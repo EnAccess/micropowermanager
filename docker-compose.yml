@@ -91,9 +91,7 @@ services:
     image: mariadb:10.3
     environment:
       MYSQL_DATABASE: micro_power_manager
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: inensus2022.
     volumes:
       - ./DB/mysql:/var/lib/mysql
 
