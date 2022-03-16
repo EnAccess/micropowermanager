@@ -90,10 +90,10 @@ services:
     container_name: maria
     image: mariadb:10.3
     environment:
-      MYSQL_ROOT_PASSWORD: laravel
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE: micro_power_manager
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
     volumes:
       - ./DB/mysql:/var/lib/mysql
 
