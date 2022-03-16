@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Notifications\Notifiable;
@@ -85,5 +86,10 @@ class User extends Authenticatable implements JWTSubject
     public function assignedAppliance(): HasMany
     {
         return $this->hasMany(AgentAssignedAppliances::class);
+    }
+    // belongsTo company
+    public function company(): BelongsTo
+    {
+        return $this->BelongsTo(Company::class, 'company_id');
     }
 }
