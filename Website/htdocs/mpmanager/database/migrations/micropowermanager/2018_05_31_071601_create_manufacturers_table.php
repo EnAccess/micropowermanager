@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('manufacturers', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('manufacturers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('website')->nullable();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('manufacturers');
+        Schema::connection('micropowermanager')->dropIfExists('manufacturers');
     }
 };

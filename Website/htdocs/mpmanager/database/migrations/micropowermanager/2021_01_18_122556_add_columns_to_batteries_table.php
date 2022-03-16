@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('batteries', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('batteries', function (Blueprint $table) {
             $table->boolean('active')->default(0);
             $table->double('c_total')->default(0);
             $table->string('c_total_unit')->default(0);
@@ -33,7 +33,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('batteries', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('batteries', function (Blueprint $table) {
             //
         });
     }

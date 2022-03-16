@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ticket_settings', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('ticket_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('api_token');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ticket_settings');
+        Schema::connection('micropowermanager')->dropIfExists('ticket_settings');
     }
 };

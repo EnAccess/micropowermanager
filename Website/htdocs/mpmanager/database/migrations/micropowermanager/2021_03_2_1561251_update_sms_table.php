@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('sms', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('sms', function (Blueprint $table) {
             $table->integer('status')->default(0)->change();
             $table->integer('sender_id')->nullable()->change();
             $table->integer('trigger_id')->nullable()->change();
@@ -30,7 +30,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('sms', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('sms', function (Blueprint $table) {
             //
         });
     }

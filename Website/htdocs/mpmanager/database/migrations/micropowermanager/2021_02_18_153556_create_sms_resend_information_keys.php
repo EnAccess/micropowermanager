@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sms_resend_information_keys', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('sms_resend_information_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->default('Resend');
             $table->timestamps();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sms_resend_information_keys');
+        Schema::connection('micropowermanager')->dropIfExists('sms_resend_information_keys');
     }
 };

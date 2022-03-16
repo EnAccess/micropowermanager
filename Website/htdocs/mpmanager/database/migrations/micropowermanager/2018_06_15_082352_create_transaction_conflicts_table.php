@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('transaction_conflicts', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('transaction_conflicts', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('transaction');
             $table->string('state'); // failed to confirm, failed to cancel
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transaction_conflicts');
+        Schema::connection('micropowermanager')->dropIfExists('transaction_conflicts');
     }
 };

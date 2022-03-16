@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('asset_rates', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('asset_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('asset_person_id');
             $table->integer('rate_cost');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asset_rates');
+        Schema::connection('micropowermanager')->dropIfExists('asset_rates');
     }
 };

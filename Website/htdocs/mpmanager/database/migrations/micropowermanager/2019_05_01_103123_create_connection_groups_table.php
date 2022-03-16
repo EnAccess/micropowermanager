@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('connection_groups', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('connection_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('connection_groups');
+        Schema::connection('micropowermanager')->dropIfExists('connection_groups');
     }
 };

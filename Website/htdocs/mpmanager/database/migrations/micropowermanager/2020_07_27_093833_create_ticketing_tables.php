@@ -23,7 +23,7 @@ return new class extends Migration
     {
         $tableNames = config('tickets.table_names');
 
-        Schema::create($tableNames['board'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['board'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('board_id');
             $table->string('board_name');
@@ -32,14 +32,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['card'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['card'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('card_id');
             $table->integer('status');
             $table->timestamps();
         });
 
-        Schema::create($tableNames['ticket'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['ticket'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('ticket_id');
             $table->morphs('creator');
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['user'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['user'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('user_name');
             $table->string('user_tag');
@@ -59,14 +59,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['ticket_categories'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['ticket_categories'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('label_name');
             $table->string('label_color');
             $table->boolean('out_source');
             $table->timestamps();
         });
-        Schema::create($tableNames['board_categories'], function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['board_categories'], function (Blueprint $table) {
             $table->increments('id');
             $table->integer('category_id');
             $table->integer('board_id');
@@ -83,12 +83,12 @@ return new class extends Migration
     public function down()
     {
         $tableNames = config('ticket.table_names');
-        Schema::drop($tableNames['board']);
-        Schema::drop($tableNames['card']);
-        Schema::drop($tableNames['ticket']);
-        Schema::drop($tableNames['user']);
-        Schema::drop($tableNames['ticket_categories']);
-        Schema::drop($tableNames['board_categories']);
+        Schema::connection('micropowermanager')->drop($tableNames['board']);
+        Schema::connection('micropowermanager')->drop($tableNames['card']);
+        Schema::connection('micropowermanager')->drop($tableNames['ticket']);
+        Schema::connection('micropowermanager')->drop($tableNames['user']);
+        Schema::connection('micropowermanager')->drop($tableNames['ticket_categories']);
+        Schema::connection('micropowermanager')->drop($tableNames['board_categories']);
     }
 
 };

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('vodacom_transactions', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('vodacom_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('conversation_id')->unique();
             $table->string('originator_conversation_id')->unique();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vodacom_transactions');
+        Schema::connection('micropowermanager')->dropIfExists('vodacom_transactions');
     }
 };

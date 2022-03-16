@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('map_settings', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('map_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('zoom');
             $table->double('latitude',10);
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('map_settings');
+        Schema::connection('micropowermanager')->dropIfExists('map_settings');
     }
 };

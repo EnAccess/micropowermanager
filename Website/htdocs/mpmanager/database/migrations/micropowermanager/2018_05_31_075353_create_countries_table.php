@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('countries', function (Blueprint $table) {
             $table->increments('id');
             $table->string('country_code');
             $table->string('country_name');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::connection('micropowermanager')->dropIfExists('countries');
     }
 };

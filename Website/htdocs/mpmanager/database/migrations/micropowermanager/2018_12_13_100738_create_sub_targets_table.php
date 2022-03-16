@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sub_targets', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('sub_targets', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('target_id');
             $table->integer('connection_id');
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_targets');
+        Schema::connection('micropowermanager')->dropIfExists('sub_targets');
     }
 };

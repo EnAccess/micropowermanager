@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('histories', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('histories', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('target'); // it contains a the target information
             $table->text('content'); //its a stringified representation of what happened
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('histories');
+        Schema::connection('micropowermanager')->dropIfExists('histories');
     }
 };

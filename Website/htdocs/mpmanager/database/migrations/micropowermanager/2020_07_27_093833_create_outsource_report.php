@@ -12,7 +12,7 @@ return new class extends Migration
 
         $tableNames = config('tickets.table_names');
 
-        Schema::create($tableNames['outsource_reports'], static function(Blueprint $table){
+        Schema::connection('micropowermanager')->create($tableNames['outsource_reports'], static function(Blueprint $table){
             $table->increments('id');
             $table->string('date');
             $table->string('path');
@@ -23,7 +23,7 @@ return new class extends Migration
 
     public function down(){
         $tableNames = config('tickets.table_names');
-        Schema::drop($tableNames['outsource_reports']);
+        Schema::connection('micropowermanager')->drop($tableNames['outsource_reports']);
     }
 
 };

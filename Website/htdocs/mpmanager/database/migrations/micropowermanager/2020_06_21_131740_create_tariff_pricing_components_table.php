@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tariff_pricing_components', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('tariff_pricing_components', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('price')->unsigned();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tariff_pricing_components');
+        Schema::connection('micropowermanager')->dropIfExists('tariff_pricing_components');
     }
 };

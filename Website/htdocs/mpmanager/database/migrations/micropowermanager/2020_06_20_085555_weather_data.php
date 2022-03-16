@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('weather_data', static function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('weather_data', static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('solar_id');
             $table->string('current_weather_data');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::connection('micropowermanager')->dropIfExists('weather_data');
     }
 };

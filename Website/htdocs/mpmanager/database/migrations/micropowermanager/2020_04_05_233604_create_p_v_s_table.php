@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('p_v_s', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('p_v_s', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('mini_grid_id');
             $table->integer('node_id');
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('p_v_s');
+        Schema::connection('micropowermanager')->dropIfExists('p_v_s');
     }
 };

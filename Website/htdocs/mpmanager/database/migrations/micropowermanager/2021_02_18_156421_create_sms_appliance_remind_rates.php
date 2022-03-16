@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sms_appliance_remind_rates', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('sms_appliance_remind_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('appliance_type_id');
             $table->integer('overdue_remind_rate');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sms_appliance_remind_rates');
+        Schema::connection('micropowermanager')->dropIfExists('sms_appliance_remind_rates');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('plugins', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('plugins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('composer_name');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('plugins');
+        Schema::connection('micropowermanager')->dropIfExists('plugins');
     }
 };

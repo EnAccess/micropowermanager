@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sub_menu_items', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('sub_menu_items', function (Blueprint $table) {
             $table->increments('id');
             $table->char('name',50);
             $table->char('url_slug',50);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_menu_items');
+        Schema::connection('micropowermanager')->dropIfExists('sub_menu_items');
     }
 };

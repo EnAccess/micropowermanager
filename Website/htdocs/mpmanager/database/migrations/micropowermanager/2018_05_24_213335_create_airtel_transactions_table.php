@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('airtel_transactions', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('airtel_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('interface_id');
             $table->string('business_number');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aritel_transactions');
+        Schema::connection('micropowermanager')->dropIfExists('aritel_transactions');
     }
 };

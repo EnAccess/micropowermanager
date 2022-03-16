@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('asset_people', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('asset_people', function (Blueprint $table) {
             $table->date('first_payment_date')->nullable();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('asset_people', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('asset_people', function (Blueprint $table) {
             $table->dropColumn('first_payment_date');
         });
     }

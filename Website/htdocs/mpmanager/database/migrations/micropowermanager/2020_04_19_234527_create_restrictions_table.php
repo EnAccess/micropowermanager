@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('restrictions', static function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('restrictions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('target');
             $table->integer('default');
@@ -31,7 +31,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('restrictions');
+        Schema::connection('micropowermanager')->dropIfExists('restrictions');
     }
 
     public function addDefault()

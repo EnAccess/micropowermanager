@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('subscriptions', static function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('subscriptions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('upgrade_id');
             $table->date('expires');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::connection('micropowermanager')->dropIfExists('subscriptions');
     }
 };

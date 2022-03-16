@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('owner'); // adds owner_id and owner_type automatically
             $table->string('email')->nullable();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('adresses');
+        Schema::connection('micropowermanager')->dropIfExists('adresses');
     }
 };

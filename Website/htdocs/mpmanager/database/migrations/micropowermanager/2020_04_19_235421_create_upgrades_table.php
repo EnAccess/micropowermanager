@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('upgrades', static function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('upgrades', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('restriction_id');
             $table->integer('cost'); // 100 times the price to handle two digit floating numbers
@@ -33,7 +33,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('upgrades');
+        Schema::connection('micropowermanager')->dropIfExists('upgrades');
     }
 
     public function addDefault()

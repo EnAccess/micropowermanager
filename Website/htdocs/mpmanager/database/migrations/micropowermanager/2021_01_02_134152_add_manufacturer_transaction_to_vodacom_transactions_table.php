@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('vodacom_transactions', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('vodacom_transactions', function (Blueprint $table) {
             $table->string('manufacturer_transaction_type')->nullable();
             $table->integer('manufacturer_transaction_id')->nullable();
         });
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('vodacom_transactions', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('vodacom_transactions', function (Blueprint $table) {
             //
         });
     }

@@ -16,7 +16,7 @@ return new class extends Migration
         $tableNames = config('tickets.table_names');
 
 
-        Schema::create($tableNames['ticket_outsource'], static function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create($tableNames['ticket_outsource'], static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('amount');
@@ -33,6 +33,6 @@ return new class extends Migration
     {
         $tableNames = config('tickets.table_names');
 
-        Schema::drop($tableNames['ticket_outsource']);
+        Schema::connection('micropowermanager')->drop($tableNames['ticket_outsource']);
     }
 };

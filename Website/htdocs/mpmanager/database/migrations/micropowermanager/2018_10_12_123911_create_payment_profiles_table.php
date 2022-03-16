@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payment_profiles', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('payment_profiles', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_profiles');
+        Schema::connection('micropowermanager')->dropIfExists('payment_profiles');
     }
 };

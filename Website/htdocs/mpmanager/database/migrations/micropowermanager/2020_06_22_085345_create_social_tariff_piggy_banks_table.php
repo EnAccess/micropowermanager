@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('social_tariff_piggy_banks', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->create('social_tariff_piggy_banks', function (Blueprint $table) {
             $table->id();
             $table->integer('savings');
             $table->integer('meter_parameter_id');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('social_tariff_piggy_banks');
+        Schema::connection('micropowermanager')->dropIfExists('social_tariff_piggy_banks');
     }
 };
