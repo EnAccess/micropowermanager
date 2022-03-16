@@ -29,9 +29,13 @@ class Migrator extends Command
     public function handle()
     {
         $dbName = $this->argument('database-name');
-
-        if ($dbName == 'all') {
-
+        if ($dbName == 'base') {
+            $this->call('optimize:clear');
+            $this->call('migrate', [
+                '--database' => 'micro_power_manager',
+                '--path' => '/database/migrations/' . $dbName,
+            ]);
+        } else {
             foreach (Config::get('database.connections') as $key => $details) {
                 $this->call('optimize:clear');
                 if ($this->isUnNecessaryConnection($key)) {
@@ -49,13 +53,7 @@ class Migrator extends Command
                 ]);
 
             }
-        } else {
 
-            $this->call('optimize:clear');
-            $this->call('migrate', [
-                '--database' => $dbName,
-                '--path' => '/database/migrations/' . $dbName,
-            ]);
         }
         return 0;
     }
