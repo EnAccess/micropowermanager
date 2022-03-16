@@ -1,0 +1,32 @@
+{
+    "data": {
+        "id": 1,
+        "online": 0,
+        "phase": 1,
+        "max_current": 10,
+        "created_at": "2018-06-22 08:15:12",
+        "updated_at": "2018-06-22 08:15:12",
+        "meters": [
+            {
+                "id": 1,
+                "serial_number": "1231321231",
+                "meter_type_id": 1,
+                "in_use": 1,
+                "manufacturer_id": 1,
+                "created_at": "2018-06-22 11:50:09",
+                "updated_at": "2018-12-17 14:20:23",
+                "deleted_at": null
+            },
+            {
+                "id": 4,
+                "serial_number": "23123123132",
+                "meter_type_id": 1,
+                "in_use": 1,
+                "manufacturer_id": 1,
+                "created_at": "2018-06-22 15:43:32",
+                "updated_at": "2018-06-22 15:43:37",
+                "deleted_at": null
+            }
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "data": {
+        "data": {
+            "cluster_id": 1,
+            "name": "test",
+            "updated_at": "2021-03-30T12:38:15.000000Z",
+            "created_at": "2021-03-30T12:38:15.000000Z",
+            "id": 2
+        }
+    },
+    "status": 201
+
+}

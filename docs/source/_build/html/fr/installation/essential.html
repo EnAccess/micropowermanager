@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Essential Configurations &mdash; Documentation MPManager </title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Deploy for Production" href="deployproduction.html" />
+    <link rel="prev" title="Building the Frontend" href="frontend.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2b2b2b" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/mpmlogo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">About MPM</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/terms.html">Terms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/beforeusing.html">Before using MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#register-a-customer-meter">Register a customer &amp; meter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#tariffs">Tariffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#payment-channels">Payment Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#payments">Payments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#selling-an-asset">Selling an Asset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/targets.html">Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/mpmanager.html">MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/mpmanager.html#clusters-dashboard">Clusters Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/clusterdashboard.html">Cluster Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/minigriddashboard.html">Mini-Grid Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/customers.html">Customers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/meters.html">Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/tickets.html">Tickets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/tickets.html#adding-user-to-ticketing-system">Adding User to Ticketing System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/maintenance.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/sms.html">Sms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/reports.html">Reports</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation MPM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#migrate-the-database">Migrate the database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-customer-registration-app-android">Installing Customer Registration App (Android)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phpmyadmin.html">phpMyAdmin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">Building the Frontend</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Essential Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mobile-payment-configurations-vodacom">Mobile Payment Configurations - Vodacom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mobile-payment-configurations-airtel">Mobile Payment Configurations - Airtel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sts-meter-configuration">STS Meter Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pusher-web-socket">Pusher(Web Socket)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#slack">Slack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-sms-communication">Setup Sms Communication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-for-bongolive">Configuration for BongoLive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-for-sms-gateway-application">Configuration for SMS-Gateway Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#change-predefined-sms-text">Change Predefined SMS Text</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#weather-data">Weather Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#email">Email</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployproduction.html">Deploy for Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#for-linux-mac-users">For Linux/Mac Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#for-windows">For Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Generate API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MPManager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Essential Configurations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installation/essential.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="essential-configurations">
+<h1>Essential Configurations<a class="headerlink" href="#essential-configurations" title="Lien permanent vers ce titre">¶</a></h1>
+<p>There are bound services like the Payment Services (Vodacom Tanzania and
+Airtel Tanzania), Ticketing Service(Trello API), Critical Logging
+notification(Slack Channel), WebSocket(Pusher), etc. if you plan to get
+your payments through these services you need to change/edit following
+files/configurations</p>
+<div class="section" id="mobile-payment-configurations-vodacom">
+<h2>Mobile Payment Configurations - Vodacom<a class="headerlink" href="#mobile-payment-configurations-vodacom" title="Lien permanent vers ce titre">¶</a></h2>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">ips</span></code> array element in <code class="docutils literal notranslate"><span class="pre">services.php</span></code>. The file is located under
+<code class="docutils literal notranslate"><span class="pre">app/config/</span></code>. The element <code class="docutils literal notranslate"><span class="pre">ips</span></code> holds a list of authorized
+IP-addresses that are allowed to send transaction data.</p></li>
+<li><p>Following changes should be done in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">VODACOM_SPID</span><span class="o">=</span>YOUR-SPID
+<span class="nv">VODACOM_SPPASSWORD</span><span class="o">=</span><span class="s2">&quot;YOUR-PASSWORD&quot;</span>
+<span class="nv">VODACOM_REQUEST_URL</span><span class="o">=</span><span class="s2">&quot;END-POINT WHERE YOU CONFIRM THE TRANSACTION&quot;</span>
+<span class="nv">VODACOM_BROKER_CRT</span><span class="o">=</span><span class="s2">&quot;LOCATION-OF-.CRT-FILE&quot;</span>
+<span class="nv">VODACOM_SLL_KEY</span><span class="o">=</span><span class="s2">&quot;LOCATION-OF-.KEY-FILE&quot;</span>
+<span class="nv">VODACOM_CERTIFICATE_AUTHORITY</span><span class="o">=</span><span class="s2">&quot;LOCATION-OF-.CER-FILE&quot;</span>
+<span class="nv">VODACOM_SSL_CERT</span><span class="o">=</span><span class="s2">&quot;LOCATION-OF-.PEM-FILE&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="mobile-payment-configurations-airtel">
+<h2>Mobile Payment Configurations - Airtel<a class="headerlink" href="#mobile-payment-configurations-airtel" title="Lien permanent vers ce titre">¶</a></h2>
+<p>When we set up the second payment provider in our live system, we were
+not that experienced by setting up <strong>VPN Tunnels</strong> that’s why we go with
+the idea “one tunnel per host`. Thatswhy the airtel payment integration
+is on a separate project for now. We’re planning to migrate it into this
+project soon.</p>
+<p>–&gt; <strong>The project link comes as soon as we uploaded the project to
+GitHub</strong> &lt;–</p>
+<p>Change the <code class="docutils literal notranslate"><span class="pre">api_user</span></code>, <code class="docutils literal notranslate"><span class="pre">api_password</span></code>, and <code class="docutils literal notranslate"><span class="pre">ips</span></code> in
+<code class="docutils literal notranslate"><span class="pre">services.php</span></code></p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">&#39;airtel&#39; =&gt; [</span>
+<span class="x">      &#39;request_url&#39; =&gt; env(&#39;AIRTEL_REQUEST_URL&#39;),</span>
+<span class="x">      &#39;api_user&#39; =&gt; &#39;YOUR-USER&#39;,</span>
+<span class="x">      &#39;api_password&#39; =&gt; &#39;YOUR-PASSWORD&#39;,</span>
+<span class="x">      &#39;ips&#39; =&gt; [</span>
+<span class="x">          &#39;ALLOWED_IPS TO SEND YOU TRANSACTION DATA&#39;</span>
+<span class="x">      ],</span>
+<span class="x">  ],</span>
+</pre></div>
+</div>
+<p>The following change should be done in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">AIRTEL_REQUEST_URL</span><span class="o">=</span><span class="s2">&quot;AIRTEL SERVICE URL&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sts-meter-configuration">
+<h2>STS Meter Configuration<a class="headerlink" href="#sts-meter-configuration" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Currently, the system supports only CALIN-STS meters. To be able to
+communicate with Calin and generate STS-Tokens, the following changes
+should be done;</p>
+<ol class="arabic">
+<li><p>Your key and the endpoint where you create those tokens.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CALIN_KEY</span><span class="o">=</span><span class="s2">&quot;CALIN-KEY&quot;</span>
+<span class="nv">CALIN_CLIENT_URL</span><span class="o">=</span><span class="s2">&quot;CALIN-CLIENT-URL&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>If you have meters which can send their consumption data to CALIN’s
+server please fill the below-listed variables too</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">METER_DATA_URL</span><span class="o">=</span><span class="s2">&quot;REMOTE-METER-READING-URL&quot;</span>
+<span class="nv">METER_DATA_KEY</span><span class="o">=</span><span class="s2">&quot;METER-READING-KEY&quot;</span>
+<span class="nv">METER_DATA_USER</span><span class="o">=</span><span class="s2">&quot;METER-READING-USER&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="pusher-web-socket">
+<h2>Pusher(Web Socket)<a class="headerlink" href="#pusher-web-socket" title="Lien permanent vers ce titre">¶</a></h2>
+<blockquote>
+<div><p>Pusher is used to notify your admins when a new ticket is been
+created.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PUSHER_APP_ID</span><span class="o">=</span><span class="s2">&quot;PUSHER-APP-ID&quot;</span>
+<span class="n">PUSHER_APP_KEY</span><span class="o">=</span><span class="s2">&quot;PUSHER-KEY&quot;</span>
+<span class="n">PUSHER_APP_SECRET</span><span class="o">=</span><span class="s2">&quot;PUSHER-APP-SECRET&quot;</span>
+<span class="n">PUSHER_APP_CLUSTER</span><span class="o">=</span><span class="s2">&quot;YOUR-CLUSTER ex. eu&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="slack">
+<h2>Slack<a class="headerlink" href="#slack" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Slack is the current critical logging service that alerts the admins
+when something went wrong. Like a transaction is been canceled.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">LOG_SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;SLACK-WEBHOOK-URL&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup-sms-communication">
+<h2>Setup Sms Communication<a class="headerlink" href="#setup-sms-communication" title="Lien permanent vers ce titre">¶</a></h2>
+<div class="section" id="configuration-for-bongolive">
+<h3>Configuration for BongoLive<a class="headerlink" href="#configuration-for-bongolive" title="Lien permanent vers ce titre">¶</a></h3>
+<p><strong>Important Note: The Bongo API integration on our system is not been
+maintained since early-2019.</strong></p>
+<p>Firstly, you have to uncomment these lines in
+<code class="docutils literal notranslate"><span class="pre">app/Providers/AppServiceProvider.php</span></code>. Because the default
+SMSProvider is the 2nd option above.</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">//$this-&gt;app-&gt;singleton(&#39;SmsProvider&#39;, function ($app) {</span>
+<span class="x">       //   return new \App\Sms\Bongo();</span>
+<span class="x">       //});</span>
+</pre></div>
+</div>
+<p>After that, change the following configuration</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;bongo&#39;</span> <span class="o">=</span>&gt; <span class="o">[</span>
+           <span class="s1">&#39;url&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;http://www.bongolive.co.tz/api/sendSMS.php&#39;</span>,
+           <span class="s1">&#39;sender&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;SENDER_NUMBER&#39;</span>,
+           <span class="s1">&#39;username&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;USER NAME&#39;</span>,
+           <span class="s1">&#39;password&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;PASSWORD&#39;</span>,
+           <span class="s1">&#39;key&#39;</span> <span class="o">=</span>&gt;<span class="s1">&#39;KEY&#39;</span>,
+       <span class="o">]</span>,
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration-for-sms-gateway-application">
+<h3>Configuration for SMS-Gateway Application<a class="headerlink" href="#configuration-for-sms-gateway-application" title="Lien permanent vers ce titre">¶</a></h3>
+<p><strong>Advice: Please read the SMS-Gateway documentation before you
+continue.</strong></p>
+<p>To lower the costs of the system we are using the following application
+to send and receive SMSes over that application. To be able to use the
+application you need to assign following configuration values in
+<code class="docutils literal notranslate"><span class="pre">services.php</span></code></p>
+<p>You are not forced to use our inhouse solution for SMS communication.
+You can change the SmsProvider easily in
+<code class="docutils literal notranslate"><span class="pre">app/Providers/AppServiceProvider.php</span></code></p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">$this-&gt;app-&gt;singleton(&#39;SmsProvider&#39;, static function ($app) {</span>
+<span class="x">           return new AndroidGateway();</span>
+<span class="x">       });</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;sms&#39;</span> <span class="o">=</span>&gt; <span class="o">[</span>
+
+        <span class="s1">&#39;android&#39;</span> <span class="o">=</span>&gt; <span class="o">[</span>
+            <span class="s1">&#39;url&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;https://fcm.googleapis.com/fcm/send&#39;</span>,
+            <span class="s1">&#39;token&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;FIREBASE_TOKEN&#39;</span>,
+            <span class="s1">&#39;key&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;PHONE_KEY&#39;</span>,
+        <span class="o">]</span>,
+        <span class="s1">&#39;callback&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;https://mpmanager.local/api/sms/%s/confirm&#39;</span>,
+    <span class="o">]</span>,
+</pre></div>
+</div>
+<p><strong>Dont forget to change the ``callback`` variable to a globaly reachable
+domain</strong></p>
+</div>
+<div class="section" id="change-predefined-sms-text">
+<h3>Change Predefined SMS Text<a class="headerlink" href="#change-predefined-sms-text" title="Lien permanent vers ce titre">¶</a></h3>
+<p>To change the predefined SMS texts, please edit <code class="docutils literal notranslate"><span class="pre">app/Sms/SmsTypes.php</span></code></p>
+</div>
+</div>
+<div class="section" id="weather-data">
+<h2>Weather Data<a class="headerlink" href="#weather-data" title="Lien permanent vers ce titre">¶</a></h2>
+<p>The system shows the weather data on the Mini-Grid level. To be able to
+read out the data from <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">Weather</span> <span class="pre">Map</span></code> service you have to register
+yourself there and get an <strong>API-KEY</strong> Change the following value in
+<code class="docutils literal notranslate"><span class="pre">services.php</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;weather&#39;</span> <span class="o">=</span>&gt; <span class="o">[</span>
+        <span class="s1">&#39;owm_app_id&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;api_key&#39;</span>,
+    <span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="email">
+<h2>Email<a class="headerlink" href="#email" title="Lien permanent vers ce titre">¶</a></h2>
+<p>To be able to send E-Mails please edit following configuration variables</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="o">[</span>
+    <span class="s1">&#39;host&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;&#39;</span>, //your host to send through
+    <span class="s1">&#39;smtp_auth&#39;</span> <span class="o">=</span>&gt; true, // <span class="nb">enable</span> SMTP authentication
+    <span class="s1">&#39;username&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;&#39;</span>,// SMTP username
+    <span class="s1">&#39;password&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;&#39;</span>, //SMTP username
+    <span class="s1">&#39;smtp_secure&#39;</span> <span class="o">=</span>&gt; PHPMailer::ENCRYPTION_STARTTLS,// default is tls
+    <span class="s1">&#39;port&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;&#39;</span>,
+    <span class="s1">&#39;default_sender&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;&#39;</span>,
+    <span class="s1">&#39;default_message&#39;</span> <span class="o">=</span>&gt; <span class="s1">&#39;Please do not reply to this email&#39;</span>, // adds a small footer text to your email
+<span class="o">]</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>There are currently two supported SMS-Gateways. 1. Bongo Live Tanzania
+2. Inhouse SMS-Gateway Application</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="deployproduction.html" class="btn btn-neutral float-right" title="Deploy for Production" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="frontend.html" class="btn btn-neutral float-left" title="Building the Frontend" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Précédent</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Inensus
+
+    </p>
+  </div>
+    
+    
+    
+    Compilé avec <a href="http://sphinx-doc.org/">Sphinx</a> en utilisant un
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">thème</a>
+    
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

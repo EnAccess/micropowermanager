@@ -1,0 +1,75 @@
+{
+    "data": {
+        "id": 1,
+        "title": null,
+        "education": null,
+        "name": "John",
+        "surname": "Doe",
+        "birth_date": "1970-01-01",
+        "sex": "male",
+        "nationality": null,
+        "created_at": "2018-06-22 11:49:57",
+        "updated_at": "2019-07-02 06:45:01",
+        "customer_group_id": null,
+        "is_customer": 1,
+        "deleted_at": null,
+        "addresses": [
+            {
+                "id": 5,
+                "is_primary": 0,
+                "email": "",
+                "phone": "+1111111111",
+                "street": "-",
+                "city_id": 1,
+                "geo_id": null,
+                "created_at": "2018-06-22 11:49:57",
+                "updated_at": "2018-11-22 09:37:07"
+            },
+            {
+                "id": 209,
+                "is_primary": 0,
+                "email": "",
+                "phone": "+1111111112",
+                "street": "",
+                "city_id": 1,
+                "geo_id": null,
+                "created_at": "2018-11-15 08:57:47",
+                "updated_at": "2020-03-21 13:47:36"
+            }
+        ],
+        "citizenship": null,
+        "role_owner": [
+            {
+                "id": 2,
+                "role_owner_type": "person",
+                "role_owner_id": 1,
+                "role_definition_id": 1,
+                "created_at": "2018-07-27 15:29:03",
+                "updated_at": "2018-07-27 15:29:03",
+                "definitions": {
+                    "id": 1,
+                    "role_name": "customer"
+                }
+            }
+        ],
+        "meters": [
+            {
+                "id": 1,
+                "connection_type_id": 1,
+                "created_at": "2018-06-22 11:59:46",
+                "updated_at": "2018-12-17 14:20:23",
+                "connection_group_id": 1,
+                "meter": {
+                    "id": 1,
+                    "serial_number": "123123123123",
+                    "meter_type_id": 1,
+                    "in_use": 1,
+                    "manufacturer_id": 1,
+                    "created_at": "2018-06-22 11:50:09",
+                    "updated_at": "2018-12-17 14:20:23",
+                    "deleted_at": null
+                }
+            }
+        ]
+    }
+}

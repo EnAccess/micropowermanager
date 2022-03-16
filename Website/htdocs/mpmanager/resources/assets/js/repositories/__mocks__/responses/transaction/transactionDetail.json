@@ -1,0 +1,74 @@
+{
+    "data": {
+        "data": {
+            "id": 96256,
+            "original_transaction_id": 89059,
+            "original_transaction_type": "vodacom_transaction",
+            "amount": 100,
+            "type": "energy",
+            "sender": "255798686796",
+            "message": "47000319021",
+            "created_at": "2020-02-27T10:56:55.000000Z",
+            "updated_at": "2020-02-27T10:56:56.000000Z",
+            "token": null,
+            "original_transaction": {
+                "id": 89059,
+                "conversation_id": "7BR13F6HAWD",
+                "originator_conversation_id": "b6e2cf63410140b9b99233f9bdb35f8b",
+                "mpesa_receipt": "7BR13F6HAWD",
+                "transaction_date": "2020-02-27 13:56:54",
+                "transaction_id": "375327860_332277",
+                "status": -1,
+                "created_at": "2020-02-27T10:56:55.000000Z",
+                "updated_at": "2020-02-27T10:57:01.000000Z",
+                "manufacturer_transaction_type": null,
+                "manufacturer_transaction_id": null,
+                "conflicts": [
+                    {
+                        "id": 8339,
+                        "transaction_type": "vodacom_transaction",
+                        "transaction_id": 89059,
+                        "state": null,
+                        "created_at": "2020-02-27T10:57:00.000000Z",
+                        "updated_at": "2020-02-27T10:57:00.000000Z"
+                    }
+                ]
+            },
+            "sms": null,
+            "payment_histories": [],
+            "meter": {
+                "id": 43,
+                "serial_number": "47000319021",
+                "meter_type_id": 1,
+                "in_use": 1,
+                "manufacturer_id": 1,
+                "created_at": "2018-08-15T14:35:23.000000Z",
+                "updated_at": "2018-12-04T15:45:05.000000Z",
+                "deleted_at": null,
+                "meter_parameter": {
+                    "id": 37,
+                    "connection_type_id": 2,
+                    "created_at": "2018-08-15T14:35:23.000000Z",
+                    "updated_at": "2020-12-12T14:59:58.000000Z",
+                    "connection_group_id": 4,
+                    "owner": {
+                        "id": 74,
+                        "title": null,
+                        "education": null,
+                        "name": "testname",
+                        "surname": "testsurname",
+                        "birth_date": null,
+                        "sex": null,
+                        "nationality": null,
+                        "created_at": "2018-08-15T14:35:23.000000Z",
+                        "updated_at": "2020-03-04T19:58:57.000000Z",
+                        "customer_group_id": null,
+                        "is_customer": 1,
+                        "deleted_at": null
+                    }
+                }
+            }
+        }
+    },
+    "status": 200
+}

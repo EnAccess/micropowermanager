@@ -1,0 +1,18 @@
+FROM composer:2.1.1
+
+RUN set -eux;\
+    apk add \
+    freetype \
+    libpng \
+    libjpeg-turbo \
+    libxml2-dev \
+    libzip-dev\
+    freetype-dev\
+    libjpeg-turbo-dev\
+    libpng-dev
+
+
+# install php extentions
+RUN docker-php-ext-install gd pcntl soap
+
+

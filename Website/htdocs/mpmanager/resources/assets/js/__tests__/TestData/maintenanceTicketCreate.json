@@ -1,0 +1,15 @@
+{
+    "customer_type": "maintenance",
+    "name": null,
+    "surname": null,
+    "phone": null,
+    "city_id": null,
+    "mini_grid_id": null,
+    "sex": "male",
+    "creator": 22,
+    "title": "test",
+    "category": 18,
+    "assigned": 1065,
+    "amount": "123",
+    "description": "test"
+}

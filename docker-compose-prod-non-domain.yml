@@ -1,0 +1,99 @@
+version: '3.1'
+
+services:
+  'laravel':
+    build:
+      context: Docker/
+      dockerfile: DockerfileLaravelProd
+    image: laravel/php:8
+    container_name: laravel
+    restart: unless-stopped
+    depends_on:
+      - maria
+      - composer
+      - node
+      - cron
+    links:
+      - maria:db
+      - redis:redis
+    volumes:
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./Website/htdocs:/var/www/html
+
+  'cron':
+    container_name: cron_job
+    build:
+      context: Docker/
+      dockerfile: DockerfileCron
+    image: laravel/cron
+    depends_on:
+      - maria
+    links:
+      - maria:db
+      - redis:redis
+    volumes:
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./Website/htdocs:/var/www/html
+
+  'worker':
+    container_name: worker
+    restart: unless-stopped
+    build:
+      context: Docker/
+      dockerfile: DockerfileQueueWorker
+    volumes:
+      - ./Website/htdocs/mpmanager:/var/www/laravel
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - maria
+    links:
+      - maria:db
+      - redis:redis
+
+  'composer':
+    container_name: mpmanager_composer
+    build:
+      context: Docker/
+      dockerfile: DockerfileComposer
+    restart: 'no'
+    command: install
+    volumes:
+      - ./Website/htdocs/mpmanager:/app
+
+  'node':
+    container_name: mpmanager_node
+    build:
+      context: Docker/
+      dockerfile: DockerfileNpm
+    volumes:
+      - ./Website/htdocs/mpmanager:/home/node/app
+    command:  /bin/sh -c "/tmp/start.sh"
+
+  'redis':
+    image: redis:5
+    restart: unless-stopped
+    volumes:
+      - ./redis/:/data
+
+  'maria':
+    container_name: maria
+    image: mariadb:10.3
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: laravel
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - ./DB/mysql:/var/lib/mysql
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./Website/htdocs:/var/www/html
+      - ./NginxProxy/conf.p:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"

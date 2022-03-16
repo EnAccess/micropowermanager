@@ -1,0 +1,114 @@
+version: '3.1'
+
+services:
+  'laravel':
+    container_name: laravel
+    build:
+      context: Docker/
+      dockerfile: DockerfileLaravelDev
+    image: laravel/php:8
+
+    environment:
+      VIRTUAL_HOST: mpmanager.local
+    depends_on:
+      - maria
+    links:
+      - maria:db
+      - redis:redis
+
+    volumes:
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./Website/htdocs:/var/www/html
+  'cron':
+    container_name: cron_job
+    build:
+      context: Docker/
+      dockerfile: DockerfileCron
+    image: laravel/cron
+    depends_on:
+      - maria
+    links:
+      - maria:db
+      - redis:redis
+    volumes:
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./Website/htdocs:/var/www/html
+
+  'worker':
+    container_name: worker
+    restart: unless-stopped
+    build:
+      context: Docker/
+      dockerfile: DockerfileQueueWorker
+    volumes:
+      - ./Website/htdocs/mpmanager:/var/www/laravel
+      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - maria
+    links:
+      - maria:db
+      - redis:redis
+
+
+  'composer':
+    container_name: mpmanager_composer
+    build:
+      context: Docker/
+      dockerfile: DockerfileComposer
+    restart: 'no'
+    command: install
+    volumes:
+      - ./Website/htdocs/mpmanager:/app
+
+  'node':
+    container_name: mpmanager_node
+    build:
+      context: Docker/
+      dockerfile: DockerfileNpm
+    volumes:
+      - ./Website/htdocs/mpmanager:/home/node/app
+    command: /bin/sh -c "/tmp/start.sh"
+
+
+  'redis':
+    image: redis:5
+    volumes:
+      - ./redis/:/data
+
+  'phpmyadmin':
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      VIRTUAL_HOST: db.mpmanager.local
+
+    depends_on:
+      - maria
+    links:
+      - maria:db
+
+
+  'maria':
+    container_name: maria
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: laravel
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - ./DB/mysql:/var/lib/mysql
+
+  nginxproxy:
+    container_name: nginx-proxy
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+      - "6379:6379"
+    environment:
+      VIRTUAL_PROTO: https
+    volumes:
+      - ./NginxProxy/proxy.conf:/etc/nginx/proxy.conf
+      - ./NginxProxy/conf.d:/etc/nginx/conf.d
+      - ./NginxProxy/certs:/etc/nginx/certs
+      - ./NginxProxy/vhost.d:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro

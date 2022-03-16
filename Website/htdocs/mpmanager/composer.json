@@ -1,0 +1,83 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "barryvdh/laravel-dompdf": "^0.9.0",
+        "doctrine/dbal": "^3.1",
+        "enlightn/enlightn": "^1.22",
+        "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^7.3.0",
+        "laravel/framework": "^8.37",
+        "laravel/helpers": "^1.2",
+        "laravel/horizon": "^5.0",
+        "laravel/tinker": "^2.5",
+        "laravel/ui": "^3.2",
+        "phpmailer/phpmailer": "^6.1.5",
+        "phpoffice/phpspreadsheet": "^1.7",
+        "predis/predis": "^1.1.7",
+        "pusher/pusher-php-server": "^6.0",
+        "tymon/jwt-auth": "dev-develop",
+        "webpatser/laravel-uuid": "^4.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.5",
+        "beyondcode/laravel-dump-server": "^1.7",
+        "facade/ignition": "^2.0",
+        "filp/whoops": "^2.0",
+        "fzaninotto/faker": "^1.9.1",
+        "mockery/mockery": "^1.0",
+        "nunomaduro/collision": "^5.3",
+        "phpunit/phpunit": "^9.0",
+        "spatie/laravel-web-tinker": "^1.7",
+        "squizlabs/php_codesniffer": "*",
+        "vimeo/psalm": "^4.4"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Inensus\\Ticket\\": "packages/inensus/ticket/src"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ],
+        "lint": "find . -name \\*.php -not -path './lib/composer/*' -not -path './vendor/*' -not -path './build/.phan/*' -exec php -l \"{}\" \\;",
+        "phpcs": "phpcs --colors  -p --no-cache --standard=PSR12 --tab-width=4 ./app/",
+        "phpcbf": "phpcbf --standard=PSR12 --tab-width=4 app/"
+    }
+
+}

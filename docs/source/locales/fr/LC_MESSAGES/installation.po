@@ -1,0 +1,364 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Inensus
+# This file is distributed under the same license as the MPManager package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: MPManager \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-30 16:15+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../installation/api.rst:2
+msgid "Generate API Documentation"
+msgstr ""
+
+#: ../../installation/api.rst:4
+msgid ""
+"To generate the API documentation, jump in the ``laravel`` container and "
+"type ``php artisan apidoc:generate`` in the **mpmanager** directory. That"
+" will create a new **docs** folder under **public** folder. The API "
+"documentation should be available under ``http://mpmanager.local/docs/``."
+" The whole API documentation will be migrated to third-party tools like "
+"Postman or Swagger."
+msgstr ""
+
+#: ../../installation/deployproduction.rst:2
+msgid "Deploy for Production"
+msgstr ""
+
+#: ../../installation/deployproduction.rst:4
+msgid ""
+"The production mode will automatically install **Let's Encrypt SSL "
+"certificates**. Therefore you need firstly register a domain."
+msgstr ""
+
+#: ../../installation/deployproduction.rst:7
+msgid ""
+"When you have your domain, the first thing to do is editing ``app.conf`` "
+"and ``db.conf``\\ (if you planning to use phpMyAdmin as well) files under"
+" ``NginxProxy/conf.p``."
+msgstr ""
+
+#: ../../installation/deployproduction.rst:11
+msgid ""
+"Afer that, paste ``chmod +x ./install-production.sh`` to make the file "
+"executable and run it via ``./install-production.sh``. This will guide "
+"you through the installation and finally, it will start the services."
+msgstr ""
+
+#: ../../installation/development.rst:2
+msgid "Development"
+msgstr ""
+
+#: ../../installation/development.rst:4
+msgid ""
+"The development environment is served under **http://mpmanager.local** To"
+" reach the site over the given url; enter the following lines to your "
+"hosts file."
+msgstr ""
+
+#: ../../installation/development.rst:9
+msgid "For Linux/Mac Users"
+msgstr ""
+
+#: ../../installation/development.rst:18
+msgid "For Windows"
+msgstr ""
+
+#: ../../installation/essential.rst:2
+msgid "Essential Configurations"
+msgstr ""
+
+#: ../../installation/essential.rst:4
+msgid ""
+"There are bound services like the Payment Services (Vodacom Tanzania and "
+"Airtel Tanzania), Ticketing Service(Trello API), Critical Logging "
+"notification(Slack Channel), WebSocket(Pusher), etc. if you plan to get "
+"your payments through these services you need to change/edit following "
+"files/configurations"
+msgstr ""
+
+#: ../../installation/essential.rst:11
+msgid "Mobile Payment Configurations - Vodacom"
+msgstr ""
+
+#: ../../installation/essential.rst:13
+msgid ""
+"``ips`` array element in ``services.php``. The file is located under "
+"``app/config/``. The element ``ips`` holds a list of authorized IP-"
+"addresses that are allowed to send transaction data."
+msgstr ""
+
+#: ../../installation/essential.rst:16
+msgid "Following changes should be done in the ``.env`` file"
+msgstr ""
+
+#: ../../installation/essential.rst:29
+msgid "Mobile Payment Configurations - Airtel"
+msgstr ""
+
+#: ../../installation/essential.rst:31
+msgid ""
+"When we set up the second payment provider in our live system, we were "
+"not that experienced by setting up **VPN Tunnels** that's why we go with "
+"the idea 'one tunnel per host\\`. Thatswhy the airtel payment integration"
+" is on a separate project for now. We're planning to migrate it into this"
+" project soon."
+msgstr ""
+
+#: ../../installation/essential.rst:37
+msgid ""
+"--> **The project link comes as soon as we uploaded the project to "
+"GitHub** <--"
+msgstr ""
+
+#: ../../installation/essential.rst:40
+msgid "Change the ``api_user``, ``api_password``, and ``ips`` in ``services.php``"
+msgstr ""
+
+#: ../../installation/essential.rst:54
+msgid "The following change should be done in the ``.env`` file"
+msgstr ""
+
+#: ../../installation/essential.rst:61
+msgid "STS Meter Configuration"
+msgstr ""
+
+#: ../../installation/essential.rst:63
+msgid ""
+"Currently, the system supports only CALIN-STS meters. To be able to "
+"communicate with Calin and generate STS-Tokens, the following changes "
+"should be done;"
+msgstr ""
+
+#: ../../installation/essential.rst:67
+msgid "Your key and the endpoint where you create those tokens."
+msgstr ""
+
+#: ../../installation/essential.rst:74
+msgid ""
+"If you have meters which can send their consumption data to CALIN's "
+"server please fill the below-listed variables too"
+msgstr ""
+
+#: ../../installation/essential.rst:84
+msgid "Pusher(Web Socket)"
+msgstr ""
+
+#: ../../installation/essential.rst:86
+msgid "Pusher is used to notify your admins when a new ticket is been created."
+msgstr ""
+
+#: ../../installation/essential.rst:97
+msgid "Slack"
+msgstr ""
+
+#: ../../installation/essential.rst:99
+msgid ""
+"Slack is the current critical logging service that alerts the admins when"
+" something went wrong. Like a transaction is been canceled."
+msgstr ""
+
+#: ../../installation/essential.rst:107
+msgid "Setup Sms Communication"
+msgstr ""
+
+#: ../../installation/essential.rst:110
+msgid "Configuration for BongoLive"
+msgstr ""
+
+#: ../../installation/essential.rst:112
+msgid ""
+"**Important Note: The Bongo API integration on our system is not been "
+"maintained since early-2019.**"
+msgstr ""
+
+#: ../../installation/essential.rst:115
+msgid ""
+"Firstly, you have to uncomment these lines in "
+"``app/Providers/AppServiceProvider.php``. Because the default SMSProvider"
+" is the 2nd option above."
+msgstr ""
+
+#: ../../installation/essential.rst:125
+msgid "After that, change the following configuration"
+msgstr ""
+
+#: ../../installation/essential.rst:138
+msgid "Configuration for SMS-Gateway Application"
+msgstr ""
+
+#: ../../installation/essential.rst:140
+msgid "**Advice: Please read the SMS-Gateway documentation before you continue.**"
+msgstr ""
+
+#: ../../installation/essential.rst:143
+msgid ""
+"To lower the costs of the system we are using the following application "
+"to send and receive SMSes over that application. To be able to use the "
+"application you need to assign following configuration values in "
+"``services.php``"
+msgstr ""
+
+#: ../../installation/essential.rst:148
+msgid ""
+"You are not forced to use our inhouse solution for SMS communication. You"
+" can change the SmsProvider easily in "
+"``app/Providers/AppServiceProvider.php``"
+msgstr ""
+
+#: ../../installation/essential.rst:170
+msgid ""
+"**Dont forget to change the ``callback`` variable to a globaly reachable "
+"domain**"
+msgstr ""
+
+#: ../../installation/essential.rst:174
+msgid "Change Predefined SMS Text"
+msgstr ""
+
+#: ../../installation/essential.rst:176
+msgid "To change the predefined SMS texts, please edit ``app/Sms/SmsTypes.php``"
+msgstr ""
+
+#: ../../installation/essential.rst:179
+msgid "Weather Data"
+msgstr ""
+
+#: ../../installation/essential.rst:181
+msgid ""
+"The system shows the weather data on the Mini-Grid level. To be able to "
+"read out the data from ``Open Weather Map`` service you have to register "
+"yourself there and get an **API-KEY** Change the following value in "
+"``services.php``"
+msgstr ""
+
+#: ../../installation/essential.rst:193
+msgid "Email"
+msgstr ""
+
+#: ../../installation/essential.rst:195
+msgid "To be able to send E-Mails please edit following configuration variables"
+msgstr ""
+
+#: ../../installation/essential.rst:211
+msgid ""
+"There are currently two supported SMS-Gateways. 1. Bongo Live Tanzania 2."
+" Inhouse SMS-Gateway Application"
+msgstr ""
+
+#: ../../installation/frontend.rst:2
+msgid "Building the Frontend"
+msgstr ""
+
+#: ../../installation/frontend.rst:4
+msgid ""
+"The project will automatically build the frontend in the **production** "
+"mode. If you want to build the project in **development** mode, change "
+"``NMP_MODE`` variable in the ``.env`` file."
+msgstr ""
+
+#: ../../installation/installation.rst:2
+msgid "Installation MPM"
+msgstr ""
+
+#: ../../installation/installation.rst:5
+msgid "System Requirements"
+msgstr ""
+
+#: ../../installation/installation.rst:7
+msgid "PHP ^7.3"
+msgstr ""
+
+#: ../../installation/installation.rst:9
+msgid "Node ^v14.3"
+msgstr ""
+
+#: ../../installation/installation.rst:12
+msgid "Installation"
+msgstr ""
+
+#: ../../installation/installation.rst:14
+msgid "Clone or download the repository"
+msgstr ""
+
+#: ../../installation/installation.rst:15
+msgid "Build the docker containers with ``docker-compose up``"
+msgstr ""
+
+#: ../../installation/installation.rst:18
+msgid "Installing Dependencies"
+msgstr ""
+
+#: ../../installation/installation.rst:20
+msgid ""
+"All dependencies will be automatically installed on the installation "
+"step. However, if you need additional dependencies, install them in the "
+"``laravel`` container. To Install additional php dependencies enter the "
+"Docker-Container named ``laravel`` navigate to ``mpmanager`` & run ``php "
+"../composer.phar install XXX``"
+msgstr ""
+
+#: ../../installation/installation.rst:27
+msgid "Migrate the database"
+msgstr ""
+
+#: ../../installation/installation.rst:29
+msgid ""
+"Run ``docker exec -it laravel /bin/bash`` to jump into the laravel "
+"container"
+msgstr ""
+
+#: ../../installation/installation.rst:31
+msgid "navigate to ``mpmanager`` directory with ``cd mpmanager``"
+msgstr ""
+
+#: ../../installation/installation.rst:32
+msgid ""
+"Run ``php artisan migrate --seed`` to initialize the Database. The "
+"``--seed`` option will create the default user to login."
+msgstr ""
+
+#: ../../installation/installation.rst:34
+msgid "The default user to login is ``admin@admin.com`` and ``basic-password``."
+msgstr ""
+
+#: ../../installation/installation.rst:38
+msgid "Installing Customer Registration App (Android)"
+msgstr ""
+
+#: ../../installation/installation.rst:40
+msgid ""
+"Please read the project documentation to get an idea of why we're using a"
+" separate app to register customers via an Android-App. Follow the link "
+"to get to the Customer Register App Project"
+msgstr ""
+
+#: ../../installation/phpmyadmin.rst:2
+msgid "phpMyAdmin"
+msgstr ""
+
+#: ../../installation/phpmyadmin.rst:4
+msgid ""
+"To project also includes phpMyAdmin which enables quick database "
+"operations without installing third-party software or writing any single "
+"line into the terminal."
+msgstr ""
+
+#: ../../installation/phpmyadmin.rst:8
+msgid "The default credentials for the database are;"
+msgstr ""
+
+#: ../../installation/phpmyadmin.rst:15
+msgid "**Please don't forget to change these before you publish your project**"
+msgstr ""
+

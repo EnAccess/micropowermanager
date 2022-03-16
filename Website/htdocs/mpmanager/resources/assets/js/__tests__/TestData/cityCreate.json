@@ -1,0 +1,43 @@
+{
+    "name": "test",
+    "cluster_id": 21,
+    "mini_grid_id": 14,
+    "geo_data": [
+        {
+            "id": 21,
+            "name": "test",
+            "manager_id": 25,
+            "created_at": "2021-03-30T11:30:50.000000Z",
+            "updated_at": "2021-03-30T11:30:50.000000Z",
+            "geo": {
+                "leaflet_id": 591,
+                "type": "manual",
+                "geojson": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                -2.757747489855385,
+                                35.5050327117256
+                            ],
+                            [
+                                -3.173167972262269,
+                                36.2099593632781
+                            ],
+                            [
+                                -2.5175906170179476,
+                                36.235234933848794
+                            ]
+                        ]
+                    ]
+                },
+                "searched": false,
+                "display_name": "test",
+                "selected": true,
+                "draw_type": "draw",
+                "lat": -2.8161686930452006,
+                "lon": 35.98340900295083
+            }
+        }
+    ]
+}

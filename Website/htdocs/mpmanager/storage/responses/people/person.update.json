@@ -1,0 +1,17 @@
+{
+    "data": {
+        "id": 1,
+        "title": null,
+        "education": null,
+        "name": "John",
+        "surname": "Doe",
+        "birth_date": "1970-01-01",
+        "sex": null,
+        "nationality": null,
+        "created_at": "2018-06-22 11:49:57",
+        "updated_at": "2020-03-31 09:59:08",
+        "customer_group_id": null,
+        "is_customer": 1,
+        "deleted_at": null
+    }
+}

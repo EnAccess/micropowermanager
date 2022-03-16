@@ -1,0 +1,16 @@
+{
+    "data": [
+        {
+            "connection_type_id": 1,
+            "total": 4796
+        },
+        {
+            "connection_type_id": 2,
+            "total": 46
+        },
+        {
+            "connection_type_id": 17,
+            "total": 9
+        }
+    ]
+}

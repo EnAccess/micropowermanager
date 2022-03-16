@@ -1,0 +1,51 @@
+FROM php:8-fpm
+
+RUN apt-get update && \
+    apt-get install -y \
+    cron \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libxml2-dev \
+    libssl-dev \
+    mariadb-client \
+    zlib1g-dev \
+    bzip2 \
+    supervisor \
+    libzip-dev \
+    vim \
+    git
+
+# remove apt lists
+RUN rm -rf /var/lib/apt/lists/*
+
+# install php extentions
+RUN docker-php-ext-install gd mysqli zip pdo pdo_mysql soap ftp opcache bcmath pcntl
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg\
+&& docker-php-ext-configure pcntl --enable-pcntl
+
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    supervisor \
+  && rm -rf /var/lib/apt/lists/*
+
+
+
+RUN mkdir /etc/supervisor/logs
+RUN mkdir /etc/supervisor/logs/horizon
+
+RUN touch /etc/supervisor/logs/supervisord.log
+
+RUN touch /etc/supervisor/logs/horizon/out.log
+RUN touch /etc/supervisor/logs/horizon/err.log
+
+ADD ./supervisor/ /etc/supervisor/conf.d/
+
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/supervisor
+
+RUN chown -R www-data:www-data .
+
+ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]

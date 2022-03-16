@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MPManager &mdash; Documentation MPManager </title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Cluster Dashboard" href="clusterdashboard.html" />
+    <link rel="prev" title="Targets" href="targets.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2b2b2b" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/mpmlogo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">About MPM</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="terms.html">Terms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beforeusing.html">Before using MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="beforeusing.html#register-a-customer-meter">Register a customer &amp; meter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beforeusing.html#tariffs">Tariffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beforeusing.html#payment-channels">Payment Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beforeusing.html#payments">Payments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beforeusing.html#selling-an-asset">Selling an Asset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="targets.html">Targets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clusters-dashboard">Clusters Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clusterdashboard.html">Cluster Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minigriddashboard.html">Mini-Grid Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customers.html">Customers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meters.html">Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tickets.html">Tickets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tickets.html#adding-user-to-ticketing-system">Adding User to Ticketing System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="maintenance.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sms.html">Sms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reports.html">Reports</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation MPM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html#migrate-the-database">Migrate the database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html#installing-customer-registration-app-android">Installing Customer Registration App (Android)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/phpmyadmin.html">phpMyAdmin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/frontend.html">Building the Frontend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/essential.html">Essential Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#mobile-payment-configurations-vodacom">Mobile Payment Configurations - Vodacom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#mobile-payment-configurations-airtel">Mobile Payment Configurations - Airtel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#sts-meter-configuration">STS Meter Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#pusher-web-socket">Pusher(Web Socket)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#slack">Slack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#setup-sms-communication">Setup Sms Communication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/essential.html#configuration-for-bongolive">Configuration for BongoLive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/essential.html#configuration-for-sms-gateway-application">Configuration for SMS-Gateway Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/essential.html#change-predefined-sms-text">Change Predefined SMS Text</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#weather-data">Weather Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/essential.html#email">Email</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/deployproduction.html">Deploy for Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/development.html#for-linux-mac-users">For Linux/Mac Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/development.html#for-windows">For Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/api.html">Generate API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MPManager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>MPManager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/about/mpmanager.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mpmanager">
+<h1>MPManager<a class="headerlink" href="#mpmanager" title="Lien permanent vers ce titre">¶</a></h1>
+<p><strong>Note: The pages that contain only a ``List of X`` and a ``Add new X``
+button without any other key feature are not explained below.</strong></p>
+<div class="section" id="clusters-dashboard">
+<h2>Clusters Dashboard<a class="headerlink" href="#clusters-dashboard" title="Lien permanent vers ce titre">¶</a></h2>
+<p>It is basically the whole overview of the business. It shows some quick
+information like total revenue, registered meters and the number of
+registered clusters.</p>
+<p>There are also more sections; 1. <strong>Financial overview:</strong> That breaks the
+total revenue to Mini-Grid level. The manager can see/analyse each
+Mini-Grid with that. 2. <strong>Cluster Map:</strong> The maps shows graphically
+where the clusters are located. The clusters on the map are clickable
+and forwards the manager to the next level dashboard <strong>Cluster
+Dashboard</strong></p>
+<p>To register a new cluster find the red plus button on the right bottom
+corner of the screen.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="clusterdashboard.html" class="btn btn-neutral float-right" title="Cluster Dashboard" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="targets.html" class="btn btn-neutral float-left" title="Targets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Précédent</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Inensus
+
+    </p>
+  </div>
+    
+    
+    
+    Compilé avec <a href="http://sphinx-doc.org/">Sphinx</a> en utilisant un
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">thème</a>
+    
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>phpMyAdmin &mdash; Documentation MPManager </title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="Building the Frontend" href="frontend.html" />
+    <link rel="prev" title="Installation MPM" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2b2b2b" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/mpmlogo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">About MPM</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/terms.html">Terms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/beforeusing.html">Before using MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#register-a-customer-meter">Register a customer &amp; meter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#tariffs">Tariffs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#payment-channels">Payment Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#payments">Payments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about/beforeusing.html#selling-an-asset">Selling an Asset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/targets.html">Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/mpmanager.html">MPManager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/mpmanager.html#clusters-dashboard">Clusters Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/clusterdashboard.html">Cluster Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/minigriddashboard.html">Mini-Grid Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/customers.html">Customers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/meters.html">Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/tickets.html">Tickets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about/tickets.html#adding-user-to-ticketing-system">Adding User to Ticketing System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about/maintenance.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/sms.html">Sms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/reports.html">Reports</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation MPM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-dependencies">Installing Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#migrate-the-database">Migrate the database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-customer-registration-app-android">Installing Customer Registration App (Android)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">phpMyAdmin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">Building the Frontend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="essential.html">Essential Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#mobile-payment-configurations-vodacom">Mobile Payment Configurations - Vodacom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#mobile-payment-configurations-airtel">Mobile Payment Configurations - Airtel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#sts-meter-configuration">STS Meter Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#pusher-web-socket">Pusher(Web Socket)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#slack">Slack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#setup-sms-communication">Setup Sms Communication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="essential.html#configuration-for-bongolive">Configuration for BongoLive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="essential.html#configuration-for-sms-gateway-application">Configuration for SMS-Gateway Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="essential.html#change-predefined-sms-text">Change Predefined SMS Text</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#weather-data">Weather Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="essential.html#email">Email</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployproduction.html">Deploy for Production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#for-linux-mac-users">For Linux/Mac Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#for-windows">For Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Generate API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MPManager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>phpMyAdmin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installation/phpmyadmin.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="phpmyadmin">
+<h1>phpMyAdmin<a class="headerlink" href="#phpmyadmin" title="Lien permanent vers ce titre">¶</a></h1>
+<p>To project also includes phpMyAdmin which enables quick database
+operations without installing third-party software or writing any single
+line into the terminal.</p>
+<p>The default credentials for the database are;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">username</span> <span class="p">:</span> <span class="n">laravel</span>
+<span class="n">password</span><span class="p">:</span> <span class="n">laravel</span>
+</pre></div>
+</div>
+<p><strong>Please don’t forget to change these before you publish your project</strong></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="frontend.html" class="btn btn-neutral float-right" title="Building the Frontend" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation MPM" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Précédent</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Inensus
+
+    </p>
+  </div>
+    
+    
+    
+    Compilé avec <a href="http://sphinx-doc.org/">Sphinx</a> en utilisant un
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">thème</a>
+    
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+    "data": {
+        "data": [
+            {
+                "id": 1,
+                "cluster_id": 12,
+                "name": "Mafia",
+                "created_at": null,
+                "updated_at": "2021-02-02T20:43:49.000000Z",
+                "data_stream": 1
+            }
+        ]
+    },
+    "status": 200
+
+}
