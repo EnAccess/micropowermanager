@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Requests\AndroidAppRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Services\PersonService;
@@ -393,4 +394,6 @@ Route::get('/clusterlist', 'ClusterController@index');
 
 Route::post('/restrictions', 'RestrictionController@store');
 
-
+Route::group(['prefix' => 'company'], static function () {
+    Route::post('/', [CompanyController::class, 'store']);
+});
