@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 12.07.18
- * Time: 18:59
- */
 
 namespace App\Services;
 
@@ -14,6 +8,7 @@ use App\Models\Address\Address;
 use App\Models\MaintenanceUsers;
 use App\Models\Person\Person;
 use App\Models\Country;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,14 +17,16 @@ use Illuminate\Http\Request;
 
 class PersonService
 {
-    /**
-     * @var Person
-     */
-    private $person;
 
-    public function __construct(Person $person)
+    public function __construct(private SessionService $sessionService,private Person $person)
     {
-        $this->person = $person;
+        $this->sessionService->setModel($person);
+    }
+
+    //get person by id
+    public function getPersonById(int $id): ?Person
+    {
+        return $this->person->firstOrFail($id);
     }
 
     public function createFromRequest(Request $request): Model
@@ -198,4 +195,11 @@ class PersonService
             ]
         )->whereIn('id', $peopleId);
     }
+
+    public function updatePersonUpdatedDate(Person $person)
+    {
+        $person->updated_at = Carbon::now();
+        $person->save();
+    }
+
 }
