@@ -1,13 +1,7 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 12.07.18
- * Time: 19:11
- */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
