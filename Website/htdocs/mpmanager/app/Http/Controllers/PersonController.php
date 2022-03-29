@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
-use App\Http\Services\PersonService;
+
 use App\Models\Person\Person;
+use App\Services\PersonService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 

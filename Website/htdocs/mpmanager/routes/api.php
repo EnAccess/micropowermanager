@@ -3,7 +3,6 @@
 use App\Http\Controllers\CompanyController;
 use App\Http\Requests\AndroidAppRequest;
 use App\Http\Resources\ApiResource;
-use App\Http\Services\PersonService;
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
@@ -12,8 +11,10 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
+use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -343,7 +344,7 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
         }
 
         if ($person === null) {
-            $personService = new PersonService(new App\Models\Person\Person());
+            $personService = App::make(PersonService::class);
             $person = $personService->createFromRequest($r);
         }
 
