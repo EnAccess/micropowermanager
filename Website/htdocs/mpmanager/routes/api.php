@@ -178,8 +178,8 @@ Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static functi
     Route::get('/{person}/addresses', 'PersonController@addresses');
     Route::get('/{person}/meters', 'MeterController@personMeters');
     Route::get('/{person}/meters/geo', 'MeterController@meterGeo');
-    Route::post('/{person}/addresses', 'AddressController@store');
-    Route::put('/{person}/addresses', 'AddressController@update');
+    Route::post('/{personId}/addresses', 'AddressController@store');
+    Route::put('/{personId}/addresses', 'AddressController@update');
     Route::get('/search', 'PersonController@search');
     Route::delete('/{person}', 'PersonController@destroy');
     Route::get('/', 'PersonController@index');
