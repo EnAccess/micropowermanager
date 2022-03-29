@@ -7,7 +7,7 @@
  * Time: 18:59
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App;
 use App\Models\Address\Address;
