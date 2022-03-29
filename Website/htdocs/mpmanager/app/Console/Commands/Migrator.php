@@ -35,7 +35,7 @@ class Migrator extends Command
                 '--database' => 'micro_power_manager',
                 '--path' => '/database/migrations/' . $dbName,
             ]);
-        } else {
+        } elseif('all') {
             foreach (Config::get('database.connections') as $key => $details) {
                 $this->call('optimize:clear');
                 if ($this->isUnNecessaryConnection($key)) {
@@ -53,7 +53,13 @@ class Migrator extends Command
                 ]);
 
             }
+        }else{
 
+            $this->call('optimize:clear');
+            $this->call('migrate', [
+                '--database' => $dbName,
+                '--path' => '/database/migrations/' . $dbName,
+            ]);
         }
         return 0;
     }

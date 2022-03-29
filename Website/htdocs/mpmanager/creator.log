@@ -46,6 +46,7 @@ Running migrations for new database..
 Done! 
 ################################ 
 ##### Creator Script Ends ###### 
+****************************************************************
 ################################ 
 ##### Creator Script Starts ###### 
 Creating MySQL db and user... 
@@ -62,6 +63,7 @@ Running migrations for new database..
 Done! 
 ################################ 
 ##### Creator Script Ends ###### 
+****************************************************************
 ################################ 
 ##### Creator Script Starts ###### 
 Creating MySQL db and user... 
@@ -78,6 +80,7 @@ Running migrations for new database..
 Done! 
 ################################ 
 ##### Creator Script Ends ###### 
+****************************************************************
 ################################ 
 ##### Creator Script Starts ###### 
 Creating MySQL db and user... 
@@ -94,6 +97,7 @@ Running migrations for new database..
 Done! 
 ################################ 
 ##### Creator Script Ends ###### 
+****************************************************************
 ################################ 
 ##### Creator Script Starts ###### 
 Creating MySQL db and user... 
@@ -110,163 +114,4 @@ Running migrations for new database..
 Done! 
 ################################ 
 ##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
-################################ 
-##### Creator Script Starts ###### 
-Creating MySQL db and user... 
-Done! 
-Adding new connection to database.php 
-Done! 
-Creating migration folder.. 
-Done! 
-Copying migration files.. 
-Done! 
-Modifying migration files.. 
-Done! 
-Running migrations for new database.. 
-Done! 
-################################ 
-##### Creator Script Ends ###### 
+****************************************************************

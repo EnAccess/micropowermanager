@@ -17,9 +17,6 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('manager_id');
-            $table->foreign('manager_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
             $table->json('geo_data');
             $table->timestamps();
         });

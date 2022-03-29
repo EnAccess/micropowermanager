@@ -32,6 +32,20 @@ return [
     */
 
     'connections' => [
+        'companyA_1648543301' => [ 
+            'driver' => 'mysql', 
+            'host' => 'db', 
+            'port' => '3306', 
+            'database' => 'companyA_1648543301', 
+            'username' => 'root', 
+            'password' => 'inensus2022.', 
+            'unix_socket' => '', 
+            'charset' => 'utf8mb4', 
+            'collation' => 'utf8mb4_unicode_ci', 
+            'prefix' => '', 
+            'strict' => true, 
+            'engine' => null, 
+        ],
 
         'sqlite' => [
             'driver' => 'sqlite',

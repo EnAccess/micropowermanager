@@ -193,50 +193,26 @@ function processArgs()
 
 function createMysqlDbUser()
 {
+
     SQL1="CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
     #SQL2="CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';"
     #SQL3="GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';"
     #SQL4="FLUSH PRIVILEGES;"
-
-    if [ -f /root/.my.cnf ]; then
-        $BIN_MYSQL -e "${SQL1}"
-          #$BIN_MYSQL -e "${SQL1}${SQL2}${SQL3}${SQL4}"
-    else
-        # If /root/.my.cnf doesn't exist then it'll ask for root password
-        $BIN_MYSQL -h $DB_HOST -uroot -e "${SQL1}"
-        #$BIN_MYSQL -h $DB_HOST -uroot -e "${SQL1}${SQL2}${SQL3}${SQL4}"
-    fi
-}
-
-function printSuccessMessage()
-{
-    _success "MySQL DB / User creation completed!"
-
-    _success "################################################################"
-    _success ""
-    _success " >> Host      : ${DB_HOST}"
-    _success " >> Database  : ${DB_NAME}"
-    _success " >> User      : ${DB_USER}"
-    #echo " >> Pass      : ${DB_PASS}"
-    _success ""
-    _success "################################################################"
-
+    mysql -h db -P 3306 -uroot -pinensus2022. -e  "${SQL1}"
 
 }
-
-
 
 function addConnectionToDatabase()
 {
-        sed -i '' '
+        sed -i '
         /'\'connections\''/a\
         '\'$DB_NAME\'' => [ \
             '\'driver\'' => '\'mysql\'', \
-            '\'host\'' => '\'localhost\'', \
+            '\'host\'' => '\'db\'', \
             '\'port\'' => '\'3306\'', \
             '\'database\'' => '\'$DB_NAME\'', \
             '\'username\'' => '\'root\'', \
-            '\'password\'' => '\'\'', \
+            '\'password\'' => '\'inensus2022.\'', \
             '\'unix_socket\'' => '\'\'', \
             '\'charset\'' => '\'utf8mb4\'', \
             '\'collation\'' => '\'utf8mb4_unicode_ci\'', \
@@ -260,7 +236,7 @@ function createNewMigrationFolder()
 # copy files in micropowermanager folder into new created folder
 function copyMigrationFiles()
 {
-    cp -r ${SOURCE_PATH}/database/migrations/micropowermanager/ ${SOURCE_PATH}/database/migrations/$DB_NAME
+    cp -r ${SOURCE_PATH}/database/migrations/micropowermanager/* ${SOURCE_PATH}/database/migrations/$DB_NAME
 }
 
 # loop through new created folder files and perform sed
@@ -268,7 +244,7 @@ function sedMigrationFiles()
 {
     for file in ${SOURCE_PATH}/database/migrations/$DB_NAME/*
     do
-        sed -i '' 's/micropowermanager/'${DB_NAME}'/g' $file
+        sed -i 's/micropowermanager/'${DB_NAME}'/g' $file
     done
 }
 
@@ -310,8 +286,6 @@ function main()
     createMysqlDbUser
     echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-    printSuccessMessage
-
      echo "Adding new connection to database.php " >> ${SOURCE_PATH}/creator.log
      addConnectionToDatabase
      echo "Done! " >> ${SOURCE_PATH}/creator.log
@@ -331,8 +305,10 @@ function main()
      echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
      runMigrator
      echo "Done! " >> ${SOURCE_PATH}/creator.log
+
      echo "################################ " >> ${SOURCE_PATH}/creator.log
-    echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
+     echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
+     echo "****************************************************************" >> ${SOURCE_PATH}/creator.log
     exit 0
 }
 
