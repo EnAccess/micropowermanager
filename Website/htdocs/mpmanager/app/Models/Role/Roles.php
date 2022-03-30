@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Roles extends BaseModel
 {
-
+    protected $connection = 'micro_power_manager';
     /**
      * @return belongsTo
      */

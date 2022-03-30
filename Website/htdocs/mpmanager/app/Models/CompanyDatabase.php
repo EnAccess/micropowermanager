@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class CompanyDatabase extends BaseModel
 {
     use HasFactory;
-
+    protected $connection = 'micro_power_manager';
 
     // has one company
     public function company(): HasOne
