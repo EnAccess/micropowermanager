@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Cluster extends BaseModel
 {
+    protected $connection = 'test_company_db';
     protected $casts = [
         'geo_data' => 'array'
     ];

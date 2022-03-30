@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class AssetType extends BaseModel
 {
 
+    protected $connection = 'test_company_db';
+
     public function agentAssignedAppliance(): HasMany
     {
         return $this->hasMany(AgentAssignedAppliances::class, 'id', 'appliance_type_id');

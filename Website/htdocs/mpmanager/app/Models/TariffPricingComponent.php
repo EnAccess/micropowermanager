@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class TariffPricingComponent extends Model
 {
+    protected $connection = 'test_company_db';
     protected $guarded = [];
 
     public function owner(): MorphTo

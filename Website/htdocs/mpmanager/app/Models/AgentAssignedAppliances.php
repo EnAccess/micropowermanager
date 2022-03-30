@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AgentAssignedAppliances extends Model
 {
+    protected $connection = 'test_company_db';
     protected $guarded = [];
 
     public function agent(): BelongsTo

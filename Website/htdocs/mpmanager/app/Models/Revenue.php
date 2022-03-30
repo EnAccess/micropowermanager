@@ -9,6 +9,7 @@ use PDO;
 class Revenue extends Model
 {
 
+    protected $connection = 'test_company_db';
 
     public function registeredMetersByTariff($tariffId, $startDate, $endDate, $limit = null)
     {

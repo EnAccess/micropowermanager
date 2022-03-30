@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
  */
 class Target extends Model
 {
+    protected $connection = 'test_company_db';
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);

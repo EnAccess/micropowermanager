@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CustomerGroup extends Model
 {
-
+    protected $connection = 'test_company_db';
     public function tariff(): BelongsTo
     {
         return $this->belongsTo(MeterTariff::class);

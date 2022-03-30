@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
  */
 class MeterToken extends BaseModel
 {
-
+    protected $connection = 'test_company_db';
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);

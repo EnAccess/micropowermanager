@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Country extends BaseModel
 {
 
+    protected $connection = 'test_company_db';
     /**
      * @return string
      */

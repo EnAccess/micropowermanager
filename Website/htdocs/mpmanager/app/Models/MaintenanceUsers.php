@@ -6,10 +6,10 @@ use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MaintenanceUsers extends Model
+class MaintenanceUsers extends BaseModel
 {
+    protected $connection = 'test_company_db';
 
-    protected $fillable = ['person_id', 'mini_gird_id'];
 
     public function person(): BelongsTo
     {

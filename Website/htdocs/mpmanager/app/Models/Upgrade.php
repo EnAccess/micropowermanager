@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Upgrade extends Model
 {
-
+    protected $connection = 'test_company_db';
     public function restriction(): BelongsTo
     {
         return $this->belongsTo(Restriction::class);

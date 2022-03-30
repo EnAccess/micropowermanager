@@ -43,6 +43,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
     use SoftDeletes;
 
+    protected $connection = 'test_company_db';
     protected $guarded = [];
 
     protected $casts = [
@@ -95,18 +96,22 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
     {
         return $this->morphMany(PaymentHistory::class, 'payer');
     }
+
     public function customerGroup(): BelongsTo
     {
         return $this->belongsTo(CustomerGroup::class);
     }
+
     public function agent(): HasOne
     {
         return $this->hasOne(Agent::Class);
     }
+
     public function agentSoldAppliance(): HasOne
     {
         return $this->hasOne(AgentSoldAppliance::Class);
     }
+
     public function __toString()
     {
         return sprintf('%s %s', $this->name, $this->surname);

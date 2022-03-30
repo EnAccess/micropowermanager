@@ -19,4 +19,5 @@ use Illuminate\Database\Eloquent\Model;
  * */
 class MainSettings extends BaseModel
 {
+    protected $connection = 'test_company_db';
 }

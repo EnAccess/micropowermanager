@@ -2,13 +2,15 @@
 
 namespace App\Models\Loan;
 
+use App\Models\BaseModel;
 use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Loan extends Model
+class Loan extends BaseModel
 {
 
+    protected $connection = 'test_company_db';
     //related payment histories which are made for that loan
     public function paymentHistories(): HasMany
     {
