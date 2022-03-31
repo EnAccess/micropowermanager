@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\BaseModel;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class SessionService
@@ -20,8 +21,12 @@ class SessionService
     {
         return $this->getAuthenticatedUserDatabaseName() == $databaseName;
     }
-    private function getAuthenticatedUserDatabaseName():string
+
+    public function getAuthenticatedUserDatabaseName(): string
     {
-        return auth('api')->user()->company->database->database_name;
+        if (auth('api')->user()) {
+            return auth('api')->user()->company->database->database_name;
+        }
+        return 'micropowermanager';
     }
 }
