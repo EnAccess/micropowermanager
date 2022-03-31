@@ -63,6 +63,10 @@ class AddressesService
     {
         return $address->save();
     }
+    public function updateAddress(Address $address,array $addressData): bool
+    {
+        return $address->update($addressData);
+    }
     public function getStoredAddressWithCityRelation(int $id): Address
     {
         return $this->address::with('city')->findOrFail($id);
@@ -75,7 +79,7 @@ class AddressesService
             'phone' => $request->get('phone') ?? '',
             'street' => $request->get('street') ?? '',
             'city_id' => $request->get('city_id') ?? '',
-            'primary' => $request->get('primary') ?? '',
+            'is_primary' => $request->get('primary') ?? '',
         ];
     }
 }

@@ -26,7 +26,7 @@ class PersonService
     //get person by id
     public function getPersonById(int $id): ?Person
     {
-        return $this->person->firstOrFail($id);
+        return $this->person->newQuery()->findOrFail($id);
     }
 
     public function createFromRequest(Request $request): Model
