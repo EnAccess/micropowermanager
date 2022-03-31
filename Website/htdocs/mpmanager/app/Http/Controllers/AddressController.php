@@ -43,7 +43,9 @@ class AddressController extends Controller
 
         $this->personAddressService->setPerson($person);
         $this->personAddressService->setAddress($address);
-        $this->personAddressService->setOldPrimaryAddressToNotPrimary();
+        if ($addressData['is_primary']) {
+            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
+        }
         $this->personAddressService->assignAddressToPerson();
 
         $this->addressService->saveAddress($address);
@@ -60,8 +62,11 @@ class AddressController extends Controller
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $this->personAddressService->setPerson($person);
         $this->personAddressService->setAddress($address);
-        $this->personAddressService->setOldPrimaryAddressToNotPrimary();
-        $this->addressService->saveAddress($address);
+        if ($addressData['is_primary']) {
+            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
+        }
+
+        $this->addressService->updateAddress($address, $addressData);
         $this->personService->updatePersonUpdatedDate($person);
         return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
     }
