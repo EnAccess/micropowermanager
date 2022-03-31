@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAddressRequest extends FormRequest
@@ -24,8 +25,9 @@ class CreateAddressRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
         return [
-            'city_id' => 'required|exists:cities,id',
+            'city_id' => 'required|exists:' . $sessionService->getAuthenticatedUserDatabaseName() . '.cities,id',
         ];
     }
 }
