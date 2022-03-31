@@ -5,24 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Solar extends Model
+class Solar extends BaseModel
 {
-    protected $fillable = [
-        'mini_grid_id',
-        'node_id',
-        'device_id',
-        'solar_reading',
-        'time_stamp',
-        'min',
-        'max',
-        'average',
-        'duration',
-        'readings',
-        'starting_time',
-        'ending_time',
-        'end_time',
-    ];
-
+    protected $connection = 'test_company_db';
 
     public function weatherData(): HasOne
     {

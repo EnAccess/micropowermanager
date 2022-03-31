@@ -3,12 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Http\Services\ClusterService;
-use App\Http\Services\PersonService;
+
 use App\Models\Cluster;
 use App\Services\ClusterManagerService;
 use App\Services\MailService;
 use App\Services\PaymentHistoryService;
 use App\Services\PdfService;
+use App\Services\PersonService;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;

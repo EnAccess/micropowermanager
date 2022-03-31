@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Http\Services\AddressService;
+
 use App\Http\Services\CountryService;
-use App\Http\Services\PersonService;
 use App\Http\Services\RolesService;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -26,20 +25,18 @@ use App\Models\Solar;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use App\Observers\AddressesObserver;
-use App\Observers\AgentAssignedApplianceObserver;
 use App\Observers\AgentBalanceHistoryObserver;
 use App\Observers\AgentObserver;
 use App\Observers\AgentReceiptObserver;
 use App\Observers\AgentSoldApplianceObserver;
-use App\Observers\AgentTransactionObserver;
 use App\Observers\BatteryObserver;
 use App\Observers\MeterParameterObserver;
 use App\Observers\MeterTariffObserver;
 use App\Observers\MiniGridObserver;
 use App\Observers\PersonObserver;
 use App\Observers\PVObserver;
-use App\Observers\SolarObserver;
-use App\Observers\TransactionObserver;
+use App\Observers\SolarObserver;;
+use App\Services\AddressesService;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Horizon;
 
@@ -81,12 +78,6 @@ class ServicesProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            AddressService::class,
-            function ($app) {
-                return new AddressService($this->app->make(Address::class));
-            }
-        );
 
         $this->app->bind(
             RolesService::class,
@@ -95,12 +86,6 @@ class ServicesProvider extends ServiceProvider
             }
         );
 
-        $this->app->bind(
-            PersonService::class,
-            function ($app) {
-                return new PersonService($this->app->make(Person::class));
-            }
-        );
         $this->app->bind(
             CountryService::class,
             function ($app) {

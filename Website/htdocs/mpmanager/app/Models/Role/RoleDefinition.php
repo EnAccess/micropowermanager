@@ -14,6 +14,7 @@ use App\Models\BaseModel;
 class RoleDefinition extends BaseModel
 {
     public $timestamps = false;
+    protected $connection = 'micro_power_manager';
 
     public function roles(): void
     {

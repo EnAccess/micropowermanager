@@ -18,4 +18,5 @@ namespace App\Models;
  */
 class Energy extends BaseModel
 {
+    protected $connection = 'test_company_db';
 }

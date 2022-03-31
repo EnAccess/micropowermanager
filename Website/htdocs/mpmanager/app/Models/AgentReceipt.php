@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AgentReceipt extends BaseModel
 {
+    protected $connection = 'test_company_db';
     public function history(): BelongsTo
     {
         return $this->belongsTo(AgentBalanceHistory::class, 'last_controlled_balance_history_id', 'id');

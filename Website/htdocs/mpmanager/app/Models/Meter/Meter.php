@@ -22,6 +22,7 @@ use PDO;
  */
 class Meter extends BaseModel
 {
+    protected $connection = 'test_company_db';
     protected $guarded = [];
     public static $rules = [
         'serial_number' => 'required|min:1|unique:meters',

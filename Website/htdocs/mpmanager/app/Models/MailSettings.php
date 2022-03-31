@@ -8,4 +8,5 @@ namespace App\Models;
  */
 class MailSettings extends BaseModel
 {
+    protected $connection = 'test_company_db';
 }

@@ -2,113 +2,72 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\CreateAddressRequest;
 use App\Models\Address\Address;
 use App\Exceptions\ValidationException;
 use App\Http\Resources\ApiResource;
 use App\Models\Person\Person;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+
+use App\Services\PersonAddressService;
+use App\Services\PersonService;
+use App\Services\AddressesService;
 use Illuminate\Support\Facades\Validator;
 
 class AddressController extends Controller
 {
-    /**
-     * The address model.
-     *
-     * @var Address
-     */
-    private $address;
+    public function __construct(
+        private AddressesService $addressService,
+        private PersonService $personService,
+        private PersonAddressService $personAddressService
+    ) {
 
-    public function __construct(Address $address)
-    {
-        $this->address = $address;
     }
-
-    /**
-     * A list of all registered addresses
-     *
-     * @return ApiResource
-     */
     public function index(): ApiResource
     {
-        return new ApiResource(
-            $this->address::all()
-        );
+        return ApiResource::make($this->addressService->getAddressList());
     }
 
-    /**
-     * The detail of a given address id
-     *
-     * @param  integer $id
-     * @return ApiResource
-     */
     public function show($id): ApiResource
     {
-        return new ApiResource(
-            $this->address->findOrFail($id)
-        );
+        return ApiResource::make($this->addressService->getAddressById($id));
     }
 
-
-    /**
-     * @group    People
-     * Create a new address
-     * It adds a new address to the given person.
-     * @urlParam person required The ID of person
-     *
-     * @bodyParam email string. Example: johndoe@mail.com
-     * @bodyParam phone string.
-     * @bodyParam street string.
-     * @bodyParam city_id string required.
-     * @bodyParam primary string required. The flag if the new address is the primary address of that person
-     * @param     Person               $person
-     * @param     CreateAddressRequest $request
-     * @return    ApiResource
-     */
-    public function store(Person $person, CreateAddressRequest $request): ApiResource
+    public function store(int $personId, CreateAddressRequest $request): ApiResource
     {
-        $this->address->email = $request->get('email') ?? '';
-        $this->address->phone = $request->get('phone') ?? '';
-        $this->address->street = $request->get('street') ?? '';
-        $this->address->city_id = $request->get('city_id');
-        $this->address->is_primary = $request->get('primary') ?? 0;
-        if ($this->address->is_primary) { // set old primary address to not primary
-            $person->addresses()->where('is_primary', 1)->update(['is_primary' => 0]);
-        }
-        $this->address->owner()->associate($person);
 
-        $this->address->save();
-        $person->update(
-            [
-                'updated_at' => date('Y-m-d h:i:s')]
-        );
-        return new ApiResource($this->address->with('city')->where('id', $this->address->id)->first());
+        $person = $this->personService->getPersonById($personId);
+        $addressData = $this->addressService->createAddressDataFromRequest($request);
+        $address = $this->addressService->makeAddress($addressData);
+
+        $this->personAddressService->setPerson($person);
+        $this->personAddressService->setAddress($address);
+        if ($addressData['is_primary']) {
+            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
+        }
+        $this->personAddressService->assignAddressToPerson();
+
+        $this->addressService->saveAddress($address);
+
+        $this->personService->updatePersonUpdatedDate($person);
+        return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
     }
 
-
-
-    public function update(Person $person): ApiResource
+    public function update(int $personId, CreateAddressRequest $request): ApiResource
     {
-        $validation = Validator::make(request()->all(), Address::$rules);
-        if ($validation->fails()) {
-            throw new ValidationException($validation->errors());
+
+        $person = $this->personService->getPersonById($personId);
+        $address = $this->addressService->getAddressById($request->input('id') ?? -1);
+        $addressData = $this->addressService->createAddressDataFromRequest($request);
+        $this->personAddressService->setPerson($person);
+        $this->personAddressService->setAddress($address);
+        if ($addressData['is_primary']) {
+            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
         }
-        $address = $this->address->find(request('id'));
-        $address->email = request('email') ?? '';
-        $address->phone = request('phone') ?? '';
-        $address->street = request('street') ?? '';
-        $address->city_id = request('city_id');
-        $address->is_primary = request('primary') ?? 0;
-        if ($address->is_primary) { // set old primary address to not primary
-            $person->addresses()->where('is_primary', 1)->update(['is_primary' => 0]);
-        }
-        $address->save();
-        $person->update(
-            [
-                'updated_at' => date('Y-m-d h:i:s')]
-        );
-        return new ApiResource($address->with('city')->where('id', $address->id)->first());
+
+        $this->addressService->updateAddress($address, $addressData);
+        $this->personService->updatePersonUpdatedDate($person);
+        return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
     }
 }

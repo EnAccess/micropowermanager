@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Plugins extends Model
+class Plugins extends BaseModel
 {
-    protected $fillable = ['name', 'composer_name', 'description'];
+    protected $connection = 'test_company_db';
+
 }

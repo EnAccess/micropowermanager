@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
+    protected $connection = 'test_company_db';
     protected $guarded = ['id'];
     public static $rules = [];
 }

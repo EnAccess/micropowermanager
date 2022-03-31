@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Log extends BaseModel
 {
 
+    protected $connection = 'test_company_db';
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

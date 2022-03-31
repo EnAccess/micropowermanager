@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Report extends BaseModel
 {
-
+    protected $connection = 'test_company_db';
 
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\AccessRate;
 
+use App\Models\BaseModel;
 use App\Models\Meter\Meter;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property DateTime due_date
  * @property int debt
  */
-class AccessRatePayment extends Model
+class AccessRatePayment extends BaseModel
 {
+    protected $connection = 'test_company_db';
+
     public function meter(): BelongsTo
     {
         return $this->belongsTo(Meter::class);
