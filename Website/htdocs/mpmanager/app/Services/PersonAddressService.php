@@ -39,4 +39,9 @@ class PersonAddressService
         $this->address->owner()->associate($this->person);;
         return $this->address;
     }
+
+    public function getPersonAddresses($person)
+    {
+       return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
+    }
 }
