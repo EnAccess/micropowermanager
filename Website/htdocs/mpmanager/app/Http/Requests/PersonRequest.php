@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -36,19 +37,20 @@ class PersonRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
-            //'type' => 'required|in:customer,none,supplier,both',
             'surname' => 'required|min:3',
             'birth_date' => 'sometimes|date_format:"Y-m-d',
             'sex' => 'required|in:male,female',
             'education' => 'sometimes|min:3',
-            'city_id' => 'sometimes|exists:cities,id',
+            'city_id' => 'sometimes|exists:'.$database.'.cities,id',
             'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
-            'phone' => 'sometimes|min:11|numeric|unique:addresses,phone',
-            'nationality' => 'sometimes|exists:countries,country_code',
+            'phone' => 'sometimes|min:11',
+            'nationality' => 'sometimes|exists:'.$database.'.countries,country_code',
         ];
     }
 }

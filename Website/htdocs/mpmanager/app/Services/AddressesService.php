@@ -79,7 +79,7 @@ class AddressesService
             'phone' => $request->get('phone') ?? '',
             'street' => $request->get('street') ?? '',
             'city_id' => $request->get('city_id') ?? '',
-            'is_primary' => $request->get('primary') ?? '',
+            'is_primary' => $request->get('is_primary') ?? 1,
         ];
     }
 }

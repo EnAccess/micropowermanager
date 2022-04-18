@@ -34,40 +34,4 @@ class AddressController extends Controller
         return ApiResource::make($this->addressService->getAddressById($id));
     }
 
-    public function store(int $personId, CreateAddressRequest $request): ApiResource
-    {
-
-        $person = $this->personService->getPersonById($personId);
-        $addressData = $this->addressService->createAddressDataFromRequest($request);
-        $address = $this->addressService->makeAddress($addressData);
-
-        $this->personAddressService->setPerson($person);
-        $this->personAddressService->setAddress($address);
-        if ($addressData['is_primary']) {
-            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
-        }
-        $this->personAddressService->assignAddressToPerson();
-
-        $this->addressService->saveAddress($address);
-
-        $this->personService->updatePersonUpdatedDate($person);
-        return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
-    }
-
-    public function update(int $personId, CreateAddressRequest $request): ApiResource
-    {
-
-        $person = $this->personService->getPersonById($personId);
-        $address = $this->addressService->getAddressById($request->input('id') ?? -1);
-        $addressData = $this->addressService->createAddressDataFromRequest($request);
-        $this->personAddressService->setPerson($person);
-        $this->personAddressService->setAddress($address);
-        if ($addressData['is_primary']) {
-            $this->personAddressService->setOldPrimaryAddressToNotPrimary();
-        }
-
-        $this->addressService->updateAddress($address, $addressData);
-        $this->personService->updatePersonUpdatedDate($person);
-        return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
-    }
 }

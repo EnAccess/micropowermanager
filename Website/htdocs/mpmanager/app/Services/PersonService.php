@@ -18,55 +18,31 @@ use Illuminate\Http\Request;
 class PersonService
 {
 
-    public function __construct(private SessionService $sessionService,private Person $person)
+    public function __construct(private SessionService $sessionService, private Person $person)
     {
         $this->sessionService->setModel($person);
     }
 
-    //get person by id
-    public function getPersonById(int $id): ?Person
+
+    public function getPeopleList($customerType, $limit): LengthAwarePaginator
     {
-        return $this->person->newQuery()->findOrFail($id);
+        return $this->person->newQuery()->with([
+            'addresses' => function ($q) {
+                return $q->where('is_primary', 1);
+            },
+            'addresses.city',
+            'meters.meter',
+        ])->where('is_customer', $customerType)->paginate($limit);
     }
 
-    public function createFromRequest(Request $request): Model
+    public function getAllRegisteredPeople(): Collection|array
     {
+        return $this->person->newQuery()->get();
+    }
 
-        $person = $this->person::create(
-            request()->only(
-                [
-                'title',
-                'education',
-                'name',
-                'surname',
-                'birth_date',
-                'sex',
-                'is_customer',
-                ]
-            )
-        );
-
-
-        $countryService = App::make(CountryService::class);
-        $country = $countryService->getByCode(request('nationality') ?? 'TZ');
-        if ($country !== null) {
-            $person = $this->addCitizenship($person, $country);
-        }
-
-        $addressService = App::make(AddressService::class);
-
-        $addressParams = [
-            'city_id' => request('city_id') ?? 1,
-            'email' => request('email') ?? "",
-            'phone' => request('phone') ?? "",
-            'street' => request('street') ?? "",
-            'is_primary' => 1,
-        ];
-
-        $address = $addressService->instantiate($addressParams);
-
-        $addressService->assignAddressToOwner($person, $address);
-        return $person;
+    public function getPersonById(int $id): ?Person
+    {
+        return $this->person->newQuery()->find($id);
     }
 
 
@@ -76,29 +52,21 @@ class PersonService
         return $person->citizenship()->associate($country);
     }
 
-    //assign an address to the person
-    /**
-     * @return Model|false
-     */
-    public function addAddress(Person $person, Address $address)
-    {
-        return $person->addresses()->save($address);
-    }
 
     public function getDetails(int $personID, bool $allRelations = false)
     {
         if (!$allRelations) {
-            return $this->person->find($personID);
+            return $this->getPersonById($personID);
         }
         return $this->person::with(
             [
-            'addresses' =>
-                function ($q) {
-                    return $q->orderBy('is_primary')->get();
-                },
-            'citizenship',
-            'roleOwner.definitions',
-            'meters.meter',
+                'addresses' =>
+                    function ($q) {
+                        return $q->orderBy('is_primary')->get();
+                    },
+                'citizenship',
+                'roleOwner.definitions',
+                'meters.meter',
             ]
         )->find($personID);
     }
@@ -122,7 +90,7 @@ class PersonService
             )->orWhereHas(
                 'meters.meter',
                 function ($q) use ($searchTerm) {
-                        $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
+                    $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
                 }
             )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
                 ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')->paginate(15);
@@ -136,45 +104,37 @@ class PersonService
         )->orWhereHas(
             'meters.meter',
             function ($q) use ($searchTerm) {
-                    $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
+                $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
             }
         )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')->get();
     }
 
-
-    public function createMaintenancePerson(Request $request): Person
+    public function getPersonTransactions($person)
     {
-        $this->person->is_customer = 0;
-        $this->person->name = $request->get('name');
-        $this->person->surname = $request->get('surname');
-        $this->person->sex = $request->get('sex');
+        return $person->transactions()->with('transaction.token')->latest()->paginate(7);
+    }
 
-        $this->person->save();
-
-
-        $addressService = App::make(AddressService::class);
-
-        $addressParams = [
-            'city_id' => $request->get('city_id') ?? 1,
-            'email' => $request->get('email') ?? '',
-            'phone' => $request->get('phone') ?? '',
-            'street' => $request->get('street') ?? '',
-            'is_primary' => 1,
-        ];
-
-        $address = $addressService->instantiate($addressParams);
-
-        $addressService->assignAddressToOwner($this->person, $address);
+    public function createMaintenancePerson(array $personData): Person
+    {
+        $personData['is_customer'] = 0;
+        return $this->person->newQuery()->create($personData);
 
 
-        $maintenance = App::make(MaintenanceUsers::class);
+    }
 
-        $maintenance->person_id = $this->person->id;
-        $maintenance->mini_grid_id = $request->get('mini_grid_id');
-        $maintenance->save();
+    public function createPerson(array $personData): Person
+    {
+        return $this->person->newQuery()->create($personData);
+    }
 
-        return $this->person;
+    public function updatePerson(Person $person, array $personData): Person
+    {
+        foreach ($personData as $key => $value) {
+            $person->$key = $value;
+        }
+        $person->save();
+        return $person;
     }
 
     public function livingInCluster(int $clusterId)
@@ -186,7 +146,7 @@ class PersonService
     {
         return $this->person::with(
             [
-                'addresses' => fn ($q) => $q->where('is_primary', '=', 1),
+                'addresses' => fn($q) => $q->where('is_primary', '=', 1),
                 'addresses.city',
                 'citizenship',
                 'roleOwner.definitions',
@@ -202,4 +162,26 @@ class PersonService
         $person->save();
     }
 
+    public function isMaintenancePerson($customerType): bool
+    {
+        return ($customerType !== null && $customerType !== 'customer' && $customerType === 'maintenance');
+    }
+
+    public function createPersonDataFromRequest(Request $request): array
+    {
+        return [
+            'title' => $request->get('title'),
+            'education' => $request->get('education'),
+            'name' => $request->get('name'),
+            'surname' => $request->get('surname'),
+            'birth_date' => $request->get('birth_date'),
+            'sex' => $request->get('sex'),
+            'is_customer' => $request->get('is_customer') ?? 0,
+        ];
+    }
+
+    public function deletePerson(Person $person): ?bool
+    {
+        return $person->delete();
+    }
 }

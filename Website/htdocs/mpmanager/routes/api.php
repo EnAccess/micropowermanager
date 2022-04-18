@@ -175,19 +175,23 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
 });
 // People
 Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
-    Route::get('/{person}/transactions', 'PersonController@transactions');
-    Route::get('/{person}/addresses', 'PersonController@addresses');
+
     Route::get('/{person}/meters', 'MeterController@personMeters');
     Route::get('/{person}/meters/geo', 'MeterController@meterGeo');
-    Route::post('/{personId}/addresses', 'AddressController@store');
-    Route::put('/{personId}/addresses', 'AddressController@update');
-    Route::get('/search', 'PersonController@search');
-    Route::delete('/{person}', 'PersonController@destroy');
+
     Route::get('/', 'PersonController@index');
-    Route::get('/all', 'PersonController@list');
-    Route::get('/{person}', 'PersonController@show');
     Route::post('/', 'PersonController@store');
-    Route::put('/{person}', 'PersonController@update');
+    Route::get('/all', 'PersonController@list');
+    Route::get('/search', 'PersonController@search');
+    Route::get('/{personId}', 'PersonController@show');
+    Route::get('/{personId}/transactions', 'PersonController@transactions');
+    Route::put('/{personId}', 'PersonController@update');
+    Route::delete('/{personId}', 'PersonController@destroy');
+
+    Route::get('/{personId}/addresses', 'PersonAddressesController@show');
+    Route::post('/{personId}/addresses', 'PersonAddressesController@store');
+    Route::put('/{personId}/addresses', 'PersonAddressesController@update');
+
 
 });
 // PV
