@@ -21,18 +21,20 @@ class MeterParameterService
         GeographicalInformation $geographicalInformation,
         Person $person
     ): MeterParameter {
-        $this->meterParameter->make([
+        $meterParameter = $this->meterParameter->newQuery()->create([
+            'owner_type' => 'person',
+            'owner_id' => $person->id,
             'meter_id' => $meterParameterData['meter_id'],
             'tariff_id' => $meterParameterData['tariff_id'],
             'connection_type_id' => $meterParameterData['connection_type_id'],
             'connection_group_id' => $meterParameterData['connection_group_id'],
         ]);
-        $this->meterParameter->owner()->associate($person);
-        $this->meterParameter->geo()->save($geographicalInformation);
 
-        event('accessRatePayment.initialize', $this->meterParameter);
+        $geographicalInformation->owner()->associate($meterParameter)->save();
+
+        event('accessRatePayment.initialize', $meterParameter);
         // changes in_use parameter of the meter
-        event('meterparameter.saved', $this->meterParameter->meter_id);
-        return $this->meterParameter;
+        event('meterparameter.saved', $meterParameter->meter_id);
+        return $meterParameter;
     }
 }
