@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Http\Services\MeterService;
+use App\Services\MeterService;
 use App\Models\City;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterConsumption;
@@ -15,12 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-/**
- * Class MeterController
- *
- * @package App\Http\Controllers
- * @group   Meters
- */
+
 class MeterController extends Controller
 {
 

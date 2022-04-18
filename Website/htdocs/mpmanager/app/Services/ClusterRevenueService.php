@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Http\Services\CityService;
-use App\Http\Services\MeterService;
+use App\Services\MeterService;
 use App\Http\Services\PeriodService;
 use App\Http\Services\RevenueService;
 use App\Http\Services\TransactionService;

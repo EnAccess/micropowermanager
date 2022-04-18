@@ -1,13 +1,8 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-13
- * Time: 17:34
- */
 
-namespace App\Http\Services;
+
+namespace App\Services;
 
 use App\Models\City;
 use App\Models\Meter\Meter;
@@ -18,19 +13,11 @@ use function count;
 
 class MeterService
 {
-    /**
-     * @var Meter
-     */
-    private $meter;
 
-    /**
-     * MeterService constructor.
-     *
-     * @param Meter $meter
-     */
-    public function __construct(Meter $meter)
+
+    public function __construct(private SessionService $sessionService, private Meter $meter)
     {
-        $this->meter = $meter;
+       $this->sessionService->setModel($meter);
     }
 
 
