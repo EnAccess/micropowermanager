@@ -50,10 +50,11 @@ class AddressesService
     public function makeAddress(array $addressData): Address
     {
         return $this->address->newQuery()->make([
-            'email' => $addressData['email'],
-            'phone' => $addressData['phone'],
-            'street' => $addressData['street'],
-            'city_id' => $addressData['city_id'],
+            'email' => $addressData['email'] ?: null,
+            'phone' => $addressData['phone'] ?: null,
+            'street' => $addressData['street'] ?: null,
+            'city_id' => $addressData['city_id' ?: null],
+            'geo_id' => $addressData['geo_id' ?: null],
             'is_primary' => $addressData['is_primary'],
         ]);
 
@@ -63,10 +64,12 @@ class AddressesService
     {
         return $address->save();
     }
-    public function updateAddress(Address $address,array $addressData): bool
+
+    public function updateAddress(Address $address, array $addressData): bool
     {
         return $address->update($addressData);
     }
+
     public function getStoredAddressWithCityRelation(int $id): Address
     {
         return $this->address::with('city')->findOrFail($id);
