@@ -161,6 +161,13 @@ class MeterTest extends TestCase
         $this->assertEquals($response['data'][0]['meter_id'], $meter->id);
     }
 
+    public function test_user_deletes_a_meter()
+    {
+        $meter = $this->getMeter();
+        $response = $this->actingAs($this->user)->delete(sprintf('/api/meters/%s', $meter->id));
+        $response->assertStatus(204);
+    }
+
     protected function createTestData()
     {
         $this->user = UserFactory::new()->create();
