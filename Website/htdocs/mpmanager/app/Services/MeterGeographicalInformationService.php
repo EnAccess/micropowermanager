@@ -5,16 +5,15 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 
-class MeterGeographicalInformationService
+class MeterGeographicalInformationService extends BaseService
 {
 
     public function __construct(
-        private SessionService $sessionService,
         private GeographicalInformation $geographicalInformation,
         private Meter $meter
     ) {
-        $this->sessionService->setModel($geographicalInformation);
-        $this->sessionService->setModel($this->meter);
+        parent::__construct([$geographicalInformation,$meter]);
+
     }
 
 

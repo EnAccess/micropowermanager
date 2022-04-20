@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class PersonService
+class PersonService extends BaseService
 {
 
-    public function __construct(private SessionService $sessionService, private Person $person)
+    public function __construct(private Person $person)
     {
-        $this->sessionService->setModel($person);
+        parent::__construct([$person]);
     }
 
 

@@ -6,7 +6,7 @@ Route::group(['prefix' => 'meters',], function () {
     Route::post('/', 'MeterController@store');
     Route::get('/search', 'MeterController@search');
     Route::get('/{serialNumber}', 'MeterController@show');
-    Route::delete('/{ownerId}', 'MeterController@destroy');
+    Route::delete('/{meterId}', 'MeterController@destroy');
     Route::get('/{meterId}/all', 'MeterController@allRelations');
 
     Route::put('/', 'MeterGeographicalInformationController@update');

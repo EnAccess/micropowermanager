@@ -5,12 +5,13 @@ namespace App\Services;
 
 use App\Models\Country;
 
-class CountryService
+class CountryService extends BaseService
 {
 
-    public function __construct(private SessionService $sessionService,private Country $country)
+    public function __construct(private Country $country)
     {
-        $this->sessionService->setModel($country);
+        parent::__construct([$country]);
+
     }
 
     public function getByCode(string|null $countryCode)

@@ -5,26 +5,24 @@ namespace App\Services;
 use App\Models\Person\Person;
 use App\Models\Address\Address;
 
-class PersonAddressService
+class PersonAddressService extends BaseService
 {
-    private Person $person;
-    private Address $address;
 
-    public function __construct(private SessionService $sessionService)
+
+    public function __construct(private Address $address,private Person $person)
     {
+        parent::__construct([$address,$person]);
     }
 
     public function setAddress(Address $address): void
     {
         $this->address = $address;
-        $this->sessionService->setModel($address);
+
     }
 
     public function setPerson(Person $person): void
     {
         $this->person = $person;
-        $this->sessionService->setModel($person);
-
     }
 
 

@@ -4,13 +4,12 @@ namespace App\Services;
 
 use App\Models\GeographicalInformation;
 
-class GeographicalInformationService
+class GeographicalInformationService extends BaseService
 {
     public function __construct(
-        private SessionService $sessionService,
         private GeographicalInformation $geographicalInformation
     ) {
-        $this->sessionService->setModel($geographicalInformation);
+        parent::__construct([$geographicalInformation]);
     }
 
 
