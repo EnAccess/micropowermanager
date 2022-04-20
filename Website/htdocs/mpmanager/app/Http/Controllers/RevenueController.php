@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Http\Services\CityService;
 use App\Http\Services\ClusterService;
-use App\Http\Services\MeterService;
+use App\Services\MeterService;
 use App\Http\Services\PeriodService;
 use App\Http\Services\RevenueService;
 use App\Http\Services\TransactionService;
@@ -674,30 +674,6 @@ class RevenueController extends Controller
         //get revenues by cities and summarise it
     }
 
-
-    /**
-     * Revenue
-     * The total revenue that the meter made.
-     *
-     * @group     Meters
-     * @bodyParam serialNumber string required.
-     *
-     * @responseFile responses/meters/meter.revenue.json
-     *
-     * @param  $serialNumber
-     * @return ApiResource
-     */
-    public function meterRevenue($serialNumber)
-    {
-        $tokens = $this->meterToken::whereHas(
-            'meter',
-            function ($q) use ($serialNumber) {
-                $q->where('serial_number', $serialNumber);
-            }
-        )->pluck('transaction_id');
-        $revenue = $this->transaction::whereIn('id', $tokens)->sum('amount');
-        return new ApiResource(['revenue' => $revenue]);
-    }
 
     /**
      * Fetch all transactions for the cluster in weekly or monthly perspective

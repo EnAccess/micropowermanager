@@ -12,6 +12,7 @@ namespace App\Http\Services;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Services\ClusterRevenueService;
+use App\Services\MeterService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ class ClusterService
 {
 
 
-    private $meterService;
+
 
     private $transactionService;
 
@@ -41,7 +42,7 @@ class ClusterService
      * @param CityService $cityService
      */
     public function __construct(
-        MeterService $meterService,
+        private MeterService $meterService,
         TransactionService $transactionService,
         CityService $cityService,
         PeriodService $periodService,

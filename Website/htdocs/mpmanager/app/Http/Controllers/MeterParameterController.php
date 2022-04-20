@@ -10,6 +10,11 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use App\Models\SubConnectionType;
+use App\Services\AddressesService;
+use App\Services\GeographicalInformationService;
+use App\Services\MeterParameterAddressService;
+use App\Services\MeterParameterService;
+use App\Services\PersonService;
 use Illuminate\Http\Request;
 
 /**
@@ -19,14 +24,7 @@ use Illuminate\Http\Request;
  */
 class MeterParameterController extends Controller
 {
-    /**
-     * @var MeterParameter
-     */
-    private $meterParameter;
-    /**
-     * @var ConnectionType
-     */
-    private $connectionType;
+
 
     /**
      * MeterParameterController constructor.
@@ -34,10 +32,16 @@ class MeterParameterController extends Controller
      * @param MeterParameter $meterParameter
      * @param ConnectionType $connectionType
      */
-    public function __construct(MeterParameter $meterParameter, ConnectionType $connectionType)
-    {
-        $this->meterParameter = $meterParameter;
-        $this->connectionType = $connectionType;
+    public function __construct(
+        private MeterParameterService $meterParameterService,
+        private GeographicalInformationService $geographicalInformationService,
+        private PersonService $personService,
+        private AddressesService $addressService,
+        private MeterParameterAddressService $meterParameterAddressService,
+        private MeterParameter $meterParameter,
+        private ConnectionType $connectionType
+    ) {
+
     }
 
     /**
@@ -62,24 +66,24 @@ class MeterParameterController extends Controller
      */
     public function store(MeterParameterRequest $request)
     {
-        $geoLocation = new GeographicalInformation();
-        $geoLocation->points = request('geo_points');
+        $meterParameterData = (array)$request->all();
+        $geographicalInformation =
+            $this->geographicalInformationService->makeGeographicalInformation($meterParameterData['geo_points']);
 
-        $meterParameter = new MeterParameter();
-        $meterParameter->meter_id = request('meter_id');
-        $meterParameter->tariff_id = request('tariff_id');
-        $meterParameter->owner()->associate(Person::find(request('customer_id')));
+        $person = $this->personService->getPersonById($meterParameterData['customer_id']);
+        $addressData = [
+            'city_id' => $meterParameterData['city_id'],
+            'geo_id' => $geographicalInformation->id,
+        ];
+        $meterParameter = $this->meterParameterService->createMeterParameter($meterParameterData,
+            $geographicalInformation, $person);
 
-        $meterParameter->save();
-        $meterParameter->geo()->save($geoLocation);
-        //initializes a new Access Rate Payment for the next Period
-        event('accessRatePayment.initialize', $meterParameter);
-        // changes in_use parameter of the meter
-        event('meterparameter.saved', $meterParameter->meter_id);
-
-        return new ApiResource(
-            $meterParameter
-        );
+        $address = $this->addressService->makeAddress($addressData);
+        $this->meterParameterAddressService->setMeterParameter($meterParameter);
+        $this->meterParameterAddressService->setAddress($address);
+        $this->meterParameterAddressService->assignAddressToMeterParameter();
+        $this->addressService->saveAddress($address);
+        return ApiResource::make($meterParameter);
     }
 
     /**
@@ -91,7 +95,7 @@ class MeterParameterController extends Controller
      *
      * @urlParam     meterParameter int required
      * @responseFile responses/meterparameters/meterparameter.detail.json
-     * @param        MeterParameter $meterParameter
+     * @param MeterParameter $meterParameter
      *
      * @return ApiResource
      */
@@ -142,7 +146,8 @@ class MeterParameterController extends Controller
         if ($person) {
             $person->update(
                 [
-                'updated_at' => date('Y-m-d h:i:s')]
+                    'updated_at' => date('Y-m-d h:i:s')
+                ]
             );
         }
         $parameter->save();
@@ -154,7 +159,7 @@ class MeterParameterController extends Controller
      * A list of connection types and the meters which belong to the connection type
      *
      * @responseFile /responses/meterparameters/meterparameter.connectiontype.list.json
-     * @param        Request $request
+     * @param Request $request
      * @return       ApiResource
      */
     public function connectionTypes(Request $request): ApiResource
