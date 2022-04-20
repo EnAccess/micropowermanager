@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidBingApiKeyException;
 use App\Http\Resources\ApiResource;
-use App\Http\Services\BingMapApiService;
+use App\Services\BingMapApiService;
 use App\Models\MapSettings;
 
 class MapSettingsController extends Controller

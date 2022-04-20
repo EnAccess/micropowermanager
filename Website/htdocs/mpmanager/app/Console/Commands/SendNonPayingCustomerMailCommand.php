@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Services\ClusterService;
+use App\Services\ClusterService;
 
 use App\Models\Cluster;
 use App\Services\ClusterManagerService;

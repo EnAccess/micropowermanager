@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Services\ClusterService;
-use App\Http\Services\PeriodService;
-use App\Http\Services\RevenueService;
+use App\Services\ClusterService;
+use App\Services\PeriodService;
+use App\Services\RevenueService;
 use Illuminate\Support\Facades\Cache;
 use Nette\Utils\DateTime;
 

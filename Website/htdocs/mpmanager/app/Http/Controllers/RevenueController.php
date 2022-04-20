@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Http\Services\CityService;
-use App\Http\Services\ClusterService;
+use App\Services\CityService;
+use App\Services\ClusterService;
 use App\Services\MeterService;
-use App\Http\Services\PeriodService;
-use App\Http\Services\RevenueService;
-use App\Http\Services\TransactionService;
+use App\Services\PeriodService;
+use App\Services\RevenueService;
+use App\Services\TransactionService;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\ConnectionGroup;

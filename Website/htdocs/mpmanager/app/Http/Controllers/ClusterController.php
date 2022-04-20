@@ -11,7 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClusterRequest;
 use App\Http\Resources\ApiResource;
-use App\Http\Services\ClusterService;
+use App\Services\ClusterService;
 use App\Models\Cluster;
 use Illuminate\Support\Facades\Artisan;
 use mysql_xdevapi\Exception;

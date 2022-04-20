@@ -7,7 +7,7 @@
  * Time: 11:50
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;

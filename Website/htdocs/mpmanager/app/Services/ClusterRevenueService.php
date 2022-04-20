@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Services\CityService;
+use App\Services\CityService;
 use App\Services\MeterService;
-use App\Http\Services\PeriodService;
-use App\Http\Services\RevenueService;
-use App\Http\Services\TransactionService;
+use App\Services\PeriodService;
+use App\Services\RevenueService;
+use App\Services\TransactionService;
 use App\Models\Cluster;
 use App\Models\ConnectionType;
 use Illuminate\Support\Facades\Cache;

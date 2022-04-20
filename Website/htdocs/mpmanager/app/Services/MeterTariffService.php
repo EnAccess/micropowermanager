@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Jobs\TariffPricingComponentsCalculator;

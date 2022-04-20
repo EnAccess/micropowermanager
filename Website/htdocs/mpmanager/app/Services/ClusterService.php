@@ -1,18 +1,14 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-13
- * Time: 19:19
- */
 
-namespace App\Http\Services;
 
+namespace App\Services;
+
+use App\Services\CityService;
+use App\Services\TransactionService;
 use App\Models\City;
 use App\Models\Cluster;
-use App\Services\ClusterRevenueService;
-use App\Services\MeterService;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

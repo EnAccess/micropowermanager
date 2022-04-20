@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
-use App\Http\Services\MeterTariffService;
+use App\Services\MeterTariffService;
 use App\Models\Meter\MeterTariff;
 
 /**

@@ -7,7 +7,7 @@
  * Time: 19:24
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\City;
 use App\Models\Person\Person;

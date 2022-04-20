@@ -1,13 +1,8 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-13
- * Time: 19:22
- */
 
-namespace App\Http\Services;
+
+namespace App\Services;
 
 use App\Http\Middleware\Transaction;
 use App\Models\Meter\Meter;
