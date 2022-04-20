@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MeterRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\MeterGeographicalInformationService;
 use App\Services\MeterService;
 use App\Models\City;
 use App\Models\Meter\Meter;
@@ -18,33 +20,11 @@ use Illuminate\Validation\ValidationException;
 
 class MeterController extends Controller
 {
-
-    /**
-     * @var Meter
-     */
-    private $meter;
-    /**
-     * @var City
-     */
-    private $city;
-
-    private $meterService;
-
-    /**
-     * MeterController constructor.
-     *
-     * @param Meter        $meter
-     * @param City         $city
-     * @param MeterService $meterService
-     */
     public function __construct(
-        Meter $meter,
-        City $city,
-        MeterService $meterService
+        private Meter $meter,
+        private City $city,
+        private MeterService $meterService
     ) {
-        $this->meter = $meter;
-        $this->city = $city;
-        $this->meterService = $meterService;
     }
 
     /**
@@ -55,54 +35,32 @@ class MeterController extends Controller
      * @urlParam     page int
      * @urlParam     in_use int to list wether used or all meters
      * @responseFile responses/meters/meters.list.json
+     * @param Request $request
      * @return       ApiResource
      */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
         $inUse = request('in_use');
-
-        if ($inUse !== null) {
-            return new ApiResource(
-                $this->meter::with('meterType', 'meterParameter.tariff')->where('in_use', $inUse)->paginate(15)
-            );
-        }
-        return new ApiResource(
-            $this->meter::with('meterType', 'meterParameter.tariff')->paginate(15)
-        );
+        $limit = $request->get('limit') ?? config('settings.paginate');
+        return ApiResource::make($this->meterService->getMeterList($limit, $inUse));
     }
 
     /**
      * Create
      * Stores a new meter
      *
-     * @param     Request $request
+     * @param MeterRequest $request
      * @bodyParam serial_number string required
      * @bodyParam meter_type_id int required
      * @bodyParam manufacturer_id int required
      * @return    mixed
      * @throws    ValidationException
      */
-    public function store(Request $request)
+    public function store(MeterRequest $request)
     {
-        //validate
-        $validation = Validator::make($request->all(), Meter::$rules);
-        if ($validation->fails()) {
-            throw new ValidationException($validation);
-        }
+        $meterData = (array)$request->all();
 
-        return
-            new ApiResource(
-                $this->meter::create(
-                    request()->only(
-                        [
-                        'serial_number',
-                        'meter_type_id',
-                        'in_use',
-                        'manufacturer_id',
-                        ]
-                    )
-                )
-            );
+        return ApiResource::make($this->meterService->createMeter($meterData));
     }
 
     /**
@@ -116,26 +74,15 @@ class MeterController extends Controller
      * - Manufacturer
      *
      * @urlParam serialNumber string
-     * @param    string $serialNumber
+     * @param string $serialNumber
      *
      * @return ApiResource
      *
      * @responseFile responses/meters/meter.detail.json
      */
-    public function show($serialNumber): ApiResource
+    public function show(string $serialNumber): ApiResource
     {
-        return new ApiResource(
-            Meter::with(
-                'meterParameter.tariff',
-                'meterParameter.owner',
-                'meterType',
-                'meterParameter.connectionType',
-                'meterParameter.connectionGroup',
-                'manufacturer'
-            )
-                ->where('serial_number', $serialNumber)
-                ->first()
-        );
+        return ApiResource::make($this->meterService->getBySerialNumber($serialNumber));
     }
 
     /**
@@ -150,77 +97,12 @@ class MeterController extends Controller
      *
      * @responseFile responses/meters/meters.search.json
      */
-    public function search()
+    public function search(): ApiResource
     {
         $term = request('term');
+        $paginate = request('paginate') ?? 1;
 
-        $meters = $this->meter::with('meterType', 'meterParameter.tariff')
-            ->whereHas(
-                'meterParameter.tariff',
-                function ($q) use ($term) {
-                    return $q->where('name', 'LIKE', '%' . $term . '%');
-                }
-            )
-            ->orWhere(
-                'serial_number',
-                'LIKE',
-                '%' . $term . '%'
-            )->paginate(15);
-        return new ApiResource($meters);
-    }
-
-
-    /**
-     * Update
-     * Updates the geo coordinates of the meter
-     *
-     * @urlParam  meter int
-     * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
-     *
-     * @param Request $request
-     * @param Meter   $meter
-     */
-    public function update(Request $request): ApiResource
-    {
-         $meters = $request->all();
-
-         return new ApiResource($this->meterService->updateMeterGeoLocations($meters));
-    }
-
-    /**
-     * @group    People
-     * Person with Meters & Tariff
-     * Person details with his/her owned meter(s) and its assigned tariff
-     * @param    Person $person
-     * @urlParam person required The ID of the person
-     * @return   ApiResource
-     *
-     * @responseFile responses/people/person.meter.tariff.json
-     */
-    public function personMeters(Person $person): ApiResource
-    {
-        $meters = Person::with('meters.tariff', 'meters.meter')->find($person->id);
-        return new ApiResource($meters);
-    }
-
-    /**
-     * @group    People
-     * Person with Meters & geo
-     * Person details with his/her owned meter(s) and the geo coordinates where each meter is placed
-     * - Meters
-     *   - Meter coordinates
-     * A list of meters which belong to that given person
-     * The list is wether sorted or paginated
-     * @urlParam person required The ID of the person
-     * @param    Person $person
-     * @return   ApiResource
-     *
-     * @responseFile responses/people/person.meter.list.json
-     */
-    public function meterGeo(Person $person): ApiResource
-    {
-        $meters = Person::with('meters.meter', 'meters.geo')->find($person->id);
-        return new ApiResource($meters);
+        return ApiResource::make($this->meterService->search($term, $paginate));
     }
 
     /**
@@ -233,71 +115,13 @@ class MeterController extends Controller
      * @param        $id
      * @return       ApiResource
      */
-    public function allRelations($id)
+    public function allRelations($meterId): ApiResource
     {
-        $meterDetails = Meter::with(
-            'meterParameter.tariff',
-            'meterParameter.geo',
-            'meterType'
-        )->find($id);
-        return new ApiResource($meterDetails);
+        return ApiResource::make($this->meterService->getMeterWithAllRelations($meterId));
     }
 
-    /**
-     * Meter Transactions
-     * A list of transactions which belong for that meter
-     * The list contains the latest transactions and is paginated. Each page contains 5 rows
-     *
-     * @urlParam serialNumber the serial number of the meter
-     *
-     * @responseFile responses/meters/meter.transaction.list.json
-     *
-     * @return ApiResource
-     */
-    public function transactionList($serialNumber): ApiResource
-    {
-        $token = new MeterToken();
-        $transactions = new Transaction();
-        $paymentHistory = new PaymentHistory();
 
 
-        return new ApiResource(
-            $paymentHistory::with('transaction', 'paidFor')
-                ->whereHas(
-                    'transaction',
-                    function ($q) use ($serialNumber) {
-                        $q->where('message', $serialNumber);
-                    }
-                )->latest()->paginate(5)
-        );
-    }
-
-    /**
-     * Consumption List
-     * If the meter has the ability to send data to your server. That is the endpoint where you get the
-     * meter readings ( used energy, credit on meter etc.)
-     *
-     * @urlParam     serialNumber
-     * @urlParam     start YYYY-mm-dd format
-     * @urlParam     end YYYY-mm-dd format
-     * @responseFile responses/meters/meter.consumption.list.json
-     *
-     * @param  $serialNumber
-     * @param  $start
-     * @param  $end
-     * @return ApiResource
-     */
-    public function consumptionList($serialNumber, $start, $end)
-    {
-        $meter = $this->meter->where('serial_number', $serialNumber)->first();
-        $mc = new MeterConsumption();
-        return new ApiResource(
-            $mc->where('meter_id', $meter->id)->whereBetween(
-                'reading_date',
-                [$start, $end]
-            )->orderBy('reading_date')->get()
-        );
-    }
 
     /**
      * List with geo and access rate
@@ -311,7 +135,6 @@ class MeterController extends Controller
      */
     public function meterGeoList($miniGridId): ApiResource
     {
-
 
         $cities = $this->city->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
 
