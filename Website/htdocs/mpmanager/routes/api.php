@@ -176,8 +176,8 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
 // People
 Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
 
-    Route::get('/{person}/meters', 'MeterController@personMeters');
-    Route::get('/{person}/meters/geo', 'MeterController@meterGeo');
+    Route::get('/{personId}/meters', 'PersonMeterController@show');
+    Route::get('/{personId}/meters/geo', 'MeterGeographicalInformationController@show');
 
     Route::get('/', 'PersonController@index');
     Route::post('/', 'PersonController@store');

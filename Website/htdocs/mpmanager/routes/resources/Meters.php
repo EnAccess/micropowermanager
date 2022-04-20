@@ -1,42 +1,34 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 05.07.18
- * Time: 17:33
- */
 
 /* Meter */
-Route::group(['prefix' => 'meters', ], function () {
+Route::group(['prefix' => 'meters',], function () {
     Route::get('/', 'MeterController@index');
-    Route::get('/{id}', 'MeterController@show');
     Route::post('/', 'MeterController@store');
-    Route::put('/', 'MeterController@update');
-    Route::get('/search', 'MeterController@Search');
+    Route::get('/search', 'MeterController@search');
+    Route::get('/{serialNumber}', 'MeterController@show');
     Route::delete('/{ownerId}', 'MeterController@destroy');
-    Route::get('{serialNumber}/revenue', 'RevenueController@meterRevenue');
+    Route::get('/{meterId}/all', 'MeterController@allRelations');
 
-
-    Route::get('/{id}/all', 'MeterController@allRelations');
+    Route::put('/', 'MeterGeographicalInformationController@update');
 
 
     Route::group(['prefix' => 'parameters'], function () {
         Route::get('/', 'MeterParameterController@index'); // list of all meters which are related to a customer
         Route::post('/', 'MeterParameterController@store');
         Route::get('/connection-types', 'MeterParameterController@connectionTypes');
+        Route::get('/{meterParameter}', 'MeterParameterController@show');
     });
-
-    Route::get('/parameters/{meterParameter}', 'MeterParameterController@show');
-
-
     Route::put('/{serialNumber}/parameters', 'MeterParameterController@update');
 
+    Route::get('/{serialNumber}/transactions', 'MeterPaymentHistoryController@show');
 
-    Route::get('/{serialNumber}/transactions', 'MeterController@transactionList');
-    Route::get('{serialNumber}/consumptions/{start}/{end}', 'MeterController@consumptionList');
+    Route::get('{serialNumber}/revenue', 'MeterRevenueController@show');
 
-    Route::get('/{migiGrid}/geoList', 'MeterController@meterGeoList');
+    Route::get('{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
+
+    Route::get('/{migiGrid}/geoList', 'MeterGeographicalInformationController@index');
 });
+
 /* Meter types */
 Route::group(['prefix' => 'meter-types'], function () {
     Route::get('/', 'MeterTypeController@index');
