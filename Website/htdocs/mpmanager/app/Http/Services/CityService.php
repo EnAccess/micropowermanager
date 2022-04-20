@@ -11,23 +11,16 @@ namespace App\Http\Services;
 
 use App\Models\City;
 use App\Models\Person\Person;
+use App\Services\SessionService;
 
 class CityService
 {
 
-    /**
-     * @var City
-     */
-    private $city;
-    /**
-     * @var Person
-     */
-    private $person;
 
-    public function __construct(City $city, Person $person)
+    public function __construct(private SessionService $sessionService, private City $city, private Person $person)
     {
-        $this->city = $city;
-        $this->person = $person;
+        $this->sessionService->setModel($city);
+        $this->sessionService->setModel($person);
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)
@@ -85,5 +78,11 @@ class CityService
 
 
         return $population;
+    }
+
+    public function getCityIdsByMiniGridId($miniGridId): array
+    {
+        return
+            $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
     }
 }

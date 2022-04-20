@@ -1,12 +1,14 @@
 <?php
 
 
-
 namespace App\Services;
 
+use App\Http\Requests\MeterRequest;
 use App\Models\City;
 use App\Models\Meter\Meter;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 use function count;
@@ -14,12 +16,92 @@ use function count;
 class MeterService
 {
 
-
     public function __construct(private SessionService $sessionService, private Meter $meter)
     {
-       $this->sessionService->setModel($meter);
+        $this->sessionService->setModel($meter);
     }
 
+    public function getMeterList($inUse, $limit): LengthAwarePaginator
+    {
+        if (isset($inUse)) {
+            return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->where('in_use',
+                $inUse)->paginate($limit);
+        }
+        return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->paginate($limit);
+
+    }
+
+    public function createMeter(array $meterData)
+    {
+        return $this->meter->newQuery()->create([
+            'serial_number' => $meterData['serial_number'],
+            'meter_type_id' => $meterData['meter_type_id'],
+            'in_use' => $meterData['in_use'],
+            'manufacturer_id' => $meterData['manufacturer_id'],
+        ]);
+    }
+
+    public function getBySerialNumber($serialNumber)
+    {
+        return $this->meter->newQuery()->with([
+                'meterParameter.tariff',
+                'meterParameter.owner',
+                'meterType',
+                'meterParameter.connectionType',
+                'meterParameter.connectionGroup',
+                'manufacturer'
+            ]
+        )->where('serial_number', $serialNumber)->first();
+    }
+
+    public function search($term, $paginate): LengthAwarePaginator
+    {
+        return $this->meter->newQuery()->with(['meterType', 'meterParameter.tariff'])
+            ->whereHas(
+                'meterParameter.tariff',
+                function ($q) use ($term) {
+                    return $q->where('name', 'LIKE', '%' . $term . '%');
+                }
+            )
+            ->orWhere(
+                'serial_number',
+                'LIKE',
+                '%' . $term . '%'
+            )->paginate($paginate);
+    }
+
+    public function getMeterWithAllRelations(int $meterId)
+    {
+        return $this->meter->newQuery()->with([
+            'meterParameter.tariff',
+            'meterParameter.geo',
+            'meterType']
+        )->find($meterId);
+    }
+
+    public function getUsedMetersGeoWithAccessRatePayments(): Collection|array
+    {
+       return $this->meter->newQuery()->with('meterParameter.address.geo', 'accessRatePayment')->where(
+            'in_use',
+            1
+        )->get();
+    }
+    public function getUsedMetersGeoWithAccessRatePaymentsInCities($cities): Collection|array
+    {
+        return $this->meter->newQuery()->with('meterParameter.address.geo', 'accessRatePayment')
+            ->whereHas(
+                'meterParameter',
+                function ($q) use ($cities) {
+                    $q->whereHas(
+                        'address',
+                        function ($q) use ($cities) {
+                            $q->whereIn('city_id', $cities);
+                        }
+                    );
+                }
+            )
+            ->where('in_use', 1)->get();
+    }
 
     public function getMeterCountInCluster($clusterId)
     {
@@ -209,7 +291,7 @@ class MeterService
             }
             return ['data' => true];
         } catch (Exception $exception) {
-             throw  new Exception($exception->getMessage());
+            throw  new Exception($exception->getMessage());
         }
     }
 }
