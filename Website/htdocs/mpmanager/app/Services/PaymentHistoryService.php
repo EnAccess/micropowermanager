@@ -9,13 +9,13 @@ use Faker\Provider\Payment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
-class PaymentHistoryService
+class PaymentHistoryService extends BaseService
 {
 
 
-    public function __construct(private SessionService $sessionService, private PaymentHistory $paymentHistory)
+    public function __construct(private PaymentHistory $paymentHistory)
     {
-        $this->sessionService->setModel($this->paymentHistory);
+        parent::__construct([$paymentHistory]);
     }
 
     public function findPayingCustomersInRange(

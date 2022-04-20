@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Log;
 
 use function count;
 
-class MeterService
+class MeterService extends BaseService
 {
 
-    public function __construct(private SessionService $sessionService, private Meter $meter)
+    public function __construct(private Meter $meter)
     {
-        $this->sessionService->setModel($meter);
+        parent::__construct([$meter]);
     }
 
     public function getMeterList($inUse, $limit): LengthAwarePaginator
@@ -53,7 +53,18 @@ class MeterService
             ]
         )->where('serial_number', $serialNumber)->first();
     }
-
+    public function getById($id)
+    {
+        return $this->meter->newQuery()->with([
+                'meterParameter.tariff',
+                'meterParameter.owner',
+                'meterType',
+                'meterParameter.connectionType',
+                'meterParameter.connectionGroup',
+                'manufacturer'
+            ]
+        )->find($id);
+    }
     public function search($term, $paginate): LengthAwarePaginator
     {
         return $this->meter->newQuery()->with(['meterType', 'meterParameter.tariff'])
@@ -101,6 +112,11 @@ class MeterService
                 }
             )
             ->where('in_use', 1)->get();
+    }
+
+    public function deleteMeter(Meter $meter)
+    {
+        return $meter->delete();
     }
 
     public function getMeterCountInCluster($clusterId)

@@ -8,12 +8,12 @@ use App\Models\Address\HasAddressesInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class AddressesService
+class AddressesService extends BaseService
 {
 
-    public function __construct(private SessionService $sessionService, private Address $address)
+    public function __construct(private Address $address)
     {
-        $this->sessionService->setModel($address);
+        parent::__construct([$address]);
     }
 
     // fills the object and returns it without saving.
@@ -50,14 +50,13 @@ class AddressesService
     public function makeAddress(array $addressData): Address
     {
         return $this->address->newQuery()->make([
-            'email' => isset($addressData['email']) ?: null,
-            'phone' => isset($addressData['phone']) ?: null,
-            'street' => isset($addressData['street']) ?: null,
-            'city_id' => isset($addressData['city_id']) ?: null,
-            'geo_id' => isset($addressData['geo_id']) ?: null,
-            'is_primary' => isset($addressData['is_primary']) ?: 0,
+            'email' => $addressData['email'] ?? null,
+            'phone' => $addressData['phone'] ?? null,
+            'street' => $addressData['street'] ?? null,
+            'city_id' => $addressData['city_id'] ?? null,
+            'geo_id' => $addressData['geo_id'] ?? null,
+            'is_primary' => $addressData['is_primary'] ?? 0,
         ]);
-
     }
 
     public function saveAddress(Address $address): bool

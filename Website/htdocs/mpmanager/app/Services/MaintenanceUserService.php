@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Models\MaintenanceUsers;
 
-class MaintenanceUserService
+class MaintenanceUserService extends BaseService
 {
 
-    public function __construct(private SessionService $sessionService,private MaintenanceUsers $maintenanceUser)
+    public function __construct(private MaintenanceUsers $maintenanceUser)
     {
-        $this->sessionService->setModel($maintenanceUser);
+        parent::__construct([$maintenanceUser]);
     }
 
     public function createMaintenanceUser(int $personId,int $miniGridId)

@@ -7,13 +7,12 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use function Symfony\Component\Translation\t;
 
-class MeterParameterService
+class MeterParameterService extends  BaseService
 {
     public function __construct(
-        private SessionService $sessionService,
         private MeterParameter $meterParameter,
     ) {
-        $this->sessionService->setModel($meterParameter);
+        parent::__construct([$meterParameter]);
     }
 
     public function createMeterParameter(

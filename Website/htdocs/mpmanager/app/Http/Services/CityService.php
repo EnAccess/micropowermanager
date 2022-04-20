@@ -11,16 +11,16 @@ namespace App\Http\Services;
 
 use App\Models\City;
 use App\Models\Person\Person;
+use App\Services\BaseService;
 use App\Services\SessionService;
 
-class CityService
+class CityService extends  BaseService
 {
 
 
-    public function __construct(private SessionService $sessionService, private City $city, private Person $person)
+    public function __construct(private City $city, private Person $person)
     {
-        $this->sessionService->setModel($city);
-        $this->sessionService->setModel($person);
+        parent::__construct([$city,$person]);
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)

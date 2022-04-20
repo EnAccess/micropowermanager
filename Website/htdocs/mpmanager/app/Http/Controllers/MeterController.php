@@ -13,6 +13,7 @@ use App\Models\Meter\MeterToken;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -21,8 +22,6 @@ use Illuminate\Validation\ValidationException;
 class MeterController extends Controller
 {
     public function __construct(
-        private Meter $meter,
-        private City $city,
         private MeterService $meterService
     ) {
     }
@@ -120,63 +119,17 @@ class MeterController extends Controller
         return ApiResource::make($this->meterService->getMeterWithAllRelations($meterId));
     }
 
-
-
-
-    /**
-     * List with geo and access rate
-     * A list of meters with their positions and access rate payments
-     * The list is not paginated.
-     *
-     * @urlParam mini_grid_id
-     *
-     * @return       ApiResource
-     * @responseFile responses/meters/meters.geo.list.json
-     */
-    public function meterGeoList($miniGridId): ApiResource
-    {
-
-        $cities = $this->city->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
-
-        //city id yi anca addresten yakalariz
-        if ($miniGridId === null) {
-            $meters = $this->meter::with('meterParameter.address.geo', 'accessRatePayment')->where(
-                'in_use',
-                1
-            )->get();
-        } else {
-            $meters = $this->meter::with('meterParameter.address.geo', 'accessRatePayment')
-                ->whereHas(
-                    'meterParameter',
-                    function ($q) use ($cities) {
-                        $q->whereHas(
-                            'address',
-                            function ($q) use ($cities) {
-                                $q->whereIn('city_id', $cities);
-                            }
-                        );
-                    }
-                )
-                ->where('in_use', 1)->get();
-        }
-
-        return new ApiResource($meters);
-    }
-
     /**
      * Delete
      * Deletes the meter with its all releations
      *
      * @urlParam meterId. The ID of the meter to be delete
      * @param    $meterId
-     * @return   ApiResource
+     * @return   JsonResponse
      */
-    public function destroy($meterId)
+    public function destroy($meterId): JsonResponse
     {
-        $meter = $this->meter->find($meterId);
-        if ($meter !== null) {
-            $meter->delete();
-        }
-        return new ApiResource($meter);
+        $meter = $this->meterService->getById($meterId);
+        return response()->json(null, 204);
     }
 }

@@ -5,15 +5,13 @@ namespace App\Services;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 
-class PersonMeterService
+class PersonMeterService extends BaseService
 {
     public function __construct(
-        private SessionService $sessionService,
         private Person $person,
         private Meter $meter
     ) {
-        $this->sessionService->setModel($this->person);
-        $this->sessionService->setModel($this->meter);
+    parent::__construct([$meter,$person])   ;
     }
 
     public function getPersonMeters(int $personId)

@@ -6,15 +6,14 @@ use App\Models\Meter\MeterToken;
 use App\Models\Revenue;
 use App\Models\Transaction\Transaction;
 
-class MeterRevenueService
+class MeterRevenueService extends BaseService
 {
     public function __construct(
-        private SessionService $sessionService,
         private MeterToken $meterToken,
         private Transaction $transaction
     ) {
-        $this->sessionService->setModel($meterToken);
-        $this->sessionService->setModel($transaction);
+        parent::__construct([$meterToken,$transaction]);
+
     }
 
     public function getBySerialNumber(string $serialNumber)
