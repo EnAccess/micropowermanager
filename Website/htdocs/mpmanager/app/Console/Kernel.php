@@ -29,14 +29,14 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('accessrate:check')->daily();
+/*        $schedule->command('accessrate:check')->daily();
         $schedule->command('asset-rate:check')->daily();
         $schedule->command('calinMeters:readOnline')->dailyAt('04:00');
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
         $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
-        $schedule->job(new SocialTariffPiggyBankManager())->daily();
+        $schedule->job(new SocialTariffPiggyBankManager())->daily();*/
     }
 
     /**
