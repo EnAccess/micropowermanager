@@ -19,35 +19,13 @@ use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class RevenueService
+class RevenueService extends BaseService
 {
 
-    /**
-     * @var Meter
-     */
-    private $meter;
-    /**
-     * @var MeterToken
-     */
-    private $meter_token;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * RevenueService constructor.
-     *
-     * @param Meter $meter
-     * @param MeterToken $meter_token
-     * @param Transaction $transaction
-     */
-    public function __construct(Meter $meter, MeterToken $meter_token, Transaction $transaction)
+    public function __construct(private Meter $meter, private MeterToken $meter_token, private  Transaction
+    $transaction)
     {
-        $this->meter = $meter;
-        $this->meter_token = $meter_token;
-        $this->transaction = $transaction;
+        parent::__construct([$meter, $meter_token, $transaction]);
     }
 
 

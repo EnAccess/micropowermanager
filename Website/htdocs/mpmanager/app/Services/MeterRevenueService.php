@@ -27,4 +27,21 @@ class MeterRevenueService extends BaseService
 
         return $this->transaction->newQuery()->whereIn('id', $tokens)->sum('amount');
     }
+
+    public function getTransactionsForWeeklyPeriod($meters, $period)
+    {
+        return $this->transaction->newQuery()
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period ,DATE_FORMAT(created_at,\'%Y-%u\') ' .
+                ' as week, SUM(amount) as revenue')
+            ->whereHasMorph(
+                'originalTransaction',
+                '*',
+                static function ($q) {
+                    $q->where('status', 1);
+                }
+            )
+            ->whereIn('message', $meters->pluck('serial_number'))
+            ->whereBetween('created_at', $period)
+            ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'),WEEKOFYEAR(created_at)'))->get();
+    }
 }
