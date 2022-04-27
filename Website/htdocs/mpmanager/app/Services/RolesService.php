@@ -7,7 +7,7 @@
  * Time: 18:59
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\Role\RoleDefinition;
 use App\Models\Role\RoleInterface;

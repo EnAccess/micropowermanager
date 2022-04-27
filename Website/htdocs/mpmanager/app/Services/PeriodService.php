@@ -7,7 +7,7 @@
  * Time: 14:56
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use DateInterval;
 use DatePeriod;

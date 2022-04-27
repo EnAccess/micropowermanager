@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 
-use App\Http\Services\CountryService;
-use App\Http\Services\RolesService;
+use App\Services\CountryService;
+use App\Services\RolesService;
 use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;

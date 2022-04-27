@@ -27,14 +27,12 @@ class ClustersDashboardCacheDataGenerator extends Command
      * @return void
      */
 
-    private $clustersDashboardCacheDataService;
-
 
     public function __construct(
-        ClustersDashboardCacheDataService $clustersDashboardCacheDataService
+        private ClustersDashboardCacheDataService $clustersDashboardCacheDataService
     ) {
         parent::__construct();
-        $this->clustersDashboardCacheDataService = $clustersDashboardCacheDataService;
+
     }
 
     /**

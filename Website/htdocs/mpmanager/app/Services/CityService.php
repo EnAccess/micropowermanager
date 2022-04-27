@@ -7,7 +7,7 @@
  * Time: 19:24
  */
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\City;
 use App\Models\Person\Person;
@@ -46,39 +46,7 @@ class CityService extends  BaseService
         return $population;
     }
 
-    public function getClusteropulation($clusterId, $onlyCustomers = true)
-    {
-        if ($onlyCustomers) {
-            $population = $this->person
-                ->where('is_customer', 1)
-                ->whereHas(
-                    'addresses',
-                    function ($q) use ($clusterId) {
-                        $q->where('is_primary', 1)->whereHas(
-                            'city',
-                            function ($q) use ($clusterId) {
-                                $q->where('cluster_id', $clusterId);
-                            }
-                        );
-                    }
-                )->count();
-        } else {
-            $population = $this->person->whereHas(
-                'addresses',
-                function ($q) use ($clusterId) {
-                    $q->where('is_primary', 1)->whereHas(
-                        'city',
-                        function ($q) use ($clusterId) {
-                            $q->where('cluster_id', $clusterId);
-                        }
-                    );
-                }
-            )->count();
-        }
 
-
-        return $population;
-    }
 
     public function getCityIdsByMiniGridId($miniGridId): array
     {

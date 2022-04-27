@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Helpers\PasswordGenerator;
-use App\Http\Services\AddressService;
-use App\Http\Services\CountryService;
-use App\Http\Services\PeriodService;
+use App\Services\AddressService;
+use App\Services\CountryService;
+use App\Services\PeriodService;
 use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;

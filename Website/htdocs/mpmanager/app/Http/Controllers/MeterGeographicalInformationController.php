@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Http\Services\CityService;
+use App\Services\CityService;
 use App\Models\Meter\Meter;
 use App\Services\MeterGeographicalInformationService;
 use App\Services\MeterService;
