@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property int $cluster_id
  * @property int $data_stream;
  */
-class MiniGrid extends Model
+class MiniGrid extends BaseModel
 {
     protected $connection = 'test_company_db';
     protected $guarded = [];
