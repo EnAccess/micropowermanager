@@ -84,22 +84,20 @@ Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
     });
 
 });
-
-
 // Batteries
 Route::group(['prefix' => 'batteries'], static function () {
     Route::post('/', 'BatteryController@store');
 });
 // Clusters
 Route::group(['prefix' => '/clusters', 'middleware' => 'jwt.verify'], static function () {
-    Route::get('/{id}/revenue/analysis', 'RevenueController@getRevenueAnalysisForCluster');
     Route::get('/', 'ClusterController@index');
-    Route::get('/revenue', 'RevenueController@getPeriodicClustersRevenue');
-    Route::get('/{id}/revenue', 'RevenueController@getClusterRevenue');
+    Route::get('/{clusterId}', 'ClusterController@show')->where('clusterId', '[0-9]+');
     Route::post('/', 'ClusterController@store');
-    Route::get('/{id}', 'ClusterController@show');
-    Route::get('/{id}/geo', 'ClusterController@showGeo');
-    Route::get('/{id}/cities-revenue', 'RevenueController@getPeriodicMiniGridsRevenue');
+    Route::get('/{clusterId}/geo', 'ClusterController@showGeo');
+    Route::get('/revenue', 'ClusterRevenueController@index');
+    Route::get('/{clusterId}/revenue', 'ClusterRevenueController@show');
+    Route::get('/{clusterId}/revenue/analysis', 'ClusterRevenueAnalysisController@show');
+    Route::get('/{clusterId}/cities-revenue', 'ClusterMiniGridRevenueController@show');
 });
 // Dashboard data from cache
 Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static function () {
@@ -145,7 +143,6 @@ Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static
     Route::put('/{id}', 'ManufacturerController@update');
 
 });
-
 // Mini-Grids
 Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'MiniGridController@index');
@@ -200,15 +197,12 @@ Route::group(['prefix' => 'pv'], static function () {
     Route::get('/{miniGridId}', ['middleware' => 'jwt.verify', 'uses' => 'PVController@show']);
 
 });
-
 // Map Settings
-
 Route::group(['prefix' => 'map-settings'], static function () {
     Route::get('/', 'MapSettingsController@index');
     Route::get('/key/{key}', 'MapSettingsController@checkBingApiKey');
     Route::put('/{mapSettings}', ['uses' => 'MapSettingsController@update', 'middleware' => 'jwt.verify']);
 });
-
 // Ticket Settings
 Route::group(['prefix' => 'ticket-settings'], static function () {
     Route::get('/', 'TicketSettingsController@index');
