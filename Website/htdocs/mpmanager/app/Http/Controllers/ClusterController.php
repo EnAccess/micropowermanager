@@ -1,81 +1,123 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-12
- * Time: 11:45
- */
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\ClusterRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\ClusterMeterService;
+use App\Services\ClusterMiniGridService;
+use App\Services\ClusterPopulationService;
+use App\Services\ClusterRevenueService;
+use App\Services\ClustersDashboardCacheDataService;
 use App\Services\ClusterService;
 use App\Models\Cluster;
+use App\Services\ClusterTransactionService;
+use App\Services\ConnectionTypeService;
+use App\Services\MeterRevenueService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use mysql_xdevapi\Exception;
 
-class ClusterController
+
+class ClusterController extends Controller
 {
-    /**
-     * @var ClusterService
-     */
-    private $clusterService;
-    /**
-     * @var Cluster
-     */
-    private $cluster;
 
-    /**
-     * ClusterController constructor.
-     *
-     * @param ClusterService     $clusterService
-     * @param Cluster            $cluster
-     */
     public function __construct(
-        ClusterService $clusterService,
-        Cluster $cluster
+        private ClusterService $clusterService,
+        private ClusterMeterService $clusterMetersService,
+        private ClusterTransactionService $clusterTransactionsService,
+        private ClusterPopulationService $clusterPopulationService,
+        private ClusterRevenueService $clusterRevenueService,
+        private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
+        private ClusterMiniGridService $clusterMiniGridService,
+        private ConnectionTypeService $connectionTypeService
     ) {
-        $this->clusterService = $clusterService;
-        $this->cluster = $cluster;
+
     }
 
-    public function index(): ApiResource
+    /**
+     * @throws \Exception
+     */
+    public function index(Request $request): ApiResource
     {
-        $startDate = request('start_date');
-        $endDate = request('end_date');
-        $dateRange = [];
-        if ($startDate !== null && $endDate !== null) {
-            $dateRange[0] = $startDate;
-            $dateRange[1] = $endDate;
-        } else {
-            $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
-            $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
-        }
+
+        $dateRange =
+            $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
         $clusters = $this->clusterService->getClusterList();
+        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+        foreach ($clusters as $index => $cluster) {
+            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
+            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
+            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
+            $clusters[$index]->citiesRevenue =
+                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
+            $clusters[$index]->revenueAnalysis =
+                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById($cluster->id,
+                    $connectionTypes);
+            $clusters[$index]->clusterData =
+                $this->clusterService->getCluster(
+                    $this->clusterService->getById($cluster->id),
+                    $clusters[$index]->meterCount,
+                    $clusters[$index]->revenue,
+                    $clusters[$index]->population
+                );
+        }
 
-        return new ApiResource($this->clusterService->fetchClusterData($clusters, $dateRange));
+        return ApiResource::make($clusters);
     }
 
-    public function show($id): ApiResource
+    /**
+     * @throws \Exception
+     */
+    public function show($clusterId, Request $request): ApiResource
     {
-        $cluster = $this->clusterService->getCluster($id);
-        return new ApiResource($cluster);
+        $dateRange =
+            $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
+        $cluster = $this->clusterService->getById($clusterId);
+        return ApiResource::make($this->clusterService->getCluster(
+            $cluster,
+            $this->clusterMetersService->getCountById($cluster->id),
+            $this->clusterTransactionsService->getById($cluster->id, $dateRange),
+            $this->clusterPopulationService->getById($cluster->id)
+        ));
     }
 
-    public function showGeo($id): ApiResource
+    public function showGeo($clusterId): ApiResource
     {
-        return ApiResource::make($this->clusterService->geoLocation($id));
+        return ApiResource::make(['geo_data' => $this->clusterService->getGeoLocationById($clusterId)]);
     }
-
 
     public function store(ClusterRequest $request): ApiResource
     {
-        $cluster = Cluster::query()->create(
-            request()->only(['name', 'manager_id', 'geo_data'])
-        );
-        Artisan::call('update:cachedClustersDashboardData');
-        return new ApiResource($cluster);
+        $clusterData = $request->only(['name', 'manager_id', 'geo_data']);
+        $cluster = $this->clusterService->createCluster($clusterData);
+        $dateRange = [];
+        $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
+        $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
+        $clusters = $this->clusterService->getClusterList();
+        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+
+        foreach ($clusters as $index => $cluster) {
+            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
+            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
+            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
+            $clusters[$index]->citiesRevenue =
+                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
+            $clusters[$index]->revenueAnalysis = $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById($cluster->id,
+                $connectionTypes);
+            $clusters[$index]->clusterData =
+                $this->clusterService->getCluster(
+                    $this->clusterService->getById($cluster->id),
+                    $clusters[$index]->meterCount,
+                    $clusters[$index]->revenue,
+                    $clusters[$index]->population
+                );
+        }
+
+        $clustersWithMeters = $this->clusterMiniGridService->getClustersWithMiniGrids();
+        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters,$this->clusterRevenueService);
+
+        return ApiResource::make($cluster);
     }
 }
