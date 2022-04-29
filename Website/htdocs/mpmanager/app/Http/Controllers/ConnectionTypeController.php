@@ -3,61 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\ConnectionType;
+
+use App\Services\ConnectionTypeService;
 use Illuminate\Http\Request;
 
 class ConnectionTypeController extends Controller
 {
 
-
-    /**
-     * @var ConnectionType
-     */
-    private $connectionType;
-
-    public function __construct(ConnectionType $connectionType)
+    public function __construct(private ConnectionTypeService $connectionTypeService)
     {
-        $this->connectionType = $connectionType;
+
     }
 
     public function index(Request $request): ApiResource
     {
-        if ($request->get('paginate') === null) {
-            $connectionTypes = $this->connectionType->paginate(15);
-        } else {
-            $connectionTypes = $this->connectionType->get();
-        }
-        return new ApiResource($connectionTypes);
+        $limit = $request->get('limit');
+
+        return ApiResource::make($this->connectionTypeService->getConnectionTypes($limit));
     }
 
+    public function show($connectionTypeId, Request $request): ApiResource
+    {
+        $meterCountRelation = $request->input('meter_count');
+
+        if ($meterCountRelation) {
+
+           return  ApiResource::make($this->connectionTypeService->getByIdWithMeterCountRelation($connectionTypeId));
+        }
+
+        return  ApiResource::make($this->connectionTypeService->getById($connectionTypeId));
+    }
 
     public function store(Request $request): ApiResource
     {
-        $connectionName = $request->get('name');
-        $connectionType = $this->connectionType->create();
-        $connectionType->name = $connectionName;
-        $connectionType->save();
-        return new ApiResource($connectionType);
+        $connectionTypeData = $request->all();
+
+        return   ApiResource::make($this->connectionTypeService->create($connectionTypeData));
     }
 
-    public function show($connectionTypeId): ApiResource
-    {
-        $meter_count_relation = request()->input('meter_count');
-        if ($connectionTypeId !== null) {
-            $connectionTypeDetail = $this->connectionType->newQuery();
-            if ($meter_count_relation) {
-                $connectionTypeDetail = $connectionTypeDetail->withCount('meterParameters');
-            }
-            $connectionTypeDetail = $connectionTypeDetail->where('id', $connectionTypeId)->get();
-            return new ApiResource($connectionTypeDetail);
-        }
-        return new ApiResource(null);
-    }
 
-    public function update(ConnectionType $connectionType): ApiResource
+    public function update($connectionTypeId, Request $request): ApiResource
     {
-        $connectionType->name = request('name');
-        $connectionType->save();
-        return new ApiResource($connectionType);
+        $connectionTypeData = $request->all();
+        $connectionType = $this->connectionTypeService->getById($connectionTypeId);
+
+        return ApiResource::make($this->connectionTypeService->update($connectionType,$connectionTypeData));
     }
 }
