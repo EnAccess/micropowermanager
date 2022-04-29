@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $default
  * @property int $limit
  */
-class Restriction extends Model
+class Restriction extends BaseModel
 {
     protected $connection = 'test_company_db';
     public function upgrades(): HasMany

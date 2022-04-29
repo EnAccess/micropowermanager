@@ -19,4 +19,9 @@ class MaintenanceUserService extends BaseService
             'mini_grid_id'=>$miniGridId
         ]);
     }
+
+    public function getMaintenanceUsersCount()
+    {
+        return $this->maintenanceUser->newQuery()->count();
+    }
 }

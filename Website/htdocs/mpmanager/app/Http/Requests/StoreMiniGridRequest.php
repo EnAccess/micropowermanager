@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,9 +25,11 @@ class StoreMiniGridRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
             'name' => 'required|min:3',
-            'cluster_id' => 'required|exists:clusters,id',
+            'cluster_id' => 'required|exists:'.$database.'.clusters,id',
             'geo_data' => 'required',
         ];
     }

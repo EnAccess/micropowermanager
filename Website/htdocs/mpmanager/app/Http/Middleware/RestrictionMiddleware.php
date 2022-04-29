@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use App\Models\MaintenanceUsers;
 use App\Models\MiniGrid;
 use App\Models\Restriction;
+use App\Services\MaintenanceUserService;
+use App\Services\MiniGridService;
+use App\Services\RestrictionService;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -19,43 +22,32 @@ use Illuminate\Http\Request;
 class RestrictionMiddleware
 {
 
-    /**
-     * @var Restriction
-     */
-    private $restriction;
-    /**
-     * @var MiniGrid
-     */
-    private $miniGrid;
-    /**
-     * @var MaintenanceUsers
-     */
-    private $maintenanceUsers;
 
-    public function __construct(Restriction $restriction, MiniGrid $miniGrid, MaintenanceUsers $maintenanceUsers)
-    {
-        $this->restriction = $restriction;
-        $this->miniGrid = $miniGrid;
-        $this->maintenanceUsers = $maintenanceUsers;
+    public function __construct(
+        private RestrictionService $restrictionService,
+        private MaintenanceUserService $maintenanceUserService,
+        private MiniGridService $miniGridService
+    ) {
+
     }
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @param  $type
      * @return mixed
      */
     public function handle($request, Closure $next, $target)
     {
-
         try {
-            $restriction = $this->restriction->where('target', $target)->firstOrFail();
+            $restriction = $this->restrictionService->getRestrictionForTarget($target);
             $restrictionResult = $this->handleRestriction($restriction->limit, $target, $request);
 
             if (!$restrictionResult) {
                 $baseMessage = 'Your free limit of %s is exceeded. You can order more slots below.';
+
                 if ($target === 'maintenance-user') {
                     $message = sprintf($baseMessage, 'External Maintenance Users');
                     $url = config('services.payment.maintenance');
@@ -63,6 +55,7 @@ class RestrictionMiddleware
                     $message = sprintf($baseMessage, 'MiniGrid Data-logger');
                     $url = config('services.payment.maintenance');
                 }
+
                 return response()->json(['data' => ['message' => $message, 'url' => $url, 'status' => 409]], 409);
             }
         } catch (ModelNotFoundException $exception) { // there is no restriction found for that target.
@@ -75,14 +68,14 @@ class RestrictionMiddleware
     private function handleRestriction(int $limit, $target, Request $request): bool
     {
         if ($target === 'maintenance-user') {
-            $users = $this->maintenanceUsers->count();
-            if ($users >= $limit) {
+
+            if ($this->maintenanceUserService->getMaintenanceUsersCount() >= $limit) {
                 return false;
             }
         } elseif ($target === 'enable-data-stream' && $request->input('data_stream') === 1) {
+
             // someone(admin) is trying to enable data-stream capability on the mini-grid dashboard
-            $enabled = $this->miniGrid->where('data_stream', 1)->count();
-            if ($enabled >= $limit) {
+            if ($this->miniGridService->getDataStreamEnabledMiniGridsCount() >= $limit) {
                 return false;
             }
         }
