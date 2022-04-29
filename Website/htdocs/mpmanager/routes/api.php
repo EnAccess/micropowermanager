@@ -35,7 +35,6 @@ require_once 'resources/AgentApp.php';
 require_once 'resources/AgentWeb.php';
 
 
-
 //JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
 
@@ -147,19 +146,22 @@ Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static
 Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'MiniGridController@index');
     Route::post('/', 'MiniGridController@store');
-    Route::get('/{id}', 'MiniGridController@show');
-    Route::post('/{id}/transactions', 'RevenueController@transactionRevenuePerMiniGrid');
-    Route::post('/{id}/energy', 'RevenueController@soldEnergyPerMiniGrid');
-    Route::get('/{id}/batteries', 'BatteryController@showByMiniGrid');
-    Route::get('/{miniGridId}/solar', 'SolarController@showByMiniGrid');
+    Route::get('/{miniGridId}', 'MiniGridController@show');
+    Route::put('/{miniGridId}', 'MiniGridController@update')->middleware('restriction:enable-data-stream');
+//
+    Route::post('/{miniGridId}/transactions', 'MiniGridRevenueController@show');
+    Route::post('/{miniGridId}/energy', 'MiniGridRevenueController@show');
+    Route::get('/{miniGridId}/batteries', 'MiniGridBatteryController@show');
+    Route::get('/{miniGridId}/solar', 'MiniGridSolarController@show');
 
-    Route::put('/{miniGrid}', 'MiniGridController@update')->middleware('restriction:enable-data-stream');
-    Route::get('/{MiniGrid}/battery-readings', 'BatteryController@show');
-    Route::get('/{MiniGrid}/energy-readings', 'EnergyController@show');
-    Route::get('/{MiniGrid}/solar-readings', 'SolarController@listByMiniGrid');
-    Route::get('/{MiniGrid}/pv-readings', 'PVController@showReadings');
-    Route::get('/{MiniGrid}/weather-readings', 'BatteryController@show');
-
+});
+// these routes are for the forecast-tool in jetson nano.
+Route::group(['prefix' => 'mini-grids'], static function () {
+    Route::get('/{miniGridId}/battery-readings', 'JetsonMiniGridBatteryController@show');
+    Route::get('/{miniGridId}/energy-readings', 'JetsonMiniGridEnergyController@show');
+    Route::get('/{miniGridId}/solar-readings', 'JetsonMiniGridSolarController@show');
+    Route::get('/{miniGridId}/pv-readings', 'JetsonMiniGridPVController@show');
+    Route::get('/{miniGridId}/weather-readings', 'JetsonMiniGridSolarController@show');
 });
 // PaymentHistories
 Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], function () {
