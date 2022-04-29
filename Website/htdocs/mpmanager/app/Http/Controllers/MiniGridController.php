@@ -6,27 +6,17 @@ use App\Http\Requests\StoreMiniGridRequest;
 use App\Http\Requests\UpdateMiniGridRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\MiniGrid;
+use App\Services\MiniGridService;
+use Facade\FlareClient\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
 class MiniGridController extends Controller
 {
 
-    /**
-     * @var MiniGrid
-     */
-    private $miniGrid;
-
-    public function __construct(MiniGrid $miniGrid)
+    public function __construct(private MiniGridService $miniGridService)
     {
-        $this->miniGrid = $miniGrid;
-    }
 
-    public function store(StoreMiniGridRequest $request): ApiResource
-    {
-        $miniGrid = $this->miniGrid::query()->create($request->only('cluster_id', 'name'));
-        Artisan::call('update:cachedClustersDashboardData');
-        return new ApiResource($miniGrid);
     }
 
     /**
@@ -34,17 +24,12 @@ class MiniGridController extends Controller
      *
      * @urlParam data_stream filters the list based on data_stream column
      *
-     * @param  Request $request
+     * @param Request $request
      * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
-
-        $miniGrids = $this->miniGrid->newQuery();
-        if ($request->has('data_stream')) {
-            $miniGrids->where('data_stream', $request->input('data_stream'));
-        }
-        return new ApiResource($miniGrids->get());
+        return ApiResource::make($this->miniGridService->getMiniGrids($request->get('data_stream')));
     }
 
     /**
@@ -52,23 +37,28 @@ class MiniGridController extends Controller
      *
      * @bodyParam id int required
      *
-     * @param int     $id
+     * @param int $id
      *
      * @param Request $request
      *
      * @return ApiResource
      */
-    public function show($id, Request $request): ApiResource
+    public function show($miniGridId, Request $request): ApiResource
     {
         $relation = $request->get('relation');
 
         if ((int)$relation === 1) {
-            $miniGrid = $this->miniGrid::with('location')->find($id);
-        } else {
-            $miniGrid = $this->miniGrid->find($id);
-        }
 
-        return new ApiResource($miniGrid);
+            return ApiResource::make($this->miniGridService->getByIdWithLocation($miniGridId));
+        } else {
+
+            return ApiResource::make($this->miniGridService->getById($miniGridId));
+        }
+    }
+
+    public function store(StoreMiniGridRequest $request): ApiResource
+    {
+        return ApiResource::make($this->miniGridService->create($request->only('cluster_id', 'name')));
     }
 
     /**
@@ -77,15 +67,14 @@ class MiniGridController extends Controller
      * @bodyParam name string The name of the MiniGrid.
      * @bodyParam data_stream int If the data_stream is enabled or not.
      *
-     * @param  MiniGrid              $miniGrid
-     * @param  UpdateMiniGridRequest $request
+     * @param MiniGrid $miniGrid
+     * @param UpdateMiniGridRequest $request
      * @return ApiResource
      */
-    public function update(MiniGrid $miniGrid, UpdateMiniGridRequest $request): ApiResource
+    public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource
     {
-        $miniGrid->name = $request->input('name') ?? $miniGrid->name;
-        $miniGrid->data_stream = $request->input('data_stream') ?? $miniGrid->data_stream;
-        $miniGrid->save();
-        return new ApiResource($miniGrid);
+        $miniGrid = $this->miniGridService->getById($miniGridId);
+        $this->miniGridService->update($miniGrid, $request->only(['name', 'data_stream']));
+        return ApiResource::make($this->miniGridService->getById($miniGridId));
     }
 }
