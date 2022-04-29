@@ -108,7 +108,8 @@ Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static fu
 Route::group(['prefix' => 'connection-groups', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'ConnectionGroupController@index');
     Route::post('/', 'ConnectionGroupController@store');
-    Route::put('/{connectionGroup}', 'ConnectionGroupController@update');
+    Route::put('/{connectionGroupId}', 'ConnectionGroupController@update');
+    Route::get('/{connectionGroupId}', 'ConnectionGroupController@show');
 });
 // Connection-Types
 Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], static function () {

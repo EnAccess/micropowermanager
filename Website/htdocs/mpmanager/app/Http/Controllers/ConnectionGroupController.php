@@ -5,36 +5,38 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateConnectionGroupRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\ConnectionGroup;
+use App\Services\ConnectionGroupService;
+use Illuminate\Http\Request;
 
 class ConnectionGroupController
 {
-    /**
-     * @var ConnectionGroup
-     */
-    private $connectionGroup;
-
-    public function __construct(ConnectionGroup $connectionGroup)
-    {
-        $this->connectionGroup = $connectionGroup;
+    public function __construct(
+        private ConnectionGroupService $connectionGroupService
+    ) {
     }
 
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        return new ApiResource($this->connectionGroup->get());
+        return  ApiResource::make($this->connectionGroupService->getConnectionGroupList());
+    }
+
+    public function show($connectionGroupId,Request $request): ApiResource
+    {
+        return  ApiResource::make($this->connectionGroupService->getById($connectionGroupId));
     }
 
     public function store(CreateConnectionGroupRequest $request): ApiResource
     {
-        $name = $request->input('name');
-        $this->connectionGroup->name = $name;
-        $this->connectionGroup->save();
-        return new ApiResource($this->connectionGroup);
+        $connectionGroupData = $request->all();
+
+        return new ApiResource($this->connectionGroupService->create($connectionGroupData));
     }
 
-    public function update(ConnectionGroup $connectionGroup): ApiResource
+    public function update($connectionGroupId,CreateConnectionGroupRequest $request): ApiResource
     {
-        $connectionGroup->update(request()->only(['name']));
-        $connectionGroup->fresh();
-        return new ApiResource($connectionGroup);
+        $connectionGroup = $this->connectionGroupService->getById($connectionGroupId);
+        $connectionGroupData = $request->all();
+
+        return   ApiResource::make($this->connectionGroupService->update($connectionGroup,$connectionGroupData));
     }
 }
