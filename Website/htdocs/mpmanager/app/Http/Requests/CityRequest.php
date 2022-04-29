@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CityRequest extends FormRequest
@@ -23,9 +24,11 @@ class CityRequest extends FormRequest
      */
     public function rules(): array
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'name' => 'required|unique:cities',
-            'mini_grid_id' => 'required|exists:mini_grids,id'
+            'name' => 'required|unique:'.$database.'.cities',
+            'mini_grid_id' => 'required|exists:'.$database.'.mini_grids,id'
         ];
     }
 }

@@ -8,31 +8,20 @@ use App\Models\City;
 use App\Models\Country;
 use App\Http\Requests\CityRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\CityService;
+use App\Services\ClusterService;
+use App\Services\MiniGridService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-/**
- * @group   City
- * Class CityController
- * @package App\Http\Controllers
- */
+
 class CityController extends Controller
 {
-    /**
-     * @var City
-     */
-    private $city;
-    /**
-     * @var MiniGrid
-     */
-    private $miniGrid;
 
-    private $cluster;
-    public function __construct(City $city, MiniGrid $miniGrid, Cluster $cluster)
-    {
-        $this->city = $city;
-        $this->miniGrid = $miniGrid;
-        $this->cluster = $cluster;
+    public function __construct(
+        private CityService $cityService
+    ) {
+
     }
 
     /**
@@ -40,47 +29,44 @@ class CityController extends Controller
      *
      * @return ApiResource
      */
-    public function index()
+    public function index(Request $request): ApiResource
     {
-        return new ApiResource(
-            $this->city->get()
-        );
+
+        return ApiResource::make($this->cityService->getCities());
     }
 
     /**
      * Details of requested city
      *
-     * @param $id
+     * @param $cityId
      *
      * @return ApiResource
      */
-    public function show($id)
+    public function show($cityId, Request $request): ApiResource
     {
-        $relation = request('relation');
+        $relation = $request->get('relation');
+
         if ($relation) {
-            return new ApiResource(
-                $this->city::with('location', 'country')->findOrFail($id)
-            );
+            return ApiResource::make($this->cityService->getByIdWithRelation($cityId, ['location', 'country']));
         }
-        return new ApiResource(
-            $this->city->findOrFail($id)
-        );
+
+        return ApiResource::make($this->cityService->getById($cityId));
     }
 
     /**
      * Updates the given city
      *
      * @param CityRequest $request
-     * @param City        $city
+     * @param $cityId
      *
      * @return ApiResource
      */
-    public function update(CityRequest $request, City $city)
+    public function update($cityId, CityRequest $request): ApiResource
     {
-        $country = Country::where('country_code', 'TR')->first();
-        $city->name = request('name');
-        $city = $country->cities()->save($city);
-        return new ApiResource($city);
+        $city = $this->cityService->getById($cityId);
+        $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id','country_id']);
+
+        return ApiResource::make($this->cityService->update($city, $cityData));
     }
 
     /**
@@ -92,16 +78,10 @@ class CityController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(CityRequest $request)
+    public function store(CityRequest $request): ApiResource
     {
+        $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id','country_id']);
 
-        $miniGrid = $this->miniGrid->find($request->input('mini_grid_id'));
-        $cluster =  $this->cluster->find($request->input('cluster_id'));
-        $this->city->name = request('name');
-        $this->city->miniGrid()->associate($miniGrid);
-        $this->city->cluster()->associate($cluster);
-        $this->city->save();
-
-        return new ApiResource($this->city);
+        return ApiResource::make($this->cityService->create($cityData));
     }
 }
