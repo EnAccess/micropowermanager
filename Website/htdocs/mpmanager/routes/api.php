@@ -116,7 +116,7 @@ Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], sta
     Route::get('/', 'ConnectionTypeController@index');
     Route::post('/', 'ConnectionTypeController@store');
     Route::get('/{connectionTypeId?}', 'ConnectionTypeController@show');
-    Route::put('/{connectionType}', 'ConnectionTypeController@update');
+    Route::put('/{connectionTypeId}', 'ConnectionTypeController@update');
 
 });
 // Energies
