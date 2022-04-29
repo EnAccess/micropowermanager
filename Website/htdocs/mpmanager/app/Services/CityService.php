@@ -10,17 +10,27 @@
 namespace App\Services;
 
 use App\Models\City;
+use App\Models\Cluster;
+use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Services\BaseService;
 use App\Services\SessionService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
-class CityService extends  BaseService
+class CityService extends BaseService
 {
 
 
     public function __construct(private City $city, private Person $person)
     {
-        parent::__construct([$city,$person]);
+        parent::__construct([$city, $person]);
+    }
+
+    public function getCities(): Collection|array
+    {
+        return $this->city->newQuery()->get();
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)
@@ -46,11 +56,41 @@ class CityService extends  BaseService
         return $population;
     }
 
-
-
     public function getCityIdsByMiniGridId($miniGridId): array
     {
         return
             $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
+    }
+
+    public function getById($cityId)
+    {
+        return $this->city->newQuery()->find($cityId);
+    }
+
+    public function getByIdWithRelation($cityId, $relation)
+    {
+        return $this->city->newQuery()->with($relation)->find($cityId);
+    }
+
+    public function update($city, $cityData)
+    {
+        $city->update([
+            'name' => $cityData['name'] ?? $city->name,
+            'mini_grid_id' => $cityData['mini_grid_id'] ?? $city->mini_grid_id,
+            'cluster_id' => $cityData['cluster_id'] ?? $city->mini_grid_id,
+            'country_id' => $cityData['country_id'] ?? $city->country_id,
+        ]);
+
+        return $city;
+    }
+
+    public function create($cityData): Model|Builder
+    {
+        return $this->city->newQuery()->create([
+            'name' => $cityData['name'],
+            'mini_grid_id' => $cityData['mini_grid_id'],
+            'cluster_id' => $cityData['cluster_id'],
+            'country_id' => $cityData['country_id'] ?? 0,
+        ]);
     }
 }

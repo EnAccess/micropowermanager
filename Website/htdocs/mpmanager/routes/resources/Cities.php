@@ -8,7 +8,7 @@
 /* City*/
 Route::group(['prefix' => 'cities' , 'middleware' => 'jwt.verify'], function () {
     Route::get('/', 'CityController@index');
-    Route::get('/{id}', 'CityController@show')->where('id', '[0-9]+');
+    Route::get('/{cityId}', 'CityController@show')->where('id', '[0-9]+');
     Route::post('/', 'CityController@store');
-    Route::put('/{city}', 'CityController@update');
+    Route::put('/{cityId}', 'CityController@update');
 });
