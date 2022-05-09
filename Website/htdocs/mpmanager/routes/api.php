@@ -279,7 +279,7 @@ Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'],
     Route::get('/{connectionTypeId?}', 'SubConnectionTypeController@index');
     Route::post('/', 'SubConnectionTypeController@store');
     Route::get('/{id}', 'SubConnectionTypeController@show');
-    Route::put('/{subConnectionType}', 'SubConnectionTypeController@update');
+    Route::put('/{subConnectionTypeId}', 'SubConnectionTypeController@update');
 
 });
 // Targets
