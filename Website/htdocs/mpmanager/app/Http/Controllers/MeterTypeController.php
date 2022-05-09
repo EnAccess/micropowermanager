@@ -6,6 +6,7 @@ use App\Http\Requests\MeterTypeCreateRequest;
 use App\Http\Requests\MeterTypeUpdateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Meter\MeterType;
+use App\Services\MeterTypeService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,10 @@ class MeterTypeController extends Controller
 {
     use SoftDeletes;
 
+    public function __construct(private MeterTypeService $meterTypeService)
+    {
+    }
+
     /**
      * List
      *
@@ -25,11 +30,11 @@ class MeterTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        return new ApiResource(
-            MeterType::paginate(15)
-        );
+        $limit = $request->get('limit');
+
+        return  ApiResource::make($this->meterTypeService->getMeterTypes($limit));
     }
 
 
@@ -46,18 +51,9 @@ class MeterTypeController extends Controller
      */
     public function store(MeterTypeCreateRequest $request)
     {
-        return
-            new ApiResource(
-                MeterType::create(
-                    request()->only(
-                        [
-                        'online',
-                        'phase',
-                        'max_current',
-                        ]
-                    )
-                )
-            );
+        $meterTypeData = $request->only(['online', 'phase', 'max_current']);
+
+        return ApiResource::make($this->meterTypeService->create($meterTypeData));
     }
 
     /**
@@ -65,14 +61,12 @@ class MeterTypeController extends Controller
      *
      * @bodyParam id int required
      *
-     * @param  int $id
+     * @param  int $meterTypeId
      * @return ApiResource
      */
-    public function show($id)
+    public function show($meterTypeId): ApiResource
     {
-        return new ApiResource(
-            MeterType::findOrFail($id)
-        );
+        return   ApiResource::make($this->meterTypeService->getById($meterTypeId));
     }
 
 
@@ -86,31 +80,15 @@ class MeterTypeController extends Controller
      * @bodyParam max_current int required
      *
      * @param  MeterTypeUpdateRequest $request
-     * @param  MeterType              $meterType
+     * @param  int              $meterTypeId
      * @return ApiResource
      */
-    public function update(MeterTypeUpdateRequest $request, MeterType $meterType)
+    public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource
     {
-        $meterType->update($request->only(['online','phase','max_current']));
-        $meterType->fresh();
-        return new ApiResource($meterType);
+        $meterType = $this->meterTypeService->getById($meterTypeId);
+        $meterTypeData = $request->only(['online', 'phase', 'max_current']);
+
+        return   ApiResource::make($this->meterTypeService->update($meterType, $meterTypeData));
     }
 
-    /**
-     * List with Meters
-     * Displays the meter types with the associated meters
-     *
-     * @urlParam id required
-     *
-     * @responseFile responses/metertypes/metertypes.meter.list.json
-     * @param        Request $request
-     * @param        $id
-     * @return       ApiResource
-     */
-    public function meterList(Request $request, $id)
-    {
-        return new ApiResource(
-            MeterType::with('meters')->findOrFail($id)
-        );
-    }
 }
