@@ -32,8 +32,8 @@ Route::group(['prefix' => 'meters',], function () {
 /* Meter types */
 Route::group(['prefix' => 'meter-types'], function () {
     Route::get('/', 'MeterTypeController@index');
-    Route::get('/{id}', 'MeterTypeController@show');
+    Route::get('/{meterTypeId}', 'MeterTypeController@show');
     Route::post('/', 'MeterTypeController@store');
-    Route::put('/{meterType}', 'MeterTypeController@update');
-    Route::get('/{id}/list', 'MeterTypeController@meterList');
+    Route::put('/{meterTypeId}', 'MeterTypeController@update');
+    Route::get('/{meterTypeId}/list', 'MeterTypeMeterController@show');
 });
