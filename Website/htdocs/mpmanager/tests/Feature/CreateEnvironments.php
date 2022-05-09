@@ -19,26 +19,40 @@ use Database\Factories\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 trait CreateEnvironments
 {
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $connectonTypeIds = [], $subConnectonTypeIds = [];
+    use RefreshMultipleDatabases, WithFaker;
 
-    protected function createTestData($connectionTypeCount = 2, $subConnectionTypeCount = 2)
+    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
+        $meterTariff, $person, $token, $transaction, $connectonTypeIds = [], $subConnectonTypeIds = [],
+        $meterTypes = [];
+
+
+    protected function createTestData($connectionTypeCount = 2, $subConnectionTypeCount = 2, $meterTypeCount = 1)
     {
         $this->user = UserFactory::new()->create();
         $this->city = CityFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
         $this->manufacturer = ManufacturerFactory::new()->create();
-        $this->meterType = MeterTypeFactory::new()->create();
         $this->meterTariff = MeterTariffFactory::new()->create();
         $this->connectionType = ConnectionTypeFactory::new()->create();
         $this->connectionGroup = ConnectionTypeFactory::new()->create();
         $this->person = PersonFactory::new()->create();
+
+        while ($meterTypeCount > 0) {
+            $meterType = MeterTypeFactory::new()->create();
+            array_push($this->meterTypes, $meterType);
+            $meterTypeCount--;
+
+        }
+        $this->meterType = $this->meterTypes[0];
 
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
@@ -117,5 +131,63 @@ trait CreateEnvironments
         }
     }
 
+    protected function createMeterWithTransaction()
+    {
+        $meter = $this->getMeter();
+        $this->transaction = TransactionFactory::new()->create([
+            'id' => 1,
+            'amount' => $this->faker->unique()->randomNumber(),
+            'sender' => $this->faker->phoneNumber,
+            'message' => $meter->serial_number,
+            'original_transaction_id' => $this->faker->unique()->randomNumber(),
+            'original_transaction_type' => 'airtel_transaction',
+        ]);
+        $this->token = MeterTokenFactory::new()->create([
+            'meter_id' => $meter->id,
+            'token' => $this->faker->unique()->randomNumber(),
+        ]);
+        $paymentHistory = PaymentHistoryFactory::new()->create([
+            'transaction_id' => $this->transaction->id,
+            'amount' => $this->transaction->amount,
+            'payment_service' => 'airtel_transaction',
+            'sender' => $this->faker->phoneNumber,
+            'payment_type' => 'energy',
+            'paid_for_type' => 'token',
+            'paid_for_id' => $this->token->id,
+            'payer_type' => 'person',
+            'payer_id' => $this->person->id,
+        ]);
+        return $meter;
+    }
 
+
+    protected function createMetersWithDifferentMeterTypes($meterCountPerMeterType=1): void
+    {
+
+        $meterTypeCount = count($this->meterTypes);
+
+        while ($meterTypeCount > 0) {
+
+            while ($meterCountPerMeterType > 0) {
+                $meter = MeterFactory::new()->create([
+                    'meter_type_id' => $this->meterType->id,
+                    'in_use' => true,
+                    'manufacturer_id' => $this->manufacturer->id,
+                    'serial_number' => str_random(36),
+                ]);
+
+                $meterParameter = MeterParameterFactory::new()->create([
+                    'owner_type' => 'person',
+                    'owner_id' => $this->person->id,
+                    'meter_id' => $meter->id,
+                    'tariff_id' => $this->meterTariff->id,
+                    'connection_type_id' => $this->connectionType->id,
+                    'connection_group_id' => $this->connectionGroup->id,
+                ]);
+                $meterCountPerMeterType--;
+            }
+            $meterTypeCount--;
+        }
+
+    }
 }

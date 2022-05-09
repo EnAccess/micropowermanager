@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SubConnectionTypeTest extends TestCase
 {
-    use CreateEnvironments, RefreshMultipleDatabases, WithFaker;
+    use CreateEnvironments;
 
     public function test_user_gets_sub_connection_type_list()
     {
