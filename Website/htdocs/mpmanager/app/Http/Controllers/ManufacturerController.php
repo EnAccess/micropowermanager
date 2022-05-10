@@ -6,21 +6,32 @@ use App\Models\Address\Address;
 use App\Http\Requests\ManufacturerRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Manufacturer;
+use App\Services\AddressesService;
+use App\Services\ManufacturerAddressService;
+use App\Services\ManufacturerService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ManufacturerController extends Controller
 {
+    public function __construct(
+        private ManufacturerService $manufacturerService,
+        private ManufacturerAddressService $manufacturerAddressService,
+        private AddressesService $addressService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return ApiResource
      */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        return new ApiResource(
-            Manufacturer::paginate(15)
-        );
+        $limit = $request->input('limit');
+
+        return ApiResource::make($this->manufacturerService->getManufacturers($limit));
     }
 
 
@@ -28,41 +39,30 @@ class ManufacturerController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  ManufacturerRequest $request
-     * @return ApiResource
+     * @return JsonResponse
      */
-    public function store(ManufacturerRequest $request)
+    public function store(ManufacturerRequest $request):JsonResponse
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->name = request('name');
-        $manufacturer->contact_person = request('contact_person');
-        $manufacturer->website = request('website');
-        $manufacturer->api_name = request('api_name');
+        $manufacturerData = $this->manufacturerService->createManufacturerDataFromRequest($request);
+        $addressData = $this->addressService->createAddressDataFromRequest($request);
+        $manufacturer = $this->manufacturerService->create($manufacturerData);
+        $address = $this->addressService->makeAddress($addressData);
+        $this->manufacturerAddressService->setAddress($address);
+        $this->manufacturerAddressService->setManufacturer($manufacturer);
+        $this->manufacturerAddressService->assignAddressToPerson();
+        $this->addressService->saveAddress($address);
 
-        $address = new Address();
-        $address->city_id = request('city_id');
-        $address->email = request('email');
-        $address->phone = request('phone');
-        $address->street = request('street');
-
-        $manufacturer->save();
-        $manufacturer->address()->save($address);
-
-        return
-            new ApiResource(
-                $manufacturer
-            );
+        return ApiResource::make($manufacturer)->response()->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Manufacturer $manufacturer
+     * @param  int $manufacturerId
      * @return ApiResource
      */
-    public function show(Manufacturer $manufacturer)
+    public function show($manufacturerId): ApiResource
     {
-        return new ApiResource(
-            $manufacturer::with('address.city.country')->get()
-        );
+        return  ApiResource::make($this->manufacturerService->getById($manufacturerId));
     }
 }

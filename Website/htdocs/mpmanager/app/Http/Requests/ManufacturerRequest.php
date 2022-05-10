@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ManufacturerRequest extends FormRequest
@@ -24,16 +25,17 @@ class ManufacturerRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'name' => 'required|string|unique:manufacturers',
+            'name' => 'required|string|unique:'.$database.'.manufacturers',
             'phone' => 'sometimes|string',
             'email' => 'sometimes|email',
             'contact_person' => 'sometimes|min:3',
             'website' => 'sometimes|min:6',
-            'city_id' => 'sometimes|integer|exists:cities,id',
-            'address' => 'sometimes|string|required_with:city_id',
-            'api_name' => 'sometimes|unique:manufacturers',
-            'master_key' => 'required_with:api_name|in:' . (string)(config()->get('services.manufacturer_master_key'))
+            'city_id' => 'sometimes|integer|exists:'.$database.'.cities,id',
+            'address' => 'sometimes|string|required_with:'.$database.'.city_id',
+            'api_name' => 'sometimes|unique:'.$database.'.manufacturers',
         ];
     }
 }
