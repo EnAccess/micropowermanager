@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
+use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
@@ -31,16 +32,26 @@ trait CreateEnvironments
 
     private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
         $meterTariff, $person, $token, $transaction, $connectonTypeIds = [], $subConnectonTypeIds = [],
-        $meterTypes = [];
+        $meterTypes = [], $manufacturers = [], $cities = [];
 
 
-    protected function createTestData($connectionTypeCount = 2, $subConnectionTypeCount = 2, $meterTypeCount = 1)
-    {
+    protected function createTestData(
+        $connectionTypeCount = 1,
+        $subConnectionTypeCount = 1,
+        $meterTypeCount = 1,
+        $cityCount = 1,
+    ) {
         $this->user = UserFactory::new()->create();
-        $this->city = CityFactory::new()->create();
+        while ($cityCount > 0) {
+            $city = CityFactory::new()->create();
+            $this->cities[] = $city;
+
+            $cityCount--;
+        }
+
+        $this->city = $this->cities[0];
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
-        $this->manufacturer = ManufacturerFactory::new()->create();
         $this->meterTariff = MeterTariffFactory::new()->create();
         $this->connectionType = ConnectionTypeFactory::new()->create();
         $this->connectionGroup = ConnectionTypeFactory::new()->create();
@@ -49,15 +60,17 @@ trait CreateEnvironments
         while ($meterTypeCount > 0) {
             $meterType = MeterTypeFactory::new()->create();
             array_push($this->meterTypes, $meterType);
-            $meterTypeCount--;
 
+            $meterTypeCount--;
         }
         $this->meterType = $this->meterTypes[0];
 
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
             array_push($this->connectonTypeIds, $connectionType->id);
+
             $connectionTypeCount--;
+
             while ($subConnectionTypeCount > 0) {
                 $subConnectionType =
                     SubConnectionTypeFactory::new()->create([
@@ -65,6 +78,7 @@ trait CreateEnvironments
                         'tariff_id' => $this->meterTariff->id
                     ]);
                 array_push($this->subConnectonTypeIds, $subConnectionType->id);
+
                 $subConnectionTypeCount--;
             }
         }
@@ -160,8 +174,7 @@ trait CreateEnvironments
         return $meter;
     }
 
-
-    protected function createMetersWithDifferentMeterTypes($meterCountPerMeterType=1): void
+    protected function createMetersWithDifferentMeterTypes($meterCountPerMeterType = 1): void
     {
 
         $meterTypeCount = count($this->meterTypes);
@@ -189,5 +202,27 @@ trait CreateEnvironments
             $meterTypeCount--;
         }
 
+    }
+
+    protected function createMeterManufacturer($manufacturerCount = 1): void
+    {
+        while ($manufacturerCount > 0) {
+
+            $manufacturer = ManufacturerFactory::new()->create();
+            $address = Address::query()->make([
+                'email' => $this->faker->email,
+                'phone' => $this->faker->phoneNumber,
+                'street' => $this->faker->streetAddress,
+                'city_id' => 1,
+            ]);
+            $address->owner()->associate($manufacturer);
+            $address->save();
+
+            $this->manufacturers[] = $manufacturer;
+
+
+            $manufacturerCount--;
+        }
+        $this->manufacturer = $this->manufacturers[0];
     }
 }
