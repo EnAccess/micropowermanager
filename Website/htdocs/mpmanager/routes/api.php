@@ -138,10 +138,8 @@ Route::group(['prefix' => '/maintenance', 'middleware' => 'jwt.verify'], static 
 // Manufacturers
 Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'ManufacturerController@index');
-    Route::get('/{manufacturer}', 'ManufacturerController@show');
+    Route::get('/{manufacturerId}', 'ManufacturerController@show');
     Route::post('/', 'ManufacturerController@store');
-    Route::put('/{id}', 'ManufacturerController@update');
-
 });
 // Mini-Grids
 Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static function () {
