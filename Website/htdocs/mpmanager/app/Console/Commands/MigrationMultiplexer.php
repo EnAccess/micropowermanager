@@ -45,15 +45,21 @@ class MigrationMultiplexer extends Command
 
 
             //dd('cp -r ' . $sourcePath . 'database/migrations/micropowermanager/ ' . $sourcePath . 'database/migrations/' . $companyDatabase->database_name);
-            info('copying migration files in ' . $sourcePath . 'database/migrations/' . $companyDatabase->database_name);
-            shell_exec('cp -r ' . $sourcePath . 'database/migrations/micropowermanager/ ' . $sourcePath . 'database/migrations/' . $companyDatabase->database_name);
+            info('copying migration files in ' . $sourcePath . 'database/migrations/' .
+                $companyDatabase->database_name);
+            shell_exec('cp -r ' . $sourcePath . 'database/migrations/micropowermanager/* ' . $sourcePath .
+                'database/migrations/' . $companyDatabase->database_name);
             info('migration files copied');
 
-            info('sed applying to migration files in ' . $sourcePath . '/database/migrations/' . $companyDatabase->database_name);
+            info('sed applying to migration files in ' . $sourcePath . '/database/migrations/' .
+                $companyDatabase->database_name);
             shell_exec(
-                'for file in ' . $sourcePath . '/database/migrations/' . $companyDatabase->database_name . '/*  
+                'for file in ' . $sourcePath . '/database/migrations/' . $companyDatabase->database_name . '/*.php  
             do 
-            sed -i \'\' \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file 
+            
+              ##sed -i \'\' \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file 
+              sed -i  \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file 
+           
             done');
         });
         info('done');
