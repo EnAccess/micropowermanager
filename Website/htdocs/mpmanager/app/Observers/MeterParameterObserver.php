@@ -13,9 +13,16 @@ use App\Jobs\CreatePiggyBankEntry;
 use App\Jobs\UpdatePiggyBankEntry;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
+use App\Services\MeterParameterService;
 
 class MeterParameterObserver
 {
+
+
+    public function __construct(private MeterParameterService $meterParameterService)
+    {
+    }
+
     /**
      * Handle "deleted" event
      *
@@ -33,8 +40,11 @@ class MeterParameterObserver
 
     public function created(MeterParameter $meterParameter): void
     {
-        CreatePiggyBankEntry::dispatchSync($meterParameter);
-        $meter = Meter::find($meterParameter->meter_id);
+
+        CreatePiggyBankEntry::dispatchSync(
+            $meterParameter,$this->meterParameterService);
+
+        $meter =$meterParameter->meter()->first();
         $meter->in_use = 1;
         $meter->save();
     }
