@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Meter\MeterTariff;
-use App\Models\TariffPricingComponent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,17 +21,19 @@ class TariffPricingComponentsCalculator implements ShouldQueue
      */
     private $tariff;
     private $components;
-
+    private $tariffPricingComponentService;
     /**
      * Create a new job instance.
      *
      * @param MeterTariff $tariff
      * @param $components
      */
-    public function __construct(MeterTariff $tariff, $components)
+    public function __construct(MeterTariff $tariff,$components, $tariffPricingComponentService)
     {
+
         $this->tariff = $tariff;
         $this->components = $components;
+        $this->tariffPricingComponentService  = $tariffPricingComponentService;
     }
 
     /**
@@ -43,17 +44,17 @@ class TariffPricingComponentsCalculator implements ShouldQueue
     public function handle()
     {
         $totalPrice = $this->tariff->total_price;
+
         foreach ($this->components as $component) {
             $totalPrice += $component['price'];
-            $this->tariff->pricingComponent()->save(
-                TariffPricingComponent::make(
-                    [
-                    'name' => $component['name'],
-                    'price' => $component['price'],
-                    ]
-                )
-            );
+            $tariffPricingComponentData = [
+                'name' => $component['name'],
+                'price' => $component['price'],
+            ];
+            $tariffPricingComponent = $this->tariffPricingComponentService->make($tariffPricingComponentData);
+            $this->tariff->pricingComponent()->save($tariffPricingComponent);
         }
+
         $this->tariff->update(['total_price' => $totalPrice]);
     }
 }
