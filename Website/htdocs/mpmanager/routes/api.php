@@ -289,13 +289,13 @@ Route::group(['prefix' => 'targets', 'middleware' => 'jwt.verify'], static funct
 });
 // Tariffs
 Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static function () {
-    Route::get('/', 'TariffController@index');
-    Route::post('/', 'TariffController@store');
-    Route::put('/{tariff}', 'TariffController@update');
-    Route::get('/{tariff}', 'TariffController@show');
-    Route::delete('/{tariff}', 'TariffController@destroy');
-    Route::get('/{tariff}/usage-count', 'TariffController@usages');
-    Route::put('/{tariff}/change-meters-tariff/{changeId}', 'TariffController@changeMetersTariff');
+    Route::get('/', 'MeterTariffController@index');
+    Route::get('/{meterTariffId}', 'MeterTariffController@show');
+    Route::post('/', 'MeterTariffController@store');
+    Route::put('/{meterTariffId}', 'MeterTariffController@update');
+    Route::delete('/{meterTariffId}', 'MeterTariffController@destroy');
+    Route::get('/{meterTariffId}/usage-count', 'MeterTariffMeterParameterController@show');
+    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffMeterParameterController@update');
 
 });
 // Transactions
