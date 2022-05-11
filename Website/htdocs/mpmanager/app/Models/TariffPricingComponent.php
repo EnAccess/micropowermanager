@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $owner_id
  * @property string $owner_type
  */
-class TariffPricingComponent extends Model
+class TariffPricingComponent extends BaseModel
 {
     protected $connection = 'test_company_db';
     protected $guarded = [];

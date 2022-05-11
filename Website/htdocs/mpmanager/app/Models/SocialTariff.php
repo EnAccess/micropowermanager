@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $initial_energy_budget
  * @property int $maximum_stacked_energy
  */
-class SocialTariff extends Model
+class SocialTariff extends BaseModel
 {
     protected $connection = 'test_company_db';
     protected $guarded = [];
