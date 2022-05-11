@@ -24,7 +24,6 @@ class ManufacturerTest extends TestCase
 
     public function test_user_gets_manufacturer_by_id()
     {
-
         $this->createTestData();
         $this->createMeterManufacturer();
         $response = $this->actingAs($this->user)->get(sprintf('/api/manufacturers/%s', $this->manufacturers[0]->id));

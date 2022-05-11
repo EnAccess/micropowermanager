@@ -4,10 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
+use App\Models\Meter\Meter;
+use App\Models\Meter\MeterParameter;
 use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
+use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\MeterFactory;
@@ -25,63 +28,52 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Illuminate\Database\Eloquent\Collection;
 trait CreateEnvironments
 {
     use RefreshMultipleDatabases, WithFaker;
 
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $connectonTypeIds = [], $subConnectonTypeIds = [],
-        $meterTypes = [], $manufacturers = [], $cities = [];
+    private
+        $user,
+        $company,
+        $city,
+        $connectionType,
+        $manufacturer,
+        $meterType,
+        $meter,
+        $meterParameter,
+        $meterTariff,
+        $person,
+        $token,
+        $transaction,
+        $connectionGroup,
+        $connectonType,
+        $subConnectionType,
+        $connectionGroups = [],
+        $connectonTypes = [],
+        $subConnectionTypes = [],
+        $meterTypes = [],
+        $manufacturers = [],
+        $cities = [],
+        $meterTariffs = [];
 
 
     protected function createTestData(
-        $connectionTypeCount = 1,
-        $subConnectionTypeCount = 1,
-        $meterTypeCount = 1,
         $cityCount = 1,
     ) {
         $this->user = UserFactory::new()->create();
         while ($cityCount > 0) {
             $city = CityFactory::new()->create();
             $this->cities[] = $city;
-
             $cityCount--;
         }
-
         $this->city = $this->cities[0];
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
-        $this->meterTariff = MeterTariffFactory::new()->create();
-        $this->connectionType = ConnectionTypeFactory::new()->create();
-        $this->connectionGroup = ConnectionTypeFactory::new()->create();
+
+
         $this->person = PersonFactory::new()->create();
 
-        while ($meterTypeCount > 0) {
-            $meterType = MeterTypeFactory::new()->create();
-            array_push($this->meterTypes, $meterType);
-
-            $meterTypeCount--;
-        }
-        $this->meterType = $this->meterTypes[0];
-
-        while ($connectionTypeCount > 0) {
-            $connectionType = ConnectionTypeFactory::new()->create();
-            array_push($this->connectonTypeIds, $connectionType->id);
-
-            $connectionTypeCount--;
-
-            while ($subConnectionTypeCount > 0) {
-                $subConnectionType =
-                    SubConnectionTypeFactory::new()->create([
-                        'connection_type_id' => $connectionType->id,
-                        'tariff_id' => $this->meterTariff->id
-                    ]);
-                array_push($this->subConnectonTypeIds, $subConnectionType->id);
-
-                $subConnectionTypeCount--;
-            }
-        }
     }
 
     protected function getMeter(): mixed
@@ -223,6 +215,127 @@ trait CreateEnvironments
 
             $manufacturerCount--;
         }
-        $this->manufacturer = $this->manufacturers[0];
+        if(count($this->manufacturers) > 0){
+            $this->manufacturer = $this->manufacturers[0];
+        }
+
+    }
+
+    protected function createMeterTariff($meterTariffCount = 1): void
+    {
+        while ($meterTariffCount > 0) {
+            $meterTariff = MeterTariffFactory::new()->create();
+            $this->meterTariffs[] = $meterTariff;
+            $meterTariffCount--;
+        }
+        if (count($this->meterTariffs) > 0) {
+            $this->meterTariff = $this->meterTariffs[0];
+        }
+
+    }
+
+    protected function createConnectionType($connectionTypeCount = 1, $subConnectionTypeCount = 1): void
+    {
+        while ($connectionTypeCount > 0) {
+            $connectionType = ConnectionTypeFactory::new()->create();
+            $this->connectonTypes[] = $connectionType;
+
+            while ($subConnectionTypeCount > 0) {
+                $subConnectionType =
+                    SubConnectionTypeFactory::new()->create([
+                        'connection_type_id' => $connectionType->id,
+                        'tariff_id' => $this->meterTariff->id
+                    ]);
+                $this->subConnectionTypes[] = $subConnectionType;
+
+                $subConnectionTypeCount--;
+            }
+            if(count($this->subConnectionTypes) > 0){
+                $this->subConnectionType = $this->subConnectionTypes[0];
+            }
+            $connectionTypeCount--;
+        }
+        if(count($this->connectonTypes) > 0){
+            $this->connectionType = $this->connectonTypes[0];
+        }
+    }
+
+    protected function createConnectionGroup($connectionGroupCount = 1): void
+    {
+        while ($connectionGroupCount > 0) {
+            $connectionGroup = ConnectionGroupFactory::new()->create();
+            $this->connectionGroups[] = $connectionGroup;
+            $connectionGroupCount--;
+        }
+        if(count($this->connectionGroups) > 0){
+            $this->connectionGroup = $this->connectionGroups[0];
+        }
+
+    }
+
+    protected function createMeterType($meterTypeCount = 1): void
+    {
+        while ($meterTypeCount > 0) {
+            $meterType = MeterTypeFactory::new()->create();
+            $this->meterTypes[] = $meterType;
+
+            $meterTypeCount--;
+        }
+
+        if(count($this->meterTypes) > 0){
+            $this->meterType = $this->meterTypes[0];
+        }
+    }
+
+    protected function createMeter($meterCount =1): void
+    {
+
+        while ($meterCount > 0) {
+            $meter = MeterFactory::new()->create([
+                'meter_type_id' => $this->meterType->id,
+                'in_use' => true,
+                'manufacturer_id' => $this->getRandomIdFromList($this->manufacturers),
+                'serial_number' => str_random(36),
+            ]);
+            $geographicalInformation = GeographicalInformation::query()->make(['points' => '111,222']);
+            $person = PersonFactory::new()->create();
+            $addressData = [
+                'city_id' => $this->getRandomIdFromList($this->cities),
+                'geo_id' => $geographicalInformation->id,
+            ];
+            $meterParameter = MeterParameterFactory::new()->create([
+                'owner_type' => 'person',
+                'owner_id' => $person->id,
+                'meter_id' => $meter->id,
+                'tariff_id' => $this->getRandomIdFromList($this->meterTariffs),
+                'connection_type_id' => $this->getRandomIdFromList($this->connectonTypes),
+                'connection_group_id' => $this->getRandomIdFromList($this->connectionGroups),
+            ]);
+            $address = Address::query()->make([
+                'email' => $addressData['email'] ?? null,
+                'phone' => $addressData['phone'] ?? null,
+                'street' => $addressData['street'] ?? null,
+                'city_id' => $addressData['city_id'] ?? null,
+                'geo_id' => $addressData['geo_id'] ?? null,
+                'is_primary' => $addressData['is_primary'] ?? 0,
+            ]);
+            $address->owner()->associate($meterParameter)->save();
+            $geographicalInformation->owner()->associate($meterParameter)->save();
+
+            $meterCount--;
+        }
+
+    }
+
+    private function getRandomIdFromList(array $list, $startIndex=1, $endIndex = null): int
+    {
+
+        $ids = collect($list)->pluck('id')->toArray();
+
+        if ($endIndex === null) {
+            $endIndex = count($ids);
+        }
+
+        return rand($startIndex, $endIndex);
     }
 }

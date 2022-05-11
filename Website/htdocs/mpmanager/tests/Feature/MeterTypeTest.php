@@ -16,7 +16,11 @@ class MeterTypeTest extends TestCase
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
         $meterTypeCount = 5;
-        $this->createTestData($connectionTypeCount, $subConnectionTypeCount,$meterTypeCount);
+        $meterTariffCount = 1;
+        $this->createTestData();
+        $this->createMeterTariff($meterTariffCount);
+        $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
+        $this->createMeterType($meterTypeCount);
         $response = $this->actingAs($this->user)->get('/api/meter-types');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), count($this->meterTypes));
@@ -27,7 +31,11 @@ class MeterTypeTest extends TestCase
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
         $meterTypeCount = 5;
-        $this->createTestData($connectionTypeCount, $subConnectionTypeCount,$meterTypeCount);
+        $meterTariffCount = 1;
+        $this->createTestData();
+        $this->createMeterTariff($meterTariffCount);
+        $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
+        $this->createMeterType($meterTypeCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/meter-types/%s', $this->meterTypes[0]->id));
         $response->assertStatus(200);
         $this->assertEquals($response['data']['max_current'], $this->meterTypes[0]->max_current);
@@ -39,9 +47,13 @@ class MeterTypeTest extends TestCase
         $connectionTypeCount = 0;
         $subConnectionTypeCount = 0;
         $meterTypeCount = 0;
-        $this->createTestData($connectionTypeCount, $subConnectionTypeCount,$meterTypeCount);
+        $meterTariffCount = 1;
+        $this->createTestData();
+        $this->createMeterTariff($meterTariffCount);
+        $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
+        $this->createMeterType($meterTypeCount);
         $meterTypeData = [
-            'online' => $this->faker->numberBetween(0,1),
+            'online' => $this->faker->numberBetween(0, 1),
             'phase' => 1,
             'max_current' => 10,
         ];
@@ -53,10 +65,11 @@ class MeterTypeTest extends TestCase
 
     public function test_user_updates_a_meter_type()
     {
-        $connectionTypeCount = 1;
-        $subConnectionTypeCount = 1;
+
         $meterTypeCount = 1;
-        $this->createTestData($connectionTypeCount, $subConnectionTypeCount,$meterTypeCount);
+        $meterTariffCount = 1;
+        $this->createTestData();
+        $this->createMeterType($meterTypeCount);
         $meterTypeData = [
             'online' => 1,
             'phase' => 3,
@@ -74,12 +87,20 @@ class MeterTypeTest extends TestCase
         $connectionTypeCount = 2;
         $subConnectionTypeCount = 1;
         $meterTypeCount = 1;
-        $this->createTestData($connectionTypeCount, $subConnectionTypeCount,$meterTypeCount);
+        $meterTariffCount = 1;
+        $meterManufacturerCount = 1;
+        $connectionGroupCount = 1;
+        $this->createTestData();
+        $this->createMeterTariff($meterTariffCount);
+        $this->createConnectionGroup($connectionGroupCount);
+        $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
+        $this->createMeterType($meterTypeCount);
+        $this->createMeterManufacturer();
         $this->createMetersWithDifferentMeterTypes(1);
         $response = $this->actingAs($this->user)->get(sprintf('/api/meter-types/%s/list',
             $this->meterTypes[0]->id));
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']['meters']),1);
+        $this->assertEquals(count($response['data']['meters']), 1);
     }
 
 
