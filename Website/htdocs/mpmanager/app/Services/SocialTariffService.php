@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\SocialTariff;
 
-class SocialTariffService extends BaseService
+class SocialTariffService extends BaseService implements IBaseService
 {
     public function __construct(private SocialTariff $socialTariff)
     {
@@ -24,6 +24,7 @@ class SocialTariffService extends BaseService
     public function update($socialTariff, $socialTariffData)
     {
          $socialTariff->update($socialTariffData);
+         $socialTariff->fresh();
 
          return $socialTariff;
     }
@@ -31,5 +32,15 @@ class SocialTariffService extends BaseService
     public function deleteByTariffId($meterTariffId)
     {
         $this->socialTariff->newQuery()->where('tariff_id', $meterTariffId)->delete();
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

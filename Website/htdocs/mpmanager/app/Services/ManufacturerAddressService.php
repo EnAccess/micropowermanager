@@ -20,7 +20,6 @@ class ManufacturerAddressService extends BaseService
 
     }
 
-
     public function setManufacturer(Manufacturer $manufacturer): void
     {
         $this->manufacturer = $manufacturer;

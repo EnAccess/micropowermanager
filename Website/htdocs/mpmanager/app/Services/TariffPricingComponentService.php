@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\TariffPricingComponent;
 
-class TariffPricingComponentService extends BaseService
+class TariffPricingComponentService extends BaseService implements IBaseService
 {
     public function __construct(private TariffPricingComponent $tariffPricingComponent)
     {
@@ -25,5 +25,30 @@ class TariffPricingComponentService extends BaseService
             $pricingComponent->delete();
         });
 
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

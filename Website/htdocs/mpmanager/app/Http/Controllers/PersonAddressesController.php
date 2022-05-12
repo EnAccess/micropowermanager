@@ -33,14 +33,14 @@ class PersonAddressesController extends Controller
      */
     public function show(int $personId): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
+        $person = $this->personService->getById($personId);
 
         return ApiResource::make($this->personAddressService->getPersonAddresses($person));
     }
 
     public function store(int $personId, CreateAddressRequest $request): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
+        $person = $this->personService->getById($personId);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $address = $this->addressService->makeAddress($addressData);
         $this->personAddressService->setPerson($person);
@@ -58,8 +58,8 @@ class PersonAddressesController extends Controller
 
     public function update(int $personId, CreateAddressRequest $request): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
-        $address = $this->addressService->getAddressById($request->input('id') ?? -1);
+        $person = $this->personService->getById($personId);
+        $address = $this->addressService->getById($request->input('id') ?? -1);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $this->personAddressService->setPerson($person);
         $this->personAddressService->setAddress($address);
@@ -67,7 +67,7 @@ class PersonAddressesController extends Controller
         if ($addressData['is_primary']) {
             $this->personAddressService->setOldPrimaryAddressToNotPrimary();
         }
-        $this->addressService->updateAddress($address, $addressData);
+        $this->addressService->update($address, $addressData);
         $this->personService->updatePersonUpdatedDate($person);
 
         return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));

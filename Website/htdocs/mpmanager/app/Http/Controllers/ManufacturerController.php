@@ -31,7 +31,7 @@ class ManufacturerController extends Controller
     {
         $limit = $request->input('limit');
 
-        return ApiResource::make($this->manufacturerService->getManufacturers($limit));
+        return ApiResource::make($this->manufacturerService->getAll($limit));
     }
 
 

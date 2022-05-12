@@ -70,7 +70,7 @@ class MeterParameterController extends Controller
         $geographicalInformation =
             $this->geographicalInformationService->makeGeographicalInformation($meterParameterData['geo_points']);
 
-        $person = $this->personService->getPersonById($meterParameterData['customer_id']);
+        $person = $this->personService->getById($meterParameterData['customer_id']);
         $addressData = [
             'city_id' => $meterParameterData['city_id'],
             'geo_id' => $geographicalInformation->id,

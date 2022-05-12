@@ -29,7 +29,10 @@ class MiniGridController extends Controller
      */
     public function index(Request $request): ApiResource
     {
-        return ApiResource::make($this->miniGridService->getMiniGrids($request->get('data_stream')));
+        $dataStream = $request->input('data_stream');
+        $limit = $request->input('limit');
+
+        return ApiResource::make($this->miniGridService->getAll($limit,$dataStream));
     }
 
     /**

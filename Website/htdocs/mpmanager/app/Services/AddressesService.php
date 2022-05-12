@@ -8,7 +8,7 @@ use App\Models\Address\HasAddressesInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class AddressesService extends BaseService
+class AddressesService extends BaseService implements IBaseService
 {
 
     public function __construct(private Address $address)
@@ -28,23 +28,9 @@ class AddressesService extends BaseService
         ]);
     }
 
-    /**
-     * @return Model|false
-     */
     public function assignAddressToOwner(HasAddressesInterface $owner, Address $address)
     {
         return $owner->addresses()->save($address);
-    }
-
-
-    public function getAddressList(): array
-    {
-        return $this->address::all();
-    }
-
-    public function getAddressById(int $id): Address
-    {
-        return $this->address::findOrFail($id);
     }
 
     public function makeAddress(array $addressData): Address
@@ -64,11 +50,6 @@ class AddressesService extends BaseService
         return $address->save();
     }
 
-    public function updateAddress(Address $address, array $addressData): bool
-    {
-        return $address->update($addressData);
-    }
-
     public function getStoredAddressWithCityRelation(int $id): Address
     {
         return $this->address::with('city')->findOrFail($id);
@@ -83,5 +64,35 @@ class AddressesService extends BaseService
             'city_id' => $request->get('city_id') ?? '',
             'is_primary' => $request->get('is_primary') ?? 1,
         ];
+    }
+
+    public function getById($id)
+    {
+        return $this->address->newQuery()->findOrFail($id);
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->address->newQuery()->paginate($limit);
+        }
+        return $this->address->newQuery()->get();
+    }
+
+    public function create($data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function update($address, $addressData)
+    {
+        $address->update($addressData);
+
+        return $address;
     }
 }

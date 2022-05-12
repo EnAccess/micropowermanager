@@ -55,6 +55,7 @@ class MiniGridSolarService extends BaseService
         if ($weatherData) {
             $solarReadings->with('weatherData');
         }
+
         return $solarReadings->get();
     }
 }

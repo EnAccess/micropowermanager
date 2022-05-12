@@ -31,8 +31,9 @@ class CityController extends Controller
      */
     public function index(Request $request): ApiResource
     {
+        $limit = $request->get('limit');
 
-        return ApiResource::make($this->cityService->getCities());
+        return ApiResource::make($this->cityService->getAll($limit));
     }
 
     /**

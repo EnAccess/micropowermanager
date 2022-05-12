@@ -47,9 +47,10 @@ class PersonController extends Controller
      */
     public function index(Request $request): ApiResource
     {
-        $customerType = request('is_customer') ?? 1;
-        $limit = $request->get('limit') ?? config('settings.paginate');
-        return ApiResource::make($this->personService->getPeopleList($customerType, $limit));
+        $customerType = $request->input('is_customer',1);
+        $limit = $request->input('limit',config('settings.paginate'));
+
+        return ApiResource::make($this->personService->getAll($limit,$customerType));
     }
 
     /**
@@ -94,29 +95,34 @@ class PersonController extends Controller
      */
     public function store(PersonRequest $request): JsonResponse
     {
-
         $customerType = $request->input('customer_type');
-
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $personData = $this->personService->createPersonDataFromRequest($request);
+        $miniGridId = $request->input('mini_grid_id');
 
         if ($this->personService->isMaintenancePerson($customerType)) {
             $person = $this->personService->createMaintenancePerson($personData);
-            $this->maintenanceUserService->createMaintenanceUser($person->id, $request->get('mini_grid_id'));
+            $maintenanceUserData = [
+                'person_id'=>$person->id,
+                'mini_grid_id'=>$miniGridId
+            ];
+            $this->maintenanceUserService->create($maintenanceUserData);
         } else {
             $country = $this->countryService->getByCode($request->get('country_code'));
-            $person = $this->personService->createPerson($personData);
+            $person = $this->personService->create($personData);
+
             if ($country !== null) {
                 $person = $this->personService->addCitizenship($person, $country);
             }
         }
+
         $address = $this->addressService->makeAddress($addressData);
         $this->personAddressService->setPerson($person);
         $this->personAddressService->setAddress($address);
         $this->personAddressService->assignAddressToPerson();
         $this->addressService->saveAddress($address);
-        return ApiResource::make($person)->response()->setStatusCode(201);
 
+        return ApiResource::make($person)->response()->setStatusCode(201);
     }
 
     /**
@@ -138,8 +144,10 @@ class PersonController extends Controller
      */
     public function update(int $personId,PersonRequest $request): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
-        return new ApiResource($this->personService->updatePerson($person, (array)$request->all()));
+        $person = $this->personService->getById($personId);
+        $personData = $request->all();
+
+        return  ApiResource::make($this->personService->update($person, $personData));
     }
 
     /**
@@ -156,8 +164,9 @@ class PersonController extends Controller
      */
     public function transactions(int $personId): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
-        return new ApiResource($this->personService->getPersonTransactions($person));
+        $person = $this->personService->getById($personId);
+
+        return  ApiResource::make($this->personService->getPersonTransactions($person));
     }
 
     /**
@@ -175,11 +184,12 @@ class PersonController extends Controller
      * @return       ApiResource
      * @responseFile responses/people/people.search.json
      */
-    public function search():ApiResource
+    public function search(Request $request):ApiResource
     {
-        $term = request('term');
-        $paginate = request('paginate') ?? 1;
-        return new ApiResource($this->personService->searchPerson($term, $paginate));
+        $term = $request->input('term');
+        $paginate = $request->input('paginate',1);
+
+        return  ApiResource::make($this->personService->searchPerson($term, $paginate));
     }
 
 
@@ -198,7 +208,8 @@ class PersonController extends Controller
      */
     public function destroy(int $personId): ApiResource
     {
-        $person = $this->personService->getPersonById($personId);
-        return new ApiResource($this->personService->deletePerson($person));
+        $person = $this->personService->getById($personId);
+
+        return ApiResource::make($this->personService->delete($person));
     }
 }

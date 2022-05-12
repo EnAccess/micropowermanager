@@ -14,7 +14,6 @@ class ClusterTransactionService extends BaseService
 
     }
 
-
     public function getById($clusterId, array $range)
     {
 
@@ -48,7 +47,5 @@ class ClusterTransactionService extends BaseService
             ->whereBetween('created_at', $range)
             ->sum('amount');
     }
-
-
 
 }

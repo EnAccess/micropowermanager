@@ -39,9 +39,10 @@ class MeterController extends Controller
      */
     public function index(Request $request): ApiResource
     {
-        $inUse = request('in_use');
-        $limit = $request->get('limit') ?? config('settings.paginate');
-        return ApiResource::make($this->meterService->getMeterList($limit, $inUse));
+        $inUse = $request->input('in_use');
+        $limit = $request->input('limit',config('settings.paginate'));
+
+        return ApiResource::make($this->meterService->getAll($limit, $inUse));
     }
 
     /**
@@ -59,7 +60,7 @@ class MeterController extends Controller
     {
         $meterData = (array)$request->all();
 
-        return ApiResource::make($this->meterService->createMeter($meterData));
+        return ApiResource::make($this->meterService->create($meterData));
     }
 
     /**

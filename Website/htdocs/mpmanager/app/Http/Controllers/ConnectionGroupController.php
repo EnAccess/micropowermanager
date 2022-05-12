@@ -17,7 +17,9 @@ class ConnectionGroupController
 
     public function index(Request $request): ApiResource
     {
-        return  ApiResource::make($this->connectionGroupService->getConnectionGroupList());
+        $limit = $request->input('limit');
+
+        return  ApiResource::make($this->connectionGroupService->getAll($limit));
     }
 
     public function show($connectionGroupId,Request $request): ApiResource

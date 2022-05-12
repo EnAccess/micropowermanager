@@ -34,7 +34,7 @@ class ClusterRevenueAnalysisController extends Controller
         $endDate = $request->get('endDate') ?? date('Y-m-t');
         $period = $request->get('period') ?? 'monthly';
         $cluster = $this->clusterService->getById($clusterId);
-        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+        $connectionTypes = $this->connectionTypeService->getAll();
 
         return ApiResource::make($this->clusterRevenueService->getRevenueAnalysisForConnectionTypesByCluser(
             $startDate, $endDate, $period, $cluster, $connectionTypes));

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\MaintenanceUsers;
 
-class MaintenanceUserService extends BaseService
+class MaintenanceUserService extends BaseService implements IBaseService
 {
 
     public function __construct(private MaintenanceUsers $maintenanceUser)
@@ -12,16 +12,33 @@ class MaintenanceUserService extends BaseService
         parent::__construct([$maintenanceUser]);
     }
 
-    public function createMaintenanceUser(int $personId,int $miniGridId)
-    {
-      return  $this->maintenanceUser->newQuery()->create([
-            'person_id'=>$personId,
-            'mini_grid_id'=>$miniGridId
-        ]);
-    }
-
     public function getMaintenanceUsersCount()
     {
         return $this->maintenanceUser->newQuery()->count();
+    }
+
+    public function create($maintenanceUserData)
+    {
+        return $this->maintenanceUser->newQuery()->create($maintenanceUserData);
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

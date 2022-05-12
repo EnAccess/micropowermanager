@@ -19,18 +19,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CityService extends BaseService
+class CityService extends BaseService implements IBaseService
 {
-
 
     public function __construct(private City $city, private Person $person)
     {
         parent::__construct([$city, $person]);
-    }
-
-    public function getCities(): Collection|array
-    {
-        return $this->city->newQuery()->get();
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)
@@ -62,14 +56,14 @@ class CityService extends BaseService
             $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
     }
 
-    public function getById($cityId)
-    {
-        return $this->city->newQuery()->find($cityId);
-    }
-
     public function getByIdWithRelation($cityId, $relation)
     {
         return $this->city->newQuery()->with($relation)->find($cityId);
+    }
+
+    public function getById($cityId)
+    {
+        return $this->city->newQuery()->find($cityId);
     }
 
     public function update($city, $cityData)
@@ -80,11 +74,12 @@ class CityService extends BaseService
             'cluster_id' => $cityData['cluster_id'] ?? $city->mini_grid_id,
             'country_id' => $cityData['country_id'] ?? $city->country_id,
         ]);
+        $city->fresh();
 
         return $city;
     }
 
-    public function create($cityData): Model|Builder
+    public function create($cityData)
     {
         return $this->city->newQuery()->create([
             'name' => $cityData['name'],
@@ -92,5 +87,18 @@ class CityService extends BaseService
             'cluster_id' => $cityData['cluster_id'],
             'country_id' => $cityData['country_id'] ?? 0,
         ]);
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->city->newQuery()->paginate($limit);
+        }
+        return $this->city->newQuery()->get();
     }
 }

@@ -49,7 +49,7 @@ class ClustersDashboardCacheDataController extends Controller
         $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
         $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
         $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+        $connectionTypes = $this->connectionTypeService->getAll();
         foreach ($clusters as $index => $cluster) {
             $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
             $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);

@@ -28,7 +28,6 @@ class ClusterRevenueService extends BaseService
 
     }
 
-
     public function getTransactionsForMonthlyPeriodById($clusterId, $period, $connectionType = null): Collection|array
     {
         return $this->transaction->newQuery()
@@ -303,4 +302,6 @@ class ClusterRevenueService extends BaseService
 
         return $dateRange;
     }
+
+
 }

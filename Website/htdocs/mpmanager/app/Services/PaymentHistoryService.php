@@ -8,6 +8,8 @@ use Carbon\CarbonImmutable;
 use Faker\Provider\Payment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class PaymentHistoryService extends BaseService
 {
@@ -43,5 +45,31 @@ class PaymentHistoryService extends BaseService
                     $q->where('message', $serialNumber);
                 }
             )->latest()->paginate($paginate);
+    }
+
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function update($id, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    function getAll($limit = null): Collection|array
+    {
+        // TODO: Implement getAll() method.
     }
 }

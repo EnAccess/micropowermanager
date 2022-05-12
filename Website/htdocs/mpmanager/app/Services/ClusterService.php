@@ -10,18 +10,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ClusterService extends BaseService
+class ClusterService extends BaseService implements IBaseService
 {
     public function __construct(
         private Cluster $cluster
     ) {
         parent::__construct([$cluster]);
 
-    }
-
-    public function getById(int $clusterId)
-    {
-        return $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
     }
 
     protected function setClusterMeterCount(Cluster $cluster, int $meterCount)
@@ -51,31 +46,16 @@ class ClusterService extends BaseService
         return $cluster;
     }
 
-    public function createCluster($clusterData)
-    {
-        return $this->cluster->newQuery()->create($clusterData);
-    }
 
-    /**
-     * @param $clusterId
-     * @return Builder|Builder[]|Collection|Model|null
-     */
     public function getClusterCities($clusterId)
     {
         return Cluster::query()->with('cities')->find($clusterId);
     }
 
-
-    /**
-     * @param $clusterId
-     * @return Builder|Builder[]|Collection|Model|null
-     */
     public function getClusterMiniGrids($clusterId)
     {
         return Cluster::query()->with('miniGrids')->find($clusterId);
     }
-
-
 
     public function getClusterList(bool $withCities = false)
     {
@@ -126,5 +106,30 @@ class ClusterService extends BaseService
         }
 
         return $dateRange;
+    }
+
+    public function getById($clusterId)
+    {
+        return $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
+    }
+
+    public function create($clusterData)
+    {
+        return $this->cluster->newQuery()->create($clusterData);
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

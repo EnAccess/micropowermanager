@@ -9,19 +9,13 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 
-class SubConnectionTypeService extends BaseService
+class SubConnectionTypeService extends BaseService implements IBaseService
 {
     public function __construct(private SubConnectionType $subConnectionType)
     {
         parent::__construct([$subConnectionType]);
     }
 
-    public function getSubConnectionTypes($limit = null): LengthAwarePaginator|Collection
-    {
-
-        return $limit ? $this->subConnectionType->newQuery()->paginate($limit) : $this->subConnectionType->newQuery()
-            ->get();
-    }
     public function getSubConnectionTypesByConnectionTypeId($connectionTypeId,$limit = null): LengthAwarePaginator|Collection
     {
 
@@ -30,7 +24,8 @@ class SubConnectionTypeService extends BaseService
             $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
             ->get();
     }
-    public function getById($subConnectionTypeId): Model|Builder
+
+    public function getById($subConnectionTypeId)
     {
         return $this->subConnectionType->newQuery()->findOrFail($subConnectionTypeId);
     }
@@ -43,7 +38,22 @@ class SubConnectionTypeService extends BaseService
     public function update($subConnectionType, $subConnectionTypeData): Model|Builder
     {
         $subConnectionType->update($subConnectionTypeData);
+        $subConnectionType->fresh();
 
         return $subConnectionType;
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+          return  $this->subConnectionType->newQuery()->paginate($limit) ;
+        }
+
+        return  $this->subConnectionType->newQuery()->get();
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
     }
 }

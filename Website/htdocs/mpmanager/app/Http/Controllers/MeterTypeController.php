@@ -34,7 +34,7 @@ class MeterTypeController extends Controller
     {
         $limit = $request->get('limit');
 
-        return  ApiResource::make($this->meterTypeService->getMeterTypes($limit));
+        return  ApiResource::make($this->meterTypeService->getAll($limit));
     }
 
 
