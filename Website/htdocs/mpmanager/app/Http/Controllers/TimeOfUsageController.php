@@ -4,14 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Meter\MeterTariff;
 use App\Models\TimeOfUsage;
+use App\Services\MeterTariffService;
+use App\Services\TimeOfUsageService;
 use Illuminate\Http\Request;
 
 class TimeOfUsageController extends Controller
 {
-    public function destroy(TimeOfUsage $timeOfUsage)
+    public function __construct(
+        private TimeOfUsageService $timeOfUsageService,
+        private MeterTariffService $meterTariffService
+    ) {
+    }
+
+    public function destroy($timeOfUsageId): ?bool
     {
-        TimeOfUsage::find($timeOfUsage->id)->delete();
-        $tariff = MeterTariff::find($timeOfUsage->tariff_id);
-        return $tariff->update(['updated_at' => date('Y-m-d H:i:s')]);
+        $timeOfUsage = $this->timeOfUsageService->getById($timeOfUsageId);
+        $result = $this->timeOfUsageService->delete($timeOfUsage);
+
+        if ($result) {
+            $meterTariff = $this->meterTariffService->getById($timeOfUsage->tariff_id);
+
+            return $result;
+        }
+
+        return $result;
     }
 }
