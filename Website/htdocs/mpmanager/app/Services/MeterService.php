@@ -13,32 +13,12 @@ use Illuminate\Support\Facades\Log;
 
 use function count;
 
-class MeterService extends BaseService
+class MeterService extends BaseService implements IBaseService
 {
 
     public function __construct(private Meter $meter)
     {
         parent::__construct([$meter]);
-    }
-
-    public function getMeterList($inUse, $limit): LengthAwarePaginator
-    {
-        if (isset($inUse)) {
-            return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->where('in_use',
-                $inUse)->paginate($limit);
-        }
-        return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->paginate($limit);
-
-    }
-
-    public function createMeter(array $meterData)
-    {
-        return $this->meter->newQuery()->create([
-            'serial_number' => $meterData['serial_number'],
-            'meter_type_id' => $meterData['meter_type_id'],
-            'in_use' => $meterData['in_use'],
-            'manufacturer_id' => $meterData['manufacturer_id'],
-        ]);
     }
 
     public function getBySerialNumber($serialNumber)
@@ -53,18 +33,7 @@ class MeterService extends BaseService
             ]
         )->where('serial_number', $serialNumber)->first();
     }
-    public function getById($id)
-    {
-        return $this->meter->newQuery()->with([
-                'meterParameter.tariff',
-                'meterParameter.owner',
-                'meterType',
-                'meterParameter.connectionType',
-                'meterParameter.connectionGroup',
-                'manufacturer'
-            ]
-        )->find($id);
-    }
+
     public function search($term, $paginate): LengthAwarePaginator
     {
         return $this->meter->newQuery()->with(['meterType', 'meterParameter.tariff'])
@@ -97,6 +66,7 @@ class MeterService extends BaseService
             1
         )->get();
     }
+
     public function getUsedMetersGeoWithAccessRatePaymentsInCities($cities): Collection|array
     {
         return $this->meter->newQuery()->with('meterParameter.address.geo', 'accessRatePayment')
@@ -114,14 +84,9 @@ class MeterService extends BaseService
             ->where('in_use', 1)->get();
     }
 
-    public function deleteMeter(Meter $meter)
-    {
-        return $meter->delete();
-    }
-
     public function getMeterCountInCluster($clusterId)
     {
-        return $this->meter::whereHas(
+        return $this->meter->newQuery()->whereHas(
             'meterParameter',
             function ($q) use ($clusterId) {
                 $q->whereHas(
@@ -141,7 +106,7 @@ class MeterService extends BaseService
 
     public function getMeterCountInMiniGrid($miniGridId)
     {
-        return $this->meter::whereHas(
+        return $this->meter->newQuery()->whereHas(
             'meterParameter',
             function ($q) use ($miniGridId) {
                 $q->whereHas(
@@ -161,7 +126,7 @@ class MeterService extends BaseService
 
     public function getMeterCountInCity($cityId)
     {
-        return $this->meter::whereHas(
+        return $this->meter->newQuery()->whereHas(
             'meterParameter',
             function ($q) use ($cityId) {
                 $q->whereHas(
@@ -174,11 +139,10 @@ class MeterService extends BaseService
         )->count();
     }
 
-
     public function meterTransactions(City $city): City
     {
         $cityId = $city->id;
-        $meters = $this->meter::whereHas(
+        $meters = $this->meter->newQuery()->whereHas(
             'meterParameter',
             function ($q) use ($cityId) {
                 $q->whereHas(
@@ -197,7 +161,7 @@ class MeterService extends BaseService
     public function getMetersInCity(City $city): City
     {
         $cityId = $city->id;
-        $meters = $this->meter::whereHas(
+        $meters = $this->meter->newQuery()->whereHas(
             'meterParameter',
             function ($q) use ($cityId) {
                 $q->whereHas(
@@ -213,9 +177,9 @@ class MeterService extends BaseService
         return $city;
     }
 
-    public function getMetersInClusterwithConnectionType($clusterId, $connectionTypeId)
+    public function getMetersInClusterWithConnectionType($clusterId, $connectionTypeId)
     {
-        return $this->meter::whereHas(
+        return $this->meter->newQuery()->whereHas(
             'meterParameter',
             static function ($q) use ($clusterId, $connectionTypeId) {
                 //meter.meter_parameter
@@ -240,7 +204,7 @@ class MeterService extends BaseService
 
     public function getMetersInMiniGrid($miniGridId)
     {
-        return $this->meter::whereHas(
+        return $this->meter->newQuery()->whereHas(
             'meterParameter',
             static function ($q) use ($miniGridId) {
                 //meter.meter_parameter
@@ -265,7 +229,7 @@ class MeterService extends BaseService
     public function getMetersInCityWithConnectionType(City $city, $connectionTypeId): City
     {
         $cityId = $city->id;
-        $meters = $this->meter::whereHas(
+        $meters = $this->meter->newQuery()->hereHas(
             'meterParameter',
             static function ($q) use ($cityId, $connectionTypeId) {
                 $q->where('connection_type_id', $connectionTypeId)
@@ -282,14 +246,6 @@ class MeterService extends BaseService
         return $city;
     }
 
-
-    /**
-     * @param array $meters
-     * @return true[]
-     *
-     * @throws Exception
-     * @psalm-return array{data: true}
-     */
     public function updateMeterGeoLocations(array $meters): array
     {
         try {
@@ -309,5 +265,47 @@ class MeterService extends BaseService
         } catch (Exception $exception) {
             throw  new Exception($exception->getMessage());
         }
+    }
+
+    public function create($meterData)
+    {
+        return $this->meter->newQuery()->create([
+            'serial_number' => $meterData['serial_number'],
+            'meter_type_id' => $meterData['meter_type_id'],
+            'in_use' => $meterData['in_use'],
+            'manufacturer_id' => $meterData['manufacturer_id'],
+        ]);
+    }
+
+    public function getById($meterId)
+    {
+        return $this->meter->newQuery()->with([
+                'meterParameter.tariff',
+                'meterParameter.owner',
+                'meterType',
+                'meterParameter.connectionType',
+                'meterParameter.connectionGroup',
+                'manufacturer'
+            ]
+        )->find($meterId);
+    }
+
+    public function delete($meter)
+    {
+        return $meter->delete();
+    }
+
+    public function getAll($limit = null, $inUse = true)
+    {
+        if (isset($inUse)) {
+            return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->where('in_use',
+                $inUse)->paginate($limit);
+        }
+        return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->paginate($limit);
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
     }
 }

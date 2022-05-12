@@ -16,7 +16,6 @@ class MeterGeographicalInformationService extends BaseService
 
     }
 
-
     public function updateGeographicalInformation(array $meters): array
     {
         collect($meters)->each(function ($meter) {

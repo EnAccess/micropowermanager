@@ -12,7 +12,6 @@ class MiniGridEnergyService extends BaseService
 {
 
     public function __construct(private MiniGrid $miniGrid,private Energy $energy)
-
     {
         parent::__construct([$energy]);
     }
@@ -29,6 +28,7 @@ class MiniGridEnergyService extends BaseService
                 Carbon::createFromTimestamp($startDate)->format('Y-m-d H:i:s')
             );
         }
+
         if ($endDate) {
             $energyReadings->where(
                 'read_out',
@@ -36,6 +36,7 @@ class MiniGridEnergyService extends BaseService
                 Carbon::createFromTimestamp($endDate)->format('Y-m-d H:i:s')
             );
         }
+
         return  $energyReadings->get();
     }
 

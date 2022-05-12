@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\TimeOfUsage;
 
-class TimeOfUsageService extends BaseService
+class TimeOfUsageService extends BaseService implements IBaseService
 {
     public function __construct(private TimeOfUsage $timeOfUsage)
     {
@@ -23,7 +23,10 @@ class TimeOfUsageService extends BaseService
 
     public function update($timeOfUsage, $timeOfUsageData)
     {
-        return $timeOfUsage->update($timeOfUsageData);
+         $timeOfUsage->update($timeOfUsageData);
+         $timeOfUsage->fresh();
+
+         return $timeOfUsage;
     }
 
     public function delete($timeOfUsage)
@@ -32,4 +35,8 @@ class TimeOfUsageService extends BaseService
     }
 
 
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
+    }
 }

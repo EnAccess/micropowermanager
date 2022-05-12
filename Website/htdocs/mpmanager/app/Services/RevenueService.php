@@ -41,6 +41,7 @@ class RevenueService extends BaseService
         if ($periodType === 'weekly' || $periodType === 'weekMonth') {
             return $this->getMeterTransactionsByWeeklyPeriod($clusterId, $period);
         }
+
         return $this->getClusterTransactionsByMonthlyPeriod($clusterId, $period, $connectionType);
     }
 
@@ -52,10 +53,10 @@ class RevenueService extends BaseService
      */
     public function getMiniGridsRevenueByPeriod($miniGridId, array $period, $periodType): Collection
     {
-
         if ($periodType === 'weekly' || $periodType === 'weekMonth') {
             return $this->getMeterTransactionsByWeeklyPeriod($miniGridId, $period);
         }
+
         return $this->getMiniGridTransactionsByMonthlyPeriod($miniGridId, $period);
     }
 
@@ -67,15 +68,16 @@ class RevenueService extends BaseService
         2019-1        1        34233
         2019-1        2        34233
         2019-1        3        34233*/
-
         if ($periodType === 'weekly' || $periodType === 'weekMonth') {
             return $this->getMeterTransactionsByWeeklyPeriod($meters, $period);
         }
+
         return $this->getClusterTransactionsByMonthlyPeriod($meters, $period, $connectionType);
     }
 
     private function getMeterTransactionsByWeeklyPeriod($meters, $period)
     {
+
         return $this->transaction->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period ,DATE_FORMAT(created_at,\'%Y-%u\') ' .
                 ' as week, SUM(amount) as revenue')
@@ -98,6 +100,7 @@ class RevenueService extends BaseService
      */
     public function getMeterSoldEnergy($meters, array $period): ?Collection
     {
+
         return $this->meter_token->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(energy) as energy')
             ->whereIn('meter_id', $meters->pluck('id'))

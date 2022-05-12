@@ -45,7 +45,7 @@ class ClusterController extends Controller
         $dateRange =
             $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
         $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+        $connectionTypes = $this->connectionTypeService->getAll();
         foreach ($clusters as $index => $cluster) {
             $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
             $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
@@ -91,12 +91,12 @@ class ClusterController extends Controller
     public function store(ClusterRequest $request): ApiResource
     {
         $clusterData = $request->only(['name', 'manager_id', 'geo_data']);
-        $cluster = $this->clusterService->createCluster($clusterData);
+        $cluster = $this->clusterService->create($clusterData);
         $dateRange = [];
         $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
         $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
         $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getConnectionTypes();
+        $connectionTypes = $this->connectionTypeService->getAll();
 
         foreach ($clusters as $index => $cluster) {
             $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);

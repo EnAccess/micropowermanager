@@ -27,6 +27,7 @@ class MiniGridPVService extends BaseService
                 Carbon::createFromTimestamp($startDate)->format('Y-m-d H:i:s')
             );
         }
+
         if ($endDate) {
             $pvReadings->where(
                 'reading_date',
@@ -34,6 +35,7 @@ class MiniGridPVService extends BaseService
                 Carbon::createFromTimestamp($endDate)->format('Y-m-d H:i:s')
             );
         }
+
         return $pvReadings->get();
     }
 

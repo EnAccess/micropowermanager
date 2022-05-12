@@ -26,12 +26,12 @@ class AddressController extends Controller
     }
     public function index(): ApiResource
     {
-        return ApiResource::make($this->addressService->getAddressList());
+        return ApiResource::make($this->addressService->getAll());
     }
 
     public function show($id): ApiResource
     {
-        return ApiResource::make($this->addressService->getAddressById($id));
+        return ApiResource::make($this->addressService->getById($id));
     }
 
 }

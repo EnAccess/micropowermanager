@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+
 abstract class BaseService
 {
 
@@ -9,6 +10,7 @@ abstract class BaseService
     {
         $this->setModels($models);
     }
+
     protected function setModels(array $models)
     {
         foreach ($models as $model) {
@@ -16,4 +18,6 @@ abstract class BaseService
             $sessionService->setModel($model);
         }
     }
+
+
 }

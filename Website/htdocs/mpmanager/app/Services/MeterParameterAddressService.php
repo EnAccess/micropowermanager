@@ -25,8 +25,8 @@ class MeterParameterAddressService extends BaseService
     }
     public function assignAddressToMeterParameter(): Address
     {
-
         $this->address->owner()->associate($this->meterParameter);;
+
         return $this->address;
     }
 }

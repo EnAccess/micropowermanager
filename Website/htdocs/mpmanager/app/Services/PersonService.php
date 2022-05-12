@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class PersonService extends BaseService
+class PersonService extends BaseService implements IBaseService
 {
 
     public function __construct(private Person $person)
@@ -24,27 +24,10 @@ class PersonService extends BaseService
     }
 
 
-    public function getPeopleList($customerType, $limit): LengthAwarePaginator
-    {
-        return $this->person->newQuery()->with([
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
-            'addresses.city',
-            'meters.meter',
-        ])->where('is_customer', $customerType)->paginate($limit);
-    }
-
     public function getAllRegisteredPeople(): Collection|array
     {
         return $this->person->newQuery()->get();
     }
-
-    public function getPersonById(int $id): ?Person
-    {
-        return $this->person->newQuery()->find($id);
-    }
-
 
     // associates the person with a country
     public function addCitizenship(Person $person, Country $country): Model
@@ -52,13 +35,12 @@ class PersonService extends BaseService
         return $person->citizenship()->associate($country);
     }
 
-
     public function getDetails(int $personID, bool $allRelations = false)
     {
         if (!$allRelations) {
-            return $this->getPersonById($personID);
+            return $this->getById($personID);
         }
-        return $this->person::with(
+        return $this->person->newQuery()->with(
             [
                 'addresses' =>
                     function ($q) {
@@ -82,7 +64,7 @@ class PersonService extends BaseService
     public function searchPerson($searchTerm, $paginate)
     {
         if ($paginate === 1) {
-            return $this->person::with('addresses.city', 'meters.meter')->whereHas(
+            return $this->person->newQuery()->with('addresses.city', 'meters.meter')->whereHas(
                 'addresses',
                 function ($q) use ($searchTerm) {
                     $q->where('phone', 'LIKE', '%' . $searchTerm . '%');
@@ -96,7 +78,7 @@ class PersonService extends BaseService
                 ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')->paginate(15);
         }
 
-        return $this->person::with('addresses.city', 'meters.meter')->whereHas(
+        return $this->person->newQuery()->with('addresses.city', 'meters.meter')->whereHas(
             'addresses',
             function ($q) use ($searchTerm) {
                 $q->where('phone', 'LIKE', '%' . $searchTerm . '%');
@@ -118,23 +100,8 @@ class PersonService extends BaseService
     public function createMaintenancePerson(array $personData): Person
     {
         $personData['is_customer'] = 0;
+
         return $this->person->newQuery()->create($personData);
-
-
-    }
-
-    public function createPerson(array $personData): Person
-    {
-        return $this->person->newQuery()->create($personData);
-    }
-
-    public function updatePerson(Person $person, array $personData): Person
-    {
-        foreach ($personData as $key => $value) {
-            $person->$key = $value;
-        }
-        $person->save();
-        return $person;
     }
 
     public function livingInCluster(int $clusterId)
@@ -144,7 +111,7 @@ class PersonService extends BaseService
 
     public function getBulkDetails(array $peopleId): Builder
     {
-        return $this->person::with(
+        return $this->person->newQuery()->with(
             [
                 'addresses' => fn($q) => $q->where('is_primary', '=', 1),
                 'addresses.city',
@@ -180,8 +147,42 @@ class PersonService extends BaseService
         ];
     }
 
-    public function deletePerson(Person $person): ?bool
+    public function getById($personId)
+    {
+        return $this->person->newQuery()->find($personId);
+    }
+
+    public function create($personData)
+    {
+        return $this->person->newQuery()->create($personData);
+    }
+
+    public function update($person, $personData)
+    {
+        foreach ($personData as $key => $value) {
+            $person->$key = $value;
+        }
+
+        $person->save();
+        $person->fresh();
+
+        return $person;
+    }
+
+    public function delete($person)
     {
         return $person->delete();
     }
+
+    public function getAll($limit = null, $customerType = 1)
+    {
+        return $this->person->newQuery()->with([
+            'addresses' => function ($q) {
+                return $q->where('is_primary', 1);
+            },
+            'addresses.city',
+            'meters.meter',
+        ])->where('is_customer', $customerType)->paginate($limit);
+    }
+
 }

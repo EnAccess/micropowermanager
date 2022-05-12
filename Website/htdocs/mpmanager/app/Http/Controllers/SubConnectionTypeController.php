@@ -27,7 +27,7 @@ class SubConnectionTypeController extends Controller
             return ApiResource::make($this->subConnectionTypeService->getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit));
         }
 
-        return  ApiResource::make($this->subConnectionTypeService->getSubConnectionTypes($limit));
+        return  ApiResource::make($this->subConnectionTypeService->getAll($limit));
     }
 
     /**

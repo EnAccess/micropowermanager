@@ -7,21 +7,13 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MeterTypeService extends BaseService
+class MeterTypeService extends BaseService implements IBaseService
 {
     use SoftDeletes;
 
     public function __construct(private MeterType $meterType)
     {
         parent::__construct([$meterType]);
-    }
-
-    public function getMeterTypes($limit = null): Collection|LengthAwarePaginator|array
-    {
-        if ($limit) {
-            return $this->meterType->newQuery()->paginate($limit);
-        }
-        return $this->meterType->newQuery()->get();
     }
 
     public function create($meterTypeData)
@@ -37,7 +29,21 @@ class MeterTypeService extends BaseService
     public function update($meterType, $meterTypeData)
     {
         $meterType->update($meterTypeData);
+        $meterType->fresh();
 
         return $meterType;
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->meterType->newQuery()->paginate($limit);
+        }
+        return $this->meterType->newQuery()->get();
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
     }
 }

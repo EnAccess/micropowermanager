@@ -46,4 +46,5 @@ class ClusterPopulationService extends BaseService
 
         return $population;
     }
+
 }

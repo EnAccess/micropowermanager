@@ -17,7 +17,6 @@ class PersonAddressService extends BaseService
     public function setAddress(Address $address): void
     {
         $this->address = $address;
-
     }
 
     public function setPerson(Person $person): void
@@ -29,12 +28,14 @@ class PersonAddressService extends BaseService
     public function setOldPrimaryAddressToNotPrimary(): Person
     {
         $this->person->addresses()->where('is_primary', 1)->update(['is_primary' => 0]);
+
         return $this->person;
     }
 
     public function assignAddressToPerson(): Address
     {
         $this->address->owner()->associate($this->person);;
+
         return $this->address;
     }
 

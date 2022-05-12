@@ -17,4 +17,5 @@ class ClusterMiniGridService extends BaseService
     {
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
+
 }

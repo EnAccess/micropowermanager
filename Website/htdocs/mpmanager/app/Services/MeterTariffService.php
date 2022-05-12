@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class MeterTariffService extends BaseService
+class MeterTariffService extends BaseService implements IBaseService
 {
 
     public function __construct(private MeterTariff $meterTariff)
@@ -24,19 +24,7 @@ class MeterTariffService extends BaseService
         parent::__construct([$meterTariff]);
     }
 
-    public function getMeterTariffs($limit = null): Collection|LengthAwarePaginator|array
-    {
-        if ($limit) {
-            return $this->meterTariff->newQuery()
-                ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
-                ->paginate($limit);
-        }
-        return $this->meterTariff->newQuery()
-            ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
-            ->get();
-    }
-
-    public function getById($meterTariffId): model|builder
+    public function getById($meterTariffId)
     {
         return $this->meterTariff->newQuery()
             ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
@@ -69,4 +57,15 @@ class MeterTariffService extends BaseService
         return  $meterTariff->delete();
     }
 
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->meterTariff->newQuery()
+                ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
+                ->paginate($limit);
+        }
+        return $this->meterTariff->newQuery()
+            ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
+            ->get();
+    }
 }

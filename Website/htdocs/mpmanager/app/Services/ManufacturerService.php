@@ -9,30 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
-class ManufacturerService extends BaseService
+class ManufacturerService extends BaseService implements IBaseService
 {
 
     public function __construct(private Manufacturer $manufacturer)
     {
         parent::__construct([$manufacturer]);
-    }
-
-    public function getManufacturers($limit = null): Collection|LengthAwarePaginator|array
-    {
-        if ($limit) {
-            return $this->manufacturer->newQuery()->paginate($limit);
-        }
-        return $this->manufacturer->newQuery()->get();
-    }
-
-    public function getById($manufacturerId): model|builder
-    {
-        return $this->manufacturer->newQuery()->with(['address.city.country'])->findOrFail($manufacturerId);
-    }
-
-    public function create($manufacturerData)
-    {
-        return $this->manufacturer->newQuery()->create($manufacturerData);
     }
 
     public function createManufacturerDataFromRequest(Request $request): array
@@ -43,5 +25,33 @@ class ManufacturerService extends BaseService
             'website' => $request->get('website'),
             'api_name' => $request->get('api_name'),
         ];
+    }
+
+    public function getById($manufacturerId)
+    {
+        return $this->manufacturer->newQuery()->with(['address.city.country'])->findOrFail($manufacturerId);
+    }
+
+    public function create($manufacturerData)
+    {
+        return $this->manufacturer->newQuery()->create($manufacturerData);
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->manufacturer->newQuery()->paginate($limit);
+        }
+        return $this->manufacturer->newQuery()->get();
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
     }
 }

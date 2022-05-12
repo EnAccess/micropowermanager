@@ -19,7 +19,7 @@ class ConnectionTypeController extends Controller
     {
         $limit = $request->get('limit');
 
-        return ApiResource::make($this->connectionTypeService->getConnectionTypes($limit));
+        return ApiResource::make($this->connectionTypeService->getAll($limit));
     }
 
     public function show($connectionTypeId, Request $request): ApiResource

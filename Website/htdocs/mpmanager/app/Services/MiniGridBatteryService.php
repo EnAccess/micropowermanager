@@ -18,6 +18,7 @@ class MiniGridBatteryService extends BaseService
     {
         $batteryReadings = $this->battery->newQuery()
             ->where('mini_grid_id', $miniGridId);
+
         if ($startDate) {
             $batteryReadings->where(
                 'read_out',
@@ -48,6 +49,7 @@ class MiniGridBatteryService extends BaseService
     {
         $batteryReadings = $this->battery->newQuery()
             ->where('mini_grid_id', $miniGridId);
+
         if ($startDate) {
             $batteryReadings->where(
                 'read_out',
