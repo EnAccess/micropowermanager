@@ -26,4 +26,10 @@ class TimeOfUsageService extends BaseService
         return $timeOfUsage->update($timeOfUsageData);
     }
 
+    public function delete($timeOfUsage)
+    {
+        return $timeOfUsage->delete();
+    }
+
+
 }
