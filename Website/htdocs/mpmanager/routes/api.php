@@ -310,7 +310,7 @@ Route::group(['prefix' => 'transactions', 'middleware' => ['transaction.auth', '
     });
 
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {
-    Route::delete('/{timeOfUsage}', 'TimeOfUsageController@destroy');
+    Route::delete('/{timeOfUsageId}', 'TimeOfUsageController@destroy');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
