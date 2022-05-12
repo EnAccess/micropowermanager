@@ -21,6 +21,7 @@ use Database\Factories\MeterTypeFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
+use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -221,11 +222,21 @@ trait CreateEnvironments
 
     }
 
-    protected function createMeterTariff($meterTariffCount = 1): void
+    protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void
     {
         while ($meterTariffCount > 0) {
             $meterTariff = MeterTariffFactory::new()->create();
             $this->meterTariffs[] = $meterTariff;
+
+            if($withTimeOfUsage){
+                $timeOfUsage = TimeOfUsageFactory::new()->create([
+                    'tariff_id' => $meterTariff->id,
+                    'start'=>'00:00',
+                    'end'=>'01:00',
+                    'value'=>$this->faker->randomFloat(2, 0, 10),
+                ]);
+            }
+
             $meterTariffCount--;
         }
         if (count($this->meterTariffs) > 0) {
