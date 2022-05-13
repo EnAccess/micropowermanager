@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $end_date
  * @property int $city_id
  */
-class Target extends Model
+class Target extends BaseModel
 {
     protected $connection = 'test_company_db';
     public function city(): BelongsTo
