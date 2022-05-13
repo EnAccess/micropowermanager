@@ -2,120 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateTargetRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Models\SubTarget;
 use App\Models\Target;
+use App\Services\ClusterService;
+use App\Services\MiniGridService;
+use App\Services\SubTargetService;
+use App\Services\TargetService;
 use Illuminate\Http\Request;
 
 class TargetController extends Controller
 {
-    /**
-     * @var Target
-     */
-    private $target;
-    /**
-     * @var SubTarget
-     */
-    private $subTarget;
-    /**
-     * @var Cluster
-     */
-    private $cluster;
-    /**
-     * @var City
-     */
-    private $miniGrid;
 
-    public function __construct(Target $target, SubTarget $subTarget, Cluster $cluster, MiniGrid $miniGrid)
-    {
-        $this->target = $target;
-        $this->subTarget = $subTarget;
-        $this->cluster = $cluster;
-        $this->miniGrid = $miniGrid;
+    public function __construct(
+        private TargetService $targetService,
+        private ClusterService $clusterService,
+        private MiniGridService $miniGridService,
+        private SubTargetService $subTargetService
+    ) {
+
     }
 
-
-    /**
-     * List of targets
-     */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        $targets = $this->target::with('owner', 'subTargets.connectionType')->orderBy(
-            'target_date',
-            'desc'
-        )->paginate(15);
-        return new ApiResource($targets);
+        $limit = $request->input('limit',15);
+
+        return ApiResource::make($this->targetService->getAll($limit));
     }
 
-    /**
-     * Detail of target
-     *
-     * @param $id
-     *
-     * @return ApiResource
-     */
-    public function show($id): ApiResource
+    public function show($targetId): ApiResource
     {
-        $target = $this->target->with('subTargets', 'city')->find($id);
-        return new ApiResource($target);
+        return  ApiResource::make($this->targetService->getById($targetId));
     }
 
-
-    public function getSlotsForDate(): ApiResource
+    public function getSlotsForDate(Request $request): ApiResource
     {
-        $date = request('date');
+        $date = $request->input('date');
         $lastDayOfMonth = date('Y-m-t', strtotime($date));
         $firstDayOfMonth = date('Y-m-1', strtotime($date));
+        $targetData = [$firstDayOfMonth, $lastDayOfMonth];
 
-        //get all targets in range
-        $takenSlots = $this->target::whereBetween('target_date', [$firstDayOfMonth, $lastDayOfMonth])->get();
-
-        return new ApiResource($takenSlots);
+        return  ApiResource::make($this->targetService->getTakenSlots($targetData));
     }
 
-    public function store(Request $request)
+    public function store(CreateTargetRequest $request):ApiResource
     {
-        $data = $request->get('data');
-        $period = $request->get('period');
-        $targetId = $request->get('targetId') ?? 1;
-        $targetType = $request->get('targetType') ?? 'weekly';
-        if ($data === null || $period === null) {
-            return;
-        }
+        $targetOwnerId = $request->input('targetId');
+        $targetData = [
+            'data' => $request->input('data'),
+            'period' => $request->input('period'),
+            'targetType' => $request->input('targetType'),
+        ];
 
-        if ($targetType === "cluster") {
-            $targetOwner = $this->cluster->find($targetId);
+        if ($targetData['targetType'] === "cluster") {
+            $targetOwner = $this->clusterService->getById($targetOwnerId);
         } else {
-            $targetOwner = $this->miniGrid->find($targetId);
+            $targetOwner = $this->miniGridService->getById($targetOwnerId);
         }
 
-        $period = date('Y-m-d', strtotime($period));
+        $targetData['owner'] = $targetOwner;
+        $target = $this->targetService->create($targetData);
+        $subTargetData = [
+            'data'=> $targetData['data'],
+            'targetId' => $target->id,
+        ];
+        $this->subTargetService->create($subTargetData);
 
-        //save target
-        $target = $this->target->create();
-        $target->owner()->associate($targetOwner);
-        $target->target_date = $period;
-        $target->type = $targetType;
-        $target->save();
-
-
-        foreach ($data as $subTargetData) {
-            $subTarget = $this->subTarget->create();
-            $subTarget->target_id = $target->id;
-
-            $subTarget->revenue = $subTargetData['target']['totalRevenue'];
-            $subTarget->connection_id = $subTargetData['id'];
-            $subTarget->new_connections = $subTargetData['target']['newConnection'];
-            $subTarget->connected_power = $subTargetData['target']['connectedPower'];
-            $subTarget->energy_per_month = $subTargetData['target']['energyPerMonth'];
-            $subTarget->average_revenue_per_month = $subTargetData['target']['averageRevenuePerMonth'];
-
-            $subTarget->save();
-        }        //create sub targets
-
-        return $target;
+        return ApiResource::make($target);
     }
 }
