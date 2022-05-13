@@ -284,7 +284,7 @@ Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'],
 Route::group(['prefix' => 'targets', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'TargetController@index');
     Route::post('/', 'TargetController@store');
-    Route::get('/{id}', 'TargetController@show');
+    Route::get('/{targetId}', 'TargetController@show');
     Route::post('/slots', 'TargetController@getSlotsForDate');
 });
 // Tariffs

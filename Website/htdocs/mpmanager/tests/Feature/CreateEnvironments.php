@@ -8,6 +8,7 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
+use Database\Factories\ClusterFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionGroupFactory;
@@ -18,9 +19,12 @@ use Database\Factories\MeterParameterFactory;
 use Database\Factories\MeterTariffFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\MeterTypeFactory;
+use Database\Factories\MiniGridFactory;
 use Database\Factories\PaymentHistoryFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
+use Database\Factories\SubTargetFactory;
+use Database\Factories\TargetFactory;
 use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
@@ -30,51 +34,75 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Database\Eloquent\Collection;
+use function Symfony\Component\Translation\t;
+
 trait CreateEnvironments
 {
     use RefreshMultipleDatabases, WithFaker;
 
-    private
-        $user,
-        $company,
-        $city,
-        $connectionType,
-        $manufacturer,
-        $meterType,
-        $meter,
-        $meterParameter,
-        $meterTariff,
-        $person,
-        $token,
-        $transaction,
-        $connectionGroup,
-        $connectonType,
-        $subConnectionType,
-        $connectionGroups = [],
-        $connectonTypes = [],
-        $subConnectionTypes = [],
-        $meterTypes = [],
-        $manufacturers = [],
-        $cities = [],
-        $meterTariffs = [];
+    private $user, $company, $city, $cluster, $miniGrid, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
+        $meterTariff, $person, $token, $transaction, $connectionGroup, $connectonType, $subConnectionType, $target, $subTarget,
+        $clusters = [], $miniGrids = [], $connectionGroups = [], $connectonTypes = [], $subConnectionTypes = [], $meterTypes = [],
+        $manufacturers = [], $cities = [], $meterTariffs = [], $targets = [], $subTargets = [];
 
-
-    protected function createTestData(
-        $cityCount = 1,
-    ) {
+    protected function createTestData()
+    {
         $this->user = UserFactory::new()->create();
+        $this->company = CompanyFactory::new()->create();
+        $this->companyDatabase = CompanyDatabaseFactory::new()->create();
+        $this->person = PersonFactory::new()->create();
+
+    }
+
+    protected function createCluster($clusterCount = 1)
+    {
+        while ($clusterCount > 0) {
+
+            $cluster = ClusterFactory::new()->create([
+                'name' => $this->faker->unique()->companySuffix,
+                'manager_id' => $this->user->id,
+            ]);
+            $this->clusters[] = $cluster;
+            $clusterCount--;
+        }
+
+        if (count($this->clusters) > 0) {
+            $this->cluster = $this->clusters[0];
+        }
+    }
+
+    protected function createMiniGrid($miniGridCount = 1)
+    {
+        while ($miniGridCount > 0) {
+            $miniGrid = MiniGridFactory::new()->create([
+                'cluster_id' => $this->getRandomIdFromList($this->clusters),
+                'name' => $this->faker->unique()->companySuffix,
+            ]);
+            $this->miniGrids[] = $miniGrid;
+            $miniGridCount--;
+        }
+
+        if (count($this->miniGrids) > 0) {
+            $this->miniGrid = $this->miniGrids[0];
+        }
+    }
+
+    protected function createCity($cityCount = 1)
+    {
         while ($cityCount > 0) {
-            $city = CityFactory::new()->create();
+            $city = CityFactory::new()->create([
+                'name' => $this->faker->unique()->citySuffix,
+                'country_id' => 1,
+                'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
+                'cluster_id' => $this->getRandomIdFromList($this->clusters),
+            ]);
             $this->cities[] = $city;
             $cityCount--;
         }
-        $this->city = $this->cities[0];
-        $this->company = CompanyFactory::new()->create();
-        $this->companyDatabase = CompanyDatabaseFactory::new()->create();
 
-
-        $this->person = PersonFactory::new()->create();
-
+        if (count($this->cities) > 0) {
+            $this->city = $this->cities[0];
+        }
     }
 
     protected function getMeter(): mixed
@@ -216,7 +244,7 @@ trait CreateEnvironments
 
             $manufacturerCount--;
         }
-        if(count($this->manufacturers) > 0){
+        if (count($this->manufacturers) > 0) {
             $this->manufacturer = $this->manufacturers[0];
         }
 
@@ -228,12 +256,12 @@ trait CreateEnvironments
             $meterTariff = MeterTariffFactory::new()->create();
             $this->meterTariffs[] = $meterTariff;
 
-            if($withTimeOfUsage){
+            if ($withTimeOfUsage) {
                 $timeOfUsage = TimeOfUsageFactory::new()->create([
                     'tariff_id' => $meterTariff->id,
-                    'start'=>'00:00',
-                    'end'=>'01:00',
-                    'value'=>$this->faker->randomFloat(2, 0, 10),
+                    'start' => '00:00',
+                    'end' => '01:00',
+                    'value' => $this->faker->randomFloat(2, 0, 10),
                 ]);
             }
 
@@ -261,12 +289,12 @@ trait CreateEnvironments
 
                 $subConnectionTypeCount--;
             }
-            if(count($this->subConnectionTypes) > 0){
+            if (count($this->subConnectionTypes) > 0) {
                 $this->subConnectionType = $this->subConnectionTypes[0];
             }
             $connectionTypeCount--;
         }
-        if(count($this->connectonTypes) > 0){
+        if (count($this->connectonTypes) > 0) {
             $this->connectionType = $this->connectonTypes[0];
         }
     }
@@ -278,7 +306,7 @@ trait CreateEnvironments
             $this->connectionGroups[] = $connectionGroup;
             $connectionGroupCount--;
         }
-        if(count($this->connectionGroups) > 0){
+        if (count($this->connectionGroups) > 0) {
             $this->connectionGroup = $this->connectionGroups[0];
         }
 
@@ -293,12 +321,12 @@ trait CreateEnvironments
             $meterTypeCount--;
         }
 
-        if(count($this->meterTypes) > 0){
+        if (count($this->meterTypes) > 0) {
             $this->meterType = $this->meterTypes[0];
         }
     }
 
-    protected function createMeter($meterCount =1): void
+    protected function createMeter($meterCount = 1): void
     {
 
         while ($meterCount > 0) {
@@ -338,7 +366,34 @@ trait CreateEnvironments
 
     }
 
-    private function getRandomIdFromList(array $list, $startIndex=1, $endIndex = null): int
+    protected function createTarget($targetCount = 1): void
+    {
+        while ($targetCount > 0) {
+            $target = TargetFactory::new()->create();
+            $this->targets[] = $target;
+            $targetCount--;
+        }
+        if (count($this->targets) > 0) {
+            $this->target = $this->targets[0];
+        }
+    }
+
+    protected function createSubTarget($subTargetCount = 1): void
+    {
+        while ($subTargetCount > 0) {
+            $subTarget = SubTargetFactory::new()->create([
+                'target_id' => $this->getRandomIdFromList($this->targets),
+                'connection_id' => $this->getRandomIdFromList($this->connectionGroups),
+            ]);
+            $this->subTargets[] = $subTarget;
+            $subTargetCount--;
+        }
+        if (count($this->subTargets) > 0) {
+            $this->subTarget = $this->subTargets[0];
+        }
+    }
+
+    private function getRandomIdFromList(array $list, $startIndex = 1, $endIndex = null): int
     {
 
         $ids = collect($list)->pluck('id')->toArray();

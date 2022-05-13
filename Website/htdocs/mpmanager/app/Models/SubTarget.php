@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $revenue
  * @property int new_connections
  */
-class SubTarget extends Model
+class SubTarget extends BaseModel
 {
 
     protected $connection = 'test_company_db';
