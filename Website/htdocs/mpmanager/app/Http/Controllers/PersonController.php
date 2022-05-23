@@ -116,11 +116,11 @@ class PersonController extends Controller
             }
         }
 
-        $address = $this->addressService->makeAddress($addressData);
-        $this->personAddressService->setPerson($person);
-        $this->personAddressService->setAddress($address);
-        $this->personAddressService->assignAddressToPerson();
-        $this->addressService->saveAddress($address);
+        $address = $this->addressService->make($addressData);
+        $this->personAddressService->setAssigner($person);
+        $this->personAddressService->setAssigned($address);
+        $this->personAddressService->assign();
+        $this->addressService->save($address);
 
         return ApiResource::make($person)->response()->setStatusCode(201);
     }

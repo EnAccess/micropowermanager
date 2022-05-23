@@ -6,26 +6,22 @@ use App\Models\Address\Address;
 use App\Models\Manufacturer;
 
 
-class ManufacturerAddressService extends BaseService
+class ManufacturerAddressService implements IAssignationService
 {
+    private Address $address;
+    private Manufacturer $manufacturer;
 
-    public function __construct(private Address $address,private Manufacturer $manufacturer)
-    {
-        parent::__construct([$address,$manufacturer]);
-    }
-
-    public function setAddress(Address $address): void
+    public function setAssigned($address)
     {
         $this->address = $address;
-
     }
 
-    public function setManufacturer(Manufacturer $manufacturer): void
+    public function setAssigner($manufacturer)
     {
         $this->manufacturer = $manufacturer;
     }
 
-    public function assignAddressToPerson(): Address
+    public function assign()
     {
         $this->address->owner()->associate($this->manufacturer);
 

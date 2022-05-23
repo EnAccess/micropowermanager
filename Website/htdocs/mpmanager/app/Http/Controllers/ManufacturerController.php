@@ -46,11 +46,11 @@ class ManufacturerController extends Controller
         $manufacturerData = $this->manufacturerService->createManufacturerDataFromRequest($request);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $manufacturer = $this->manufacturerService->create($manufacturerData);
-        $address = $this->addressService->makeAddress($addressData);
-        $this->manufacturerAddressService->setAddress($address);
-        $this->manufacturerAddressService->setManufacturer($manufacturer);
-        $this->manufacturerAddressService->assignAddressToPerson();
-        $this->addressService->saveAddress($address);
+        $address = $this->addressService->make($addressData);
+        $this->manufacturerAddressService->setAssigned($address);
+        $this->manufacturerAddressService->setAssigner($manufacturer);
+        $this->manufacturerAddressService->assign();
+        $this->addressService->save($address);
 
         return ApiResource::make($manufacturer)->response()->setStatusCode(201);
     }

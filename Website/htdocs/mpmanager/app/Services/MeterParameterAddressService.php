@@ -3,27 +3,28 @@
 namespace App\Services;
 
 use App\Models\Address\Address;
+use App\Models\BaseModel;
 use App\Models\Meter\MeterParameter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
-class MeterParameterAddressService extends BaseService
+class MeterParameterAddressService implements IAssignationService
 {
-    public function __construct(
-        private Address $address,
-        private MeterParameter $meterParameter
-    ) {
-        parent::__construct([$address,$meterParameter]);
+    private Address $address;
+    private MeterParameter $meterParameter;
+
+
+    public function setAssigner($meterParameter)
+    {
+        $this->meterParameter = $meterParameter;
     }
 
-    public function setAddress(Address $address): void
+    public function setAssigned($address)
     {
         $this->address = $address;
     }
 
-    public function setMeterParameter(MeterParameter $meterParameter): void
-    {
-        $this->meterParameter = $meterParameter;
-    }
-    public function assignAddressToMeterParameter(): Address
+    public function assign(): Address
     {
         $this->address->owner()->associate($this->meterParameter);;
 

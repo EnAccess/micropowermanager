@@ -5,25 +5,10 @@ namespace App\Services;
 use App\Models\Person\Person;
 use App\Models\Address\Address;
 
-class PersonAddressService extends BaseService
+class PersonAddressService implements IAssignationService
 {
-
-
-    public function __construct(private Address $address,private Person $person)
-    {
-        parent::__construct([$address,$person]);
-    }
-
-    public function setAddress(Address $address): void
-    {
-        $this->address = $address;
-    }
-
-    public function setPerson(Person $person): void
-    {
-        $this->person = $person;
-    }
-
+    private Address $address;
+    private Person $person;
 
     public function setOldPrimaryAddressToNotPrimary(): Person
     {
@@ -32,15 +17,26 @@ class PersonAddressService extends BaseService
         return $this->person;
     }
 
-    public function assignAddressToPerson(): Address
-    {
-        $this->address->owner()->associate($this->person);;
-
-        return $this->address;
-    }
 
     public function getPersonAddresses($person)
     {
        return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
+    }
+
+    public function setAssigned($address)
+    {
+        $this->address = $address;
+    }
+
+    public function setAssigner($person)
+    {
+        $this->person = $person;
+    }
+
+    public function assign()
+    {
+        $this->address->owner()->associate($this->person);;
+
+        return $this->address;
     }
 }

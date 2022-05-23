@@ -6,7 +6,16 @@ use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
+use App\Services\AgentBalanceHistoryService;
 use Database\Factories\AddressFactory;
+use Database\Factories\AgentAssignedApplianceFactory;
+use Database\Factories\AgentBalanceHistoryFactory;
+use Database\Factories\AgentCommissionFactory;
+use Database\Factories\AgentFactory;
+use Database\Factories\AgentReceiptFactory;
+use Database\Factories\AgentSoldApplianceFactory;
+use Database\Factories\AgentTransactionFactory;
+use Database\Factories\AssetTypeFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\CompanyDatabaseFactory;
@@ -41,16 +50,20 @@ trait CreateEnvironments
     use RefreshMultipleDatabases, WithFaker;
 
     private $user, $company, $city, $cluster, $miniGrid, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $connectionGroup, $connectonType, $subConnectionType, $target, $subTarget,
-        $clusters = [], $miniGrids = [], $connectionGroups = [], $connectonTypes = [], $subConnectionTypes = [], $meterTypes = [],
-        $manufacturers = [], $cities = [], $meterTariffs = [], $targets = [], $subTargets = [];
+        $meterTariff, $person, $token, $transaction, $connectionGroup, $connectonType, $subConnectionType, $target,
+        $subTarget, $agent, $agentCommission, $address, $timeOfUsage, $companyDatabase, $meterToken, $paymentHistory,
+        $assetType, $assignedAppliance, $soldAppliance, $agentReceipt, $agentTransaction, $agentBalanceHistory;
+
+    private $clusters = [], $miniGrids = [], $connectionGroups = [], $connectonTypes = [], $subConnectionTypes = [], $meterTypes = [],
+        $manufacturers = [], $cities = [], $meterTariffs = [], $targets = [], $subTargets = [], $people = [], $assignedAppliances = [],
+        $addresses = [], $agents = [], $agentCommissions = [], $transactions = [], $paymentHistories = [], $meters = [], $assetTypes = [],
+        $soldAppliances = [], $agentReceipts = [], $agentTransactions = [], $agentBalanceHistories = [];
 
     protected function createTestData()
     {
         $this->user = UserFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
-        $this->person = PersonFactory::new()->create();
 
     }
 
@@ -390,6 +403,213 @@ trait CreateEnvironments
         }
         if (count($this->subTargets) > 0) {
             $this->subTarget = $this->subTargets[0];
+        }
+    }
+
+    protected function createPerson($personCount = 1)
+    {
+
+        while ($personCount > 0) {
+            $person = PersonFactory::new()->create();
+            $this->people[] = $person;
+            $personCount--;
+        }
+        if (count($this->people) > 0) {
+            $this->person = $this->people[0];
+        }
+
+    }
+
+    protected function createAgent($agentCount = 1)
+    {
+        $this->createPerson($agentCount);
+
+        foreach ($this->people as $person) {
+            $agent = AgentFactory::new()->create([
+                'person_id' => $person->id,
+                'name' => $person->name,
+                'agent_commission_id' => $this->getRandomIdFromList($this->agentCommissions),
+            ]);
+            $this->agents[] = $agent;
+
+            AddressFactory::new()->create([
+                'owner_type' => 'person',
+                'owner_id' => $person->id,
+                'email' => $person->email,
+                'phone' => $person->phone,
+                'street' => $person->street,
+                'city_id' => $person->city_id,
+                'geo_id' => $person->geo_id,
+                'is_primary' => 1,
+            ]);
+        }
+
+        if (count($this->agents) > 0) {
+            $this->agent = $this->agents[0];
+        }
+    }
+
+    protected function createAgentCommission($agentCommissionCount = 1)
+    {
+        while ($agentCommissionCount > 0) {
+            $agentCommission = AgentCommissionFactory::new()->create();
+            $this->agentCommissions[] = $agentCommission;
+
+            $agentCommissionCount--;
+        }
+        if (count($this->agentCommissions) > 0) {
+            $this->agentCommission = $this->agentCommissions[0];
+        }
+
+    }
+
+    protected function createAssetType($assetTypeCount = 1)
+    {
+        while ($assetTypeCount > 0) {
+            $assetType = AssetTypeFactory::new()->create();
+            $this->assetTypes[] = $assetType;
+
+            $assetTypeCount--;
+        }
+        if (count($this->assetTypes) > 0) {
+            $this->assetType = $this->assetTypes[0];
+        }
+
+    }
+
+    protected function createAssignedAppliances($applianceCount = 1)
+    {
+        $this->createAssetType($applianceCount);
+
+        while ($applianceCount > 0) {
+            $assignedAppliance = AgentAssignedApplianceFactory::new()->create([
+                'agent_id' => $this->getRandomIdFromList($this->agents),
+                'appliance_type_id' => $this->getRandomIdFromList($this->assetTypes),
+                'user_id' => $this->user->id,
+                'cost' => $this->faker->randomFloat(2, 1, 100),
+            ]);
+            $this->assignedAppliances[] = $assignedAppliance;
+
+            $applianceCount--;
+        }
+        if (count($this->assignedAppliances) > 0) {
+            $this->assignedAppliance = $this->assignedAppliances[0];
+        }
+    }
+
+    protected function createAgentSoldAppliance($soldApplianceCount = 1)
+    {
+        while ($soldApplianceCount > 0) {
+            $soldAppliance = AgentSoldApplianceFactory::new()->create([
+                'agent_assigned_appliance_id' => $this->getRandomIdFromList($this->assignedAppliances),
+                'person_id' => $this->getRandomIdFromList($this->people),
+            ]);
+            $this->soldAppliances[] = $soldAppliance;
+
+            $soldApplianceCount--;
+        }
+        if (count($this->soldAppliances) > 0) {
+            $this->soldAppliance = $this->soldAppliances[0];
+        }
+    }
+
+
+    protected function createAgentReceipt($agentReceiptCount = 1,$amount =50)
+    {
+        while ($agentReceiptCount > 0) {
+
+            $agentReceipt = AgentReceiptFactory::new()->create([
+                'user_id' => 1,
+                'agent_id' => $this->getRandomIdFromList($this->agents),
+                'amount' => $amount,
+                'last_controlled_balance_history_id' => $this->getRandomIdFromList($this->agentBalanceHistories),
+            ]);
+            $this->agentReceipts[] = $agentReceipt;
+
+            $agentReceiptCount--;
+        }
+        if (count($this->agentReceipts) > 0) {
+            $this->agentReceipt = $this->agentReceipts[0];
+        }
+    }
+
+    protected function createAgentBalanceHistory($agentBalanceHistoryCount = 1)
+    {
+        while ($agentBalanceHistoryCount > 0) {
+            $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
+                'agent_id' => $this->getRandomIdFromList($this->agents),
+                'amount' => $this->faker->randomFloat(2, 1, 100),
+                'transaction_id' => $this->getRandomIdFromList($this->transactions),
+                'available_balance' => 0,
+                'due_to_supplier' => (-1 * $this->faker->randomFloat(2, 1, 100)),
+                'trigger_id' => $this->getRandomIdFromList($this->transactions),
+                'trigger_type' => 'agent_transaction'
+            ]);
+            $this->agentBalanceHistories[] = $agentBalanceHistory;
+
+            $agentBalanceHistoryCount--;
+        }
+        if (count($this->agentBalanceHistories) > 0) {
+            $this->agentBalanceHistory = $this->agentBalanceHistories[0];
+        }
+    }
+
+    protected function createAgentTransaction($agentTransactionCount = 1, $amount = 100,$agentId = null)
+    {
+        while ($agentTransactionCount > 0) {
+
+            $transaction = TransactionFactory::new()->make([
+                'amount' =>  $amount,
+                'sender' => $this->faker->phoneNumber,
+                'message' => '47000268748',
+            ]);
+
+            if(!$agentId){
+                $agentId = $this->getRandomIdFromList($this->agents);
+            }
+
+            $agent = collect($this->agents)->where('id', $agentId)->first();
+            $agentTransaction = AgentTransactionFactory::new()->create([
+                'agent_id' => $agent->id,
+                'device_id' => '123456789',
+                'status' => 1,
+                'manufacturer_transaction_type' => 'test',
+                'manufacturer_transaction_id' => 1,
+            ]);
+            $this->agentTransactions[] = $agentTransaction;
+
+            $transaction->originalTransaction()->associate($agentTransaction);
+            $transaction->save();
+
+            $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
+                'agent_id' => $agent->id,
+                'amount' => ($amount) > 0 ? (-1 * ($amount)) : ($amount),
+                'transaction_id' => $agentTransaction->id,
+                'available_balance' => $agent->balance,
+                'due_to_supplier' => $agent->due_to_energy_supplier,
+                'trigger_id' => $agentTransaction->id,
+                'trigger_type' => 'agent_transaction'
+            ]);
+            $this->agentBalanceHistories[] = $agentBalanceHistory;
+
+            $commission = $this->agentCommission;
+
+            $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
+                'agent_id' => $this->getRandomIdFromList($this->agents),
+                'amount' => ($amount * $commission->energy_commission) < 0 ?
+                    (-1 * ($amount * $commission->energy_commission)) : ($amount * $commission->energy_commission),
+                'transaction_id' => $agentTransaction->id,
+                'available_balance' => $agent->balance,
+                'due_to_supplier' => $agent->due_to_energy_supplier,
+                'trigger_id' => $commission->id,
+                'trigger_type' => 'agent_commission'
+            ]);
+            $this->agentBalanceHistories[] = $agentBalanceHistory;
+
+            $agentTransactionCount--;
+        }
+        if (count($this->agentTransactions) > 0) {
+            $this->agentTransaction = $this->agentTransactions[0];
         }
     }
 

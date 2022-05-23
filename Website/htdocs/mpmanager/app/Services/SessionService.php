@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SessionService
 {
-    private BaseModel $model;
+    private BaseModel|Model $model;
+
     public function setModel(BaseModel|Model $model): void
     {
         $this->model = $model;
@@ -17,6 +18,7 @@ class SessionService
             $this->model->setConnection($this->getAuthenticatedUserDatabaseName());
         }
     }
+
     private function checkDatabaseName($databaseName): bool
     {
         return $this->getAuthenticatedUserDatabaseName() == $databaseName;
