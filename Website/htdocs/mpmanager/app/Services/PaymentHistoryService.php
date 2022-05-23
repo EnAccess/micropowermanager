@@ -53,8 +53,9 @@ class PaymentHistoryService extends BaseService implements IAssociative
        return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }
 
-    public function save($model)
+    public function save($paymentHistory)
     {
-        // TODO: Implement save() method.
+        return $paymentHistory->save();
     }
+
 }
