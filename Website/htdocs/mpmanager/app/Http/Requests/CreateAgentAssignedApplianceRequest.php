@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentAssignedApplianceRequest extends FormRequest
@@ -23,10 +24,12 @@ class CreateAgentAssignedApplianceRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'agent_id' => 'required|exists:agents,id',
-            'user_id' => 'required|exists:users,id',
-            'appliance_type_id' => 'required|exists:asset_types,id',
+            'agent_id' => 'required|exists:'.$database.'.agents,id',
+            'user_id' => 'required|exists:micro_power_manager.users,id',
+            'appliance_type_id' => 'required|exists:'.$database.'.asset_types,id',
             'cost' => 'required|regex:/^\d*(\.\d{1,2})?$/',
         ];
     }

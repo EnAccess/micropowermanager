@@ -4,20 +4,18 @@
 
 namespace App\Services;
 
-use App\Http\Middleware\Transaction;
+
 use App\Models\Meter\Meter;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
+use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Collection;
 
-class TransactionService
+class TransactionService extends BaseService implements IBaseService,IAssociative
 {
-    /**
-     * @var Transaction
-     */
-    private $transaction;
+
     /**
      * @var Meter
      */
@@ -29,9 +27,10 @@ class TransactionService
      * @param Transaction $transaction
      * @param Meter $meter
      */
-    public function __construct(Transaction $transaction, Meter $meter)
+    public function __construct(private Transaction $transaction, Meter $meter)
     {
-        $this->transaction = $transaction;
+
+        parent::__construct([$transaction]);
         $this->meter = $meter;
     }
 
@@ -148,5 +147,41 @@ class TransactionService
             )
                 ->whereBetween('created_at', $range)
                 ->sum('amount');
+    }
+
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
+    }
+
+    public function make($transactionData)
+    {
+       return $this->transaction->newQuery()->make($transactionData);
+    }
+
+    public function save($transaction)
+    {
+        $transaction->save();
     }
 }

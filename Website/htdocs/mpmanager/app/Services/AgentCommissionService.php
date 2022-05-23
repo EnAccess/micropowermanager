@@ -6,49 +6,52 @@ use App\Models\AgentCommission;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\This;
 
-class AgentCommissionService
+class AgentCommissionService extends BaseService implements IBaseService
 {
+
+    public function __construct(private AgentCommission $agentCommission)
+    {
+        parent::__construct([$agentCommission]);
+    }
 
 
     /**
      * @return Model|Builder
      */
-    public function create()
+    public function create($agentCommissiondata)
     {
-        return AgentCommission::query()->create(
-            request()->only(
-                'name',
-                'energy_commission',
-                'appliance_commission',
-                'risk_balance'
-            )
-        );
+        return $this->agentCommission->newQuery()->create($agentCommissiondata);
     }
 
     /**
-     * @param AgentCommission $agentCommission
+     * @param  $agentCommission
      * @param array $data
-     * @return mixed
      */
-    public function update(AgentCommission $agentCommission, array $data)
+    public function update($agentCommission,  $agentCommissiondata)
     {
-        $agentCommission->update([
-            'name' => $data['name'],
-            'energy_commission' => $data['energy_commission'],
-            'appliance_commission' => $data['appliance_commission'],
-            'risk_balance' => $data['risk_balance']
-        ]);
+        $agentCommission->update($agentCommissiondata);
+        $agentCommission->fresh();
 
-        return $agentCommission->fresh();
+        return $agentCommission;
     }
 
-    /**
-     * @param AgentCommission $agentCommission
-     * @throws Exception
-     */
-    public function delete(AgentCommission $agentCommission): void
+    public function delete($agentCommission)
     {
-        $agentCommission->delete();
+       return $agentCommission->delete();
+    }
+
+    public function getById($id)
+    {
+        return $this->agentCommission->newQuery()->find($id);
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->agentCommission->newQuery()->paginate($limit);
+        }
+        return $this->agentCommission->newQuery()->get();
     }
 }

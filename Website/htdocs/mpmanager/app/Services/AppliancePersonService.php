@@ -7,19 +7,19 @@ use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use PhpParser\Node\Stmt\Throw_;
 
-class AppliancePersonService
+class AppliancePersonService extends BaseService implements IBaseService, IAssociative
 {
     private $mainSettings;
-    private $assetPerson;
     private $cashTransactionService;
 
     public function __construct(
         MainSettings $mainSettings,
-        AssetPerson $assetPerson,
+        private AssetPerson $assetPerson,
         CashTransactionService $cashTransactionService,
     ) {
+        parent::__construct([$assetPerson]);
+
         $this->mainSettings = $mainSettings;
-        $this->assetPerson = $assetPerson;
         $this->cashTransactionService = $cashTransactionService;
     }
 
@@ -100,7 +100,7 @@ class AppliancePersonService
                     'user_id' => auth('api')->user()->id,
                     'affected' => $assetPerson,
                     'action' => 'Appliance is sold to ' . $cost . ' ' . $currency .
-                        ' instead of Preferred Price (' . $preferredPrice . ' ' . $currency .  ')'
+                        ' instead of Preferred Price (' . $preferredPrice . ' ' . $currency . ')'
                 ]
             ]
         );
@@ -128,12 +128,47 @@ class AppliancePersonService
         $appliance['totalPayments'] = 0;
 
         $rates->map(function ($rate) use ($appliance) {
-                $appliance['totalRemainingAmount'] +=  $rate->remaining;
+            $appliance['totalRemainingAmount'] += $rate->remaining;
             if ($rate->remaining !== $rate->rate_cost) {
                 $appliance['totalPayments'] += $rate->rate_cost - $rate->remaining;
             }
         });
 
         return $appliance;
+    }
+
+    public function make($data)
+    {
+        return $this->assetPerson->newQuery()->make($data);
+    }
+
+    public function save($appliancePerson)
+    {
+        $appliancePerson->save();
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($data)
+    {
+        // TODO: Implement create() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

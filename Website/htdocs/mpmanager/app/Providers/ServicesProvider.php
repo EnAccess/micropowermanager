@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 
+use App\Models\AgentCharge;
+use App\Observers\AgentChargeObserver;
 use App\Services\CountryService;
 use App\Services\RolesService;
 use App\Models\Address\Address;
@@ -68,6 +70,7 @@ class ServicesProvider extends ServiceProvider
         AgentSoldAppliance::observe(AgentSoldApplianceObserver::class);
         AgentReceipt::observe(AgentReceiptObserver::class);
         Agent::observe(AgentObserver::class);
+        AgentCharge::observe(AgentChargeObserver::class);
     }
 
 

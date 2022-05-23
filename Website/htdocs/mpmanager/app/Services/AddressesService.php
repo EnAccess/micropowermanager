@@ -8,7 +8,7 @@ use App\Models\Address\HasAddressesInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class AddressesService extends BaseService implements IBaseService
+class AddressesService extends BaseService implements IBaseService,IAssociative
 {
 
     public function __construct(private Address $address)
@@ -31,23 +31,6 @@ class AddressesService extends BaseService implements IBaseService
     public function assignAddressToOwner(HasAddressesInterface $owner, Address $address)
     {
         return $owner->addresses()->save($address);
-    }
-
-    public function makeAddress(array $addressData): Address
-    {
-        return $this->address->newQuery()->make([
-            'email' => $addressData['email'] ?? null,
-            'phone' => $addressData['phone'] ?? null,
-            'street' => $addressData['street'] ?? null,
-            'city_id' => $addressData['city_id'] ?? null,
-            'geo_id' => $addressData['geo_id'] ?? null,
-            'is_primary' => $addressData['is_primary'] ?? 0,
-        ]);
-    }
-
-    public function saveAddress(Address $address): bool
-    {
-        return $address->save();
     }
 
     public function getStoredAddressWithCityRelation(int $id): Address
@@ -94,5 +77,22 @@ class AddressesService extends BaseService implements IBaseService
         $address->update($addressData);
 
         return $address;
+    }
+
+    public function make($addressData)
+    {
+        return $this->address->newQuery()->make([
+            'email' => $addressData['email'] ?? null,
+            'phone' => $addressData['phone'] ?? null,
+            'street' => $addressData['street'] ?? null,
+            'city_id' => $addressData['city_id'] ?? null,
+            'geo_id' => $addressData['geo_id'] ?? null,
+            'is_primary' => $addressData['is_primary'] ?? 0,
+        ]);
+    }
+
+    public function save($address)
+    {
+        return $address->save();
     }
 }

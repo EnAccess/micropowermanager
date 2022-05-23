@@ -3,14 +3,34 @@
 namespace App\Listeners;
 
 use App\Lib\ITransactionProvider;
+use App\Models\AccessRate\AccessRate;
+use App\Models\AssetRate;
 use App\Models\Meter\MeterParameter;
+use App\Models\Meter\MeterToken;
 use App\Models\PaymentHistory;
+use App\Services\AccessRatePaymentHistoryService;
+use App\Services\ApplianceRatePaymentHistoryService;
+use App\Services\MeterTokenPaymentHistoryService;
+use App\Services\PaymentHistoryService;
+use App\Services\PersonPaymentHistoryService;
+use App\Services\TransactionPaymentHistoryService;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class PaymentListener
 {
+    public function __construct(
+        private PaymentHistoryService $paymentHistoryService,
+        private PersonPaymentHistoryService $personPaymentHistoryService,
+        private ApplianceRatePaymentHistoryService $applianceRatePaymentHistoryService,
+        private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
+        private MeterTokenPaymentHistoryService $meterTokenPaymentHistoryService,
+        private TransactionPaymentHistoryService $transactionPaymentHistoryService
+    ) {
+    }
+
+
     public function onEnergyPayment(ITransactionProvider $transactionProvider): void
     {
         $transaction = $transactionProvider->getTransaction();
@@ -34,11 +54,11 @@ class PaymentListener
     }
 
     /**
-     * @param int    $amount
+     * @param int $amount
      * @param string $paymentService the name of the Payment gateway
      * @param $paymentType
-     * @param mixed  $sender         : The number or person who sent the money
-     * @param mixed  $paidFor        the identifier for the payment. Ex; { LoanID, TokenID }
+     * @param mixed $sender : The number or person who sent the money
+     * @param mixed $paidFor the identifier for the payment. Ex; { LoanID, TokenID }
      * @param $payer
      * @param $transaction
      */
@@ -51,16 +71,41 @@ class PaymentListener
         $payer,
         $transaction
     ): void {
-        //store payment history
-        $paymentHistory = new PaymentHistory();
-        $paymentHistory->amount = $amount;
-        $paymentHistory->payment_service = $paymentService;
-        $paymentHistory->payment_type = $paymentType;
-        $paymentHistory->sender = $sender;
-        $paymentHistory->payer()->associate($payer); //the related payer
-        $paymentHistory->paidFor()->associate($paidFor); // Loan , Token {Energy} , AccessRate
+        $paymentHistoryData = [
+            'amount' => $amount,
+            'payment_service' => $paymentService,
+            'payment_type' => $paymentType,
+            'sender' => $sender,
+        ];
+        $paymentHistory = $this->paymentHistoryService->make($paymentHistoryData);
+        $this->personPaymentHistoryService->setAssigner($payer);
+        $this->personPaymentHistoryService->setAssigned($paymentHistory);
+        $this->personPaymentHistoryService->assign();
+
+
+        switch (true) {
+            case $paidFor instanceof AccessRate:
+                $this->accessRatePaymentHistoryService->setAssigner($paidFor);
+                $this->accessRatePaymentHistoryService->setAssigned($paymentHistory);
+                $this->accessRatePaymentHistoryService->assign();
+                break;
+            case $paidFor instanceof AssetRate:
+                $this->applianceRatePaymentHistoryService->setAssigner($paidFor);
+                $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
+                $this->applianceRatePaymentHistoryService->assign();
+                break;
+            case $paidFor instanceof MeterToken:
+                $this->meterTokenPaymentHistoryService->setAssigner($paidFor);
+                $this->meterTokenPaymentHistoryService->setAssigned($paymentHistory);
+                $this->meterTokenPaymentHistoryService->assign();
+                break;
+        }
+
+
         if ($transaction !== null) {
-            $paymentHistory->transaction()->associate($transaction);
+            $this->transactionPaymentHistoryService->setAssigner($transaction);
+            $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
+            $this->transactionPaymentHistoryService->assign();
 
             if ($paymentHistory->payment_service === 'third_party_transaction') {
                 $paymentHistory->created_at = $transaction->created_at;
@@ -68,7 +113,7 @@ class PaymentListener
             }
         }
 
-        $paymentHistory->save();
+        $this->paymentHistoryService->save($paymentHistory);
     }
 
     public function subscribe(Dispatcher $events): void

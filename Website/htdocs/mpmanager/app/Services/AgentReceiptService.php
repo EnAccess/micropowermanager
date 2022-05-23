@@ -4,63 +4,67 @@ namespace App\Services;
 
 use App\Models\AgentReceipt;
 use App\Models\AgentBalanceHistory;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Matrix\Exception;
 
-class AgentReceiptService implements IAgentRelatedService
+class AgentReceiptService extends BaseService implements IBaseService
 {
-    /**
-     * @return LengthAwarePaginator
-     */
-    public function list($agentId): LengthAwarePaginator
+
+    public function __construct(private AgentReceipt $agentReceipt)
     {
-        return AgentReceipt::with(['user', 'agent', 'history'])
-            ->whereHas(
+        parent::__construct([$agentReceipt]);
+    }
+
+    public function getAll($limit = null, $agentId = null)
+    {
+        $query = $this->agentReceipt->newQuery()
+            ->with(['user', 'agent', 'history']);
+
+        if ($agentId) {
+            $query->whereHas(
                 'agent',
                 function ($q) use ($agentId) {
                     $q->where('agent_id', $agentId);
                 }
-            )
-            ->latest()->paginate();
+            );
+        }
+        if ($limit) {
+            return $query->latest()->paginate($limit);
+        } else {
+            return $query->latest()->paginate();
+        }
     }
 
-    public function listAllReceipts(): LengthAwarePaginator
+    public function create($receiptData)
     {
-        return AgentReceipt::with(['user', 'agent', 'history'])->latest()->paginate();
+        return $this->agentReceipt->newQuery()->create($receiptData);
     }
 
-    public function listReceiptsForUser($userId): LengthAwarePaginator
+    public function getById($id)
     {
-        return AgentReceipt::with(['user', 'agent', 'history'])
-            ->whereHas(
-                'user',
-                function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                }
-            )
-            ->latest()->paginate();
+        // TODO: Implement getById() method.
     }
 
-    /**
-     * @param $userId
-     * @param int $agentId
-     * @param array $receiptData
-     * @return Builder|Model
-     */
-    public function create($userId, int $agentId, array $receiptData)
+    public function update($model, $data)
     {
-
-        $lastBalanceHistoryId = AgentBalanceHistory::where('agent_id', $agentId)->get()->last();
-
-        return AgentReceipt::query()->create(
-            [
-            'agent_id' => $agentId,
-            'user_id' => $userId,
-            'amount' => $receiptData['amount'],
-            'last_controlled_balance_history_id' => $lastBalanceHistoryId->id
-            ]
-        );
+        // TODO: Implement update() method.
     }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getLastReceipt($agentId)
+    {
+      return  $this->agentReceipt->newQuery()->where('agent_id', $agentId)
+            ->latest()
+            ->skip(1)
+            ->take(1)
+            ->get();
+    }
+
 }

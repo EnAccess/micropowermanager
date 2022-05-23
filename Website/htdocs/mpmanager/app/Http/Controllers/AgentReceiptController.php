@@ -7,45 +7,31 @@ use App\Http\Requests\CreateAgentReceiptRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
 use App\Models\User;
+use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptService;
 use Illuminate\Http\Request;
 
 class AgentReceiptController extends Controller
 {
+    public function __construct(
+        private AgentReceiptService $agentReceiptService,
+        private AgentBalanceHistoryService $agentBalanceHistoryService
+    ) {
 
-    private $agentReceiptService;
-
-    public function __construct(AgentReceiptService $agentReceiptService)
-    {
-        $this->agentReceiptService = $agentReceiptService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param  Agent   $agent
-     * @param  Request $request
+     * @param $agentId
+     * @param Request $request
      * @return ApiResource
      */
-    public function index(Agent $agent, Request $request)
+    public function show($agentId, Request $request)
     {
+        $limit = $request->input('limit');
 
-        $agentReceipts = $this->agentReceiptService->list($agent->id);
-        return new ApiResource($agentReceipts);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  User    $user
-     * @param  Request $request
-     * @return ApiResource
-     */
-    public function listByUsers(Request $request)
-    {
-        $user = User::find(auth('api')->user()->id);
-        $agentReceipts = $this->agentReceiptService->listReceiptsForUser($user->id);
-        return new ApiResource($agentReceipts);
+        return ApiResource::make($this->agentReceiptService->getAll($limit, $agentId));
     }
 
     /**
@@ -54,57 +40,33 @@ class AgentReceiptController extends Controller
      * @param  Request $request
      * @return ApiResource
      */
-    public function listAllReceipts(Request $request)
+    public function index(Request $request)
     {
+        $limit = $request->input('limit');
 
-        $agentReceipts = $this->agentReceiptService->listAllReceipts();
-        return new ApiResource($agentReceipts);
+        return ApiResource::make($this->agentReceiptService->getAll($limit));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Agent                     $agent
+     * @param  $agentId
      * @param  CreateAgentReceiptRequest $request
      * @return ApiResource
      */
-    public function store(Agent $agent, CreateAgentReceiptRequest $request)
+    public function store(CreateAgentReceiptRequest $request)
     {
 
-        $user = User::find(auth('api')->user()->id);
-        $appliance = $this->agentReceiptService->create(
-            $user->id,
-            $agent->id,
-            $request->only(
-                [
-                'amount',
-                ]
-            )
-        );
+        $userId = auth('api')->user()->id;
+        $agentId = $request->input('agent_id');
+        $lastBalanceHistory= $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
+        $receiptData = [
+            'user_id' => $userId,
+            'agent_id' => $agentId,
+            'amount' => $request->input('amount'),
+            'last_controlled_balance_history_id' => $lastBalanceHistory->id
+        ];
 
-        return new ApiResource($appliance);
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return void
-     */
-    public function update(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Request $request
-     * @return void
-     */
-    public function destroy(Request $request)
-    {
-        //
+        return  ApiResource::make($this->agentReceiptService->create($receiptData));
     }
 }

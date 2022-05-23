@@ -8,8 +8,17 @@ use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class AgentTransactionService implements IAgentRelatedService
+class AgentTransactionService extends BaseService implements IBaseService
 {
+
+    public function __construct(
+        private AgentTransaction $agentTransaction,
+        private Transaction $transaction
+    ) {
+
+        parent::__construct([$agentTransaction, $transaction]);
+    }
+
 
     /**
      * @return LengthAwarePaginator
@@ -77,5 +86,54 @@ class AgentTransactionService implements IAgentRelatedService
                 }
             )
             ->latest()->paginate();
+
+
     }
+
+    public function getAll($limit = null, $agentId = null, $forApp = false)
+    {
+        $query = $this->transaction->newQuery();
+
+        if ($forApp) {
+            $query->with(['originalAgent', 'meter.meterParameter.owner']);
+        } else {
+            $query->with(['meter.meterParameter.owner']);
+        }
+
+        $query->whereHasMorph(
+            'originalTransaction',
+            [AgentTransaction::class],
+            static function ($q) use ($agentId) {
+                $q->where('agent_id', $agentId);
+            }
+        );
+
+        if ($limit) {
+            return $query->paginate($limit);
+        }
+        return $query->get();
+
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($transactionData)
+    {
+        return $this->agentTransaction->newQuery()->create($transactionData);
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+
 }

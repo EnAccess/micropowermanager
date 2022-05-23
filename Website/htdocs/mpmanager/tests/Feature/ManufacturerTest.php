@@ -34,6 +34,7 @@ class ManufacturerTest extends TestCase
     public function test_user_creates_new_manufacturer()
     {
         $this->createTestData();
+        $this->createCity();
         $manufacturerData = [
             'name' => 'test meters company',
             'website' => $this->faker->url,

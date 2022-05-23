@@ -5,54 +5,49 @@ namespace App\Observers;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
-use App\Models\AgentReceiptDetail;
+
+use App\Services\AgentBalanceHistoryService;
+use App\Services\AgentReceiptDetailService;
+use App\Services\AgentReceiptHistoryBalanceService;
+use App\Services\AgentReceiptService;
+use App\Services\AgentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use mysql_xdevapi\Exception;
+
 
 class AgentReceiptObserver
 {
-    private $agentBalanceHistory;
+    public function __construct(
+        private AgentBalanceHistoryService $agentBalanceHistoryService,
+        private AgentService $agentService,
+        private AgentReceiptService $agentReceiptService,
+        private AgentReceiptDetailService $agentReceiptDetailService,
+        private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService
+    ) {
 
-    public function __construct(AgentBalanceHistory $agentBalanceHistory)
-    {
-        $this->agentBalanceHistory = $agentBalanceHistory;
     }
 
     public function created(AgentReceipt $receipt): void
     {
         $agentId = $receipt->agent_id;
-        $agent = Agent::query()->find($agentId);
+        $agent = $this->agentService->getById($agentId);
         $due = $agent->due_to_energy_supplier;
         $sinceLastVisit = 0;
-        $lastBalanceHistory = AgentReceipt::query()->where('agent_id', $agentId)
-            ->latest()
-            ->skip(1)
-            ->take(1)
-            ->get();
-        if (count($lastBalanceHistory) > 0) {
-            $sinceLastVisit = AgentBalanceHistory::query()
-                ->where('agent_id', $agentId)
-                ->where('id', '>', $lastBalanceHistory[0]->last_controlled_balance_history_id)
-                ->whereIn('trigger_type', ['agent_appliance', 'agent_transaction'])
-                ->sum('amount');
+        $lastReceipt = $this->agentReceiptService->getLastReceipt($agentId);
+
+        if (count($lastReceipt) > 0) {
+            $agentBalanceHistoryId = $lastReceipt[0]->last_controlled_balance_history_id;
+            $sinceLastVisit =
+                $this->agentBalanceHistoryService->getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId);
         }
         try {
-            $earlier = AgentReceiptDetail::query()->select('summary')
-                ->whereHas(
-                    'receipt',
-                    static function ($q) use ($agentId) {
-                        $q->where('agent_id', $agentId);
-                    }
-                )->latest()->firstOrFail()->summary;
+            $earlier = $this->agentReceiptDetailService->getSummary($agentId);
         } catch (ModelNotFoundException $exception) {
             $earlier = 0;
         }
 
         $summary = $receipt->amount - $agent->due_to_energy_supplier;
         $collected = $receipt->amount;
-
-        AgentReceiptDetail::query()->create(
-            [
+        $agentReceiptDetailData = [
             'agent_receipt_id' => $receipt->id,
             'due' => $due ?? 0,
             'collected' => $collected ?? 0,
@@ -60,20 +55,20 @@ class AgentReceiptObserver
             'earlier' => $earlier ?? 0,
             'summary' => $summary ?? 0
 
-            ]
-        );
-
-
-        $history = AgentBalanceHistory::query()->make(
-            [
+        ];
+        $this->agentReceiptDetailService->create($agentReceiptDetailData);
+        $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
             'amount' => $receipt->amount,
             'transaction_id' => $receipt->id,
             'available_balance' => $agent->balance,
             'due_to_supplier' => $agent->due_to_energy_supplier
-            ]
-        );
-        $history->trigger()->associate($receipt);
-        $history->save();
+        ];
+        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
+        $this->agentReceiptHistoryBalanceService->setAssigner($receipt);
+        $this->agentReceiptHistoryBalanceService->setAssigned($agentBalanceHistory);
+        $this->agentReceiptHistoryBalanceService->assign();
+        $this->agentBalanceHistoryService->save($agentBalanceHistory);
+
     }
 }

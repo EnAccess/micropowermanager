@@ -10,16 +10,21 @@ use Illuminate\Http\Request;
 
 class AgentChargeController extends Controller
 {
-    private $agentChargeService;
 
-    public function __construct(AgentChargeService $agentChargeService)
+    public function __construct(private AgentChargeService $agentChargeService)
     {
-        $this->agentChargeService = $agentChargeService;
     }
 
-    public function store(Agent $agent, CreateAgentChargeRequest $request): ApiResource
+    public function store(CreateAgentChargeRequest $request): ApiResource
     {
-        $agentCharge = $this->agentChargeService->create($agent, $request->only(['user_id']));
-        return new ApiResource($agentCharge);
+        $userId = auth('api')->user()->id;
+
+        $agentChargeData = [
+            'agent_id' => $request->input('agent_id'),
+            'amount' => $request->input('amount'),
+            'user_id' => $userId
+        ];
+
+        return ApiResource::make($this->agentChargeService->create($agentChargeData));
     }
 }

@@ -85,18 +85,14 @@ class MeterTypeTest extends TestCase
     public function test_user_gets_meter_types_with_meter_relation_by_meter_type_id()
     {
         $connectionTypeCount = 2;
-        $subConnectionTypeCount = 1;
-        $meterTypeCount = 1;
-        $meterTariffCount = 1;
-        $meterManufacturerCount = 1;
-        $connectionGroupCount = 1;
         $this->createTestData();
-        $this->createMeterTariff($meterTariffCount);
-        $this->createConnectionGroup($connectionGroupCount);
-        $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
-        $this->createMeterType($meterTypeCount);
+        $this->createMeterTariff();
+        $this->createConnectionGroup();
+        $this->createConnectionType($connectionTypeCount );
+        $this->createMeterType();
         $this->createMeterManufacturer();
-        $this->createMetersWithDifferentMeterTypes(1);
+        $this->createPerson();
+        $this->createMetersWithDifferentMeterTypes();
         $response = $this->actingAs($this->user)->get(sprintf('/api/meter-types/%s/list',
             $this->meterTypes[0]->id));
         $response->assertStatus(200);

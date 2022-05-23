@@ -6,27 +6,36 @@ use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 
-class AgentChargeService
+class AgentChargeService extends BaseService implements IBaseService
 {
 
-    public function create(Agent $agent, array $data)
+    public function __construct(private AgentCharge $agentCharge)
     {
-        $agentCharge = AgentCharge::query()->create(
-            [
-            'agent_id' => $agent->id,
-            'user_id' => $data['user_id'],
-            ]
-        );
-        $history = AgentBalanceHistory::query()->make(
-            [
-            'agent_id' => $agent->id,
-            'amount' => request()->input('amount'),
-            'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier
-            ]
-        );
-        $history->trigger()->associate($agentCharge);
-        $history->save();
-        return $agentCharge->fresh();
+        parent::__construct([$agentCharge]);
+    }
+
+    public function create($agentChargeData)
+    {
+       return $this->agentCharge->newQuery()->create($agentChargeData);
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }

@@ -11,96 +11,131 @@ use App\Models\AssetPerson;
 use App\Models\Person\Person;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
+use App\Services\AgentAppliancePersonService;
+use App\Services\AgentAssignedApplianceHistoryBalanceService;
+use App\Services\AgentAssignedApplianceService;
+use App\Services\AgentBalanceHistoryService;
+use App\Services\AgentCommissionHistoryBalanceService;
+use App\Services\AgentCommissionService;
+use App\Services\AgentService;
+use App\Services\AgentTransactionService;
+use App\Services\AgentTransactionTransactionService;
+use App\Services\AppliancePersonService;
+use App\Services\PersonService;
+use App\Services\TransactionService;
 
 class AgentSoldApplianceObserver
 {
-    private $agentBalanceHistory;
 
-    public function __construct(AgentBalanceHistory $agentBalanceHistory)
-    {
-        $this->agentBalanceHistory = $agentBalanceHistory;
+    public function __construct(
+        private AgentBalanceHistoryService $agentBalanceHistoryService,
+        private AgentAssignedApplianceService $agentAssignedApplianceService,
+        private AgentService $agentService,
+        private AgentTransactionService $agentTransactionService,
+        private TransactionService $transactionService,
+        private AgentTransactionTransactionService $agentTransactionTransactionService,
+        private AppliancePersonService $appliancePersonService,
+        private AgentAppliancePersonService $agentAppliancePersonService,
+        private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
+        private AgentCommissionService $agentCommissionService,
+        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService
+    ) {
+
     }
 
-    public function created(AgentSoldAppliance $appliances): void
+    public function created(AgentSoldAppliance $agentSoldAppliance): void
     {
-        $assignedApplianceId = $appliances->agent_assigned_appliance_id;
-        $assignedAppliance = AgentAssignedAppliances::with('applianceType')->find($assignedApplianceId);
+        if (request()->all()){
+            $this->processSaleIfIsNotCreatedByFactory($agentSoldAppliance);
+        }
+    }
 
+    private function processSaleIfIsNotCreatedByFactory($agentSoldAppliance)
+    {
+        $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
+        $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->applianceType()->first();
-        $agent = Agent::query()->find($assignedAppliance->agent_id);
-        $buyer = Person::query()->find(request()->input('person_id'));
+        $agent = $this->agentService->getById($assignedAppliance->agent_id);
+
+
         //create agent transaction
-        $agentTransaction = AgentTransaction::query()->create(
-            [
+        $agentTransactionData = [
             'agent_id' => $agent->id,
             'device_id' => $agent->device_id,
             'status' => 1,
-            ]
-        );
+        ];
+        $agentTransaction = $this->agentTransactionService->create($agentTransactionData);
 
-        $transaction = Transaction::query()->make(
-            [
-            'amount' => request()->input('down_payment'),
+        // assign agent transaction to transaction
+        $transactionData = [
+            'amount' => request()->input('down_payment') ?:0,
             'sender' => $agent->device_id,
             'message' => '-'
-            ]
-        );
-        $transaction->originalTransaction()->associate($agentTransaction);
-        $transaction->save();
+        ];
 
-        $assetPerson = AssetPerson::make(
-            [
-                'person_id' => request()->input('person_id'),
-                'first_payment_date' => request()->input('first_payment_date'),
-                'rate_count' => request()->input('tenure'),
-                'total_cost' => $assignedAppliance->cost,
-                'down_payment' => request()->input('down_payment'),
-                'asset_type_id' => $assignedAppliance->applianceType->id,
-            ]
-        );
-        $assetPerson->creator()->associate($agent);
-        $assetPerson->save();
+        $transaction = $this->transactionService->make($transactionData);
+        $this->agentTransactionTransactionService->setAssigner($agentTransaction);
+        $this->agentTransactionTransactionService->setAssigned($transaction);
+        $this->agentTransactionTransactionService->assign();
+        $this->transactionService->save($transaction);
+
+        //assign agent to appliance person
+        $appliancePersonData = [
+            'person_id' => request()->input('person_id'),
+            'first_payment_date' => request()->input('first_payment_date'),
+            'rate_count' => request()->input('tenure'),
+            'total_cost' => $assignedAppliance->cost,
+            'down_payment' => request()->input('down_payment'),
+            'asset_type_id' => $assignedAppliance->applianceType->id,
+        ];
+        $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
+        $this->agentAppliancePersonService->setAssigner($agent);
+        $this->agentAppliancePersonService->setAssigned($appliancePerson);
+        $this->agentAppliancePersonService->assign();
+        $this->appliancePersonService->save($appliancePerson);
 
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',
             [
                 'assetType' => $appliance,
-                'assetPerson' => $assetPerson,
+                'assetPerson' => $appliancePerson,
                 'transaction' => $transaction
             ]
         );
 
         event('appliance.sold', $soldApplianceDataContainer);
 
-
-        $history = AgentBalanceHistory::query()->make(
-            [
+        //assign agent assigned appliance to agent balance history
+        $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
             'amount' => (-1 * request()->input('down_payment')),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->balance,
             'due_to_supplier' => $agent->due_to_energy_supplier
 
-            ]
-        );
-
-        $history->trigger()->associate($assignedAppliance);
-        $history->save();
-
+        ];
+        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
+        $this->agentAssignedApplianceHistoryBalanceService->setAssigner($assignedAppliance);
+        $this->agentAssignedApplianceHistoryBalanceService->setAssigned($agentBalanceHistory);
+        $this->agentAssignedApplianceHistoryBalanceService->assign();
+        $this->agentBalanceHistoryService->save($agentBalanceHistory);
 
         //create agent commission
-        $commission = AgentCommission::query()->find($agent->agent_commission_id);
+        $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
 
-        $history = AgentBalanceHistory::query()->make(
-            [
+        //assign agent commission to agent balance history
+        $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
-            'amount' => ($assignedAppliance->cost * $commission->appliance_commission),
+            'amount' => ($assignedAppliance->cost * $agentCommission->appliance_commission),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->commission_revenue,
             'due_to_supplier' => $agent->due_to_energy_supplier
-            ]
-        );
-        $history->trigger()->associate($commission);
-        $history->save();
+
+        ];
+        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
+        $this->agentCommissionHistoryBalanceService->setAssigner($agentCommission);
+        $this->agentCommissionHistoryBalanceService->setAssigned($agentBalanceHistory);
+        $this->agentCommissionHistoryBalanceService->assign();
+        $this->agentBalanceHistoryService->save($agentBalanceHistory);
     }
 }

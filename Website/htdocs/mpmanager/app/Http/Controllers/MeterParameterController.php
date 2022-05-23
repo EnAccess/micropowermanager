@@ -78,11 +78,12 @@ class MeterParameterController extends Controller
         $meterParameter = $this->meterParameterService->createMeterParameter($meterParameterData,
             $geographicalInformation, $person);
 
-        $address = $this->addressService->makeAddress($addressData);
-        $this->meterParameterAddressService->setMeterParameter($meterParameter);
-        $this->meterParameterAddressService->setAddress($address);
-        $this->meterParameterAddressService->assignAddressToMeterParameter();
-        $this->addressService->saveAddress($address);
+        $address = $this->addressService->make($addressData);
+        $this->meterParameterAddressService->setAssigner($meterParameter);
+        $this->meterParameterAddressService->setAssigned($address);
+        $this->meterParameterAddressService->assign();
+        $this->addressService->save($address);
+
         return ApiResource::make($meterParameter);
     }
 

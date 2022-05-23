@@ -7,22 +7,19 @@ use App\Models\AssetRate;
 use App\Models\Person\Person;
 use App\Models\Transaction\CashTransaction;
 use App\Services\ApplianceRateService;
+use App\Services\PersonService;
 use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 
 class SoldApplianceListener
 {
-    /**
-     * @var AssetRate
-     */
-    private $assetRate;
 
-    private $applianceRateService;
 
-    public function __construct(AssetRate $assetRate, ApplianceRateService $applianceRateService)
-    {
-        $this->assetRate = $assetRate;
-        $this->applianceRateService = $applianceRateService;
+    public function __construct(
+        private ApplianceRateService $applianceRateService,
+        private PersonService $personService
+    ) {
+
     }
 
     public function initializeApplianceRates(SoldApplianceDataContainer $soldAppliance): void
@@ -30,9 +27,9 @@ class SoldApplianceListener
         $assetPerson = $soldAppliance->getAssetPerson();
         $assetType = $soldAppliance->getAssetType();
         $transaction = $soldAppliance->getTransaction();
-        $buyer = Person::query()->find($assetPerson->person_id);
+        $buyer = $this->personService->getById($assetPerson->person_id);
 
-        $this->applianceRateService->createApplianceRatesFromAssetPerson($assetPerson);
+        $this->applianceRateService->create($assetPerson);
 
         if ($assetPerson->down_payment > 0) {
             event(

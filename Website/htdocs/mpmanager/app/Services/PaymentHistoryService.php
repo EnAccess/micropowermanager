@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentHistoryService extends BaseService
+class PaymentHistoryService extends BaseService implements IAssociative
 {
 
 
@@ -48,28 +48,14 @@ class PaymentHistoryService extends BaseService
     }
 
 
-    public function getById($id)
+    public function make($paymentHistoryData)
     {
-        // TODO: Implement getById() method.
+       return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }
 
-    public function create($data)
+    public function save($paymentHistory)
     {
-        // TODO: Implement create() method.
+        return $paymentHistory->save();
     }
 
-    public function update($id, $data)
-    {
-        // TODO: Implement update() method.
-    }
-
-    function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
-
-    function getAll($limit = null): Collection|array
-    {
-        // TODO: Implement getAll() method.
-    }
 }

@@ -78,17 +78,4 @@ class AgentBalanceHistoryController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Agent   $agent
-     * @param  Request $request
-     * @return ApiResource
-     */
-    public function indexWeb(Agent $agent, Request $request)
-    {
-
-        $balanceHistories = $this->agentBalanceHistoryService->agentBalanceHistories($agent->id);
-        return new ApiResource($balanceHistories);
-    }
 }
