@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Agent;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * @group   Agent-Authenticator
@@ -15,16 +16,13 @@ use Illuminate\Http\JsonResponse;
 class AgentAuthController extends Controller
 {
 
-    private $agentService;
-
     /**
      * Create a new AuthController instance.
      *
      * @param AgentService $agentService
      */
-    public function __construct(AgentService $agentService)
+    public function __construct(private AgentService $agentService)
     {
-        $this->agentService = $agentService;
         $this->middleware('auth:agent_api', ['except' => ['login']]);
     }
 
@@ -35,15 +33,16 @@ class AgentAuthController extends Controller
      * @bodyParam password string required
      * @return    JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
 
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
         if (!$token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $deviceId = request()->header('device-id');
+        $agentId = auth('agent_api')->user()->id;
+        $agent = $this->agentService->getById($agentId);
+        $deviceId = $request->header('device-id');
 
         $this->agentService->updateDevice($agent, $deviceId);
         return $this->respondWithToken($token);

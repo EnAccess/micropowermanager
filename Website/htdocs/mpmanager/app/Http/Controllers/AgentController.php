@@ -5,62 +5,95 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
+use App\Services\AddressesService;
 use App\Services\AgentService;
+use App\Services\CountryService;
+use App\Services\MaintenanceUserService;
+use App\Services\PersonAddressService;
+use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AgentController extends Controller
 {
-    private $agentService;
 
-    public function __construct(AgentService $agentService)
-    {
+    public function __construct(
+        private AgentService $agentService,
+        private AddressesService $addressService,
+        private PersonService $personService,
+        private PersonAddressService $personAddressService,
+        private CountryService $countryService
+    ) {
 
-        $this->agentService = $agentService;
     }
 
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        $users = $this->agentService->list();
-        return new ApiResource($users);
+        $limit = $request->input('limit');
+
+        return ApiResource::make($this->agentService->getAll($limit));
     }
 
-    public function show(Agent $agent, Request $request): ApiResource
+    public function show($agentId, Request $request): ApiResource
     {
-        $agent = $this->agentService->get($agent->id);
-        return new ApiResource($agent);
+        return ApiResource::make($this->agentService->getById($agentId));
     }
 
     public function store(CreateAgentRequest $request): ApiResource
     {
-        $agent = $this->agentService->createFromRequest($request);
-        return new ApiResource($agent);
+
+        $addressData = $this->addressService->createAddressDataFromRequest($request);
+        $personData = $this->personService->createPersonDataFromRequest($request);
+        $country = $this->countryService->getByCode($request->get('nationality'));
+        $agentData = [
+            'password' => $request['password'],
+            'email' => $request['email'],
+            'mini_grid_id' => $request['city_id'],
+            'agent_commission_id' => $request['agent_commission_id'],
+            'device_id' => '-',
+            'fire_base_token' => '-',
+        ];
+
+        return ApiResource::make($this->agentService->create(
+            $agentData,
+            $addressData,
+            $personData,
+            $country,
+            $this->addressService,
+            $this->countryService,
+            $this->personService,
+            $this->personAddressService
+        ));
     }
 
-    public function update(Agent $agent, Request $request): ApiResource
+    public function update($agentId, Request $request): ApiResource
     {
-        $updatedAgent = $this->agentService->update($agent, $request->all());
-        return new ApiResource($updatedAgent);
+        $agent = $this->agentService->getById($agentId);
+        $agentData = $request->all();
+
+        return ApiResource::make($this->agentService->update($agent, $agentData, $this->personService));
     }
 
-    public function destroy(Agent $agent): ApiResource
+    public function destroy($agentId, Request $request): ApiResource
     {
-        return new ApiResource($this->agentService->deleteAgent($agent));
+        $agent = $this->agentService->getById($agentId);
+
+        return ApiResource::make($this->agentService->delete($agent));
     }
 
 
-    public function search(): ApiResource
+    public function search(Request $request): ApiResource
     {
-        $term = request('term');
-        $paginate = request('paginate') ?? 1;
+        $term = $request->input('term');
+        $paginate = $request->input('paginate', 1);
 
-        return new ApiResource($this->agentService->searchAgent($term, $paginate));
+        return ApiResource::make($this->agentService->searchAgent($term, $paginate));
     }
 
     /**
      * @return Response
      */
-    public function resetPassword(Request $request, Response $response): self
+    public function resetPassword(Request $request, Response $response)
     {
         $responseMessage = $this->agentService->resetPassword($request->input('email'));
 

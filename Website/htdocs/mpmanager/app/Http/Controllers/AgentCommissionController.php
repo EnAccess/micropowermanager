@@ -11,11 +11,9 @@ use Illuminate\Http\Request;
 class AgentCommissionController extends Controller
 {
 
-    private $agentCommissionService;
-
-    public function __construct(AgentCommissionService $agentCommissionService)
+    public function __construct(private AgentCommissionService $agentCommissionService)
     {
-        $this->agentCommissionService = $agentCommissionService;
+
     }
 
     /**
@@ -23,50 +21,52 @@ class AgentCommissionController extends Controller
      *
      * @return ApiResource
      */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        $commissions = AgentCommission::query()->paginate(config('settings.paginate'));
-        return new ApiResource($commissions);
+        $limit = $request->input('limit');
+
+        return ApiResource::make($this->agentCommissionService->getAll($limit));
     }
 
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  CreateAgentCommissionRequest $request
+     * @param CreateAgentCommissionRequest $request
      * @return ApiResource
      */
     public function store(CreateAgentCommissionRequest $request)
     {
-        $commission = $this->agentCommissionService->create();
-        return new ApiResource($commission);
+        $commissionData = $request->only(['name', 'energy_commission', 'appliance_commission', 'risk_balance']);
+
+        return ApiResource::make($this->agentCommissionService->create($commissionData));
     }
 
 
     /**
      * Update the specified resource in storage.
      *
+     * @param $agentCommissionId
      * @param CreateAgentCommissionRequest $request
-     * @param AgentCommission $commission
-     *
      * @return ApiResource
      */
-    public function update(CreateAgentCommissionRequest $request, AgentCommission $commission): ApiResource
+    public function update($agentCommissionId,CreateAgentCommissionRequest $request): ApiResource
     {
-        $updatedAgentCommission = $this->agentCommissionService->update($commission, $request->all());
-        return new ApiResource($updatedAgentCommission);
+        $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
+
+        return ApiResource::make( $this->agentCommissionService->update($agentCommission, $request->all()));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param AgentCommission $commission
-     *
+     * @param $agentCommissionId
      * @return ApiResource
-     * @throws \Exception
      */
-    public function destroy(AgentCommission $commission): ApiResource
+    public function destroy($agentCommissionId): ApiResource
     {
-        return new ApiResource($this->agentCommissionService->delete($commission));
+        $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
+
+        return ApiResource::make($this->agentCommissionService->delete($agentCommission));
     }
 }

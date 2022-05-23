@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 class AgentSoldApplianceController extends Controller
 {
 
-    private $agentSoldApplianceService;
 
-    public function __construct(AgentSoldApplianceService $agentSoldApplianceService)
+
+    public function __construct(private AgentSoldApplianceService $agentSoldApplianceService)
     {
-        $this->agentSoldApplianceService = $agentSoldApplianceService;
+
     }
 
 
@@ -65,11 +65,4 @@ class AgentSoldApplianceController extends Controller
         return new ApiResource($appliance);
     }
 
-    public function indexWeb(Agent $agent, Request $request): ApiResource
-    {
-
-        $soldAppliances = $this->agentSoldApplianceService->listForWeb($agent->id);
-
-        return new ApiResource($soldAppliances);
-    }
 }
