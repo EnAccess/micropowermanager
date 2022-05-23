@@ -8,7 +8,7 @@ use App\Models\AgentCommission;
 use App\Services\AgentCommissionService;
 use Illuminate\Http\Request;
 
-class AgentCommissionController extends Controller
+class AgentCommissionWebController extends Controller
 {
 
     public function __construct(private AgentCommissionService $agentCommissionService)

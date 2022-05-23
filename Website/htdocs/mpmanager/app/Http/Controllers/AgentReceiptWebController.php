@@ -11,7 +11,7 @@ use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptService;
 use Illuminate\Http\Request;
 
-class AgentReceiptController extends Controller
+class AgentReceiptWebController extends Controller
 {
     public function __construct(
         private AgentReceiptService $agentReceiptService,
