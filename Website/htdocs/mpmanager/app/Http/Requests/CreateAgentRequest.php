@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -28,14 +29,16 @@ class CreateAgentRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
 
-            'email' => 'required|unique:agents,email',
+            'email' => 'required|unique:'.$database.'.agents,email',
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
             'password' => 'required|min:6',
             'city_id' => 'required',
-            'agent_commission_id' => 'required|exists:agent_commissions,id'
+            'agent_commission_id' => 'required|exists:'.$database.'.agent_commissions,id'
         ];
     }
 }
