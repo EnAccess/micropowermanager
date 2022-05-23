@@ -20,19 +20,19 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 //Routes for City resource
-require_once 'resources/Cities.php';
+require 'resources/Cities.php';
 //Routes for Country resource
-require_once 'resources/Countries.php';
+require 'resources/Countries.php';
 //Routes for meter resource
-require_once 'resources/Meters.php';
+require 'resources/Meters.php';
 //Routes for Addresses resource
-require_once 'resources/Addresses.php';
+require 'resources/Addresses.php';
 // Transaction routes
-require_once 'api_paths/transactions.php';
+require 'api_paths/transactions.php';
 // Agent routes
-require_once 'resources/AgentApp.php';
+require 'resources/AgentApp.php';
 // Agent Web panel routes
-require_once 'resources/AgentWeb.php';
+require 'resources/AgentWeb.php';
 
 
 //JWT authentication
