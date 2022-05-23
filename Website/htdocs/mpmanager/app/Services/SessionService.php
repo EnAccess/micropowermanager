@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Agent;
 use App\Models\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -26,8 +27,13 @@ class SessionService
 
     public function getAuthenticatedUserDatabaseName(): string
     {
-        if (auth('api')->user()) {
+        if (auth('api')->user() instanceof User) {
+
             return auth('api')->user()->company->database->database_name;
+
+        } elseif (auth('api')->user() instanceof Agent) {
+
+            return auth('api')->user()->connection;
         }
         return 'test_company_db';
     }
