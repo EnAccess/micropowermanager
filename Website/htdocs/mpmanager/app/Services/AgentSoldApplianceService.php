@@ -8,9 +8,15 @@ use App\Models\AssetPerson;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\This;
 
-class AgentSoldApplianceService implements IAgentRelatedService
+class AgentSoldApplianceService extends BaseService implements IBaseService
 {
+
+    public function __construct(private AgentSoldAppliance $agentSoldAppliance)
+    {
+        parent::__construct([$agentSoldAppliance]);
+    }
 
     /**
      * @return LengthAwarePaginator
@@ -46,7 +52,7 @@ class AgentSoldApplianceService implements IAgentRelatedService
     /**
      * @return Builder|Model
      */
-    public function create(array $applianceData)
+    public function create($applianceData)
     {
         return AgentSoldAppliance::query()->create(
             [
@@ -57,26 +63,52 @@ class AgentSoldApplianceService implements IAgentRelatedService
         );
     }
 
-    public function listForWeb(int $agentId): LengthAwarePaginator
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null, $agentId = null, $customerId = null)
     {
 
-        return AgentSoldAppliance::with(
-            [
-                'assignedAppliance',
-                'assignedAppliance.applianceType',
-                'person',
-
-            ]
-        )->whereHas(
+        $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
-            function ($q) use ($agentId) {
-                $q->whereHas(
-                    'agent',
-                    function ($q) use ($agentId) {
-                        $q->where('agent_id', $agentId);
-                    }
-                );
-            }
-        )->latest()->paginate();
+            'assignedAppliance.applianceType',
+            'person'
+        ]);
+
+        if ($agentId) {
+            $query->whereHas(
+                'assignedAppliance',
+                function ($q) use ($agentId) {
+                    $q->whereHas(
+                        'agent',
+                        function ($q) use ($agentId) {
+                            $q->where('agent_id', $agentId);
+                        }
+                    );
+                }
+            );
+        }
+        if ($customerId) {
+            $query->where('person_id', $customerId);
+        }
+        if ($limit) {
+            return $query->latest()->paginate($limit);
+        } else {
+            return $query->latest()->paginate();
+        }
+
     }
 }

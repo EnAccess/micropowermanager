@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Helpers\PasswordGenerator;
-use App\Services\AddressService;
+use App\Models\Agent;
 use App\Services\CountryService;
 use App\Services\PeriodService;
 use App\Models\Address\Address;
-use App\Models\Agent;
+
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
 use App\Models\Country;
@@ -20,117 +20,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\This;
 
-class AgentService implements IUserService
+class AgentService extends BaseService implements IBaseService
 {
-    private $countryService;
-    private $addressService;
-    private $periodService;
 
     public function __construct(
-        CountryService $countryService,
-        AddressService $addressService,
-        PeriodService $periodService
+        private Agent $agent,
+        private PeriodService $periodService
     ) {
-        $this->countryService = $countryService;
-        $this->addressService = $addressService;
-        $this->periodService = $periodService;
-    }
 
-    /**
-     * @param Request $request
-     * @return Model|Builder
-     */
-    public function createFromRequest(Request $request)
-    {
-        $person = Person::query()->create(
-            request()->only(
-                [
-                    'title',
-                    'education',
-                    'name',
-                    'surname',
-                    'birth_date',
-                    'sex',
-                    'is_customer',
-                ]
-            )
-        );
-
-
-        $country = $this->countryService->getByCode(request('nationality') ?? 'TZ');
-        if ($country !== null) {
-            $person = $this->addCitizenship($person, $country);
-        }
-
-        $addressParams = [
-            'city_id' => request('city_id') ?? 1,
-            'email' => request('email') ?? "",
-            'phone' => request('phone') ?? "",
-            'street' => request('street') ?? "",
-            'is_primary' => 1,
-        ];
-
-        $address = $this->addressService->instantiate($addressParams);
-        $agent = Agent::query()->create(
-            [
-                'person_id' => $person->id,
-                'name' => $person->name,
-                'password' => $request['password'],
-                'email' => $request['email'],
-                'mini_grid_id' => $request['city_id'],
-                'agent_commission_id' => $request['agent_commission_id']
-            ]
-        );
-        $this->addressService->assignAddressToOwner($agent->person, $address);
-
-
-        return $agent;
-    }
-
-    /**
-     * @return void
-     */
-    public function create(array $userData)
-    {
-        // TODO: Implement create() method.
-    }
-
-    /**
-     * @param $agent
-     * @param $data
-     * @return Model|Builder
-     */
-    public function update($agent, $data)
-    {
-        $person = Person::find($data['personId']);
-        $person->name = $data['name'];
-        $person->surname = $data['surname'];
-        $person->sex = $data['gender'];
-        $person->birth_date = $data['birthday'];
-        $person->update();
-
-        $address = Address::query()->where('owner_type', 'person')
-            ->where('owner_id', $data['personId'])
-            ->firstOrFail();
-
-        $address->phone = $data['phone'];
-        $address->update();
-
-        $agent->name = $data['name'];
-        $agent->agent_commission_id = $data['commissionTypeId'];
-
-        $agent->update();
-
-        return Agent::with(['person', 'person.addresses', 'miniGrid', 'commission'])
-            ->where('id', $agent->id)->firstOrFail();
-    }
-
-
-    public function get($id)
-    {
-        return Agent::with(['person', 'person.addresses', 'miniGrid', 'commission'])
-            ->where('id', $id)->firstOrFail();
+        parent::__construct([$agent]);
     }
 
     /**
@@ -145,7 +45,7 @@ class AgentService implements IUserService
             $newPassword = time();
         }
         try {
-            $agent = Agent::query()->where('email', $email)->firstOrFail();
+            $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
         } catch (ModelNotFoundException $x) {
             $message = 'Invalid email.';
             return $message;
@@ -155,11 +55,6 @@ class AgentService implements IUserService
         $agent->update();
         $agent->fresh();
         return $newPassword;
-    }
-
-    public function list(): LengthAwarePaginator
-    {
-        return Agent::with(['person.addresses', 'miniGrid'])->paginate(config('settings.paginate'));
     }
 
     public function updateDevice($agent, $deviceId): void
@@ -219,7 +114,7 @@ class AgentService implements IUserService
     public function searchAgent($searchTerm, $paginate)
     {
         if ($paginate === 1) {
-            return Agent::with('miniGrid')->WhereHas(
+            return $this->agent->newQuery()->with('miniGrid')->WhereHas(
                 'miniGrid',
                 function ($q) use ($searchTerm) {
                     $q->where('name', 'LIKE', '%' . $searchTerm . '%');
@@ -228,24 +123,13 @@ class AgentService implements IUserService
                 ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')->paginate(15);
         }
 
-        return Agent::with('miniGrid')->WhereHas(
+        return $this->agent->newQuery()->with('miniGrid')->WhereHas(
             'miniGrid',
             function ($q) use ($searchTerm) {
                 $q->where('name', 'LIKE', '%' . $searchTerm . '%');
             }
         )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')->get();
-    }
-
-    // associates the person with a country
-    public function addCitizenship(Person $person, Country $country): Model
-    {
-        return $person->citizenship()->associate($country);
-    }
-
-    public function deleteAgent(Agent $agent): void
-    {
-        $agent->delete();
     }
 
     /**
@@ -320,7 +204,6 @@ class AgentService implements IUserService
         return $period;
     }
 
-
     public function getAgentRevenuesWeekly($agent): array
     {
         $startDate = date("Y-m-d", strtotime("-3 months"));
@@ -337,4 +220,85 @@ class AgentService implements IUserService
         }
         return $p;
     }
+
+    public function getById($id)
+    {
+        return $this->agent->newQuery()
+            ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
+            ->where('id', $id)->firstOrFail();
+    }
+
+    public function delete($agent)
+    {
+       return $agent->delete();
+    }
+
+    public function getAll($limit = null)
+    {
+        if ($limit) {
+            return $this->agent->newQuery()
+                ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
+                ->paginate($limit);
+        }
+
+        return $this->agent->newQuery()
+            ->with(['person.addresses', 'miniGrid'])
+            ->get();
+    }
+
+    public function create(
+        $agentData,
+        $addressData = null,
+        $personData = null,
+        $country = null,
+        $addressService = null,
+        $countryService = null,
+        $personService = null,
+        $personAddressService = null,
+    )
+    {
+        $person = $personService->create($personData);
+
+        if ($country !== null) {
+            $person = $personService->addCitizenship($person, $country);
+        }
+
+        $agentData['person_id'] = $person->id;
+        $agentData['name'] = $person->name;
+        $address = $addressService->make($addressData);
+        $personAddressService->setAssigner($person);
+        $personAddressService->setAssigned($address);
+        $personAddressService->assign();
+        $addressService->save($address);
+
+        return $this->agent->newQuery()->create($agentData);
+    }
+
+    /**
+     * @param $agent
+     * @param $data
+     * @return Model|Builder
+     */
+    public function update($agent, $agentData, $personService = null)
+    {
+
+        $person = $personService->getById($agentData['personId']);
+        $personData = [
+            'name'=>$agentData['name'],
+            'surname'=>$agentData['surname'],
+            'sex'=> $agentData['gender'],
+            'birth_date'=>$agentData['birthday']
+        ];
+        $person = $personService->update($person,$personData);
+        $address = $person->addresses()->where('is_primary',1)->first();
+        $address->phone = $agentData['phone'];
+        $address->update();
+        $agent->name = $agentData['name'];
+        $agent->agent_commission_id = $agentData['commissionTypeId'];
+        $agent->update();
+
+        return $this->agent->with(['person', 'person.addresses', 'miniGrid', 'commission'])
+            ->where('id', $agent->id)->first();
+    }
+
 }

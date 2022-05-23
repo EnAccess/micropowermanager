@@ -6,15 +6,15 @@ use App\Models\AssetRate;
 use App\Models\MainSettings;
 use Carbon\Carbon;
 
-class ApplianceRateService
+class ApplianceRateService extends BaseService implements IBaseService
 {
-    private $applianceRate;
+
     private $mainSettings;
 
-    public function __construct(AssetRate $applianceRate, MainSettings $mainSettings)
+    public function __construct(private AssetRate $applianceRate, MainSettings $mainSettings)
     {
-        $this->applianceRate = $applianceRate;
         $this->mainSettings = $mainSettings;
+        parent::__construct([$applianceRate]);
     }
 
     public function getCurrencyFromMainSettings()
@@ -67,12 +67,18 @@ class ApplianceRateService
         );
     }
 
-    public function createApplianceRatesFromAssetPerson($assetPerson)
+
+    public function getById($id)
     {
-        $base_time = $assetPerson->first_payment_date ?? date('Y-m-d');
+        // TODO: Implement getById() method.
+    }
+
+    public function create($assetPerson)
+    {
+        $baseTime = $assetPerson->first_payment_date ?? date('Y-m-d');
 
         if ($assetPerson->down_payment > 0) {
-            $this->applianceRate::query()->create(
+            $this->applianceRate->newQuery()->create(
                 [
                     'asset_person_id' => $assetPerson->id,
                     'rate_cost' => $assetPerson->down_payment,
@@ -86,24 +92,39 @@ class ApplianceRateService
 
         foreach (range(1, $assetPerson->rate_count) as $rate) {
             if ($assetPerson->rate_count === 0) {
-                $rate_cost = 0;
+                $rateCost = 0;
             } elseif ((int)$rate === (int)$assetPerson->rate_count) {
                 //last rate
-                $rate_cost = $assetPerson->total_cost
+                $rateCost = $assetPerson->total_cost
                     - (($rate - 1) * floor($assetPerson->total_cost / $assetPerson->rate_count));
             } else {
-                $rate_cost = floor($assetPerson->total_cost / $assetPerson->rate_count);
+                $rateCost = floor($assetPerson->total_cost / $assetPerson->rate_count);
             }
-            $rate_date = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($base_time)));
-            $this->applianceRate::query()->create(
+            $rateDate = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($baseTime)));
+            $this->applianceRate->newQuery()->create(
                 [
                     'asset_person_id' => $assetPerson->id,
-                    'rate_cost' => $rate_cost,
-                    'remaining' => $rate_cost,
-                    'due_date' => $rate_date,
+                    'rate_cost' => $rateCost,
+                    'remaining' => $rateCost,
+                    'due_date' => $rateDate,
                     'remind' => 0
                 ]
             );
         }
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
     }
 }
