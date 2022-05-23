@@ -19,7 +19,7 @@ class AgentFactory extends Factory
         return [
             'name' => $this->faker->name,
             'person_id' => $this->faker->numberBetween(1, 10),
-            'password' => $this->faker->password,
+            'password' => "123456",
             'email' => $this->faker->unique()->safeEmail,
             'mini_grid_id' => $this->faker->numberBetween(1, 10),
             'agent_commission_id' => $this->faker->numberBetween(1, 10),
@@ -28,7 +28,7 @@ class AgentFactory extends Factory
             'balance' => 0,
             'commission_revenue' => 0,
             'due_to_energy_supplier' => 0,
-
+            'connection' =>'test_company_db'
         ];
     }
 }
