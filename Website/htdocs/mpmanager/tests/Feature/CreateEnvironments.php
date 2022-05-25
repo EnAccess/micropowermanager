@@ -15,6 +15,7 @@ use Database\Factories\AgentFactory;
 use Database\Factories\AgentReceiptFactory;
 use Database\Factories\AgentSoldApplianceFactory;
 use Database\Factories\AgentTransactionFactory;
+use Database\Factories\AppliancePersonFactory;
 use Database\Factories\AssetTypeFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
@@ -406,12 +407,23 @@ trait CreateEnvironments
         }
     }
 
-    protected function createPerson($personCount = 1)
+    protected function createPerson($personCount = 1, $isCustomer = 1)
     {
 
         while ($personCount > 0) {
-            $person = PersonFactory::new()->create();
+            $person = PersonFactory::new()->create(['is_customer' => $isCustomer]);
             $this->people[] = $person;
+            $address = Address::query()->make([
+                'email' => $this->faker->email,
+                'phone' => $this->faker->phoneNumber,
+                'street' => "",
+                'city_id' => $this->getRandomIdFromList($this->cities),
+                'geo_id' => 1,
+                'is_primary' => 1
+            ]);
+            $address->owner()->associate($person)->save();
+            $address->save();
+
             $personCount--;
         }
         if (count($this->people) > 0) {
@@ -422,26 +434,18 @@ trait CreateEnvironments
 
     protected function createAgent($agentCount = 1)
     {
-        $this->createPerson($agentCount);
+        $this->createPerson($agentCount, 0);
 
         foreach ($this->people as $person) {
+
             $agent = AgentFactory::new()->create([
                 'person_id' => $person->id,
                 'name' => $person->name,
                 'agent_commission_id' => $this->getRandomIdFromList($this->agentCommissions),
+                'mini_grid_id' => $this->getRandomIdFromList($this->miniGrids),
             ]);
             $this->agents[] = $agent;
 
-            AddressFactory::new()->create([
-                'owner_type' => 'person',
-                'owner_id' => $person->id,
-                'email' => $person->email,
-                'phone' => $person->phone,
-                'street' => $person->street,
-                'city_id' => $person->city_id,
-                'geo_id' => $person->geo_id,
-                'is_primary' => 1,
-            ]);
         }
 
         if (count($this->agents) > 0) {
@@ -480,7 +484,6 @@ trait CreateEnvironments
     protected function createAssignedAppliances($applianceCount = 1)
     {
         $this->createAssetType($applianceCount);
-
         while ($applianceCount > 0) {
             $assignedAppliance = AgentAssignedApplianceFactory::new()->create([
                 'agent_id' => $this->getRandomIdFromList($this->agents),
@@ -500,11 +503,26 @@ trait CreateEnvironments
     protected function createAgentSoldAppliance($soldApplianceCount = 1)
     {
         while ($soldApplianceCount > 0) {
+
+            $assignedApplianceId = $this->getRandomIdFromList($this->assignedAppliances);
+            $assignedAppliance = collect($this->assignedAppliances)->where('id', $assignedApplianceId)->first();
             $soldAppliance = AgentSoldApplianceFactory::new()->create([
-                'agent_assigned_appliance_id' => $this->getRandomIdFromList($this->assignedAppliances),
+                'agent_assigned_appliance_id' => $assignedAppliance->id,
                 'person_id' => $this->getRandomIdFromList($this->people),
             ]);
+
             $this->soldAppliances[] = $soldAppliance;
+
+            AppliancePersonFactory::new()->create([
+                'person_id' => $soldAppliance->person_id,
+                'first_payment_date' => date('Y-m-d', strtotime('+1 month')),
+                'rate_count' => 10,
+                'total_cost' => $assignedAppliance->cost,
+                'down_payment' => request()->input('down_payment'),
+                'asset_type_id' => $assignedAppliance->applianceType->id,
+                'creator_type' => 'agent',
+                'creator_id' => $assignedAppliance->agent_id,
+            ]);
 
             $soldApplianceCount--;
         }
@@ -514,7 +532,7 @@ trait CreateEnvironments
     }
 
 
-    protected function createAgentReceipt($agentReceiptCount = 1,$amount =50)
+    protected function createAgentReceipt($agentReceiptCount = 1, $amount = 50)
     {
         while ($agentReceiptCount > 0) {
 
@@ -554,17 +572,18 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentTransaction($agentTransactionCount = 1, $amount = 100,$agentId = null)
+    protected function createAgentTransaction($agentTransactionCount = 1, $amount = 100, $agentId = null)
     {
         while ($agentTransactionCount > 0) {
+            $meter = $this->getMeter();
 
             $transaction = TransactionFactory::new()->make([
-                'amount' =>  $amount,
+                'amount' => $amount,
                 'sender' => $this->faker->phoneNumber,
-                'message' => '47000268748',
+                'message' => $meter->serial_number,
             ]);
 
-            if(!$agentId){
+            if (!$agentId) {
                 $agentId = $this->getRandomIdFromList($this->agents);
             }
 
@@ -580,6 +599,27 @@ trait CreateEnvironments
 
             $transaction->originalTransaction()->associate($agentTransaction);
             $transaction->save();
+
+            $token = MeterTokenFactory::new()->create([
+                'transaction_id' => $transaction->id,
+                'meter_id' => $meter->id,
+                'token' => $this->faker->unique()->randomNumber(),
+            ]);
+
+            // payment event
+            event(
+                'payment.successful',
+                [
+                    'amount' => $transaction->amount,
+                    'paymentService' => $transaction->original_transaction_type,
+                    'paymentType' => 'energy',
+                    'sender' => $transaction->sender,
+                    'paidFor' => $token,
+                    'payer' => $this->person,
+                    'transaction' => $transaction,
+                ]
+            );
+
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $agent->id,
@@ -606,10 +646,51 @@ trait CreateEnvironments
             ]);
             $this->agentBalanceHistories[] = $agentBalanceHistory;
 
+
             $agentTransactionCount--;
         }
         if (count($this->agentTransactions) > 0) {
             $this->agentTransaction = $this->agentTransactions[0];
+        }
+    }
+
+    protected function createPaymentHistory($paymentHistoryCount = 1, $amount = 100, $agentId = null)
+    {
+        while ($paymentHistoryCount > 0) {
+
+            $paymentHistory = PaymentHistoryFactory::new()->make([
+                'id' => 1,
+                'transaction_id' => $this->faker->numberBetween(1, 100),
+                'amount' => $this->faker->randomFloat(2, 0, 100),
+                'payment_service' => $this->faker->randomElement(['vodacom_transaction', 'airtel_transaction', 'agent_transaction']),
+                'sender' => $this->faker->phoneNumber,
+                'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'loan rate','access rate']),
+
+            ]);
+
+            if (!$agentId) {
+                $agentId = $this->getRandomIdFromList($this->agents);
+            }
+
+            $agent = collect($this->agents)->where('id', $agentId)->first();
+            $paymentHistory->agent()->associate($agent);
+            $paymentHistory->save();
+
+            $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
+                'agent_id' => $agent->id,
+                'amount' => ($amount) > 0 ? (-1 * ($amount)) : ($amount),
+                'transaction_id' => $paymentHistory->id,
+                'available_balance' => $agent->balance,
+                'due_to_supplier' => $agent->due_to_energy_supplier,
+                'trigger_id' => $paymentHistory->id,
+                'trigger_type' => 'payment_history'
+            ]);
+            $this->agentBalanceHistories[] = $agentBalanceHistory;
+
+            $paymentHistoryCount--;
+        }
+        if (count($this->paymentHistories) > 0) {
+            $this->paymentHistory = $this->paymentHistories[0];
         }
     }
 
