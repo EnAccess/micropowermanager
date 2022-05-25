@@ -9,34 +9,28 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\Types\This;
+use function Symfony\Component\String\s;
 
 class AgentSoldApplianceService extends BaseService implements IBaseService
 {
 
-    public function __construct(private AgentSoldAppliance $agentSoldAppliance)
-    {
+    public function __construct(
+        private AgentSoldAppliance $agentSoldAppliance,
+        private AssetPerson $assetPerson
+    ) {
         parent::__construct([$agentSoldAppliance]);
     }
 
-    /**
-     * @return LengthAwarePaginator
-     */
-    public function list($agentId)
+
+    public function create($applianceData)
     {
-        return AssetPerson::with('person', 'assetType', 'rates')
-            ->whereHasMorph(
-                'creator',
-                [Agent::class],
-                function ($q) use ($agentId) {
-                    $q->where('id', $agentId);
-                }
-            )->latest()
-            ->paginate();
+        return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function customerSoldList($customerId, $agentId): LengthAwarePaginator
+
+    public function getById($agentId, $customerId = null)
     {
-        return AssetPerson::with('person', 'assetType', 'rates')
+        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -49,26 +43,6 @@ class AgentSoldApplianceService extends BaseService implements IBaseService
             ->paginate();
     }
 
-    /**
-     * @return Builder|Model
-     */
-    public function create($applianceData)
-    {
-        return AgentSoldAppliance::query()->create(
-            [
-
-                'person_id' => $applianceData['person_id'],
-                'agent_assigned_appliance_id' => $applianceData['agent_assigned_appliance_id'],
-            ]
-        );
-    }
-
-
-    public function getById($id)
-    {
-        // TODO: Implement getById() method.
-    }
-
     public function update($model, $data)
     {
         // TODO: Implement update() method.
@@ -79,8 +53,12 @@ class AgentSoldApplianceService extends BaseService implements IBaseService
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null, $agentId = null, $customerId = null)
+
+    public function getAll($limit = null, $agentId = null, $customerId = null, $forApp = false)
     {
+        if ($forApp) {
+            return $this->list($agentId);
+        }
 
         $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
@@ -110,5 +88,19 @@ class AgentSoldApplianceService extends BaseService implements IBaseService
             return $query->latest()->paginate();
         }
 
+    }
+
+    public function list($agentId)
+    {
+
+        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
+            ->whereHasMorph(
+                'creator',
+                [Agent::class],
+                function ($q) use ($agentId) {
+                    $q->where('id', $agentId);
+                }
+            )->latest()
+            ->paginate();
     }
 }

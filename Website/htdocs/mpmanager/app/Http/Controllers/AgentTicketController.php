@@ -2,75 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\TrelloAPIException;
 use App\Http\Requests\CreateAgentTicketRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\AgentService;
 use App\Services\AgentTicketService;
-use Illuminate\Http\JsonResponse;
+use App\Services\PersonService;
+use App\Services\PersonTicketService;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
+use Inensus\Ticket\Models\Board;
+use Inensus\Ticket\Services\BoardService;
+use Inensus\Ticket\Services\CardService;
+use Inensus\Ticket\Services\TicketService;
+
 
 class AgentTicketController extends Controller
 {
-    private $agentTicketService;
+    private $board;
+    private $card;
 
+    public function __construct(
+        private BoardService $boardService,
+        private CardService $cardService,
+        private AgentTicketService $agentTicketService,
+        private PersonTicketService $personTicketService,
+        private AgentService $agentService,
+        private TicketService $ticketService,
+        private PersonService $personService,
 
-    public function __construct(AgentTicketService $agentTicketService)
-    {
-
-        $this->agentTicketService = $agentTicketService;
+    ) {
+        $this->board = $this->boardService->initializeBoard();
+        $this->card = $this->cardService->initalizeList($this->board);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Request $request
-     * @return ApiResource
-     */
-    public function index(Request $request)
+    public function index(Request $request): ApiResource
     {
-        $agent = request()->attributes->get('user');
-        $tickets = $this->agentTicketService->list($agent->id);
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $limit = $request->input('limit', 5);
 
-        return new ApiResource($tickets);
+        return ApiResource::make($this->ticketService->getAll($limit, $agent->id));
     }
 
-    public function agentCustomerTickets($customerId, Request $request): ApiResource
+    public function show($ticketId, Request $request): ApiResource
     {
-        $agent = request()->attributes->get('user');
-        $tickets = $this->agentTicketService->listByCustomer($agent->id, $customerId);
-        return new ApiResource($tickets);
+        return ApiResource::make($this->ticketService->getById($ticketId));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  CreateAgentTicketRequest $request
-     * @return JsonResponse|TicketResource
-     */
-    public function store(CreateAgentTicketRequest $request)
+    public function store(CreateAgentTicketRequest $request): TicketResource
     {
-        try {
-            $ticket = $this->agentTicketService->create(
-                $request->only(
-                    [
-                    'owner_id',
-                    'due_date',
-                    'label',
-                    'title',
-                    'description'
-                    ]
-                )
-            );
-        } catch (TicketOwnerNotFoundException $e) {
-            return response()->setStatusCode(409)->json(['success' => 0, 'message' => $e->getMessage()]);
+        $ticketData = $request->only([
+            'owner_id',
+            'due_date',
+            'label',
+            'title',
+            'description',
+            'assignedId'
+        ]);
+        $ownerId = $ticketData['owner_id'];
+        $owner = $this->personService->getById($ownerId);
+
+        if (!$owner) {
+            throw new TicketOwnerNotFoundException('Ticket owner with following id not found ' . $ownerId);
         }
-        return new TicketResource($this->agentTicketService->getBatch([$ticket]));
+
+        $agent = $this->agentService->getByAuthenticatedUser();
+        //reformat due date if it is set
+        $dueDate = isset($ticketData['due_date']) ? date('Y-m-d H:i:00', strtotime($ticketData['due_date'])) : null;
+        $categoryId = $ticketData['label'];
+
+        $trelloParams = [
+            'idList' => $this->card->card_id,
+            'name' => $ticketData['title'],
+            'desc' => $ticketData['description'],
+            'due' => $dueDate === '1970-01-01' ? null : $dueDate,
+        ];
+
+        $trelloTicket = $this->ticketService->create($trelloParams);
+        $ticketId= $trelloTicket->id;
+        $ticketData = [
+            'ticket_id' => $ticketId,
+            'category_id' => $categoryId,
+            'assigned_id' => $ticketData['assignedId'] ?? null
+        ];
+        $ticket = $this->ticketService->make($ticketData);
+        $this->agentTicketService->setAssigned($ticket);
+        $this->agentTicketService->setAssigner($agent);
+        $this->agentTicketService->assign();
+        $this->personTicketService->setAssigned($ticket);
+        $this->personTicketService->setAssigner($owner);
+        $this->personTicketService->assign();
+        $this->ticketService->save($ticket);
+
+        return TicketResource::make($this->ticketService->getBatch([$ticket]));
     }
 
-    public function show($ticketId): ApiResource
-    {
-        $ticket = $this->agentTicketService->getTicket($ticketId);
-        return new ApiResource($ticket);
-    }
 }

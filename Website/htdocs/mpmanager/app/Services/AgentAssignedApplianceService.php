@@ -16,10 +16,6 @@ class AgentAssignedApplianceService extends BaseService implements IBaseService
     }
 
 
-    /**
-     * @param array $applianceData
-     * @return Builder|Model
-     */
     public function create($applianceData)
     {
 

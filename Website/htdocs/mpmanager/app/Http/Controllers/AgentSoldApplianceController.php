@@ -6,63 +6,47 @@ use App\Http\Requests\CreateAgentSoldApplianceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
+use App\Services\AgentService;
 use App\Services\AgentSoldApplianceService;
 use Illuminate\Http\Request;
 
 class AgentSoldApplianceController extends Controller
 {
+    const FOR_APP = true;
 
-
-
-    public function __construct(private AgentSoldApplianceService $agentSoldApplianceService)
-    {
+    public function __construct(
+        private AgentSoldApplianceService $agentSoldApplianceService,
+        private AgentService $agentService
+    ) {
 
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Agent   $agent
-     * @param  Request $request
-     * @return ApiResource
-     */
     public function index(Request $request)
     {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $soldAppliances = $this->agentSoldApplianceService->list($agent->id);
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $limit = $request->input('limit');
 
-        return new ApiResource($soldAppliances);
+        return ApiResource::make($this->agentSoldApplianceService->getAll($limit, $agent->id, null, self::FOR_APP));
     }
 
-    public function customerSoldAppliances($customerId, Request $request): ApiResource
+    public function show($customerId, Request $request): ApiResource
     {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $soldAppliances = $this->agentSoldApplianceService->customerSoldList($customerId, $agent->id);
+        $agent = $this->agentService->getByAuthenticatedUser();
 
-        return new ApiResource($soldAppliances);
+        return ApiResource::make($this->agentSoldApplianceService->getById($agent->id, $customerId));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  CreateAgentSoldApplianceRequest $request
+     * @param CreateAgentSoldApplianceRequest $request
      * @return ApiResource
      */
-    public function store(CreateAgentSoldApplianceRequest $request)
-    {
+    public function store(CreateAgentSoldApplianceRequest $request) {
 
-        $appliance = $this->agentSoldApplianceService->create(
-            $request->only(
-                [
-                'person_id',
-                'agent_assigned_appliance_id',
+        $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
 
-                ]
-            )
-        );
-
-        return new ApiResource($appliance);
+        return ApiResource::make($this->agentSoldApplianceService->create($soldApplianceData));
     }
 
 }

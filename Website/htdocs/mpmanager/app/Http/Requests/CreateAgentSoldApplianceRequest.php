@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentSoldApplianceRequest extends FormRequest
@@ -23,12 +24,14 @@ class CreateAgentSoldApplianceRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'person_id' => 'required|exists:people,id',
+            'person_id' => 'required|exists:'.$database.'.people,id',
             'down_payment' => 'required|numeric',
             'tenure' => 'required|numeric|min:0',
             'first_payment_date' => 'required',
-            'agent_assigned_appliance_id' => 'required|exists:agent_assigned_appliances,id',
+            'agent_assigned_appliance_id' => 'required|exists:'.$database.'.agent_assigned_appliances,id',
         ];
     }
 }

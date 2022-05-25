@@ -4,19 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CountryService;
-use App\Services\MaintenanceUserService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class AgentController extends Controller
+class AgentWebController extends Controller
 {
-
     public function __construct(
         private AgentService $agentService,
         private AddressesService $addressService,
@@ -52,6 +49,7 @@ class AgentController extends Controller
             'agent_commission_id' => $request['agent_commission_id'],
             'device_id' => '-',
             'fire_base_token' => '-',
+            'connection'=> auth('api')->user()->company->database->database_name
         ];
 
         return ApiResource::make($this->agentService->create(
@@ -80,7 +78,6 @@ class AgentController extends Controller
 
         return ApiResource::make($this->agentService->delete($agent));
     }
-
 
     public function search(Request $request): ApiResource
     {
@@ -118,49 +115,4 @@ class AgentController extends Controller
         );
     }
 
-    public function setFirebaseToken(Request $request): ApiResource
-    {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $this->agentService->setFirebaseToken($agent, $request->input('fire_base_token'));
-
-        return new ApiResource($agent->fresh());
-    }
-
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @return AgentController|Response|object
-     */
-    public function showDashboardBoxes(Request $request, Response $response)
-    {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $average = $this->agentService->getTransactionAverage($agent);
-        $since = $this->agentService->getLastReceiptDate($agent);
-        return $response->setStatusCode(200)->setContent(
-            [
-                'data' => [
-                    'balance' => $agent->balance,
-                    'profit' => $agent->commission_revenue,
-                    'dept' => $agent->due_to_energy_supplier,
-                    'average' => $average,
-                    'since' => $since,
-                    'status_code' => 200
-                ]
-            ]
-        );
-    }
-
-    public function showBalanceHistories(Request $request, Response $response)
-    {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        $graphValues = $this->agentService->getGraphValues($agent);
-        return $graphValues;
-    }
-
-    public function showRevenuesWeekly(Request $request, Response $response)
-    {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        return $this->agentService->getAgentRevenuesWeekly($agent);
-    }
 }

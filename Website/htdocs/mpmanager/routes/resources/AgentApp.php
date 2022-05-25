@@ -10,25 +10,25 @@ Route::group([
     Route::post('refresh', 'AgentAuthController@refresh');
     Route::get('me', 'AgentAuthController@me');
     Route::group(['prefix' => 'agents', 'middleware' => ['jwt.verify:agent'],], function () {
-        Route::post('/firebase', 'AgentController@setFirebaseToken');
-        Route::get('/balance', 'AgentController@showBalance');
+        Route::post('/firebase', 'AgentFirebaseController@update');
+        Route::get('/balance', 'AgentBalanceController@show');
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', 'AgentCustomerController@index');
             Route::get('/search', 'AgentCustomerController@search');
             Route::get('/{customerId}/graph/{period}/{limit?}/{order?}',
-                'PaymentHistoryController@show')->where('customerId', '[0-9]+');
+                'AgentCustomersPaymentHistoryController@show')->where('customerId', '[0-9]+');
             Route::get('/graph/{period}/{limit?}/{order?}',
-                'PaymentHistoryController@showForAgentCustomers')->where('customerId', '[0-9]+');
+                'AgentCustomersPaymentHistoryController@index');
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', 'AgentTransactionsController@index');
-            Route::get('/{customerId}', 'AgentTransactionsController@agentCustomerTransactions');
+            Route::get('/{customerId}', 'AgentTransactionsController@show');
 
         });
         Route::group(['prefix' => 'appliances'], function () {
 
             Route::get('/', 'AgentSoldApplianceController@index');
-            Route::get('/{customer}', 'AgentSoldApplianceController@customerSoldAppliances');
+            Route::get('/{customerId}', 'AgentSoldApplianceController@show');
             Route::post('/', [
                 'middleware' => 'agent.balance',
                 'uses' => 'AgentSoldApplianceController@store'
@@ -40,13 +40,13 @@ Route::group([
         Route::group(['prefix' => 'ticket'], function () {
             Route::get('/', 'AgentTicketController@index');
             Route::get('/{ticketId}', 'AgentTicketController@show');
-            Route::get('/customer/{customerId}', 'AgentTicketController@agentCustomerTickets');
+            Route::get('/customer/{customerId}', 'AgentCustomerTicketController@show');
             Route::post('/', 'AgentTicketController@store');
         });
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::get('/boxes',  'AgentController@showDashboardBoxes');
-            Route::get('/graph',  'AgentController@showBalanceHistories');
-            Route::get('/revenue','AgentController@showRevenuesWeekly');
+            Route::get('/boxes',  'AgentDashboardBoxesController@show');
+            Route::get('/graph',  'AgentDashboardBalanceHistoryController@show');
+            Route::get('/revenue','AgentDashboardRevenueController@show');
 
         });
     });

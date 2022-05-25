@@ -8,7 +8,7 @@ use App\Models\Agent;
 use App\Services\AgentChargeService;
 use Illuminate\Http\Request;
 
-class AgentChargeController extends Controller
+class AgentChargeWebController extends Controller
 {
 
     public function __construct(private AgentChargeService $agentChargeService)

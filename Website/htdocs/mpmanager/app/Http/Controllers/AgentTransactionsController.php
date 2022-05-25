@@ -5,46 +5,35 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
 use App\Models\Transaction\AgentTransaction;
+use App\Services\AgentService;
 use App\Services\AgentTransactionService;
 use Illuminate\Http\Request;
 
-/**
- * @group   AgentTransactions
- * Class AgentTransactionController
- * @package App\Http\Controllers
- */
 class AgentTransactionsController extends Controller
 {
-    private $agentTransactionService;
+    const FOR_APP = true;
 
+    public function __construct(
+        private AgentTransactionService $agentTransactionService,
+        private AgentService $agentService
+    ) {
 
-    public function __construct(AgentTransactionService $agentTransactionService)
-    {
-        $this->agentTransactionService = $agentTransactionService;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ApiResource
-     */
-    public function index(): ApiResource
+    public function index(Request $request): ApiResource
     {
-        $agent = request()->attributes->get('user');
-        $transactions = $this->agentTransactionService->list($agent->id);
-        return new ApiResource($transactions);
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $limit = $request->input('limit');
+
+        return ApiResource::make($this->agentTransactionService->getAll($limit, $agent->id, self::FOR_APP));
     }
-    public function agentCustomerTransactions($customerId, Request $request): ApiResource
+
+
+    public function show($customerId, Request $request): ApiResource
     {
-        $agent = request()->attributes->get('user');
-        $transactions = $this->agentTransactionService->listByCustomer($agent->id, $customerId);
-        return new ApiResource($transactions);
-    }
-    public function show($customerId): ApiResource
-    {
-        $agent = request()->attributes->get('user');
-        $transactions = $this->agentTransactionService->listByCustomer($agent->id, $customerId);
-        return new ApiResource($transactions);
+        $agent = $this->agentService->getByAuthenticatedUser();
+
+        return ApiResource::make($this->agentTransactionService->getById($agent->id, $customerId));
     }
 
 }

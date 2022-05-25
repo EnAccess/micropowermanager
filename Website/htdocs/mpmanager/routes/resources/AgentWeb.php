@@ -7,13 +7,13 @@ Route::group([
     'prefix' => 'agents'
 
 ], static function ($router) {
-    Route::get('/', 'AgentController@index');
-    Route::get('/{agentId}', 'AgentController@show')->where('agentId', '[0-9]+');
-    Route::post('/', 'AgentController@store');
-    Route::put('/{agentId}', 'AgentController@update');
-    Route::get('/search', 'AgentController@search');
-    Route::post('/reset-password', 'AgentController@resetPassword');
-    Route::delete('/{agentId}', 'AgentController@destroy');
+    Route::get('/', 'AgentWebController@index');
+    Route::get('/{agentId}', 'AgentWebController@show')->where('agentId', '[0-9]+');
+    Route::post('/', 'AgentWebController@store');
+    Route::put('/{agentId}', 'AgentWebController@update');
+    Route::get('/search', 'AgentWebController@search');
+    Route::post('/reset-password', 'AgentWebController@resetPassword');
+    Route::delete('/{agentId}', 'AgentWebController@destroy');
 
     Route::group(['prefix' => 'assigned'], function () {
         Route::post('/', 'AgentAssignedApplianceWebController@store');
@@ -24,15 +24,15 @@ Route::group([
     });
     Route::group(['prefix' => 'commissions'], function () {
 
-        Route::get('/', 'AgentCommissionController@index');
-        Route::post('/', 'AgentCommissionController@store');
-        Route::delete('/{agentCommissionId}', 'AgentCommissionController@destroy');
-        Route::put('/{agentCommissionId}', 'AgentCommissionController@update');
+        Route::get('/', 'AgentCommissionWebController@index');
+        Route::post('/', 'AgentCommissionWebController@store');
+        Route::delete('/{agentCommissionId}', 'AgentCommissionWebController@destroy');
+        Route::put('/{agentCommissionId}', 'AgentCommissionWebController@update');
     });
     Route::group(['prefix' => 'receipt'], function () {
-        Route::get('/', 'AgentReceiptController@index');
-        Route::get('/{agentId}', 'AgentReceiptController@show');
-        Route::post('/', 'AgentReceiptController@store');
+        Route::get('/', 'AgentReceiptWebController@index');
+        Route::get('/{agentId}', 'AgentReceiptWebController@show');
+        Route::post('/', 'AgentReceiptWebController@store');
     });
     Route::group(['prefix' => 'transactions'], function () {
         Route::get('/{agentId}', 'AgentTransactionWebController@index')->where('agentId', '[0-9]+');
@@ -44,7 +44,7 @@ Route::group([
         });
     });
     Route::group(['prefix' => 'charge'], function () {
-        Route::post('/', 'AgentChargeController@store');
+        Route::post('/', 'AgentChargeWebController@store');
     });
 
 });
