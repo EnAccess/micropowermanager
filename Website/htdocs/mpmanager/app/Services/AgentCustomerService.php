@@ -9,28 +9,25 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
-class AgentCustomerService
+class AgentCustomerService extends BaseService
 {
 
-
-    private $agent;
-
-    public function __construct(Agent $agent)
+    public function __construct(private Agent $agent, private Person $person)
     {
-        $this->agent = $agent;
+        parent::__construct([$agent, $person]);
     }
 
     public function list(Agent $agent): LengthAwarePaginator
     {
-
         $miniGridId = $agent->mini_grid_id;
-        return Person::with(
+
+        return $this->person->newQuery()->with(
             [
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
-            'addresses.city',
-            'meters.meter',
+                'addresses' => function ($q) {
+                    return $q->where('is_primary', 1);
+                },
+                'addresses.city',
+                'meters.meter',
             ]
         )
             ->where('is_customer', 1)
@@ -48,24 +45,18 @@ class AgentCustomerService
             ->paginate(config('settings.paginate'));
     }
 
-    /**
-     * @param Request|array|string $searchTerm
-     * @param Request|array|int|string $paginate
-     *
-     * @return LengthAwarePaginator|Builder[]|Collection
-     *
-     */
-    public function searchAgentsCustomers($searchTerm, $paginate, $agent)
-    {
 
+    public function search($searchTerm, $limit, $agent)
+    {
         $miniGridId = $agent->mini_grid_id;
-        $personQuery = Person::with(
+
+        return $this->person->newQuery()->with(
             [
-            'addresses' => function ($q) {
-                return $q->where('is_primary', 1);
-            },
-            'addresses.city',
-            'meters.meter',
+                'addresses' => function ($q) {
+                    return $q->where('is_primary', 1);
+                },
+                'addresses.city',
+                'meters.meter',
 
             ]
         )->where('is_customer', 1)
@@ -95,11 +86,8 @@ class AgentCustomerService
                 function ($q) use ($searchTerm) {
                     $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
                 }
-            );
+            )->paginate($limit);
 
-        if ($paginate === 1) {
-            return $personQuery->paginate(15);
-        }
-        return $personQuery->get();
+
     }
 }

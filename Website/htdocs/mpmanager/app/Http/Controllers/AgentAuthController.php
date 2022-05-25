@@ -35,16 +35,17 @@ class AgentAuthController extends Controller
      */
     public function login(Request $request)
     {
-
         $credentials = $request->only(['email', 'password']);
+
         if (!$token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
+
         $agentId = auth('agent_api')->user()->id;
         $agent = $this->agentService->getById($agentId);
         $deviceId = $request->header('device-id');
-
         $this->agentService->updateDevice($agent, $deviceId);
+
         return $this->respondWithToken($token);
     }
 

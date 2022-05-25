@@ -6,6 +6,7 @@ use App\Http\Requests\CreateAgentAssignedApplianceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
 use App\Services\AgentAssignedApplianceService;
+use App\Services\AgentService;
 use Illuminate\Http\Request;
 
 /**
@@ -18,7 +19,8 @@ class AgentAssignedAppliancesController extends Controller
 
 
     public function __construct(
-        private AgentAssignedApplianceService $agentAssignedApplianceService
+        private AgentAssignedApplianceService $agentAssignedApplianceService,
+        private AgentService $agentService
     ) {
 
     }
@@ -31,10 +33,10 @@ class AgentAssignedAppliancesController extends Controller
      */
     public function index(Request $request)
     {
-        $agent = Agent::find(auth('agent_api')->user()->id);
+        $agent = $this->agentService->getByAuthenticatedUser();
+        $limit = $request->input('limit');
 
-
-        return ApiResource::make($this->agentAssignedApplianceService->listByAgentId($agent->id));
+        return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agent->id));
     }
 
 

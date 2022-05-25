@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Agent;
 use App\Services\AgentCustomerService;
+use App\Services\AgentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AgentCustomerController extends Controller
 {
 
-    private $agentCustomerService;
+    public function __construct(
+        private AgentCustomerService $agentCustomerService,
+        private AgentService $agentService
+    ) {
 
-    public function __construct(AgentCustomerService $agentCustomerService)
-    {
-        $this->agentCustomerService = $agentCustomerService;
     }
 
     /**
@@ -26,14 +27,16 @@ class AgentCustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        return new ApiResource($this->agentCustomerService->list($agent));
+        $agent = $this->agentService->getByAuthenticatedUser();
+
+        return  ApiResource::make($this->agentCustomerService->list($agent));
     }
-    public function search(): ApiResource
+    public function search(Request $request): ApiResource
     {
-        $term = request('term');
-        $paginate = request('paginate') ?? 1;
-        $agent = Agent::find(auth('agent_api')->user()->id);
-        return new ApiResource($this->agentCustomerService->searchAgentsCustomers($term, $paginate, $agent));
+        $term =  $request->input('term');
+        $limit = $request->input('paginate',15);
+        $agent = $this->agentService->getByAuthenticatedUser();
+
+        return ApiResource::make($this->agentCustomerService->search($term, $limit, $agent));
     }
 }

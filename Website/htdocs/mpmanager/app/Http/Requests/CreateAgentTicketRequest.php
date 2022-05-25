@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentTicketRequest extends FormRequest
@@ -23,8 +24,10 @@ class CreateAgentTicketRequest extends FormRequest
      */
     public function rules()
     {
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'owner_id' => 'required|exists:people,id',
+            'owner_id' => 'required|exists:'.$database.'.people,id',
             'title' => 'required',
             'description' => 'required'
 
