@@ -14,22 +14,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use PDO;
 
-/**
- * Class Ticket
- *
- * @package Inensus\Ticket\Models
- * @property int $id
- * @property int $creator_id
- * @property int $creator_type
- * @property int $owner_id
- * @property int $owner_type
- * @property string ticket_id
- * @property int $status
- * @property int $category_id
- * @property int $assigned_id
- */
+
 class Ticket extends BaseModel
 {
+    protected $connection = 'test_company_db';
+    protected $table = 'tickets';
+
     public const STATUS = [
         'opened' => 0,
         'closed' => 1,
@@ -38,12 +28,12 @@ class Ticket extends BaseModel
 
     public function card()
     {
-        return $this->belongsTo(Card::class);
+        return $this->belongsTo(TicketCard::class);
     }
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Label::class, 'category_id');
+        return $this->belongsTo(TicketCategory::class, 'category_id');
     }
 
     public function owner(): MorphTo
@@ -53,12 +43,12 @@ class Ticket extends BaseModel
 
     public function outsource(): HasOne
     {
-        return $this->hasOne(OutSourcing::class);
+        return $this->hasOne(TicketOutsource::class);
     }
 
     public function assignedTo(): BelongsTo
     {
-        return $this->belongsTo(UserModel::class, 'assigned_id');
+        return $this->belongsTo(TicketUser::class, 'assigned_id');
     }
 
     public function ticketsOpenedInPeriod($startDate, $endDate)

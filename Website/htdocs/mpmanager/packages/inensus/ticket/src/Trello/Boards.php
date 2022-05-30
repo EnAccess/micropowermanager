@@ -8,8 +8,10 @@
 
 namespace Inensus\Ticket\Trello;
 
+use App\Exceptions\TrelloAPIException;
 use Exception;
-use Inensus\Ticket\Models\Board;
+use GuzzleHttp\Exception\GuzzleException;
+use Inensus\Ticket\Models\TicketBoard;
 use function is_string;
 use function json_decode;
 
@@ -51,11 +53,23 @@ class Boards
      */
     public function createBoard(string $boardName)
     {
-        $request = $this->api->request('boards', null, $this->api::POST, ['name' => $boardName,]);
+        if (!is_string($boardName)) {
+            throw new Exception('Board name must be a string');
+        }
+
+        $board = $this->getExistingBoardIfCreated();
+
+        if ($board) {
+            return $board;
+        }
+
+        $request = $this->api->request('boards', null, $this->api::POST, ['name' => $boardName]);
+
         if ($request->getStatusCode() !== 200) {
             throw new Exception('4357345df8490flw94');
         }
-        return json_decode($request->getBody());
+
+        return json_decode($request->getBody(), true);
     }
 
     /**
@@ -76,11 +90,21 @@ class Boards
             'active' => $active,
         ];
 
-        $request = $this->api->request('webhooks', '', $this->api::POST, $postData);
-        if ($request->getStatusCode() !== 200) {
-            throw new Exception('5643875643c87');
+        try {
+            $request = $this->api->request('webhooks', '', $this->api::POST, $postData);
+            $webhook = json_decode($request->getBody(), true);
+
+            return $webhook['id'];
+        } catch (GuzzleException $e) {
+
+            if ( str_contains($e->getMessage(),'A webhook with that callback, model, and token already exists')) {
+
+                return config('tickets.webhookId');
+            }
+
+            throw new TrelloAPIException($e->getMessage());
         }
-        return json_decode($request->getBody());
+
 
     }
 
@@ -106,21 +130,17 @@ class Boards
      * Initializes the board ;
      * It checks whether an existing active board exists or creates a new one
      *
-     * @throws Exception
-     * @return  Board
      */
-    public function initialize(): Board
+    public function getExistingBoardIfCreated()
     {
-        //check if the 'Jumeme' board exists
-        $request = $this->api->request('members', 'alikemalzkan/boards', api::GET,
-            ['lists' => 'open', 'fields' => 'id,name']);
-        //create a new 'Jumeme' board
+        //check if the 'MicroPowerManager' board exists
+        $request = $this->api->request('board', config('tickets.boardId'), api::GET);
         if ($request->getStatusCode() === 200) {
-            $board = $this->checkBoardName('Your-Company', json_decode($request->getBody())) ?? $this->createBoard('Your-Company');
+            return json_decode($request->getBody(), true);
         } else {
-            throw new Exception($request->getBody(), $request->getStatusCode());
+            return null;
         }
-        return $board;
+
     }
 
 }

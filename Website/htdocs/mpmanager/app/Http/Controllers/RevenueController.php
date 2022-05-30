@@ -24,7 +24,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Illuminate\Http\Request;
-use Inensus\Ticket\Models\Label;
+use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Models\Ticket;
 use stdClass;
 
@@ -57,7 +57,7 @@ class RevenueController extends Controller
      */
     private $ticket;
     /**
-     * @var Label
+     * @var TicketCategory
      */
     private $label;
     /**
@@ -115,7 +115,7 @@ class RevenueController extends Controller
      * @param MeterToken $meterToken
      * @param Transaction $transaction
      * @param Ticket $ticket
-     * @param Label $label
+     * @param TicketCategory $label
      * @param Meter $meter
      * @param Cluster $cluster
      * @param ClusterService $clusterService
@@ -135,7 +135,7 @@ class RevenueController extends Controller
         MeterToken $meterToken,
         Transaction $transaction,
         Ticket $ticket,
-        Label $label,
+        TicketCategory $label,
         Meter $meter,
         Cluster $cluster,
         ClusterService $clusterService,

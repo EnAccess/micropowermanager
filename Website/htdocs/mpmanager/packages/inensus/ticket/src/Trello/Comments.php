@@ -8,6 +8,8 @@
 
 namespace Inensus\Ticket\Trello;
 
+use App\Exceptions\TrelloAPIException;
+use GuzzleHttp\Exception\GuzzleException;
 use Inensus\Ticket\Interfaces\ITicketProvider;
 
 class Comments
@@ -23,7 +25,12 @@ class Comments
 
     public function newComment($cardId, $comment)
     {
-       return $this->api->request('cards', $cardId . '/actions/comments', $this->api::POST, ['text' => $comment]);
+        try {
+            return $this->api->request('cards', $cardId . '/actions/comments', $this->api::POST, ['text' => $comment]);
+        } catch (GuzzleException $e) {
+            throw  new TrelloAPIException($e->getMessage());
+        }
+
     }
 
 }

@@ -13,8 +13,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Services\BoardService;
-use Inensus\Ticket\Services\CardService;
 use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Trello\Tickets;
 

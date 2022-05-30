@@ -12,9 +12,9 @@ use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
-use Inensus\Ticket\Models\Label;
-use Inensus\Ticket\Services\BoardService;
-use Inensus\Ticket\Services\CardService;
+use Inensus\Ticket\Models\TicketCategory;
+use Inensus\Ticket\Services\TicketBoardService;
+use Inensus\Ticket\Services\TicketCardService;
 use Inensus\Ticket\Services\TicketService;
 
 class AssetRateChecker extends Command
@@ -36,12 +36,12 @@ class AssetRateChecker extends Command
 
     public function __construct(
         AssetRate $assetRate,
-        BoardService $boardService,
-        CardService $cardService,
+        TicketBoardService $boardService,
+        TicketCardService $cardService,
         TicketService $ticketService,
         SmsApplianceRemindRateService $smsApplianceRemindRateService,
         User $user,
-        Label $label
+        TicketCategory $label
     ) {
         parent::__construct();
         $this->assetRate = $assetRate;

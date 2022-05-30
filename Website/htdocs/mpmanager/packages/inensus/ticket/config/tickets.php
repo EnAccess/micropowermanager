@@ -21,8 +21,10 @@ return [
     ],
     'max_boards' => 400,
     'max_cards' => 4000,
-    'prefix' => 'your-company',
-    'card_prefix' => 'your-company_cards',
+    'prefix' => 'MicroPowerManager',
+    'boardId' => '6291424c4e11631cfad78a37',
+    'webhookId'=> '629142abb63d648cf1b2d967',
+    'card_prefix' => 'micro_power_manager_cards',
     'callback' => getenv('TICKETING_CALLBACK', ''),
 
 ];

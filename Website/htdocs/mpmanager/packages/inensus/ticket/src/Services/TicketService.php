@@ -15,7 +15,7 @@ use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Trello\Tickets;
 use function Symfony\Component\Translation\t;
 
-class TicketService extends BaseService implements IBaseService,IAssociative
+class TicketService extends BaseService implements IBaseService, IAssociative
 {
 
     public function __construct(private Tickets $trelloAPI, private Ticket $ticket)
@@ -25,10 +25,9 @@ class TicketService extends BaseService implements IBaseService,IAssociative
 
     public function create($trelloTicketData = [])
     {
-
         try {
             $trelloTicket = $this->trelloAPI->createTicket($trelloTicketData);
-        } catch (\Exception $exception) {
+        } catch (TrelloAPIException $exception) {
             Log::error('An unexpected error occurred at trello ticket creation.',
                 ['message' => $exception->getMessage()]);
 
@@ -41,19 +40,18 @@ class TicketService extends BaseService implements IBaseService,IAssociative
     public function close($ticketId)
     {
         try {
-            $closeRequest = $this->trelloAPI->closeTicket($ticketId);
-        } catch (\Exception $exception) {
+            $ticket = $this->getById($ticketId);
+            $closeRequest = $this->trelloAPI->closeTicket($ticket->ticket_id);
+            $ticketData = ['status' => 1];
+            $this->update($ticket, $ticketData);
+
+            return $closeRequest;
+        } catch (TrelloAPIException $exception) {
             Log::error('An unexpected error occurred at trello ticket closing.',
                 ['message' => $exception->getMessage()]);
 
             throw new TrelloAPIException($exception->getMessage());
         }
-
-        $ticket = $this->getById($ticketId);
-        $ticketData = ['status'=>1];
-        $this->update($ticket, $ticketData);
-
-        return $closeRequest;
     }
 
     public function getTicket($ticketId)
@@ -72,7 +70,7 @@ class TicketService extends BaseService implements IBaseService,IAssociative
     {
         try {
             return $this->trelloAPI->actions($ticketId);
-        } catch (\Exception $exception) {
+        } catch (TrelloAPIException $exception) {
             Log::error('An unexpected error occurred at getting actions from trello API.',
                 ['message' => $exception->getMessage()]);
 
@@ -83,7 +81,6 @@ class TicketService extends BaseService implements IBaseService,IAssociative
     public function getBatch($tickets)
     {
         foreach ($tickets as $index => $ticket) {
-
             $tickets[$index]['ticket'] = $this->getTicket($ticket->ticket_id);
             $tickets[$index]['actions'] = $this->getActions($ticket->ticket_id);
             //$t['self'] = $ticket;
@@ -92,16 +89,21 @@ class TicketService extends BaseService implements IBaseService,IAssociative
         return $tickets;
     }
 
-    public function getById($ticketId)
+    public function getByTrelloId($trelloId)
     {
-        $ticket = $this->ticket->newQuery()->with(['category', 'owner'])->where('ticket_id', $ticketId)->first();
+        $ticket = $this->ticket->newQuery()->with(['category', 'owner'])->where('ticket_id', $trelloId)->first();
 
         if ($ticket !== null) {
-            $ticket->ticket = $this->getTicket($ticketId);
-            $ticket->actions = $this->getActions($ticketId);
+            $ticket->ticket = $this->getTicket($trelloId);
+            $ticket->actions = $this->getActions($trelloId);
         }
 
         return $ticket;
+    }
+
+    public function getById($ticketId)
+    {
+        return $this->ticket->newQuery()->with(['category', 'owner'])->where('id', $ticketId)->first();
     }
 
     public function update($ticket, $ticketData)
@@ -117,11 +119,13 @@ class TicketService extends BaseService implements IBaseService,IAssociative
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null, $agentId = null, $customerId = null)
+    public function getAll($limit = null, $status = null, $agentId = null, $customerId = null,
+        $assignedId = null, $categoryId = null)
     {
-        $tickets = $this->ticket->newQuery()->with(['category', 'owner']);
+        $query = $this->ticket->newQuery()->with(['category', 'owner','assignedTo']);
+
         if ($agentId) {
-            $tickets->whereHasMorph(
+            $query->whereHasMorph(
                 'creator',
                 [Agent::class],
                 static function ($q) use ($agentId) {
@@ -130,17 +134,29 @@ class TicketService extends BaseService implements IBaseService,IAssociative
             );
         }
 
-        if ($customerId)
-        {
-            $tickets ->where('owner_id', $customerId);
+        if ($status) {
+            $query->where('status', $status);
         }
 
-        if ($limit)
-        {
-            $tickets->paginate($limit);
-        }else{
-            $tickets->get();
+        if ($customerId) {
+            $query->where('owner_id', $customerId);
         }
+
+        if ($categoryId){
+            $query->where('category_id', $categoryId);
+        }
+
+        if ($assignedId){
+            $query->where('assigned_id', $assignedId);
+        }
+
+        if ($limit) {
+            $tickets = $query->paginate($limit);
+        } else {
+
+            $tickets = $query->paginate();
+        }
+
 
         if ($tickets->count()) {
             //get ticket details from trello
@@ -158,6 +174,19 @@ class TicketService extends BaseService implements IBaseService,IAssociative
 
     public function save($ticket)
     {
-       return $ticket->save();
+        return $ticket->save();
+    }
+
+    public function getForOutsourceReport($startDate, $endDate)
+    {
+      return  $this->ticket->newQuery()->with(['outsource', 'assignedTo', 'category'])
+            ->whereHas('category', static function ($q) {
+                $q->where('out_source', 1);
+            })
+            ->whereHas('assignedTo', static function ($q) {
+                $q->whereNotNull('owner_id');
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
     }
 }
