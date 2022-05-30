@@ -17,7 +17,8 @@ class AgentCustomerTicketController extends Controller
     {
         $agent = $this->agentService->getByAuthenticatedUser();
         $limit = $request->input('limit');
+        $status = null;
 
-        return ApiResource::make($this->ticketService->getAll($limit, $agent->id, $customerId));
+        return ApiResource::make($this->ticketService->getAll($limit, $status ,$agent->id, $customerId));
     }
 }

@@ -17,13 +17,14 @@ namespace Inensus\Ticket\Models;
  * @property string $owner_type
  * @property int $owner_id
  */
-class Card extends BaseModel
+class TicketCard extends BaseModel
 {
+    protected $connection = 'test_company_db';
     protected $table = 'ticket_cards';
 
     public function board()
     {
-        return $this->belongsTo(Board::class);
+        return $this->belongsTo(TicketBoard::class);
     }
 
     public function owner()

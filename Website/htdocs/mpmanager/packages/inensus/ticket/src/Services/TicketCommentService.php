@@ -9,24 +9,32 @@
 namespace Inensus\Ticket\Services;
 
 
+use App\Exceptions\TrelloAPIException;
 use App\Models\Person\Person;
+use App\Services\BaseService;
+use App\Services\IBaseService;
+use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Trello\Comments;
 
-class CommentService
+class TicketCommentService extends BaseService
 {
 
-    private $comments;
-    private $person;
-
-    public function __construct(Comments $comments, Person $person)
+    public function __construct(private Comments $commentsGateway, private Person $person)
     {
-        $this->comments = $comments;
-        $this->person = $person;
+        parent::__construct([$person]);
     }
 
     public function createComment($cardId, $comment)
     {
-        return $this->comments->newComment($cardId, $comment);
+        try {
+            return $this->commentsGateway->newComment($cardId, $comment);
+        } catch (TrelloAPIException $exception) {
+            Log::error('An unexpected error occurred at creating comment in trello API.',
+                ['message' => $exception->getMessage()]);
+
+            throw new TrelloAPIException($exception->getMessage());
+        }
+
     }
 
     // store a comment if the sender is an maintenance guy  and responds with sms to an open ticket.
@@ -50,4 +58,6 @@ class CommentService
             $this->createComment($person->tickets[0]->ticket_id, 'Sms Comment' . $message);
         }
     }
+
+
 }

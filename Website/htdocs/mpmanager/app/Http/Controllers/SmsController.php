@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Inensus\Ticket\Services\CommentService;
+use Inensus\Ticket\Services\TicketCommentService;
 
 class SmsController extends Controller
 {
@@ -66,7 +66,7 @@ class SmsController extends Controller
      * @param MeterParameter $meterParameter
      * @param SmsResendInformationKeyService $smsResendInformationKeyService
      * @param SmsService $smsService
-     * @param CommentService $commentService
+     * @param TicketCommentService $commentService
      */
     public function __construct(
         Sms $sms,
@@ -76,7 +76,7 @@ class SmsController extends Controller
         MeterParameter $meterParameter,
         SmsResendInformationKeyService $smsResendInformationKeyService,
         SmsService $smsService,
-        CommentService $commentService
+        TicketCommentService $commentService
     ) {
         $this->sms = $sms;
         $this->person = $person;

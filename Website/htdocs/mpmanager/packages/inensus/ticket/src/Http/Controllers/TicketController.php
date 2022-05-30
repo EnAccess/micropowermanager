@@ -9,45 +9,32 @@
 namespace Inensus\Ticket\Http\Controllers;
 
 
+use App\Http\Resources\ApiResource;
 use App\Models\Agent;
+use App\Services\PersonService;
+use App\Services\PersonTicketService;
+use App\Services\UserTicketService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
-use Inensus\Ticket\Models\Label;
+use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Services\BoardService;
-use Inensus\Ticket\Services\CardService;
+use Inensus\Ticket\Services\TicketBoardService;
+use Inensus\Ticket\Services\TicketCardService;
+use Inensus\Ticket\Services\TicketCategoryService;
+use Inensus\Ticket\Services\TicketOutSourceService;
 use Inensus\Ticket\Services\TicketService;
-use Inensus\Ticket\Services\UserService;
+use Inensus\Ticket\Services\TicketUserService;
 
 
 class TicketController extends Controller
 {
-    private $boardService;
-    private $cardService;
-    private $ticketService;
-    /**
-     * @var Label
-     */
-    private $label;
-    /**
-     * @var UserService
-     */
-    private $userService;
+    const FOR_APP = false;
 
-    public function __construct(
-        BoardService $boardService,
-        CardService $cardService,
-        TicketService $ticketService,
-        UserService $userService,
-        Label $label
-    ) {
-        $this->boardService = $boardService;
-        $this->cardService = $cardService;
-        $this->ticketService = $ticketService;
+    public function __construct(private TicketService $ticketService)
+    {
 
-        $this->label = $label;
-        $this->userService = $userService;
     }
 
     /**
@@ -107,144 +94,32 @@ class TicketController extends Controller
      * "total": 999
      * }
      */
-    public function index(): TicketResource
+    public function index(Request $request): TicketResource
     {
-        $person = request('person');
-        $category = request('category');
-        if (request('status') !== null) {
-            $tickets = Ticket::with('category', 'owner', 'assignedTo')
-                ->where('status', request('status'));
-            if ($person) {
-                $tickets = $tickets->where('assigned_id', $person);
-            }
-            if ($category) {
-                $tickets = $tickets->where('category_id', $category);
-            }
+        $assignedId = $request->input('person');
+        $categoryId = $request->input('category');
+        $status = $request->input('status');
+        $limit = 5;
 
-            $tickets = $tickets
-                ->latest()
-                ->paginate(5);
-
-        } else {
-            $tickets = Ticket::with('category', 'owner', 'assignedTo')->latest()->paginate(5);
-        }
-
-        //$fetchetdTickets = $this->ticketService->getBatch($tickets);
-        return new TicketResource($tickets);
+        return TicketResource::make($this->ticketService->getAll($limit, $status, null, null, $assignedId, $categoryId));
     }
 
-    public function show()
+    public function show($trelloId, Request $request): TicketResource
     {
-        $trelloId = request('trelloId');
-        $ticket = Ticket::with('category', 'owner')->where('ticket_id', $trelloId)->first();
+        $ticket = $this->ticketService->getByTrelloId($trelloId);
         $ticket['ticket'] = $this->ticketService->getTicket($trelloId);
         $ticket['actions'] = $this->ticketService->getActions($trelloId);
-        return new TicketResource(collect($ticket));
 
+        return TicketResource::make(collect($ticket));
     }
 
-    public function create(Request $request): TicketResource
+    // TODO: change this on UI side with query parameter $ticketId
+    public function destroy($ticketId,Request $request)
     {
-
-        $ownerId = (int)$request->get('owner_id');
-        $ownerType = $request->get('owner_type');
-        $assignedId = $request->get('assignedPerson');
-
-
-        $board = $this->boardService->initializeBoard();
-        $card = $this->cardService->initalizeList($board);
-        $creatorId = $request->get('creator');
-        $creatorType = $request->get('creator_type');
-
-        //reformat due date if it is set
-        $dueDate = $request->get('dueDate') !== null ? date('Y-m-d H:i:00', strtotime($request->get('dueDate'))) : null;
-        $category = $request->get('label');
-
-
-        $trelloParams = [
-            'idList' => $card->card_id,
-            'name' => $request->get('title'),
-            'desc' => $request->get('description'),
-            'due' => $dueDate === '1970-01-01' ? null : $dueDate,
-            'idMembers' => $assignedId,
-
-        ];
-
-        $assignedUser = $assignedId;
-        $ticket = $this->ticketService->create(
-            $creatorId,
-            $creatorType,
-            $ownerId,
-            $ownerType,
-            $category,
-            $assignedUser,
-            $trelloParams
-        );
-        //get category to check outsourcing
-        $categoryData = $this->label->find($category);
-        if ($categoryData->out_source) {
-            $ticket->outsource()->create(['amount' => (int)$request->get('outsourcing')]);
-        }
-
-
-        return new TicketResource($this->ticketService->getBatch([$ticket]));
-
-    }
-
-    public function destroy(Request $request)
-    {
-        $ticket = $request->get('ticketId');
-        $ticketId=$ticket['id'];
-        if ($ticketId === null) {
-            return (new TicketResource([]))->response()->setStatusCode(404);
-        }
         $closed = $this->ticketService->close($ticketId);
 
-        return new TicketResource(['data' => $closed]);
+        return TicketResource::make(['data' => $closed]);
     }
 
-    public function getTickets(int $owner_id)
-    {
-        $tickets = Ticket::with('owner', 'category')->where('owner_id', $owner_id)->latest()->get();
-
-        $fetchedTickets = $this->ticketService->getBatch($tickets);
-        return new TicketResource($this->paginateCollection(collect($fetchedTickets), 15));
-
-    }
-
-    public function paginateCollection($collection, $perPage, $pageName = 'page', $fragment = null)
-    {
-        $currentPage = LengthAwarePaginator::resolveCurrentPage($pageName);
-        $currentPageItems = $collection->slice(($currentPage - 1) * $perPage, $perPage);
-        parse_str(request()->getQueryString(), $query);
-        unset($query[$pageName]);
-        $paginator = new LengthAwarePaginator(
-            $currentPageItems,
-            $collection->count(),
-            $perPage,
-            $currentPage,
-            [
-                'pageName' => $pageName,
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-                'query' => $query,
-                'fragment' => $fragment,
-
-            ]
-        );
-
-        return $paginator;
-    }
-
-    public function indexAgentTickets($agent_id): TicketResource
-    {
-
-        $tickets = Ticket::with('category', 'owner', 'assignedTo')
-            ->where('creator_type', 'agent')
-            ->where('creator_id', $agent_id)
-            ->latest()
-            ->paginate(5);
-
-        return new TicketResource($tickets);
-    }
 
 }

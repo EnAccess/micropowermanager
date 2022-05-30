@@ -35,11 +35,19 @@ use Database\Factories\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
 use Database\Factories\SubTargetFactory;
 use Database\Factories\TargetFactory;
+use Database\Factories\TicketBoardFactory;
+use Database\Factories\TicketCardFactory;
+use Database\Factories\TicketCategoryFactory;
+use Database\Factories\TicketFactory;
+use Database\Factories\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inensus\Ticket\Models\TicketUser;
+use Inensus\Ticket\Services\TicketService;
+use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -53,12 +61,14 @@ trait CreateEnvironments
     private $user, $company, $city, $cluster, $miniGrid, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
         $meterTariff, $person, $token, $transaction, $connectionGroup, $connectonType, $subConnectionType, $target,
         $subTarget, $agent, $agentCommission, $address, $timeOfUsage, $companyDatabase, $meterToken, $paymentHistory,
-        $assetType, $assignedAppliance, $soldAppliance, $agentReceipt, $agentTransaction, $agentBalanceHistory;
+        $assetType, $assignedAppliance, $soldAppliance, $agentReceipt, $agentTransaction, $agentBalanceHistory,
+        $ticketCategory, $ticketUser, $ticketBoard, $ticketCard,$ticket;
 
     private $clusters = [], $miniGrids = [], $connectionGroups = [], $connectonTypes = [], $subConnectionTypes = [], $meterTypes = [],
         $manufacturers = [], $cities = [], $meterTariffs = [], $targets = [], $subTargets = [], $people = [], $assignedAppliances = [],
         $addresses = [], $agents = [], $agentCommissions = [], $transactions = [], $paymentHistories = [], $meters = [], $assetTypes = [],
-        $soldAppliances = [], $agentReceipts = [], $agentTransactions = [], $agentBalanceHistories = [];
+        $soldAppliances = [], $agentReceipts = [], $agentTransactions = [], $agentBalanceHistories = [],
+        $ticketCategories = [], $ticketUsers =[],$tickets= [];
 
     protected function createTestData()
     {
@@ -662,9 +672,13 @@ trait CreateEnvironments
                 'id' => 1,
                 'transaction_id' => $this->faker->numberBetween(1, 100),
                 'amount' => $this->faker->randomFloat(2, 0, 100),
-                'payment_service' => $this->faker->randomElement(['vodacom_transaction', 'airtel_transaction', 'agent_transaction']),
+                'payment_service' => $this->faker->randomElement([
+                    'vodacom_transaction',
+                    'airtel_transaction',
+                    'agent_transaction'
+                ]),
                 'sender' => $this->faker->phoneNumber,
-                'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'loan rate','access rate']),
+                'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'loan rate', 'access rate']),
 
             ]);
 
@@ -691,6 +705,93 @@ trait CreateEnvironments
         }
         if (count($this->paymentHistories) > 0) {
             $this->paymentHistory = $this->paymentHistories[0];
+        }
+    }
+
+    protected function createTicketCategory($ticketCategoryCount = 1)
+    {
+        while ($ticketCategoryCount > 0) {
+
+            $ticketCategory = TicketCategoryFactory::new()->create();
+            $this->ticketCategories[] = $ticketCategory;
+
+            $ticketCategoryCount--;
+        }
+        if (count($this->ticketCategories) > 0) {
+            $this->ticketCategory = $this->ticketCategories[0];
+        }
+    }
+
+    protected function createTicket($ticketCount = 1, $status = 0, $customerId = null,$agentId =null)
+    {
+        while ($ticketCount > 0) {
+            $trelloParams = [
+                'idList' => $this->ticketCard->card_id,
+                'name' => $this->faker->word,
+                'desc' => $this->faker->sentence,
+                'due' => $this->faker->date('Y-m-d'),
+                'idMembers' => $this->ticketUser->extern_id,
+            ];
+            $ticketService = app()->make(TicketService::class);
+            $trelloTicket = $ticketService->create($trelloParams);
+            $ticketId = $trelloTicket->id;
+
+          $ticket = TicketFactory::new()->create([
+                'ticket_id' => $ticketId,
+                'category_id' => $this->ticketCategory->id,
+                'assigned_id' => $this->ticketUser->id,
+                'status' => $status,
+                'owner_type' => 'person',
+                'owner_id' => $customerId,
+                'creator_type' => $agentId ?'agent':'user',
+                'creator_id' => $agentId ?: $this->user->id,
+            ]);
+          $this->tickets[] = $ticket;
+
+          $ticketCount--;
+        }
+        if (count($this->tickets) > 0) {
+            $this->ticket = $this->tickets[0];
+        }
+
+    }
+
+    protected function createTicketBoard()
+    {
+        $this->ticketBoard = TicketBoardFactory::new()->create();
+    }
+
+    protected function createTicketCard()
+    {
+        $this->ticketCard = TicketCardFactory::new()->create();
+    }
+
+    protected function createTicketOutsourceReport($ticketOutSourceReportCount =1)
+    {
+        while ($ticketOutSourceReportCount>0){
+
+        }
+    }
+    protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus')
+    {
+
+        $ticketUserService = app()->make(TicketUserService::class);
+        $externalUser = $ticketUserService->getByTag($tag);
+
+        while ($ticketUserCount > 0) {
+
+            $ticketUser = TicketUserFactory::new()->create([
+                'user_name' => $this->faker->name,
+                'user_tag' => $this->faker->word,
+                'out_source' => 0,
+                'extern_id' => $externalUser->id
+            ]);
+            $this->ticketUsers[] = $ticketUser;
+
+            $ticketUserCount--;
+        }
+        if (count($this->ticketUsers) > 0) {
+            $this->ticketUser = $this->ticketUsers[0];
         }
     }
 

@@ -7,17 +7,17 @@
  */
 
 use Inensus\Ticket\Models\BaseModel;
-use Inensus\Ticket\Models\Card;
+use Inensus\Ticket\Models\TicketCard;
 
 /**
  * Class Comment
  *
  */
-class Comment extends BaseModel
+class TicketComment extends BaseModel
 {
 
-    function ticket()
+   public function ticket()
     {
-        return $this->belongsTo(Card::class);
+        return $this->belongsTo(TicketCard::class);
     }
 }

@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $date
  * @property string $path
  */
-class OutsourceReport extends Model
+class TicketOutsourceReport extends BaseModel
 {
+    protected $connection = 'test_company_db';
     protected $table = 'ticket_outsource_reports';
 }

@@ -12,10 +12,11 @@ use App\Services\PersonTicketService;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
-use Inensus\Ticket\Models\Board;
-use Inensus\Ticket\Services\BoardService;
-use Inensus\Ticket\Services\CardService;
+use Inensus\Ticket\Models\TicketBoard;
+use Inensus\Ticket\Services\TicketBoardService;
+use Inensus\Ticket\Services\TicketCardService;
 use Inensus\Ticket\Services\TicketService;
+use Inensus\Ticket\Services\TicketUserService;
 
 
 class AgentTicketController extends Controller
@@ -24,16 +25,17 @@ class AgentTicketController extends Controller
     private $card;
 
     public function __construct(
-        private BoardService $boardService,
-        private CardService $cardService,
+        private TicketBoardService $boardService,
+        private TicketCardService $cardService,
         private AgentTicketService $agentTicketService,
         private PersonTicketService $personTicketService,
         private AgentService $agentService,
         private TicketService $ticketService,
         private PersonService $personService,
+        private TicketUserService $ticketUserService
 
     ) {
-        $this->board = $this->boardService->initializeBoard();
+        $this->board = $this->boardService->initializeBoard($this->ticketUserService);
         $this->card = $this->cardService->initalizeList($this->board);
     }
 
@@ -41,8 +43,9 @@ class AgentTicketController extends Controller
     {
         $agent = $this->agentService->getByAuthenticatedUser();
         $limit = $request->input('limit', 5);
+        $status = null;
 
-        return ApiResource::make($this->ticketService->getAll($limit, $agent->id));
+        return ApiResource::make($this->ticketService->getAll($limit, $status ,$agent->id));
     }
 
     public function show($ticketId, Request $request): ApiResource
@@ -77,6 +80,7 @@ class AgentTicketController extends Controller
             'name' => $ticketData['title'],
             'desc' => $ticketData['description'],
             'due' => $dueDate === '1970-01-01' ? null : $dueDate,
+            'idMembers' => $ticketData['assignedId'],
         ];
 
         $trelloTicket = $this->ticketService->create($trelloParams);

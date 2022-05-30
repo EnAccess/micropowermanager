@@ -9,8 +9,10 @@
 namespace Inensus\Ticket\Trello;
 
 
+use App\Exceptions\TrelloAPIException;
 use Exception;
-use Inensus\Ticket\Models\Board;
+use GuzzleHttp\Exception\GuzzleException;
+use Inensus\Ticket\Models\TicketBoard;
 use function json_decode;
 
 class Lists
@@ -24,21 +26,23 @@ class Lists
 
     /**
      * @param $name
-     * @param Board $board
+     * @param TicketBoard $board
      * @return mixed
      * @throws Exception
      */
-    public function createList($name, Board $board)
+    public function createList($name, TicketBoard $board)
     {
         $board->board_id;
-        $request = $this->api->request('lists', null, $this->api::POST, [
-            'name' => $name,
-            'idBoard' => $board->board_id,
-        ]);
-        if ($request->getStatusCode() !== 200) {
-            throw new Exception('38fmdskjckew9e');
+        try {
+            $request = $this->api->request('lists', null, $this->api::POST, [
+                'name' => $name,
+                'idBoard' => $board->board_id,
+            ]);
+
+            return json_decode($request->getBody());
+        }catch (GuzzleException $e){
+            throw new TrelloAPIException($e->getMessage());
         }
-        return json_decode($request->getBody());
 
     }
 

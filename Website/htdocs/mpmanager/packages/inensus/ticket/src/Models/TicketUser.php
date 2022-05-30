@@ -16,8 +16,8 @@ namespace Inensus\Ticket\Models;
  * @property string $user_tag
  * @property int $out_source
  */
-class UserModel extends BaseModel
+class TicketUser extends BaseModel
 {
-
+    protected $connection = 'test_company_db';
     protected $table = 'ticket_users';
 }

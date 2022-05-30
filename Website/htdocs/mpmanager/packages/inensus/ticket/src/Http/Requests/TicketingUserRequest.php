@@ -9,19 +9,11 @@
 namespace Inensus\Ticket\Http\Requests;
 
 
+use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TicketingUserRequest extends FormRequest
 {
-
-    /**
-     * Determine if the user is authorized to make this request
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Describes the rules which should be fulfilled by the request
@@ -29,13 +21,12 @@ class TicketingUserRequest extends FormRequest
      */
     public function rules(): array
     {
-
-        //get table names
-        $tableNames = config('tickets.table_names');
+        $sessionService = app()->make(SessionService::class);
+        $database=$sessionService->getAuthenticatedUserDatabaseName();
 
         return [
-            'username' => 'required|unique:' . $tableNames['user'] . ',user_name',
-            'usertag' => 'required|unique:' . $tableNames['user'] . ',user_name',
+            'username' => 'required|unique:'.$database.'.ticket_users,user_name',
+            'usertag' => 'required|unique:'.$database.'.ticket_users,user_name',
         ];
     }
 }
