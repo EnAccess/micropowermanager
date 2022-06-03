@@ -9,7 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class TicketOutsourceReportService extends BaseService implements IBaseService
+class TicketOutsourceReportService  implements IBaseService
 {
     public function __construct(
         private TicketOutsourceReport $ticketOutsourceReport,

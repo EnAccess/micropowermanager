@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Models\Cluster;
 use App\Models\Meter\Meter;
 
-class ClusterMeterService extends BaseService
+class ClusterMeterService
 {
     public function __construct(private Cluster $cluster,private Meter $meter)
     {
-        parent::__construct([$cluster,$meter]);
+
     }
 
     public function getCountById($clusterId): int

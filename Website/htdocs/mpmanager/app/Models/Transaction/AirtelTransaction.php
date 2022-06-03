@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AirtelTransaction extends BaseModel implements IRawTransaction
 {
-    protected $connection = 'test_company_db';
+
     /**
      * @return MorphOne
      */

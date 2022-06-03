@@ -43,7 +43,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
     use SoftDeletes;
 
-    protected $connection = 'test_company_db';
+
     protected $guarded = [];
 
     protected $casts = [

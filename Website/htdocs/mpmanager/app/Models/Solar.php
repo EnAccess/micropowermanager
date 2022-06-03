@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Solar extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 
     public function weatherData(): HasOne
     {

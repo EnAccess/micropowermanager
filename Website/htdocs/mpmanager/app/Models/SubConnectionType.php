@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubConnectionType extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     public function connectionType(): BelongsTo
     {
         return $this->belongsTo(ConnectionType::class);

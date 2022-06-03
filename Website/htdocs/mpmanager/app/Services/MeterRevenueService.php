@@ -7,13 +7,13 @@ use App\Models\Revenue;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\DB;
 
-class MeterRevenueService extends BaseService
+class MeterRevenueService
 {
     public function __construct(
         private MeterToken $meterToken,
         private Transaction $transaction
     ) {
-        parent::__construct([$meterToken,$transaction]);
+
 
     }
 

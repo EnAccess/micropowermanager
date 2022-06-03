@@ -7,7 +7,7 @@ use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use PhpParser\Node\Stmt\Throw_;
 
-class AppliancePersonService extends BaseService implements IBaseService, IAssociative
+class AppliancePersonService  implements IBaseService, IAssociative
 {
     private $mainSettings;
     private $cashTransactionService;
@@ -17,7 +17,7 @@ class AppliancePersonService extends BaseService implements IBaseService, IAssoc
         private AssetPerson $assetPerson,
         CashTransactionService $cashTransactionService,
     ) {
-        parent::__construct([$assetPerson]);
+
 
         $this->mainSettings = $mainSettings;
         $this->cashTransactionService = $cashTransactionService;

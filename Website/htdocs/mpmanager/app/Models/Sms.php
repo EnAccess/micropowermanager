@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Sms extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     public function trigger(): MorphTo
     {
         return $this->morphTo();

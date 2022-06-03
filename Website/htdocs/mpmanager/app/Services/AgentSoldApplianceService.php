@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\Types\This;
 use function Symfony\Component\String\s;
 
-class AgentSoldApplianceService extends BaseService implements IBaseService
+class AgentSoldApplianceService  implements IBaseService
 {
 
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
         private AssetPerson $assetPerson
     ) {
-        parent::__construct([$agentSoldAppliance]);
+
     }
 
 

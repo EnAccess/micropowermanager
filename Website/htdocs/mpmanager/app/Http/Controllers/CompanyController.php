@@ -19,10 +19,8 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
 
-        $company = $this->company->newQuery()->create([
-            'name' => $request->input('name'),
-            'address' => $request->input('address'),
-        ]);
+        $company = $this->company->newQuery()->create($request->only(['name','address', 'phone', 'country_id']));
+
 
         $name = str_replace(" ", "", $company->name);
         $companyDatabase = $this->companyDatabase->newQuery()->create([

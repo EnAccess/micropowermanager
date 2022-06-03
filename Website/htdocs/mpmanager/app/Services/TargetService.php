@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\Target;
 
-class TargetService extends BaseService implements IBaseService
+class TargetService  implements IBaseService
 {
     public function __construct(private Target $target)
     {
-        parent::__construct([$target]);
+
     }
 
     public function getById($targetId)

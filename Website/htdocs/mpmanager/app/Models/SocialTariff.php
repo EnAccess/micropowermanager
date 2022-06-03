@@ -18,6 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SocialTariff extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $guarded = [];
 }

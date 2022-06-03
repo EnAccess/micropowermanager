@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 
-class PersonMeterService extends BaseService
+class PersonMeterService
 {
     public function __construct(
         private Person $person,

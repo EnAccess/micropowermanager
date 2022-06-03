@@ -6,12 +6,12 @@ use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 
-class AgentChargeService extends BaseService implements IBaseService
+class AgentChargeService  implements IBaseService
 {
 
     public function __construct(private AgentCharge $agentCharge)
     {
-        parent::__construct([$agentCharge]);
+
     }
 
     public function create($agentChargeData)

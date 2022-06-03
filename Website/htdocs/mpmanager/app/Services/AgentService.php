@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentService extends BaseService implements IBaseService
+class AgentService  implements IBaseService
 {
 
     public function __construct(
@@ -32,7 +32,7 @@ class AgentService extends BaseService implements IBaseService
         private PeriodService $periodService
     ) {
 
-        parent::__construct([$agent]);
+
     }
 
     /**

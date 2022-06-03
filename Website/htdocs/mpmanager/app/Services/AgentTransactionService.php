@@ -9,7 +9,7 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use function Symfony\Component\String\s;
 
-class AgentTransactionService extends BaseService implements IBaseService
+class AgentTransactionService  implements IBaseService
 {
 
     public function __construct(
@@ -19,7 +19,7 @@ class AgentTransactionService extends BaseService implements IBaseService
         private MeterParameter $meterParameter
     ) {
 
-        parent::__construct([$agentTransaction, $transaction, $meter, $meterParameter]);
+
     }
 
 

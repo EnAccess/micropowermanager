@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ConnectionGroupService extends BaseService implements IBaseService
+class ConnectionGroupService  implements IBaseService
 {
     public function __construct(private ConnectionGroup $connectionGroup)
     {
-        parent::__construct([$connectionGroup]);
+
     }
 
     public function create($connectionGroupData)

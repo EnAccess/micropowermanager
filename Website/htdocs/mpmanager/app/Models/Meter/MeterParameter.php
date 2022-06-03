@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class MeterParameter extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $hidden = ['owner_id', 'owner_type', 'meter_id', 'tariff_id'];
     protected $guarded = [];
 

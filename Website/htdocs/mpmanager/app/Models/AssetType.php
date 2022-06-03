@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class AssetType extends BaseModel
 {
 
-    protected $connection = 'test_company_db';
+
 
     public function agentAssignedAppliance(): HasMany
     {

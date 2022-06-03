@@ -4,13 +4,11 @@ namespace App\Services;
 
 use App\Models\WeatherData;
 
-class MiniGridWeatherDataService extends BaseService
+class MiniGridWeatherDataService
 {
 
     public function __construct(private WeatherData $weatherData)
-  
     {
-        parent::__construct([$weatherData]);
     }
 
 }

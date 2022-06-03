@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MeterType extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     public static $rules = [
         'online' => 'required',
         'phase' => 'required',

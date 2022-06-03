@@ -202,6 +202,7 @@ function createMysqlDbUser()
 
 }
 
+#todo remove after database connection is working in the middleware
 function addConnectionToDatabase()
 {
         sed -i '

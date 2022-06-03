@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SubTarget extends BaseModel
 {
 
-    protected $connection = 'test_company_db';
+
     /**
      * @return BelongsTo
      */

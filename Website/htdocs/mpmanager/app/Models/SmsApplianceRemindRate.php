@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SmsApplianceRemindRate extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $table = 'sms_appliance_remind_rates';
 
     public function applianceType(): BelongsTo

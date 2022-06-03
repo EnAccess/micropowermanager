@@ -27,14 +27,15 @@ class SessionService
 
     public function getAuthenticatedUserDatabaseName(): string
     {
-        if (auth('api')->user() instanceof User) {
-
-            return auth('api')->user()->company->database->database_name;
-
-        } elseif (auth('api')->user() instanceof Agent) {
-
-            return auth('api')->user()->connection;
-        }
-        return 'test_company_db';
+        return 'yarak_var';
+//        if (auth('api')->user() instanceof User) {
+//
+//            return auth('api')->user()->company->database->database_name;
+//
+//        } elseif (auth('api')->user() instanceof Agent) {
+//
+//            return auth('api')->user()->connection;
+//        }
+//        return 'test_company_db';
     }
 }

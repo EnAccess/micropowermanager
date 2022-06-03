@@ -7,11 +7,11 @@ use App\Models\Meter\MeterConsumption;
 use App\Services\SessionService;
 use Illuminate\Database\Eloquent\Collection;
 
-class MeterConsumptionService extends BaseService implements IBaseService
+class MeterConsumptionService  implements IBaseService
 {
     public function __construct(private MeterConsumption $meterConsumption)
     {
-        parent::__construct([$meterConsumption]);
+
     }
 
     public function getByMeter(Meter $meter, $start, $end): Collection|array

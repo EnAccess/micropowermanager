@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MaintenanceUsers extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 
 
     public function person(): BelongsTo

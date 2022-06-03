@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
-class AgentCustomerService extends BaseService
+class AgentCustomerService
 {
 
     public function __construct(private Agent $agent, private Person $person)
     {
-        parent::__construct([$agent, $person]);
+
     }
 
     public function list(Agent $agent): LengthAwarePaginator
