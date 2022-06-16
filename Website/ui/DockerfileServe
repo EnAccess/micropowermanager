@@ -1,0 +1,14 @@
+FROM node:16.10.0
+
+WORKDIR /usr/app
+
+# Copy the package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy rest of the files
+COPY . .
+
+EXPOSE 8080
+
+CMD npm run serve & tail -f /dev/null
