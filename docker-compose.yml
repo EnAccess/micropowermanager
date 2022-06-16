@@ -9,7 +9,7 @@ services:
     image: laravel/php:8
 
     environment:
-      VIRTUAL_HOST: mpmanager.local
+      VIRTUAL_HOST: api.mpmanager.local
     depends_on:
       - maria
     links:

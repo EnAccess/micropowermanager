@@ -46,6 +46,7 @@ class Kernel extends HttpKernel
         ConvertEmptyStringsToNull::class,
         TrustProxies::class,
         UserDefaultDatabaseConnectionMiddleware::class,
+        \Fruitcake\Cors\HandleCors::class,
     ];
 
     /**
@@ -96,5 +97,4 @@ class Kernel extends HttpKernel
         'data.controller' => DataControllerMiddleware::class,
         'agent.balance' => AgentBalanceMiddleware::class,
     ];
-
 }
