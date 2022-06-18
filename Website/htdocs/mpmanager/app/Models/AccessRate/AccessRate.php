@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class AccessRate extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 
     public function tariff(): BelongsTo
     {

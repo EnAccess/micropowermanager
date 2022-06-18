@@ -17,11 +17,20 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @package App\Models
  *
  * @property int $id
+ * @property int $company_id
+ *
  */
 class User extends Authenticatable implements JWTSubject
 {
+    public function __construct(array $attributes = [])
+    {
+        $this->setConnection('shard');
+        parent::__construct($attributes);
+    }
+
     use Notifiable;
-    protected $connection = 'micro_power_manager';
+
+    public const COL_COMPANY_ID = 'company_id';
 
     public function setPasswordAttribute($password): void
     {
@@ -59,14 +68,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
+    //we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
+    public function getJWTCustomClaims(): array
     {
-        return [];
+        return [
+            'companyId' => $this->getCompanyId()
+        ];
     }
 
 
@@ -91,5 +98,11 @@ class User extends Authenticatable implements JWTSubject
     public function company(): BelongsTo
     {
         return $this->BelongsTo(Company::class, 'company_id');
+    }
+
+
+    public function getCompanyId(): int
+    {
+        return $this->company_id;
     }
 }

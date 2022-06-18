@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class History extends Model
 {
-    protected $connection = 'test_company_db';
+
     public const ACTION_CREATED = 'create';
     public const ACTION_UPDATE = 'update';
     public const ACTION_DELETE = 'delete';

@@ -28,7 +28,7 @@ use PDO;
  */
 class Transaction extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     use RelationsManager;
 
     public function originalTransaction(): morphTo

@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class CashTransaction extends BaseModel implements IRawTransaction
 {
-    protected $connection = 'test_company_db';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

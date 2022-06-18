@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class SocialTariffPiggyBank extends Model
 {
-    protected $connection = 'test_company_db';
+
     protected $guarded = [];
 
     public function meter(): BelongsTo

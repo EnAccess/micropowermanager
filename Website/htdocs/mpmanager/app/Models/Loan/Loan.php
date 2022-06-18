@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Loan extends BaseModel
 {
 
-    protected $connection = 'test_company_db';
+
     //related payment histories which are made for that loan
     public function paymentHistories(): HasMany
     {

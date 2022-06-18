@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class AssetRate extends Model
 {
-    protected $connection = 'test_company_db';
+
 
     protected $fillable = [
         'asset_person_id',

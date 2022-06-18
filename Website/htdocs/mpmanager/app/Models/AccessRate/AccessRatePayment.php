@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AccessRatePayment extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 
     public function meter(): BelongsTo
     {

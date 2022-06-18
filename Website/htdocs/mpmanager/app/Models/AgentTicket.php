@@ -9,7 +9,7 @@ use Inensus\Ticket\Models\Ticket;
 
 class AgentTicket extends Model
 {
-    protected $connection = 'test_company_db';
+
     protected $guarded = [];
 
     public function ticket(): MorphOne

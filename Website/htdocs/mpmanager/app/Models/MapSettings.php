@@ -16,5 +16,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MapSettings extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 }
