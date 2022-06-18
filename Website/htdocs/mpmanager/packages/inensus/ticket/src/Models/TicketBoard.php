@@ -11,7 +11,7 @@ namespace Inensus\Ticket\Models;
 
 class TicketBoard extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $table = 'ticket_boards';
 
     public function tickets()

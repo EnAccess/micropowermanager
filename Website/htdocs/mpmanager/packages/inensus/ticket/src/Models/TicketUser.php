@@ -18,6 +18,6 @@ namespace Inensus\Ticket\Models;
  */
 class TicketUser extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $table = 'ticket_users';
 }

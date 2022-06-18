@@ -11,7 +11,7 @@ namespace Inensus\Ticket\Models;
 
 class TicketCategory extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $table = 'ticket_categories';
 
 }
