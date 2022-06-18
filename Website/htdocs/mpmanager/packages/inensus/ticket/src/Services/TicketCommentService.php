@@ -16,9 +16,8 @@ use App\Services\IBaseService;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Trello\Comments;
 
-class TicketCommentService extends BaseService
+class TicketCommentService
 {
-
     public function __construct(private Comments $commentsGateway, private Person $person)
     {
         parent::__construct([$person]);

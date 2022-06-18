@@ -6,7 +6,7 @@ use App\Services\BaseService;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketCategory;
 
-class TicketCategoryService extends BaseService implements IBaseService
+class TicketCategoryService  implements IBaseService
 {
 
     public function __construct(private TicketCategory $ticketCategory)
