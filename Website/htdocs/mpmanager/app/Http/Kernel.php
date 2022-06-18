@@ -13,6 +13,7 @@ use App\Http\Middleware\Transaction;
 use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -44,6 +45,7 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         TrustProxies::class,
+        UserDefaultDatabaseConnectionMiddleware::class,
     ];
 
     /**
@@ -94,4 +96,5 @@ class Kernel extends HttpKernel
         'data.controller' => DataControllerMiddleware::class,
         'agent.balance' => AgentBalanceMiddleware::class,
     ];
+
 }
