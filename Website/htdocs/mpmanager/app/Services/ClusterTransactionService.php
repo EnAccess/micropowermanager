@@ -6,11 +6,11 @@ use App\Models\Transaction\Transaction;
 use App\Models\Cluster;
 use Illuminate\Database\Eloquent\Collection;
 
-class ClusterTransactionService extends BaseService
+class ClusterTransactionService
 {
     public function __construct(private Cluster $cluster, private Transaction $transaction)
     {
-        parent::__construct([$cluster, $transaction]);
+
 
     }
 

@@ -14,14 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentBalanceHistoryService extends BaseService implements IBaseService, IAssociative
+class AgentBalanceHistoryService  implements IBaseService, IAssociative
 {
 
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService)
     {
-        parent::__construct([$agentBalanceHistory]);
+
     }
 
     public function getAll($limit = null, $agentId = null)

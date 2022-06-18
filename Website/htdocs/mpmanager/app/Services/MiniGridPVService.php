@@ -7,12 +7,12 @@ use App\Models\PV;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
-class MiniGridPVService extends BaseService
+class MiniGridPVService
 {
 
     public function __construct(private PV $pv)
     {
-        parent::__construct([$pv]);
+
     }
 
     public function getById($miniGridId, $startDate, $endDate): Collection|array

@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Matrix\Exception;
 
-class AgentReceiptService extends BaseService implements IBaseService
+class AgentReceiptService  implements IBaseService
 {
 
     public function __construct(private AgentReceipt $agentReceipt)
     {
-        parent::__construct([$agentReceipt]);
     }
 
     public function getAll($limit = null, $agentId = null)

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentCommissionService extends BaseService implements IBaseService
+class AgentCommissionService  implements IBaseService
 {
 
     public function __construct(private AgentCommission $agentCommission)
     {
-        parent::__construct([$agentCommission]);
+
     }
 
 

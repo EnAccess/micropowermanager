@@ -5,12 +5,12 @@ namespace App\Services;
 use App\Models\Cluster;
 use App\Models\Person\Person;
 
-class ClusterPopulationService extends BaseService
+class ClusterPopulationService
 {
  public function __construct(private Person $person,private Cluster $cluster)
 
  {
-     parent::__construct([$cluster,$person]);
+
  }
 
     public function getById($clusterId, $onlyCustomers = true):int

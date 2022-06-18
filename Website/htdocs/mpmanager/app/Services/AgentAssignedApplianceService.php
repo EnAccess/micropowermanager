@@ -7,12 +7,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class AgentAssignedApplianceService extends BaseService implements IBaseService
+class AgentAssignedApplianceService  implements IBaseService
 {
 
     public function __construct(private AgentAssignedAppliances $agentAssignedAppliance)
     {
-        parent::__construct([$agentAssignedAppliance]);
     }
 
 

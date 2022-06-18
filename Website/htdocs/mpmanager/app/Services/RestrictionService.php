@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\Restriction;
 
-class RestrictionService extends BaseService implements IBaseService
+class RestrictionService  implements IBaseService
 {
     public function __construct(private Restriction $restriction)
     {
-        parent::__construct([$this->restriction]);
+
     }
 
     public function getRestrictionForTarget($target)

@@ -8,12 +8,11 @@ use App\Models\Address\HasAddressesInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class AddressesService extends BaseService implements IBaseService,IAssociative
+class AddressesService  implements IBaseService,IAssociative
 {
 
     public function __construct(private Address $address)
     {
-        parent::__construct([$address]);
     }
 
     // fills the object and returns it without saving.

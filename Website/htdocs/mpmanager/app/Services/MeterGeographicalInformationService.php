@@ -5,14 +5,14 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 
-class MeterGeographicalInformationService extends BaseService
+class MeterGeographicalInformationService
 {
 
     public function __construct(
         private GeographicalInformation $geographicalInformation,
         private Meter $meter
     ) {
-        parent::__construct([$geographicalInformation,$meter]);
+
 
     }
 

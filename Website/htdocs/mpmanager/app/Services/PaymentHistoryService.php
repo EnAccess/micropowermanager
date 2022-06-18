@@ -11,13 +11,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentHistoryService extends BaseService implements IAssociative
+class PaymentHistoryService  implements IAssociative
 {
-
 
     public function __construct(private PaymentHistory $paymentHistory)
     {
-        parent::__construct([$paymentHistory]);
+
     }
 
     public function findPayingCustomersInRange(

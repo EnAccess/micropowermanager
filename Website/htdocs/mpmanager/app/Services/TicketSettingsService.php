@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\TicketSettings;
 
-class TicketSettingsService extends BaseService implements ISettingsService
+class TicketSettingsService  implements ISettingsService
 {
     public function __construct(private TicketSettings $ticketSettings)
     {
-        parent::__construct([$ticketSettings]);
+
     }
 
     public function update($ticketSettings, $ticketSettingsData)

@@ -13,7 +13,7 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Collection;
 
-class TransactionService extends BaseService implements IBaseService,IAssociative
+class TransactionService  implements IBaseService,IAssociative
 {
 
     /**
@@ -30,7 +30,7 @@ class TransactionService extends BaseService implements IBaseService,IAssociativ
     public function __construct(private Transaction $transaction, Meter $meter)
     {
 
-        parent::__construct([$transaction]);
+
         $this->meter = $meter;
     }
 

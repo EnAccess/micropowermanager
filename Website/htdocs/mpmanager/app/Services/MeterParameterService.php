@@ -5,14 +5,12 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
-use function Symfony\Component\Translation\t;
 
-class MeterParameterService extends  BaseService
+class MeterParameterService
 {
     public function __construct(
         private MeterParameter $meterParameter,
     ) {
-        parent::__construct([$meterParameter]);
     }
 
     public function createMeterParameter(

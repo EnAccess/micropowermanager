@@ -8,18 +8,22 @@ use Nette\Utils\DateTime;
 
 class ClustersDashboardCacheDataService
 {
+    private const CACHE_KEY_CLUSTER_LIST = 'ClustersList';
+    private const CACHE_KEY_CLUSTERS_REVENUE = 'ClustersRevenue';
+
     public function __construct(
         private PeriodService $periodService,
+        private ClusterService $clusterService,
     ) {
     }
 
     public function setClustersData($clusterData,$clustersWithMeters,$clusterRevenueService)
     {
-        $this->setClustersListData('ClustersList',$clusterData);
-        $this->setClustersRevenues('ClustersRevenue',$clustersWithMeters,$clusterRevenueService);
+        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST,$clusterData);
+        $this->setClustersRevenues(self::CACHE_KEY_CLUSTERS_REVENUE,$clustersWithMeters,$clusterRevenueService);
     }
 
-    public function setClustersListData($key,$clusterData)
+    private  function setClustersListData($key,$clusterData)
     {
         Cache::forever($key, $clusterData);
     }
@@ -58,8 +62,8 @@ class ClustersDashboardCacheDataService
 
     public function getData(): array
     {
-        $data['clustersList'] = Cache::get('ClustersList') ? Cache::get('ClustersList') : [];
-        $data['clustersRevenue'] = Cache::get('ClustersRevenue') ? Cache::get('ClustersRevenue') : [];
+        $data['clustersList'] = Cache::get('ClustersList') ??  $this->buildCachedList();
+        $data['clustersRevenue'] = Cache::get('ClustersRevenue') ?? [];
         return $data;
     }
 
@@ -68,5 +72,12 @@ class ClustersDashboardCacheDataService
         return Cache::get('ClustersList') ? collect(Cache::get('ClustersList'))->filter(function($cluster) use ($clusterId) {
             return $cluster['id'] == $clusterId;
         })->first() : [];
+    }
+
+    public function buildCachedList()
+    {
+        $clusters = $this->clusterService->getAll();
+        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST, $clusters);
+        return $clusters->toArray();
     }
 }
