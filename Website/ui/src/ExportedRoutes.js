@@ -1,10 +1,22 @@
 import Login from './components/Login/Login'
+
 import LoginHeader from './components/Login/LoginHeader'
 import LoginFooter from './components/Login/LoginFooter'
 import ForgotPassword from './components/Login/ForgotPassword'
+import Welcome from './components/Welcome/Welcome'
 
 /*eslint-disable */
 export const exportedRoutes = [
+  {
+    path: '/welcome',
+    name: 'welcome',
+    components: { default: Welcome, header: LoginHeader, footer: LoginFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    },
+    meta: { requireAuth: false }
+  },
+
   {
     path: '/login',
     name: 'login',

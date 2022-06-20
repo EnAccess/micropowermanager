@@ -21,7 +21,7 @@ Vue.component('default', Default)
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']
     const intervalId = store.getters['auth/getIntervalId']
-    if (['login', 'forgot_password'].includes(to.name)) {
+    if (['login', 'forgot_password', 'welcome'].includes(to.name)) {
         return next()
     }
     if (authToken === undefined || authToken === '') {
