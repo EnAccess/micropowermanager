@@ -32,7 +32,7 @@ class UserDefaultDatabaseConnectionMiddleware{
           $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
         }
         //agent app login
-        elseif($this->isAgentApp($request->path()) && $request->path()=== 'app/login'){
+        elseif($this->isAgentApp($request->path()) &&  Str::contains($request->path(),'login') ){
             $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
         }
         //agent app authenticated user requests
@@ -45,6 +45,7 @@ class UserDefaultDatabaseConnectionMiddleware{
         }
         //web client authenticated user requests
         else {
+            dd("ne isin var");
             $companyId = auth('api')->payload()->get('companyId');
             if(!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
@@ -80,6 +81,6 @@ class UserDefaultDatabaseConnectionMiddleware{
     }
 
     private function isAgentApp(string $path){
-        return Str::startsWith($path,'app/');
+        return Str::startsWith($path,'api/app/');
     }
 }

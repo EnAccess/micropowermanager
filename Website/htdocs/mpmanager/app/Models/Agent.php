@@ -39,6 +39,12 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Agent extends Authenticatable implements JWTSubject
 {
 
+    public function __construct(array $attributes = [])
+    {
+        $this->setConnection('shard');
+        parent::__construct($attributes);
+    }
+
     public function setPasswordAttribute($password): void
     {
         $this->attributes['password'] = Hash::make($password);
@@ -84,7 +90,7 @@ class Agent extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'company_id' => $this->getCompanyId()
+            'company_id' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID]
         ];
     }
 
@@ -143,10 +149,5 @@ class Agent extends Authenticatable implements JWTSubject
     public function receipt(): HasMany
     {
         return $this->hasMany(AgentReceipt::class, 'agent_id', 'id');
-    }
-
-    public function getCompanyId():int
-    {
-        return $this->company_id;
     }
 }

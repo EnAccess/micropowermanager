@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class Company extends HybridModel
+class Company extends MasterModel
 {
     use HasFactory;
 

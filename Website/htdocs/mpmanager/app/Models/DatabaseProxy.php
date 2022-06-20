@@ -7,7 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class DatabaseProxy extends HybridModel
+class DatabaseProxy extends MasterModel
 {
     public const COL_DATABASE_CONNECTION = 'database_connection';
     public const COL_COMPANY_ID = 'fk_company_id';

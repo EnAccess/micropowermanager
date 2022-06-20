@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class CompanyDatabase extends HybridModel
+class CompanyDatabase extends MasterModel
 {
     use HasFactory;
 
