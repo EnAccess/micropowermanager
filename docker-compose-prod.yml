@@ -20,6 +20,13 @@ services:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
 
+  'ui':
+    container_name: ui
+    build:
+      context: ./Website/ui/
+      dockerfile: Dockerfile
+    volumes:
+      - ./Website/ui:/usr/ui-src
   'cron':
     container_name: cron_job
     build:

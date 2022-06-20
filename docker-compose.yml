@@ -19,17 +19,9 @@ services:
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
+
   'ui':
     container_name: ui
-    build:
-      context: ./Website/ui/
-      dockerfile: Dockerfile
-    volumes:
-      - ./Website/ui:/usr/ui-src
-    environment:
-      VIRTUAL_HOST: mpmanager.local
-  'ui_serve':
-    container_name: ui_serve
     build:
       context: ./Website/ui/
       dockerfile: DockerfileServe
@@ -37,7 +29,7 @@ services:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
     environment:
-      VIRTUAL_HOST: serve.mpmanager.local
+      VIRTUAL_HOST: mpmanager.local
   'cron':
     container_name: cron_job
     build:
