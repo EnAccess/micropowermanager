@@ -31,7 +31,7 @@ class CompanyController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $companyData = $request->only(['name', 'address', 'phone', 'email']);
+        $companyData =$request->only(['name', 'address', 'phone', 'email']);
         $company = $this->companyService->create($companyData);
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
