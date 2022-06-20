@@ -14,7 +14,7 @@ use Inensus\Ticket\Models\TicketBoard;
 use Inensus\Ticket\Trello\Boards;
 use function config;
 
-class TicketBoardService extends BaseService implements IBaseService
+class TicketBoardService  implements IBaseService
 {
 
     public function __construct(

@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\Meter\MeterType;
 
-class MeterTypeMeterService extends BaseService
+class MeterTypeMeterService
 {
     public function __construct(private MeterType $meterType)
     {
-        parent::__construct([$meterType]);
+
     }
 
     public function getByIdWithMeters($meterTypeId)

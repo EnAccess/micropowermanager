@@ -6,7 +6,7 @@ use App\Services\BaseService;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketOutsource;
 
-class TicketOutSourceService extends BaseService implements IBaseService
+class TicketOutSourceService  implements IBaseService
 {
 
     public function __construct(private TicketOutsource $ticketOutsource)

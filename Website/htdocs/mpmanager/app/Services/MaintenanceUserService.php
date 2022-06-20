@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Models\MaintenanceUsers;
 
-class MaintenanceUserService extends BaseService implements IBaseService
+class MaintenanceUserService  implements IBaseService
 {
 
     public function __construct(private MaintenanceUsers $maintenanceUser)
     {
-        parent::__construct([$maintenanceUser]);
+
     }
 
     public function getMaintenanceUsersCount()

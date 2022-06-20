@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class ClusterRevenueService extends BaseService
+class ClusterRevenueService
 {
 
     public function __construct(
@@ -24,7 +24,7 @@ class ClusterRevenueService extends BaseService
         private Cluster $cluster,
         private Transaction $transaction,
     ) {
-        parent::__construct([$cluster, $transaction]);
+
 
     }
 

@@ -16,7 +16,7 @@ use Inensus\Ticket\Exceptions\ApiUserNotFound;
 use Inensus\Ticket\Models\TicketUser;
 use Inensus\Ticket\Trello\Users;
 
-class TicketUserService extends BaseService implements IBaseService
+class TicketUserService  implements IBaseService
 {
     public function __construct(
         private TicketUser $ticketUser,

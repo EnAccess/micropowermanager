@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\SocialTariff;
 
-class SocialTariffService extends BaseService implements IBaseService
+class SocialTariffService  implements IBaseService
 {
     public function __construct(private SocialTariff $socialTariff)
     {
-        parent::__construct([$socialTariff]);
+
     }
 
     public function create($socialTariffData)

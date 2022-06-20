@@ -19,7 +19,7 @@ class Migrator extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Migrates all base migrations to provided database name';
 
     /**
      * Execute the console command.

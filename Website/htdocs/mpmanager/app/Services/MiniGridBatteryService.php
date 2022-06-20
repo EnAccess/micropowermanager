@@ -7,11 +7,11 @@ use App\Models\MiniGrid;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
-class MiniGridBatteryService extends BaseService
+class MiniGridBatteryService
 {
     public function __construct(private Battery $battery, private MiniGrid $miniGrid)
     {
-        parent::__construct([$battery, $miniGrid]);
+
     }
 
     public function getById($miniGridId,$startDate,$endDate,$limit): Collection|array

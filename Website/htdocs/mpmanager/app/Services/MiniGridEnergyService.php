@@ -8,12 +8,11 @@ use App\Models\MiniGrid;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
-class MiniGridEnergyService extends BaseService
+class MiniGridEnergyService
 {
 
     public function __construct(private MiniGrid $miniGrid,private Energy $energy)
     {
-        parent::__construct([$energy]);
     }
 
     public function getById($miniGridId,$startDate,$endDate): Collection|array

@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class MiniGridSolarService extends BaseService
+class MiniGridSolarService
 {
     public function __construct(
         private MiniGrid $miniGrid,
         private Solar $solar
     ) {
-        parent::__construct([$solar, $miniGrid]);
+
     }
 
     /**

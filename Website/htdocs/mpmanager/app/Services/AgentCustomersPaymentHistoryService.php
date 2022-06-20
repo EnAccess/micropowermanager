@@ -6,12 +6,12 @@ use App\Models\PaymentHistory;
 use Illuminate\Support\Facades\DB;
 use PDO;
 
-class AgentCustomersPaymentHistoryService extends BaseService
+class AgentCustomersPaymentHistoryService
 {
     public function __construct(
         private PaymentHistory $paymentHistory
     ) {
-        parent::__construct([$paymentHistory]);
+
     }
 
     public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC')

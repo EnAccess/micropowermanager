@@ -9,6 +9,8 @@ class Company extends BaseModel
 {
     use HasFactory;
 
+    public const COL_ID = 'id';
+
     protected $connection = 'micro_power_manager';
 
     //has many Users

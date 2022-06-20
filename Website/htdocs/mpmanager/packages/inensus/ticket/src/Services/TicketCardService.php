@@ -15,7 +15,7 @@ use Inensus\Ticket\Models\TicketCard;
 use Inensus\Ticket\Trello\Lists;
 use function config;
 
-class TicketCardService extends BaseService
+class TicketCardService
 {
 
     public function __construct(private TicketCard $ticketCard, private Lists $lists)

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class AgentCharge extends BaseModel
 {
     //
-    protected $connection = 'test_company_db';
+
     public function agent(): void
     {
         $this->belongsTo(Agent::class);

@@ -5,12 +5,12 @@ namespace App\Services;
 
 use App\Models\Country;
 
-class CountryService extends BaseService implements IBaseService
+class CountryService  implements IBaseService
 {
 
     public function __construct(private Country $country)
     {
-        parent::__construct([$country]);
+
 
     }
 

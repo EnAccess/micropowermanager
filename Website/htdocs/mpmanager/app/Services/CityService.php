@@ -19,12 +19,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CityService extends BaseService implements IBaseService
+class CityService  implements IBaseService
 {
 
     public function __construct(private City $city, private Person $person)
     {
-        parent::__construct([$city, $person]);
+
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)

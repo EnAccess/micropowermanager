@@ -17,7 +17,7 @@ use PDO;
 
 class Ticket extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     protected $table = 'tickets';
 
     public const STATUS = [

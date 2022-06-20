@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 
-class SubConnectionTypeService extends BaseService implements IBaseService
+class SubConnectionTypeService  implements IBaseService
 {
     public function __construct(private SubConnectionType $subConnectionType)
     {
-        parent::__construct([$subConnectionType]);
+
     }
 
     public function getSubConnectionTypesByConnectionTypeId($connectionTypeId,$limit = null): LengthAwarePaginator|Collection

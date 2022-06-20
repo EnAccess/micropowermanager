@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Models\AgentReceipt;
 use App\Models\AgentReceiptDetail;
 
-class AgentReceiptDetailService extends BaseService implements IBaseService
+class AgentReceiptDetailService  implements IBaseService
 {
     public function __construct(private AgentReceiptDetail $agentReceiptDetail)
     {
-        parent::__construct([$agentReceiptDetail]);
+
     }
 
     public function getSummary($agentId)

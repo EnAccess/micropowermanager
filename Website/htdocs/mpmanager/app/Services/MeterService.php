@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Log;
 
 use function count;
 
-class MeterService extends BaseService implements IBaseService
+class MeterService  implements IBaseService
 {
 
     public function __construct(private Meter $meter)
     {
-        parent::__construct([$meter]);
+
     }
 
     public function getBySerialNumber($serialNumber)

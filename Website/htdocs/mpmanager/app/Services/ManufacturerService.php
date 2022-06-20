@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
-class ManufacturerService extends BaseService implements IBaseService
+class ManufacturerService  implements IBaseService
 {
 
     public function __construct(private Manufacturer $manufacturer)
     {
-        parent::__construct([$manufacturer]);
+
     }
 
     public function createManufacturerDataFromRequest(Request $request): array

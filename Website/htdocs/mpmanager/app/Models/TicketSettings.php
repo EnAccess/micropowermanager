@@ -17,5 +17,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketSettings extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 }

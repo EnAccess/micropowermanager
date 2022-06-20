@@ -7,13 +7,12 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MeterTypeService extends BaseService implements IBaseService
+class MeterTypeService  implements IBaseService
 {
-    use SoftDeletes;
 
     public function __construct(private MeterType $meterType)
     {
-        parent::__construct([$meterType]);
+
     }
 
     public function create($meterTypeData)

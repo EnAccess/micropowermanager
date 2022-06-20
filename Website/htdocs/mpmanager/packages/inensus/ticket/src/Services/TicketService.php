@@ -15,7 +15,7 @@ use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Trello\Tickets;
 use function Symfony\Component\Translation\t;
 
-class TicketService extends BaseService implements IBaseService, IAssociative
+class TicketService  implements IBaseService, IAssociative
 {
 
     public function __construct(private Tickets $trelloAPI, private Ticket $ticket)

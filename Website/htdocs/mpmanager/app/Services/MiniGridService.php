@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\MiniGrid;
 
-class MiniGridService extends BaseService implements IBaseService
+class MiniGridService  implements IBaseService
 {
     public function __construct(private MiniGrid $miniGrid)
     {
-        parent::__construct([$miniGrid]);
+
     }
 
     public function getByIdWithLocation($miniGridId)

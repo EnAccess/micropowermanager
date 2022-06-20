@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Models\GeographicalInformation;
 
-class GeographicalInformationService extends BaseService implements IBaseService
+class GeographicalInformationService  implements IBaseService
 {
     public function __construct(
         private GeographicalInformation $geographicalInformation
     ) {
-        parent::__construct([$geographicalInformation]);
+
     }
 
 

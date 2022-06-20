@@ -13,7 +13,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    protected $connection = 'test_company_db';
+
     protected $guarded = ['id'];
     public static $rules = [];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->setConnection('shard');
+    }
 }

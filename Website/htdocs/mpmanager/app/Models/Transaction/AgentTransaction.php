@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AgentTransaction extends BaseModel implements IRawTransaction
 {
-    protected $connection = 'test_company_db';
+
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

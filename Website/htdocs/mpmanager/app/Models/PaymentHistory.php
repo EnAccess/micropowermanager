@@ -23,7 +23,7 @@ use PDO;
  */
 class PaymentHistory extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
     public function paidFor(): MorphTo
     {
         return $this->morphTo();

@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ClusterService extends BaseService implements IBaseService
+class ClusterService  implements IBaseService
 {
     public function __construct(
         private Cluster $cluster
     ) {
-        parent::__construct([$cluster]);
+
 
     }
 
@@ -128,8 +128,8 @@ class ClusterService extends BaseService implements IBaseService
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null)
+    public function getAll($limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        return $this->cluster->get();
     }
 }

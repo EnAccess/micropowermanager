@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AssetPerson extends BaseModel
 {
-    protected $connection = 'test_company_db';
+
 
     protected $dispatchesEvents = [
         'created' => AssetPersonCreated::class,

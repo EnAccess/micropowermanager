@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 
-class ConnectionTypeService extends BaseService implements IBaseService
+class ConnectionTypeService  implements IBaseService
 {
     public function __construct(private ConnectionType $connectionType)
     {
-        parent::__construct([$connectionType]);
     }
 
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder

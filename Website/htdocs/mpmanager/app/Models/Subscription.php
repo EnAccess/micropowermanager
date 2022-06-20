@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Subscription extends Model
 {
-    protected $connection = 'test_company_db';
+
     public function upgrade(): BelongsTo
     {
         return $this->belongsTo(Upgrade::class);

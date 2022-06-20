@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class PersonService extends BaseService implements IBaseService
+class PersonService  implements IBaseService
 {
 
     public function __construct(private Person $person)
     {
-        parent::__construct([$person]);
+
     }
 
 

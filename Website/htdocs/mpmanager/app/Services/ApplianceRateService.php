@@ -6,7 +6,7 @@ use App\Models\AssetRate;
 use App\Models\MainSettings;
 use Carbon\Carbon;
 
-class ApplianceRateService extends BaseService implements IBaseService
+class ApplianceRateService  implements IBaseService
 {
 
     private $mainSettings;
@@ -14,7 +14,7 @@ class ApplianceRateService extends BaseService implements IBaseService
     public function __construct(private AssetRate $applianceRate, MainSettings $mainSettings)
     {
         $this->mainSettings = $mainSettings;
-        parent::__construct([$applianceRate]);
+
     }
 
     public function getCurrencyFromMainSettings()

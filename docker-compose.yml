@@ -75,17 +75,6 @@ services:
     volumes:
       - ./redis/:/data
 
-  'phpmyadmin':
-    image: phpmyadmin/phpmyadmin:latest
-    environment:
-      VIRTUAL_HOST: db.mpmanager.local
-
-    depends_on:
-      - maria
-    links:
-      - maria:db
-
-
   'maria':
     container_name: maria
     image: mariadb:10.3
@@ -94,6 +83,9 @@ services:
       MYSQL_ROOT_PASSWORD: inensus2022.
     volumes:
       - ./DB/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
 
   nginxproxy:
     container_name: nginx-proxy

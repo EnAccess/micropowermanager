@@ -4,11 +4,11 @@ namespace App\Services;
 
 use App\Models\TariffPricingComponent;
 
-class TariffPricingComponentService extends BaseService implements IBaseService
+class TariffPricingComponentService  implements IBaseService
 {
     public function __construct(private TariffPricingComponent $tariffPricingComponent)
     {
-        parent::__construct([$tariffPricingComponent]);
+
     }
 
     public function make($tariffPricingComponentData)

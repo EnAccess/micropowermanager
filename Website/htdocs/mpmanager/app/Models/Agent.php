@@ -37,7 +37,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Agent extends Authenticatable implements JWTSubject
 {
-    protected $connection = 'test_company_db';
+
     public function setPasswordAttribute($password): void
     {
         $this->attributes['password'] = Hash::make($password);

@@ -5,13 +5,13 @@ namespace App\Services;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 
-class MeterTariffMeterParameterService extends BaseService
+class MeterTariffMeterParameterService
 {
     public function __construct(
         private MeterTariff $meterTariff,
         private MeterParameter $meterParameter
     ) {
-        parent::__construct([$meterTariff, $meterParameter]);
+
     }
 
     public function getCountById($meterTariffId): array
