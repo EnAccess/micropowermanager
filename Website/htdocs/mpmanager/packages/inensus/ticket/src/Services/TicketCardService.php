@@ -20,7 +20,6 @@ class TicketCardService
 
     public function __construct(private TicketCard $ticketCard, private Lists $lists)
     {
-        parent::__construct([$ticketCard]);
     }
 
     public function initalizeList(TicketBoard $board)

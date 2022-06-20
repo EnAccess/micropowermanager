@@ -32,6 +32,20 @@ return [
     */
 
     'connections' => [
+        'kml_1655584711' => [ 
+            'driver' => 'mysql', 
+            'host' => 'db', 
+            'port' => '3306', 
+            'database' => 'kml_1655584711', 
+            'username' => 'root', 
+            'password' => 'inensus2022.', 
+            'unix_socket' => '', 
+            'charset' => 'utf8mb4', 
+            'collation' => 'utf8mb4_unicode_ci', 
+            'prefix' => '', 
+            'strict' => false, 
+            'engine' => null, 
+        ],
         'test_company_db' => [
             'driver' => 'mysql',
             'host' => env('TEST_DB_HOST', '127.0.0.1'),

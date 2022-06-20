@@ -34,6 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property double $balance
  * @property double $available_balance
  * @property string $remember_token
+ * @property int $company_id
  */
 class Agent extends Authenticatable implements JWTSubject
 {
@@ -82,7 +83,9 @@ class Agent extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'company_id' => $this->getCompanyId()
+        ];
     }
 
 
@@ -140,5 +143,10 @@ class Agent extends Authenticatable implements JWTSubject
     public function receipt(): HasMany
     {
         return $this->hasMany(AgentReceipt::class, 'agent_id', 'id');
+    }
+
+    public function getCompanyId():int
+    {
+        return $this->company_id;
     }
 }

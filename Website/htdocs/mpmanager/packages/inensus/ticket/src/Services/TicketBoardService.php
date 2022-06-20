@@ -21,7 +21,6 @@ class TicketBoardService  implements IBaseService
         private Boards $boardsGateway,
         private TicketBoard $ticketBoard
     ) {
-        parent::__construct([$ticketBoard]);
     }
 
     public function initializeBoard($ticketUserService): TicketBoard
