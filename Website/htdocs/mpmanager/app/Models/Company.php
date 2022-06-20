@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class Company extends BaseModel
+class Company extends MasterModel
 {
     use HasFactory;
 
     public const COL_ID = 'id';
-
-    protected $connection = 'micro_power_manager';
 
     //has many Users
     public function users()

@@ -34,9 +34,16 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property double $balance
  * @property double $available_balance
  * @property string $remember_token
+ * @property int $company_id
  */
 class Agent extends Authenticatable implements JWTSubject
 {
+
+    public function __construct(array $attributes = [])
+    {
+        $this->setConnection('shard');
+        parent::__construct($attributes);
+    }
 
     public function setPasswordAttribute($password): void
     {
@@ -82,7 +89,9 @@ class Agent extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'company_id' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID]
+        ];
     }
 
 

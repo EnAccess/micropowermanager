@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 /**
@@ -21,10 +22,30 @@ class UserDefaultDatabaseConnectionMiddleware{
 
     public function handle(Request $request, Closure $next)
     {
-        if($request->path() === 'api/auth/login' ) {
-          $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
+        //adding new company should not be proxied. It should use the base database to create the record
+        if($request->path() === 'api/company' && $request->isMethod('post')) {
+            return $next($request);
+        }
 
-        } else {
+        //webclient login
+        if($request->path() === 'api/auth/login') {
+          $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
+        }
+        //agent app login
+        elseif($this->isAgentApp($request->path()) &&  Str::contains($request->path(),'login') ){
+            $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
+        }
+        //agent app authenticated user requests
+        elseif($this->isAgentApp($request->path())){
+            $companyId = auth('agent_api')->payload()->get('companyId');
+            if(!is_numeric($companyId)) {
+                throw new \Exception("JWT is not provided");
+            }
+            $databaseName = $this->databaseProxyManager->findCompanyId($companyId);
+        }
+        //web client authenticated user requests
+        else {
+            dd("ne isin var");
             $companyId = auth('api')->payload()->get('companyId');
             if(!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
@@ -57,5 +78,9 @@ class UserDefaultDatabaseConnectionMiddleware{
         ];
         config()->set('database.connections', $databaseConnections);
 
+    }
+
+    private function isAgentApp(string $path){
+        return Str::startsWith($path,'api/app/');
     }
 }

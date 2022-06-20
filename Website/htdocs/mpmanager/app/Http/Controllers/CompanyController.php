@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\CompanyDatabase;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
@@ -16,10 +17,11 @@ class CompanyController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
 
-        $company = $this->company->newQuery()->create($request->only(['name','address', 'phone', 'country_id']));
+        $company = $this->company->newQuery()
+            ->create($request->only(['name', 'address', 'phone', 'country_id']));
 
 
         $name = str_replace(" ", "", $company->name);

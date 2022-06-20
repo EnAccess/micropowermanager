@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class CompanyDatabase extends BaseModel
+class CompanyDatabase extends MasterModel
 {
     use HasFactory;
-    protected $connection = 'micro_power_manager';
 
-
+    public const TABLE_NAME = 'company_databases';
     public const COL_DATABASE_NAME = 'database_name';
+    public const COL_COMPANY_ID = 'company_id';
 
-    // has one company
+
     public function company(): HasOne
     {
         return $this->HasOne(Company::class);

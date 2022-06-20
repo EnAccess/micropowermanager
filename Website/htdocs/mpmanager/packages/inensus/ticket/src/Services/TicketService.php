@@ -20,7 +20,6 @@ class TicketService  implements IBaseService, IAssociative
 
     public function __construct(private Tickets $trelloAPI, private Ticket $ticket)
     {
-        parent::__construct([$ticket]);
     }
 
     public function create($trelloTicketData = [])

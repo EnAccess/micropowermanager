@@ -86,14 +86,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->address()->with('city');
     }
+
     public function balanceHistory(): HasMany
     {
         return $this->hasMany(AgentBalanceHistory::class);
     }
+
     public function assignedAppliance(): HasMany
     {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
+
     // belongsTo company
     public function company(): BelongsTo
     {
