@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace MPM\DatabaseProxy;
 
+use App\Models\CompanyDatabase;
 use App\Models\DatabaseProxy;
 
 
@@ -16,7 +17,7 @@ class DatabaseProxyManagerService
 
     public function findByEmail(string $email): string
     {
-        return $this->databaseProxy->findByEmail($email)[DatabaseProxy::COL_DATABASE_CONNECTION];
+        return $this->databaseProxy->findByEmail($email)[CompanyDatabase::COL_DATABASE_NAME];
     }
 
     public function findCompanyId(int $companyId): string

@@ -24,7 +24,10 @@ class User extends Authenticatable implements JWTSubject
 {
     public function __construct(array $attributes = [])
     {
-        $this->setConnection('shard');
+        if (config()->get('database.connections.shard')) {
+            \Illuminate\Support\Facades\Log::critical('shard is defined');
+            $this->setConnection('shard');
+        }
         parent::__construct($attributes);
     }
 
@@ -86,14 +89,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->address()->with('city');
     }
+
     public function balanceHistory(): HasMany
     {
         return $this->hasMany(AgentBalanceHistory::class);
     }
+
     public function assignedAppliance(): HasMany
     {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
+
     // belongsTo company
     public function company(): BelongsTo
     {
