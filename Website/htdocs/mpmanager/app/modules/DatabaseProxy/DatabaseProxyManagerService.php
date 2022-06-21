@@ -22,6 +22,6 @@ class DatabaseProxyManagerService
 
     public function findCompanyId(int $companyId): string
     {
-        return $this->databaseProxy->findByCompanyId($companyId)[DatabaseProxy::COL_DATABASE_CONNECTION];
+        return $this->databaseProxy->findByCompanyId($companyId)[CompanyDatabase::COL_DATABASE_NAME];
     }
 }

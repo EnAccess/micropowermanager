@@ -1,7 +1,7 @@
 import Client from './Client/AxiosClient'
 import { baseUrl } from './Client/AxiosClient'
 
-const resource = `${baseUrl}/api/tariffs`
+export const resource = `${baseUrl}/api/tariffs`
 
 export default {
 

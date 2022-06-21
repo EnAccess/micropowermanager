@@ -45,13 +45,12 @@ class UserDefaultDatabaseConnectionMiddleware{
         }
         //web client authenticated user requests
         else {
-            dd("ne isin var");
+
             $companyId = auth('api')->payload()->get('companyId');
             if(!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
             $databaseName = $this->databaseProxyManager->findCompanyId($companyId);
-
         }
 
         $this->buildDatabaseConnection($databaseName);
