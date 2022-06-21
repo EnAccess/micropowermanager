@@ -82,7 +82,7 @@ services:
     volumes:
       - ./DB/mysql:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
 
 
   nginxproxy:

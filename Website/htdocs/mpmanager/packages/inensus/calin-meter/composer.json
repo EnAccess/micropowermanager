@@ -1,0 +1,26 @@
+{
+  "name": "inensus/calin-meter",
+  "description": "Calin Meter API integration for Micropowermanager",
+  "type": "package",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\CalinMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\CalinMeter\\Providers\\CalinMeterServiceProvider"
+      ]
+    }
+  }
+}

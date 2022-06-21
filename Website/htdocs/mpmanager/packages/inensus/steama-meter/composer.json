@@ -1,0 +1,27 @@
+{
+  "name": "inensus/steama-meter",
+  "description": "Steamaco Meter Package Micropowermanager.",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kamuran Engin",
+      "email": "ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\SteamaMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\SteamaMeter\\Providers\\SteamaMeterServiceProvider"
+      ]
+    }
+  }
+}

@@ -168,6 +168,14 @@ return [
         \App\Providers\ServicesServiceProvider::class, // repositories
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         \Inensus\Ticket\Providers\TicketServiceProvider::class,
+        \Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
+        \Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
+        \Inensus\KelinMeter\Providers\KelinMeterServiceProvider::class,
+        \Inensus\CalinMeter\Providers\CalinMeterServiceProvider::class,
+        \Inensus\StronMeter\Providers\StronMeterServiceProvider::class,
+        \Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider::class,
+        \Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider::class,
+        \Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
     ],
 
     /*

@@ -60,7 +60,15 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/",
-            "Inensus\\Ticket\\": "packages/inensus/ticket/src"
+            "Inensus\\Ticket\\": "packages/inensus/ticket/src",
+            "Inensus\\SparkMeter\\": "packages/inensus/spark-meter/src",
+            "Inensus\\SteamaMeter\\": "packages/inensus/steama-meter/src",
+            "Inensus\\KelinMeter\\":"packages/inensus/kelin-meter/src",
+            "Inensus\\CalinMeter\\":"packages/inensus/calin-meter/src",
+            "Inensus\\CalinSmartMeter\\":"packages/inensus/calin-smart-meter/src",
+            "Inensus\\StronMeter\\":"packages/inensus/stron-meter/src",
+            "Inensus\\SwiftaPaymentProvider\\":"packages/inensus/swifta-payment-provider/src",
+            "Inensus\\MesombPaymentProvider\\":"packages/inensus/mesomb-payment-provider/src"
         }
     },
     "minimum-stability": "dev",

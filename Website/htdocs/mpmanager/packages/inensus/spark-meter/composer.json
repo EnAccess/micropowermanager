@@ -1,0 +1,29 @@
+{
+  "name": "inensus/spark-meter",
+  "description": "Spark meter integration for MicroPowerManager Mini-Grid management system.",
+  "type": "package",
+  "require": {
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\SparkMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\SparkMeter\\Providers\\SparkMeterServiceProvider",
+        "Inensus\\SparkMeter\\Providers\\EventServiceProvider"
+      ]
+    }
+  }
+}
