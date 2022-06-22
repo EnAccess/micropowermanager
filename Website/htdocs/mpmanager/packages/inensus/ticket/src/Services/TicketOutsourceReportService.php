@@ -15,7 +15,6 @@ class TicketOutsourceReportService  implements IBaseService
         private TicketOutsourceReport $ticketOutsourceReport,
         private Spreadsheet $spreadsheet)
     {
-        parent::__construct([$this->ticketOutsourceReport]);
     }
 
     public function getAll($limit = null)

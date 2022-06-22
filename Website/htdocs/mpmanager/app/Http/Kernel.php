@@ -40,12 +40,14 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        \Fruitcake\Cors\HandleCors::class,
         CheckForMaintenanceMode::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         TrustProxies::class,
         UserDefaultDatabaseConnectionMiddleware::class,
+
     ];
 
     /**
@@ -96,5 +98,4 @@ class Kernel extends HttpKernel
         'data.controller' => DataControllerMiddleware::class,
         'agent.balance' => AgentBalanceMiddleware::class,
     ];
-
 }
