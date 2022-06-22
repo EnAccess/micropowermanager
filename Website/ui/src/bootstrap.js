@@ -19,10 +19,9 @@ window.axios.interceptors.request.use(
     }
 )
 
-import {config} from './config'
+import { config } from './config'
 
 Vue.prototype.appConfig = config
-
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -53,16 +52,14 @@ const datepickerOptions = {}
 // make sure we can use it in our components
 Vue.use(AirbnbStyleDatepicker, datepickerOptions)
 
-import {resources} from './resources'
+import { resources } from './resources'
 
 window.resources = resources
-
 
 /**
  * Pusher
  */
 window.Pusher = require('pusher-js')
-
 
 /**
  * Sweet Alert
@@ -105,13 +102,24 @@ import SidebarComponent from './components/Sidebar'
 Vue.use(SidebarComponent)
 import '../src/assets/sass/mpm.scss'
 
-
 import VeeValidate from 'vee-validate'
 
 Vue.use(VeeValidate)
-
 
 import Default from './layouts/Default.vue'
 
 Vue.component('default-layout', Default)
 
+import VueTelInput from 'vue-tel-input'
+import 'vue-tel-input/dist/vue-tel-input.css'
+
+const opt = {
+    dropdownOptions: {
+        disabledDialCode: false,
+        showSearchBox:true
+    },
+    inputOptions: {
+        showDialCode: true
+    }
+}
+Vue.use(VueTelInput, opt)

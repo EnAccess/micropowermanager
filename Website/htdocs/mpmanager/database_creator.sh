@@ -287,10 +287,6 @@ function main()
     createMysqlDbUser
     echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-     echo "Adding new connection to database.php " >> ${SOURCE_PATH}/creator.log
-     addConnectionToDatabase
-     echo "Done! " >> ${SOURCE_PATH}/creator.log
-
      echo "Creating migration folder.. " >> ${SOURCE_PATH}/creator.log
      createNewMigrationFolder
      echo "Done! " >> ${SOURCE_PATH}/creator.log

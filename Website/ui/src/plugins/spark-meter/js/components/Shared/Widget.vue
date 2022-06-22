@@ -67,7 +67,7 @@
                     </div>
                     <div v-else class="loading-state">
                         <div>
-                            <img src="../../../../../../spinner/spinner.gif" alt="">
+                            <img src="../../../../../assets/spinner/spinner.gif" alt="">
                         </div>
                     </div>
                 </div>

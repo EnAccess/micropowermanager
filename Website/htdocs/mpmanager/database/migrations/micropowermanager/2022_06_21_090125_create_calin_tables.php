@@ -9,7 +9,8 @@ return new class extends Migration
     public function up()
     {
         if (!Schema:: hasTable('calin_api_credentials')) {
-            Schema::create('calin_api_credentials', static function (Blueprint $table) {
+            Schema::connection('micropowermanager')->create('calin_api_credentials', static function (Blueprint
+            $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('http://api.calinhost.com/api');
                 $table->string('user_id')->nullable();
@@ -18,7 +19,7 @@ return new class extends Migration
             });
         }
         if (!Schema:: hasTable('calin_transactions')) {
-            Schema::create('calin_transactions', static function (Blueprint $table) {
+            Schema::connection('micropowermanager')->create('calin_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
@@ -27,8 +28,8 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('calin_api_credentials');
-        Schema::dropIfExists('calin_transactions');
+        Schema::connection('micropowermanager')->dropIfExists('calin_api_credentials');
+        Schema::connection('micropowermanager')->dropIfExists('calin_transactions');
 
     }
 };

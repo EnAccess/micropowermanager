@@ -9,7 +9,7 @@ return new class extends Migration {
     {
 
         if (!Schema:: hasTable('swifta_transactions')) {
-            Schema::create('swifta_transactions', static function (Blueprint $table) {
+            Schema::connection('micropowermanager')->create('swifta_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('transaction_reference')->nullable();
                 $table->string('manufacturer_transaction_type')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration {
             });
         }
         if (!Schema:: hasTable('swifta_authentication')) {
-            Schema::create('swifta_authentication', static function (Blueprint $table) {
+            Schema::connection('micropowermanager')->create('swifta_authentication', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('token')->nullable();
                 $table->unsignedInteger('expire_date')->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('swifta_transactions');
-        Schema::dropIfExists('swifta_authentication');
+        Schema::connection('micropowermanager')->dropIfExists('swifta_transactions');
+        Schema::connection('micropowermanager')->dropIfExists('swifta_authentication');
     }
 };

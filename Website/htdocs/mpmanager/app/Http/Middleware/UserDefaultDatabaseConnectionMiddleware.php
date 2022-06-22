@@ -13,7 +13,8 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
  * The goal is to have the database connection on each incomming http request.
  * This will save querying in each model the correct database connection string
  */
-class UserDefaultDatabaseConnectionMiddleware{
+class UserDefaultDatabaseConnectionMiddleware
+{
 
 
     public function __construct(private DatabaseProxyManagerService $databaseProxyManager)
@@ -23,31 +24,32 @@ class UserDefaultDatabaseConnectionMiddleware{
     public function handle(Request $request, Closure $next)
     {
         //adding new company should not be proxied. It should use the base database to create the record
-        if($request->path() === 'api/company' && $request->isMethod('post')) {
+        if ($request->path() === 'api/company' && $request->isMethod('post')) {
             return $next($request);
         }
 
+        //getting mpm plugins should not be proxied. It should use the base database to create the record
+        if ($request->path() === 'api/mpm-plugins' && $request->isMethod('get')) {
+            return $next($request);
+        }
         //webclient login
-        if($request->path() === 'api/auth/login') {
-          $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
-        }
-        //agent app login
-        elseif($this->isAgentApp($request->path()) &&  Str::contains($request->path(),'login') ){
+        if ($request->path() === 'api/auth/login') {
             $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
-        }
-        //agent app authenticated user requests
-        elseif($this->isAgentApp($request->path())){
+        } //agent app login
+        elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) {
+            $databaseName = $this->databaseProxyManager->findByEmail($request->input('email'));
+        } //agent app authenticated user requests
+        elseif ($this->isAgentApp($request->path())) {
             $companyId = auth('agent_api')->payload()->get('companyId');
-            if(!is_numeric($companyId)) {
+            if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
             $databaseName = $this->databaseProxyManager->findCompanyId($companyId);
-        }
-        //web client authenticated user requests
+        } //web client authenticated user requests
         else {
 
             $companyId = auth('api')->payload()->get('companyId');
-            if(!is_numeric($companyId)) {
+            if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
             $databaseName = $this->databaseProxyManager->findCompanyId($companyId);
@@ -79,7 +81,8 @@ class UserDefaultDatabaseConnectionMiddleware{
 
     }
 
-    private function isAgentApp(string $path){
-        return Str::startsWith($path,'api/app/');
+    private function isAgentApp(string $path)
+    {
+        return Str::startsWith($path, 'api/app/');
     }
 }
