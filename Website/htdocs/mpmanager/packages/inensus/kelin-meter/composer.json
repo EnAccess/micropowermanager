@@ -1,0 +1,28 @@
+{
+  "name": "inensus/kelin-meter",
+  "description": "Kelin meter integration for MicroPowerManager.",
+  "type": "package",
+  "require": {
+  },
+  "license": "AGPL-3.0",
+  "authors": [
+    {
+      "name": "Kamuran Engin",
+      "email": "ke@inenus.com",
+      "role": "developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\KelinMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\KelinMeter\\Providers\\KelinMeterServiceProvider"
+      ]
+    }
+  }
+}

@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 import { TimeOfUsageService } from './TimeOfUsageService'
 import { Paginator } from '../classes/paginator'
-import { resources } from '../resources'
+import { resource } from '../repositories/TariffRepository'
 
 export class TariffService {
     constructor () {
@@ -34,7 +34,7 @@ export class TariffService {
         this.socialOptions = false
         this.times = this.generateTimes()
         this.conflicts = []
-        this.paginator = new Paginator(resources.tariff.list)
+        this.paginator = new Paginator(resource)
     }
 
     fromJson (tariffData) {

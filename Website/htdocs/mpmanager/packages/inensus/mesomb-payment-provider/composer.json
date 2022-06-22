@@ -1,0 +1,28 @@
+{
+  "name": "inensus/mesomb-payment-provider",
+  "description": "Mesomb Payment Provider integration to Micropowermanager.",
+  "type": "package",
+  "require": {},
+  "license": "AGPL-3.0",
+  "authors": [
+    {
+      "name": "Kamuran Engin",
+      "email": "Ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\MesombPaymentProvider\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\MesombPaymentProvider\\Providers\\MesombServiceProvider",
+        "Inensus\\MesombPaymentProvider\\Providers\\EventServiceProvider"
+      ]
+    }
+  }
+}

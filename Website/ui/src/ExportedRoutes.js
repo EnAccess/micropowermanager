@@ -1,14 +1,36 @@
 import Login from './components/Login/Login'
+
 import LoginHeader from './components/Login/LoginHeader'
 import LoginFooter from './components/Login/LoginFooter'
 import ForgotPassword from './components/Login/ForgotPassword'
+import Welcome from './components/Welcome/Welcome'
+import Register from './components/Register/Register'
 
 /*eslint-disable */
 export const exportedRoutes = [
   {
+    path: '/welcome',
+    name: 'welcome',
+    components: { default: Welcome, header: LoginHeader, footer: LoginFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    },
+    meta: { requireAuth: false }
+  },
+
+  {
     path: '/login',
     name: 'login',
     components: { default: Login, header: LoginHeader, footer: LoginFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    },
+    meta: { requireAuth: false }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    components: { default: Register, header: LoginHeader, footer: LoginFooter },
     props: {
       header: { colorOnScroll: 400 }
     },
@@ -310,4 +332,130 @@ export const exportedRoutes = [
         level: 'detail', name: 'Sold Appliance Detail', link: '/sold-appliance-detail', target: 'id' }
           }
   },
+  {
+    path: '/calin-meters/calin-overview',
+    component: require('./plugins/calin-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/calin-smart-meters/calin-smart-overview',
+    component: require('./plugins/calin-smart-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-overview',
+    component: require('./plugins/kelin-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-customer',
+    component: require('./plugins/kelin-meter/js/components/Customer/List').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-meter',
+    component: require('./plugins/kelin-meter/js/components/Meter/List').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-meter/status/:meter',
+    component: require('./plugins/kelin-meter/js/components/Meter/Status').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-meter/daily-consumptions/:meter',
+    component: require('./plugins/kelin-meter/js/components/Meter/Consumption/Daily').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-meter/minutely-consumptions/:meter',
+    component: require('./plugins/kelin-meter/js/components/Meter/Consumption/Minutely').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/kelin-meters/kelin-setting',
+    component: require('./plugins/kelin-meter/js/components/Setting/Setting').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-site',
+    component: require('./plugins/spark-meter/js/components/Site/SiteList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-meter-model',
+    component: require('./plugins/spark-meter/js/components/MeterModel/MeterModelList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-customer',
+    component: require('./plugins/spark-meter/js/components/Customer/CustomerList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-tariff',
+    component: require('./plugins/spark-meter/js/components/Tariff/TariffList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-tariff/:id',
+    component: require('./plugins/spark-meter/js/components/Tariff/TariffDetail').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-overview',
+    component: require('./plugins/spark-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-sales-account',
+    component: require('./plugins/spark-meter/js/components/SalesAccount/SalesAccountList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/spark-meters/sm-setting',
+    component: require('./plugins/spark-meter/js/components/Setting/Setting').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-overview',
+    component: require('./plugins/steama-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-site',
+    component: require('./plugins/steama-meter/js/components/Site/SiteList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-customer',
+    component: require('./plugins/steama-meter/js/components/Customer/CustomerList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-transaction/:customer_id',
+    component: require('./plugins/steama-meter/js/components/Customer/CustomerMovements').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-meter',
+    component: require('./plugins/steama-meter/js/components/Meter/MeterList').default,
+    meta: { layout: 'default' },
+  },
+
+  {
+    path: '/steama-meters/steama-agent',
+    component: require('./plugins/steama-meter/js/components/Agent/AgentList').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/steama-meters/steama-setting',
+    component: require('./plugins/steama-meter/js/components/Setting/Setting').default,
+    meta: { layout: 'default' },
+  },
+  {
+    path: '/stron-meters/stron-overview',
+    component: require('./plugins/stron-meter/js/components/Overview/Overview').default,
+    meta: { layout: 'default' },
+  }
 ]

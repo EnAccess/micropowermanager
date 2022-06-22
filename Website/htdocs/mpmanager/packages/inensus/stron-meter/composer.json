@@ -1,0 +1,26 @@
+{
+  "name": "inensus/stron-meter",
+  "description": "Package description",
+  "type": "package",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\StronMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\StronMeter\\Providers\\StronMeterServiceProvider"
+      ]
+    }
+  }
+}

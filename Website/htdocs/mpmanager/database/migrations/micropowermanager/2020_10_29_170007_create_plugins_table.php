@@ -15,10 +15,8 @@ return new class extends Migration
     {
         Schema::connection('micropowermanager')->create('plugins', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('composer_name');
-            $table->string('description');
-            $table->string('status')->default(1);
+            $table->integer('mpm_plugin_id');
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }

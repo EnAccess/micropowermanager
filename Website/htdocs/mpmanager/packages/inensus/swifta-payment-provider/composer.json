@@ -1,0 +1,27 @@
+{
+  "name": "inensus/swifta-payment-provider",
+  "description": "Swifta Payment Provider integration to Micropowermanager.n",
+  "type": "package",
+  "require": {},
+  "license": "AGPL-3.0",
+  "authors": [
+    {
+      "name": "Kamuran Engin",
+      "email": "ke@inensus.com",
+      "role": "developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\SwiftaPaymentProvider\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\SwiftaPaymentProvider\\Providers\\SwiftaServiceProvider"
+      ]
+    }
+  }
+}
