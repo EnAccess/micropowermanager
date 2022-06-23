@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SmsBody;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,7 @@ class SmsBodiesSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('sms_bodies')->insert(array(
+        DB::connection('shard')->table('sms_bodies')->insert(array(
                 [
                     'reference' => 'SmsTransactionHeader',
                     'place_holder' => 'Dear [name] [surname], we received your transaction [transaction_amount].',
@@ -104,5 +105,6 @@ class SmsBodiesSeeder extends Seeder
 
             )
         );
+
     }
 }

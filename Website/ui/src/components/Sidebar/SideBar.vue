@@ -1,8 +1,8 @@
 <template>
     <div
-            class="sidebar"
-            :data-color="sidebarItemColor"
-            :style="sidebarStyle"
+        class="sidebar"
+        :data-color="sidebarItemColor"
+        :style="sidebarStyle"
     >
         <div class="logo">
             <div class="brand-column">
@@ -25,18 +25,19 @@
                 >
                     <md-list-item :md-expand="menu.sub_menu_items.length !== 0">
                         <!-- add icon if icon is defined -->
-                        <md-icon v-if="menu.md_icon !== ''" class="c-white icon-box">{{menu.md_icon}}</md-icon>
-                        <span class="md-list-item-text c-white">{{translateItem(menu.name)}}</span>
+                        <md-icon v-if="menu.md_icon !== ''" class="c-white icon-box">{{ menu.md_icon }}</md-icon>
+                        <span class="md-list-item-text c-white">{{ translateItem(menu.name) }}</span>
                         <md-list slot="md-expand" v-if="menu.sub_menu_items.length !== 0" class="no-bg">
                             <md-list-item v-for="(sub,index) in menu.sub_menu_items"
                                           :key="index"
 
                             >
                                 <router-link
-                                        :to="route(sub.url_slug)"
-                                        class="sub-menu">
+                                    :to="route(sub.url_slug)"
+                                    class="sub-menu">
                                     <md-list-item class="md-inset c-white">
-                                        <span class="md-list-item-text c-white"> {{$tc('menu.subMenu.'+sub.name)}}</span>
+                                        <span
+                                            class="md-list-item-text c-white"> {{ $tc('menu.subMenu.' + sub.name) }}</span>
                                     </md-list-item>
                                 </router-link>
                             </md-list-item>
@@ -49,7 +50,7 @@
     </div>
 </template>
 <script>
-import menu from './menu.json'
+
 import { translateItem } from '@/Helpers/TranslateItem'
 
 export default {
@@ -58,7 +59,7 @@ export default {
         return {
             show_extender: false,
             admin: null,
-            menus: menu,
+            menus: this.$store.getters['settings/getSidebar'],
             translateItem: translateItem
         }
     },
@@ -133,114 +134,116 @@ export default {
 }
 </script>
 <style>
+.brand-column {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: visible;
+    margin-top: 0px;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    grid-auto-columns: 1fr;
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
+    -ms-grid-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    -ms-grid-rows: auto auto;
+    grid-template-rows: auto auto;
+    -o-object-fit: fill;
+    object-fit: fill;
+}
+
+.brand-column {
+    text-align: center;
+    padding-left: 2rem !important
+}
+
+@media screen and (min-width: 991px) {
     .brand-column {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        overflow: visible;
-        margin-top: 0px;
-        -webkit-box-align: center;
-        -webkit-align-items: center;
-        -ms-flex-align: center;
-        align-items: center;
-        grid-auto-columns: 1fr;
-        grid-column-gap: 16px;
-        grid-row-gap: 16px;
-        -ms-grid-columns: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        -ms-grid-rows: auto auto;
-        grid-template-rows: auto auto;
-        -o-object-fit: fill;
-        object-fit: fill;
+        dtext-align: center;
+        padding-left: 1rem !important
     }
+}
 
-    .brand-column {
-        text-align: center;
-        padding-left: 2rem !important
+.md-list-item-text {
+    font-size: 0.8rem !important;
+    font-weight: 400 !important;
+}
+
+@media screen and (min-width: 991px) {
+    .nav-mobile-menu {
+        display: none;
     }
-    @media screen and (min-width: 991px) {
-        .brand-column {
-            dtext-align: center;
-            padding-left: 1rem !important
-        }
-    }
-    .md-list-item-text{
-        font-size: 0.8rem!important;
-        font-weight: 400!important;
-    }
+}
 
-    @media screen and (min-width: 991px) {
-        .nav-mobile-menu {
-            display: none;
-        }
-    }
+.company-header {
+    color: white;
+    font-weight: bold;
+}
 
-    .company-header {
-        color: white;
-        font-weight: bold;
-    }
+.active-link {
+    background-color: rgba(32, 66, 32, 0.74);
 
-    .active-link {
-        background-color: rgba(32, 66, 32, 0.74);
+}
 
-    }
+.exact-active {
+    background: #6b6a6a !important;
+    position: relative;
+    left: -15px;
+    width: calc(100% + 30px) !important;
+}
 
-    .exact-active {
-        background: #6b6a6a !important;
-        position: relative;
-        left: -15px;
-        width: calc(100% + 30px) !important;
-    }
+/*  .md-list-item-text {
+      color: #f5e8e8 !important;
 
-    /*  .md-list-item-text {
-          color: #f5e8e8 !important;
+  }*/
 
-      }*/
+.no-bg {
+    background-color: transparent !important;
+}
 
-    .no-bg {
-        background-color: transparent !important;
-    }
+.c-white {
+    color: #f5e8e8 !important;
+}
 
-    .c-white {
-        color: #f5e8e8 !important;
-    }
+.sidebar-layout {
+    position: absolute;
+    height: 100%;
+    width: 100%;
 
-    .sidebar-layout {
-        position: absolute;
-        height: 100%;
-        width: 100%;
+}
 
-    }
+.icon-box {
+    margin-right: 10px !important;
+    width: 25px !important;
+    height: 25px !important;
 
-    .icon-box {
-        margin-right: 10px!important;
-        width: 25px !important;
-        height: 25px !important;
+}
 
-    }
+.sub-menu {
+    width: 100% !important;
+}
 
-    .sub-menu {
-        width: 100% !important;
-    }
+.c-gray {
+    color: gray;
+}
 
-    .c-gray {
-        color: gray;
-    }
+.app-style {
+    width: calc(100% / 12 * 2);
+    position: fixed;
+}
 
-    .app-style {
-        width: calc(100% / 12 * 2);
-        position: fixed;
-    }
+.drawer-style {
+    background-color: #2b2b2b !important;
+    height: 100vh;
+}
 
-    .drawer-style {
-        background-color: #2b2b2b !important;
-        height: 100vh;
-    }
-
-    .p-15 {
-        padding: 10px;
-    }
+.p-15 {
+    padding: 10px;
+}
 
 </style>
 

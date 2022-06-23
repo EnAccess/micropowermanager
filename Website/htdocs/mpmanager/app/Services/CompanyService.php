@@ -2,26 +2,24 @@
 
 namespace App\Services;
 
-use App\Models\Plugins;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
-class PluginsService implements IBaseService
+
+use App\Models\Company;
+
+class CompanyService implements IBaseService
 {
-    public function __construct(private Plugins $plugin)
+    public function __construct(private Company $company)
     {
     }
-
-
 
     public function getById($id)
     {
         // TODO: Implement getById() method.
     }
 
-    public function create($pluginData)
+    public function create($companyData)
     {
-       return $this->plugin->newQuery()->create($pluginData);
+        return $this->company->newQuery()->create($companyData);
     }
 
     public function update($model, $data)

@@ -245,7 +245,7 @@ function sedMigrationFiles()
 {
     for file in ${SOURCE_PATH}/database/migrations/$DB_NAME/*
     do
-        sed -i 's/micropowermanager/'${DB_NAME}'/g' $file
+        sed -i 's/micropowermanager/shard/g' $file
     done
 }
 
@@ -297,10 +297,6 @@ function main()
 
      echo "Modifying migration files.. " >> ${SOURCE_PATH}/creator.log
      sedMigrationFiles
-     echo "Done! " >> ${SOURCE_PATH}/creator.log
-
-     echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
-     runMigrator
      echo "Done! " >> ${SOURCE_PATH}/creator.log
 
      echo "################################ " >> ${SOURCE_PATH}/creator.log

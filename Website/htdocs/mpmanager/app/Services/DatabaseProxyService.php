@@ -2,26 +2,24 @@
 
 namespace App\Services;
 
-use App\Models\Plugins;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\DatabaseProxy;
 
-class PluginsService implements IBaseService
+class DatabaseProxyService implements IBaseService
 {
-    public function __construct(private Plugins $plugin)
+
+    public function __construct(private DatabaseProxy $databaseProxy)
     {
     }
-
-
 
     public function getById($id)
     {
         // TODO: Implement getById() method.
     }
 
-    public function create($pluginData)
+    public function create($databaseProxyData)
     {
-       return $this->plugin->newQuery()->create($pluginData);
+        return $this->databaseProxy->newQuery()->create($databaseProxyData);
+
     }
 
     public function update($model, $data)

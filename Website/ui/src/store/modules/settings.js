@@ -12,6 +12,7 @@ export const state = {
     mainSettings: {},
     ticketSettings: {},
     mapSettings: {},
+    sidebar:{}
 
 }
 export const mutations = {
@@ -25,7 +26,9 @@ export const mutations = {
     FETCH_TICKET_SETTINGS (state, payload) {
         state.ticketSettings = payload
     },
-
+    SET_SIDEBAR (state, payload){
+        state.sidebar = payload
+    }
 }
 export const actions = {
     getSettings ({ dispatch }) {
@@ -66,6 +69,9 @@ export const actions = {
         })
 
     },
+    setSidebar ({ commit }, sidebar) {
+        commit('SET_SIDEBAR', sidebar)
+    }
 
 }
 
@@ -82,4 +88,5 @@ export const getters = {
     mainSettingsService: state => state.serviceMain,
     mapSettingsService: state => state.serviceMap,
     ticketSettingsService: state => state.serviceTicket,
+    getSidebar : state => state.sidebar
 }

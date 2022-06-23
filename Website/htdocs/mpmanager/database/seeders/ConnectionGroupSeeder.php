@@ -10,7 +10,7 @@ class ConnectionGroupSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('connection_groups')->insert([
+        DB::connection('shard')->table('connection_groups')->insert([
             'name' => 'default connection group',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

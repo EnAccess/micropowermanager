@@ -10,7 +10,7 @@ class SmsVariableDefaultValuesSeeder extends Seeder
 
     public function run()
     {
-        DB::table('sms_variable_default_values')->insert(array(
+        DB::connection('shard')->table('sms_variable_default_values')->insert(array(
                 [
                     'variable' => 'name',
                     'value' => 'Herbert',

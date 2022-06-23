@@ -10,7 +10,7 @@ class SubConnectionTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('sub_connection_types')->insert([
+        DB::connection('shard')->table('sub_connection_types')->insert([
             'name' => 'default  sub connection type',
             'tariff_id' => 1,
             'connection_type_id' => 1,
