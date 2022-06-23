@@ -9,7 +9,7 @@ class SubMenuItemsSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('sub_menu_items')->insert(array(
+        DB::connection('shard')->table('sub_menu_items')->insert(array(
                 [
                     'name' => 'Clusters',
                     'url_slug' => '/',

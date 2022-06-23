@@ -10,7 +10,7 @@ class TicketSettingsSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('ticket_settings')->insert([
+        DB::connection('shard')->table('ticket_settings')->insert([
             'name' => 'Trello',
             'api_token' => '----',
             'api_url' => 'https://api.trello.com/1',

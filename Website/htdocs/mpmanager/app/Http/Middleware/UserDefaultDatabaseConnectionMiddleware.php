@@ -24,7 +24,7 @@ class UserDefaultDatabaseConnectionMiddleware
     public function handle(Request $request, Closure $next)
     {
         //adding new company should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/company' && $request->isMethod('post')) {
+        if ($request->path() === 'api/companies' && $request->isMethod('post')) {
             return $next($request);
         }
 
@@ -60,7 +60,7 @@ class UserDefaultDatabaseConnectionMiddleware
         return $next($request);
     }
 
-    private function buildDatabaseConnection(string $databaseName): void
+    public function buildDatabaseConnection(string $databaseName): void
     {
         $databaseConnections = config()->get('database.connections');
         $databaseConnections['shard'] = [

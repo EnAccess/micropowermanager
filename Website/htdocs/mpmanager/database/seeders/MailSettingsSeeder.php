@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\MailSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class MailSettingsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('mail_settings')->insert([
+        DB::connection('shard')->table('mail_settings')->insert([
             'mail_host' => 'smtp.example.com',
             'mail_port' => 123,
             'mail_encryption' => 'tls',
@@ -25,5 +26,6 @@ class MailSettingsSeeder extends Seeder
             'updated_at' => Carbon::now(),
 
         ]);
+
     }
 }

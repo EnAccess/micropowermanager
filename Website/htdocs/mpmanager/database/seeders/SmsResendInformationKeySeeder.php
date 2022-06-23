@@ -9,6 +9,6 @@ class SmsResendInformationKeySeeder extends Seeder
 {
     public function run()
     {
-        DB::table('sms_resend_information_keys')->insert(['key' => 'Resend']);
+        DB::connection('shard')->table('sms_resend_information_keys')->insert(['key' => 'Resend']);
     }
 }

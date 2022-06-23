@@ -24,10 +24,8 @@ class User extends Authenticatable implements JWTSubject
 {
     public function __construct(array $attributes = [])
     {
-        if (config()->get('database.connections.shard')) {
-            \Illuminate\Support\Facades\Log::critical('shard is defined');
-            $this->setConnection('shard');
-        }
+        $this->setConnection('shard');
+
         parent::__construct($attributes);
     }
 

@@ -398,6 +398,6 @@ Route::get('/clusterlist', 'ClusterController@index');
 
 Route::post('/restrictions', 'RestrictionController@store');
 
-Route::group(['prefix' => 'company'], static function () {
+Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', [CompanyController::class, 'store']);
 });

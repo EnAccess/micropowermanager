@@ -129,7 +129,7 @@
                         </div>
                     </div>
                 </md-step>
-                <md-step class="stepper-step" id="Create-Form" md-label="User Creation" :md-done.sync="secondStep">
+                <md-step class="stepper-step" id="Create-Form" md-label="User Creation" :md-done.sync="thirdStep">
                     <div class="exclamation">
                         <div>
                             <div class="md-layout-item md-size-100 exclamation-div">
@@ -143,7 +143,7 @@
                                             :class="{'md-invalid': errors.has('Create-Form.' + $tc('words.name'))}">
                                             <label>{{ $tc('words.name') }}</label>
                                             <md-input
-                                                v-model="user.name"
+                                                v-model="companyForm.user.name"
                                                 v-validate="'required|min:2|max:20'"
                                                 :name="$tc('words.name')"
                                                 id="name"
@@ -162,7 +162,7 @@
                                                 type="text"
                                                 :name="$tc('words.email')"
                                                 id="email"
-                                                v-model="user.email"
+                                                v-model="companyForm.user.email"
                                                 v-validate="'required|email'"
                                             />
                                             <md-icon>email</md-icon>
@@ -180,7 +180,7 @@
                                                 :name="$tc('words.password')"
                                                 id="password"
                                                 v-validate="'required|min:3|max:15'"
-                                                v-model="user.password"
+                                                v-model="companyForm.user.password"
                                                 ref="passwordRef"
                                             />
 
@@ -197,7 +197,7 @@
                                                 type="password"
                                                 :name="$tc('phrases.confirmPassword')"
                                                 id="confirmPassword"
-                                                v-model="user.confirmPassword"
+                                                v-model="companyForm.user.confirmPassword"
                                                 v-validate="'required|confirmed:passwordRef|min:3|max:15'"
                                             />
                                             <span class="md-error">{{
@@ -220,35 +220,32 @@
                         </div>
                     </div>
                 </md-step>
-                <md-step class="stepper-step" id="Complete" md-label="Complete" :md-done.sync="thirdStep">
+                <md-step class="stepper-step" id="Complete" md-label="Complete" :md-done.sync="fourthStep">
 
                     <div class="exclamation">
                         <div>
                             <div class="md-layout-item md-size-100" id="logger-done-success"
-                                 v-if="1===1">
+                                 v-if="succeed">
                         <span class="success-span">{{ $tc('words.successful') }}
                             <md-icon style="color: green">check</md-icon>
                         </span>
 
                                 <div class="md-layout-item md-size-100 exclamation-div">
-                                    <span>User Creation</span>
+                                    <span>Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to login page in seconds..</span>
 
                                 </div>
                             </div>
                             <div class="md-layout-item md-size-100" id="logger-done-fail"
-                                 v-if="1===2">
+                                 v-if="!succeed">
                         <span class="failure-span">{{ $tc('phrases.somethingWentWrong') }}
                             <md-icon style="color: red">priority_high</md-icon>
                         </span>
 
                                 <div class="md-layout-item md-size-100 exclamation-div">
-                                    <span>{{ $tc('phrases.stepperLabels3', 2) }}</span>
+                                    <span>Unexpected error occurred during registration please reach to system admin.</span>
                                 </div>
                             </div>
 
-                            <div class="md-layout-item md-size-100">
-                                <md-button class="md-raised md-primary">{{ $tc('words.done') }}</md-button>
-                            </div>
                         </div>
                     </div>
 
@@ -264,18 +261,21 @@
 
 
 import { MpmPluginService } from '@/services/MpmPluginService'
+import { CompanyService } from '@/services/CompanyService'
 
 export default {
     name: 'Register',
     data () {
         return {
             mpmPluginsService: new MpmPluginService(),
+            companyService: new CompanyService(),
             loadingNextStep: false,
             activeStep: 'Company-Form',
             firstStepClicked: false,
             firstStep: false,
             secondStep: false,
             thirdStep: false,
+            fourthStep: false,
             phone: {
                 valid: true
             },
@@ -284,14 +284,16 @@ export default {
                 address: '',
                 phone: '',
                 email: '',
-                country: null,
+                user: {
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
+                },
+                plugins: []
             },
-            user: {
-                name: '',
-                email: '',
-                password: '',
-                confirmPassword: ''
-            }
+            successMessage: '',
+            succeed: true
         }
     },
     mounted () {
@@ -323,22 +325,33 @@ export default {
                     this.loadingNextStep = false
                     return
                 }
-                this.register()
+                await this.register()
                 if (index) {
                     this.activeStep = index
                 }
             }
             this.loadingNextStep = false
+
         },
 
         validatePhone (phone) {
             this.phone = phone
         },
-        register () {
-            let asd = this.companyForm
-            let basd = this.phone
-            let csd = this.mpmPluginsService.list
-            debugger
+        async register () {
+            this.companyForm.phone = this.phone.number
+            this.companyForm.plugins = this.mpmPluginsService.list.filter(x => x.checked)
+            try {
+                this.loading = true
+                let response = await this.companyService.register(this.companyForm)
+                this.loading = false
+                this.$store.dispatch('settings/setSidebar', response.sidebarData)
+                setTimeout(() => {
+                    this.$router.push('/')
+                }, 3000)
+            } catch (e) {
+                this.succeed = false
+                this.loading = false
+            }
         }
     },
 

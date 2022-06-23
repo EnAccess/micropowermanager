@@ -14,7 +14,7 @@ class MenuItemsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('menu_items')->insert(array(
+        DB::connection('shard')->table('menu_items')->insert(array(
                 [
                     'name' => 'Dashboard',
                     'url_slug' => '',

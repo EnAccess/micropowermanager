@@ -62,6 +62,7 @@ import MailSettingsRepository from './MailSettingsRepository'
 import ClustersDashboardCacheDataRepository from './ClustersDashboardCacheDataRepository'
 import { MpmPluginService } from '@/services/MpmPluginService'
 import MpmPluginRepository from '@/repositories/MpmPluginRepository'
+import CompanyRepository from '@/repositories/CompanyRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -126,7 +127,8 @@ const repositories = {
     'appliancePayment': AppliancePaymentRepository,
     'mailSettings': MailSettingsRepository,
     'clustersDashboardCacheData': ClustersDashboardCacheDataRepository,
-    'mpmPlugin': MpmPluginRepository
+    'mpmPlugin': MpmPluginRepository,
+    'company': CompanyRepository,
 }
 
 export default {
