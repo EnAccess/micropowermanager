@@ -5,28 +5,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 
-class Migrator extends Command
+class Migrator extends AbstractSharedCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'migrator:migrate {database-name}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Migrates all base migrations to provided database name';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    public function runInCompanyScope(): void
     {
         $dbName = $this->argument('database-name');
         if ($dbName == 'base') {
@@ -61,7 +45,6 @@ class Migrator extends Command
                 '--path' => '/database/migrations/' . $dbName,
             ]);
         }
-        return 0;
     }
 
     private function isUnNecessaryConnection($name): bool

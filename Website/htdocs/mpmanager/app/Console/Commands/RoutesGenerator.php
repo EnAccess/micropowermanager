@@ -2,28 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 
-class RoutesGenerator extends Command
+class RoutesGenerator extends AbstractSharedCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'routes:generate';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generates new routes from packages';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle(): void
+    public function runInCompanyScope(): void
     {
         $routeTmp = 'storage/skeletons/routes.tmp';
         fopen($routeTmp, 'w');

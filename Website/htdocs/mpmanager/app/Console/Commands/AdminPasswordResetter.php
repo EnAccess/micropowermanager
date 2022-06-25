@@ -5,42 +5,17 @@ namespace App\Console\Commands;
 use App\Services\UserService;
 use Illuminate\Console\Command;
 
-class AdminPasswordResetter extends Command
+class AdminPasswordResetter extends AbstractSharedCommand
 {
 
-    private $userService;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'reset:admin-password';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Reset forgotten password';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(UserService $userService)
+    public function __construct(private UserService $userService)
     {
         parent::__construct();
-        $this->userService = $userService;
     }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    function runInCompanyScope(): void
     {
         $admin = $this->userService->resetAdminPassword();
         $this->alert('

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 28.11.18
- * Time: 15:26
- */
-
 namespace App\Console\Commands;
 
 use App\ManufacturerApi\CalinReadMeter;
@@ -18,40 +11,18 @@ use Illuminate\Support\Facades\Log;
  * Reads the daily consumptions of meters
  * Class CalinMeterReader
  *
- * @package App\Console\Commands
  */
-class CalinMeterReader extends Command
+class CalinMeterReader extends AbstractSharedCommand
 {
 
-    /**
-     * The name and signature of the command
-     *
-     * @var string
-     */
     protected $signature = 'calinMeters:readOnline';
 
-    /**
-     * @var Meter
-     */
-    public $meter;
-    /**
-     * @var CalinReadMeter
-     */
-    public $calinReadMeter;
-
-    /**
-     * CalinMeterReader constructor.
-     *
-     * @param Meter $meter
-     */
-    public function __construct(Meter $meter, CalinReadMeter $calinReadMeter)
+    public function __construct(private Meter $meter, private CalinReadMeter $calinReadMeter)
     {
         parent::__construct();
-        $this->meter = $meter;
-        $this->calinReadMeter = $calinReadMeter;
     }
 
-    public function handle(): int
+    public function runInCompanyScope(): void
     {
         $meters = $this->meter::whereHas(
             'meterType',
@@ -66,6 +37,5 @@ class CalinMeterReader extends Command
             1,
             ['date' => $readingDate]
         );
-        return 0;
     }
 }
