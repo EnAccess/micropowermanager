@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
+use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\DataControllerMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\JwtMiddleware;
@@ -40,14 +41,14 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Fruitcake\Cors\HandleCors::class,
+        CorsMiddleware::class,
+//        \Fruitcake\Cors\HandleCors::class,
         CheckForMaintenanceMode::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         TrustProxies::class,
         UserDefaultDatabaseConnectionMiddleware::class,
-
     ];
 
     /**
