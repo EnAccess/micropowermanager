@@ -32,13 +32,13 @@ trait RestExceptionHandler
         $response = null;
         switch (true) {
             case $this->isModelNotFoundException($e):
-                $response = $this->modelNotFound('model not found ' . $e->getMessage());
+                $response = $this->modelNotFound(['model not found '.  implode(' ',$e->getIds()) , $e->getMessage(), $e->getTrace()]);
                 break;
             case $this->isValidationException($e):
                 $response = $this->validationError($e->errors());
                 break;
             default:
-                $response = $this->badRequest($e->getMessage());
+                $response = $this->badRequest([$e->getMessage(), $e->getTrace()]);
         }
         return $response;
     }

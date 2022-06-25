@@ -50,7 +50,9 @@ class UserService implements IUserService
         }
 
         try {
-            $user = User::query()->where('email', $email)->firstOrFail();
+            $user = $this->buildQuery()
+                ->where('email', $email)
+                ->firstOrFail();
         } catch (ModelNotFoundException $x) {
             return null;
         }
@@ -83,27 +85,50 @@ class UserService implements IUserService
         return $user->fresh()->with(['addressDetails']);
     }
 
-    public function list()
+    public function list(): LengthAwarePaginator
     {
-        return User::query()->select('id', 'name', 'email')->with(['addressDetails'])->paginate();
+        return $this->buildQuery()
+            ->select('id', 'name', 'email')
+            ->with(['addressDetails'])
+            ->paginate();
     }
 
-    public function get($id)
+    public function get($id): User
     {
-        return User::with(['addressDetails'])
-            ->where('id', $id)->firstOrFail();
+        /** @var User $user */
+        $user =  User::with(['addressDetails'])
+            ->where('id','=', $id)
+            ->firstOrFail();
+
+        return $user;
     }
 
-    public function resetAdminPassword()
+    public function resetAdminPassword(): array
     {
-        $firstUser = User::query()->get()->first();
+        /** @var User $user */
+        $user = $this->buildQuery()->first();
         $randomPassword = str_random(8);
-        $firstUser->update(['password' => $randomPassword]) ;
-        $firstUser->save();
+        $user->update(['password' => $randomPassword]) ;
+        $user->save();
 
-        $admin['email'] = $firstUser->email;
+        $admin['email'] = $user->email;
         $admin['password'] = $randomPassword;
 
         return $admin;
+    }
+
+    private function buildQuery(): Builder
+    {
+        return $this->user->newQuery();
+    }
+
+    public function getCompanyId():int
+    {
+        /** @var User $user */
+        $user = $this->buildQuery()
+            ->select(User::COL_COMPANY_ID)
+            ->first();
+
+        return $user->getCompanyId();
     }
 }

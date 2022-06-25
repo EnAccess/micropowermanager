@@ -17,9 +17,12 @@ class CompanyService implements IBaseService
         // TODO: Implement getById() method.
     }
 
-    public function create($companyData)
+    public function create($data): Company
     {
-        return $this->company->newQuery()->create($companyData);
+        /** @var Company $company */
+        $company =  $this->company->newQuery()->create($data);
+
+        return $company;
     }
 
     public function update($model, $data)

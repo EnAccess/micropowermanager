@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
 use App\Models\CompanyDatabase;
 use Illuminate\Support\Facades\Artisan;
 
@@ -17,9 +16,12 @@ class CompanyDatabaseService implements IBaseService
         // TODO: Implement getById() method.
     }
 
-    public function create($companyDatabaseData)
+    public function create($data): CompanyDatabase
     {
-        return $this->companyDatabase->newQuery()->create($companyDatabaseData);
+        /** @var CompanyDatabase $result */
+        $result =  $this->companyDatabase->newQuery()->create($data);
+
+        return $result;
     }
 
     public function update($model, $data)
@@ -37,7 +39,7 @@ class CompanyDatabaseService implements IBaseService
         // TODO: Implement getAll() method.
     }
 
-    public function createNewDatabaseForCompany($databaseName)
+    public function createNewDatabaseForCompany($databaseName): void
     {
         $sourcePath = __DIR__ . '/../../';
         shell_exec(__DIR__ . '/../../database_creator.sh --database='
@@ -47,8 +49,7 @@ class CompanyDatabaseService implements IBaseService
 
     public function setDatabaseConnectionForCompany($databaseName)
     {
-        $middleware = app()->make(UserDefaultDatabaseConnectionMiddleware::class);
-        $middleware->buildDatabaseConnection($databaseName);
+
     }
 
     public function doMigrations($databaseName)
@@ -80,5 +81,15 @@ class CompanyDatabaseService implements IBaseService
             'subMenuItems' => $menuItems['subMenuItems'],
         ]);
 
+    }
+
+    public function findByCompanyId(int $companyId): CompanyDatabase
+    {
+        /** @var CompanyDatabase $result */
+        $result =$this->companyDatabase->newQuery()
+            ->where(CompanyDatabase::COL_COMPANY_ID, '=', $companyId)
+            ->firstOrFail();
+
+        return $result;
     }
 }
