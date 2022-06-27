@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
+/**
+ * @property int $id
+ * @property string $name;
+ */
 class Company extends MasterModel
 {
     use HasFactory;
@@ -20,5 +24,15 @@ class Company extends MasterModel
     public function database()
     {
         return $this->hasOne(CompanyDatabase::class);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

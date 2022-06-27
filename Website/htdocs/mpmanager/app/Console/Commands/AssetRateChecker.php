@@ -12,49 +12,31 @@ use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Services\TicketBoardService;
 use Inensus\Ticket\Services\TicketCardService;
 use Inensus\Ticket\Services\TicketService;
 
-class AssetRateChecker extends Command
+class AssetRateChecker extends AbstractSharedCommand
 {
-
     protected $signature = 'asset-rate:check';
-
-
     protected $description = 'Checks if any asset rate is due and creates a ticket and reminds the customer';
 
-    private $assetRate;
-    private $user;
-    private $boardService;
-    private $cardService;
-    private $ticketService;
-    private $smsApplianceRemindRateService;
-    private $label;
-
-
     public function __construct(
-        AssetRate $assetRate,
-        TicketBoardService $boardService,
-        TicketCardService $cardService,
-        TicketService $ticketService,
-        SmsApplianceRemindRateService $smsApplianceRemindRateService,
-        User $user,
-        TicketCategory $label
+        private AssetRate $assetRate,
+        private TicketBoardService $boardService,
+        private TicketCardService $cardService,
+        private TicketService $ticketService,
+        private SmsApplianceRemindRateService $smsApplianceRemindRateService,
+        private User $user,
+        private TicketCategory $label
     ) {
         parent::__construct();
-        $this->assetRate = $assetRate;
-        $this->boardService = $boardService;
-        $this->cardService = $cardService;
-        $this->ticketService = $ticketService;
-        $this->smsApplianceRemindRateService = $smsApplianceRemindRateService;
-        $this->user = $user;
-        $this->label = $label;
     }
 
 
-    public function handle()
+    function runInCompanyScope(): void
     {
         $this->remindUpComingRates();
         $this->findOverDueRates();
@@ -159,7 +141,7 @@ class AssetRateChecker extends Command
         }
     }
 
-    private function getApplianceRemindRates()
+    private function getApplianceRemindRates(): Collection|array
     {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }

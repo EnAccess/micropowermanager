@@ -3,42 +3,21 @@
 namespace App\Console\Commands;
 
 use App\Models\AccessRate\AccessRatePayment;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class AccessRateChecker extends Command
+class AccessRateChecker extends AbstractSharedCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'accessrate:check';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    protected $signature = 'accessrate:check';
     protected $description = 'Updates the "debt" field, based on "due_date" field';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function runInCompanyScope(): void
     {
+        dump (User::get()->toArray());
+
         // get all access-rate payments where due Date is <= today
         $accessRatePayments = AccessRatePayment::where('due_date', '<=', Carbon::now())->get();
 
@@ -63,7 +42,5 @@ class AccessRateChecker extends Command
                 //unpaid = 1 send customer a reminder
             }
         }
-
-        return 0;
     }
 }

@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id;
+ * @property int $database_name;
+ */
 class CompanyDatabase extends MasterModel
 {
     use HasFactory;
@@ -20,13 +24,24 @@ class CompanyDatabase extends MasterModel
     }
 
 
-    public function getDatabaseConnectionName(int $companyId, ):string
+    public function findByCompanyId(int $companyId): CompanyDatabase
     {
-        $databaseName =  $this->newQuery()
+        /** @var CompanyDatabase $result */
+        $result = $this->newQuery()
             ->select(self::COL_DATABASE_NAME)
-            ->where(Company::COL_ID, '=', $companyId)
+            ->where(self::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail();
 
-        return $databaseName[self::COL_DATABASE_NAME];
+        return $result;
+    }
+
+    public function getDatabaseName(): string
+    {
+        return $this->database_name;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

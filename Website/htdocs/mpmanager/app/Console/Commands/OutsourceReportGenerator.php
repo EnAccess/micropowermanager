@@ -8,44 +8,18 @@ use Inensus\Ticket\Http\Controllers\TicketExportController;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class OutsourceReportGenerator extends Command
+class OutsourceReportGenerator extends AbstractSharedCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'reports:outsource {--start-date=}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create outsources reports';
 
-    public $reports;
-
-    /**
-     * Create a new command instance.
-     *
-     * @param TicketExportController $reports
-     */
-    public function __construct(TicketExportController $reports)
+    public function __construct(Private TicketExportController $reports)
     {
         parent::__construct();
-        $this->reports = $reports;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle(): int
+    public function runInCompanyScope(): void
     {
-        //TODO: fix for Saas.
-
         if ($this->option('start-date') !== "") {
             $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
         } else {
@@ -102,6 +76,5 @@ class OutsourceReportGenerator extends Command
                 ['Exception' => $e->getMessage()]
             );
         }*/
-        return 0;
     }
 }

@@ -6,49 +6,17 @@ use App\Models\Address\Address;
 use App\Models\Meter\MeterParameter;
 use Illuminate\Console\Command;
 
-class AddMeterAddress extends Command
+class AddMeterAddress extends AbstractSharedCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'meters:addAddress';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Creates an address entry for all every registered meter. Sets them all to village 1';
-    /**
-     * @var MeterParameter
-     */
-    private $meterParameter;
-    /**
-     * @var Address
-     */
-    private $address;
 
-    /**
-     * Create a new command instance.
-     *
-     * @param MeterParameter $meterParameter
-     * @param Address        $address
-     */
-    public function __construct(MeterParameter $meterParameter, Address $address)
+    public function __construct(private MeterParameter $meterParameter, private Address $address)
     {
         parent::__construct();
-        $this->meterParameter = $meterParameter;
-        $this->address = $address;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function runInCompanyScope(): void
     {
         $usedMeters = $this->meterParameter::all();
 
@@ -66,7 +34,5 @@ class AddMeterAddress extends Command
             $address->geo()->associate($meter->geo()->first());
             $address->save();
         }
-
-        return 0;
     }
 }
