@@ -11,7 +11,6 @@ export class CompanyService {
 
             let response = await this.repository.create(company)
             if (response.status === 200 || response.status === 201) {
-                debugger
                 return response.data
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)

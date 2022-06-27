@@ -321,6 +321,10 @@ Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', 'MpmPluginController@index');
 });
 
+Route::group(['prefix' => 'sidebar'], static function () {
+    Route::get('/', 'SidebarController@index');
+});
+
 Route::post('androidApp', static function (AndroidAppRequest $r) {
     try {
         DB::beginTransaction();

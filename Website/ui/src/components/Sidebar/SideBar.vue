@@ -37,7 +37,9 @@
                                     class="sub-menu">
                                     <md-list-item class="md-inset c-white">
                                         <span
-                                            class="md-list-item-text c-white"> {{ $tc('menu.subMenu.' + sub.name) }}</span>
+                                            class="md-list-item-text c-white"> {{
+                                                $tc('menu.subMenu.' + sub.name)
+                                            }}</span>
                                     </md-list-item>
                                 </router-link>
                             </md-list-item>
@@ -95,9 +97,18 @@ export default {
     },
 
     mounted () {
-
+        this.setSidebar()
     },
     methods: {
+        async setSidebar () {
+
+            if (!this.menus.length) {
+
+                await this.$store.dispatch('settings/setSidebar')
+
+                this.menus = this.$store.getters['settings/getSidebar']
+            }
+        },
         translateMenuItem (name) {
             if (this.$tc('menu.' + name).search('menu') !== -1) {
                 return name
