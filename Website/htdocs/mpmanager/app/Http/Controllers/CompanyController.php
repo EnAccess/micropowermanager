@@ -40,11 +40,7 @@ class CompanyController extends Controller
             'company_id' => $company->getId(),
             'database_name' => str_replace(" ", "", $company->getName()) . '_' . Carbon::now()->timestamp,
         ];
-
-        dump($companyDatabaseData);
-
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
-        dump($companyDatabase->toArray());
         $databaseProxyData = [
             'email' => $adminData['email'],
             'fk_company_id' => $company->getId(),

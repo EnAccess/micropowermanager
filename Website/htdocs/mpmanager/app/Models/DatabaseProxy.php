@@ -32,10 +32,9 @@ class DatabaseProxy extends MasterModel
     {
         /** @var DatabaseProxy $result */
         $result = $this->buildQuery()
-            ->select(CompanyDatabase::COL_DATABASE_NAME)
+            ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=',self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
             ->firstOrFail();
-
         return $result;
     }
 

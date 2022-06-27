@@ -30,7 +30,8 @@ class UserService implements IUserService
         $user =  $this->user->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
-            'email' => $userData['email']
+            'email' => $userData['email'],
+            'company_id'=> $userData['company_id']
         ]);
         return $this->user->newQuery()->with(['addressDetails'])->find($user->id);
     }
