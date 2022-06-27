@@ -2,6 +2,7 @@ import { TicketSettingsService } from '@/services/TicketSettingsService'
 import { MapSettingsService } from '@/services/MapSettingsService'
 import { MainSettingsService } from '@/services/MainSettingsService'
 import i18n from '../../i18n'
+import { SidebarService } from '@/services/SidebarService'
 
 export const namespaced = true
 
@@ -9,10 +10,11 @@ export const state = {
     serviceMap: new MapSettingsService(),
     serviceMain: new MainSettingsService(),
     serviceTicket: new TicketSettingsService(),
+    serviceSidebar :  new SidebarService(),
     mainSettings: {},
     ticketSettings: {},
     mapSettings: {},
-    sidebar:{}
+    sidebar:[]
 
 }
 export const mutations = {
@@ -69,8 +71,21 @@ export const actions = {
         })
 
     },
-    setSidebar ({ commit }, sidebar) {
-        commit('SET_SIDEBAR', sidebar)
+    setSidebar ({ commit }, sidebar = null) {
+        if (sidebar){
+            commit('SET_SIDEBAR', sidebar)
+
+        }else{
+            return new Promise((resolve, reject) => {
+                state.serviceSidebar.list().then(res => {
+                    commit('SET_SIDEBAR', res)
+                    resolve(res)
+                }).catch((e) => {
+                    reject(e)
+                })
+            })
+        }
+
     }
 
 }

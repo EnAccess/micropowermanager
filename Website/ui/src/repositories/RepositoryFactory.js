@@ -60,9 +60,9 @@ import UserPasswordRepository from './UserPasswordRepository'
 import AppliancePaymentRepository from './AppliancePaymentRepository'
 import MailSettingsRepository from './MailSettingsRepository'
 import ClustersDashboardCacheDataRepository from './ClustersDashboardCacheDataRepository'
-import { MpmPluginService } from '@/services/MpmPluginService'
 import MpmPluginRepository from '@/repositories/MpmPluginRepository'
 import CompanyRepository from '@/repositories/CompanyRepository'
+import SidebarRepository from '@/repositories/SidebarRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -129,6 +129,7 @@ const repositories = {
     'clustersDashboardCacheData': ClustersDashboardCacheDataRepository,
     'mpmPlugin': MpmPluginRepository,
     'company': CompanyRepository,
+    'sidebar': SidebarRepository
 }
 
 export default {
