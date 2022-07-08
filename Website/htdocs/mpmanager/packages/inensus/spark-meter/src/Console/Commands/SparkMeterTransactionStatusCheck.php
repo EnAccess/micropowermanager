@@ -2,28 +2,27 @@
 
 namespace Inensus\SparkMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use Illuminate\Console\Command;
 use Inensus\SparkMeter\Services\TransactionService;
 use Inensus\SparkMeter\Models\SmTransaction;
 
-class SparkMeterTransactionStatusCheck extends Command
+class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
 {
     protected $signature = 'spark-meter:transactionStatusCheck';
     protected $description = 'Checks status of Spark Meter transactions';
 
-    private $transactionService;
-    private $smTransaction;
 
     public function __construct(
-        TransactionService $transactionService,
-        SmTransaction $smTransaction
+        private  TransactionService $transactionService,
+        private  SmTransaction $smTransaction
     ) {
         parent::__construct();
-        $this->transactionService = $transactionService;
-        $this->smTransaction = $smTransaction;
+
     }
 
-    public function handle(): void
+
+   public function runInCompanyScope(): void
     {
         $smTransactions = $this->smTransaction->newQuery()
             ->where('status', 'error')

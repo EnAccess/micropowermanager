@@ -4,24 +4,23 @@
 namespace Inensus\KelinMeter\Console\Commands;
 
 
+use App\Console\Commands\AbstractSharedCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
-class AccessTokenRefresher extends Command
+class AccessTokenRefresher extends AbstractSharedCommand
 {
     protected $signature = 'kelin-meter:access-token-refresher';
     protected $description = 'Refreshes access token per each one hour.';
 
-    private $credentialService;
-
-    public function __construct(KelinCredentialService $credentialService)
+    public function __construct(private KelinCredentialService $credentialService)
     {
         parent::__construct();
-        $this->credentialService = $credentialService;
+
     }
 
-    public function handle(): void
+   public function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');
@@ -33,6 +32,5 @@ class AccessTokenRefresher extends Command
         $totalTime = $timeEnd - $timeStart;
         $this->info("Took " . $totalTime . " seconds.");
         $this->info('#############################');
-
     }
 }

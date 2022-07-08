@@ -3,24 +3,24 @@
 
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
-class TransactionStatusChecker extends Command
+class TransactionStatusChecker extends AbstractSharedCommand
 {
     protected $signature = 'swifta-payment-provider:transactionStatusCheck';
     protected $description = 'Update the Swifta Transaction status if still -2 at 00:00';
 
-    private $swiftaTransactionService;
 
-    public function __construct(SwiftaTransactionService $swiftaTransactionService)
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
     {
         parent::__construct();
-        $this->swiftaTransactionService = $swiftaTransactionService;
+
     }
 
-    public function handle()
+    public function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');

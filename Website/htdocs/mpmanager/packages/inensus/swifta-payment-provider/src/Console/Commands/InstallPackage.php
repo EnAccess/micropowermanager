@@ -26,12 +26,12 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing SwiftaPaymentProvider Integration Package\n');
-        $this->publishConfigurations();
-        $this->publishMigrations();
-        $this->createDatabaseTables();
-        $this->createPluginRecord();
-        $token = $this->generateAuthenticationToken();
-        $this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
+        //$this->publishConfigurations();
+        //$this->publishMigrations();
+        //$this->createDatabaseTables();
+        //$this->createPluginRecord();
+        //$token = $this->generateAuthenticationToken();
+        //$this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
         $this->info('Package installed successfully..');
     }
 

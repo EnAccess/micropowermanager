@@ -18,8 +18,8 @@ class CalinCredentialRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required',Rule::unique('calin_api_credentials')->ignore($this->id)],
-            'api_key' => ['required',Rule::unique('calin_api_credentials')->ignore($this->id)],
+            'user_id' => ['required',Rule::unique('shard.calin_api_credentials')->ignore($this->id)],
+            'api_key' => ['required',Rule::unique('shard.calin_api_credentials')->ignore($this->id)],
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use App\Jobs\SmsProcessor;
 use App\Models\Address\Address;
 use App\Models\User;
@@ -18,9 +19,10 @@ use Inensus\SteamaMeter\Services\SteamaSiteService;
 use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
 use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Services\StemaSyncActionService;
-use Inensus\SteamaMeter\Exceptions\CronJobException;
+use Inensus\StemaMeter\Exceptions\CronJobException;
 
-class SteamaMeterDataSynchronizer extends Command
+
+class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 {
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
@@ -58,7 +60,8 @@ class SteamaMeterDataSynchronizer extends Command
         $this->cluster=$cluster;
     }
 
-    public function handle(): void
+
+  public  function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');

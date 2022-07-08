@@ -29,16 +29,8 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing CalinMeter Integration Package\n');
-
-        $this->publishMigrations();
-        $this->createDatabaseTables();
-        $this->publishVueFiles();
         $this->apiHelpers->registerCalinMeterManufacturer();
         $this->credentialService->createCredentials();
-        $this->createPluginRecord();
-        $this->call('routes:generate');
-        $this->createMenuItems();
-        $this->call('sidebar:generate');
         $this->info('Package installed successfully..');
     }
     private function publishMigrations()

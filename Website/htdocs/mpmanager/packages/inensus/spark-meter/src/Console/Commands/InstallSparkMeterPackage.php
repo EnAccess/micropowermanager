@@ -82,16 +82,9 @@ class InstallSparkMeterPackage extends Command
     public function handle(): void
     {
         $this->info('Installing Spark Meter Integration Package\n');
-        $this->publishMigrations();
-        $this->createDatabaseTables();
         $this->packageInstallationService->createDefaultSettingRecords();
-        $this->publishVueFiles();
         $this->insertSparkMeterApi->registerSparkMeterManufacturer();
         $this->credentialService->createSmCredentials();
-        $this->createPluginRecord();
-        $this->call('routes:generate');
-        $this->createMenuItems();
-        $this->call('sidebar:generate');
         $this->info('Package installed successfully..');
         $connections = $this->customerService->checkConnectionAvailability();
         if (!$this->siteService->checkLocationAvailability()) {

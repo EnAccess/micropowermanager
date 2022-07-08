@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use App\Jobs\SmsProcessor;
 use App\Models\Address\Address;
 use App\Models\User;
@@ -20,45 +21,28 @@ use Inensus\SparkMeter\Services\SmSyncSettingService;
 use Inensus\SparkMeter\Services\TariffService;
 use Inensus\SparkMeter\Services\TransactionService;
 
-class SparkMeterDataSynchronizer extends Command
+class SparkMeterDataSynchronizer extends AbstractSharedCommand
 {
     protected $signature = 'spark-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Spark Meter.';
 
-    private $smSiteService;
-    private $smMeterModelService;
-    private $smTariffService;
-    private $smCustomerService;
-    private $smSyncSettingService;
-    private $smSyncActionService;
-    private $smTransactionService;
-    private $address;
-    private $cluster;
-
     public function __construct(
-        SiteService $smSiteService,
-        MeterModelService $smMeterModelService,
-        TariffService $smTariffService,
-        SmSyncSettingService $smSyncSettingService,
-        TransactionService $smTransactionService,
-        CustomerService $smCustomerService,
-        SmSyncActionService $smSyncActionService,
-        Address $address,
-        Cluster $cluster
+        private  SiteService $smSiteService,
+        private   MeterModelService $smMeterModelService,
+        private   TariffService $smTariffService,
+        private   SmSyncSettingService $smSyncSettingService,
+        private   TransactionService $smTransactionService,
+        private   CustomerService $smCustomerService,
+        private   SmSyncActionService $smSyncActionService,
+        private   Address $address,
+        private   Cluster $cluster
     ) {
         parent::__construct();
-        $this->smSiteService = $smSiteService;
-        $this->smMeterModelService = $smMeterModelService;
-        $this->smTariffService = $smTariffService;
-        $this->smTransactionService = $smTransactionService;
-        $this->smCustomerService = $smCustomerService;
-        $this->smSyncActionService = $smSyncActionService;
-        $this->smSyncSettingService = $smSyncSettingService;
-        $this->address = $address;
-        $this->cluster = $cluster;
+
     }
 
-    public function handle(): void
+
+  public  function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');

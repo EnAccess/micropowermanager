@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use App\Jobs\SmsProcessor;
 use App\Models\Sms;
 use App\Services\SmsService;
@@ -15,9 +16,10 @@ use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
 use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
-use Inensus\SteamaMeter\Exceptions\CronJobException;
+use Inensus\StemaMeter\Exceptions\CronJobException;
 
-class SteamaSmsNotifier extends Command
+
+class SteamaSmsNotifier extends AbstractSharedCommand
 {
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = '';
@@ -46,35 +48,6 @@ class SteamaSmsNotifier extends Command
         $this->smsService = $smsService;
     }
 
-    public function handle()
-    {
-        $timeStart = microtime(true);
-        $this->info('#############################');
-        $this->info('# Steamaco Meter Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('smsNotifier command started at ' . $startedAt);
-        try {
-            $smsSettings = $this->smsSettingsService->getSmsSettings();
-            $transactionMin = $smsSettings->where('state', 'Transactions')
-                ->first()->not_send_elder_than_mins;
-            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')
-                ->first()->not_send_elder_than_mins;
-            $smsNotifiedCustomers = $this->steamaSmsNotifiedCustomerService->getSteamaSmsNotifiedCustomers();
-            $customers = $this->steamaCustomerService->getSteamaCustomersWithAddress();
-            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
-            $this->sendLowBalanceWarningNotifySms($customers->where(
-                'updated_at',
-                '>=',
-                Carbon::now()->subMinutes($lowBalanceMin)
-            )->get(), $smsNotifiedCustomers, $lowBalanceMin);
-        } catch (CronJobException $e) {
-            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
-        }
-        $timeEnd = microtime(true);
-        $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
-        $this->info('#############################');
-    }
 
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
     {
@@ -143,5 +116,35 @@ class SteamaSmsNotifier extends Command
             $this->steamaSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
             return true;
         });
+    }
+
+    public function runInCompanyScope(): void
+    {
+        $timeStart = microtime(true);
+        $this->info('#############################');
+        $this->info('# Steamaco Meter Package #');
+        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $this->info('smsNotifier command started at ' . $startedAt);
+        try {
+            $smsSettings = $this->smsSettingsService->getSmsSettings();
+            $transactionMin = $smsSettings->where('state', 'Transactions')
+                ->first()->not_send_elder_than_mins;
+            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')
+                ->first()->not_send_elder_than_mins;
+            $smsNotifiedCustomers = $this->steamaSmsNotifiedCustomerService->getSteamaSmsNotifiedCustomers();
+            $customers = $this->steamaCustomerService->getSteamaCustomersWithAddress();
+            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
+            $this->sendLowBalanceWarningNotifySms($customers->where(
+                'updated_at',
+                '>=',
+                Carbon::now()->subMinutes($lowBalanceMin)
+            )->get(), $smsNotifiedCustomers, $lowBalanceMin);
+        } catch (CronJobException $e) {
+            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
+        }
+        $timeEnd = microtime(true);
+        $totalTime = $timeEnd - $timeStart;
+        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('#############################');
     }
 }
