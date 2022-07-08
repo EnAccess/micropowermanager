@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
@@ -17,7 +18,7 @@ use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
 
-class SparkMeterSmsNotifier extends Command
+class SparkMeterSmsNotifier extends AbstractSharedCommand
 {
     protected $signature = 'spark-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits';
@@ -46,34 +47,7 @@ class SparkMeterSmsNotifier extends Command
         $this->smsService = $smsService;
     }
 
-    public function handle()
-    {
-        $timeStart = microtime(true);
-        $this->info('#############################');
-        $this->info('# Spark Meter Package #');
-        $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('smsNotifier command started at ' . $startedAt);
-        try {
-            $smsSettings = $this->smsSettingsService->getSmsSettings();
-            $transactionMin = $smsSettings->where('state', 'Transactions')->first()->not_send_elder_than_mins;
-            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')->first()->not_send_elder_than_mins;
-            $smsNotifiedCustomers = $this->smSmsNotifiedCustomerService->getSmsNotifiedCustomers();
-            $customers = $this->smCustomerService->getSparkCustomersWithAddress();
-            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
-            $this->sendLowBalanceWarningNotifySms($customers
-                ->where(
-                    'updated_at',
-                    '>=',
-                    Carbon::now()->subMinutes($lowBalanceMin)
-                ), $smsNotifiedCustomers, $lowBalanceMin);
-        } catch (CronJobException $e) {
-            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
-        }
-        $timeEnd = microtime(true);
-        $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
-        $this->info('#############################');
-    }
+
 
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
     {
@@ -143,5 +117,34 @@ class SparkMeterSmsNotifier extends Command
             $this->smSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
             return true;
         });
+    }
+
+   public function runInCompanyScope(): void
+    {
+        $timeStart = microtime(true);
+        $this->info('#############################');
+        $this->info('# Spark Meter Package #');
+        $startedAt = Carbon::now()->toIso8601ZuluString();
+        $this->info('smsNotifier command started at ' . $startedAt);
+        try {
+            $smsSettings = $this->smsSettingsService->getSmsSettings();
+            $transactionMin = $smsSettings->where('state', 'Transactions')->first()->not_send_elder_than_mins;
+            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')->first()->not_send_elder_than_mins;
+            $smsNotifiedCustomers = $this->smSmsNotifiedCustomerService->getSmsNotifiedCustomers();
+            $customers = $this->smCustomerService->getSparkCustomersWithAddress();
+            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
+            $this->sendLowBalanceWarningNotifySms($customers
+                ->where(
+                    'updated_at',
+                    '>=',
+                    Carbon::now()->subMinutes($lowBalanceMin)
+                ), $smsNotifiedCustomers, $lowBalanceMin);
+        } catch (CronJobException $e) {
+            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
+        }
+        $timeEnd = microtime(true);
+        $totalTime = $timeEnd - $timeStart;
+        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('#############################');
     }
 }

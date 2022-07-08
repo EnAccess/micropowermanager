@@ -4,7 +4,7 @@
 namespace Inensus\KelinMeter\Models;
 
 
-use Inensus\Ticket\Models\BaseModel;
+use App\Models\BaseModel;
 
 class KelinMeterDailyData extends  BaseModel
 {

@@ -3,25 +3,24 @@
 
 namespace Inensus\SteamaMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SteamaMeter\Services\SteamaMeterReadingService;
 
 
-class ReadHourlyMeterReadings extends Command
+class ReadHourlyMeterReadings extends AbstractSharedCommand
 {
     protected $signature = 'steama-meter:hourlyReadings';
     protected $description = 'Reads hourly meter readings.';
 
-    private $steamaMeterReadingService;
-
-    public function __construct(SteamaMeterReadingService $steamaMeterReadingService)
+    public function __construct(private SteamaMeterReadingService $steamaMeterReadingService)
     {
         parent::__construct();
-        $this->steamaMeterReadingService = $steamaMeterReadingService;
+
     }
 
-    public function handle()
+   public function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');

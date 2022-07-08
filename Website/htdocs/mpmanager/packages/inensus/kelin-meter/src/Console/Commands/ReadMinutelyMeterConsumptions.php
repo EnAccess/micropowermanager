@@ -4,30 +4,26 @@
 namespace Inensus\KelinMeter\Console\Commands;
 
 
+use App\Console\Commands\AbstractSharedCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\MinutelyConsumptionService;
 
 
-class ReadMinutelyMeterConsumptions extends Command
+class ReadMinutelyMeterConsumptions extends AbstractSharedCommand
 {
     protected $signature = 'kelin-meter:read-minutely-consumptions';
     protected $description = 'Reads daily meter consumptions.';
 
-    private $minutelyConsumptionService;
-    private $credentialService;
-
     public function __construct(
-        MinutelyConsumptionService $minutelyConsumptionService,
-        KelinCredentialService $credentialService
+        private  MinutelyConsumptionService $minutelyConsumptionService,
+        private  KelinCredentialService $credentialService
     ) {
         parent::__construct();
-        $this->minutelyConsumptionService = $minutelyConsumptionService;
-        $this->credentialService=$credentialService;
     }
 
-    public function handle()
+  public  function runInCompanyScope(): void
     {
         $credentials = $this->credentialService->getCredentials();
         $timeStart = microtime(true);

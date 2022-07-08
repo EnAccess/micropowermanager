@@ -35,22 +35,9 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing KelinMeters Integration Package\n');
-
-        $this->publishMigrations();
-        $this->publishConfigurations();
-        $this->createDatabaseTables();
         $this->packageInstallationService->createDefaultSettingRecords();
-        $this->publishVueFiles();
         $this->apiHelpers->registerMeterManufacturer();
         $this->credentialService->createCredentials();
-        $this->createPluginRecord();
-        $this->call('routes:generate');
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
-        ]);
-        $this->call('sidebar:generate');
         $this->info('Package installed successfully..');
     }
 

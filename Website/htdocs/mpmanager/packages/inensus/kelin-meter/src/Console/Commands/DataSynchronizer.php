@@ -2,6 +2,7 @@
 
 namespace Inensus\KelinMeter\Console\Commands;
 
+use App\Console\Commands\AbstractSharedCommand;
 use App\Jobs\SmsProcessor;
 use App\Models\Address\Address;
 use App\Models\Cluster;
@@ -16,38 +17,26 @@ use Inensus\KelinMeter\Services\KelinSyncActionService;
 use Inensus\KelinMeter\Services\KelinSyncSettingService;
 
 
-class DataSynchronizer extends Command
+class DataSynchronizer extends AbstractSharedCommand
 {
     protected $signature = 'kelin-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Kelin platform.';
 
 
-    private $address;
-    private $cluster;
-    private $syncSettingService;
-    private $meterService;
-    private $customerService;
-    private $syncActionService;
-
     public function __construct(
 
-        KelinSyncSettingService $syncSettingService,
-        KelinMeterService $meterService,
-        KelinCustomerService $customerService,
-        KelinSyncActionService $syncActionService,
-        Address $address,
-        Cluster $cluster
+        private   KelinSyncSettingService $syncSettingService,
+        private  KelinMeterService $meterService,
+        private KelinCustomerService $customerService,
+        private   KelinSyncActionService $syncActionService,
+        private Address $address,
+        private Cluster $cluster
     ) {
         parent::__construct();
-        $this->syncSettingService=$syncSettingService;
-        $this->meterService =$meterService;
-        $this->customerService =$customerService;
-        $this->syncActionService = $syncActionService;
-        $this->address = $address;
-        $this->cluster=$cluster;
     }
 
-    public function handle(): void
+
+   public function runInCompanyScope(): void
     {
         $timeStart = microtime(true);
         $this->info('#############################');

@@ -15,9 +15,6 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing MesombPaymentProvider Integration Package\n');
-        $this->publishMigrations();
-        $this->createDatabaseTables();
-        $this->createPluginRecord();
         $this->info('Package installed successfully..');
     }
     private function publishMigrations(){

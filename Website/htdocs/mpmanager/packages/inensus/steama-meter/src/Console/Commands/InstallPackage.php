@@ -76,21 +76,21 @@ class InstallPackage extends Command
     {
         $this->info('Installing Steamaco Meter Integration Package\n');
 
-        $this->publishMigrations();
-        $this->createDatabaseTables();
+        //$this->publishMigrations();
+        //$this->createDatabaseTables();
         $this->packageInstallationService->createDefaultSettingRecords();
-        $this->publishVueFiles();
+        //$this->publishVueFiles();
         $this->apiHelpers->registerSparkMeterManufacturer();
         $this->credentialService->createCredentials();
-        $this->createPluginRecord();
+        //$this->createPluginRecord();
         $tariff = $this->tariffService->createTariff();
         $this->userTypeService->createUserTypes($tariff);
         $this->paymentPlanService->createPaymentPlans();
         $this->agentService->createSteamaAgentCommission();
-        $this->call('routes:generate');
-        $this->createMenuItems();
-        $this->call('sidebar:generate');
-        $this->info('Package installed successfully..');
+        //$this->call('routes:generate');
+        //$this->createMenuItems();
+        //$this->call('sidebar:generate');
+        //$this->info('Package installed successfully..');
         if (!$this->siteService->checkLocationAvailability()) {
             $this->warn('------------------------------');
             $this->warn("Steamaco Meter package needs least one registered Cluster.");

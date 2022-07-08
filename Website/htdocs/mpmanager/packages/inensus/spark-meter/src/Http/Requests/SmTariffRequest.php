@@ -28,7 +28,7 @@ class SmTariffRequest extends FormRequest
     {
         $meterTariff = SmTariff::with('mpmTariff')->where('tariff_id', $this->id)->firstOrFail();
         return [
-            'name' => ['required',Rule::unique('meter_tariffs')->ignore($meterTariff->mpmTariff->id)],
+            'name' => ['required',Rule::unique('shard.meter_tariffs')->ignore($meterTariff->mpmTariff->id)],
             'flatPrice' => 'required',
             'flatLoadLimit' => 'required',
             'planEnabled' => 'required',
