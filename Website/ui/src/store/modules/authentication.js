@@ -79,5 +79,6 @@ export const getters = {
         return state.authenticateUser.intervalId
     },
     authenticationService: state => state.service,
+    getStatus: state => state.status,
 
 }

@@ -8,8 +8,6 @@
 
 namespace Inensus\Ticket\Services;
 
-
-use App\Services\BaseService;
 use App\Services\IBaseService;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Exceptions\ApiUserNotFound;
@@ -23,7 +21,6 @@ class TicketUserService  implements IBaseService
         private Users $usersGateway
     ) {
 
-        parent::__construct([$ticketUser]);
     }
 
     /**

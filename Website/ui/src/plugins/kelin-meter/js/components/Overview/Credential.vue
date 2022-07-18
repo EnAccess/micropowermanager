@@ -72,6 +72,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
@@ -98,7 +99,7 @@ export default {
                 this.loading = true
                 const updatedData = await this.credentialService.updateCredential()
                 this.alertNotify(updatedData.alert.type, updatedData.alert.message)
-
+                EventBus.$emit('Kelin Meter')
             } catch (e) {
                 this.alertNotify('error', 'MPM failed to verify your request')
             }

@@ -13,7 +13,7 @@ class MpmPluginService implements IBaseService
 
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        return $this->mpmPlugin->newQuery()->findOrFail($id);
     }
 
     public function create($data)

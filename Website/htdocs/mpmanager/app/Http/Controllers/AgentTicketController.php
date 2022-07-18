@@ -35,8 +35,8 @@ class AgentTicketController extends Controller
         private TicketUserService $ticketUserService
 
     ) {
-        $this->board = $this->boardService->initializeBoard($this->ticketUserService);
-        $this->card = $this->cardService->initalizeList($this->board);
+       // $this->board = $this->boardService->initializeBoard($this->ticketUserService);
+       // $this->card = $this->cardService->initalizeList($this->board);
     }
 
     public function index(Request $request): ApiResource

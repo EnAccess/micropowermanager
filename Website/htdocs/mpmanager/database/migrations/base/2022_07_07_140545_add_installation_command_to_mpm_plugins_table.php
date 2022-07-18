@@ -14,7 +14,7 @@ return new class  extends Migration
     public function up()
     {
         Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->string('tail_tag')->nullable();
+            $table->string('installation_command')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ return new class  extends Migration
     public function down()
     {
         Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->dropColumn('tail_tag');
+            $table->dropColumn('installation_command');
         });
     }
 };

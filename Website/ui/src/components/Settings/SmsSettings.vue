@@ -139,6 +139,7 @@ export default {
                     try {
                         await this.smsBodiesService.updateSmsBodies(this.tab)
                         this.alertNotify('success', 'Updated Successfully')
+                        EventBus.$emit('Settings')
                     } catch (e) {
                         this.alertNotify('error', e.message)
                     }
@@ -150,6 +151,7 @@ export default {
                     try {
                         await this.smsBodiesService.updateSmsBodies(this.tab)
                         this.alertNotify('success', 'Updated Successfully')
+                        EventBus.$emit('Settings')
                     } catch (e) {
                         this.alertNotify('error', e.message)
                     }
@@ -162,6 +164,7 @@ export default {
                         await this.smsResendInformationKeyService.updateResendInformationKey()
                         await this.smsBodiesService.updateSmsBodies(this.tab)
                         this.alertNotify('success', 'Updated Successfully')
+                        EventBus.$emit('Settings')
                     } catch (e) {
                         this.alertNotify('error', e.message)
                     }
@@ -190,6 +193,7 @@ export default {
                     return
                 }
                 this.alertNotify('success', 'updated successfully')
+                EventBus.$emit('Settings')
             } catch (e) {
                 let errorMessage = e.response.data.message
                 return new ErrorHandler(errorMessage, 'http')

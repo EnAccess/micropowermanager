@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('downloadDaily', '\App\Http\Controllers\Export\DailyTransactions@getDailyReport');
+//Route::get('downloadDaily', '\App\Http\Controllers\Export\DailyTransactions@getDailyReport');
 
 
 Route::get('/', 'HomeController@index')->name('home');
@@ -66,5 +66,5 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/user-data', 'AdminController@auth');
+   // Route::get('/user-data', 'AdminController@auth');
 });

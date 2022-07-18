@@ -13,7 +13,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
-use App\Services\BaseService;
 use App\Services\SessionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

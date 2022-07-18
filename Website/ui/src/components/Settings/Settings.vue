@@ -1,29 +1,21 @@
 <template>
     <div>
         <widget
-                color="green"
-                title="Settings"
+            color="green"
+            title="Settings"
         >
             <div style="padding: 2vh;">
                 <md-tabs>
                     <md-tab id="tab-home" md-icon="home" md-label="Main" exact>
-                        <main-settings :mainSettings="mainSettings" />
-                    </md-tab>
-
-                    <md-tab id="tab-mail" md-icon="mail" md-label="Mail">
-                        <mail-settings/>
-                    </md-tab>
-
-                    <md-tab id="tab-ticket" name="ticket" md-icon="confirmation_number" md-label="Ticket">
-                        <ticket-settings :ticketSettings="ticketSettings"/>
+                        <main-settings :mainSettings="mainSettings"/>
                     </md-tab>
 
                     <md-tab id="tab-sms" name="sms" md-icon="sms" md-label="Sms">
-                        <sms-settings />
+                        <sms-settings/>
                     </md-tab>
 
                     <md-tab id="tab-map" md-icon="map" md-label="Map">
-                        <map-settings :center="center" :mapSettings="mapSettings" />
+                        <map-settings :center="center" :mapSettings="mapSettings"/>
                     </md-tab>
                 </md-tabs>
             </div>
@@ -45,6 +37,7 @@ import { MainSettingsService } from '@/services/MainSettingsService'
 import { MapSettingsService } from '@/services/MapSettingsService'
 import { TicketSettingsService } from '@/services/TicketSettingsService'
 
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'Settings',
@@ -54,11 +47,11 @@ export default {
             mainSettingsService: new MainSettingsService(),
             mapSettingService: new MapSettingsService(),
             ticketSettingsService: new TicketSettingsService(),
-            mainSettings:{},
-            ticketSettings:{},
-            mapSettings:{},
-            center:null,
-            smsBodies:[]
+            ticketSettings: {},
+            mapSettings: {},
+            mainSettings: {},
+            center: null,
+            smsBodies: []
         }
     },
     mounted () {

@@ -1,7 +1,8 @@
+import { baseUrl } from '@/repositories/Client/AxiosClient';
 export class Paginator {
 
     constructor(url) {
-        this.url = url
+        this.url = `${baseUrl}${url}`
         this._initialize()
         this.postData = null
 

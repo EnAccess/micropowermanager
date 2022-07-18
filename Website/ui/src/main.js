@@ -4,6 +4,16 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
+
+
+
+
+
+
+
+
+
 require('./bootstrap')
 import router from './routes'
 import App from './App'
@@ -15,8 +25,23 @@ import i18n from './i18n'
 import { MapSettingsService } from './services/MapSettingsService'
 import { TicketSettingsService } from './services/TicketSettingsService'
 import { MainSettingsService } from './services/MainSettingsService'
+import Steamaco from '@/plugins/steama-meter/js/components/Overview/Credential'
+import Spark from '@/plugins/spark-meter/js/components/Overview/Credential'
+import Calin from '@/plugins/calin-meter/js/components/Overview/Credential'
+import CalinSmart from '@/plugins/calin-smart-meter/js/components/Overview/Credential'
+import Kelin from '@/plugins/kelin-meter/js/components/Overview/Credential'
+import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
+import Settings from '@/components/Settings/MainSettings'
 
 Vue.component('default', Default)
+Vue.component('Spark-Meter', Spark)
+Vue.component('Steamaco-Meter', Steamaco)
+Vue.component('Calin-Meter', Calin)
+Vue.component('CalinSmart-Meter', CalinSmart)
+Vue.component('Kelin-Meter', Kelin)
+Vue.component('Stron-Meter', Stron)
+Vue.component('Settings', Settings)
+
 
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']

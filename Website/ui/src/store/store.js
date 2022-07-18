@@ -6,6 +6,7 @@ import * as auth from '../store/modules/authentication'
 import * as settings from '../store/modules/settings'
 import * as resolution from '../store/modules/resolution'
 import * as breadcrumb from '../store/modules/breadcrumb'
+import * as registrationTail from '../store/modules/registrationTail'
 import * as clusterDashboard from '../store/modules/clusterDashboard'
 import VuexPersist from 'vuex-persist'
 
@@ -31,6 +32,10 @@ const vuexLocalStorage = new VuexPersist({
         clusterDashboard: {
             clustersCacheData: state.clusterDashboard.clustersCacheData
 
+        },
+        registrationTail: {
+            registrationTail: state.registrationTail.registrationTail,
+            isWizardShown: state.registrationTail.isWizardShown
         }
     }),
     key: 'vuex',
@@ -42,7 +47,8 @@ export default new Vuex.Store({
         settings,
         resolution,
         breadcrumb,
-        clusterDashboard
+        clusterDashboard,
+        registrationTail
     },
     plugins: [vuexLocalStorage.plugin],
     state: {

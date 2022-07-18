@@ -8,7 +8,7 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\BaseService;
+
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketBoard;
 use Inensus\Ticket\Trello\Boards;

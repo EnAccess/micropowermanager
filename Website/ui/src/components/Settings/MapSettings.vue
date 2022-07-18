@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h2>Map Settings</h2>
         <div class="md-layout md-gutter md-size-100">
             <div class="md-layout-item md-layout md-gutter md-size-100">
                 <div class="md-layout-item md-size-25 md-small-size-50">
@@ -163,6 +162,7 @@ export default {
             try {
                 await this.mapSettingsService.update()
                 this.updateMapSettingsStore()
+                EventBus.$emit('Settings')
             } catch (e) {
                 this.alertNotify('error', 'Map settings update failed')
             }
