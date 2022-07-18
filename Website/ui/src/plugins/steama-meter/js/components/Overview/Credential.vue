@@ -98,7 +98,7 @@ export default {
                 this.loading = true
                 const updatedData = await this.credentialService.updateCredential()
                 this.alertNotify(updatedData.alert.type, updatedData.alert.message)
-
+                EventBus.$emit('Steamaco Meter')
             } catch (e) {
                 this.alertNotify('error', 'MPM failed to verify your request')
             }

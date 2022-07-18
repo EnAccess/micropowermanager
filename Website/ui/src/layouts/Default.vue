@@ -28,39 +28,53 @@
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
+        <tail-wizard :show-wizard="showWizard" :tail="tail"/>
     </div>
 </template>
-
-
 <script>
 import FooterBar from '../layouts/FooterBar.vue'
-import { EventBus } from '../shared/eventbus'
+import { EventBus } from '@/shared/eventbus'
 import TopNavbar from './TopNavbar.vue'
 import SideBar from '../components/Sidebar/SideBar'
 import MobileTopNavbar from './MobileTopNavbar'
-
+import TailWizard from '@/shared/TailWizard'
+import { mapGetters } from 'vuex'
 export default {
     name: 'default',
     components: {
         TopNavbar,
         FooterBar,
         SideBar,
-        MobileTopNavbar
+        MobileTopNavbar,
+        TailWizard
+    },
+    created () {
+        if (this.status !=='') {
+            let asd =this.registrationTail.tail
+            console.log(asd)
+            const tail = JSON.parse(this.registrationTail.tail)
+            for (const tailElement of tail) {
+                if (tailElement.adjusted === false && !this.isWizardShown) {
+                    this.showWizard = true
+                }
+            }
+            this.tail = tail.filter(x => x.adjusted === false && x.tag!==null)
+        }
     },
     mounted () {
         //register the time extender
         EventBus.$on('ask.for.extend', this.showExtender)
         EventBus.$on('session.end', this.logout)
     },
-
     data: () => ({
-
         active: false,
         showed: false,
         confirmed: false,
         expires_in: null,
         sidebarBackground: 'green',
-        sidebarBackgroundImage: null
+        sidebarBackgroundImage: null,
+        showWizard: false,
+        tail:[]
     }),
     methods: {
         showExtender (val) {
@@ -76,11 +90,19 @@ export default {
             location.reload()
         },
         logout () {
+            this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
             this.$store.dispatch('auth/logOut').then(() => {
                 this.$router.replace('/login')
             })
 
         }
+    },
+    computed: {
+        ...mapGetters({
+            status: 'auth/getStatus',
+            registrationTail: 'registrationTail/getTail',
+            isWizardShown: 'registrationTail/getIsWizardShown',
+        })
     }
 }
 </script>

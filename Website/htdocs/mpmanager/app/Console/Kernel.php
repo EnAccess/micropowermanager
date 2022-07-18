@@ -5,6 +5,15 @@ namespace App\Console;
 use App\Jobs\SocialTariffPiggyBankManager;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
+use Inensus\SparkMeter\Console\Commands\InstallSparkMeterPackage;
+use Inensus\CalinSmartMeter\Console\Commands\InstallPackage as InstallCalinSmartMeterPackage;
+use Inensus\KelinMeter\Console\Commands\InstallPackage as InstallKelinMeterPackage;
+use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPackage;
+use Inensus\SteamaMeter\Console\Commands\InstallPackage as InstallStemacoMeterPackage;
+use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
+use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
+
 
 class Kernel extends ConsoleKernel
 {
@@ -16,6 +25,14 @@ class Kernel extends ConsoleKernel
     protected $commands = [
 
         Commands\AddMeterAddress::class,
+        InstallSparkMeterPackage::class,
+        InstallCalinMeterPackage::class,
+        InstallCalinSmartMeterPackage::class,
+        InstallKelinMeterPackage::class,
+        InstallStronMeterPackage::class,
+        InstallStemacoMeterPackage::class,
+        InstallSwiftaPaymentProviderPackage::class,
+        InstallMsombPaymentProviderPackage::class,
     ];
 
     /**

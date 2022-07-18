@@ -11,7 +11,6 @@ namespace Inensus\Ticket\Services;
 
 use App\Exceptions\TrelloAPIException;
 use App\Models\Person\Person;
-use App\Services\BaseService;
 use App\Services\IBaseService;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Trello\Comments;
@@ -21,7 +20,7 @@ class TicketCommentService
 
     public function __construct(private Comments $commentsGateway, private Person $person)
     {
-        parent::__construct([$person]);
+
     }
 
     public function createComment($cardId, $comment)

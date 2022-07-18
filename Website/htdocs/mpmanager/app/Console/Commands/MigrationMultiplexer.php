@@ -26,7 +26,7 @@ class MigrationMultiplexer extends AbstractSharedCommand
                 'for file in ' . $sourcePath . '/database/migrations/' . $companyDatabase->database_name . '/*.php
             do
               ##sed -i \'\' \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file
-              sed -i  \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file
+              sed -i  \'s/micropowermanager/\'shard\'/g\' $file
             done');
         });
         $this->info('done');

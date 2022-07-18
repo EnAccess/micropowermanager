@@ -4,17 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use File;
-use Storage;
 
 class LanguageController extends Controller
 {
-    private $languagesList;
-
-    public function __constructor(LanguagesList $languagesList)
-    {
-        $this->languagesList = $languagesList;
-    }
-
     public function index(): ApiResource
     {
         $path = resource_path('assets/locales');
@@ -26,6 +18,6 @@ class LanguageController extends Controller
                 }
             }
         );
-        return new ApiResource($filteredFiles);
+        return ApiResource::make($filteredFiles);
     }
 }

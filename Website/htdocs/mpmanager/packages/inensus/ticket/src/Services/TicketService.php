@@ -6,7 +6,7 @@ namespace Inensus\Ticket\Services;
 
 use App\Exceptions\TrelloAPIException;
 use App\Models\Agent;
-use App\Services\BaseService;
+
 use App\Services\IAssociative;
 use App\Services\IBaseService;
 use Illuminate\Database\Eloquent\Collection;

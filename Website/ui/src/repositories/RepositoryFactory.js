@@ -63,6 +63,7 @@ import ClustersDashboardCacheDataRepository from './ClustersDashboardCacheDataRe
 import MpmPluginRepository from '@/repositories/MpmPluginRepository'
 import CompanyRepository from '@/repositories/CompanyRepository'
 import SidebarRepository from '@/repositories/SidebarRepository'
+import RegistrationTailRepository from '@/repositories/RegistrationTailRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -129,7 +130,8 @@ const repositories = {
     'clustersDashboardCacheData': ClustersDashboardCacheDataRepository,
     'mpmPlugin': MpmPluginRepository,
     'company': CompanyRepository,
-    'sidebar': SidebarRepository
+    'sidebar': SidebarRepository,
+    'registrationTail':RegistrationTailRepository
 }
 
 export default {

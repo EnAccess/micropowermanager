@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class RegistrationTail
+class RegistrationTail extends BaseModel
 {
-
+    protected $table = 'registration_tail';
 }

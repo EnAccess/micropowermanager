@@ -3,16 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class CurrencyController extends Controller
 {
-    private $currencyList;
-
-    public function __constructor(CurrencyList $currencyList)
-    {
-        $this->currencyList = $currencyList;
-    }
 
     public function index(): ApiResource
     {

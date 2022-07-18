@@ -2,7 +2,7 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\BaseService;
+
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

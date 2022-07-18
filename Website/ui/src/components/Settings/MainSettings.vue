@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h2>Main Settings</h2>
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field :class="{'md-invalid': errors.has($tc('words.title'))}">
@@ -35,7 +34,8 @@
                         <md-option v-for="(cur,index) in currencyListService.currencyList" :key="index"
                                    :value="cur.symbol">
                             {{
-                            cur.name }} - {{ cur.symbol }}
+                                cur.name
+                            }} - {{ cur.symbol }}
                         </md-option>
                     </md-select>
                 </md-field>
@@ -46,7 +46,7 @@
                     <md-select name="country" id="country" v-model="mainSettingsService.mainSettings.country" md-dense>
                         <md-option disabled>Select Country</md-option>
                         <md-option v-for="(country,index) in countryListService.countryList" :key="index"
-                                   :value="country">{{country }}
+                                   :value="country">{{ country }}
                         </md-option>
                     </md-select>
                 </md-field>
@@ -69,12 +69,12 @@
                 <md-field :class="{'md-invalid': errors.has('vat_energy')}">
                     <label for="vat_energy">VAT Energy</label>
                     <md-input
-                            name="vat_energy"
-                            id="vat_energy"
-                            v-model="mainSettingsService.mainSettings.vatEnergy"
-                            type="number"
-                            maxlength="9"
-                            v-validate="'required|decimal:2|max:4'"
+                        name="vat_energy"
+                        id="vat_energy"
+                        v-model="mainSettingsService.mainSettings.vatEnergy"
+                        type="number"
+                        maxlength="9"
+                        v-validate="'required|decimal:2|max:4'"
                     ></md-input>
                 </md-field>
                 <span class="md-error">{{ errors.first('vat_energy') }}</span>
@@ -83,12 +83,12 @@
                 <md-field :class="{'md-invalid': errors.has('vat_appliance')}">
                     <label for="vat_appliance">VAT Appliance</label>
                     <md-input
-                            name="vat_appliance"
-                            id="vat_appliance"
-                            v-model="mainSettingsService.mainSettings.vatAppliance"
-                            type="number"
-                            maxlength="9"
-                            v-validate="'required|decimal:2|max:4'"
+                        name="vat_appliance"
+                        id="vat_appliance"
+                        v-model="mainSettingsService.mainSettings.vatAppliance"
+                        type="number"
+                        maxlength="9"
+                        v-validate="'required|decimal:2|max:4'"
                     ></md-input>
                 </md-field>
                 <span class="md-error">{{ errors.first('vat_appliance') }}</span>
@@ -108,12 +108,13 @@ import { CurrencyListService } from '@/services/CurrencyListService'
 import { LanguagesService } from '@/services/LanguagesService'
 import { CountryListService } from '@/services/CountryListService'
 import { MainSettingsService } from '@/services/MainSettingsService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'MainSettings',
     props: {
         mainSettings: {
-            type: Object
+            default: null
         }
     },
     data () {
@@ -122,7 +123,6 @@ export default {
             currencyListService: new CurrencyListService(),
             languagesService: new LanguagesService(),
             countryListService: new CountryListService(),
-
             currencyList: [],
             languagesList: [],
             countryList: [],
@@ -131,7 +131,12 @@ export default {
 
     },
     mounted () {
-        this.fetchMainSettings()
+        if (!this.mainSettings) {
+            this.mainSettingsService.mainSettings = this.$store.getters['settings/getMainSettings']
+        } else {
+            this.fetchMainSettings()
+        }
+
         this.getCurrencyList()
         this.getLanguagesList()
         this.getCountryList()
@@ -177,6 +182,7 @@ export default {
                     console.log(err)
                 })
                 this.alertNotify('success', 'Updated Successfully')
+                EventBus.$emit('Settings')
             } catch (e) {
                 this.alertNotify('error', e.message)
             }

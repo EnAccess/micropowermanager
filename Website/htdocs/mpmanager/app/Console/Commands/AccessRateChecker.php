@@ -16,7 +16,6 @@ class AccessRateChecker extends AbstractSharedCommand
 
     public function runInCompanyScope(): void
     {
-        dump (User::get()->toArray());
 
         // get all access-rate payments where due Date is <= today
         $accessRatePayments = AccessRatePayment::where('due_date', '<=', Carbon::now())->get();

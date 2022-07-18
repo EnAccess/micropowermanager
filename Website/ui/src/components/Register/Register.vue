@@ -344,10 +344,15 @@ export default {
                 this.loading = true
                 let response = await this.companyService.register(this.companyForm)
                 this.loading = false
-                this.$store.dispatch('settings/setSidebar', response.sidebarData)
+                await this.$store.dispatch('settings/setSidebar', response.sidebarData)
+                const email = this.companyForm.user.email
+                const password = this.companyForm.user.password
+
+                await this.$store.dispatch('auth/authenticate', { email, password })
+                await this.$store.dispatch('registrationTail/getRegistrationTail')
                 setTimeout(() => {
                     this.$router.push('/')
-                }, 3000)
+                }, 2000)
             } catch (e) {
                 this.succeed = false
                 this.loading = false

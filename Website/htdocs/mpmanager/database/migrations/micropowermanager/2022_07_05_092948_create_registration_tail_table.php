@@ -15,6 +15,8 @@ return new class  extends Migration
     {
         Schema::connection('micropowermanager')->create('registration_tail', function (Blueprint $table) {
             $table->id();
+            $table->json('tail');
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

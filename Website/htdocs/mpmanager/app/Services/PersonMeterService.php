@@ -11,7 +11,7 @@ class PersonMeterService
         private Person $person,
         private Meter $meter
     ) {
-    parent::__construct([$meter,$person])   ;
+
     }
 
     public function getPersonMeters(int $personId)

@@ -34,7 +34,7 @@ export class MainSettingsService {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
-                this.fromJson(response.data.data[0])
+                this.fromJson(response.data.data)
                 return this.mainSettings
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -59,7 +59,7 @@ export class MainSettingsService {
             let response = await this.repository.update(mainSettingsPm.id,
                 mainSettingsPm)
             if (response.status === 200) {
-                this.fromJson(response.data.data[0])
+                this.fromJson(response.data.data)
                 return this.mainSettings
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)

@@ -1,7 +1,7 @@
 import Client from './Client/AxiosClient'
 import { baseUrl } from './Client/AxiosClient'
 
-const resource = `${baseUrl}/tickets/api/map-settings`
+const resource = `${baseUrl}/api/map-settings`
 
 export default {
     list(){
