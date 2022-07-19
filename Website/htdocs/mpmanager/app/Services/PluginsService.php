@@ -12,8 +12,6 @@ class PluginsService implements IBaseService
     {
     }
 
-
-
     public function getById($id)
     {
         // TODO: Implement getById() method.
@@ -26,7 +24,10 @@ class PluginsService implements IBaseService
 
     public function update($model, $data)
     {
-        // TODO: Implement update() method.
+        $model->update($data);
+        $model->fresh();
+
+        return $model;
     }
 
     public function delete($model)
@@ -36,6 +37,14 @@ class PluginsService implements IBaseService
 
     public function getAll($limit = null)
     {
-        // TODO: Implement getAll() method.
+        if ($limit) {
+            return $this->plugin->newQuery()->paginate($limit);
+        }
+        return $this->plugin->newQuery()->get();
+    }
+
+    public function getByMpmPluginId($mpmPluginId)
+    {
+        return $this->plugin->newQuery()->where('mpm_plugin_id', $mpmPluginId)->first();
     }
 }

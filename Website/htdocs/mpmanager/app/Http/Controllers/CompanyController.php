@@ -42,9 +42,10 @@ class CompanyController extends Controller
 
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
+
         $companyDatabaseData = [
             'company_id' => $company->getId(),
-            'database_name' => str_replace(" ", "", $company->getName()) . '_' . Carbon::now()->timestamp,
+            'database_name' => str_replace(" ", "",preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' . Carbon::now()->timestamp,
         ];
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
         $databaseProxyData = [

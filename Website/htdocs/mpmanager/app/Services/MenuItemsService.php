@@ -6,6 +6,8 @@ use App\Models\MenuItems;
 use App\Models\SubMenuItems;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class MenuItemsService
 {
@@ -48,4 +50,23 @@ class MenuItemsService
             );
         }
     }
+
+    public function checkMenuItemIsExistsForTag($tag)
+    {
+        return $this->menuItems->newQuery()->where('name', $tag)->first();
+
+    }
+
+    public function removeMenuItemAndSubmenuItemForMenuItemName($menuItemName)
+    {
+
+        $menuItem = $this->menuItems->newQuery()->where('name', $menuItemName)->first();
+
+        if ($menuItem) {
+            $this->subMenuItems->newQuery()->where('parent_id', $menuItem->id)->each(function ($subMenuItem) {
+                $subMenuItem->delete();
+            });
+            $menuItem->delete();
+        }
+   }
 }

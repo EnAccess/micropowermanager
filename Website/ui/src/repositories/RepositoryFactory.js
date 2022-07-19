@@ -64,6 +64,7 @@ import MpmPluginRepository from '@/repositories/MpmPluginRepository'
 import CompanyRepository from '@/repositories/CompanyRepository'
 import SidebarRepository from '@/repositories/SidebarRepository'
 import RegistrationTailRepository from '@/repositories/RegistrationTailRepository'
+import PluginRepository from '@/repositories/PluginRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -131,7 +132,8 @@ const repositories = {
     'mpmPlugin': MpmPluginRepository,
     'company': CompanyRepository,
     'sidebar': SidebarRepository,
-    'registrationTail':RegistrationTailRepository
+    'registrationTail':RegistrationTailRepository,
+    'plugin':PluginRepository,
 }
 
 export default {
