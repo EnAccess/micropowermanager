@@ -330,6 +330,10 @@ Route::group(['prefix' => 'registration-tails'], static function () {
     Route::put('/{registrationTail}', 'RegistrationTailController@update');
 
 });
+Route::group(['prefix' => 'plugins'], static function () {
+    Route::get('/', 'PluginController@index');
+    Route::put('/{mpmPluginId}', 'PluginController@update');
+});
 
 Route::post('androidApp', static function (AndroidAppRequest $r) {
     try {

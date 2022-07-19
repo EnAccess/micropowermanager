@@ -6,7 +6,7 @@
             </div>
 
             <p class="cloud-description">
-                This is a cloud version of the MicroPowerManager. It is a web application that allows you to manage your
+                This is the cloud version of the MicroPowerManager. It is a web application that allows you to manage your
                 MiniGrids easily.
             </p>
             <div class="router-box">

@@ -18,7 +18,7 @@
 
         <div class="sidebar-wrapper">
             <slot name="content"></slot>
-            <md-list class="no-bg p-15" md-expand-single>
+            <md-list class="no-bg p-15" md-expand-single >
                 <component :is="menu.url_slug !== '' ? 'router-link' : 'div'" v-for="(menu,index) in menus" :key="index"
                            :md-expand="menu.sub_menu_items.length !== 0"
                            :to="route(menu.url_slug)"
@@ -54,6 +54,7 @@
 <script>
 
 import { translateItem } from '@/Helpers/TranslateItem'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'SideBar',
@@ -98,6 +99,10 @@ export default {
 
     mounted () {
         this.setSidebar()
+        EventBus.$on('setSidebar', async () => {
+            await this.$store.dispatch('settings/setSidebar')
+            this.menus = this.$store.getters['settings/getSidebar']
+        })
     },
     methods: {
         async setSidebar () {

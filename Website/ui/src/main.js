@@ -4,16 +4,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-
-
-
-
-
-
-
-
-
-
 require('./bootstrap')
 import router from './routes'
 import App from './App'
@@ -42,20 +32,19 @@ Vue.component('Kelin-Meter', Kelin)
 Vue.component('Stron-Meter', Stron)
 Vue.component('Settings', Settings)
 
-
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']
     const intervalId = store.getters['auth/getIntervalId']
-    if (['login', 'forgot_password', 'welcome','register'].includes(to.name)) {
+    if (['login', 'forgot_password', 'welcome', 'register'].includes(to.name)) {
         return next()
     }
     if (authToken === undefined || authToken === '') {
-        return next({ name: 'login' })
+        return next({ name: 'welcome' })
     }
     store.dispatch('auth/refreshToken', authToken, intervalId).then((result) => {
         return result ? next() : next({ name: 'login' })
     }).catch(() => {
-        return next({ name: 'login' })
+        return next({ name: 'welcome' })
     })
 })
 

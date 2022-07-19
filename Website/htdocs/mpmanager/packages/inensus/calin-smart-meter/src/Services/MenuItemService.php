@@ -10,7 +10,7 @@ class MenuItemService
     {
 
         $menuItem = [
-            'name' => 'Calin Smart Meter',
+            'name' => 'CalinSmart Meter',
             'url_slug' => '',
             'md_icon' => 'bolt'
         ];
