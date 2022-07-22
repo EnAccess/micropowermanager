@@ -12,7 +12,7 @@ namespace Inensus\Ticket\Http\Requests;
 use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TicketingUserRequest extends FormRequest
+class TicketingUserExternalRequest extends FormRequest
 {
 
     /**
@@ -22,12 +22,18 @@ class TicketingUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|numeric',
+            'username' => 'required',
+            'phone' => 'required',
         ];
     }
 
-    public function getUserId():int
+    public function getUserName():string
     {
-        return (int)$this->input('user_id');
+        return $this->input('username');
+    }
+
+    public function getPhone():string
+    {
+        return (int)$this->input('phone');
     }
 }

@@ -20,7 +20,6 @@ class TicketCategoryController extends Controller
 
     public function __construct(private TicketCategoryService $ticketCategoryService)
     {
-
     }
 
     /**
@@ -28,20 +27,21 @@ class TicketCategoryController extends Controller
      */
     public function index(Request $request): TicketResource
     {
+        dump("geldim");
         $limit = $request->input('limit');
         $outsource = $request->get('outsource');
 
+        dump($this->ticketCategoryService->getAll($limit, $outsource)->toArray());
         return  TicketResource::make($this->ticketCategoryService->getAll($limit, $outsource));
     }
 
 
     public function store(TicketCategoryRequest $request): TicketResource
     {
-
         $ticketCategoryData = [
             'label_name' => $request->input('labelName'),
             'label_color' => $request->input('labelColor'),
-            'out_source' => $request->input('outSource')
+            'out_source' => $request->input('outSourcing')
         ];
 
         return  TicketResource::make($this->ticketCategoryService->create($ticketCategoryData));

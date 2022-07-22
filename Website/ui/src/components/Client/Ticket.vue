@@ -18,7 +18,6 @@
             >
             </ticket-item>
 
-
         </widget>
 
 
@@ -96,6 +95,7 @@ import moment from 'moment'
 import { TicketUserService } from '@/services/TicketUserService'
 import { TicketLabelService} from '@/services/TicketLabelService'
 import TicketItem from '../../shared/TicketItem'
+import {baseUrl} from "@/repositories/Client/AxiosClient";
 
 
 export default {
@@ -236,7 +236,7 @@ export default {
                 return
             }
 
-            axios.post(resources.ticket.create, this.newTicket).then(() => {
+            axios.post(baseUrl+ resources.ticket.create, this.newTicket).then(() => {
                 EventBus.$emit('widgetContentLoaded', this.subscriber, this.tickets.list.length)
                 this.resetKey++
             })

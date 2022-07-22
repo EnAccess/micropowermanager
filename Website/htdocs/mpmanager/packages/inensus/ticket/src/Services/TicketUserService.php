@@ -8,40 +8,24 @@
 
 namespace Inensus\Ticket\Services;
 
+
+use App\Models\User;
 use App\Services\IBaseService;
-use Illuminate\Support\Facades\Log;
-use Inensus\Ticket\Exceptions\ApiUserNotFound;
 use Inensus\Ticket\Models\TicketUser;
-use Inensus\Ticket\Trello\Users;
+
 
 class TicketUserService  implements IBaseService
 {
     public function __construct(
         private TicketUser $ticketUser,
-        private Users $usersGateway
+        private User $user,
     ) {
-
     }
 
-    /**
-     * Finds the user on Trello
-     *
-     * @param string $userTag the username @ Trello
-     */
-    public function getByTag($userTag)
-    {
-        try {
-
-            return $this->usersGateway->find($userTag);
-        } catch (ApiUserNotFound $e) {
-            Log::critical($userTag . ' not found in Ticketing system');
-        }
-        return null;
-    }
 
     public function getAll($limit = null, $outsource = null)
     {
-        $ticketUsers = $this->ticketUser->newQuery();
+        $ticketUsers = $this->user::with('relationTicketUser');
 
         if ($outsource) {
             $ticketUsers->where('out_source', 1);
@@ -72,6 +56,32 @@ class TicketUserService  implements IBaseService
     public function delete($model)
     {
         // TODO: Implement delete() method.
+    }
+
+    public function findByPhone(string $phone): TicketUser
+    {
+        /** @var TicketUser $result */
+        $result =  $this->ticketUser->newQuery()->where('phone', '=', $phone)
+            ->firstOrFail();
+
+        return $result;
+    }
+
+    public function findOrCreateByUser(User $user): TicketUser
+    {
+        try {
+            /** @var TicketUser $result */
+            $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
+                ->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $result =$this->ticketUser->newQuery()->create([
+                'user_id' => $user->getId(),
+                'phone' => null,
+                'user_name' => $user->getName(),
+            ]);
+        }
+
+        return $result;
     }
 
 }

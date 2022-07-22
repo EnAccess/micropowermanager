@@ -13,8 +13,8 @@ return new class  extends Migration
      */
     public function up()
     {
-        Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->string('installation_command')->nullable();
+        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
+            $table->string('tail_tag')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ return new class  extends Migration
      */
     public function down()
     {
-        Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->dropColumn('installation_command');
+        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
+            $table->dropColumn('tail_tag');
         });
     }
 };

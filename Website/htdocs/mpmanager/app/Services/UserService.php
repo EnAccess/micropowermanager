@@ -13,13 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Inensus\Ticket\Services\TicketUserService;
 
 class UserService implements IUserService
 {
-    private $user;
-    public function __construct(User $user)
+    public function __construct(private User $user, private TicketUserService $ticketUserService)
     {
-        $this->user = $user;
     }
 
     /**
@@ -27,13 +26,17 @@ class UserService implements IUserService
      */
     public function create(array $userData)
     {
+        /** @var User $user */
         $user =  $this->user->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
             'email' => $userData['email'],
             'company_id'=> $userData['company_id']
         ]);
-        return $this->user->newQuery()->with(['addressDetails'])->find($user->id);
+
+        $this->ticketUserService->findOrCreateByUser($user);
+
+        return $user::with('addressDetails');
     }
 
     public function update($user, $data)

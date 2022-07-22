@@ -6,11 +6,18 @@ const resource = `${baseUrl}/tickets/api`
 export default {
 
     list () {
+
         return Client.get(`${resource}/users`)
     },
-    create (userPM) {
 
-        return Client.post(`${resource}/tickets/users`, userPM)
+    create (user) {
+
+        return Client.post(`${resource}/users`, user)
+    },
+
+    createExternal (user) {
+
+        return Client.post(`${resource}/users/external`, user)
     }
 
 }

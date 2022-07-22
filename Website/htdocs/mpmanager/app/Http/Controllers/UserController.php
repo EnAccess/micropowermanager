@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    private $userService;
-    public function __construct(IUserService $userService)
+    public function __construct(private IUserService $userService)
     {
-        $this->userService = $userService;
     }
 
     public function index(Request $request): ApiResource
@@ -24,7 +22,11 @@ class UserController extends Controller
 
     public function store(CreateAdminRequest $request): ApiResource
     {
-        return new ApiResource($this->userService->create($request->only(['name', 'password', 'email'])));
+        $user = $this->userService->create($request->only(['name', 'password', 'email']));
+
+
+        return ApiResource::make($user);
+
     }
 
     public function show(User $user)

@@ -2,7 +2,7 @@
 
 namespace Inensus\Ticket\Services;
 
-
+use App\Services\BaseService;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketCategory;
 
@@ -11,7 +11,6 @@ class TicketCategoryService  implements IBaseService
 
     public function __construct(private TicketCategory $ticketCategory)
     {
-
     }
 
     public function getById($categoryId)

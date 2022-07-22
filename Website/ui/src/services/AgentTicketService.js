@@ -1,6 +1,7 @@
 import { TicketTrelloService } from './TicketTrelloService'
 import { Paginator } from '@/classes/paginator'
 import { resources } from '@/resources'
+import {Ticket} from "@/classes/person/ticket";
 
 export class AgentTicketService {
     constructor (agentId) {
@@ -12,10 +13,13 @@ export class AgentTicketService {
 
     async updateList (data) {
         this.list = []
-        for (let m in data) {
-            let ticketData = await this.trelloService.getTicketDetail(data[m])
-            ticketData.assignedTo = data[m].assigned_to
-            this.list.push(ticketData)
+
+        if(data && data.length>0) {
+            const tickets = data?.data.map(function (ticket) {
+                return (new Ticket()).fromJson(ticket)
+            });
+            this.list = tickets ?? [];
+        } else {
 
         }
     }

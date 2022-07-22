@@ -1,11 +1,11 @@
 import Repository from '../repositories/RepositoryFactory'
-import { ErrorHandler } from '@/Helpers/ErrorHander'
-import { Paginator } from '@/classes/paginator'
-import { resources } from '@/resources'
-import { TicketTrelloService } from './TicketTrelloService'
+import {ErrorHandler} from '@/Helpers/ErrorHander'
+import {Paginator} from '@/classes/paginator'
+import {resources} from '@/resources'
+import {TicketTrelloService} from './TicketTrelloService'
 
 export class TicketService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('ticket')
         this.trelloService = new TicketTrelloService()
         this.ticket = this.trelloService.ticket
@@ -17,33 +17,39 @@ export class TicketService {
 
     }
 
-    async updateList (data, type) {
+    async updateList(data, type) {
+        console.log('updatelist ticket', data, type)
         if (type === 'ticketListOpened')
             this.openedList = []
         else
             this.closedList = []
 
-        for (let m in data) {
-
-            let ticketData = await this.trelloService.getTicketDetail(data[m])
-            ticketData.assignedTo = data[m].assigned_to
-            if (type === 'ticketListOpened') {
-
-                if (ticketData)
-                    this.openedList.push(ticketData)
-
-            } else {
-
-                if (ticketData) {
-
-                    this.closedList.push(ticketData)
-                }
-            }
-        }
+        const result  =  data?.data?.map((ticket) => {
+            console.log('MAP', ticket)
+            return {
+                created: ticket.created_at,
+                id: ticket.id,
+                name: ticket.name,
+                description: ticket.content,
+                due: ticket.due,
+                closed: ticket.status === 1,
+                lastActivity: null,
+                comments: ticket.comments,
+                category: ticket.category.label_name,
+                owner: ticket.owner.name + ticket.owner.surname,
+                assigned: ticket.assigned_id &&  ticket.assigned_to? ticket.assigned_to.user_name : null,
+                title: ticket.title,
+            };
+        });
+        console.log("mapping resul", result);
+        if (type === 'ticketListOpened')
+            this.openedList = result;
+        else
+            this.closedList = result;
 
     }
 
-    async getCategories () {
+    async getCategories() {
         try {
             let response = await this.repository.listCategory()
             if (response.status === 200 || response.status === 201) {
@@ -59,7 +65,7 @@ export class TicketService {
         }
     }
 
-    async createMaintenanceTicket (maintenanceData) {
+    async createMaintenanceTicket(maintenanceData) {
         let maintenanceDataPM =
             {
                 creator: maintenanceData.creator,
@@ -86,7 +92,7 @@ export class TicketService {
         }
     }
 
-    async closeTicket (id) {
+    async closeTicket(id) {
         try {
 
             let response = await this.repository.close(id)

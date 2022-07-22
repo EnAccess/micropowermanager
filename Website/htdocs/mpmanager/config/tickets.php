@@ -8,7 +8,6 @@
 
 
 return [
-
     'table_names' => [
         'board' => 'ticket_boards',
         'board_categories' => 'ticket_board_categories',
@@ -18,13 +17,6 @@ return [
         'ticket_categories' => 'ticket_categories',
         'ticket_outsource' => 'ticket_outsources',
         'outsource_reports' => 'ticket_outsource_reports',
+        'ticket_comments' => 'ticket_comments',
     ],
-    'max_boards' => 400,
-    'max_cards' => 4000,
-    'prefix' => 'MicroPowerManager',
-    'boardId'=>'6291424c4e11631cfad78a37',
-    'webhookId'=> '629142abb63d648cf1b2d967',
-    'card_prefix' => 'micro_power_manager_cards',
-    'callback' => getenv('TICKETING_CALLBACK', ''),
-
 ];

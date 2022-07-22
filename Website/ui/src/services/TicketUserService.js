@@ -7,8 +7,7 @@ export class TicketUserService {
         this.list = []
         this.newUser = {
             name: '',
-            tag: '',
-            outsourcing: false,
+            phone: '',
         }
     }
 
@@ -26,27 +25,38 @@ export class TicketUserService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
+
+    async getAvailableUsers() {
+        try {
+            const response = await this.repository.getAvailableUsers();
+            if(response.status === 200) {
+                this.availableUserList = response.data.data;
+            } else {
+                new ErrorHandler(response.error, 'http', response.status)
+            }
+        } catch (e) {
+            new ErrorHandler(e.response.data.data.message);
+        }
+    }
+
     pushUsers(user){
         return {
             id: user.id,
-            name: user.user_name,
-            tag: user.user_tag,
-            created_at:  user.created_at.toString().replace(/T/, ' ').replace(/\..+/, '')
+            name: user.name,
+            isTicketingUser : user.relation_ticket_user !== null ,
+            created_at : user.relation_ticket_user  ?user.relation_ticket_user.created_at :'-'
         }
     }
-    async createUser (name, tag, outsourcing) {
+    async createExternalUser (name, phone) {
         try {
-            let userPM = {
+            const user = {
                 'username': name,
-                'usertag': tag,
-                'outsourcing': outsourcing
+                'phone': phone,
             }
 
-            let response = await this.repository.create(userPM)
+            let response = await this.repository.createExternal(user)
             if (response.status === 200 || response.status === 201) {
-
                 return response.data.data
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -61,8 +71,7 @@ export class TicketUserService {
     resetNewUser () {
         this.newUser = {
             'name': '',
-            'tag': '',
-            'outsourcing': false,
+            'phone': '',
         }
     }
 }

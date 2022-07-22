@@ -5,17 +5,13 @@ namespace App\Console\Commands;
 use App\Jobs\SmsProcessor;
 use App\Models\AssetRate;
 use App\Models\User;
-use App\Services\SmsAndroidSettingService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Services\TicketBoardService;
-use Inensus\Ticket\Services\TicketCardService;
 use Inensus\Ticket\Services\TicketService;
 
 class AssetRateChecker extends AbstractSharedCommand
@@ -24,14 +20,13 @@ class AssetRateChecker extends AbstractSharedCommand
     protected $description = 'Checks if any asset rate is due and creates a ticket and reminds the customer';
 
     public function __construct(
-        private AssetRate $assetRate,
-        private TicketBoardService $boardService,
-        private TicketCardService $cardService,
-        private TicketService $ticketService,
+        private AssetRate                     $assetRate,
+        private TicketService                 $ticketService,
         private SmsApplianceRemindRateService $smsApplianceRemindRateService,
-        private User $user,
-        private TicketCategory $label
-    ) {
+        private User                          $user,
+        private TicketCategory                $label
+    )
+    {
         parent::__construct();
     }
 
@@ -47,15 +42,15 @@ class AssetRateChecker extends AbstractSharedCommand
     {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
         $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
-                $overDueRates = $this->assetRate::with(['assetPerson.assetType', 'assetPerson.person.addresses'])
-                    ->whereDate(
-                        'due_date',
-                        '>=',
-                        Carbon::parse('due_date')->addDays($smsApplianceRemindRate->overdue_remind_rate)
-                    )
-                    ->where('remaining', '>', 0)
-                    ->where('remind', 0)
-                    ->get();
+            $overDueRates = $this->assetRate::with(['assetPerson.assetType', 'assetPerson.person.addresses'])
+                ->whereDate(
+                    'due_date',
+                    '>=',
+                    Carbon::parse('due_date')->addDays($smsApplianceRemindRate->overdue_remind_rate)
+                )
+                ->where('remaining', '>', 0)
+                ->where('remind', 0)
+                ->get();
             echo "\n" . count($overDueRates) . ' overdue rates found' . "\n";
             $this->sendReminders($overDueRates, SmsTypes::OVER_DUE_APPLIANCE_RATE);
         });
@@ -66,10 +61,10 @@ class AssetRateChecker extends AbstractSharedCommand
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
         $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
             $remindDay = Carbon::now()->subDays($smsApplianceRemindRate->remind_rate)->format('Y-m-d');
-                $dueAssetRates = $this->assetRate::with([
+            $dueAssetRates = $this->assetRate::with([
                 'assetPerson.assetType.smsReminderRate',
                 'assetPerson.person.addresses'
-                ])
+            ])
                 ->whereDate('due_date', '>=', $remindDay)
                 ->where('remaining', '>', 0)
                 ->whereHas(
@@ -79,8 +74,8 @@ class AssetRateChecker extends AbstractSharedCommand
                     }
                 )
                 ->get();
-             echo "\n" . count($dueAssetRates) . ' upcoming rates found' . "\n";
-             $this->sendReminders($dueAssetRates, SmsTypes::APPLIANCE_RATE);
+            echo "\n" . count($dueAssetRates) . ' upcoming rates found' . "\n";
+            $this->sendReminders($dueAssetRates, SmsTypes::APPLIANCE_RATE);
         });
     }
 
@@ -108,8 +103,6 @@ class AssetRateChecker extends AbstractSharedCommand
     private function createReminderTicket(AssetRate $assetRate, $overDue = false): void
     {
         //create ticket for customer service
-        $board = $this->boardService->initializeBoard();
-        $card = $this->cardService->initalizeList($board);
         $creator = $this->user->newQuery()->where('name', 'System')->first();
         //reformat due date if it is set
         if ($overDue) {
@@ -119,26 +112,18 @@ class AssetRateChecker extends AbstractSharedCommand
             $category = $this->label->newQuery()->where('label_name', 'Customer Follow Up')->first();
             $description = 'Customer should pay ' . $assetRate->remaining . 'TZS until ' . $assetRate->due_date;
         }
-        $trelloParams = [
-            'idList' => $card->card_id,
-            'name' => $assetRate->assetPerson->assetType->name . ' rate reminder',
-            'desc' => $description,
-            'due' => $assetRate->due_date === '1970-01-01' ? null : $assetRate->due_date,
-            'idMembers' => null,
-        ];
 
-        try {
-            $this->ticketService->create(
-                $creator->id,
-                $assetRate->assetPerson->person->id,
-                'person',
-                $category->id,
-                null,
-                $trelloParams
-            );
-        } catch (Exception $exception) {
-            echo 'Ticket Creation failed with following reason :' . $exception->getMessage();
-        }
+
+        $this->ticketService->create(
+            title: $assetRate->assetPerson->assetType->name . ' rate reminder',
+            content: $description,
+            categoryId: $category->id,
+            assignedId: $creator?->id,
+            dueDate: $assetRate->due_date === '1970-01-01' ? null : $assetRate->due_date,
+            owner: $assetRate->assetPerson()->first()->person()->first(),
+        );
+
+
     }
 
     private function getApplianceRemindRates(): Collection|array

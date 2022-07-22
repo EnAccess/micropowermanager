@@ -1,8 +1,8 @@
-import { Paginator } from '../paginator'
-import { resources } from '@/resources'
+import {Paginator} from '../paginator'
+import {resources} from '@/resources'
 
 export class Ticket {
-    constructor () {
+    constructor() {
         this.id = null
         this.name = null
         this.description = null
@@ -14,40 +14,45 @@ export class Ticket {
         this.created_at = null
     }
 
-    fromJson (ticketData) {
-        let ticket = ticketData.ticket
-        let actions = ticketData.actions
-        this.created = ticketData.created_at
-        this.id = ticket.id
-        this.name = ticket.name
-        this.description = ticket.desc
-        this.due = ticket.due
-        this.lastActivity = ticket.dateLastActivity
-        this.category = ticketData.category
-        this.closed = ticket.closed
-        this.status =ticketData.status
-        for (let i = 0; i < actions.length; i++) {
-            let action = actions[i]
-            if (action.type !== 'commentCard') {
-                continue
-            }
+    fromJson(ticketData) {
 
-            this.comments.push({
-                'comment': action.data.text,
-                'date': action.date,
-                'fullName': action.memberCreator.fullName,
-                'username': action.memberCreator.username,
-            })
+
+        console.log("from json ", ticketData)
+
+        let comments = ticketData?.comments
+        this.created = ticketData.created_at
+        this.id = ticketData.id
+        this.title = ticketData.title
+        this.description = ticketData.content
+        this.due = ticketData.due_date
+        this.category = ticketData.category.label_name
+        this.closed = ticketData.status === 1;
+        this.status = ticketData.status
+
+
+        if (comments) {
+            console.log("COMMENTS FOUND for " + ticketData.title)
+
+            const commentList = comments.map(function (comment) {
+                return {
+                    'comment': comment.comment,
+                    'date': comment.created_at,
+                    'username': comment.ticket_user.user_name,
+                }
+            });
+            this.comments = commentList;
+            console.log("FINAL COMMENTS", commentList)
         }
+
 
         return this
     }
 
-    commentCount () {
+    commentCount() {
         return this.comments.length
     }
 
-    close () {
+    close() {
         axios.delete(resources.ticket.close, {data: {'ticketId': this.id}}).then(() => {
             this.closed = true
         })
@@ -55,38 +60,40 @@ export class Ticket {
 }
 
 export class UserTickets {
-    constructor (personId) {
+    constructor(personId) {
         this.list = []
         this.paginator = new Paginator(resources.ticket.getUser + personId)
     }
 
-    addTicket (ticket) {
+    addTicket(ticket) {
         this.list.push(ticket)
     }
 
-    search () {
-    // this.paginator = new Paginator(resources.meters.search);
-    // EventBus.$emit('loadPage', this.paginator, {'term': term});
+    search() {
+        // this.paginator = new Paginator(resources.meters.search);
+        // EventBus.$emit('loadPage', this.paginator, {'term': term});
     }
 
-    showAll () {
-    //this.paginator = new Paginator(resources.meters.list);
-    //EventBus.$emit('loadPage', this.paginator);
+    showAll() {
+        //this.paginator = new Paginator(resources.meters.list);
+        //EventBus.$emit('loadPage', this.paginator);
     }
 
-    updateList (data) {
+    updateList(data) {
 
         this.list = []
+        console.log("update list with ", data)
 
-        for (let m in data) {
-            let ticket = new Ticket()
-            ticket.fromJson(data[m])
-            this.list.push(ticket)
-        }
+        const tickets = data.data.map(function (ticket) {
+            return (new Ticket()).fromJson(ticket)
+        });
+
+        this.list = tickets;
+
 
     }
 
-    newComment (commentData) {
+    newComment(commentData) {
         axios.post(resources.ticket.comments, commentData)
     }
 
