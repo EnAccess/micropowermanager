@@ -61,7 +61,7 @@
                                     :name="$tc('phrases.confirmPassword')"
                                     id="confirmPassword"
                                     v-model="user.confirmPassword"
-                                    v-validate="'required|confirmed:$passwordRef|min:3|max:15'"
+                                    v-validate="'required|min:3|max:15'"
                                 />
                                 <span class="md-error">{{ errors.first('Create-Form.' +$tc('phrases.confirmPassword')) }}</span>
                             </md-field>

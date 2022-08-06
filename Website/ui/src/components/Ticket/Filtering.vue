@@ -30,7 +30,7 @@
                         :key="person.id"
                         :value="person.id"
                         v-for="person in ticketUserService.list"
-                    >{{person.user_name}}
+                    >{{person.name}}
                     </md-option>
                 </md-select>
             </md-field>

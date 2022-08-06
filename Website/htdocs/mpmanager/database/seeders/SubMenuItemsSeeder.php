@@ -46,11 +46,6 @@ class SubMenuItemsSeeder extends Seeder
                     'parent_id' => '6',
                 ],
                 [
-                    'name' => 'Users',
-                    'url_slug' => '/tickets/settings/users',
-                    'parent_id' => '6',
-                ],
-                [
                     'name' => 'Categories',
                     'url_slug' => '/tickets/settings/categories',
                     'parent_id' => '6',

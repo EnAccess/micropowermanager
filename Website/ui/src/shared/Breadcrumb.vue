@@ -1,6 +1,6 @@
 <template>
     <div class="breadcrumb" :key="renderKey">
-        <ul>
+        <ul v-if="breadcrumbList">
             <li
                 v-for="(breadcrumb, index) in breadcrumbList"
                 :key="index"
@@ -33,7 +33,7 @@ export default {
     },
     created () {
         this.breadcrumbListState = this.$store.getters['breadcrumb/getBreadcrumb']
-        if(this.breadcrumbListState['breadcrumb'].length > 0){
+        if(this.breadcrumbListState['breadcrumb'] && this.breadcrumbListState['breadcrumb'].length > 0){
             this.breadcrumbList = this.breadcrumbListState['breadcrumb']
         }else{
             this.updateList()

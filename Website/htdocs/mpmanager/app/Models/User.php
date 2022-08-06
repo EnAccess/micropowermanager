@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Address\Address;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
+use Inensus\Ticket\Models\TicketUser;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -18,20 +20,21 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *
  * @property int $id
  * @property int $company_id
+ * @property string $name
  *
  */
 class User extends Authenticatable implements JWTSubject
 {
+    use Notifiable;
+    public const COL_ID = 'id';
+    public const COL_COMPANY_ID = 'company_id';
+
     public function __construct(array $attributes = [])
     {
         $this->setConnection('shard');
 
         parent::__construct($attributes);
     }
-
-    use Notifiable;
-
-    public const COL_COMPANY_ID = 'company_id';
 
     public function setPasswordAttribute($password): void
     {
@@ -109,5 +112,20 @@ class User extends Authenticatable implements JWTSubject
     public function getCompanyId(): int
     {
         return $this->company_id;
+    }
+
+    public function getId():int
+    {
+        return $this->id;
+    }
+
+    public function getName():string
+    {
+        return $this->name;
+    }
+
+    public function relationTicketUser(): HasOne
+    {
+        return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
     }
 }

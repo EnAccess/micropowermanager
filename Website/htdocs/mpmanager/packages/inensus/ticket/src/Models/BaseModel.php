@@ -8,12 +8,8 @@
 
 namespace Inensus\Ticket\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class BaseModel extends Model
+class BaseModel extends \App\Models\BaseModel
 {
-    protected $guarded = ['id'];
-    public static $rules = [];
 }
 
 

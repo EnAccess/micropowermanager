@@ -12,9 +12,7 @@ use App\Services\PersonTicketService;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
-use Inensus\Ticket\Models\TicketBoard;
-use Inensus\Ticket\Services\TicketBoardService;
-use Inensus\Ticket\Services\TicketCardService;
+
 use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 
@@ -25,8 +23,6 @@ class AgentTicketController extends Controller
     private $card;
 
     public function __construct(
-        private TicketBoardService $boardService,
-        private TicketCardService $cardService,
         private AgentTicketService $agentTicketService,
         private PersonTicketService $personTicketService,
         private AgentService $agentService,
@@ -75,18 +71,10 @@ class AgentTicketController extends Controller
         $dueDate = isset($ticketData['due_date']) ? date('Y-m-d H:i:00', strtotime($ticketData['due_date'])) : null;
         $categoryId = $ticketData['label'];
 
-        $trelloParams = [
-            'idList' => $this->card->card_id,
-            'name' => $ticketData['title'],
-            'desc' => $ticketData['description'],
-            'due' => $dueDate === '1970-01-01' ? null : $dueDate,
-            'idMembers' => $ticketData['assignedId'],
-        ];
-
-        $trelloTicket = $this->ticketService->create($trelloParams);
-        $ticketId= $trelloTicket->id;
         $ticketData = [
-            'ticket_id' => $ticketId,
+            'title' => $ticketData['title'],
+            'content' => $ticketData['description'],
+            'due_date' => $dueDate === '1970-01-01' ? null : $dueDate,
             'category_id' => $categoryId,
             'assigned_id' => $ticketData['assignedId'] ?? null
         ];

@@ -9,6 +9,7 @@
 namespace Inensus\Ticket\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +72,7 @@ class Ticket extends BaseModel
         return $this->morphTo('creator');
     }
 
-    public function ticketsOpenedWithCategories($miniGridId)
+    public function ticketsOpenedWithCategories($miniGridId): bool|array
     {
         $sql = "SELECT ticket_categories.label_name, count(tickets.id) as new_tickets, YEARWEEK(tickets.created_at,3) as period FROM `tickets` " .
             "LEFT join ticket_categories on tickets.category_id = ticket_categories.id " .
@@ -87,7 +88,7 @@ class Ticket extends BaseModel
 
     }
 
-    public function ticketsClosedWithCategories($miniGridId)
+    public function ticketsClosedWithCategories($miniGridId): bool|array
     {
         $sql = "SELECT ticket_categories.label_name, count(tickets.id) as closed_tickets, YEARWEEK(tickets.updated_at,3) as period FROM `tickets` " .
             "LEFT join ticket_categories on tickets.category_id = ticket_categories.id " .
@@ -100,5 +101,10 @@ class Ticket extends BaseModel
 
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class, 'ticket_id', 'id');
     }
 }

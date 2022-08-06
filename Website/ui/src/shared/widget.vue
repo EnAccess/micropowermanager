@@ -14,9 +14,7 @@
                 <div class="search-area">
                     <div class="search-input" v-if="search">
                         <div class="md-layout md-gutter">
-
                             <md-field>
-
                                 <label style="color: white!important;">{{$tc('words.search')}} ..</label>
                                 <md-input style="color: white!important;" v-model="searchTerm"></md-input>
                                 <div v-if="searching">

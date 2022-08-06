@@ -46,9 +46,9 @@ export let resources = {
         person: '/api/maintenance/user'
     },
     person: {
-        'create': '/api/people',
-        'update': '/api/people/',
-        'detail': '/api/people/',
+        'create': 'http://api.mpmanager.local/api/people',
+        'update': 'http://api.mpmanager.local/api/people/',
+        'detail': 'http://api.mpmanager.local/api/people/',
         'delete': '/api/people/',
         'search': '/api/people/search',
         'list': '/api/people',
@@ -168,7 +168,7 @@ export let resources = {
         balance_histories:'/api/agents/balance/history/',
         sold_appliances:'api/agents/sold/',
         transactions:'api/agents/transactions/',
-        tickets:'tickets/api/agents',
+        tickets:'/tickets/api/agents',
         receipts:'api/agents/receipt'
     }
 }

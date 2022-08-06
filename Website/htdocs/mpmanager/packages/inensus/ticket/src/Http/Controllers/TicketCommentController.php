@@ -8,28 +8,32 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inensus\Ticket\Services\TicketCommentService;
-use Inensus\Ticket\Trello\Comments;
+use Inensus\Ticket\Services\TicketUserService;
 
 
 class TicketCommentController extends Controller
 {
 
-    public function __construct(private TicketCommentService $ticketCommentService) {
+    public function __construct(private TicketCommentService $ticketCommentService, private TicketUserService $ticketUserService)
+    {
 
     }
 
     public function store(Request $request)
     {
-        $cardId = $request->input('cardId');
-        $fullName = $request->input('fullName');
-        $username = $request->input('username');
+        /** @var User $user */
+        $user = Auth::user();
+        $ticketId = (int)$request->input('cardId');
         $comment = $request->input('comment');
-        // put all data together since trello uses api key to identify the user who commented a card.
-        $commentData = $fullName . ' ' . $username . ': ' . $comment;
 
-        $this->ticketCommentService->createComment($cardId, $comment);
+
+        $ticketUser = $this->ticketUserService->findOrCreateByUser($user);
+
+        $this->ticketCommentService->createComment($ticketId, $comment, $ticketUser->getId());
     }
 
 

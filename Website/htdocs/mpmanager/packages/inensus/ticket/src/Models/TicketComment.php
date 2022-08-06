@@ -1,23 +1,24 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 26.09.18
- * Time: 16:00
- */
 
-use Inensus\Ticket\Models\BaseModel;
-use Inensus\Ticket\Models\TicketCard;
+namespace Inensus\Ticket\Models;
 
-/**
- * Class Comment
- *
- */
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Inensus\Ticket\Models\Ticket;
+
 class TicketComment extends BaseModel
 {
+    protected $table='ticket_comments';
 
-   public function ticket()
+
+    public function ticket(): BelongsTo
     {
-        return $this->belongsTo(TicketCard::class);
+        return $this->belongsTo(Ticket::class, 'ticket_id', 'id');
     }
+
+    public function ticketUser(): BelongsTo
+    {
+        return $this->belongsTo(TicketUser::class, 'ticket_user_id', 'id');
+    }
+
+
 }

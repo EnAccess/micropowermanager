@@ -17,11 +17,8 @@ class TicketCategoryRequest extends FormRequest
 
     public function rules(): array
     {
-        $sessionService = app()->make(SessionService::class);
-        $database= $sessionService->getAuthenticatedUserDatabaseName();
-
         return [
-            'labelName' => 'required|unique:'.$database.'.ticket_categories,label_name',
+            'labelName' => 'required',
             'labelColor' => 'sometimes|in:yellow,purple,blue,red,green,orange,black,sky,pink,lime,nocolor',
         ];
     }
