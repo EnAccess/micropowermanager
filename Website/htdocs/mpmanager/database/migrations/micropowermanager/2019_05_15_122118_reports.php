@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('reports', static function (Blueprint $table) {
+        Schema::connection('shard')->create('reports', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('path');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->drop('reports');
+        Schema::connection('shard')->drop('reports');
     }
 };

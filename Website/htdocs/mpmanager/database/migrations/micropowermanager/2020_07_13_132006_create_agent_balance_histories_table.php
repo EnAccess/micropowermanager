@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('agent_balance_histories', function (Blueprint $table) {
+        Schema::connection('shard')->create('agent_balance_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('agent_id');
             $table->morphs('trigger');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('agent_balance_histories');
+        Schema::connection('shard')->dropIfExists('agent_balance_histories');
     }
 };

@@ -23,11 +23,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
 class AccessRateTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshMultipleDatabases, WithFaker;
 
     private function initApplication(): void
     {

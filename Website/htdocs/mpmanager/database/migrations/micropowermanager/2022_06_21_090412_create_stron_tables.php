@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(){
 
         if (!Schema:: hasTable('stron_api_credentials')) {
-            Schema::connection('micropowermanager')->create('stron_api_credentials', static function (Blueprint $table) {
+            Schema::connection('shard')->create('stron_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('http://www.saitecapi.stronpower.com/api');
                 $table->string('api_token')->nullable();
@@ -21,15 +21,15 @@ return new class extends Migration
             });
         }
         if (!Schema:: hasTable('stron_transactions')) {
-            Schema::connection('micropowermanager')->create('stron_transactions', static function (Blueprint $table) {
+            Schema::connection('shard')->create('stron_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
         }
     }
     public function down(){
-        Schema::connection('micropowermanager')->dropIfExists('stron_api_credentials');
-        Schema::connection('micropowermanager')->dropIfExists('stron_transactions');
+        Schema::connection('shard')->dropIfExists('stron_api_credentials');
+        Schema::connection('shard')->dropIfExists('stron_transactions');
 
     }
 };

@@ -39,6 +39,9 @@ class DatabaseProxyManagerService
 
     private function buildDatabaseConnection(string $databaseName): void
     {
+        if (config('PHP_UNIT') === true) {
+            return;
+        }
         $databaseConnections = config()->get('database.connections');
         $databaseConnections['shard'] = [
             'driver' => 'mysql',

@@ -13,7 +13,7 @@ return new class  extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->table('agents', function (Blueprint $table) {
+        Schema::connection('shard')->table('agents', function (Blueprint $table) {
             $table->string('connection');
         });
 
@@ -26,7 +26,7 @@ return new class  extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->table('agents', function (Blueprint $table) {
+        Schema::connection('shard')->table('agents', function (Blueprint $table) {
             $table->dropColumn('connection');
         });
     }

@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Env;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -11,6 +12,13 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config()->set('PHP_UNIT', true);
+
+    }
 
     /**
      * generates an jwt for the given user

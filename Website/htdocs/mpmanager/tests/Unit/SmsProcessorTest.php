@@ -27,14 +27,16 @@ use Database\Factories\TransactionFactory;
 use Database\Factories\VodacomTransactionFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
 
 class SmsProcessorTest extends TestCase
 {
     /*    ./vendor/bin/phpunit --filter   sms_sending_with_transaction     */
-    use RefreshDatabase;
+    use RefreshMultipleDatabases;
 
     public function test_token_creation_with_valid_transaction()
     {

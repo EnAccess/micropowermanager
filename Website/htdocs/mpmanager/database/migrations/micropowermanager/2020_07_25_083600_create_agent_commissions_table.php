@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('agent_commissions', function (Blueprint $table) {
+        Schema::connection('shard')->create('agent_commissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->double('energy_commission');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('agent_commissions');
+        Schema::connection('shard')->dropIfExists('agent_commissions');
     }
 };

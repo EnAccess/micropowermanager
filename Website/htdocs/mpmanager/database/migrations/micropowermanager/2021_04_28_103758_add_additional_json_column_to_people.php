@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->table('people', function (Blueprint $table) {
+        Schema::connection('shard')->table('people', function (Blueprint $table) {
             $table->json('additional_json')->nullable();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->table('people', function (Blueprint $table) {
+        Schema::connection('shard')->table('people', function (Blueprint $table) {
             //
         });
     }

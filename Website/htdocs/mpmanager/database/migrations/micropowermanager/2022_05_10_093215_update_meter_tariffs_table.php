@@ -18,7 +18,7 @@ return  new class extends Migration
         if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
-        Schema::connection('micropowermanager')->table('meter_tariffs', function (Blueprint $table) {
+        Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             $table->double('price',15,6)->change();
             $table->double('total_price',15,6)->change();
         });
@@ -31,7 +31,7 @@ return  new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->table('meter_tariffs', function (Blueprint $table) {
+        Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             //
         });
     }

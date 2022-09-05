@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('cities', function (Blueprint $table) {
+        Schema::connection('shard')->create('cities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('country_id');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('cities');
+        Schema::connection('shard')->dropIfExists('cities');
     }
 };

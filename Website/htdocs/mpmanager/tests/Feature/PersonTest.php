@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Address\Address;
+use App\Models\Company;
 use App\Models\MaintenanceUsers;
 use App\Models\Person\Person;
+use App\Models\User;
 use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
@@ -27,13 +29,14 @@ class PersonTest extends TestCase
 
     public function test_user_gets_customer_list()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
-        $person = PersonFactory::new()->create();
-        $person = PersonFactory::new()->create();
-        $person = PersonFactory::new()->create([
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
+        PersonFactory::new()->create();
+        PersonFactory::new()->create();
+        PersonFactory::new()->create([
             'title' => $this->faker->title('male'),
             'name' => $this->faker->firstName(),
             'surname' => $this->faker->firstName(),
@@ -61,11 +64,13 @@ class PersonTest extends TestCase
 
     public function test_user_get_person_by_id()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
         $person = PersonFactory::new()->create();
+
         $response = $this->actingAs($user)->get(sprintf('/api/people/%s', $person->id));
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $person->name);
@@ -74,10 +79,11 @@ class PersonTest extends TestCase
     public function test_user_can_create_new_person_as_a_customer()
     {
         $this->withExceptionHandling();
+        /** @var User $user */
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
         $postData = [
             'email' => $this->faker->email,
             'phone' => "254231232132",
@@ -175,10 +181,10 @@ class PersonTest extends TestCase
     public function test_user_can_search_a_person_by_phone_number()
     {
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
-        $person = PersonFactory::new()->create();
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
+        PersonFactory::new()->create();
         $address = AddressFactory::new()->create([
             'phone' => '254231232132',
         ]);
@@ -189,10 +195,11 @@ class PersonTest extends TestCase
 
     public function test_user_can_get_persons_transactions()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
         $person = PersonFactory::new()->create();
         $address = AddressFactory::new()->create([
             'phone' => '254231232132',
@@ -206,7 +213,7 @@ class PersonTest extends TestCase
             'original_transaction_id' => $vodacomTransaction->id,
             'original_transaction_type' => 'vodacom_transaction',
         ]);
-        $paymentHistory = PaymentHistoryFactory::new()->create(['amount' => $transaction->amount]);
+        PaymentHistoryFactory::new()->create(['amount' => $transaction->amount]);
         $response = $this->actingAs($user)->get(sprintf('/api/people/%s/transactions', $person->id));
 
         $this->assertEquals($person->id, $response['data'][0]['payer_id']);
@@ -215,10 +222,12 @@ class PersonTest extends TestCase
 
     public function test_user_can_delete_a_person()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
-        $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CityFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
+        /** @var Person $person */
         $person = PersonFactory::new()->create();
         $response = $this->actingAs($user)->delete(sprintf('/api/people/%s', $person->id));
         $personListCount = Person::query()->get()->count();

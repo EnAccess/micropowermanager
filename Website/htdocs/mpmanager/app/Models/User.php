@@ -21,11 +21,13 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int $id
  * @property int $company_id
  * @property string $name
+ * @property null|string $email
  *
  */
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
 
@@ -114,12 +116,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->company_id;
     }
 
-    public function getId():int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName():string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -131,5 +133,10 @@ class User extends Authenticatable implements JWTSubject
     public function relationTicketUser(): HasOne
     {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
     }
 }

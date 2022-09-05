@@ -14,14 +14,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('restrictions', static function (Blueprint $table) {
+        Schema::connection('shard')->create('restrictions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('target');
             $table->integer('default');
             $table->integer('limit');
             $table->timestamps();
         });
-        $this->addDefault();
+     //   $this->addDefault();
     }
 
     /**
@@ -31,7 +31,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('restrictions');
+        Schema::connection('shard')->dropIfExists('restrictions');
     }
 
     public function addDefault()

@@ -10,16 +10,18 @@ use App\Models\AssetType;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
+use App\Models\User;
 use Database\Factories\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentSellApplianceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshMultipleDatabases, WithFaker;
     public function actingAs($user, $driver = null)
     {
         $token = JWTAuth::fromUser($user);
@@ -44,6 +46,7 @@ class AgentSellApplianceTest extends TestCase
             'tenure' => 5
         ];
 
+        /** @var Agent $agent */
         $agent = Agent::query()->latest()->first();
 
         $this->actingAs($agent)->post('/api/app/agents/appliances', $data);
@@ -60,6 +63,7 @@ class AgentSellApplianceTest extends TestCase
 
     public function initData()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
         $this->actingAs($user);
         PersonFactory::new()->create();
@@ -86,6 +90,7 @@ class AgentSellApplianceTest extends TestCase
             'email' => 'a@b.com',
             'fire_base_token' => 'sadadadasd3',
             'password' => '123123',
+            'connection' => 'why do we need this? '
 
         ]);
 

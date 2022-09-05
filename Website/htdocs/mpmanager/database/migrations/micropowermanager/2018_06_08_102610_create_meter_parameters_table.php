@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('meter_parameters', function (Blueprint $table) {
+        Schema::connection('shard')->create('meter_parameters', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('owner');
             $table->integer('meter_id');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('meter_parameters');
+        Schema::connection('shard')->dropIfExists('meter_parameters');
     }
 };
