@@ -24,9 +24,11 @@ services:
     container_name: ui
     build:
       context: ./Website/ui/
-      dockerfile: Dockerfile
+      dockerfile: DockerfileServe
     volumes:
-      - ./Website/ui:/usr/ui-src
+      - ./Website/ui:/usr/app/
+      - frontend_node_modules:/usr/app/node_modules/
+
   'cron':
     container_name: cron_job
     build:
@@ -86,10 +88,8 @@ services:
     image: mariadb:10.3
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: laravel
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE: micro_power_manager
+      MYSQL_ROOT_PASSWORD: inensus2022.
     volumes:
       - ./DB/mysql:/var/lib/mysql
 
@@ -115,3 +115,6 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  frontend_node_modules:
