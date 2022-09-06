@@ -25,8 +25,6 @@ services:
     build:
       context: ./Website/ui/
       dockerfile: DockerfileServe
-    depends_on:
-      - nginx
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
