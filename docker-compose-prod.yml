@@ -25,6 +25,8 @@ services:
     build:
       context: ./Website/ui/
       dockerfile: DockerfileServe
+    depends_on:
+      - nginx
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
@@ -67,15 +69,6 @@ services:
     command: install
     volumes:
       - ./Website/htdocs/mpmanager:/app
-
-  'node':
-    container_name: mpmanager_node
-    build:
-      context: Docker/
-      dockerfile: DockerfileNpm
-    volumes:
-      - ./Website/htdocs/mpmanager:/home/node/app
-    command: /bin/sh -c "/tmp/start.sh"
 
   'redis':
     image: redis:5
