@@ -9,6 +9,8 @@ RUN npm install
 # Copy rest of the files
 COPY . .
 
+RUN -R www-data:www-data node_modules
+
 EXPOSE 8080
 
 CMD npm run serve & tail -f /dev/null

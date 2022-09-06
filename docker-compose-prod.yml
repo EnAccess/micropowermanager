@@ -23,7 +23,7 @@ services:
     container_name: ui
     build:
       context: ./Website/ui/
-      dockerfile: DockerfileServe
+      dockerfile: Dockerfile
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/

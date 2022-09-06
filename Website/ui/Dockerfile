@@ -8,6 +8,8 @@ RUN npm install
 # Copy rest of the files
 COPY . .
 
+RUN -R www-data:www-data node_modules
+
 # Build the project
 RUN npm run build
 
