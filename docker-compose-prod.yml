@@ -85,7 +85,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx:1.15-alpine
+    image: nginx:stable-alpine
     restart: unless-stopped
     volumes:
       - ./Website:/var/www/html
@@ -93,8 +93,6 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    depends_on:
-      - ui
     ports:
       - "80:80"
       - "443:443"
