@@ -15,8 +15,6 @@ services:
     links:
       - maria:db
       - redis:redis
-    ports:
-      - "9000:80"
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
@@ -26,8 +24,6 @@ services:
     build:
       context: ./Website/ui/
       dockerfile: Dockerfile
-    ports:
-      - "8081:80"
     volumes:
       - ./Website/ui:/app
 
