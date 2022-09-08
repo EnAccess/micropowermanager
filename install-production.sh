@@ -136,7 +136,7 @@ server {
     index index.php index.html;
     error_log  /var/log/nginx/error.log;
     access_log /var/log/nginx/access.log;
-    root /var/www/html/mpmanager/public;
+    root /var/www/html/htdocs/mpmanager/public;
     location ~ \.php$ {
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;

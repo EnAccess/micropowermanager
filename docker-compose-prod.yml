@@ -15,6 +15,8 @@ services:
     links:
       - maria:db
       - redis:redis
+    ports:
+      - "9000:80"
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
@@ -24,9 +26,10 @@ services:
     build:
       context: ./Website/ui/
       dockerfile: Dockerfile
+    ports:
+      - "8081:80"
     volumes:
-      - ./Website/ui:/usr/app/
-      - frontend_node_modules:/usr/app/node_modules/
+      - ./Website/ui:/app
 
   'cron':
     container_name: cron_job
@@ -42,6 +45,7 @@ services:
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
+
   'worker':
     container_name: worker
     restart: unless-stopped
@@ -88,10 +92,13 @@ services:
     image: nginx:1.15-alpine
     restart: unless-stopped
     volumes:
-      - ./Website/htdocs:/var/www/html
+      - ./Website:/var/www/html
       - ./NginxProxy/conf.p:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - ui
     ports:
       - "80:80"
       - "443:443"
@@ -107,4 +114,4 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
-  frontend_node_modules:
+  ui_dist:

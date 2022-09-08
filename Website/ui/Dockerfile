@@ -1,30 +1,24 @@
-FROM node:16.10.0 as builder
-WORKDIR /usr/app
+FROM node:16.10.0
+WORKDIR /app
 
-# Copy the package.json and install dependencies
-COPY package*.json ./
+COPY package.json /app/
+
 RUN npm install
 
-# Copy rest of the files
-COPY --chown=www-data:www-data  . .
+COPY . /app
 
-# Build the project
+RUN mkdir -p dist
+
 RUN npm run build
 
-# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
+COPY entrypoint.sh /tmp/entrypoint.sh
 
-FROM nginx as production-build
-COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
+RUN chmod +x /tmp/entrypoint.sh
 
-## Remove default nginx index page
-RUN rm -rf /usr/share/nginx/html/*
+RUN cp -a /app/. /app_backup
 
-# Copy from the stahg 1
-COPY --from=builder /usr/app/dist /usr/share/nginx/html
+ENTRYPOINT [ "/tmp/entrypoint.sh"]
 
-RUN mkdir /usr/ui-src
+EXPOSE 8081
 
-COPY --from=builder /usr/app/src /usr/ui-src
-
-EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD [ "tail", "-f", "/dev/null" ]
