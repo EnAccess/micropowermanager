@@ -130,14 +130,14 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/'$domain_name'/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/'$domain_name'/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf /etc/nginx/mime.types;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     error_log  /var/log/nginx/error.log;
     access_log /var/log/nginx/access.log;
     root  /var/www/html/dist;
     index index.php index.html index.htm;
-    include /etc/nginx/mime.types;
+
 
     location / {
                 try_files $uri /index.html;
