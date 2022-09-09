@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const baseUrl = 'http://api.mpmanager.local'
+export const baseUrl = window.location.origin
 
 const axiosClient = axios.create(
 

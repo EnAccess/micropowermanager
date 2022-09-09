@@ -46,9 +46,9 @@ export let resources = {
         person: '/api/maintenance/user'
     },
     person: {
-        'create': 'http://api.mpmanager.local/api/people',
-        'update': 'http://api.mpmanager.local/api/people/',
-        'detail': 'http://api.mpmanager.local/api/people/',
+        'create': `${window.location.origin}/api/people`,
+        'update': `${window.location.origin}/api/people/`,
+        'detail': `${window.location.origin}/api/people/`,
         'delete': '/api/people/',
         'search': '/api/people/search',
         'list': '/api/people',
