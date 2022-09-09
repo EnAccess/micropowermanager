@@ -11,7 +11,6 @@ services:
     depends_on:
       - maria
       - composer
-      - node
       - cron
     links:
       - maria:db
@@ -26,7 +25,9 @@ services:
       context: ./Website/ui/
       dockerfile: Dockerfile
     volumes:
-      - ./Website/ui:/usr/ui-src
+      - ./Website/ui:/app
+      - ./Website/htdocs/dist:/app/dist
+
   'cron':
     container_name: cron_job
     build:
@@ -41,6 +42,7 @@ services:
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
+
   'worker':
     container_name: worker
     restart: unless-stopped
@@ -66,15 +68,6 @@ services:
     volumes:
       - ./Website/htdocs/mpmanager:/app
 
-  'node':
-    container_name: mpmanager_node
-    build:
-      context: Docker/
-      dockerfile: DockerfileNpm
-    volumes:
-      - ./Website/htdocs/mpmanager:/home/node/app
-    command: /bin/sh -c "/tmp/start.sh"
-
   'redis':
     image: redis:5
     restart: unless-stopped
@@ -86,22 +79,21 @@ services:
     image: mariadb:10.3
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: laravel
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE: micro_power_manager
+      MYSQL_ROOT_PASSWORD: inensus2022.
     volumes:
       - ./DB/mysql:/var/lib/mysql
 
   nginx:
     container_name: nginx
-    image: nginx:1.15-alpine
+    image: nginx:stable-alpine
     restart: unless-stopped
     volumes:
       - ./Website/htdocs:/var/www/html
       - ./NginxProxy/conf.p:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - "80:80"
       - "443:443"
@@ -115,3 +107,4 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+

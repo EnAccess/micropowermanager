@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy rest of the files
-COPY . .
+COPY --chown=www-data:www-data  . .
 
 EXPOSE 8080
 

@@ -11,7 +11,6 @@ services:
     depends_on:
       - maria
       - composer
-      - node
       - cron
     links:
       - maria:db
@@ -60,14 +59,14 @@ services:
     volumes:
       - ./Website/htdocs/mpmanager:/app
 
-  'node':
-    container_name: mpmanager_node
+  'ui':
+    container_name: ui
     build:
-      context: Docker/
-      dockerfile: DockerfileNpm
+      context: ./Website/ui/
+      dockerfile: Dockerfile
     volumes:
-      - ./Website/htdocs/mpmanager:/home/node/app
-    command:  /bin/sh -c "/tmp/start.sh"
+      - ./Website/ui:/app
+      - ./Website/htdocs/dist:/app/dist
 
   'redis':
     image: redis:5
@@ -80,10 +79,8 @@ services:
     image: mariadb:10.3
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: laravel
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE: micro_power_manager
+      MYSQL_ROOT_PASSWORD: inensus2022.
     volumes:
       - ./DB/mysql:/var/lib/mysql
 
@@ -93,7 +90,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./Website/htdocs:/var/www/html
-      - ./NginxProxy/conf.p:/etc/nginx/conf.d
+      - ./NginxProxy/conf.nd:/etc/nginx/conf.d
     ports:
       - "80:80"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
