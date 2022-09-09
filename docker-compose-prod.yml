@@ -26,6 +26,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./Website/ui:/app
+      - ./Website/htdocs/dist:/app/dist
 
   'cron':
     container_name: cron_job
@@ -88,7 +89,7 @@ services:
     image: nginx:stable-alpine
     restart: unless-stopped
     volumes:
-      - ./Website:/var/www/html
+      - ./Website/htdocs:/var/www/html
       - ./NginxProxy/conf.p:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
@@ -107,5 +108,3 @@ services:
       - ./certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
-volumes:
-  ui_dist:
