@@ -27,11 +27,11 @@ class AndroidAppRequest extends FormRequest
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
             'phone' => 'required|min:11|regex:(^\+)|numeric',
-            'tariff_id' => 'required|exists:meter_tariffs,id',
+            'tariff_id' => 'required',
             'geo_points' => 'required',
             'serial_number' => 'required|string',
-            'manufacturer' => 'required|exists:manufacturers,id',
-            'meter_type' => 'required|exists:meter_types,id',
+            'manufacturer' => 'required',
+            'meter_type' => 'required',
         ];
     }
 }

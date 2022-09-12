@@ -28,7 +28,7 @@ class CreateAgentReceiptRequest extends FormRequest
         $sessionService = app()->make(SessionService::class);
         $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'agent_id' => 'required|exists:'.$database.'.agents,id',
+            'agent_id' => 'required',
             'amount' => 'required|numeric',
 
         ];

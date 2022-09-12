@@ -34,14 +34,12 @@ class MeterParameterRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'meter_id' => 'required|exists:'.$database.'.meters,id,in_use,0', //meter should be exist and un used
-            'tariff_id' => 'required|exists:'.$database.'.meter_tariffs,id',
-            'customer_id' => 'required|exists:'.$database.'.people,id',
-            'connection_type_id' => 'required|exists:'.$database.'.connection_types,id',
-            'connection_group_id' => 'required|exists:'.$database.'.connection_groups,id',
+            'meter_id' => 'required',
+            'tariff_id' => 'required',
+            'customer_id' => 'required',
+            'connection_type_id' => 'required',
+            'connection_group_id' => 'required',
             'geo_points' => 'required',
         ];
     }

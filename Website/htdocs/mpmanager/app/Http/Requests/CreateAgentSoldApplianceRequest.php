@@ -24,14 +24,12 @@ class CreateAgentSoldApplianceRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'person_id' => 'required|exists:'.$database.'.people,id',
+            'person_id' => 'required',
             'down_payment' => 'required|numeric',
             'tenure' => 'required|numeric|min:0',
             'first_payment_date' => 'required',
-            'agent_assigned_appliance_id' => 'required|exists:'.$database.'.agent_assigned_appliances,id',
+            'agent_assigned_appliance_id' => 'required',
         ];
     }
 }

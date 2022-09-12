@@ -37,8 +37,6 @@ class PersonRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
