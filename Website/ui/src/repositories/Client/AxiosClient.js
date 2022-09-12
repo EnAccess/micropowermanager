@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const baseUrl = window.location.origin
+export const baseUrl = window.location.protocol + '//' + window.location.hostname
 
 const axiosClient = axios.create(
 

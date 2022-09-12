@@ -46,9 +46,9 @@ export let resources = {
         person: '/api/maintenance/user'
     },
     person: {
-        'create': `${window.location.origin}/api/people`,
-        'update': `${window.location.origin}/api/people/`,
-        'detail': `${window.location.origin}/api/people/`,
+        'create': `${window.location.protocol + '//' + window.location.hostname}/api/people`,
+        'update': `${window.location.protocol + '//' + window.location.hostname}/api/people/`,
+        'detail': `${window.location.protocol + '//' + window.location.hostname}/api/people/`,
         'delete': '/api/people/',
         'search': '/api/people/search',
         'list': '/api/people',
