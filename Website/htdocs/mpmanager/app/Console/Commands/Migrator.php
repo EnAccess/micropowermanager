@@ -6,12 +6,12 @@ use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 
-class Migrator extends AbstractSharedCommand
+class Migrator extends Command
 {
     protected $signature = 'migrator:migrate {database-name}';
     protected $description = 'Migrates all base migrations to provided database name';
 
-     function runInCompanyScope(): void
+    public function handle()
     {
         $dbName = $this->argument('database-name');
         if ($dbName == 'base') {
@@ -36,27 +36,7 @@ class Migrator extends AbstractSharedCommand
                 '--path' => '/database/migrations/' . $dbName,
             ]);
         }
-    }
-
-    private function isUnNecessaryConnection($name): bool
-    {
-        if ($name == 'sqlite' || $name == 'pgsql' || $name == 'sqlsrv') {
-            return true;
-        }
-        return false;
-    }
-
-    private function isKeyMicroPowerManager($key): bool
-    {
-        if ($key == 'micro_power_manager') {
-            $this->call('migrate', [
-                '--database' => $key,
-                '--path' => '/database/migrations/base',
-            ]);
-            return true;
-        }
-        return false;
-    }
+     }
 
 
 }
