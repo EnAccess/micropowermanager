@@ -9,8 +9,10 @@ services:
     image: laravel/php:8
     depends_on:
       - maria
+      - mariatesting
     links:
       - maria:db
+      - mariatesting:dbtesting
       - redis:redis
     environment:
       VIRTUAL_HOST: api.mpmanager.local
@@ -91,15 +93,17 @@ services:
     ports:
       - "3307:3306"
 
-  'phpmyadmin':
-    image: phpmyadmin/phpmyadmin:latest
+  'mariatesting':
+    container_name: mariatesting
+    image: mariadb:10.3
     environment:
-      VIRTUAL_HOST: db.mpmanager.local
+      MYSQL_DATABASE: testing
+      MYSQL_ROOT_PASSWORD: inensus2022.
+    volumes:
+      - ./DB/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
-    depends_on:
-      - maria
-    links:
-      - maria:db
 
   nginxproxy:
     container_name: nginx-proxy

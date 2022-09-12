@@ -9,6 +9,7 @@ use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use App\Models\SocialTariff;
 use App\Models\SocialTariffPiggyBank;
+use App\Services\UserService;
 use Database\Factories\MeterFactory;
 use Database\Factories\MeterTariffFactory;
 use Database\Factories\PersonFactory;
@@ -42,7 +43,7 @@ class SocialTariffPiggyBankTest extends TestCase
             'connection_group_id' => 1,
         ]);
 
-        $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
+        $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first(), app()->make(UserService::class));
         $createPiggyBankJob->handle();
         $job = new SocialTariffPiggyBankManager();
         $socialTariff = SocialTariff::first();
@@ -111,7 +112,7 @@ class SocialTariffPiggyBankTest extends TestCase
 
         Queue::assertPushed(CreatePiggyBankEntry::class);
 
-        $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
+        $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first(),app()->make(UserService::class));
         $createPiggyBankJob->handle();
 
         $this->assertCount(1, \App\Models\SocialTariffPiggyBank::all());

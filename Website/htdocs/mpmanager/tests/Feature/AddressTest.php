@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\City;
 use App\Models\Company;
 use App\Models\CompanyDatabase;
+use App\Models\User;
 use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
@@ -30,11 +31,12 @@ class AddressTest extends TestCase
 
     public function test_user_defines_an_address_to_customer_for_own_company()
     {
+        /** @var User $user */
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
-        $company = CompanyFactory::new()->create();
-        $companyDatabase = CompanyDatabaseFactory::new()->create();
+        CompanyFactory::new()->create();
+        CompanyDatabaseFactory::new()->create();
 
         $response = $this->actingAs($user)->post(sprintf('/api/people/%s/addresses', $person->id), [
             'email' => $this->faker->email,

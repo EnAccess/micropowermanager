@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\AgentAssignedAppliances;
+use App\Models\CompanyDatabase;
+use App\Models\DatabaseProxy;
 use App\Models\Person\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,11 +15,21 @@ class AgentAppTest extends TestCase
 {
     use CreateEnvironments;
 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->createAgent();
+        $this->createTestData();
+        $this->createAgentLogin($this->getAgent()->email, $this->getCompany()->getId());
+    }
+
     public function test_agent_logs_in()
     {
         $this->createTestData();
-        $this->createAgent();
         $agent = $this->agent;
+
+        $this->createAgentLogin($agent->email, $this->getCompany()->getId());
 
         $response = $this->post('/api/app/login', [
             'email' => $agent->email,
@@ -31,9 +43,7 @@ class AgentAppTest extends TestCase
 
     public function test_agent_gets_own_data()
     {
-        $this->createTestData();
         $this->createAgentCommission();
-        $this->createAgent();
         $agent = $this->agent;
         $response = $this->actingAs($this->agent)->get('/api/app/me');
         $response->assertStatus(200);
@@ -45,9 +55,6 @@ class AgentAppTest extends TestCase
 
     public function test_agent_logs_out()
     {
-        $this->createTestData();
-        $this->createAgent();
-        $agent = $this->agent;
         $response = $this->actingAs($this->agent)->post('/api/app/logout');
         $response->assertStatus(200);
         $this->assertEquals($response->json('message'), 'Successfully logged out');
@@ -93,7 +100,6 @@ class AgentAppTest extends TestCase
 
     public function test_agent_gets_customers()
     {
-        $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
         $this->createCity();
@@ -102,27 +108,19 @@ class AgentAppTest extends TestCase
         $personCount = 10;
         $this->createPerson($personCount);
         $this->createAgentCommission();
-        $this->createAgent();
-        $agent = $this->agent;
         $response = $this->actingAs($this->agent)->get('/api/app/agents/customers');
         $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), $personCount);
-
+        $this->assertCount($personCount,$response['data']);
     }
 
     public function test_agent_searches_in_customers()
     {
-        $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
         $this->createCity();
         $this->createMeterType();
         $this->createMeterTariff();
-        $personCount = 10;
-        $this->createPerson($personCount);
         $this->createAgentCommission();
-        $this->createAgent();
-        $agent = $this->agent;
         $person = Person::query()->where('is_customer', 1)->first();
         $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/search?q=%s', $person->name));
         $response->assertStatus(200);

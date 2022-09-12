@@ -56,11 +56,19 @@ return [
         ],
 
         // PHPunit testing test_db connection
-        'testing_test_company_db' => [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
+        'testing_test_company_db' =>  [
+            'driver' => 'mysql',
+            'host' => env('TEST_DB_HOST', ),
+            'port' => env('TEST_DB_PORT', '3306'),
+            'database' => env('TEST_DB_DATABASE'),
+            'username' => env('TEST_DB_USERNAME'),
+            'password' => env('TEST_DB_PASSWORD'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-
+            'strict' => true,
+            'engine' => null,
         ]
     ],
 

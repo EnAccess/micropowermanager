@@ -3,11 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Address\Address;
+use App\Models\Agent;
+use App\Models\Company;
+use App\Models\CompanyDatabase;
+use App\Models\DatabaseProxy;
 use App\Models\GeographicalInformation;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Services\AgentBalanceHistoryService;
-use Database\Factories\AddressFactory;
+use App\Models\User;
 use Database\Factories\AgentAssignedApplianceFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -43,24 +44,22 @@ use Database\Factories\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inensus\Ticket\Models\TicketUser;
 use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
-use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Database\Eloquent\Collection;
-use function Symfony\Component\Translation\t;
 
 trait CreateEnvironments
 {
     use RefreshMultipleDatabases, WithFaker;
 
-    private $user, $company, $city, $cluster, $miniGrid, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
+    private User $user;
+    private Company $company;
+    private Agent $agent;
+
+    private  $city, $cluster, $miniGrid, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
         $meterTariff, $person, $token, $transaction, $connectionGroup, $connectonType, $subConnectionType, $target,
-        $subTarget, $agent, $agentCommission, $address, $timeOfUsage, $companyDatabase, $meterToken, $paymentHistory,
+        $subTarget, $agentCommission, $address, $timeOfUsage, $companyDatabase, $meterToken, $paymentHistory,
         $assetType, $assignedAppliance, $soldAppliance, $agentReceipt, $agentTransaction, $agentBalanceHistory,
         $ticketCategory, $ticketUser, $ticketBoard, $ticketCard,$ticket;
 
@@ -76,6 +75,30 @@ trait CreateEnvironments
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
 
+    }
+
+    protected function getCompany(): Company
+    {
+        return $this->company;
+    }
+
+    protected function getAgent(): Agent
+    {
+        return $this->agent;
+    }
+
+    protected function createAgentLogin(string $email, int $companyId) {
+        $companyDatabase = new CompanyDatabase();
+        $companyDatabase->company_id = $companyId;
+        $companyDatabase->database_name = 'test';
+        $companyDatabase->save();
+
+
+        $databaseProxy = new DatabaseProxy();
+        $databaseProxy->fk_company_database_id = $companyDatabase->getId();
+        $databaseProxy->fk_company_id = $companyId;
+        $databaseProxy->email = $email;
+        $databaseProxy->save();
     }
 
     protected function createCluster($clusterCount = 1)
