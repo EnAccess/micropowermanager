@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use PDO;
 
-class Revenue extends Model
+class Revenue extends BaseModel
 {
 
 

@@ -21,11 +21,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Address extends BaseModel
 {
 
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-    }
-
     protected $hidden = ['owner_id', 'owner_type'];
     public static $rules = [
     'city_id' => 'required|exists:cities,id',

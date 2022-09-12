@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $expires
  * @property string $transaction_id
  */
-class Subscription extends Model
+class Subscription extends BaseModel
 {
 
     public function upgrade(): BelongsTo
