@@ -7,14 +7,13 @@ services:
       context: Docker/
       dockerfile: DockerfileLaravelDev
     image: laravel/php:8
-
-    environment:
-      VIRTUAL_HOST: api.mpmanager.local
     depends_on:
       - maria
     links:
       - maria:db
       - redis:redis
+    environment:
+      VIRTUAL_HOST: mpmanager.local
 
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
@@ -25,11 +24,15 @@ services:
     build:
       context: ./Website/ui/
       dockerfile: DockerfileServe
+    environment:
+      VIRTUAL_HOST: mpmanager.local
+    ports:
+      - "8080:8080"
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
-    environment:
-      VIRTUAL_HOST: mpmanager.local
+
+
   'cron':
     container_name: cron_job
     build:
@@ -59,6 +62,8 @@ services:
     links:
       - maria:db
       - redis:redis
+
+
   'composer':
     container_name: mpmanager_composer
     build:
@@ -68,10 +73,13 @@ services:
     command: install
     volumes:
       - ./Website/htdocs/mpmanager:/app
+
+
   'redis':
     image: redis:5
     volumes:
       - ./redis/:/data
+
 
   'maria':
     container_name: maria
@@ -84,6 +92,15 @@ services:
     ports:
       - "3307:3306"
 
+  'phpmyadmin':
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      VIRTUAL_HOST: db.mpmanager.local
+
+    depends_on:
+      - maria
+    links:
+      - maria:db
 
   nginxproxy:
     container_name: nginx-proxy
