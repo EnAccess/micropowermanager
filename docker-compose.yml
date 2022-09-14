@@ -13,7 +13,7 @@ services:
       - maria:db
       - redis:redis
     environment:
-      VIRTUAL_HOST: mpmanager.local
+      VIRTUAL_HOST: api.mpmanager.local
 
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
@@ -26,8 +26,7 @@ services:
       dockerfile: DockerfileServe
     environment:
       VIRTUAL_HOST: mpmanager.local
-    ports:
-      - "8080:8080"
+
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/

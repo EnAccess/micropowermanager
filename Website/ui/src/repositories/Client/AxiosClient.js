@@ -1,9 +1,16 @@
 import axios from 'axios'
+import {config} from '@/config'
 
-export const baseUrl = window.location.protocol + '//' + window.location.hostname
+function  getBaseUrl () {
+    if (config.env === 'development') {
+        return  `${window.location.protocol}//api.${window.location.hostname}`
+    }
+    return window.location.protocol + '//' + window.location.hostname
+}
+
+export const baseUrl = getBaseUrl()
 
 const axiosClient = axios.create(
-
 )
 
 axiosClient.interceptors.request.use(
