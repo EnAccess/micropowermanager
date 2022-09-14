@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Services\MenuItemsService;
 use Illuminate\Console\Command;
 
-class MenuItemsGenerator extends AbstractSharedCommand
+class MenuItemsGenerator extends Command
 {
     protected $signature = 'menu-items:generate {menuItem} {subMenuItems}';
     protected $description = 'Creates new menu items and related submenu items';
@@ -16,7 +16,7 @@ class MenuItemsGenerator extends AbstractSharedCommand
          parent::__construct();
     }
 
-    public function runInCompanyScope(): void
+    public function handle(): void
     {
         $menuItem = $this->argument('menuItem');
         $subMenuItems = $this->argument('subMenuItems');
