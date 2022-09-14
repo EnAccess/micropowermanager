@@ -1,4 +1,4 @@
-import Client from './Client/AxiosClient'
+import Client from '@/repositories/Client/AxiosClient'
 
 export default {
     get (url, params) {
