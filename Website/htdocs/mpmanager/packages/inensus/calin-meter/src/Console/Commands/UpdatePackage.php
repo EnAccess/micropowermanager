@@ -44,7 +44,6 @@ class UpdatePackage extends Command
         $this->publishVueFilesAgain();
         $this->call('routes:generate');
         $this->createMenuItems();
-        $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
 

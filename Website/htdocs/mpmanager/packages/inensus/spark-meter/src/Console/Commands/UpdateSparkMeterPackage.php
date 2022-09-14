@@ -102,7 +102,6 @@ class UpdateSparkMeterPackage extends Command
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->call('routes:generate');
         $this->createMenuItems();
-        $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
 
