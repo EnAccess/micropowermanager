@@ -167,6 +167,9 @@ function processArgs()
             -d=*|--database=*)
                 DB_NAME="${arg#*=}"
             ;;
+            -cid=*|--company_id=*)
+                C_ID="${arg#*=}"
+            ;;
             -u=*|--user=*)
                 DB_USER="${arg#*=}"
             ;;
@@ -254,7 +257,7 @@ function runMigrator()
 {
     cd ${SOURCE_PATH}
     php artisan optimize:clear
-    php artisan migrator:migrate $DB_NAME
+    php artisan migrator:migrate $DB_NAME $C_ID
 }
 
 ################################################################################
@@ -299,6 +302,11 @@ function main()
      sedMigrationFiles
      echo "Done! " >> ${SOURCE_PATH}/creator.log
 
+      echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
+      runMigrator
+      echo "Done! " >> ${SOURCE_PATH}/creator.log
+
+
      echo "################################ " >> ${SOURCE_PATH}/creator.log
      echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
      echo "****************************************************************" >> ${SOURCE_PATH}/creator.log
@@ -308,4 +316,4 @@ function main()
 main "$@"
 
 _debug set +x
-#./database_creator.sh --host=localhost --database=remove_db --user=root
+#./database_creator.sh --host=localhost --database=remove_db --user=root --company_id=23432
