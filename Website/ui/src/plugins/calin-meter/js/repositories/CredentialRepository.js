@@ -1,10 +1,11 @@
-import { baseUrl } from '@/repositories/Client/AxiosClient'
+import { baseUrl } from '../../../../repositories/Client/AxiosClient'
 
 const resource = `${baseUrl}/api/calin-meters/calin-credential`
 
-import Client from '@/repositories/Client/AxiosClient'
+import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
+
     get () {
         return Client.get(`${resource}`)
     },
