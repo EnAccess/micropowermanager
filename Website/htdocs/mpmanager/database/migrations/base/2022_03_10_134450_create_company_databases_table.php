@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('company_databases', function (Blueprint $table) {
+        Schema::connection('micro_power_manager')->create('company_databases', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id')->unsigned();
             $table->string('database_name');

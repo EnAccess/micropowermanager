@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\CompanyDatabase;
 use Illuminate\Support\Facades\Artisan;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyDatabaseService implements IBaseService
 {
@@ -39,12 +40,11 @@ class CompanyDatabaseService implements IBaseService
         // TODO: Implement getAll() method.
     }
 
-    public function createNewDatabaseForCompany($databaseName): void
+    public function createNewDatabaseForCompany(string $databaseName, int $companyId): void
     {
         $sourcePath = __DIR__ . '/../../';
         shell_exec(__DIR__ . '/../../database_creator.sh --database='
-            . $databaseName . ' --user=root' . ' --path='
-            . $sourcePath);
+            . $databaseName . ' --user=root' . ' --path=' . $sourcePath . ' --company_id='. $companyId );
     }
 
     public function setDatabaseConnectionForCompany($databaseName)
@@ -65,7 +65,7 @@ class CompanyDatabaseService implements IBaseService
         Artisan::call('db:seed', ['--force' => true]);
     }
 
-    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin)
+    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId=null)
     {
         $pluginName = $plugin['name'];
         try {
@@ -76,10 +76,24 @@ class CompanyDatabaseService implements IBaseService
             return 0;
         }
         $menuItems = $menuItemService->createMenuItems();
-        Artisan::call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
-        ]);
+
+        if($companyId !== null) {
+            /** @var DatabaseProxyManagerService $databaseProxyManagerService */
+            $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
+            $databaseProxyManagerService->runForCompany($companyId, function() use($menuItems){
+                Artisan::call('menu-items:generate', [
+                    'menuItem' => $menuItems['menuItem'],
+                    'subMenuItems' => $menuItems['subMenuItems'],
+                ]);
+            });
+        } else {
+            Artisan::call('menu-items:generate', [
+                'menuItem' => $menuItems['menuItem'],
+                'subMenuItems' => $menuItems['subMenuItems'],
+            ]);
+        }
+
+
 
     }
 

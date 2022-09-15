@@ -55,7 +55,7 @@ class CompanyController extends Controller
         ];
         $databaseName = $companyDatabase->database_name;
         $this->databaseProxyService->create($databaseProxyData);
-        $this->companyDatabaseService->createNewDatabaseForCompany($databaseName);
+        $this->companyDatabaseService->createNewDatabaseForCompany($databaseName, $company->getId());
 
         return $this->databaseProxyManagerService->runForCompany($company->getId(),
             function () use ($databaseName, $adminData, $company, $plugins) {
@@ -69,7 +69,7 @@ class CompanyController extends Controller
                         'status' => 1
                     ];
                     $this->pluginsService->create($pluginData);
-                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($plugin);
+                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($plugin, $company->getId());
 
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
                     array_push($registrationTail, [
