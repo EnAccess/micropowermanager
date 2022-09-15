@@ -50,8 +50,8 @@ export default {
     },
     created () {
         if (this.status !=='') {
-            let asd =this.registrationTail.tail
-            console.log(asd)
+
+
             const tail = JSON.parse(this.registrationTail.tail)
             for (const tailElement of tail) {
                 if (tailElement.adjusted === false && !this.isWizardShown) {
