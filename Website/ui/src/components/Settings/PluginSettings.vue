@@ -49,13 +49,20 @@ export default {
 
             this.switching = false
             this.progressing = false
+        },
+        alertNotify (type, message) {
+            this.$notify({
+                group: 'notify',
+                type: type,
+                title: type + ' !',
+                text: message
+            })
         }
     }
 }
 </script>
 
 <style scoped lang="scss">
-
 .box {
     border-radius: 5px;
     padding: 1.3vw;
