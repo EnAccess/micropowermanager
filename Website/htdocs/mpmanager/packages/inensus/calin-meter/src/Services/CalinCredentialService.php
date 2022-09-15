@@ -38,7 +38,7 @@ class CalinCredentialService
 
     public function updateCredentials($data)
     {
-        $credential = $this->credential->newQuery()->find($data['id']);
+        $credential = $this->credential->newQuery()->firstOrFail();
         $credential->update([
             'user_id' => $data['user_id'],
             'api_key' => $data['api_key'],

@@ -43,7 +43,7 @@ class StronCredentialService
 
     public function updateCredentials($data)
     {
-        $credential = $this->credential->newQuery()->find($data['id']);
+        $credential = $this->credential->newQuery()->firstOrFail();
 
         $credential->update([
             'username' => $data['username'],

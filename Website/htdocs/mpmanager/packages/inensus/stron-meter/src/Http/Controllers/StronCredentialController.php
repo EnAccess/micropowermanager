@@ -22,7 +22,6 @@ class StronCredentialController extends Controller
     public function update(StronCredentialRequest $request): StronCredentialResource
     {
         $credentials = $this->credentialService->updateCredentials($request->only([
-            'id',
             'username',
             'password',
             'company_name'
