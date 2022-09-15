@@ -74,7 +74,7 @@ class PluginController extends Controller
             }) ;
 
             $this->registrationTailService->update(
-                $registrationTail,['tail' => $updatedTail]);
+                $registrationTail,['tail' => array_values($updatedTail)] );
         }
         return ApiResource::make($updatedPlugin);
 
