@@ -13,7 +13,7 @@ return new class  extends Migration
      */
     public function up()
     {
-        Schema::table('companies', function (Blueprint $table) {
+        Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
             $table->string('email');
         });
     }
