@@ -22,7 +22,6 @@ class CalinCredentialController extends Controller
     public function update(CalinCredentialRequest $request): CalinResource
     {
         $credentials = $this->credentialService->updateCredentials($request->only([
-            'id',
             'user_id',
             'api_key'
         ]));
