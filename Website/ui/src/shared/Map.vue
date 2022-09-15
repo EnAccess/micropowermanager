@@ -139,15 +139,15 @@ export default {
     destroyed () {
         this.map = null
     },
-    computed:{
-        mapProvider(){
-            if(this.$store.getters['settings/getMapSettings'].provider === 'Bing Maps'){
+    computed: {
+        mapProvider () {
+            if (this.$store.getters['settings/getMapSettings'].provider === 'Bing Maps') {
                 return true
-            }else{
+            } else {
                 return false
             }
         },
-        bingMapApiKey(){
+        bingMapApiKey () {
             return this.$store.getters['settings/getMapSettings'].bingMapApiKey
         }
     },
@@ -336,9 +336,12 @@ export default {
         generateMap (options, center) {
             this.mapInitialized = true
             this.map = L.map('map').setView(center, this.zoom)
-            if(this.mapProvider){
-                L.tileLayer.bing(this.bingMapApiKey, {maxZoom: this.maxZoom, attribution: this.osmAttrib}).addTo(this.map)
-            }else{
+            if (this.mapProvider) {
+                L.tileLayer.bing(this.bingMapApiKey, {
+                    maxZoom: this.maxZoom,
+                    attribution: this.osmAttrib
+                }).addTo(this.map)
+            } else {
                 L.tileLayer(this.osmUrl, { maxZoom: this.maxZoom, attribution: this.osmAttrib }).addTo(this.map)
             }
             this.editableLayer = new L.FeatureGroup()
@@ -346,7 +349,6 @@ export default {
                 chunkedLoading: true,
                 spiderfyOnMaxZoom: false
             })
-
 
             this.map.addLayer(this.editableLayer)
             options.edit.featureGroup = this.editableLayer
@@ -382,7 +384,7 @@ export default {
             let nonEditableLayers = new L.FeatureGroup()
             const geographicalInformation = geoData
             for (let i in geographicalInformation) {
-                let geoData = geographicalInformation[i].geo !== undefined ? geographicalInformation[i].geo : geographicalInformation[i]
+                let geoData = geographicalInformation[i].geo_data !== undefined ? geographicalInformation[i].geo_data : geographicalInformation[i]
                 let geoType = geoData.geojson.type
                 let coordinatesClone = []
                 coordinatesClone[0] = []
@@ -591,12 +593,12 @@ export default {
         reGenerateMap (mutatingCenter) {
             this.map.flyTo(mutatingCenter, this.zoom, this.drawingOptions)
         },
-        getLatLng(){
+        getLatLng () {
             let latlng
             let zoom
-            this.map.on('move',function (e){
+            this.map.on('move', function (e) {
                 zoom = Math.round(e.target._zoom)
-                EventBus.$emit('mapZoom',zoom)
+                EventBus.$emit('mapZoom', zoom)
 
             })
             latlng = {
@@ -616,10 +618,10 @@ export default {
     },
 
     watch: {
-        zoom(){
+        zoom () {
             this.map.setZoom(this.zoom)
         },
-        mutatingCenter(){
+        mutatingCenter () {
             this.reGenerateMap(this.mutatingCenter)
         },
         geoData: debounce(function () {
@@ -637,13 +639,13 @@ export default {
 
 </script>
 <style scoped>
-    #map {
-        height: 100%;
-        min-height: 500px;
-        width: 100%;
-    }
+#map {
+    height: 100%;
+    min-height: 500px;
+    width: 100%;
+}
 
-    .leaflet-draw-actions a {
-        background: white !important;
-    }
+.leaflet-draw-actions a {
+    background: white !important;
+}
 </style>
