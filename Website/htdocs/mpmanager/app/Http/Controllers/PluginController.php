@@ -9,6 +9,7 @@ use App\Services\MpmPluginService;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class PluginController extends Controller
@@ -51,6 +52,7 @@ class PluginController extends Controller
                 $createdPlugin = $this->pluginsService->create($pluginData);
                 $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
                 $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
+                Artisan::call($mpmPlugin->installation_command);
 
                 return ApiResource::make($createdPlugin);
             }

@@ -1,7 +1,7 @@
-import { baseUrl } from './Client/AxiosClient'
+import { baseUrl } from '../../../../repositories/Client/AxiosClient'
 const resource = `${baseUrl}/api/stron-meters/stron-credential`
 
-import Client from './Client/AxiosClient'
+import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
     get () {
