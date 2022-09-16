@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
-use App\Services\IUserService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(private IUserService $userService)
+    public function __construct(private UserService $userService)
     {
     }
 
@@ -20,12 +20,10 @@ class UserController extends Controller
         return new ApiResource($users);
     }
 
-    public function store(CreateAdminRequest $request): ApiResource
+    public function store(CreateAdminRequest $request)
     {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
-
-
-        return ApiResource::make($user);
+        return ApiResource::make($user->toArray());
 
     }
 
