@@ -10,29 +10,30 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-use Inensus\Ticket\Services\TicketUserService;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserService
 {
-    public function __construct(private User $user, private TicketUserService $ticketUserService)
+    public function __construct(private User $user)
     {
     }
 
 
-    public function create(array $userData): User
+    public function create(array $userData, ?int $companyId = null): User
     {
+        $shouldSyncUserWithMasterDatabase = $companyId !== null;
+        $companyId = $companyId ?? auth('api')->payload()->get('companyId');
 
-        $companyId = auth('api')->payload()->get('companyId');
         /** @var User $user */
-        $user =  $this->user->newQuery()->create([
+        $user = $this->buildQuery()->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
             'email' => $userData['email'],
-            'company_id'=>$companyId,
+            'company_id' => $companyId,
         ]);
-        event(new UserCreatedEvent($user));
-        $this->ticketUserService->findOrCreateByUser($user);
+
+        event(new UserCreatedEvent($user, $shouldSyncUserWithMasterDatabase));
+
         return $user;
     }
 
@@ -97,8 +98,8 @@ class UserService
     public function get($id): User
     {
         /** @var User $user */
-        $user =  User::with(['addressDetails'])
-            ->where('id','=', $id)
+        $user = User::with(['addressDetails'])
+            ->where('id', '=', $id)
             ->firstOrFail();
 
         return $user;
@@ -109,7 +110,7 @@ class UserService
         /** @var User $user */
         $user = $this->buildQuery()->first();
         $randomPassword = str_random(8);
-        $user->update(['password' => $randomPassword]) ;
+        $user->update(['password' => $randomPassword]);
         $user->save();
 
         $admin['email'] = $user->email;
@@ -123,7 +124,7 @@ class UserService
         return $this->user->newQuery();
     }
 
-    public function getCompanyId():int
+    public function getCompanyId(): int
     {
         /** @var User $user */
         $user = $this->buildQuery()
