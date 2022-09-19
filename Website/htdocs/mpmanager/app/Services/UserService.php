@@ -20,10 +20,16 @@ class UserService
     }
 
 
-    public function create(array $userData): User
+    public function create(array $userData, $companyId = null): User
     {
+        $isFirstUserOfCompany = true;
 
-        $companyId = auth('api')->payload()->get('companyId');
+        if (!$companyId)
+        {
+            $companyId = auth('api')->payload()->get('companyId');
+            $isFirstUserOfCompany = false;
+        }
+
         /** @var User $user */
         $user =  $this->user->newQuery()->create([
             'name' => $userData['name'],
@@ -31,7 +37,11 @@ class UserService
             'email' => $userData['email'],
             'company_id'=>$companyId,
         ]);
-        event(new UserCreatedEvent($user));
+
+        if (!$isFirstUserOfCompany) {
+            event(new UserCreatedEvent($user));
+        }
+
         $this->ticketUserService->findOrCreateByUser($user);
         return $user;
     }

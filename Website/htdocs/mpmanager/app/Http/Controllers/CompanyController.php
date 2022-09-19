@@ -88,7 +88,7 @@ class CompanyController extends Controller
                     'password' => $adminData['password'],
                     'email' => $adminData['email'],
                     'company_id' => $company->getId(),
-                ]);
+                ], $company->getId());
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
                 $mainSettings = $this->mainSettingsService->getAll()->first();
