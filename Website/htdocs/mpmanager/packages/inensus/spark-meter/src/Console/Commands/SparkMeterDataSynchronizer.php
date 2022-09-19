@@ -10,6 +10,7 @@ use App\Models\Person\Person;
 use App\Models\Cluster;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SparkMeter\Exceptions\CronJobException;
@@ -23,6 +24,9 @@ use Inensus\SparkMeter\Services\TransactionService;
 
 class SparkMeterDataSynchronizer extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 2;
+    use ScheduledPluginCommand;
+
     protected $signature = 'spark-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Spark Meter.';
 
@@ -42,8 +46,12 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
     }
 
 
-  public  function runInCompanyScope(): void
+  public  function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Spark Meter Package #');

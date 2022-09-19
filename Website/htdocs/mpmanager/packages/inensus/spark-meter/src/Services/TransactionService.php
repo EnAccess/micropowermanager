@@ -160,6 +160,11 @@ class TransactionService
             'desc'
         )->first();
         $organization = $this->sparkOrganization->newQuery()->first();
+        if (!$organization)
+        {
+            Log::info('Organization not found for Koios API');
+            return;
+        }
         $koiosUrl = '/organizations/' . $organization->organization_id . '/data/historical';
         $params = [
             "filters" => [

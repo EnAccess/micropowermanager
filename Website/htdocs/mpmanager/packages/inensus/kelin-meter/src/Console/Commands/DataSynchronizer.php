@@ -8,6 +8,7 @@ use App\Models\Address\Address;
 use App\Models\Cluster;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\KelinMeter\Exceptions\CronJobException;
@@ -19,6 +20,9 @@ use Inensus\KelinMeter\Services\KelinSyncSettingService;
 
 class DataSynchronizer extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 5;
+    use ScheduledPluginCommand;
+
     protected $signature = 'kelin-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Kelin platform.';
 
@@ -36,8 +40,12 @@ class DataSynchronizer extends AbstractSharedCommand
     }
 
 
-   public function runInCompanyScope(): void
+   public function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Kelin Meter Package #');

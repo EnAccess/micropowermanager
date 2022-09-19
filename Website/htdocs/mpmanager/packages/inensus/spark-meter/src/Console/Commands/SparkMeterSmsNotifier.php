@@ -7,6 +7,7 @@ use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SparkMeter\Exceptions\CronJobException;
@@ -20,6 +21,9 @@ use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
 class SparkMeterSmsNotifier extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 2;
+    use ScheduledPluginCommand;
+
     protected $signature = 'spark-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits';
 
@@ -119,8 +123,12 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         });
     }
 
-   public function runInCompanyScope(): void
+   public function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Spark Meter Package #');
