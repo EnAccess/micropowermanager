@@ -16,7 +16,6 @@ class UserListener
 
     public function handle($event): void
     {
-        dump("event received", get_class($event));
         if ($event instanceof UserCreatedEvent) {
             $this->handleUserCreatedEvent($event);
         }
