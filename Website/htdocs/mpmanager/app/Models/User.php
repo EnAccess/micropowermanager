@@ -87,7 +87,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphOne(Address::class, 'owner');
     }
 
-    public function addressDetails()
+    public function addressDetails(): MorphOne
     {
         return $this->address()->with('city');
     }
@@ -124,6 +124,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->name;
     }
 
+    public function getEmail():string
+    {
+        return $this->email;
+    }
     public function relationTicketUser(): HasOne
     {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);

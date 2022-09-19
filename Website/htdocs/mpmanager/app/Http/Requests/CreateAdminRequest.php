@@ -29,7 +29,7 @@ class CreateAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|unique:users,name',
+            'email' => 'required',
             'name' => 'required|min:3',
             'password' => 'required|min:6'
         ];

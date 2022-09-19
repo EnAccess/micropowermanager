@@ -8,35 +8,32 @@ use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Services\TicketUserService;
+use MPM\User\Events\UserCreatedEvent;
 
-class UserService implements IUserService
+class UserService
 {
     public function __construct(private User $user, private TicketUserService $ticketUserService)
     {
     }
 
-    /**
-     * @return Builder|Model
-     */
-    public function create(array $userData)
+
+    public function create(array $userData): User
     {
+
+        $companyId = auth('api')->payload()->get('companyId');
         /** @var User $user */
         $user =  $this->user->newQuery()->create([
             'name' => $userData['name'],
             'password' => $userData['password'],
             'email' => $userData['email'],
-            'company_id'=> $userData['company_id']
+            'company_id'=>$companyId,
         ]);
-
+        event(new UserCreatedEvent($user));
         $this->ticketUserService->findOrCreateByUser($user);
-
-        return $user::with('addressDetails');
+        return $user;
     }
 
     public function update($user, $data)
