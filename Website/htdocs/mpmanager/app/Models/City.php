@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @package  App
  * @property integer id
  * @property string name
+ * @property int country_id
+ * @property int cluster_id
+ * @property int mini_grid_id
  */
 class City extends BaseModel
 {
@@ -45,5 +48,30 @@ class City extends BaseModel
     public function location(): MorphOne
     {
         return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name =  $name;
+    }
+
+    public function setCountryId(int $countryId ): void
+    {
+        $this->country_id = $countryId;
+    }
+
+    public function setClusterId(int $clusterId): void
+    {
+        $this->cluster_id = $clusterId;
+    }
+
+    public function setMiniGridId(int $miniGridId)
+    {
+        $this->mini_grid_id = $miniGridId;
+    }
+
+    public function getMiniGridId(): int
+    {
+        return $this->mini_grid_id;
     }
 }
