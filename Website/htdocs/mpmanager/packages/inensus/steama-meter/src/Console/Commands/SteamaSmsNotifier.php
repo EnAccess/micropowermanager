@@ -8,8 +8,10 @@ use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
@@ -21,6 +23,9 @@ use Inensus\StemaMeter\Exceptions\CronJobException;
 
 class SteamaSmsNotifier extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 2;
+    use ScheduledPluginCommand;
+
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = '';
 
@@ -118,8 +123,12 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         });
     }
 
-    public function runInCompanyScope(): void
+    public function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Steamaco Meter Package #');

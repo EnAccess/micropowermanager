@@ -5,6 +5,7 @@ namespace Inensus\KelinMeter\Console\Commands;
 
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\KelinMeter\Services\DailyConsumptionService;
@@ -13,6 +14,9 @@ use Inensus\KelinMeter\Services\KelinCredentialService;
 
 class ReadDailyMeterConsumptions extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 5;
+    use ScheduledPluginCommand;
+
     protected $signature = 'kelin-meter:read-daily-consumptions';
     protected $description = 'Reads daily meter consumptions.';
 
@@ -25,8 +29,12 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand
     }
 
 
-   public function runInCompanyScope(): void
+   public function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $credentials = $this->credentialService->getCredentials();
         $timeStart = microtime(true);
         $this->info('#############################');

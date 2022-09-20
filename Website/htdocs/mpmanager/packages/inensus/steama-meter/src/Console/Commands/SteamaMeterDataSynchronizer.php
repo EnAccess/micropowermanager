@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Cluster;
 use App\Models\Person\Person;
 use App\Sms\SmsTypes;
+use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,9 @@ use Inensus\StemaMeter\Exceptions\CronJobException;
 
 class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 {
+    const MPM_PLUGIN_ID = 2;
+    use ScheduledPluginCommand;
+
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
 
@@ -61,8 +65,12 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
     }
 
 
-  public  function runInCompanyScope(): void
+  public  function handle(): void
     {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# Steamaco Meter Package #');
