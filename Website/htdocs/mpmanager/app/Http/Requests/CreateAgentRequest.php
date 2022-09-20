@@ -29,16 +29,14 @@ class CreateAgentRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
 
-            'email' => 'required|unique:'.$database.'.agents,email',
+            'email' => 'required',
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
             'password' => 'required|min:6',
             'city_id' => 'required',
-            'agent_commission_id' => 'required|exists:'.$database.'.agent_commissions,id'
+            'agent_commission_id' => 'required'
         ];
     }
 }
