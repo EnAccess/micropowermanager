@@ -2,11 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
 use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CityRequest extends FormRequest
 {
+    private const PARAM_NAME = 'name';
+    private const PARAM_MINI_GRID = 'mini_grid_id';
+    private const PARAM_CLUSTER_ID = 'cluster_id';
+    private const PARAM_COUNTRY_ID = 'country_id';
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,11 +30,20 @@ class CityRequest extends FormRequest
      */
     public function rules(): array
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'name' => 'required|unique:'.$database.'.cities',
-            'mini_grid_id' => 'required|exists:'.$database.'.mini_grids,id'
+            'name' => 'required',
+            'mini_grid_id' => 'required'
         ];
+    }
+
+    public function getCity(): City
+    {
+        $city = new City();
+        $city->setName($this->input(self::PARAM_NAME));
+        $city->setCountryId($this->input(self::PARAM_COUNTRY_ID,0));
+        $city->setClusterId($this->input(self::PARAM_CLUSTER_ID));
+        $city->setMiniGridId($this->input(self::PARAM_MINI_GRID));
+
+        return $city;
     }
 }

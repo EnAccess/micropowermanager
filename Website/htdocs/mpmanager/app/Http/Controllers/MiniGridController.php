@@ -61,7 +61,7 @@ class MiniGridController extends Controller
 
     public function store(StoreMiniGridRequest $request): ApiResource
     {
-        return ApiResource::make($this->miniGridService->create($request->only('cluster_id', 'name')));
+        return ApiResource::make($this->miniGridService->create($request->getMiniGrid()));
     }
 
     /**

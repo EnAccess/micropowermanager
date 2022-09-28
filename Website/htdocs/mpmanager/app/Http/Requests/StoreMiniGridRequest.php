@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
+use App\Models\MiniGrid;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreMiniGridRequest extends FormRequest
 {
+    const PARAM_CLUSTER_ID = 'cluster_id';
+    const PARAM_NAME = 'name';
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,12 +27,19 @@ class StoreMiniGridRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
             'name' => 'required|min:3',
-            'cluster_id' => 'required|exists:'.$database.'.clusters,id',
+            'cluster_id' => 'required',
             'geo_data' => 'required',
         ];
+    }
+
+    public function getMiniGrid(): MiniGrid
+    {
+        $miniGrid = new MiniGrid();
+        $miniGrid->setClusterId($this->input(self::PARAM_CLUSTER_ID));
+        $miniGrid->setName($this->input(self::PARAM_NAME));
+
+        return $miniGrid;
     }
 }
