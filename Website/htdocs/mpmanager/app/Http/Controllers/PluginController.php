@@ -69,7 +69,15 @@ class PluginController extends Controller
         else
         {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
-            $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin->tail_tag);
+
+            //since we do not force the user to configure bulk registrations.
+            if ($mpmPlugin->name === 'BulkRegistration')
+            {
+                $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName('Bulk Registration');
+            }else{
+                $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin->tail_tag);
+            }
+
 
             $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {
                 return $item['tag'] !== $mpmPlugin->tail_tag;

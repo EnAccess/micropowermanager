@@ -118,7 +118,7 @@ export let resources = {
         'detail':
             '/api/manufacturers/',
         'list':
-            '/api/manufacturers/',
+            '/api/manufacturers',
     },
     revenues: {
         'analysis': '/api/revenue/analysis',
@@ -165,10 +165,10 @@ export let resources = {
     agents: {
         list: '/api/agents',
         search: '/api/agents/search',
-        balance_histories:'/api/agents/balance/history/',
-        sold_appliances:'api/agents/sold/',
-        transactions:'api/agents/transactions/',
-        tickets:'/tickets/api/agents',
-        receipts:'api/agents/receipt'
+        balance_histories: '/api/agents/balance/history/',
+        sold_appliances: 'api/agents/sold/',
+        transactions: 'api/agents/transactions/',
+        tickets: '/tickets/api/agents',
+        receipts: 'api/agents/receipt'
     }
 }

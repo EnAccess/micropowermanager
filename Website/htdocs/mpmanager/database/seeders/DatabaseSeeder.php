@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(ConnectionTypeSeeder::class);
-        $this->call(ManufacturerSeeder::class);
         $this->call(SubConnectionTypeSeeder::class);
         $this->call(MenuItemsSeeder::class);
         $this->call(SubMenuItemsSeeder::class);

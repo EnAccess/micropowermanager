@@ -1,13 +1,19 @@
 <template>
     <div>
         <widget
-                color="green"
-                :title="title"
+            color="green"
+            :title="title"
         >
             <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-20">
+                <div class="md-layout-item md-size-30"
+                     style="margin: auto; text-align: center;padding: 3rem;font-size: initial;font-weight: 500;display: grid;">
+                    <span>
+                        Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.
+                    </span>
+                    <span style="margin-top: 16px">You can download sample csv file from <a
+                        href="/files/bulk-registration-template.csv">here</a></span>
                 </div>
-                <div class="md-layout-item md-size-60">
+                <div class="md-layout-item md-size-70">
 
                     <div :hidden="fileUploaded">
 
@@ -46,28 +52,50 @@
 
                                 <div>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Cluster :</label><span>{{csvUploadService.recentlyCreatedRecords.cluster}}</span>
+                                    <label
+                                        class="uploaded">Cluster :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.cluster
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Mini Grid :</label><span>{{csvUploadService.recentlyCreatedRecords.miniGrid}}</span>
+                                    <label
+                                        class="uploaded">Mini Grid :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.miniGrid
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Village :</label><span>{{csvUploadService.recentlyCreatedRecords.village}}</span>
+                                    <label
+                                        class="uploaded">Village :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.village
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Customer :</label><span>{{csvUploadService.recentlyCreatedRecords.customer }}</span>
+                                    <label class="uploaded">Customer :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.customer
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Tariff :</label><span>{{csvUploadService.recentlyCreatedRecords.tariff}}</span>
+                                    <label
+                                        class="uploaded">Tariff :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.tariff
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Meter :</label><span>{{csvUploadService.recentlyCreatedRecords.meter}}</span>
+                                    <label
+                                        class="uploaded">Meter :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.meter
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Connection Type :</label><span>{{csvUploadService.recentlyCreatedRecords.connectionType }}</span>
+                                    <label class="uploaded">Connection Type :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.connectionType
+                                        }}</span>
                                    </span>
                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">Connection Group :</label><span>{{csvUploadService.recentlyCreatedRecords.connectionGroup}}</span>
+                                    <label
+                                        class="uploaded">Connection Group :</label><span>{{
+                                            csvUploadService.recentlyCreatedRecords.connectionGroup
+                                        }}</span>
                                    </span>
                                 </div>
 
@@ -89,8 +117,6 @@
 
                 </div>
 
-                <div class="md-layout-item md-size-20">
-                </div>
 
             </div>
 
@@ -159,8 +185,8 @@ export default {
                 this.createdRecordCountCheck()
                 this.fileUploaded = true
 
-            } catch (e) {
-                this.alertNotify('error', e.message)
+            } catch (error) {
+                this.alertNotify('error', error.message[0])
             }
 
             this.loading = false
@@ -192,76 +218,76 @@ export default {
 </script>
 
 <style scoped>
-    .csv-p {
-        font-size: x-small;
-        font-weight: 500;
-        color: gray;
-    }
+.csv-p {
+    font-size: x-small;
+    font-weight: 500;
+    color: gray;
+}
 
-    .upload-area {
-        margin: auto;
-        width: 60%;
-        padding: 10px;
-        min-height: 4rem;
-        border: 1px dashed;
-        margin-bottom: 2rem;
-        margin-top: 2rem
-    }
+.upload-area {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+    min-height: 4rem;
+    border: 1px dashed;
+    margin-bottom: 2rem;
+    margin-top: 2rem
+}
 
-    .upload-area p {
-        text-align: center;
-        font-family: Arial;
-    }
+.upload-area p {
+    text-align: center;
+    font-family: Arial;
+}
 
-    .upload-area input {
-        position: absolute;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        outline: none;
-        opacity: 0;
-    }
+.upload-area input {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+}
 
-    .buttons-area {
-        margin: auto;
-        width: 60%;
-        margin-bottom: 2rem;
-        margin-top: 2rem
-    }
+.buttons-area {
+    margin: auto;
+    width: 60%;
+    margin-bottom: 2rem;
+    margin-top: 2rem
+}
 
-    .uploaded {
-        display: inline-block;
-        font-weight: 200;
-        padding: 10px 5px;
-        height: 37px;
-        position: relative;
-    }
+.uploaded {
+    display: inline-block;
+    font-weight: 200;
+    padding: 10px 5px;
+    height: 37px;
+    position: relative;
+}
 
-    .uploaded-wrap {
-        display: block;
-        position: relative;
-        /*box-shadow*/
-        -webkit-box-shadow: 0 2px 0 -1px #ebebeb;
-        -moz-box-shadow: 0 2px 0 -1px #ebebeb;
-        box-shadow: 0 2px 0 -1px #ebebeb;
-    }
+.uploaded-wrap {
+    display: block;
+    position: relative;
+    /*box-shadow*/
+    -webkit-box-shadow: 0 2px 0 -1px #ebebeb;
+    -moz-box-shadow: 0 2px 0 -1px #ebebeb;
+    box-shadow: 0 2px 0 -1px #ebebeb;
+}
 
-    .uploaded-wrap:last-of-type {
-        /*box-shadow*/
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-    }
+.uploaded-wrap:last-of-type {
+    /*box-shadow*/
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
 
-    .warning-message-area {
-        padding: 20px;
-        margin: 10px;
-        d-webkit-border-radius: 16px;
-        -moz-border-radius: 16px;
-        border-radius: 16px;
-        color: #856404;
-        background-color: #fff3cd;
-        border-color: #ffeeba;
-    }
+.warning-message-area {
+    padding: 20px;
+    margin: 10px;
+    d-webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
 </style>

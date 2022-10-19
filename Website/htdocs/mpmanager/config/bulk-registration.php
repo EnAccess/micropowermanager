@@ -11,7 +11,7 @@ return [
         ],
 
         'cluster' => [
-            'name' => 'State'
+            'name' => 'Cluster Name',
         ],
 
         'mini_grid' => [
@@ -22,7 +22,7 @@ return [
         'city' => [
             'cluster_id' => 'cluster_id',
             'mini_grid_id' => 'mini_grid_id',
-            'name' => 'Village name'
+            'name' => 'Village Name'
         ],
 
         'address' => [
@@ -82,25 +82,25 @@ return [
 
         'person_docs' => [
             'customer_picture' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Customer Picture',
                 'location' => null
             ],
             'signed_contract' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of signed contract',
                 'location' => null
             ],
             'customer_id' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of customer ID',
                 'location' => null
             ],
             'payment receipt' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of customer payment reciept',
                 'location' => null
