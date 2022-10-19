@@ -1,0 +1,30 @@
+{
+    "name": "inensus/bulk-registration",
+    "description": "Package description",
+    "type": "package",
+    "require": {
+        "parsecsv/php-parsecsv": "^1.3",
+        "spatie/geocoder": "^3.10"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kamuran Engin",
+            "email": "ke@inensus.com",
+            "role": "developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Inensus\\BulkRegistration\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Inensus\\BulkRegistration\\Providers\\BulkRegistrationServiceProvider"
+            ]
+        }
+    }
+}
