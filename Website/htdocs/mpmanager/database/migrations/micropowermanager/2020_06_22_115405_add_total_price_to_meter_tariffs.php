@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->table('meter_tariffs', function (Blueprint $table) {
+        Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             $table->integer('total_price')->unsigned()->nullable();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->table('meter_tariffs', function (Blueprint $table) {
+        Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             $table->dropColumn('total_price');
         });
     }

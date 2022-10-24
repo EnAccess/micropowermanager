@@ -10,7 +10,7 @@ return new class extends Migration
     {
 
         if (!Schema:: hasTable('mesomb_transactions')) {
-            Schema::connection('micropowermanager')->create('mesomb_transactions', static function (Blueprint $table) {
+            Schema::connection('shard')->create('mesomb_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('pk');
                 $table->integer('status')->default(0);
@@ -32,6 +32,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('mesomb_transactions');
+        Schema::connection('shard')->dropIfExists('mesomb_transactions');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('sms_variable_default_values', function (Blueprint $table) {
+        Schema::connection('shard')->create('sms_variable_default_values', function (Blueprint $table) {
             $table->id();
             $table->string('variable');
             $table->string('value');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('sms_variable_default_values');
+        Schema::connection('shard')->dropIfExists('sms_variable_default_values');
     }
 };

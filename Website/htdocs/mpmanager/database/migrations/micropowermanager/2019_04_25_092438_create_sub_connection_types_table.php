@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('micropowermanager')->create('sub_connection_types', static function (Blueprint $table) {
+        Schema::connection('shard')->create('sub_connection_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('connection_type_id');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('micropowermanager')->dropIfExists('sub_connection_types');
+        Schema::connection('shard')->dropIfExists('sub_connection_types');
     }
 };

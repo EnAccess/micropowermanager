@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('role_definitions', function (Blueprint $table) {
+        Schema::connection('shard')->create('role_definitions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('role_name');
         });
 
 
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::connection('shard')->create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('role_owner');
             $table->integer('role_definition_id');
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('person_roles');
+        Schema::connection('shard')->dropIfExists('person_roles');
     }
 };

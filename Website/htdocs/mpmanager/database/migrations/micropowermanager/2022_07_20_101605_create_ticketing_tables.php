@@ -23,7 +23,7 @@ class CreateTicketingTables extends Migration
     {
         $tableNames = config('tickets.table_names');
 
-        Schema::create($tableNames['ticket'], function (Blueprint $table) {
+        Schema::connection('shard')->create($tableNames['ticket'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('ticket_id');
             $table->morphs('creator');
@@ -37,7 +37,7 @@ class CreateTicketingTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['user'], function (Blueprint $table) {
+        Schema::connection('shard')->create($tableNames['user'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('user_name')->unique();
             $table->string('phone')->nullable();
@@ -46,7 +46,7 @@ class CreateTicketingTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['ticket_categories'], function (Blueprint $table) {
+        Schema::connection('shard')->create($tableNames['ticket_categories'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('label_name');
             $table->string('label_color');
@@ -54,20 +54,20 @@ class CreateTicketingTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create($tableNames['outsource_reports'], static function(Blueprint $table){
+        Schema::connection('shard')->create($tableNames['outsource_reports'], static function(Blueprint $table){
             $table->increments('id');
             $table->string('date');
             $table->string('path');
             $table->timestamps();
         });
 
-         Schema::create($tableNames['ticket_outsource'], static function (Blueprint $table) {
+         Schema::connection('shard')->create($tableNames['ticket_outsource'], static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('amount');
             $table->timestamps();
         });
-         Schema::create($tableNames['ticket_comments'], static function (Blueprint $table) {
+         Schema::connection('shard')->create($tableNames['ticket_comments'], static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('ticket_user_id');
@@ -85,10 +85,10 @@ class CreateTicketingTables extends Migration
     public function down()
     {
         $tableNames = config('ticket.table_names');
-        Schema::drop($tableNames['ticket']);
-        Schema::drop($tableNames['user']);
-        Schema::drop($tableNames['ticket_categories']);
-        Schema::drop($tableNames['ticket_outsource']);
+        Schema::connection('shard')->drop($tableNames['ticket']);
+        Schema::connection('shard')->drop($tableNames['user']);
+        Schema::connection('shard')->drop($tableNames['ticket_categories']);
+        Schema::connection('shard')->drop($tableNames['ticket_outsource']);
 
     }
 

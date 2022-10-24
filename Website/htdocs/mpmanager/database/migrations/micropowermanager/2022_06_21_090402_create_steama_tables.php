@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         if (!Schema:: hasTable('steama_agents')) {
-            Schema::connection('micropowermanager')->create('steama_agents', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_agents', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('site_id');
                 $table->integer('agent_id')->unique();
@@ -23,7 +23,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_asset_rates_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_asset_rates_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_asset_rates_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_asset_people_id');
                 $table->decimal('down_payment');
@@ -33,7 +33,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_credentials')) {
-            Schema::connection('micropowermanager')->create('steama_credentials', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_credentials', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('username')->nullable();
                 $table->string('password')->nullable();
@@ -46,7 +46,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_customer_basis_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_customer_basis_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_customer_basis_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('customer_id');
                 $table->string('payment_plan_type');
@@ -57,7 +57,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_customer_basis_time_of_usages')) {
-            Schema::connection('micropowermanager')->create('steama_customer_basis_time_of_usages', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_customer_basis_time_of_usages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('start');
                 $table->integer('end');
@@ -68,7 +68,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_customers')) {
-            Schema::connection('micropowermanager')->create('steama_customers', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_customers', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('site_id');
                 $table->integer('user_type_id');
@@ -84,7 +84,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_flat_rate_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_flat_rate_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_flat_rate_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('energy_price')->default(0);
                 $table->timestamps();
@@ -93,7 +93,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_hybrid_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_hybrid_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_hybrid_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('connection_fee')->nullable();
                 $table->decimal('subscription_cost')->default(0);
@@ -104,7 +104,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_meter_types')) {
-            Schema::connection('micropowermanager')->create('steama_meter_types', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_meter_types', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_meter_type_id');
                 $table->string('version');
@@ -116,7 +116,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_meters')) {
-            Schema::connection('micropowermanager')->create('steama_meters', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_meters', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('meter_id')->unique();
                 $table->integer('customer_id');
@@ -129,7 +129,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_minimum_top_up_requirements_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_minimum_top_up_requirements_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_minimum_top_up_requirements_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('threshold')->default(0);
                 $table->timestamps();
@@ -138,7 +138,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_per_kwh_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_per_kwh_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_per_kwh_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('energy_price')->default(0);
                 $table->timestamps();
@@ -147,7 +147,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_site_level_payment_plan_types')) {
-            Schema::connection('micropowermanager')->create('steama_site_level_payment_plan_types', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_site_level_payment_plan_types', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
                 $table->timestamps();
@@ -156,7 +156,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_site_level_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_site_level_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_site_level_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('site_id');
                 $table->integer('payment_plan_type_id');
@@ -169,7 +169,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sites')) {
-            Schema::connection('micropowermanager')->create('steama_sites', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sites', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('site_id')->unique();
                 $table->integer('mpm_mini_grid_id')->unique();
@@ -180,7 +180,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_subscription_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_subscription_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_subscription_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('plan_fee')->default(0);
                 $table->string('plan_duration')->default(0);
@@ -192,7 +192,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_tariff_override_payment_plans')) {
-            Schema::connection('micropowermanager')->create('steama_tariff_override_payment_plans', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_tariff_override_payment_plans', function (Blueprint $table) {
                 $table->increments('id');
                 $table->decimal('energy_price')->default(0);
                 $table->timestamps();
@@ -201,7 +201,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_tariffs')) {
-            Schema::connection('micropowermanager')->create('steama_tariffs', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_tariffs', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_tariff_id')->unique();
                 $table->timestamps();
@@ -210,7 +210,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_transactions')) {
-            Schema::connection('micropowermanager')->create('steama_transactions', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_transactions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('site_id');
                 $table->integer('transaction_id')->unique();
@@ -226,7 +226,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_user_types')) {
-            Schema::connection('micropowermanager')->create('steama_user_types', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_user_types', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_connection_type_id');
                 $table->string('name');
@@ -237,7 +237,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sync_actions')) {
-            Schema::connection('micropowermanager')->create('steama_sync_actions', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sync_actions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sync_setting_id');
                 $table->integer('attempts')->default(0);
@@ -249,7 +249,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_settings')) {
-            Schema::connection('micropowermanager')->create('steama_settings', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('setting_id');
                 $table->string('setting_type');
@@ -259,7 +259,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sms_settings')) {
-            Schema::connection('micropowermanager')->create('steama_sms_settings', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sms_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('state')->unique();
                 $table->integer('not_send_elder_than_mins');
@@ -270,7 +270,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sync_settings')) {
-            Schema::connection('micropowermanager')->create('steama_sync_settings', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sync_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('action_name')->unique();
                 $table->string('sync_in_value_str');
@@ -282,7 +282,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sms_notified_customers')) {
-            Schema::connection('micropowermanager')->create('steama_sms_notified_customers', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sms_notified_customers', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('customer_id');
                 $table->string('notify_type');
@@ -293,7 +293,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sms_bodies')) {
-            Schema::connection('micropowermanager')->create('steama_sms_bodies', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sms_bodies', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('reference', 50)->unique();
                 $table->string('title')->nullable();
@@ -306,7 +306,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sms_variable_default_values')) {
-            Schema::connection('micropowermanager')->create('steama_sms_variable_default_values', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sms_variable_default_values', function (Blueprint $table) {
                 $table->id();
                 $table->string('variable');
                 $table->string('value');
@@ -316,7 +316,7 @@ return new class extends Migration
 
 
         if (!Schema:: hasTable('steama_sms_feedback_words')) {
-            Schema::connection('micropowermanager')->create('steama_sms_feedback_words', function (Blueprint $table) {
+            Schema::connection('shard')->create('steama_sms_feedback_words', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('meter_balance')->nullable();
                 $table->timestamps();
@@ -327,33 +327,33 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('steama_agents');
-        Schema::connection('micropowermanager')->dropIfExists('steama_asset_rates_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_credentials');
-        Schema::connection('micropowermanager')->dropIfExists('steama_customer_basis_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_customer_basis_time_of_usages');
-        Schema::connection('micropowermanager')->dropIfExists('steama_customers');
-        Schema::connection('micropowermanager')->dropIfExists('steama_flat_rate_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_hybrid_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_meter_types');
-        Schema::connection('micropowermanager')->dropIfExists('steama_meters');
-        Schema::connection('micropowermanager')->dropIfExists('steama_minimum_top_up_requirements_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_per_kwh_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_site_level_payment_plan_types');
-        Schema::connection('micropowermanager')->dropIfExists('steama_site_level_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sites');
-        Schema::connection('micropowermanager')->dropIfExists('steama_subscription_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_tariff_override_payment_plans');
-        Schema::connection('micropowermanager')->dropIfExists('steama_tariffs');
-        Schema::connection('micropowermanager')->dropIfExists('steama_transactions');
-        Schema::connection('micropowermanager')->dropIfExists('steama_user_types');
-        Schema::connection('micropowermanager')->dropIfExists('stema_sync_actions');
-        Schema::connection('micropowermanager')->dropIfExists('steama_settings');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sms_settings');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sync_settings');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sms_bodies');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sms_variable_default_values');
-        Schema::connection('micropowermanager')->dropIfExists('steama_sms_feedback_words');
+        Schema::connection('shard')->dropIfExists('steama_agents');
+        Schema::connection('shard')->dropIfExists('steama_asset_rates_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_credentials');
+        Schema::connection('shard')->dropIfExists('steama_customer_basis_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_customer_basis_time_of_usages');
+        Schema::connection('shard')->dropIfExists('steama_customers');
+        Schema::connection('shard')->dropIfExists('steama_flat_rate_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_hybrid_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_meter_types');
+        Schema::connection('shard')->dropIfExists('steama_meters');
+        Schema::connection('shard')->dropIfExists('steama_minimum_top_up_requirements_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_per_kwh_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_site_level_payment_plan_types');
+        Schema::connection('shard')->dropIfExists('steama_site_level_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_sites');
+        Schema::connection('shard')->dropIfExists('steama_subscription_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_tariff_override_payment_plans');
+        Schema::connection('shard')->dropIfExists('steama_tariffs');
+        Schema::connection('shard')->dropIfExists('steama_transactions');
+        Schema::connection('shard')->dropIfExists('steama_user_types');
+        Schema::connection('shard')->dropIfExists('stema_sync_actions');
+        Schema::connection('shard')->dropIfExists('steama_settings');
+        Schema::connection('shard')->dropIfExists('steama_sms_settings');
+        Schema::connection('shard')->dropIfExists('steama_sync_settings');
+        Schema::connection('shard')->dropIfExists('steama_sms_bodies');
+        Schema::connection('shard')->dropIfExists('steama_sms_variable_default_values');
+        Schema::connection('shard')->dropIfExists('steama_sms_feedback_words');
 
 
     }

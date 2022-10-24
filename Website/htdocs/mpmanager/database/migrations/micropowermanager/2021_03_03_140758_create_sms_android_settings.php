@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('sms_android_settings', function (Blueprint $table) {
+        Schema::connection('shard')->create('sms_android_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url')->default('https://fcm.googleapis.com/fcm/send');
             $table->string('token')->nullable();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('sms_android_settings');
+        Schema::connection('shard')->dropIfExists('sms_android_settings');
     }
 };

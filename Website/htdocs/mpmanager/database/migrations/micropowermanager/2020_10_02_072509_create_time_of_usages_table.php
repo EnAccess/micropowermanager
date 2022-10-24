@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('time_of_usages', function (Blueprint $table) {
+        Schema::connection('shard')->create('time_of_usages', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('tariff_id');
             $table->string('start');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('time_of_usages');
+        Schema::connection('shard')->dropIfExists('time_of_usages');
     }
 };
