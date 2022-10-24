@@ -5,9 +5,9 @@ namespace App\Listeners;
 use App\Lib\ITransactionProvider;
 use App\Models\AccessRate\AccessRate;
 use App\Models\AssetRate;
+use App\Models\AssetType;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterToken;
-use App\Models\PaymentHistory;
 use App\Services\AccessRatePaymentHistoryService;
 use App\Services\ApplianceRatePaymentHistoryService;
 use App\Services\MeterTokenPaymentHistoryService;
@@ -26,7 +26,7 @@ class PaymentListener
         private ApplianceRatePaymentHistoryService $applianceRatePaymentHistoryService,
         private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
         private MeterTokenPaymentHistoryService $meterTokenPaymentHistoryService,
-        private TransactionPaymentHistoryService $transactionPaymentHistoryService
+        private TransactionPaymentHistoryService $transactionPaymentHistoryService,
     ) {
     }
 
@@ -93,6 +93,10 @@ class PaymentListener
                 $this->applianceRatePaymentHistoryService->setAssigner($paidFor);
                 $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->applianceRatePaymentHistoryService->assign();
+                break;
+            case $paidFor instanceof AssetType:
+                $paymentHistory->paid_for_type = AssetType::class;
+                $paymentHistory->paid_for_id = $paidFor->id;
                 break;
             case $paidFor instanceof MeterToken:
                 $this->meterTokenPaymentHistoryService->setAssigner($paidFor);

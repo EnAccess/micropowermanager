@@ -171,7 +171,8 @@ class PersonService  implements IBaseService
 
     public function delete($person)
     {
-        return $person->delete();
+        $person->delete();
+        return $person;
     }
 
     public function getAll($limit = null, $customerType = 1)

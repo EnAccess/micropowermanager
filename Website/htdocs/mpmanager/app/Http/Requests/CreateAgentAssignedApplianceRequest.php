@@ -27,9 +27,9 @@ class CreateAgentAssignedApplianceRequest extends FormRequest
         $sessionService = app()->make(SessionService::class);
         $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'agent_id' => 'required|exists:'.$database.'.agents,id',
-            'user_id' => 'required|exists:micro_power_manager.users,id',
-            'appliance_type_id' => 'required|exists:'.$database.'.asset_types,id',
+            'agent_id' => 'required',
+            'user_id' => 'required',
+            'appliance_type_id' => 'required',
             'cost' => 'required|regex:/^\d*(\.\d{1,2})?$/',
         ];
     }

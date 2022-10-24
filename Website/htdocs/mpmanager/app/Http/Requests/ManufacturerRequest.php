@@ -25,17 +25,15 @@ class ManufacturerRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'name' => 'required|string|unique:'.$database.'.manufacturers',
+            'name' => 'required|string',
             'phone' => 'sometimes|string',
             'email' => 'sometimes|email',
             'contact_person' => 'sometimes|min:3',
             'website' => 'sometimes|min:6',
-            'city_id' => 'sometimes|integer|exists:'.$database.'.cities,id',
-            'address' => 'sometimes|string|required_with:'.$database.'.city_id',
-            'api_name' => 'sometimes|unique:'.$database.'.manufacturers',
+            'city_id' => 'sometimes|integer',
+            'address' => 'sometimes|string',
+            'api_name' => 'sometimes',
         ];
     }
 }

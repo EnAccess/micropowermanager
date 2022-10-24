@@ -37,8 +37,6 @@ class PersonRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
@@ -46,11 +44,9 @@ class PersonRequest extends FormRequest
             'birth_date' => 'sometimes|date_format:"Y-m-d',
             'sex' => 'required|in:male,female',
             'education' => 'sometimes|min:3',
-            'city_id' => 'sometimes|exists:'.$database.'.cities,id',
             'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
             'phone' => 'sometimes|min:11',
-            'nationality' => 'sometimes|exists:'.$database.'.countries,country_code',
         ];
     }
 }
