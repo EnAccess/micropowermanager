@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class AgentBalanceHistory extends Model
+class AgentBalanceHistory extends BaseModel
 {
 
     protected $guarded = [];

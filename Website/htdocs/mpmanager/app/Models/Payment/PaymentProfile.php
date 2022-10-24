@@ -2,9 +2,9 @@
 
 namespace App\Models\Payment;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class PaymentProfile extends Model
+class PaymentProfile extends BaseModel
 {
 
 }
