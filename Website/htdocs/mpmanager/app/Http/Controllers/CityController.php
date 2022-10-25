@@ -24,11 +24,6 @@ class CityController extends Controller
 
     }
 
-    /**
-     * List of all cities
-     *
-     * @return ApiResource
-     */
     public function index(Request $request): ApiResource
     {
         $limit = $request->get('limit');
@@ -36,13 +31,6 @@ class CityController extends Controller
         return ApiResource::make($this->cityService->getAll($limit));
     }
 
-    /**
-     * Details of requested city
-     *
-     * @param $cityId
-     *
-     * @return ApiResource
-     */
     public function show($cityId, Request $request): ApiResource
     {
         $relation = $request->get('relation');
@@ -54,14 +42,7 @@ class CityController extends Controller
         return ApiResource::make($this->cityService->getById($cityId));
     }
 
-    /**
-     * Updates the given city
-     *
-     * @param CityRequest $request
-     * @param $cityId
-     *
-     * @return ApiResource
-     */
+
     public function update($cityId, CityRequest $request): ApiResource
     {
         $city = $this->cityService->getById($cityId);
@@ -70,19 +51,9 @@ class CityController extends Controller
         return ApiResource::make($this->cityService->update($city, $cityData));
     }
 
-    /**
-     * Create
-     *
-     * @param CityRequest $request
-     *
-     * @return ApiResource
-     *
-     * @throws ValidationException
-     */
     public function store(CityRequest $request): ApiResource
     {
-        $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id','country_id']);
-
-        return ApiResource::make($this->cityService->create($cityData));
+        $city = $this->cityService->create($request->getCity());
+        return ApiResource::make($city);
     }
 }

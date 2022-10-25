@@ -143,7 +143,7 @@
                                 <div class="md-layout-item md-size-50 md-small-size-100 ">
                                     <md-field :class="{'md-invalid': errors.has($tc('words.password'))}"
                                     >
-                                        <label for="email">{{ $tc('words.password') }}</label>
+                                        <label for="password">{{ $tc('words.password') }}</label>
                                         <md-input
                                             id="password"
                                             :name="$tc('words.password')"
@@ -160,12 +160,12 @@
                                 <div class="md-layout-item md-size-50 md-small-size-100 ">
                                     <md-field :class="{'md-invalid': errors.has($tc('phrases.confirmPassword'))}"
                                     >
-                                        <label for="email">{{ $tc('phrases.confirmPassword') }}</label>
+                                        <label for="confirmPassword">{{ $tc('phrases.confirmPassword') }}</label>
                                         <md-input
                                             id="confirmPassword"
                                            :name="$tc('phrases.confirmPassword')"
                                             v-model="confirmPassword"
-                                            v-validate="'required|confirmed:$passwordRef'"
+                                            v-validate="'required|confirmed:passwordRef'"
                                             type="password"
                                         />
                                         <span class="md-error">{{ errors.first($tc('phrases.confirmPassword')) }}</span>

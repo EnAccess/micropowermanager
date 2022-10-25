@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CityService  implements IBaseService
+class CityService
 {
 
-    public function __construct(private City $city, private Person $person)
+    public function __construct(private City $city, private Person $person, private MiniGrid $miniGrid)
     {
 
     }
@@ -78,14 +78,13 @@ class CityService  implements IBaseService
         return $city;
     }
 
-    public function create($cityData)
+    public function create(City $city): City
     {
-        return $this->city->newQuery()->create([
-            'name' => $cityData['name'],
-            'mini_grid_id' => $cityData['mini_grid_id'],
-            'cluster_id' => $cityData['cluster_id'],
-            'country_id' => $cityData['country_id'] ?? 0,
-        ]);
+        // validation
+        $this->miniGrid->newQuery()->findOrFail($city->getMiniGridId());
+        $city->save();
+
+        return $city;
     }
 
     public function delete($model)

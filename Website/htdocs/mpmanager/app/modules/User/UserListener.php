@@ -6,11 +6,12 @@ namespace MPM\User;
 
 use App\Services\CompanyDatabaseService;
 use App\Services\DatabaseProxyService;
+use Inensus\Ticket\Services\TicketUserService;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserListener
 {
-    public function __construct(private DatabaseProxyService $databaseProxyService, private CompanyDatabaseService $companyDatabaseService)
+    public function __construct(private DatabaseProxyService $databaseProxyService, private CompanyDatabaseService $companyDatabaseService, private TicketUserService $ticketUserService)
     {
     }
 
@@ -24,15 +25,19 @@ class UserListener
 
     public function handleUserCreatedEvent(UserCreatedEvent $event)
     {
-        $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->getCompanyId());
+        if($event->shouldSyncUser) {
+            $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->getCompanyId());
 
-        $databaseProxyData = [
-            'email' => $event->user->getEmail(),
-            'fk_company_id' => $event->user->getCompanyId(),
-            'fk_company_database_id' => $companyDatabase->getId()
-        ];
+            $databaseProxyData = [
+                'email' => $event->user->getEmail(),
+                'fk_company_id' => $event->user->getCompanyId(),
+                'fk_company_database_id' => $companyDatabase->getId()
+            ];
 
-        $this->databaseProxyService->create($databaseProxyData);
+            $this->databaseProxyService->create($databaseProxyData);
+        }
+
+        $this->ticketUserService->findOrCreateByUser($event->user);
     }
 
 

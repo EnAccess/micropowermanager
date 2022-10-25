@@ -39,8 +39,25 @@ class MiniGrid extends BaseModel
     {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
+
     public function agent(): HasOne
     {
         return $this->hasOne(Agent::Class);
     }
+
+    public function setClusterId(int $clusterId): void
+    {
+        $this->cluster_id = $clusterId;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getClusterId(): int
+    {
+        return $this->cluster_id;
+    }
+
 }
