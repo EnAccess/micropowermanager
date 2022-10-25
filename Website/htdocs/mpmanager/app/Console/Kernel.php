@@ -13,6 +13,7 @@ use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPacka
 use Inensus\SteamaMeter\Console\Commands\InstallPackage as InstallStemacoMeterPackage;
 use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
 use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
+use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 
 
 class Kernel extends ConsoleKernel
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         InstallStemacoMeterPackage::class,
         InstallSwiftaPaymentProviderPackage::class,
         InstallMsombPaymentProviderPackage::class,
+        InstallBulkRegistrationPackage::class,
     ];
 
     /**

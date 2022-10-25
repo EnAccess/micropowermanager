@@ -176,6 +176,7 @@ return [
         \Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider::class,
         \Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider::class,
         \Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
+        \Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider::class
     ],
 
     /*

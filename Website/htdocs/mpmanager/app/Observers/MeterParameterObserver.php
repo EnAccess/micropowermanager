@@ -41,16 +41,16 @@ class MeterParameterObserver
     public function created(MeterParameter $meterParameter): void
     {
 
-        CreatePiggyBankEntry::dispatchSync(
-            $meterParameter,$this->meterParameterService);
+        /*        CreatePiggyBankEntry::dispatchSync(
+                    $meterParameter,$this->meterParameterService);*/
 
-        $meter =$meterParameter->meter()->first();
+        $meter = $meterParameter->meter()->first();
         $meter->in_use = 1;
         $meter->save();
     }
 
     public function updated(MeterParameter $meterParameter): void
     {
-        UpdatePiggyBankEntry::dispatchSync($meterParameter);
+        // UpdatePiggyBankEntry::dispatchSync($meterParameter);
     }
 }

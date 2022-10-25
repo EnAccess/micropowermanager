@@ -1,3 +1,6 @@
+import { baseUrl } from '@/repositories/Client/AxiosClient'
+import { resources } from '@/resources'
+
 export class Meters {
     constructor () {
         this.meters = []
@@ -17,7 +20,7 @@ export class Meters {
     }
 
     getMeterDetails (meterId) {
-        return axios.get(resources.meters.getMeters + meterId + '/all')
+        return axios.get(`${baseUrl}${resources.meters.getMeters}${meterId}/all`)
             .then(response => {
                 let data = response.data.data
                 let meter = {

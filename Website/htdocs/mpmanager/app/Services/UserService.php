@@ -18,7 +18,6 @@ class UserService
     {
     }
 
-
     public function create(array $userData, ?int $companyId = null): User
     {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
@@ -33,7 +32,7 @@ class UserService
         ]);
 
         event(new UserCreatedEvent($user, $shouldSyncUserWithMasterDatabase));
-
+        
         return $user;
     }
 
