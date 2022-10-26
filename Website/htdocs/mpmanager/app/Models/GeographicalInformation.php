@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class GeographicalInformation extends BaseModel
 {
-
     protected $table = 'geographical_informations';
 
     public function owner(): MorphTo

@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 
 class TestJob extends AbstractJob
 {
-
     public function __construct(int $companyId)
     {
         $this->companyId = $companyId;
@@ -20,6 +19,4 @@ class TestJob extends AbstractJob
     {
         dump("brnako");
     }
-
-
 }

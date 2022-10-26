@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AirtelTransaction extends BaseModel implements IRawTransaction
 {
-
     /**
      * @return MorphOne
      */

@@ -23,10 +23,9 @@ class RegistrationTailService implements IBaseService
 
     public function update($registrationTail, $registrationTailData)
     {
-        if (array_key_exists('tail',$registrationTailData))
-        {
+        if (array_key_exists('tail', $registrationTailData)) {
             $registrationTail->update($registrationTailData);
-        }else{
+        } else {
             $registrationTail->update(['tail' => $registrationTailData]);
         }
 
@@ -59,13 +58,18 @@ class RegistrationTailService implements IBaseService
     {
         array_push($tail, [
             'tag' => $mpmPlugin->tail_tag,
-            'component' => isset($mpmPlugin->tail_tag) ? str_replace(" ", "-",
-                $mpmPlugin->tail_tag) : null,
+            'component' => isset($mpmPlugin->tail_tag) ? str_replace(
+                " ",
+                "-",
+                $mpmPlugin->tail_tag
+            ) : null,
             'adjusted' =>
                 false
         ]);
         $this->update(
-            $registrationTail, ['tail' => json_encode($tail)]);
+            $registrationTail,
+            ['tail' => json_encode($tail)]
+        );
         return $tail;
     }
 }

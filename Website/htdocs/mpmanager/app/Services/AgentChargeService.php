@@ -6,17 +6,15 @@ use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 
-class AgentChargeService  implements IBaseService
+class AgentChargeService implements IBaseService
 {
-
     public function __construct(private AgentCharge $agentCharge)
     {
-
     }
 
     public function create($agentChargeData)
     {
-       return $this->agentCharge->newQuery()->create($agentChargeData);
+        return $this->agentCharge->newQuery()->create($agentChargeData);
     }
 
     public function getById($id)

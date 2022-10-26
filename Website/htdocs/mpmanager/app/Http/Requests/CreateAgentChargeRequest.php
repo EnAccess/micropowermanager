@@ -26,7 +26,7 @@ class CreateAgentChargeRequest extends FormRequest
     {
         // TODO: Change on UI.  user_id is not required.
         $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
+        $database = $sessionService->getAuthenticatedUserDatabaseName();
         return [
             'agent_id' => 'required',
             'amount' => 'required|numeric',

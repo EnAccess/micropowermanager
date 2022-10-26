@@ -18,6 +18,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SocialTariff extends BaseModel
 {
-
     protected $guarded = [];
 }

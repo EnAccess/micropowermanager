@@ -20,7 +20,6 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyController extends Controller
 {
-
     public function __construct(
         private CompanyService $companyService,
         private CompanyDatabaseService $companyDatabaseService,
@@ -45,7 +44,7 @@ class CompanyController extends Controller
 
         $companyDatabaseData = [
             'company_id' => $company->getId(),
-            'database_name' => str_replace(" ", "",preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' . Carbon::now()->timestamp,
+            'database_name' => str_replace(" ", "", preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' . Carbon::now()->timestamp,
         ];
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
         $databaseProxyData = [
@@ -57,7 +56,8 @@ class CompanyController extends Controller
         $this->databaseProxyService->create($databaseProxyData);
         $this->companyDatabaseService->createNewDatabaseForCompany($databaseName, $company->getId());
 
-        return $this->databaseProxyManagerService->runForCompany($company->getId(),
+        return $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
             function () use ($databaseName, $adminData, $company, $plugins) {
                 $this->companyDatabaseService->doMigrations($databaseName);
                 $this->companyDatabaseService->runSeeders();
@@ -74,13 +74,15 @@ class CompanyController extends Controller
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
                     array_push($registrationTail, [
                         'tag' => $mpmPlugin->tail_tag,
-                        'component' => isset($mpmPlugin->tail_tag) ? str_replace(" ", "-",
-                            $mpmPlugin->tail_tag) : null,
+                        'component' => isset($mpmPlugin->tail_tag) ? str_replace(
+                            " ",
+                            "-",
+                            $mpmPlugin->tail_tag
+                        ) : null,
                         'adjusted' =>
                             false
                     ]);
                     Artisan::call($mpmPlugin->installation_command);
-
                 }
 
                 $this->userService->create([
@@ -92,16 +94,14 @@ class CompanyController extends Controller
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
                 $mainSettings = $this->mainSettingsService->getAll()->first();
-                $this->mainSettingsService->update($mainSettings,['company_name' => $company->name]);
+                $this->mainSettingsService->update($mainSettings, ['company_name' => $company->name]);
 
                 return response()->json([
                     'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',
                     'company' => $company,
                     'sidebarData' => $this->menuItemsService->getMenuItems()
                 ], 201);
-            });
-
-
+            }
+        );
     }
-
 }

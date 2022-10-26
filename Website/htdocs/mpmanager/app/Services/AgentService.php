@@ -7,7 +7,6 @@ use App\Models\Agent;
 use App\Services\CountryService;
 use App\Services\PeriodService;
 use App\Models\Address\Address;
-
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
 use App\Models\Country;
@@ -22,17 +21,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentService  implements IBaseService
+class AgentService implements IBaseService
 {
-
     public function __construct(
         private Agent $agent,
         private AgentReceipt $agentReceipt,
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService
     ) {
-
-
     }
 
     /**
@@ -183,5 +179,4 @@ class AgentService  implements IBaseService
         return $this->agent->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $agent->id)->first();
     }
-
 }

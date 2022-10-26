@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class AgentBalanceHistory extends BaseModel
 {
-
     protected $guarded = [];
 
     public function agent(): void

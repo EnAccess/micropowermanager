@@ -24,7 +24,6 @@ class UserController extends Controller
     {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
         return ApiResource::make($user->toArray());
-
     }
 
     public function show(User $user)

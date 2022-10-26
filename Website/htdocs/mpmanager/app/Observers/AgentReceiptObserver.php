@@ -5,14 +5,12 @@ namespace App\Observers;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
-
 use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptDetailService;
 use App\Services\AgentReceiptHistoryBalanceService;
 use App\Services\AgentReceiptService;
 use App\Services\AgentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
 
 class AgentReceiptObserver
 {
@@ -23,7 +21,6 @@ class AgentReceiptObserver
         private AgentReceiptDetailService $agentReceiptDetailService,
         private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService
     ) {
-
     }
 
     public function created(AgentReceipt $receipt): void
@@ -69,6 +66,5 @@ class AgentReceiptObserver
         $this->agentReceiptHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentReceiptHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
-
     }
 }

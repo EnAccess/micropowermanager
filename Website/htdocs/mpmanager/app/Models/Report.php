@@ -17,7 +17,4 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Report extends BaseModel
 {
-
-
-
 }

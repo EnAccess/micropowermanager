@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class AndroidGateway implements ISmsProvider
 {
-
     /**
      * Sends the sms to the sms provider
      *

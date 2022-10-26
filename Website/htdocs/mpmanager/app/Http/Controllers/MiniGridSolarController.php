@@ -7,9 +7,9 @@ use App\Services\MiniGridSolarService;
 
 class MiniGridSolarController extends Controller
 {
-   public function __construct(private MiniGridSolarService $miniGridSolarService)
-   {
-   }
+    public function __construct(private MiniGridSolarService $miniGridSolarService)
+    {
+    }
 
     public function show($miniGridId): \Illuminate\Http\JsonResponse|ApiResource
     {

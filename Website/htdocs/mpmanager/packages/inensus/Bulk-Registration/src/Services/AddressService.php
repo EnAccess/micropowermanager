@@ -45,4 +45,18 @@ class AddressService extends CreatorService
         }
         $this->createRelatedDataIfDoesNotExists($returnAddresses);
     }
+
+    public function createForPerson(int $personId, int $cityId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address
+    {
+        $address = new Address();
+        $address->setOwner($personId, 'person');
+        $address->setCityId($cityId);
+        $address->setPhone($phone);
+        $address->setEmail($email);
+        $address->setIsPrimary($isPrimary);
+        $address->setStreet($street);
+        $address->save();
+
+        return $address;
+    }
 }

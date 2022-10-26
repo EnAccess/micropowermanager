@@ -1,22 +1,18 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Models\Country;
 
-class CountryService  implements IBaseService
+class CountryService implements IBaseService
 {
-
     public function __construct(private Country $country)
     {
-
-
     }
 
     public function getByCode(string|null $countryCode)
     {
-        return $countryCode !==null? $this->country->where('country_code', $countryCode)->first():$countryCode;
+        return $countryCode !== null ? $this->country->where('country_code', $countryCode)->first() : $countryCode;
     }
 
     public function getById($id)

@@ -81,7 +81,7 @@ class Ticket extends BaseModel
             "and addresses.city_id  in (SELECT id from cities where mini_grid_id  =" . $miniGridId . " ) " .
             " GROUP by tickets.category_id,YEARWEEK(tickets.updated_at,3)";
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -97,7 +97,7 @@ class Ticket extends BaseModel
             "and addresses.city_id in (SELECT id from cities where id =  " . $miniGridId . " ) " .
             "and tickets . status = 1 " .
             "GROUP by tickets . category_id,YEARWEEK(tickets.updated_at,3)";
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
         $sth->execute();
         return $sth->fetchAll(PDO::FETCH_ASSOC);

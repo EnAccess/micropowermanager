@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use App;
@@ -15,12 +14,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class PersonService  implements IBaseService
+class PersonService implements IBaseService
 {
-
     public function __construct(private Person $person)
     {
-
     }
 
 
@@ -100,8 +97,9 @@ class PersonService  implements IBaseService
     public function createMaintenancePerson(array $personData): Person
     {
         $personData['is_customer'] = 0;
-
-        return $this->person->newQuery()->create($personData);
+        /** @var Person $person */
+        $person =  $this->person->newQuery()->create($personData);
+        return $person;
     }
 
     public function livingInCluster(int $clusterId)
@@ -185,5 +183,4 @@ class PersonService  implements IBaseService
             'meters.meter',
         ])->where('is_customer', $customerType)->paginate($limit);
     }
-
 }

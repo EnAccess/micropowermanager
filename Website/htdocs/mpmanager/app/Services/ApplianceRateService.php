@@ -6,15 +6,13 @@ use App\Models\AssetRate;
 use App\Models\MainSettings;
 use Carbon\Carbon;
 
-class ApplianceRateService  implements IBaseService
+class ApplianceRateService implements IBaseService
 {
-
     private $mainSettings;
 
     public function __construct(private AssetRate $applianceRate, MainSettings $mainSettings)
     {
         $this->mainSettings = $mainSettings;
-
     }
 
     public function getCurrencyFromMainSettings()

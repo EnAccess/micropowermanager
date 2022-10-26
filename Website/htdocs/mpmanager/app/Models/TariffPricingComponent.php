@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class TariffPricingComponent extends BaseModel
 {
-
     protected $guarded = [];
 
     public function owner(): MorphTo

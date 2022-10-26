@@ -11,7 +11,7 @@ class SidebarController extends Controller
     {
     }
 
-    public function index():ApiResource
+    public function index(): ApiResource
     {
         return ApiResource::make($this->menuItemsService->getMenuItems());
     }

@@ -12,7 +12,6 @@ use Ramsey\Collection\Collection;
 
 class AssetPersonController extends Controller
 {
-
     /**
      * @var AssetPerson
      */

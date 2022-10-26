@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MasterModel extends Model
 {
-
     protected $guarded = ['id'];
     public static $rules = [];
 
@@ -24,6 +23,5 @@ class MasterModel extends Model
     {
         $this->setConnection('micro_power_manager');
         parent::__construct($attributes);
-
     }
 }

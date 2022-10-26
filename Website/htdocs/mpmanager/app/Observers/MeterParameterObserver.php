@@ -17,8 +17,6 @@ use App\Services\MeterParameterService;
 
 class MeterParameterObserver
 {
-
-
     public function __construct(private MeterParameterService $meterParameterService)
     {
     }

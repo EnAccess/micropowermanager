@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class SmsAndroidSettingService
 {
-
     private $smsAndroidSetting;
 
     public function __construct(SmsAndroidSetting $smsAndroidSetting)

@@ -6,7 +6,6 @@ use App\Models\Solar;
 
 class SolarObserver
 {
-
     /**
      * @var Solar
      */
@@ -30,6 +29,5 @@ class SolarObserver
                 ]
             );
         }
-
     }
 }

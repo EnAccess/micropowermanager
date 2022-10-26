@@ -13,7 +13,7 @@ class UserTicketService implements IAssignationService
 
     public function setAssigned($ticket)
     {
-       $this->ticket = $ticket;
+        $this->ticket = $ticket;
     }
 
     public function setAssigner($user)

@@ -20,7 +20,7 @@ class RegistrationTailController extends Controller
         return ApiResource::make($this->registrationTailService->getAll());
     }
 
-    public function update(RegistrationTail $registrationTail,Request $request): ApiResource
+    public function update(RegistrationTail $registrationTail, Request $request): ApiResource
     {
         $tail = $request->input('tail');
         $registrationTailData = [

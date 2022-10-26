@@ -8,9 +8,6 @@ use PDO;
 
 class Revenue extends BaseModel
 {
-
-
-
     public function registeredMetersByTariff($tariffId, $startDate, $endDate, $limit = null)
     {
         //get meters which are registered in the given period
@@ -23,7 +20,7 @@ class Revenue extends BaseModel
         if ($limit !== null) {
             $sql .= ' LIMIT ' . (int)$limit;
         }
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':tariff_id', $tariffId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -41,7 +38,7 @@ class Revenue extends BaseModel
             'and addresses.city_id IN (SELECT id from cities where mini_grid_id = ' . $miniGridId . ') ' .
             'and addresses.owner_type = "meter_parameter" ';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connection_id', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
 
@@ -57,7 +54,7 @@ class Revenue extends BaseModel
             ' DATE(meter_parameters.created_at) <= DATE(:endDate) ' .
             'and addresses.city_id IN (SELECT city_id from cities where cluster_id = ' . $clusterId . ' ) ' .
             ' and addresses.owner_type = "meter_parameter" ';
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connection_id', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
 
@@ -78,7 +75,7 @@ class Revenue extends BaseModel
             'and addresses.city_id IN (SELECT city_id from cities where cluster_id = :clusterId )' .
             '  and addresses.owner_type = "mini-grid" ';
         //.            ' GROUP BY YEARWEEK(meter_parameters.created_at, 3)';
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connection_id', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -100,7 +97,7 @@ class Revenue extends BaseModel
             ' and  addresses.owner_type=\'meter_parameter\' and addresses.city_id=:miniGridId and ' .
             ' DATE(meter_parameters.created_at) between DATE(:startDate) and DATE(:endDate)';
         //.            ' GROUP BY YEARWEEK(meter_parameters.created_at, 3)';
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connection_id', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':miniGridId', $miniGridId, PDO::PARAM_STR);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
@@ -131,7 +128,7 @@ class Revenue extends BaseModel
             'third_party_transactions.status=1 or agent_transactions.status=1 )' .
             ' AND DATE(transactions.created_at) between :startDate and :endDate';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':serialNumber', $serialNumber, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -159,7 +156,7 @@ class Revenue extends BaseModel
             'third_party_transactions.status=1 or agent_transactions.status=1)' .
             ' AND DATE(transactions.created_at) between DATE(:startDate) and DATE(:endDate)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':tariffId', $tariffId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -188,7 +185,7 @@ class Revenue extends BaseModel
             'third_party_transactions.status=1 or agent_transactions.status=1)' .
             ' AND DATE(transactions.created_at) between DATE(:startDate) and DATE(:endDate)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connectionId', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -218,7 +215,7 @@ class Revenue extends BaseModel
             ' AND DATE(transactions.created_at) between :startDate and :endDate' .
             ' GROUP BY DATE(created_at)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':tariffId', $tariffId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -254,7 +251,7 @@ class Revenue extends BaseModel
             ' AND DATE(transactions.created_at) between DATE(:startDate) and DATE(:endDate)' .
             ' GROUP BY YEARWEEK(transactions.created_at,3)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connectionId', $connectionId, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
         $sth->bindValue(':endDate', $endDate, PDO::PARAM_STR);
@@ -289,7 +286,7 @@ class Revenue extends BaseModel
         //.
         //'GROUP BY(' . $periodGroup . ')';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connectionTypeId', $connectionType, PDO::PARAM_INT);
         $sth->bindValue(':connectionSelect', $connectionType, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
@@ -328,7 +325,7 @@ class Revenue extends BaseModel
             'third_party_transactions.status=1 or agent_transactions.status=1)' .
             ' AND DATE(transactions.created_at) between DATE(:startDate) and DATE(:endDate)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connectionTypeId', $connectionGroup, PDO::PARAM_INT);
         $sth->bindValue(':connectionSelect', $connectionGroup, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);
@@ -368,7 +365,7 @@ class Revenue extends BaseModel
             'third_party_transactions.status=1 or agent_transactions.status=1)' .
             ' AND DATE(transactions.created_at) between DATE(:startDate) and DATE(:endDate)';
 
-        $sth = DB::connection()->getPdo()->prepare($sql);
+        $sth = DB::connection('shard')->getPdo()->prepare($sql);
         $sth->bindValue(':connectionTypeId', $connectionGroup, PDO::PARAM_INT);
         $sth->bindValue(':connectionSelect', $connectionGroup, PDO::PARAM_INT);
         $sth->bindValue(':startDate', $startDate, PDO::PARAM_STR);

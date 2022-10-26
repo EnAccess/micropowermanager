@@ -26,7 +26,8 @@ class MeterParameterAddressService implements IAssignationService
 
     public function assign(): Address
     {
-        $this->address->owner()->associate($this->meterParameter);;
+        $this->address->owner()->associate($this->meterParameter);
+        ;
 
         return $this->address;
     }

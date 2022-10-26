@@ -6,7 +6,6 @@ use App\Models\User;
 
 class ClusterManagerService
 {
-
     private User $user;
 
     public function __construct(User $user,)

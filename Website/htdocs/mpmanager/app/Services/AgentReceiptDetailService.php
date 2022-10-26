@@ -5,16 +5,15 @@ namespace App\Services;
 use App\Models\AgentReceipt;
 use App\Models\AgentReceiptDetail;
 
-class AgentReceiptDetailService  implements IBaseService
+class AgentReceiptDetailService implements IBaseService
 {
     public function __construct(private AgentReceiptDetail $agentReceiptDetail)
     {
-
     }
 
     public function getSummary($agentId)
     {
-       return $this->agentReceiptDetail->newQuery()->select('summary')
+        return $this->agentReceiptDetail->newQuery()->select('summary')
             ->whereHas(
                 'receipt',
                 static function ($q) use ($agentId) {

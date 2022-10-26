@@ -16,16 +16,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HybridModel extends Model
 {
-
     protected $guarded = ['id'];
     public static $rules = [];
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        if(config()->get('database.connections.shard')) {
+        if (config()->get('database.connections.shard')) {
             $this->setConnection('shard');
         }
-
     }
 }

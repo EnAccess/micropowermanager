@@ -22,7 +22,11 @@ class ClusterMiniGridRevenueController extends Controller
         $endDate = $request->input('endDate') ?? date('Y-m-t');
         $period = $request->input('period') ?? 'monthly';
 
-        return ApiResource::make($this->clusterRevenueService->getMiniGridBasedRevenueById($clusterId,
-            $startDate, $endDate, $period));
+        return ApiResource::make($this->clusterRevenueService->getMiniGridBasedRevenueById(
+            $clusterId,
+            $startDate,
+            $endDate,
+            $period
+        ));
     }
 }

@@ -10,7 +10,7 @@ class MigrationMultiplexer extends AbstractSharedCommand
     protected $signature = 'migrator:copy';
     protected $description = 'Copy elder created migrations to company database folders';
 
-    public function runInCompanyScope():void
+    public function runInCompanyScope(): void
     {
         $sourcePath = __DIR__ . '/../../../';
         CompanyDatabase::all()->each(function ($companyDatabase) use ($sourcePath) {
@@ -27,7 +27,8 @@ class MigrationMultiplexer extends AbstractSharedCommand
             do
               ##sed -i \'\' \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file
               sed -i  \'s/micropowermanager/\'shard\'/g\' $file
-            done');
+            done'
+            );
         });
         $this->info('done');
     }

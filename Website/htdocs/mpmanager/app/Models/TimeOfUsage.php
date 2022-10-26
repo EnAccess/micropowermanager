@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TimeOfUsage extends BaseModel
 {
-
     public function tariff(): BelongsTo
     {
         return $this->belongsTo(MeterTariff::class);

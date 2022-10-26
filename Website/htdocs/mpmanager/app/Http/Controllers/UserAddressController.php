@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 
 class UserAddressController extends Controller
 {
-
     private $userAddressService;
     public function __construct(UserAddressService $userAddressService)
     {

@@ -14,30 +14,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentBalanceHistoryService  implements IBaseService, IAssociative
+class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
-
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
-        private PeriodService $periodService)
-    {
-
+        private PeriodService $periodService
+    ) {
     }
 
     public function getAll($limit = null, $agentId = null)
     {
         $query = $this->agentBalanceHistory->newQuery()
             ->whereHasMorph(
-            'trigger',
-            '*'
-        );
-        if($agentId) {
+                'trigger',
+                '*'
+            );
+        if ($agentId) {
             $query->where('agent_id', $agentId);
         }
         if ($limit) {
-
             return $query->latest()->paginate($limit);
-
         }
         return  $query->latest()->get();
     }
@@ -62,7 +58,7 @@ class AgentBalanceHistoryService  implements IBaseService, IAssociative
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->get()->last();
     }
 
-    public function getTotalAmountSinceLastVisit($agentBalanceHistoryId,$agentId)
+    public function getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId)
     {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
         ->where('id', '>', $agentBalanceHistoryId)
@@ -70,7 +66,7 @@ class AgentBalanceHistoryService  implements IBaseService, IAssociative
         ->sum('amount');
     }
 
-    public function getTransactionAverage($agent,$lastReceipt)
+    public function getTransactionAverage($agent, $lastReceipt)
     {
         if ($lastReceipt) {
             $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
@@ -191,6 +187,4 @@ class AgentBalanceHistoryService  implements IBaseService, IAssociative
     {
         // TODO: Implement delete() method.
     }
-
-
 }

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-
 class RoutesGenerator extends AbstractSharedCommand
 {
     protected $signature = 'routes:generate';

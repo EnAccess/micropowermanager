@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class AppliancePaymentController extends Controller
 {
-
     private $appliancePaymentService;
 
     public function __construct(AppliancePaymentService $appliancePaymentService)

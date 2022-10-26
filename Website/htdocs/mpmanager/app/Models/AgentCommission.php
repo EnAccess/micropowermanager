@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class AgentCommission extends BaseModel
 {
-
     public function agent(): HasMany
     {
         return $this->hasMany(Agent::Class);

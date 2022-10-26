@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class ConnectionGroup extends BaseModel
 {
-
     public function meterParameters(): HasMany
     {
         return $this->hasMany(MeterParameter::class);

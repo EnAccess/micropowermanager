@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\Restriction;
 
-class RestrictionService  implements IBaseService
+class RestrictionService implements IBaseService
 {
     public function __construct(private Restriction $restriction)
     {
-
     }
 
     public function getRestrictionForTarget($target)

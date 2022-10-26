@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
-
 use App\Services\CountryService;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
@@ -14,7 +13,6 @@ use App\Services\PersonService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 
 /**
  * Class PersonController
@@ -32,7 +30,6 @@ class PersonController extends Controller
         private MaintenanceUserService $maintenanceUserService,
         private CountryService $countryService
     ) {
-
     }
 
     /**
@@ -47,10 +44,10 @@ class PersonController extends Controller
      */
     public function index(Request $request): ApiResource
     {
-        $customerType = $request->input('is_customer',1);
-        $limit = $request->input('limit',config('settings.paginate'));
+        $customerType = $request->input('is_customer', 1);
+        $limit = $request->input('limit', config('settings.paginate'));
 
-        return ApiResource::make($this->personService->getAll($limit,$customerType));
+        return ApiResource::make($this->personService->getAll($limit, $customerType));
     }
 
     /**
@@ -103,8 +100,8 @@ class PersonController extends Controller
         if ($this->personService->isMaintenancePerson($customerType)) {
             $person = $this->personService->createMaintenancePerson($personData);
             $maintenanceUserData = [
-                'person_id'=>$person->id,
-                'mini_grid_id'=>$miniGridId
+                'person_id' => $person->id,
+                'mini_grid_id' => $miniGridId
             ];
             $this->maintenanceUserService->create($maintenanceUserData);
         } else {
@@ -142,7 +139,7 @@ class PersonController extends Controller
      * @apiResourceModel App\Models\Person\Person
      * @responseFile     responses/people/person.update.json
      */
-    public function update(int $personId,PersonRequest $request): ApiResource
+    public function update(int $personId, PersonRequest $request): ApiResource
     {
         $person = $this->personService->getById($personId);
         $personData = $request->all();
@@ -184,10 +181,10 @@ class PersonController extends Controller
      * @return       ApiResource
      * @responseFile responses/people/people.search.json
      */
-    public function search(Request $request):ApiResource
+    public function search(Request $request): ApiResource
     {
         $term = $request->input('term');
-        $paginate = $request->input('paginate',1);
+        $paginate = $request->input('paginate', 1);
 
         return  ApiResource::make($this->personService->searchPerson($term, $paginate));
     }

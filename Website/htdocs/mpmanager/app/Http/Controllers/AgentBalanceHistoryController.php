@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 class AgentBalanceHistoryController extends Controller
 {
-
     private $agentBalanceHistoryService;
 
     public function __construct(AgentBalanceHistoryService $agentBalanceHistoryService)
@@ -76,6 +75,4 @@ class AgentBalanceHistoryController extends Controller
     {
         //
     }
-
-
 }

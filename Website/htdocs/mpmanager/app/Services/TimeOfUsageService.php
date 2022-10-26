@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\TimeOfUsage;
 
-class TimeOfUsageService  implements IBaseService
+class TimeOfUsageService implements IBaseService
 {
     public function __construct(private TimeOfUsage $timeOfUsage)
     {
-
     }
 
     public function create($timeOfUsageData)

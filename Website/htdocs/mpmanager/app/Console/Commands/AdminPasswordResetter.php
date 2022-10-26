@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 
 class AdminPasswordResetter extends AbstractSharedCommand
 {
-
     protected $signature = 'reset:admin-password';
     protected $description = 'Reset forgotten password';
 
@@ -15,7 +14,8 @@ class AdminPasswordResetter extends AbstractSharedCommand
     {
         parent::__construct();
     }
-    function runInCompanyScope(): void
+
+    public function runInCompanyScope(): void
     {
         $admin = $this->userService->resetAdminPassword();
         $this->alert('

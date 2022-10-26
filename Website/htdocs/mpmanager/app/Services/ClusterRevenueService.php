@@ -18,14 +18,11 @@ use Illuminate\Support\Facades\DB;
 
 class ClusterRevenueService
 {
-
     public function __construct(
         private PeriodService $periodService,
         private Cluster $cluster,
         private Transaction $transaction,
     ) {
-
-
     }
 
     public function getTransactionsForMonthlyPeriodById($clusterId, $period, $connectionType = null): Collection|array
@@ -155,8 +152,7 @@ class ClusterRevenueService
             if ($period === 'weekly' || $period === 'weekMonth') {
                 $revenues = $this->getTransactionsForWeeklyPeriod($cluster->id, [$startDate, $endDate]);
             } else {
-                $revenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate],
-                    $connectionType->id);
+                $revenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate], $connectionType->id);
             }
 
             foreach ($revenues as $revenue) {
@@ -211,8 +207,7 @@ class ClusterRevenueService
     /**
      * @throws \Exception
      */
-    public function getMonthlyMiniGridBasedRevenueById(
-        $clusterId)
+    public function getMonthlyMiniGridBasedRevenueById($clusterId)
     {
         $startDate = date('Y-01-01');
         $endDate = date('Y-m-t');
@@ -245,8 +240,8 @@ class ClusterRevenueService
         $clusterId,
         $startDate,
         $endDate,
-        $period)
-    {
+        $period
+    ) {
         $clusterMiniGrids = $this->cluster->newQuery()->with('miniGrids')->find($clusterId);
         $miniGrids = $clusterMiniGrids->miniGrids;
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
@@ -257,7 +252,7 @@ class ClusterRevenueService
             if ($period === 'weekly' || $period === 'weekMonth') {
                 $revenues = $this->getTransactionsForWeeklyPeriod($clusterId, [$startDate, $endDate]);
             } else {
-                $revenues = $this->getTransactionsForMonthlyPeriodById($clusterId, [$startDate, $endDate],);
+                $revenues = $this->getTransactionsForMonthlyPeriodById($clusterId, [$startDate, $endDate]);
             }
 
             foreach ($revenues as $rIndex => $revenue) {
@@ -302,6 +297,4 @@ class ClusterRevenueService
 
         return $dateRange;
     }
-
-
 }

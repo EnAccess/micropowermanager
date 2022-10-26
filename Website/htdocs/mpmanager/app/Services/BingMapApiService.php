@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class BingMapApiService
 {
-
     private $httpClient;
 
     public function __construct(Client $httpClient)

@@ -9,8 +9,6 @@ use mysql_xdevapi\Exception;
 
 class FirebaseService
 {
-
-
     public function sendNotify($firebaseToken, $body): string
     {
         try {

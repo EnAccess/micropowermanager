@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use App\Http\Requests\ClusterRequest;
 use App\Http\Resources\ApiResource;
@@ -19,10 +17,8 @@ use App\Services\MeterRevenueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-
 class ClusterController extends Controller
 {
-
     public function __construct(
         private ClusterService $clusterService,
         private ClusterMeterService $clusterMetersService,
@@ -33,7 +29,6 @@ class ClusterController extends Controller
         private ClusterMiniGridService $clusterMiniGridService,
         private ConnectionTypeService $connectionTypeService
     ) {
-
     }
 
     /**
@@ -53,8 +48,10 @@ class ClusterController extends Controller
             $clusters[$index]->citiesRevenue =
                 $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
             $clusters[$index]->revenueAnalysis =
-                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById($cluster->id,
-                    $connectionTypes);
+                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
+                    $cluster->id,
+                    $connectionTypes
+                );
             $clusters[$index]->clusterData =
                 $this->clusterService->getCluster(
                     $this->clusterService->getById($cluster->id),
@@ -104,8 +101,10 @@ class ClusterController extends Controller
             $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
             $clusters[$index]->citiesRevenue =
                 $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
-            $clusters[$index]->revenueAnalysis = $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById($cluster->id,
-                $connectionTypes);
+            $clusters[$index]->revenueAnalysis = $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
+                $cluster->id,
+                $connectionTypes
+            );
             $clusters[$index]->clusterData =
                 $this->clusterService->getCluster(
                     $this->clusterService->getById($cluster->id),
@@ -116,7 +115,7 @@ class ClusterController extends Controller
         }
 
         $clustersWithMeters = $this->clusterMiniGridService->getClustersWithMiniGrids();
-        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters,$this->clusterRevenueService);
+        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters, $this->clusterRevenueService);
 
         return ApiResource::make($cluster);
     }

@@ -7,7 +7,6 @@ use App\Services\MeterService;
 use App\Services\PaymentHistoryService;
 use Illuminate\Http\Request;
 
-
 class MeterPaymentHistoryController
 {
     public function __construct(
@@ -19,6 +18,6 @@ class MeterPaymentHistoryController
     {
         $paginate = request('paginate') ?? 1;
 
-        return ApiResource::make($this->paymentHistoryService->getBySerialNumber($serialNumber,$paginate));
-     }
+        return ApiResource::make($this->paymentHistoryService->getBySerialNumber($serialNumber, $paginate));
+    }
 }

@@ -6,11 +6,13 @@ use App\Jobs\SmsProcessor;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
 use App\Sms\Senders\SmsConfigs;
+use App\Sms\SmsTypes;
 
 class SmsService
 {
     public const TICKET = 1;
     public const FEEDBACK = 2;
+    public const DIRECTION_OUTGOING = 1;
 
     private $sms;
     private $transaction;
@@ -35,9 +37,24 @@ class SmsService
         }
     }
 
-    public function createSms($smsData)
+    public function createAndSendSms($smsData): Sms
     {
-        return $this->sms->newQuery()->create($smsData);
+        $sms = $this->createSms($smsData);
+
+        $data = [
+            'message' => $smsData['body'],
+            'phone' => $smsData['receiver']
+        ];
+        $this->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
+
+        return $sms;
+    }
+
+    public function createSms($smsData): Sms
+    {
+        /** @var Sms $sms */
+        $sms =  $this->sms->newQuery()->create($smsData);
+        return $sms;
     }
 
     public function sendSms($data, $smsType, $SmsConfigClass)

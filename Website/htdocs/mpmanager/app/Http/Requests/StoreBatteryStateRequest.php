@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBatteryStateRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;

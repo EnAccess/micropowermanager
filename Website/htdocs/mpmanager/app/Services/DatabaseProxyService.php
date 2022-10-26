@@ -6,7 +6,6 @@ use App\Models\DatabaseProxy;
 
 class DatabaseProxyService implements IBaseService
 {
-
     public function __construct(private DatabaseProxy $databaseProxy)
     {
     }
@@ -19,7 +18,6 @@ class DatabaseProxyService implements IBaseService
     public function create($databaseProxyData)
     {
         return $this->databaseProxy->newQuery()->create($databaseProxyData);
-
     }
 
     public function update($model, $data)

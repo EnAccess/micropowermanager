@@ -7,7 +7,6 @@ use Illuminate\Events\Dispatcher;
 
 class LogListener
 {
-
     /**
      * @var Log
      */

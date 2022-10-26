@@ -14,7 +14,7 @@ class InitializeShardingCommand extends Command
     public function handle()
     {
         $pdo = new PDO('mysql:host=' . env('DB_HOST'), env('DB_USERNAME'), env('DB_PASSWORD'));
-        $pdo->exec('CREATE DATABASE IF NOT EXISTS micro_power_manager' );
+        $pdo->exec('CREATE DATABASE IF NOT EXISTS micro_power_manager');
 
         $this->call('optimize:clear');
         $this->call('migrate', [
@@ -22,5 +22,4 @@ class InitializeShardingCommand extends Command
             '--path' => '/database/migrations/base',
         ]);
     }
-
 }

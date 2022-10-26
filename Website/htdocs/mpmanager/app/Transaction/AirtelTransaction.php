@@ -26,7 +26,6 @@ use function config;
 
 class AirtelTransaction implements ITransactionProvider
 {
-
     /**
      * @var \App\Models\Transaction\AirtelTransaction
      */

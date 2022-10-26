@@ -23,7 +23,6 @@ use function config;
 
 class CalinApi implements IManufacturerAPI
 {
-
     /**
      * @var Client
      */

@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Log;
 
 class AccessRateListener
 {
-
-
     public function initializeAccessRatePayment(MeterParameter $meterParameter): void
     {
         try {

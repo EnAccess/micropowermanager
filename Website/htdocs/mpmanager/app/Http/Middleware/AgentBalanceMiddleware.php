@@ -15,13 +15,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AgentBalanceMiddleware
 {
-
     public function __construct(
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentTransactionService $agentTransactionService
     ) {
-
     }
 
     /**
@@ -41,13 +39,12 @@ class AgentBalanceMiddleware
         if ($routeName === 'agent-sell-appliance') {
             $assignedApplianceCost = $this->agentAssignedApplianceService->getById($request->input('agent_assigned_appliance_id'));
             $downPayment = $request->input('down_payment');
-            if (!$assignedApplianceCost){
+            if (!$assignedApplianceCost) {
                 throw new ModelNotFoundException('Assigned Appliance not found');
             }
 
             if (!isset($downPayment)) {
                 throw  new DownPaymentNotFoundException('DownPayment not found');
-
             }
 
             $agentBalance -= $downPayment;

@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\TicketSettings;
 
-class TicketSettingsService  implements ISettingsService
+class TicketSettingsService implements ISettingsService
 {
     public function __construct(private TicketSettings $ticketSettings)
     {
-
     }
 
     public function update($ticketSettings, $ticketSettingsData)
@@ -21,6 +20,6 @@ class TicketSettingsService  implements ISettingsService
 
     public function get()
     {
-       return $this->ticketSettings->newQuery()->first();
+        return $this->ticketSettings->newQuery()->first();
     }
 }

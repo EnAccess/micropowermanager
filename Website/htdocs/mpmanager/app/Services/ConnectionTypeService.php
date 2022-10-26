@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-
-class ConnectionTypeService  implements IBaseService
+class ConnectionTypeService implements IBaseService
 {
     public function __construct(private ConnectionType $connectionType)
     {
@@ -19,7 +18,6 @@ class ConnectionTypeService  implements IBaseService
     {
         return $this->connectionType->newQuery()->withCount('meterParameters')->where('id', $connectionTypeId)
             ->firstOrFail();
-
     }
 
     public function getById($connectionTypeId)

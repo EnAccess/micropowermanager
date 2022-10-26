@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class PersonObserver
 {
-
     /**
      * Handle the Person "updated" event
      *

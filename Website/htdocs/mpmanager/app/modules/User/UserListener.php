@@ -25,7 +25,7 @@ class UserListener
 
     public function handleUserCreatedEvent(UserCreatedEvent $event)
     {
-        if($event->shouldSyncUser) {
+        if ($event->shouldSyncUser) {
             $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->getCompanyId());
 
             $databaseProxyData = [
@@ -39,6 +39,4 @@ class UserListener
 
         $this->ticketUserService->findOrCreateByUser($event->user);
     }
-
-
 }

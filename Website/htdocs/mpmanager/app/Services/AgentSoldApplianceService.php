@@ -9,16 +9,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\Types\This;
+
 use function Symfony\Component\String\s;
 
-class AgentSoldApplianceService  implements IBaseService
+class AgentSoldApplianceService implements IBaseService
 {
-
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
         private AssetPerson $assetPerson
     ) {
-
     }
 
 
@@ -87,7 +86,6 @@ class AgentSoldApplianceService  implements IBaseService
         } else {
             return $query->latest()->paginate();
         }
-
     }
 
     public function list($agentId)

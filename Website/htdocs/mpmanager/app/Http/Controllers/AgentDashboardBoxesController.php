@@ -15,13 +15,12 @@ class AgentDashboardBoxesController extends Controller
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentReceiptService $agentReceiptService,
     ) {
-
     }
     public function show(Request $request, Response $response)
     {
         $agent = $this->agentService->getByAuthenticatedUser();
         $lastReceipt  = $this->agentReceiptService->getLastReceipt($agent->id);
-        $average = $this->agentBalanceHistoryService->getTransactionAverage($agent,$lastReceipt);
+        $average = $this->agentBalanceHistoryService->getTransactionAverage($agent, $lastReceipt);
         $since = $this->agentReceiptService->getLastReceiptDate($agent);
 
         return $response->setStatusCode(200)->setContent(

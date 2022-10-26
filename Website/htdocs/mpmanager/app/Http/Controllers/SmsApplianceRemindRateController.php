@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 
 class SmsApplianceRemindRateController extends Controller
 {
-
     private $smsApplianceRemindService;
 
     public function __construct(SmsApplianceRemindRateService $smsApplianceRemindService)

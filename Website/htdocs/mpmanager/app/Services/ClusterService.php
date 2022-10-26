@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
 
 use App\Models\City;
 use App\Models\Cluster;
@@ -10,13 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ClusterService  implements IBaseService
+class ClusterService implements IBaseService
 {
     public function __construct(
         private Cluster $cluster
     ) {
-
-
     }
 
     protected function setClusterMeterCount(Cluster $cluster, int $meterCount)

@@ -9,26 +9,18 @@ use App\Models\Person\Person;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Inensus\BulkRegistration\Services\AddressService;
 
 class MaintenanceUserController extends Controller
 {
     private $roles;
-    /**
-     * @var Person
-     */
-    private $person;
-    /**
-     * @var MaintenanceUsers
-     */
-    private $maintenanceUsers;
 
-
-    public function __construct(MaintenanceUsers $maintenance_users, Person $person)
-    {
-        $this->person = $person;
-        $this->maintenanceUsers = $maintenance_users;
+    public function __construct(
+        private MaintenanceUsers $maintenanceUsers,
+        private Person $person,
+        private PersonService $personService,
+        private AddressService $addressService
+    ) {
     }
 
 
@@ -47,27 +39,28 @@ class MaintenanceUserController extends Controller
         $phone = $request->get('phone');
 
         try {
-            $person = $this->person->whereHas(
+            $person = $this->person->newQuery()->whereHas(
                 'addresses',
                 static function ($q) use ($phone) {
                     $q->where('phone', $phone);
                 }
             )->firstOrFail();
-        } catch (ModelNotFoundException $ex) {
-            $personService = App::make(PersonService::class);
-            $person = $personService->createFromRequest($request);
+        } catch (ModelNotFoundException) {
+            $personData = $this->personService->createPersonDataFromRequest($request);
+            $person = $this->personService->createMaintenancePerson($personData);
+            $this->addressService->createForPerson($person->getId(), $request->getCityId(), $request->getPhone(), $request->getEmail(), $request->getStreet(), true);
         }
 
-        $maintenanceUser = $this->maintenanceUsers::create(
+        $maintenanceUser = $this->maintenanceUsers::query()->create(
             [
-            'person_id' => $person->id,
-            'mini_grid_id' => $request->get('mini_grid_id'),
+                'person_id' => $person->id,
+                'mini_grid_id' => $request->get('mini_grid_id'),
             ]
         );
 
         return
             (new ApiResource($maintenanceUser))
-            ->response()
-            ->setStatusCode(201);
+                ->response()
+                ->setStatusCode(201);
     }
 }

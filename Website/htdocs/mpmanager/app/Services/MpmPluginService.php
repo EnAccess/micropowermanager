@@ -6,7 +6,6 @@ use App\Models\MpmPlugin;
 
 class MpmPluginService implements IBaseService
 {
-
     public function __construct(private MpmPlugin $mpmPlugin)
     {
     }

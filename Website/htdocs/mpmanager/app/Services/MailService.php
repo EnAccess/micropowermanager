@@ -7,7 +7,6 @@ use Illuminate\Mail\Message;
 
 class MailService
 {
-
     private MailManager $mailManager;
 
     public function __construct(MailManager $mailManager)

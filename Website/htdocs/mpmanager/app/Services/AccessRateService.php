@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-
 use App\Models\AccessRate\AccessRate;
 
-
-class AccessRateService  implements IBaseService
+class AccessRateService implements IBaseService
 {
-
     public function __construct(private AccessRate $accessRate)
     {
     }

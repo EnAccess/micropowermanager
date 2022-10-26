@@ -4,13 +4,13 @@ namespace App\Services;
 
 interface IBaseService
 {
-     public function getById($id);
+    public function getById($id);
 
-     public function create($data);
+    public function create($data);
 
-     public function update($model, $data);
+    public function update($model, $data);
 
-     public function delete($model);
+    public function delete($model);
 
-     public function getAll($limit = null);
+    public function getAll($limit = null);
 }

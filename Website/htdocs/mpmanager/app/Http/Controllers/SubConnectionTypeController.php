@@ -12,14 +12,12 @@ use Illuminate\Http\Response;
 
 class SubConnectionTypeController extends Controller
 {
-
     public function __construct(private SubConnectionTypeService $subConnectionTypeService)
     {
-
     }
 
 
-    public function index(Request $request,$connectionTypeId = null): ApiResource
+    public function index(Request $request, $connectionTypeId = null): ApiResource
     {
         $limit = $request->get('limit');
 
@@ -56,6 +54,6 @@ class SubConnectionTypeController extends Controller
         $subConnectionType = $this->subConnectionTypeService->getById($subConnectionTypeId);
         $subConnectionTypeData = $request->only(['name', 'tariff_id']);
 
-        return  ApiResource::make($this->subConnectionTypeService->update($subConnectionType,$subConnectionTypeData));
+        return  ApiResource::make($this->subConnectionTypeService->update($subConnectionType, $subConnectionTypeData));
     }
 }

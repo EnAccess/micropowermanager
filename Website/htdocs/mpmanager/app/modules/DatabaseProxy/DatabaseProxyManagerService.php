@@ -9,10 +9,8 @@ use App\Models\DatabaseProxy;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 
-
 class DatabaseProxyManagerService
 {
-
     public function __construct(private DatabaseProxy $databaseProxy, private DatabaseManager $databaseManager, private CompanyDatabase $companyDatabase)
     {
     }
@@ -56,6 +54,5 @@ class DatabaseProxyManagerService
         ];
         config()->set('database.connections', $databaseConnections);
         $this->databaseManager->purge('shard');
-
     }
 }

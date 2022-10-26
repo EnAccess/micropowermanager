@@ -17,19 +17,17 @@ use Illuminate\Http\Request;
 
 class TargetController extends Controller
 {
-
     public function __construct(
         private TargetService $targetService,
         private ClusterService $clusterService,
         private MiniGridService $miniGridService,
         private SubTargetService $subTargetService
     ) {
-
     }
 
     public function index(Request $request): ApiResource
     {
-        $limit = $request->input('limit',15);
+        $limit = $request->input('limit', 15);
 
         return ApiResource::make($this->targetService->getAll($limit));
     }
@@ -49,7 +47,7 @@ class TargetController extends Controller
         return  ApiResource::make($this->targetService->getTakenSlots($targetData));
     }
 
-    public function store(CreateTargetRequest $request):ApiResource
+    public function store(CreateTargetRequest $request): ApiResource
     {
         $targetOwnerId = $request->input('targetId');
         $targetData = [
@@ -67,7 +65,7 @@ class TargetController extends Controller
         $targetData['owner'] = $targetOwner;
         $target = $this->targetService->create($targetData);
         $subTargetData = [
-            'data'=> $targetData['data'],
+            'data' => $targetData['data'],
             'targetId' => $target->id,
         ];
         $this->subTargetService->create($subTargetData);

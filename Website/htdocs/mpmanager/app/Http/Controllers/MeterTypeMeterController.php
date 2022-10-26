@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class MeterTypeMeterController extends Controller
 {
-
     public function __construct(private MeterTypeMeterService $meterTypeMeterService)
     {
     }
@@ -28,6 +27,4 @@ class MeterTypeMeterController extends Controller
     {
         return ApiResource::make($this->meterTypeMeterService->getByIdWithMeters($meterTypeId));
     }
-
-
 }

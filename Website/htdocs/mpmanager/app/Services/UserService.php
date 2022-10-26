@@ -32,7 +32,7 @@ class UserService
         ]);
 
         event(new UserCreatedEvent($user, $shouldSyncUserWithMasterDatabase));
-        
+
         return $user;
     }
 

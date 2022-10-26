@@ -18,7 +18,6 @@ class AgentSoldApplianceController extends Controller
         private AgentSoldApplianceService $agentSoldApplianceService,
         private AgentService $agentService
     ) {
-
     }
 
     public function index(Request $request)
@@ -42,11 +41,11 @@ class AgentSoldApplianceController extends Controller
      * @param CreateAgentSoldApplianceRequest $request
      * @return ApiResource
      */
-    public function store(CreateAgentSoldApplianceRequest $request) {
+    public function store(CreateAgentSoldApplianceRequest $request)
+    {
 
         $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
 
         return ApiResource::make($this->agentSoldApplianceService->create($soldApplianceData));
     }
-
 }

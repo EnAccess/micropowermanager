@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MaintenanceUsers extends BaseModel
 {
-
-
-
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

@@ -6,7 +6,6 @@ use App\Models\MainSettings;
 
 class MainSettingsService implements IBaseService
 {
-
     public function __construct(private MainSettings $mainSettings)
     {
     }
@@ -36,6 +35,6 @@ class MainSettingsService implements IBaseService
 
     public function getAll($limit = null)
     {
-       return $this->mainSettings->newQuery()->get();
+        return $this->mainSettings->newQuery()->get();
     }
 }

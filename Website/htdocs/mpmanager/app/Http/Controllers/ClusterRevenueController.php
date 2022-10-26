@@ -38,9 +38,14 @@ class ClusterRevenueController extends Controller
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
 
         return ApiResource::make(
-            $this->clusterRevenueService->getPeriodicRevenueForClusters($clusters, $startDate, $endDate, $periods,
-                $period));
-
+            $this->clusterRevenueService->getPeriodicRevenueForClusters(
+                $clusters,
+                $startDate,
+                $endDate,
+                $periods,
+                $period
+            )
+        );
     }
 
     public function show($clusterId, Request $request): ApiResource

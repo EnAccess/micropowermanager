@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class PluginController extends Controller
 {
-
     public function __construct(
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
@@ -40,15 +39,12 @@ class PluginController extends Controller
             'status' => $request->input('checked')
         ];
 
-        if (!$plugin && !$request->input('checked'))
-        {
+        if (!$plugin && !$request->input('checked')) {
             throw new \Exception(['message' => 'Plugin not found']);
         }
 
-        if ($request->input('checked'))
-        {
-            if(!$plugin)
-            {
+        if ($request->input('checked')) {
+            if (!$plugin) {
                 $createdPlugin = $this->pluginsService->create($pluginData);
                 $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
                 $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
@@ -65,16 +61,13 @@ class PluginController extends Controller
             }
 
             $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
-        }
-        else
-        {
+        } else {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
 
             //since we do not force the user to configure bulk registrations.
-            if ($mpmPlugin->name === 'BulkRegistration')
-            {
+            if ($mpmPlugin->name === 'BulkRegistration') {
                 $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName('Bulk Registration');
-            }else{
+            } else {
                 $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin->tail_tag);
             }
 
@@ -84,10 +77,10 @@ class PluginController extends Controller
             }) ;
 
             $this->registrationTailService->update(
-                $registrationTail,['tail' => array_values($updatedTail)] );
+                $registrationTail,
+                ['tail' => array_values($updatedTail)]
+            );
         }
         return ApiResource::make($updatedPlugin);
-
     }
-
 }

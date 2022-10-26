@@ -135,4 +135,9 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
             ->orderBy('people.id')
             ->orderBy('cities.id');
     }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Services\ClusterService;
-
 use App\Models\Cluster;
 use App\Services\ClusterManagerService;
 use App\Services\MailService;

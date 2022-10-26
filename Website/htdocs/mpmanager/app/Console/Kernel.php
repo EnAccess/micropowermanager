@@ -15,7 +15,6 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 
-
 class Kernel extends ConsoleKernel
 {
     /**

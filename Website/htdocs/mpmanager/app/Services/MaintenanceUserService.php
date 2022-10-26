@@ -4,12 +4,10 @@ namespace App\Services;
 
 use App\Models\MaintenanceUsers;
 
-class MaintenanceUserService  implements IBaseService
+class MaintenanceUserService implements IBaseService
 {
-
     public function __construct(private MaintenanceUsers $maintenanceUser)
     {
-
     }
 
     public function getMaintenanceUsersCount()

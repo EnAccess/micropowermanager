@@ -17,5 +17,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketSettings extends BaseModel
 {
-
 }

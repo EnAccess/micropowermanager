@@ -30,6 +30,4 @@ class AbstractJob implements ShouldQueue
     {
         return (app()->make(UserService::class))->getCompanyId();
     }
-
-
 }

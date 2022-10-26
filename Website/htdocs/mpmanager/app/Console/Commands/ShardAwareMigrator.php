@@ -20,13 +20,11 @@ class ShardAwareMigrator extends Command
         /** @var DatabaseProxyManagerService $databaseProxyManagerService */
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 
-        $databaseProxyManagerService->runForCompany($companyId, function() use($force){
-            $command = 'migrate'. ($force ? ':fresh':'');
-            $this->info('Calling '. $command);
+        $databaseProxyManagerService->runForCompany($companyId, function () use ($force) {
+            $command = 'migrate' . ($force ? ':fresh' : '');
+            $this->info('Calling ' . $command);
 
             $this->call($command);
         });
-
-
     }
 }

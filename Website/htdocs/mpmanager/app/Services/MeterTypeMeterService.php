@@ -8,7 +8,6 @@ class MeterTypeMeterService
 {
     public function __construct(private MeterType $meterType)
     {
-
     }
 
     public function getByIdWithMeters($meterTypeId)

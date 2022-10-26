@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Artisan;
 
 class ClustersDashboardCacheDataController extends Controller
 {
-
     public function __construct(
         private ClusterService $clusterService,
         private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
@@ -29,7 +28,6 @@ class ClustersDashboardCacheDataController extends Controller
         private MeterRevenueService $meterRevenueService,
         private ConnectionTypeService $connectionTypeService
     ) {
-
     }
 
 
@@ -57,8 +55,11 @@ class ClustersDashboardCacheDataController extends Controller
             $clusters[$index]->citiesRevenue =
                 $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
             $clusters[$index]->revenueAnalysis =
-                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById($cluster->id,
-                    $connectionTypes, $this->meterRevenueService);
+                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
+                    $cluster->id,
+                    $connectionTypes,
+                    $this->meterRevenueService
+                );
             $clusters[$index]->clusterData =
                 $this->clusterService->getCluster(
                     $this->clusterService->getById($cluster->id),
@@ -69,7 +70,7 @@ class ClustersDashboardCacheDataController extends Controller
         }
 
         $clustersWithMeters = $this->clusterMiniGridService->getClustersWithMiniGrids();
-        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters,$this->clusterRevenueService);
+        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters, $this->clusterRevenueService);
 
         return ApiResource::make($this->clustersDashboardCacheDataService->getData());
     }

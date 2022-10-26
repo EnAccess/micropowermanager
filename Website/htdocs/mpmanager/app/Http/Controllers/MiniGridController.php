@@ -13,10 +13,8 @@ use Illuminate\Support\Facades\Artisan;
 
 class MiniGridController extends Controller
 {
-
     public function __construct(private MiniGridService $miniGridService)
     {
-
     }
 
     /**
@@ -32,7 +30,7 @@ class MiniGridController extends Controller
         $dataStream = $request->input('data_stream');
         $limit = $request->input('limit');
 
-        return ApiResource::make($this->miniGridService->getAll($limit,$dataStream));
+        return ApiResource::make($this->miniGridService->getAll($limit, $dataStream));
     }
 
     /**
@@ -51,10 +49,8 @@ class MiniGridController extends Controller
         $relation = $request->get('relation');
 
         if ((int)$relation === 1) {
-
             return ApiResource::make($this->miniGridService->getByIdWithLocation($miniGridId));
         } else {
-
             return ApiResource::make($this->miniGridService->getById($miniGridId));
         }
     }

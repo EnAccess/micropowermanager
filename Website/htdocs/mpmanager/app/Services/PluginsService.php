@@ -19,7 +19,7 @@ class PluginsService implements IBaseService
 
     public function create($pluginData)
     {
-       return $this->plugin->newQuery()->create($pluginData);
+        return $this->plugin->newQuery()->create($pluginData);
     }
 
     public function update($model, $data)

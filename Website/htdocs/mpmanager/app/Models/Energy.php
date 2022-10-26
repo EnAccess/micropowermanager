@@ -18,5 +18,4 @@ namespace App\Models;
  */
 class Energy extends BaseModel
 {
-
 }

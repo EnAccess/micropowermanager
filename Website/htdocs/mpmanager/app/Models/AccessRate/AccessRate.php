@@ -20,8 +20,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class AccessRate extends BaseModel
 {
-
-
     public function tariff(): BelongsTo
     {
         return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');

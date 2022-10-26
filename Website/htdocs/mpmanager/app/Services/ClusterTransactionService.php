@@ -10,8 +10,6 @@ class ClusterTransactionService
 {
     public function __construct(private Cluster $cluster, private Transaction $transaction)
     {
-
-
     }
 
     public function getById($clusterId, array $range)
@@ -47,5 +45,4 @@ class ClusterTransactionService
             ->whereBetween('created_at', $range)
             ->sum('amount');
     }
-
 }

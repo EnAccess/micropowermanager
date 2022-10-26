@@ -6,7 +6,7 @@ use App\Models\Plugins;
 
 trait ScheduledPluginCommand
 {
-    static int $ACTIVE = 1;
+    private static int $ACTIVE = 1;
 
     protected function checkForPluginStatusIsActive($mpmPluginId)
     {

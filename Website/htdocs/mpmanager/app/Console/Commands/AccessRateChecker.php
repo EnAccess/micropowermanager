@@ -9,7 +9,6 @@ use Illuminate\Console\Command;
 
 class AccessRateChecker extends AbstractSharedCommand
 {
-
     protected $signature = 'accessrate:check';
     protected $description = 'Updates the "debt" field, based on "due_date" field';
 

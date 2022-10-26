@@ -7,7 +7,6 @@ use App\Models\Transaction\Transaction;
 
 class TransactionPaymentHistoryService implements IAssignationService
 {
-
     private Transaction $transaction;
     private PaymentHistory $paymentHistory;
 

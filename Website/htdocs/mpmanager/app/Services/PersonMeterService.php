@@ -11,7 +11,6 @@ class PersonMeterService
         private Person $person,
         private Meter $meter
     ) {
-
     }
 
     public function getPersonMeters(int $personId)

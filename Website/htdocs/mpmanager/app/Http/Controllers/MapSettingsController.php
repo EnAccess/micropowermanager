@@ -9,7 +9,6 @@ use App\Models\MapSettings;
 
 class MapSettingsController extends Controller
 {
-
     private $bingMapApiService;
 
     public function __construct(BingMapApiService $bingMapApiService)

@@ -30,11 +30,31 @@ class MaintenanceRequest extends FormRequest
             'birth_date' => 'sometimes|date_format:"Y-m-d',
             'sex' => 'sometimes|in:male,female',
             'education' => 'sometimes|min:3',
-            'city_id' => 'sometimes|exists:cities,id',
+            'city_id' => 'sometimes|exists:shard.cities,id',
             'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
             'phone' => 'required|min:11|regex:(^\+)|numeric',
-            'nationality' => 'sometimes|exists:countries,country_code',
+            'nationality' => 'sometimes|exists:shard.countries,country_code',
         ];
+    }
+
+    public function getCityId(): int
+    {
+        return $this->input('city_id');
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->input('phone');
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->input('street');
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->input('email');
     }
 }

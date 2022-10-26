@@ -16,5 +16,4 @@ class MpmPlugin extends MasterModel
     {
         return $this->hasMany(Plugins::class);
     }
-
 }

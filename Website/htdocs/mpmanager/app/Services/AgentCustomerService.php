@@ -11,10 +11,8 @@ use Illuminate\Http\Request;
 
 class AgentCustomerService
 {
-
     public function __construct(private Agent $agent, private Person $person)
     {
-
     }
 
     public function list(Agent $agent): LengthAwarePaginator
@@ -87,7 +85,5 @@ class AgentCustomerService
                     $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
                 }
             )->paginate($limit);
-
-
     }
 }

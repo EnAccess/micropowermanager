@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-
 use App\Services\ConnectionTypeService;
 use Illuminate\Http\Request;
 
 class ConnectionTypeController extends Controller
 {
-
     public function __construct(private ConnectionTypeService $connectionTypeService)
     {
-
     }
 
     public function index(Request $request): ApiResource
@@ -27,8 +24,7 @@ class ConnectionTypeController extends Controller
         $meterCountRelation = $request->input('meter_count');
 
         if ($meterCountRelation) {
-
-           return  ApiResource::make($this->connectionTypeService->getByIdWithMeterCountRelation($connectionTypeId));
+            return  ApiResource::make($this->connectionTypeService->getByIdWithMeterCountRelation($connectionTypeId));
         }
 
         return  ApiResource::make($this->connectionTypeService->getById($connectionTypeId));
@@ -47,6 +43,6 @@ class ConnectionTypeController extends Controller
         $connectionTypeData = $request->all();
         $connectionType = $this->connectionTypeService->getById($connectionTypeId);
 
-        return ApiResource::make($this->connectionTypeService->update($connectionType,$connectionTypeData));
+        return ApiResource::make($this->connectionTypeService->update($connectionType, $connectionTypeData));
     }
 }

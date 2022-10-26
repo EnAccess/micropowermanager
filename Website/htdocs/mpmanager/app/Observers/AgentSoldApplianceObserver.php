@@ -26,7 +26,6 @@ use App\Services\TransactionService;
 
 class AgentSoldApplianceObserver
 {
-
     public function __construct(
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
@@ -40,12 +39,11 @@ class AgentSoldApplianceObserver
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService
     ) {
-
     }
 
     public function created(AgentSoldAppliance $agentSoldAppliance): void
     {
-        if (request()->all()){
+        if (request()->all()) {
             $this->processSaleIfIsNotCreatedByFactory($agentSoldAppliance);
         }
     }
@@ -68,7 +66,7 @@ class AgentSoldApplianceObserver
 
         // assign agent transaction to transaction
         $transactionData = [
-            'amount' => request()->input('down_payment') ?:0,
+            'amount' => request()->input('down_payment') ?: 0,
             'sender' => $agent->device_id,
             'message' => '-'
         ];

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Manufacturer extends BaseModel
 {
-
     protected $hidden = ['api_name'];
     protected $guarded = [];
     public function address(): MorphMany

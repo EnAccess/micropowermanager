@@ -9,7 +9,6 @@ use Illuminate\Http\Response;
 
 class MiniGridFrequencyController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      *

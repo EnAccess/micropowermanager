@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
  */
 class AgentAuthController extends Controller
 {
-
     /**
      * Create a new AuthController instance.
      *
