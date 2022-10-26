@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Collection;
+use MPM\Target\TargetAssignable;
 
 /**
  * Class MiniGrid
@@ -16,9 +17,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property int $id
  * @property string $name
  * @property int $cluster_id
- * @property int $data_stream;
+ * @property int $data_stream
+ * @property Collection $cities
  */
-class MiniGrid extends BaseModel
+class MiniGrid extends BaseModel implements TargetAssignable
 {
     protected $guarded = [];
 

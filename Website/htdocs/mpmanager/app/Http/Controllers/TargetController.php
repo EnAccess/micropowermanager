@@ -49,23 +49,23 @@ class TargetController extends Controller
 
     public function store(CreateTargetRequest $request): ApiResource
     {
-        $targetOwnerId = $request->input('targetId');
         $targetData = [
-            'data' => $request->input('data'),
-            'period' => $request->input('period'),
-            'targetType' => $request->input('targetType'),
+            'period' => $request->getPeriod(),
+            'targetForType' => $request->getTargetForType(),
         ];
 
-        if ($targetData['targetType'] === "cluster") {
-            $targetOwner = $this->clusterService->getById($targetOwnerId);
+        if ($request->getTargetForType() === "cluster") {
+            $targetOwner = $this->clusterService->getById($request->getTargetForId());
         } else {
-            $targetOwner = $this->miniGridService->getById($targetOwnerId);
+            $targetOwner = $this->miniGridService->getById($request->getTargetForId());
         }
 
         $targetData['owner'] = $targetOwner;
-        $target = $this->targetService->create($targetData);
+        $target = $this->targetService->create($request->getPeriod(), $request->getTargetForType(), $targetOwner);
+
+
         $subTargetData = [
-            'data' => $targetData['data'],
+            'data' => $request->getData(),
             'targetId' => $target->id,
         ];
         $this->subTargetService->create($subTargetData);

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 /* Meter */
 Route::group(['prefix' => 'meters',], function () {
     Route::get('/', 'MeterController@index');

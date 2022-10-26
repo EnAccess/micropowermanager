@@ -145,9 +145,11 @@ class PersonService implements IBaseService
         ];
     }
 
-    public function getById($personId)
+    public function getById($personId): Person
     {
-        return $this->person->newQuery()->find($personId);
+        /** @var Person $model */
+        $model = $this->person->newQuery()->find($personId);
+        return $model;
     }
 
     public function create($personData)

@@ -20,8 +20,8 @@ export class Targets {
     async store (period, targetType, targetId, list) {
         let target = {
             period: period,
-            targetType: targetType,
-            targetId: targetId,
+            targetForType: targetType,
+            targetForId: targetId,
             data: list
         }
         try {

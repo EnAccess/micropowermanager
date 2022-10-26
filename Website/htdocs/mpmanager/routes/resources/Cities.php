@@ -5,6 +5,8 @@
  * Date: 05.07.18
  * Time: 17:30
  */
+
+use Illuminate\Support\Facades\Route;
 /* City*/
 Route::group(['prefix' => 'cities' , 'middleware' => 'jwt.verify'], function () {
     Route::get('/', 'CityController@index');

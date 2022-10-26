@@ -1,6 +1,7 @@
 import { resources } from '@/resources'
 import { ConnectionsType } from './ConnectionsType'
 import { Paginator } from '../paginator'
+import Client, {baseUrl} from '../../repositories/Client/AxiosClient'
 
 export class ConnectionTypes {
 
@@ -16,7 +17,7 @@ export class ConnectionTypes {
     }
 
     getConnectionTypes () {
-        axios.get(resources.connections.list + '?paginate=1').then(
+        Client.get(baseUrl+resources.connections.list + '?paginate=1').then(
             (response) => {
                 this.fromJson(response.data.data)
                 return this.list
@@ -25,7 +26,7 @@ export class ConnectionTypes {
     }
 
     getSubConnectionTypes () {
-        axios.get(resources.connections.sublist + '?paginate=1').then(
+        Client.get(baseUrl+resources.connections.sublist + '?paginate=1').then(
             (response) => {
                 this.fromJson(response.data.data)
                 return this.list

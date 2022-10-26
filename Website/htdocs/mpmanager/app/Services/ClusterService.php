@@ -4,11 +4,9 @@ namespace App\Services;
 
 use App\Models\City;
 use App\Models\Cluster;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
-class ClusterService implements IBaseService
+class ClusterService
 {
     public function __construct(
         private Cluster $cluster
@@ -104,24 +102,17 @@ class ClusterService implements IBaseService
         return $dateRange;
     }
 
-    public function getById($clusterId)
+    public function getById(int $clusterId): Cluster
     {
-        return $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
+        /** @var Cluster $model */
+        $model = $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
+
+        return $model;
     }
 
     public function create($clusterData)
     {
         return $this->cluster->newQuery()->create($clusterData);
-    }
-
-    public function update($model, $data)
-    {
-        // TODO: Implement update() method.
-    }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
     }
 
     public function getAll($limit = null): Collection

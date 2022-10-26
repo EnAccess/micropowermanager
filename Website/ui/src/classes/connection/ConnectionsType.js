@@ -1,3 +1,5 @@
+import Client, {baseUrl} from '../../repositories/Client/AxiosClient'
+
 export class ConnectionsType {
 
     constructor () {
@@ -7,7 +9,6 @@ export class ConnectionsType {
     }
 
     fromJson (jsonData) {
-
         if (jsonData){
             this.id = jsonData.id
             this.name = jsonData.name
@@ -17,6 +18,6 @@ export class ConnectionsType {
     }
 
     store () {
-        return axios.post(resources.connections.store, {'name': this.name})
+        return Client.post(baseUrl+resources.connections.store, {'name': this.name})
     }
 }

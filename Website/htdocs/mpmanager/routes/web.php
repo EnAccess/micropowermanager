@@ -16,7 +16,6 @@ use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
