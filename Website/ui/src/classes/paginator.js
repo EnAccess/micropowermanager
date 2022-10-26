@@ -2,7 +2,8 @@ import { baseUrl } from '@/repositories/Client/AxiosClient';
 export class Paginator {
 
     constructor(url) {
-        this.url = `${baseUrl}${url}`
+        //when the consumer passes a fully qualified url use it, otherwise use the base url from axiosClient
+        this.url = url.startsWith('http')  ? url :  `${baseUrl}${url}`;
         this._initialize()
         this.postData = null
 
