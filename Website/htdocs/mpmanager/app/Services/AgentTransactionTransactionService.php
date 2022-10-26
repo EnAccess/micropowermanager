@@ -23,7 +23,8 @@ class AgentTransactionTransactionService implements IAssignationService
 
     public function assign()
     {
-        $this->transaction->originalTransaction()->associate($this->agentTransaction);;
+        $this->transaction->originalTransaction()->associate($this->agentTransaction);
+        ;
 
         return $this->transaction;
     }

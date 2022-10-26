@@ -18,7 +18,6 @@ use Throwable;
 
 trait RestExceptionHandler
 {
-
     /**
      * Creates a new response based on exception type
      *
@@ -32,7 +31,7 @@ trait RestExceptionHandler
         $response = null;
         switch (true) {
             case $this->isModelNotFoundException($e):
-                $response = $this->modelNotFound(['model not found '.  implode(' ',$e->getIds()) , $e->getMessage(), $e->getTrace()]);
+                $response = $this->modelNotFound(['model not found ' .  implode(' ', $e->getIds()) , $e->getMessage(), $e->getTrace()]);
                 break;
             case $this->isValidationException($e):
                 $response = $this->validationError($e->errors());

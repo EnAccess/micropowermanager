@@ -13,8 +13,6 @@ class MeterRevenueService
         private MeterToken $meterToken,
         private Transaction $transaction
     ) {
-
-
     }
 
     public function getBySerialNumber(string $serialNumber)

@@ -11,7 +11,6 @@ class AgentFirebaseController extends Controller
     public function __construct(
         private AgentService $agentService
     ) {
-
     }
 
     public function update(Request $request): ApiResource
@@ -19,6 +18,5 @@ class AgentFirebaseController extends Controller
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return  ApiResource::make($this->agentService->setFirebaseToken($agent, $request->input('fire_base_token')));
-
     }
 }

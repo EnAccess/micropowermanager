@@ -12,10 +12,8 @@ use App\Services\PersonTicketService;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
-
 use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
-
 
 class AgentTicketController extends Controller
 {
@@ -29,7 +27,6 @@ class AgentTicketController extends Controller
         private TicketService $ticketService,
         private PersonService $personService,
         private TicketUserService $ticketUserService
-
     ) {
        // $this->board = $this->boardService->initializeBoard($this->ticketUserService);
        // $this->card = $this->cardService->initalizeList($this->board);
@@ -41,7 +38,7 @@ class AgentTicketController extends Controller
         $limit = $request->input('limit', 5);
         $status = null;
 
-        return ApiResource::make($this->ticketService->getAll($limit, $status ,$agent->id));
+        return ApiResource::make($this->ticketService->getAll($limit, $status, $agent->id));
     }
 
     public function show($ticketId, Request $request): ApiResource
@@ -89,5 +86,4 @@ class AgentTicketController extends Controller
 
         return TicketResource::make($this->ticketService->getBatch([$ticket]));
     }
-
 }

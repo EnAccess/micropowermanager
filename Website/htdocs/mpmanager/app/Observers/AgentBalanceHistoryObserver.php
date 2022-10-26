@@ -14,7 +14,6 @@ use App\Services\AgentService;
 
 class AgentBalanceHistoryObserver
 {
-
     public function __construct(
         private AgentService $agentService
     ) {
@@ -32,12 +31,10 @@ class AgentBalanceHistoryObserver
         $agent = $this->agentService->getById($agentBalanceHistory->agent_id);
 
         if ($trigger instanceof AgentAssignedAppliances || $trigger instanceof AgentTransaction) {
-
             if ($agent->balance < 0) {
                 $agent->due_to_energy_supplier += (-1 * $agentBalanceHistory->amount);
                 $agent->balance += $agentBalanceHistory->amount;
             } else {
-
                 if ($agent->balance < (-1 * $agentBalanceHistory->amount)) {
                     $agent->due_to_energy_supplier += -1 * ($agent->balance + $agentBalanceHistory->amount);
                     $agent->balance += $agentBalanceHistory->amount;

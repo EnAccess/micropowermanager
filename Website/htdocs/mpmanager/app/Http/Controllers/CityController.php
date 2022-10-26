@@ -14,14 +14,11 @@ use App\Services\MiniGridService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-
 class CityController extends Controller
 {
-
     public function __construct(
         private CityService $cityService
     ) {
-
     }
 
     public function index(Request $request): ApiResource

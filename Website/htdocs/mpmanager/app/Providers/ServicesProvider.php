@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-
 use App\Models\AgentCharge;
 use App\Observers\AgentChargeObserver;
 use App\Services\CountryService;
@@ -37,7 +36,9 @@ use App\Observers\MeterTariffObserver;
 use App\Observers\MiniGridObserver;
 use App\Observers\PersonObserver;
 use App\Observers\PVObserver;
-use App\Observers\SolarObserver;;
+use App\Observers\SolarObserver;
+
+;
 use App\Services\AddressesService;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Horizon;

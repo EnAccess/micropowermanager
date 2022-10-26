@@ -7,7 +7,6 @@ use Inensus\Ticket\Models\Ticket;
 
 class AgentTicket extends BaseModel
 {
-
     protected $guarded = [];
 
     public function ticket(): MorphOne

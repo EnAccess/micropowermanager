@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AssetType extends BaseModel
 {
-
-
-
     public function agentAssignedAppliance(): HasMany
     {
         return $this->hasMany(AgentAssignedAppliances::class, 'id', 'appliance_type_id');

@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\Target;
 
-class TargetService  implements IBaseService
+class TargetService implements IBaseService
 {
     public function __construct(private Target $target)
     {
-
     }
 
     public function getById($targetId)
@@ -42,7 +41,6 @@ class TargetService  implements IBaseService
     public function getAll($limit = null)
     {
         if ($limit) {
-
             return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(
                 'target_date',
                 'desc'
@@ -57,6 +55,6 @@ class TargetService  implements IBaseService
 
     public function getTakenSlots($targetDate)
     {
-        return $this->target->newQuery()->whereBetween('target_date',$targetDate)->get();
+        return $this->target->newQuery()->whereBetween('target_date', $targetDate)->get();
     }
 }

@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Sms extends BaseModel
 {
-
     public function trigger(): MorphTo
     {
         return $this->morphTo();

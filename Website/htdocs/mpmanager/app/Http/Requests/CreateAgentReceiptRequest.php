@@ -7,7 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentReceiptRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,7 +25,7 @@ class CreateAgentReceiptRequest extends FormRequest
     public function rules()
     {
         $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
+        $database = $sessionService->getAuthenticatedUserDatabaseName();
         return [
             'agent_id' => 'required',
             'amount' => 'required|numeric',

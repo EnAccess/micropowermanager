@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Address extends BaseModel
 {
-
     protected $hidden = ['owner_id', 'owner_type'];
     public static $rules = [
     'city_id' => 'required|exists:cities,id',

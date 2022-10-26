@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoanDataContainer
 {
-
     private $meterOwner;
     private $transaction;
 

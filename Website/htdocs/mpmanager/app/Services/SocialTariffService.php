@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\SocialTariff;
 
-class SocialTariffService  implements IBaseService
+class SocialTariffService implements IBaseService
 {
     public function __construct(private SocialTariff $socialTariff)
     {
-
     }
 
     public function create($socialTariffData)

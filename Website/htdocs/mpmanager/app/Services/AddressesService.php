@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Models\Address\Address;
@@ -8,9 +7,8 @@ use App\Models\Address\HasAddressesInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-class AddressesService  implements IBaseService,IAssociative
+class AddressesService implements IBaseService, IAssociative
 {
-
     public function __construct(private Address $address)
     {
     }

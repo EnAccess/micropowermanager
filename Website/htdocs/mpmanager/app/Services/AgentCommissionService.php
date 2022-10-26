@@ -8,12 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\Types\This;
 
-class AgentCommissionService  implements IBaseService
+class AgentCommissionService implements IBaseService
 {
-
     public function __construct(private AgentCommission $agentCommission)
     {
-
     }
 
 
@@ -29,7 +27,7 @@ class AgentCommissionService  implements IBaseService
      * @param  $agentCommission
      * @param array $data
      */
-    public function update($agentCommission,  $agentCommissiondata)
+    public function update($agentCommission, $agentCommissiondata)
     {
         $agentCommission->update($agentCommissiondata);
         $agentCommission->fresh();
@@ -39,7 +37,7 @@ class AgentCommissionService  implements IBaseService
 
     public function delete($agentCommission)
     {
-       return $agentCommission->delete();
+        return $agentCommission->delete();
     }
 
     public function getById($id)

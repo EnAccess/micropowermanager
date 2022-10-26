@@ -90,5 +90,4 @@ class MeterTypeController extends Controller
 
         return   ApiResource::make($this->meterTypeService->update($meterType, $meterTypeData));
     }
-
 }

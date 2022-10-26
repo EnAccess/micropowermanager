@@ -11,7 +11,6 @@ class MeterTariffMeterParameterService
         private MeterTariff $meterTariff,
         private MeterParameter $meterParameter
     ) {
-
     }
 
     public function getCountById($meterTariffId): array
@@ -26,15 +25,15 @@ class MeterTariffMeterParameterService
         return ['count' => $count];
     }
 
-    public function changeMetersTariff($meterTariffIdFrom,  $meterTariffIdTo): array
+    public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo): array
     {
 
         return  $this->meterParameter->newQuery()->where('tariff_id', $meterTariffIdFrom)
             ->get()
             ->each(function ($meterParameter) use ($meterTariffIdTo) {
-            $meterParameter->tariff_id = $meterTariffIdTo;
-            $meterParameter->update();
-            $meterParameter->save();
-        });
+                $meterParameter->tariff_id = $meterTariffIdTo;
+                $meterParameter->update();
+                $meterParameter->save();
+            });
     }
 }

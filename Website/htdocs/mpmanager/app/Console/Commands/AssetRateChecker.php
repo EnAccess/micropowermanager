@@ -20,18 +20,17 @@ class AssetRateChecker extends AbstractSharedCommand
     protected $description = 'Checks if any asset rate is due and creates a ticket and reminds the customer';
 
     public function __construct(
-        private AssetRate                     $assetRate,
-        private TicketService                 $ticketService,
+        private AssetRate $assetRate,
+        private TicketService $ticketService,
         private SmsApplianceRemindRateService $smsApplianceRemindRateService,
-        private User                          $user,
-        private TicketCategory                $label
-    )
-    {
+        private User $user,
+        private TicketCategory $label
+    ) {
         parent::__construct();
     }
 
 
-    function runInCompanyScope(): void
+    public function runInCompanyScope(): void
     {
         $this->remindUpComingRates();
         $this->findOverDueRates();
@@ -122,8 +121,6 @@ class AssetRateChecker extends AbstractSharedCommand
             dueDate: $assetRate->due_date === '1970-01-01' ? null : $assetRate->due_date,
             owner: $assetRate->assetPerson()->first()->person()->first(),
         );
-
-
     }
 
     private function getApplianceRemindRates(): Collection|array

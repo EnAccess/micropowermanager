@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Restriction extends BaseModel
 {
-
     public function upgrades(): HasMany
     {
         return $this->hasMany(Upgrade::class);

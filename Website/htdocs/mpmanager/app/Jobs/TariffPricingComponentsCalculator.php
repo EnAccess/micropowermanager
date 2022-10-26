@@ -28,7 +28,7 @@ class TariffPricingComponentsCalculator implements ShouldQueue
      * @param MeterTariff $tariff
      * @param $components
      */
-    public function __construct(MeterTariff $tariff,$components, $tariffPricingComponentService)
+    public function __construct(MeterTariff $tariff, $components, $tariffPricingComponentService)
     {
 
         $this->tariff = $tariff;

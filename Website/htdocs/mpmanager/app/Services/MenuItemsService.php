@@ -54,7 +54,6 @@ class MenuItemsService
     public function checkMenuItemIsExistsForTag($tag)
     {
         return $this->menuItems->newQuery()->where('name', $tag)->first();
-
     }
 
     public function removeMenuItemAndSubmenuItemForMenuItemName($menuItemName)
@@ -68,5 +67,5 @@ class MenuItemsService
             });
             $menuItem->delete();
         }
-   }
+    }
 }

@@ -18,8 +18,8 @@ class ManufacturerController extends Controller
     public function __construct(
         private ManufacturerService $manufacturerService,
         private ManufacturerAddressService $manufacturerAddressService,
-        private AddressesService $addressService)
-    {
+        private AddressesService $addressService
+    ) {
     }
 
     /**
@@ -41,7 +41,7 @@ class ManufacturerController extends Controller
      * @param  ManufacturerRequest $request
      * @return JsonResponse
      */
-    public function store(ManufacturerRequest $request):JsonResponse
+    public function store(ManufacturerRequest $request): JsonResponse
     {
         $manufacturerData = $this->manufacturerService->createManufacturerDataFromRequest($request);
         $addressData = $this->addressService->createAddressDataFromRequest($request);

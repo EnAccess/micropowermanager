@@ -7,19 +7,17 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
 use function Symfony\Component\String\s;
 
-class AgentTransactionService  implements IBaseService
+class AgentTransactionService implements IBaseService
 {
-
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
         private Meter $meter,
         private MeterParameter $meterParameter
     ) {
-
-
     }
 
 
@@ -46,7 +44,6 @@ class AgentTransactionService  implements IBaseService
             return $query->paginate($limit);
         }
         return $query->get();
-
     }
 
     public function getById($agentId, $customerId = null)
@@ -99,6 +96,4 @@ class AgentTransactionService  implements IBaseService
     {
         // TODO: Implement delete() method.
     }
-
-
 }

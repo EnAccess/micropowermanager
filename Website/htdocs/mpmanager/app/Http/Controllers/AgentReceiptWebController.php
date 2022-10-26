@@ -17,7 +17,6 @@ class AgentReceiptWebController extends Controller
         private AgentReceiptService $agentReceiptService,
         private AgentBalanceHistoryService $agentBalanceHistoryService
     ) {
-
     }
 
     /**
@@ -59,7 +58,7 @@ class AgentReceiptWebController extends Controller
 
         $userId = auth('api')->user()->id;
         $agentId = $request->input('agent_id');
-        $lastBalanceHistory= $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
+        $lastBalanceHistory = $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
         $receiptData = [
             'user_id' => $userId,
             'agent_id' => $agentId,

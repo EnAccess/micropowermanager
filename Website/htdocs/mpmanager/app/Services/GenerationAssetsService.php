@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class GenerationAssetsService
 {
-
     /**
      * @var Battery
      */

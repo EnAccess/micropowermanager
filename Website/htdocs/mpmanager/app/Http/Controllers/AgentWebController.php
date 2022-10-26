@@ -21,7 +21,6 @@ class AgentWebController extends Controller
         private PersonAddressService $personAddressService,
         private CountryService $countryService
     ) {
-
     }
 
     public function index(Request $request): ApiResource
@@ -49,7 +48,7 @@ class AgentWebController extends Controller
             'agent_commission_id' => $request['agent_commission_id'],
             'device_id' => '-',
             'fire_base_token' => '-',
-            'connection'=> auth('api')->user()->company->database->database_name
+            'connection' => auth('api')->user()->company->database->database_name
         ];
 
         return ApiResource::make($this->agentService->create(
@@ -114,5 +113,4 @@ class AgentWebController extends Controller
             ]
         );
     }
-
 }

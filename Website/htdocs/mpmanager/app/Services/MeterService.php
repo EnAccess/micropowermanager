@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Http\Requests\MeterRequest;
@@ -13,12 +12,10 @@ use Illuminate\Support\Facades\Log;
 
 use function count;
 
-class MeterService  implements IBaseService
+class MeterService implements IBaseService
 {
-
     public function __construct(private Meter $meter)
     {
-
     }
 
     public function getBySerialNumber($serialNumber)
@@ -30,8 +27,7 @@ class MeterService  implements IBaseService
                 'meterParameter.connectionType',
                 'meterParameter.connectionGroup',
                 'manufacturer'
-            ]
-        )->where('serial_number', $serialNumber)->first();
+            ])->where('serial_number', $serialNumber)->first();
     }
 
     public function search($term, $paginate): LengthAwarePaginator
@@ -55,13 +51,12 @@ class MeterService  implements IBaseService
         return $this->meter->newQuery()->with([
             'meterParameter.tariff',
             'meterParameter.geo',
-            'meterType']
-        )->find($meterId);
+            'meterType'])->find($meterId);
     }
 
     public function getUsedMetersGeoWithAccessRatePayments(): Collection|array
     {
-       return $this->meter->newQuery()->with('meterParameter.address.geo', 'accessRatePayment')->where(
+        return $this->meter->newQuery()->with('meterParameter.address.geo', 'accessRatePayment')->where(
             'in_use',
             1
         )->get();
@@ -286,8 +281,7 @@ class MeterService  implements IBaseService
                 'meterParameter.connectionType',
                 'meterParameter.connectionGroup',
                 'manufacturer'
-            ]
-        )->find($meterId);
+            ])->find($meterId);
     }
 
     public function delete($meter)
@@ -298,8 +292,10 @@ class MeterService  implements IBaseService
     public function getAll($limit = null, $inUse = true)
     {
         if (isset($inUse)) {
-            return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->where('in_use',
-                $inUse)->paginate($limit);
+            return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->where(
+                'in_use',
+                $inUse
+            )->paginate($limit);
         }
         return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->paginate($limit);
     }

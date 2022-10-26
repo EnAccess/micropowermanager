@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 
 class MeterTariffObserver
 {
-
     public function __construct(
         private AccessRateService $accessRateService,
         private SocialTariffService $socialTariffService,
@@ -85,18 +84,16 @@ class MeterTariffObserver
         $accessRate = request()->input('access_rate');
 
         if ($accessRate) {
-
             if (isset($accessRate['id'])) {
-
                 $updatedAccessRate = $this->accessRateService->getById($accessRate['id']);
-                $accessRateData =[
+                $accessRateData = [
                     'amount' => $accessRate['access_rate_amount'],
                     'period' => $accessRate['access_rate_period']
                 ];
 
                 $this->accessRateService->update($updatedAccessRate, $accessRateData);
             } else {
-                $accessRateData =[
+                $accessRateData = [
                     'tariff_id' => $tariff->id,
                     'amount' => $accessRate['access_rate_amount'],
                     'period' => $accessRate['access_rate_period']
@@ -111,11 +108,9 @@ class MeterTariffObserver
         $social = request()->input('social_tariff');
 
         if ($social) {
-
             if (isset($social['id'])) {
-
                 $updatedSocialTariff = $this->socialTariffService->getById($social['id']);
-                $socialTariffData =[
+                $socialTariffData = [
                     'daily_allowance' => $social['daily_allowance'],
                     'price' => $social['price'],
                     'initial_energy_budget' => $social['initial_energy_budget'],
@@ -124,7 +119,7 @@ class MeterTariffObserver
 
                 $this->socialTariffService->update($updatedSocialTariff, $socialTariffData);
             } else {
-                $socialTariffData =[
+                $socialTariffData = [
                     'tariff_id' => $tariff->id,
                     'daily_allowance' => $social['daily_allowance'],
                     'price' => $social['price'],
@@ -153,18 +148,17 @@ class MeterTariffObserver
 
         if ($tous) {
             foreach ($tous as $key => $value) {
-
-                $tou = isset($tous[$key]['id'])? $this->timeOfUsageService->getById($tous[$key]['id']): null;
+                $tou = isset($tous[$key]['id']) ? $this->timeOfUsageService->getById($tous[$key]['id']) : null;
 
                 if ($tou) {
-                    $touData =[
+                    $touData = [
                         'start' => $tous[$key]['start'],
                         'end' => $tous[$key]['end'],
                         'value' => $tous[$key]['value']
                     ];
-                $this->timeOfUsageService->update($tou, $touData);
+                    $this->timeOfUsageService->update($tou, $touData);
                 } else {
-                    $touData =[
+                    $touData = [
                         'tariff_id' => $tariff->id,
                         'start' => $tous[$key]['start'],
                         'end' => $tous[$key]['end'],

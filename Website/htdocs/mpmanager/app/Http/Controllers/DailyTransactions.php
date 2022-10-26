@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
  */
 class DailyTransactions extends Controller
 {
-
     /**
      * The used transaction model
      *

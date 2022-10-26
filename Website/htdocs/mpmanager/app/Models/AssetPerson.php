@@ -22,8 +22,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AssetPerson extends BaseModel
 {
-
-
     protected $dispatchesEvents = [
         'created' => AssetPersonCreated::class,
     ];

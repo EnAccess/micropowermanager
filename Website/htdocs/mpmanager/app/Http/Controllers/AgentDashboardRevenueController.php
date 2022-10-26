@@ -14,8 +14,8 @@ class AgentDashboardRevenueController extends Controller
         private AgentService $agentService,
         private AgentBalanceHistoryService $agentBalanceHistoryService
     ) {
-
     }
+
     public function show(Request $request, Response $response)
     {
         $agent = $this->agentService->getByAuthenticatedUser();

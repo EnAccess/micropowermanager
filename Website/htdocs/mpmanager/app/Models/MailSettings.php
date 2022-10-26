@@ -8,5 +8,4 @@ namespace App\Models;
  */
 class MailSettings extends BaseModel
 {
-
 }

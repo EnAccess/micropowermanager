@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DataControllerMiddleware
 {
-
     /**
      * @var MiniGrid
      */

@@ -21,14 +21,11 @@ use Illuminate\Http\Request;
  */
 class RestrictionMiddleware
 {
-
-
     public function __construct(
         private RestrictionService $restrictionService,
         private MaintenanceUserService $maintenanceUserService,
         private MiniGridService $miniGridService
     ) {
-
     }
 
     /**
@@ -68,12 +65,10 @@ class RestrictionMiddleware
     private function handleRestriction(int $limit, $target, Request $request): bool
     {
         if ($target === 'maintenance-user') {
-
             if ($this->maintenanceUserService->getMaintenanceUsersCount() >= $limit) {
                 return false;
             }
         } elseif ($target === 'enable-data-stream' && $request->input('data_stream') === 1) {
-
             // someone(admin) is trying to enable data-stream capability on the mini-grid dashboard
             if ($this->miniGridService->getDataStreamEnabledMiniGridsCount() >= $limit) {
                 return false;

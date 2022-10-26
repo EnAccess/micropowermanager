@@ -15,7 +15,6 @@ class MiniGridSolarService
         private MiniGrid $miniGrid,
         private Solar $solar
     ) {
-
     }
 
     /**

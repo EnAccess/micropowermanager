@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class VodacomTransaction extends BaseModel implements IRawTransaction
 {
-
     /**
      * @return MorphOne
      */

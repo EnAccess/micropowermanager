@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AgentReceiptDetail extends BaseModel
 {
-
     public function receipt(): BelongsTo
     {
         return $this->belongsTo(AgentReceipt::Class, 'agent_receipt_id');

@@ -12,10 +12,8 @@ class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
 
     public function __construct(
         private ClustersDashboardCacheDataService $clustersDashboardCacheDataService
-    )
-    {
+    ) {
         parent::__construct();
-
     }
 
     public function runInCompanyScope(): void

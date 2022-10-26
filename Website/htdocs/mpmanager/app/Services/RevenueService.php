@@ -21,11 +21,8 @@ use Illuminate\Support\Facades\DB;
 
 class RevenueService
 {
-
-    public function __construct(private Meter $meter, private MeterToken $meter_token, private  Transaction
-    $transaction)
+    public function __construct(private MeterToken $meter_token, private Transaction $transaction)
     {
-
     }
 
 

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-
 use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
 use App\Models\Transaction\Transaction;
@@ -18,7 +17,7 @@ class MiniGridRevenueService
     ) {
     }
 
-    public function getById($miniGridId, $startDate,$endDate,$meterService)
+    public function getById($miniGridId, $startDate, $endDate, $meterService)
     {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
@@ -35,10 +34,9 @@ class MiniGridRevenueService
             )
             ->whereIn('message', $miniGridMeters->pluck('serial_number'))
             ->whereBetween('created_at', [$startDate,$endDate])->get();
-
     }
 
-    public function getSoldEnergyById($miniGridId, $startDate, $endDate,$meterService)
+    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $meterService)
     {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
@@ -48,7 +46,7 @@ class MiniGridRevenueService
             ->whereIn('meter_id', $miniGridMeters->pluck('id'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
-        $energy=0;
+        $energy = 0;
 
         if ($soldEnergy) {
             $energy = round($soldEnergy[0]->energy, 3);

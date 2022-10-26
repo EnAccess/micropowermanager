@@ -13,13 +13,10 @@ use Illuminate\Events\Dispatcher;
 
 class SoldApplianceListener
 {
-
-
     public function __construct(
         private ApplianceRateService $applianceRateService,
         private PersonService $personService
     ) {
-
     }
 
     public function initializeApplianceRates(SoldApplianceDataContainer $soldAppliance): void

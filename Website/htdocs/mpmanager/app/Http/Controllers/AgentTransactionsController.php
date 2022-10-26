@@ -17,7 +17,6 @@ class AgentTransactionsController extends Controller
         private AgentTransactionService $agentTransactionService,
         private AgentService $agentService
     ) {
-
     }
 
     public function index(Request $request): ApiResource
@@ -35,5 +34,4 @@ class AgentTransactionsController extends Controller
 
         return ApiResource::make($this->agentTransactionService->getById($agent->id, $customerId));
     }
-
 }

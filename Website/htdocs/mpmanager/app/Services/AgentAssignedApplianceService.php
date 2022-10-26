@@ -7,9 +7,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class AgentAssignedApplianceService  implements IBaseService
+class AgentAssignedApplianceService implements IBaseService
 {
-
     public function __construct(private AgentAssignedAppliances $agentAssignedAppliance)
     {
     }
@@ -45,7 +44,7 @@ class AgentAssignedApplianceService  implements IBaseService
     {
         $query = $this->agentAssignedAppliance->newQuery();
 
-        if ($agentId){
+        if ($agentId) {
             $query->with(['user', 'agent', 'applianceType'])
                 ->whereHas(
                     'agent',
@@ -55,8 +54,7 @@ class AgentAssignedApplianceService  implements IBaseService
                 );
         }
 
-        if ($limit){
-
+        if ($limit) {
             return $query->latest()->paginate($limit);
         }
 

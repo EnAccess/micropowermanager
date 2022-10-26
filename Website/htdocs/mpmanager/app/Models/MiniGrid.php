@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class MiniGrid extends BaseModel
 {
-
     protected $guarded = [];
 
 
@@ -59,5 +58,4 @@ class MiniGrid extends BaseModel
     {
         return $this->cluster_id;
     }
-
 }

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\AccessRate\AccessRate;
 use App\Models\PaymentHistory;
 
-class AccessRatePaymentHistoryService  implements IAssignationService
+class AccessRatePaymentHistoryService implements IAssignationService
 {
     private AccessRate $accessRate;
     private PaymentHistory $paymentHistory;

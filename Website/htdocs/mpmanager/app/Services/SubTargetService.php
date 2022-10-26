@@ -4,12 +4,10 @@ namespace App\Services;
 
 use App\Models\SubTarget;
 
-class SubTargetService  implements IBaseService
+class SubTargetService implements IBaseService
 {
-
     public function __construct(private SubTarget $subTarget)
     {
-
     }
 
     public function getById($id)

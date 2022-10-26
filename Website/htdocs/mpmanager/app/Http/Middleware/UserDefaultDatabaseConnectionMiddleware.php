@@ -17,30 +17,30 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
  */
 class UserDefaultDatabaseConnectionMiddleware
 {
-
-
     public function __construct(private DatabaseProxyManagerService $databaseProxyManager, private CompanyDatabaseService $companyDatabaseService)
     {
     }
 
-    public function handle( $request, Closure $next)
+    public function handle($request, Closure $next)
     {
-        if($request instanceof Request) {
+        if ($request instanceof Request) {
             return $this->handleApiRequest($request, $next);
-        } elseif($request instanceof  AbstractJob) {
+        } elseif ($request instanceof  AbstractJob) {
             return $this->handleJob($request, $next);
         }
     }
 
-    private function handleJob(AbstractJob $job, Closure $next){
+    private function handleJob(AbstractJob $job, Closure $next)
+    {
         $companyId = $job->getCompanyId();
 
-        return $this->databaseProxyManager->runForCompany($companyId, function() use($next, $job) {
+        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $job) {
             return $next($job);
         });
     }
 
-    private function handleApiRequest(Request $request, Closure $next) {
+    private function handleApiRequest(Request $request, Closure $next)
+    {
 
         //adding new company should not be proxied. It should use the base database to create the record
         if ($request->path() === 'api/companies' && $request->isMethod('post')) {
@@ -55,25 +55,22 @@ class UserDefaultDatabaseConnectionMiddleware
         if ($request->path() === 'api/auth/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
-        } //agent app login
-        elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) {
+        } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { //agent app login
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
-        } //agent app authenticated user requests
-        elseif ($this->isAgentApp($request->path())) {
+        } elseif ($this->isAgentApp($request->path())) { //agent app authenticated user requests
             $companyId = auth('agent_api')->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
-        } //web client authenticated user requests
-        else {
+        } else { //web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
         }
 
-        return $this->databaseProxyManager->runForCompany($companyId, function() use($next, $request) {
+        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request) {
             return $next($request);
         });
     }

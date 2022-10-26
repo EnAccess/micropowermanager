@@ -44,12 +44,11 @@ class CompanyDatabaseService implements IBaseService
     {
         $sourcePath = __DIR__ . '/../../';
         shell_exec(__DIR__ . '/../../database_creator.sh --database='
-            . $databaseName . ' --user=root' . ' --path=' . $sourcePath . ' --company_id='. $companyId );
+            . $databaseName . ' --user=root' . ' --path=' . $sourcePath . ' --company_id=' . $companyId);
     }
 
     public function setDatabaseConnectionForCompany($databaseName)
     {
-
     }
 
     public function doMigrations($databaseName)
@@ -65,22 +64,21 @@ class CompanyDatabaseService implements IBaseService
         Artisan::call('db:seed', ['--force' => true]);
     }
 
-    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId=null)
+    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null)
     {
         $pluginName = $plugin['name'];
         try {
             $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $pluginName));
-
         } catch (\Exception $exception) {
             // we return here if company chooses a plugin which does not have UI components
             return 0;
         }
         $menuItems = $menuItemService->createMenuItems();
 
-        if($companyId !== null) {
+        if ($companyId !== null) {
             /** @var DatabaseProxyManagerService $databaseProxyManagerService */
             $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
-            $databaseProxyManagerService->runForCompany($companyId, function() use($menuItems){
+            $databaseProxyManagerService->runForCompany($companyId, function () use ($menuItems) {
                 Artisan::call('menu-items:generate', [
                     'menuItem' => $menuItems['menuItem'],
                     'subMenuItems' => $menuItems['subMenuItems'],
@@ -92,15 +90,12 @@ class CompanyDatabaseService implements IBaseService
                 'subMenuItems' => $menuItems['subMenuItems'],
             ]);
         }
-
-
-
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
-        $result =$this->companyDatabase->newQuery()
+        $result = $this->companyDatabase->newQuery()
             ->where(CompanyDatabase::COL_COMPANY_ID, '=', $companyId)
             ->firstOrFail();
 

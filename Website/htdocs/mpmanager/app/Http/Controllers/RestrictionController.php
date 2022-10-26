@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 
 class RestrictionController extends Controller
 {
-
     /**
      * @var Restriction
      */

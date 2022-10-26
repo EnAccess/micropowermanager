@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCommission;
 
 class AgentCommissionHistoryBalanceService implements IAssignationService
 {
-
     private AgentCommission $agentCommission;
     private AgentBalanceHistory $agentBalanceHistory;
 

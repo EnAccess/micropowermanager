@@ -1,9 +1,6 @@
 <?php
 
-
-
 namespace App\Services;
-
 
 use App\Models\Meter\Meter;
 use App\Models\Transaction\AgentTransaction;
@@ -13,9 +10,8 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Collection;
 
-class TransactionService  implements IBaseService,IAssociative
+class TransactionService implements IBaseService, IAssociative
 {
-
     /**
      * @var Meter
      */
@@ -177,7 +173,7 @@ class TransactionService  implements IBaseService,IAssociative
 
     public function make($transactionData)
     {
-       return $this->transaction->newQuery()->make($transactionData);
+        return $this->transaction->newQuery()->make($transactionData);
     }
 
     public function save($transaction)

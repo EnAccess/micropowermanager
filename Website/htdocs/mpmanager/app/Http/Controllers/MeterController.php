@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-
 class MeterController extends Controller
 {
     public function __construct(
@@ -40,7 +39,7 @@ class MeterController extends Controller
     public function index(Request $request): ApiResource
     {
         $inUse = $request->input('in_use');
-        $limit = $request->input('limit',config('settings.paginate'));
+        $limit = $request->input('limit', config('settings.paginate'));
 
         return ApiResource::make($this->meterService->getAll($limit, $inUse));
     }

@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends BaseModel
 {
-
-
     /**
      * @return string
      */

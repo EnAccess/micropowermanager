@@ -20,10 +20,8 @@ use Illuminate\Database\Query\Builder;
 
 class CityService
 {
-
     public function __construct(private City $city, private Person $person, private MiniGrid $miniGrid)
     {
-
     }
 
     public function getCityPopulation($cityId, $onlyCustomers = true)

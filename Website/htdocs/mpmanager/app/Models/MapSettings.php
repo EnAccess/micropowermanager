@@ -16,5 +16,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class MapSettings extends BaseModel
 {
-
 }

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class ResendInformationNotification extends SmsSender
 {
-
     protected $data;
     public $body = '';
     protected $references = [

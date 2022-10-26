@@ -9,10 +9,8 @@ use Illuminate\Http\Request;
 
 class MainSettingsController extends Controller
 {
-
-    public function __construct( private MainSettingsService $mainSettingsService)
+    public function __construct(private MainSettingsService $mainSettingsService)
     {
-
     }
 
     public function index(): ApiResource

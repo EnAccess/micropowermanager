@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class City extends BaseModel
 {
-
     public function targets(): HasMany
     {
         return $this->hasMany(Target::class);
@@ -55,7 +54,7 @@ class City extends BaseModel
         $this->name =  $name;
     }
 
-    public function setCountryId(int $countryId ): void
+    public function setCountryId(int $countryId): void
     {
         $this->country_id = $countryId;
     }

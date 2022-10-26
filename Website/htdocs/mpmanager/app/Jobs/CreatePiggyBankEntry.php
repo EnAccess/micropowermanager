@@ -6,8 +6,6 @@ use App\Models\Meter\MeterParameter;
 
 class CreatePiggyBankEntry extends AbstractJob
 {
-
-
     public function __construct(private MeterParameter $meterParameter)
     {
     }

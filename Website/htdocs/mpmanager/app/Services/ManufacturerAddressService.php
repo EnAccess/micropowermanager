@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 
-
 class ManufacturerAddressService implements IAssignationService
 {
     private Address $address;

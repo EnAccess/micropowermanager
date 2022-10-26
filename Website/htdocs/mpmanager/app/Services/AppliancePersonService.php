@@ -7,7 +7,7 @@ use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use PhpParser\Node\Stmt\Throw_;
 
-class AppliancePersonService  implements IBaseService, IAssociative
+class AppliancePersonService implements IBaseService, IAssociative
 {
     private $mainSettings;
     private $cashTransactionService;

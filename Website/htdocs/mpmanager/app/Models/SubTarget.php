@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class SubTarget extends BaseModel
 {
-
-
     /**
      * @return BelongsTo
      */

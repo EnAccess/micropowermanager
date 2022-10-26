@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\CreateAddressRequest;
 use App\Models\Address\Address;
 use App\Exceptions\ValidationException;
 use App\Http\Resources\ApiResource;
 use App\Models\Person\Person;
 use App\Models\User;
-
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use App\Services\AddressesService;
@@ -22,8 +20,8 @@ class AddressController extends Controller
         private PersonService $personService,
         private PersonAddressService $personAddressService
     ) {
-
     }
+
     public function index(): ApiResource
     {
         return ApiResource::make($this->addressService->getAll());
@@ -33,5 +31,4 @@ class AddressController extends Controller
     {
         return ApiResource::make($this->addressService->getById($id));
     }
-
 }

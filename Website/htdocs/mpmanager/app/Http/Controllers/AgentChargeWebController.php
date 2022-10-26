@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 
 class AgentChargeWebController extends Controller
 {
-
     public function __construct(private AgentChargeService $agentChargeService)
     {
     }

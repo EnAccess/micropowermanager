@@ -24,12 +24,12 @@ class MiniGridBatteryController extends Controller
      * @param  $id
      * @return ApiResource
      */
-    public function show($miniGridId,Request $request ): ApiResource
+    public function show($miniGridId, Request $request): ApiResource
     {
         $limit = $request->get('limit');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        return new ApiResource($this->miniGridBatteryService->getById($miniGridId,$startDate,$endDate,$limit));
+        return new ApiResource($this->miniGridBatteryService->getById($miniGridId, $startDate, $endDate, $limit));
     }
 }

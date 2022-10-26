@@ -11,12 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentHistoryService  implements IAssociative
+class PaymentHistoryService implements IAssociative
 {
-
     public function __construct(private PaymentHistory $paymentHistory)
     {
-
     }
 
     public function findPayingCustomersInRange(
@@ -35,9 +33,9 @@ class PaymentHistoryService  implements IAssociative
             ->first();
     }
 
-    public function getBySerialNumber(string $serialNumber,int $paginate): LengthAwarePaginator
+    public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator
     {
-       return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])
+        return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])
             ->whereHas(
                 'transaction',
                 function ($q) use ($serialNumber) {
@@ -49,12 +47,11 @@ class PaymentHistoryService  implements IAssociative
 
     public function make($paymentHistoryData)
     {
-       return $this->paymentHistory->newQuery()->make($paymentHistoryData);
+        return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }
 
     public function save($paymentHistory)
     {
         return $paymentHistory->save();
     }
-
 }

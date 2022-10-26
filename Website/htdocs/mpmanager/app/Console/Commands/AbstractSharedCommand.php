@@ -35,17 +35,16 @@ abstract class AbstractSharedCommand extends Command
     {
         $databaseProxyManagerService->queryAllConnections()->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
             $modelCollection->map(function (DatabaseProxy $databaseProxy) use ($databaseProxyManagerService, $input, $output) {
-               $this->runForCompany($databaseProxyManagerService, $databaseProxy->getCompanyId(), $input, $output);
+                $this->runForCompany($databaseProxyManagerService, $databaseProxy->getCompanyId(), $input, $output);
             });
         });
     }
 
     private function runForCompany(DatabaseProxyManagerService $databaseProxyManagerService, int $companyId, InputInterface $input, OutputInterface $output): void
     {
-        $this->info("Running " . $this->name . " for company ID : " .$companyId);
+        $this->info("Running " . $this->name . " for company ID : " . $companyId);
         $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
             parent::execute($input, $output);
         });
-
     }
 }

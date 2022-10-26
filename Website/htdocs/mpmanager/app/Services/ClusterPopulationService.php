@@ -7,13 +7,11 @@ use App\Models\Person\Person;
 
 class ClusterPopulationService
 {
- public function __construct(private Person $person,private Cluster $cluster)
+    public function __construct(private Person $person, private Cluster $cluster)
+    {
+    }
 
- {
-
- }
-
-    public function getById($clusterId, $onlyCustomers = true):int
+    public function getById($clusterId, $onlyCustomers = true): int
     {
 
         if ($onlyCustomers) {
@@ -46,5 +44,4 @@ class ClusterPopulationService
 
         return $population;
     }
-
 }

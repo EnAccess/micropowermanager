@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\DB;
  */
 class Target extends BaseModel
 {
-
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);

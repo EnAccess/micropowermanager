@@ -6,7 +6,6 @@ use App\Models\PaymentHistory;
 
 class AccessRateConfirmation extends SmsBodyParser
 {
-
     protected $variables = ['amount'];
     protected $paymentHistory;
 

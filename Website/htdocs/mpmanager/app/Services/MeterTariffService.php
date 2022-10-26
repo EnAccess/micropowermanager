@@ -16,12 +16,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class MeterTariffService  implements IBaseService
+class MeterTariffService implements IBaseService
 {
-
     public function __construct(private MeterTariff $meterTariff)
     {
-
     }
 
     public function getById($meterTariffId)

@@ -9,10 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MiniGridPVService
 {
-
     public function __construct(private PV $pv)
     {
-
     }
 
     public function getById($miniGridId, $startDate, $endDate): Collection|array
@@ -38,5 +36,4 @@ class MiniGridPVService
 
         return $pvReadings->get();
     }
-
 }

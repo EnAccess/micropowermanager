@@ -8,15 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-
-class SubConnectionTypeService  implements IBaseService
+class SubConnectionTypeService implements IBaseService
 {
     public function __construct(private SubConnectionType $subConnectionType)
     {
-
     }
 
-    public function getSubConnectionTypesByConnectionTypeId($connectionTypeId,$limit = null): LengthAwarePaginator|Collection
+    public function getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit = null): LengthAwarePaginator|Collection
     {
 
         return $limit ? $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
@@ -46,7 +44,7 @@ class SubConnectionTypeService  implements IBaseService
     public function getAll($limit = null)
     {
         if ($limit) {
-          return  $this->subConnectionType->newQuery()->paginate($limit) ;
+            return  $this->subConnectionType->newQuery()->paginate($limit) ;
         }
 
         return  $this->subConnectionType->newQuery()->get();

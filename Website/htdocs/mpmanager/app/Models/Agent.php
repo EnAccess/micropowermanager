@@ -36,7 +36,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Agent extends Authenticatable implements JWTSubject
 {
-
     public function __construct(array $attributes = [])
     {
         $this->setConnection('shard');

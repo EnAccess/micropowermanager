@@ -17,18 +17,18 @@ class ClustersDashboardCacheDataService
     ) {
     }
 
-    public function setClustersData($clusterData,$clustersWithMeters,$clusterRevenueService)
+    public function setClustersData($clusterData, $clustersWithMeters, $clusterRevenueService)
     {
-        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST,$clusterData);
-        $this->setClustersRevenues(self::CACHE_KEY_CLUSTERS_REVENUE,$clustersWithMeters,$clusterRevenueService);
+        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST, $clusterData);
+        $this->setClustersRevenues(self::CACHE_KEY_CLUSTERS_REVENUE, $clustersWithMeters, $clusterRevenueService);
     }
 
-    private  function setClustersListData($key,$clusterData)
+    private function setClustersListData($key, $clusterData)
     {
         Cache::forever($key, $clusterData);
     }
 
-    public function setClustersRevenues($key,$clustersWithMeters,$clusterRevenueService)
+    public function setClustersRevenues($key, $clustersWithMeters, $clusterRevenueService)
     {
         $startDate = null;
         if (!$startDate) {
@@ -49,7 +49,7 @@ class ClustersDashboardCacheDataService
             $revenues = $clusterRevenueService->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
 
             foreach ($revenues as $rIndex => $revenue) {
-               $p[$revenue->period]['revenue'] += $revenue->revenue;
+                $p[$revenue->period]['revenue'] += $revenue->revenue;
                 $totalRevenue += $revenue->revenue;
             }
 
@@ -69,7 +69,7 @@ class ClustersDashboardCacheDataService
 
     public function getDataById($clusterId)
     {
-        return Cache::get('ClustersList') ? collect(Cache::get('ClustersList'))->filter(function($cluster) use ($clusterId) {
+        return Cache::get('ClustersList') ? collect(Cache::get('ClustersList'))->filter(function ($cluster) use ($clusterId) {
             return $cluster['id'] == $clusterId;
         })->first() : [];
     }

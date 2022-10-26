@@ -11,10 +11,9 @@ class MiniGridBatteryService
 {
     public function __construct(private Battery $battery, private MiniGrid $miniGrid)
     {
-
     }
 
-    public function getById($miniGridId,$startDate,$endDate,$limit): Collection|array
+    public function getById($miniGridId, $startDate, $endDate, $limit): Collection|array
     {
         $batteryReadings = $this->battery->newQuery()
             ->where('mini_grid_id', $miniGridId);
@@ -45,7 +44,7 @@ class MiniGridBatteryService
         return $batteryReadings->get()->reverse()->values();
     }
 
-    public function getForJetsonById($miniGridId,$startDate,$endDate)
+    public function getForJetsonById($miniGridId, $startDate, $endDate)
     {
         $batteryReadings = $this->battery->newQuery()
             ->where('mini_grid_id', $miniGridId);

@@ -9,10 +9,8 @@ use Illuminate\Http\Request;
 
 class AgentTransactionWebController extends Controller
 {
-
     public function __construct(private AgentTransactionService $agentTransactionService)
     {
-
     }
 
     public function index($agentId, Request $request): ApiResource

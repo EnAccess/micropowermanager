@@ -40,7 +40,7 @@ class CityRequest extends FormRequest
     {
         $city = new City();
         $city->setName($this->input(self::PARAM_NAME));
-        $city->setCountryId($this->input(self::PARAM_COUNTRY_ID,0));
+        $city->setCountryId($this->input(self::PARAM_COUNTRY_ID, 0));
         $city->setClusterId($this->input(self::PARAM_CLUSTER_ID));
         $city->setMiniGridId($this->input(self::PARAM_MINI_GRID));
 

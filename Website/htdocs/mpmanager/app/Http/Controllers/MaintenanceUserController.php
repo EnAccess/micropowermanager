@@ -9,7 +9,6 @@ use App\Models\Person\Person;
 use App\Services\PersonService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-
 use Inensus\BulkRegistration\Services\AddressService;
 
 class MaintenanceUserController extends Controller
@@ -18,11 +17,10 @@ class MaintenanceUserController extends Controller
 
     public function __construct(
         private MaintenanceUsers $maintenanceUsers,
-        private Person           $person,
-        private PersonService    $personService,
-        private AddressService   $addressService)
-    {
-
+        private Person $person,
+        private PersonService $personService,
+        private AddressService $addressService
+    ) {
     }
 
 
@@ -50,7 +48,7 @@ class MaintenanceUserController extends Controller
         } catch (ModelNotFoundException) {
             $personData = $this->personService->createPersonDataFromRequest($request);
             $person = $this->personService->createMaintenancePerson($personData);
-            $this->addressService->createForPerson($person->getId(), $request->getCityId(),$request->getPhone(), $request->getEmail(), $request->getStreet(), true);
+            $this->addressService->createForPerson($person->getId(), $request->getCityId(), $request->getPhone(), $request->getEmail(), $request->getStreet(), true);
         }
 
         $maintenanceUser = $this->maintenanceUsers::query()->create(

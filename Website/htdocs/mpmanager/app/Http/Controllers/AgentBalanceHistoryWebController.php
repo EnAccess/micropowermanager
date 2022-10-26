@@ -18,6 +18,6 @@ class AgentBalanceHistoryWebController extends Controller
     {
         $limit = $request->input('limit');
 
-        return  ApiResource::make($this->agentBalanceHistoryService->getAll($limit,$agentId));
+        return  ApiResource::make($this->agentBalanceHistoryService->getAll($limit, $agentId));
     }
 }

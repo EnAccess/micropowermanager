@@ -7,11 +7,9 @@ use App\Services\PersonMeterService;
 
 class PersonMeterController
 {
-
     public function __construct(
         private PersonMeterService $personMeterService
     ) {
-
     }
 
     /**

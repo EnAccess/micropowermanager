@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AgentSoldAppliance extends BaseModel
 {
-
     protected $guarded = [];
 
     public function assignedAppliance(): BelongsTo

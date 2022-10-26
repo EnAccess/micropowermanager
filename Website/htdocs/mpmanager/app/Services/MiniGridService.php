@@ -9,7 +9,6 @@ class MiniGridService
 {
     public function __construct(private MiniGrid $miniGrid, private Cluster $cluster)
     {
-
     }
 
     public function getByIdWithLocation($miniGridId)
@@ -41,13 +40,13 @@ class MiniGridService
          $miniGrid->update([
             'name' => $miniGridData['name'] ?? $miniGrid->name,
             'data_stream' => $miniGridData['data_stream'] ?? $miniGrid->data_stream,
-        ]);
+         ]);
          $miniGrid->fresh();
 
          return $miniGrid;
     }
 
-    public function getAll($limit = null,$dataStream = null)
+    public function getAll($limit = null, $dataStream = null)
     {
         $miniGrids = $this->miniGrid->newQuery();
         if ($dataStream) {

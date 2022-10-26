@@ -126,7 +126,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->name;
     }
 
-    public function getEmail():string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -134,5 +134,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
     }
-    
 }

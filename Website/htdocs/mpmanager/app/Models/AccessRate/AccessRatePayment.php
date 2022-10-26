@@ -19,8 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AccessRatePayment extends BaseModel
 {
-
-
     public function meter(): BelongsTo
     {
         return $this->belongsTo(Meter::class);

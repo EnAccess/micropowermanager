@@ -4,11 +4,10 @@ namespace App\Services;
 
 use App\Models\TariffPricingComponent;
 
-class TariffPricingComponentService  implements IBaseService
+class TariffPricingComponentService implements IBaseService
 {
     public function __construct(private TariffPricingComponent $tariffPricingComponent)
     {
-
     }
 
     public function make($tariffPricingComponentData)
@@ -21,10 +20,9 @@ class TariffPricingComponentService  implements IBaseService
         $this->tariffPricingComponent->newQuery()->where('owner_type', 'meter_tariff')->where(
             'owner_id',
             $meterTariffId
-        )->each(function($pricingComponent) {
+        )->each(function ($pricingComponent) {
             $pricingComponent->delete();
         });
-
     }
 
     public function getById($id)

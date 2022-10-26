@@ -28,7 +28,6 @@ use PDO;
  */
 class Transaction extends BaseModel
 {
-
     use RelationsManager;
 
     public function originalTransaction(): morphTo

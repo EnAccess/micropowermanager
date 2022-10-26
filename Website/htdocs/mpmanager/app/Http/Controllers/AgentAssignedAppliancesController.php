@@ -16,13 +16,10 @@ use Illuminate\Http\Request;
  */
 class AgentAssignedAppliancesController extends Controller
 {
-
-
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentService $agentService
     ) {
-
     }
 
     /**
@@ -38,6 +35,4 @@ class AgentAssignedAppliancesController extends Controller
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agent->id));
     }
-
-
 }

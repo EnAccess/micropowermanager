@@ -7,7 +7,6 @@ use App\Models\Person\Person;
 
 class PersonPaymentHistoryService implements IAssignationService
 {
-
     private PaymentHistory $paymentHistory;
     private Person $person;
 

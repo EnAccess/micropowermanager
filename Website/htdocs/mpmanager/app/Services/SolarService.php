@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SolarService implements ISolarService
 {
-
-
     public function create()
     {
         $solarData = request()->input('solar_reading');

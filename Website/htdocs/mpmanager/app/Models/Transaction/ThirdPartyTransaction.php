@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ThirdPartyTransaction extends BaseModel implements IRawTransaction
 {
-
-
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

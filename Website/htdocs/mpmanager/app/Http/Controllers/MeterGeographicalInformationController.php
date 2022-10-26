@@ -80,5 +80,4 @@ class MeterGeographicalInformationController extends Controller
 
         return ApiResource::make($this->meterGeographicalInformationService->updateGeographicalInformation($meters));
     }
-
 }

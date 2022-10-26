@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-
 class Migrator extends AbstractSharedCommand
 {
     protected $signature = 'migrator:migrate {database-name} {company-id}';

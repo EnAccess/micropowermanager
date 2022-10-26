@@ -10,11 +10,9 @@ use Illuminate\Http\Request;
 
 class AgentAssignedApplianceWebController extends Controller
 {
-
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService
     ) {
-
     }
 
     /**

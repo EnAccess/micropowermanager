@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use Illuminate\Support\Facades\Storage;
 
-
 class CountryListController extends Controller
 {
     public function index(): ApiResource

@@ -15,7 +15,6 @@ class AgentChargeObserver
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentService $agentService,
     ) {
-
     }
 
     public function created(AgentCharge $agentCharge): void
@@ -32,6 +31,5 @@ class AgentChargeObserver
         $this->agentChargeHistoryBalanceService->setAssigner($agentCharge);
         $this->agentChargeHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
-
     }
 }

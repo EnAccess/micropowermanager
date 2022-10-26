@@ -15,7 +15,6 @@ use Exception;
 
 class PeriodService
 {
-
     /**
      * @param $startDate
      * @param $endDate

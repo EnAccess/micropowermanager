@@ -15,7 +15,6 @@ class AgentDashboardBalanceHistoryController extends Controller
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentReceiptService $agentReceiptService,
     ) {
-
     }
 
     public function show(Request $request, Response $response)
@@ -23,6 +22,6 @@ class AgentDashboardBalanceHistoryController extends Controller
         $agent = $this->agentService->getByAuthenticatedUser();
         $lastReceiptDate = $this->agentReceiptService->getLastReceiptDate($agent);
 
-        return $this->agentBalanceHistoryService->getGraphValues($agent,$lastReceiptDate);
+        return $this->agentBalanceHistoryService->getGraphValues($agent, $lastReceiptDate);
     }
 }

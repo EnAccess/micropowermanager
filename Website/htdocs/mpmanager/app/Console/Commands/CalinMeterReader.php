@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
  */
 class CalinMeterReader extends AbstractSharedCommand
 {
-
     protected $signature = 'calinMeters:readOnline';
 
     public function __construct(private Meter $meter, private CalinReadMeter $calinReadMeter)

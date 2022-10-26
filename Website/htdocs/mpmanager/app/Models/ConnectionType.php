@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\DB;
  */
 class ConnectionType extends BaseModel
 {
-
     public function subTargets(): HasMany
     {
         return $this->hasMany(SubTarget::class);

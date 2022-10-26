@@ -23,7 +23,6 @@ use PDO;
  */
 class PaymentHistory extends BaseModel
 {
-
     public function paidFor(): MorphTo
     {
         return $this->morphTo();

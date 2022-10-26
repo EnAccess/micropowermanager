@@ -19,5 +19,4 @@ use Illuminate\Database\Eloquent\Model;
  * */
 class MainSettings extends BaseModel
 {
-
 }

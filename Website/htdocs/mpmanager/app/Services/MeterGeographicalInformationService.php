@@ -7,13 +7,10 @@ use App\Models\Meter\Meter;
 
 class MeterGeographicalInformationService
 {
-
     public function __construct(
         private GeographicalInformation $geographicalInformation,
         private Meter $meter
     ) {
-
-
     }
 
     public function updateGeographicalInformation(array $meters): array
@@ -26,15 +23,13 @@ class MeterGeographicalInformationService
             if ($points) {
                 $meter = $this->meter->newQuery()->where('id', $meter['id'])
                     ->first();
-                if ($meter){
+                if ($meter) {
                     $geo = $meter->meterParameter->geo;
                     $geo->points = $points[0] . ',' . $points[1];
                     $geo->save();
                 }
-
             }
         });
         return ['data' => true];
     }
-
 }

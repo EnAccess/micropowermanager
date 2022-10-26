@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Subscription extends BaseModel
 {
-
     public function upgrade(): BelongsTo
     {
         return $this->belongsTo(Upgrade::class);

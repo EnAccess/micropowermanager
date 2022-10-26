@@ -8,13 +8,11 @@ use App\Models\Transaction\Transaction;
 
 class SoldApplianceDataContainer
 {
-
     public function __construct(
         private AssetType $assetType,
         private AssetPerson $assetPerson,
         private ?Transaction $transaction = null
     ) {
-
     }
 
     public function getAssetType()

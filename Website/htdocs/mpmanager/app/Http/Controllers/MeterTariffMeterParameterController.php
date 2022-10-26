@@ -6,14 +6,11 @@ use App\Http\Resources\ApiResource;
 use App\Models\Meter\MeterTariff;
 use App\Services\MeterTariffMeterParameterService;
 
-
 class MeterTariffMeterParameterController extends Controller
 {
-
     public function __construct(
         private MeterTariffMeterParameterService $meterTariffMeterParameterService
     ) {
-
     }
 
     /**

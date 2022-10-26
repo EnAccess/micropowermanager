@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Upgrade extends BaseModel
 {
-
     public function restriction(): BelongsTo
     {
         return $this->belongsTo(Restriction::class);

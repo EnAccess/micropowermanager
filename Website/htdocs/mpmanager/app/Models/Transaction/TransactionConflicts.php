@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class TransactionConflicts extends BaseModel
 {
-
     public function transaction(): MorphTo
     {
         return $this->morphTo();

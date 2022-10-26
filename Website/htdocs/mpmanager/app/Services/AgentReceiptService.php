@@ -10,9 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Matrix\Exception;
 
-class AgentReceiptService  implements IBaseService
+class AgentReceiptService implements IBaseService
 {
-
     public function __construct(private AgentReceipt $agentReceipt)
     {
     }
@@ -59,9 +58,8 @@ class AgentReceiptService  implements IBaseService
 
     public function getLastReceipt($agentId)
     {
-      return  $this->agentReceipt->newQuery()->where('agent_id', $agentId)
+        return  $this->agentReceipt->newQuery()->where('agent_id', $agentId)
             ->latest('id')->first();
-
     }
 
     public function getLastReceiptDate($agent)

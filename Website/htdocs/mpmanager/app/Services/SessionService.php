@@ -28,6 +28,5 @@ class SessionService
     public function getAuthenticatedUserDatabaseName(): string
     {
         return config()->get('database.connections.shard.database');
-
     }
 }

@@ -24,8 +24,6 @@ use Illuminate\Http\Request;
  */
 class MeterParameterController extends Controller
 {
-
-
     /**
      * MeterParameterController constructor.
      *
@@ -41,7 +39,6 @@ class MeterParameterController extends Controller
         private MeterParameter $meterParameter,
         private ConnectionType $connectionType
     ) {
-
     }
 
     /**
@@ -75,8 +72,11 @@ class MeterParameterController extends Controller
             'city_id' => $meterParameterData['city_id'],
             'geo_id' => $geographicalInformation->id,
         ];
-        $meterParameter = $this->meterParameterService->createMeterParameter($meterParameterData,
-            $geographicalInformation, $person);
+        $meterParameter = $this->meterParameterService->createMeterParameter(
+            $meterParameterData,
+            $geographicalInformation,
+            $person
+        );
 
         $address = $this->addressService->make($addressData);
         $this->meterParameterAddressService->setAssigner($meterParameter);

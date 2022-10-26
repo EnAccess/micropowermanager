@@ -10,10 +10,8 @@ use Illuminate\Http\Request;
 
 class AgentCommissionWebController extends Controller
 {
-
     public function __construct(private AgentCommissionService $agentCommissionService)
     {
-
     }
 
     /**
@@ -50,11 +48,11 @@ class AgentCommissionWebController extends Controller
      * @param CreateAgentCommissionRequest $request
      * @return ApiResource
      */
-    public function update($agentCommissionId,CreateAgentCommissionRequest $request): ApiResource
+    public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource
     {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
-        return ApiResource::make( $this->agentCommissionService->update($agentCommission, $request->all()));
+        return ApiResource::make($this->agentCommissionService->update($agentCommission, $request->all()));
     }
 
     /**
