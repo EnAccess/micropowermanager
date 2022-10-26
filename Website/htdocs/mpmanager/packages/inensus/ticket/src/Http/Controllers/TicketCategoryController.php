@@ -27,11 +27,8 @@ class TicketCategoryController extends Controller
      */
     public function index(Request $request): TicketResource
     {
-        dump("geldim");
         $limit = $request->input('limit');
         $outsource = $request->get('outsource');
-
-        dump($this->ticketCategoryService->getAll($limit, $outsource)->toArray());
         return  TicketResource::make($this->ticketCategoryService->getAll($limit, $outsource));
     }
 

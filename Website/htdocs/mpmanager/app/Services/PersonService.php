@@ -100,8 +100,9 @@ class PersonService  implements IBaseService
     public function createMaintenancePerson(array $personData): Person
     {
         $personData['is_customer'] = 0;
-
-        return $this->person->newQuery()->create($personData);
+        /** @var Person $person */
+        $person =  $this->person->newQuery()->create($personData);
+        return $person;
     }
 
     public function livingInCluster(int $clusterId)

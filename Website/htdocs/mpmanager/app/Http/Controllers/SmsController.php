@@ -30,61 +30,13 @@ use Inensus\Ticket\Services\TicketCommentService;
 
 class SmsController extends Controller
 {
-    /**
-     * @var Sms
-     */
-    private $sms;
-    /**
-     * @var Person
-     */
-    private $person;
-    /**
-     * @var ConnectionGroup
-     */
-    private $connectionGroup;
-    /**
-     * @var ConnectionType
-     */
-    private $connectionType;
-    /**
-     * @var MeterParameter
-     */
-    private $meterParameter;
-
-
-    private $smsService;
-
-    private $commentService;
-
-    /**
-     * SmsController constructor.
-     *
-     * @param Sms $sms
-     * @param Person $person
-     * @param ConnectionGroup $connectionGroup
-     * @param ConnectionType $connectionType
-     * @param MeterParameter $meterParameter
-     * @param SmsResendInformationKeyService $smsResendInformationKeyService
-     * @param SmsService $smsService
-     * @param TicketCommentService $commentService
-     */
     public function __construct(
-        Sms $sms,
-        Person $person,
-        ConnectionGroup $connectionGroup,
-        ConnectionType $connectionType,
-        MeterParameter $meterParameter,
-        SmsResendInformationKeyService $smsResendInformationKeyService,
-        SmsService $smsService,
-        TicketCommentService $commentService
+        private Sms $sms,
+        private Person $person,
+        private MeterParameter $meterParameter,
+        private SmsService $smsService,
+        private TicketCommentService $commentService
     ) {
-        $this->sms = $sms;
-        $this->person = $person;
-        $this->connectionGroup = $connectionGroup;
-        $this->connectionType = $connectionType;
-        $this->meterParameter = $meterParameter;
-        $this->smsService = $smsService;
-        $this->commentService = $commentService;
     }
 
     public function index(): ApiResource
@@ -267,15 +219,12 @@ class SmsController extends Controller
         $smsData = [
             'receiver' => $phone,
             'body' => $message,
-            'direction' => 1,
+            // TODO MPM-78
+            //'direction' => SmsService::DIRECTION_OUTGOING,
             'sender_id' => $senderId,
         ];
-        $sms = $this->smsService->createSms($smsData);
-        $data = [
-            'message' => $message,
-            'phone' => $phone
-        ];
-        $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
+        $sms = $this->smsService->createAndSendSms($smsData);
+
         return new ApiResource($sms);
     }
 
