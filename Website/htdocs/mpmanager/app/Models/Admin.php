@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+use App\Models\BaseModel;
+
+class Admin extends BaseModel
 {
 
 }

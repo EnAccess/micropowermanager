@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
-use App\Models\Address\HasAddressesInterface;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
@@ -90,7 +88,7 @@ class Agent extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'company_id' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID]
+            'companyId' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID]
         ];
     }
 

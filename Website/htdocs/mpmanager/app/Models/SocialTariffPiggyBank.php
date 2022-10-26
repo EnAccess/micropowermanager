@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $owner_type
  * @property int $savings
  */
-class SocialTariffPiggyBank extends Model
+class SocialTariffPiggyBank extends BaseModel
 {
 
     protected $guarded = [];

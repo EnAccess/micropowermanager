@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $cost
  * @property int $period_in_months
  */
-class Upgrade extends Model
+class Upgrade extends BaseModel
 {
 
     public function restriction(): BelongsTo

@@ -6,7 +6,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AgentSoldAppliance extends Model
+class AgentSoldAppliance extends BaseModel
 {
 
     protected $guarded = [];
