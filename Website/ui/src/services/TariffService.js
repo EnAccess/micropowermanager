@@ -1,8 +1,8 @@
 import Repository from '../repositories/RepositoryFactory'
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { TimeOfUsageService } from './TimeOfUsageService'
-import { Paginator } from '../classes/paginator'
-import { resource } from '../repositories/TariffRepository'
+import { Paginator } from '@/classes/paginator'
+import { resource } from '@/repositories/TariffRepository'
 
 export class TariffService {
     constructor () {
