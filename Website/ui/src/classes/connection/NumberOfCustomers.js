@@ -1,4 +1,5 @@
-import { resources } from '../../resources'
+import { resources } from '@/resources'
+import Client, {baseUrl} from '../../repositories/Client/AxiosClient'
 
 export class NumberOfCustomers {
 
@@ -8,7 +9,7 @@ export class NumberOfCustomers {
     }
 
     getList () {
-        axios.get(resources.connections.number_of_customers)
+        Client.get(baseUrl+resources.connections.number_of_customers)
             .then((response) => {
                 this.fromJson(response.data.data)
             })

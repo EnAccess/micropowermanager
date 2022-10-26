@@ -21,9 +21,11 @@ class MiniGridService
         return $this->miniGrid->newQuery()->where('data_stream', 1)->count();
     }
 
-    public function getById($miniGridId)
+    public function getById($miniGridId): MiniGrid
     {
-        return $this->miniGrid->newQuery()->find($miniGridId);
+        /** @var MiniGrid $model */
+        $model = $this->miniGrid->newQuery()->find($miniGridId);
+        return $model;
     }
 
     public function create(MiniGrid $miniGrid): MiniGrid
@@ -58,10 +60,5 @@ class MiniGridService
         }
 
         return $miniGrids->newQuery()->get();
-    }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
     }
 }

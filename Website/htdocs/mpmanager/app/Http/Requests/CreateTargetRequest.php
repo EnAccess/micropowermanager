@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateTargetRequest extends FormRequest
@@ -16,8 +17,29 @@ class CreateTargetRequest extends FormRequest
         return [
             'data' => 'required',
             'period' => 'required',
-            'targetType' => 'required|string',
-            'targetId' => 'required|numeric|min:1',
+            'targetForType' => 'required|string',
+            'targetForId' => 'required|numeric|min:1',
         ];
+    }
+
+
+    public function getTargetForType(): string
+    {
+        return $this->input('targetForType');
+    }
+
+    public function getTargetForId(): int
+    {
+        return $this->input('targetForId');
+    }
+
+    public function getData(): array
+    {
+        return $this->input('data');
+    }
+
+    public function getPeriod(): CarbonImmutable
+    {
+        return CarbonImmutable::parse($this->input('period'));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use MPM\Target\TargetAssignable;
 
 /**
  * Class Cluster
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $updated_at
  * @property string $created_at
  */
-class Cluster extends BaseModel
+class Cluster extends BaseModel implements TargetAssignable
 {
     protected $casts = [
         'geo_data' => 'array'

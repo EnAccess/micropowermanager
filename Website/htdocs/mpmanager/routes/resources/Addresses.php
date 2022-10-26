@@ -6,6 +6,7 @@
  * Time: 17:33
  */
 
+use Illuminate\Support\Facades\Route;
 /* Address */
 Route::group(['prefix' => 'addresses', 'middleware' => 'jwt.verify'], function () {
     Route::get('/', 'AddressController@index');

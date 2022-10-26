@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\MeterParameter\MeterParameterNotFound;
 use App\Http\Requests\MeterParameterRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\ConnectionType;
@@ -61,7 +62,7 @@ class MeterParameterController extends Controller
      *
      * @return ApiResource
      */
-    public function store(MeterParameterRequest $request)
+    public function store(MeterParameterRequest $request): ApiResource
     {
         $meterParameterData = (array)$request->all();
         $geographicalInformation =
@@ -119,7 +120,7 @@ class MeterParameterController extends Controller
      *
      * @return ApiResource|null
      */
-    public function update(string $meterId)
+    public function update(string $meterId): ?ApiResource
     {
 
         $personId = request()->input('personId', -1);
@@ -141,16 +142,10 @@ class MeterParameterController extends Controller
                 $acP->update();
             }
         } else {
-            return;
+            throw new MeterParameterNotFound("Unable to update parameters for {$meterId}");
         }
-        $person = Person::find($parameter->owner_id);
-        if ($person) {
-            $person->update(
-                [
-                    'updated_at' => date('Y-m-d h:i:s')
-                ]
-            );
-        }
+        $person = Person::query()->find($parameter->owner_id);
+        $person?->update(['updated_at' => date('Y-m-d h:i:s')]);
         $parameter->save();
         return new ApiResource($parameter);
     }
@@ -165,6 +160,6 @@ class MeterParameterController extends Controller
      */
     public function connectionTypes(Request $request): ApiResource
     {
-        return new ApiResource($this->connectionType->numberOfConnections());
+        return  ApiResource::make($this->connectionType->numberOfConnections());
     }
 }
