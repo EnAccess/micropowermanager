@@ -21,10 +21,6 @@ class AbstractJob implements ShouldQueue
     protected int $companyId;
 
 
-    public function __construct(private UserService $userService)
-    {
-    }
-
     public function middleware(): array
     {
         return [UserDefaultDatabaseConnectionMiddleware::class];
@@ -32,7 +28,7 @@ class AbstractJob implements ShouldQueue
 
     public function getCompanyId(): int
     {
-        return $this->userService->getCompanyId();
+        return (app()->make(UserService::class))->getCompanyId();
     }
 
 

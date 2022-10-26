@@ -24,10 +24,8 @@ class CreateAgentTicketRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database=$sessionService->getAuthenticatedUserDatabaseName();
         return [
-            'owner_id' => 'required|exists:'.$database.'.people,id',
+            'owner_id' => 'required',
             'title' => 'required',
             'description' => 'required'
 

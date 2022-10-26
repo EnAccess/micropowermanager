@@ -25,9 +25,8 @@ class CreateAddressRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
         return [
-            'city_id' => 'required|exists:' . $sessionService->getAuthenticatedUserDatabaseName() . '.cities,id',
+            'city_id' => 'required',
         ];
     }
 }
