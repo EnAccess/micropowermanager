@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('payment_histories', function (Blueprint $table) {
+        Schema::connection('shard')->create('payment_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('amount');
             $table->integer('transaction_id');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('payment_histories');
+        Schema::connection('shard')->dropIfExists('payment_histories');
     }
 };

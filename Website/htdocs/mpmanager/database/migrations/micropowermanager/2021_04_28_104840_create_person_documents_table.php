@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('person_documents', function (Blueprint $table) {
+        Schema::connection('shard')->create('person_documents', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('person_id');
             $table->string('type');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('person_documents');
+        Schema::connection('shard')->dropIfExists('person_documents');
     }
 };

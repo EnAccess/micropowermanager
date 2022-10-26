@@ -13,7 +13,7 @@ return new class  extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('registration_tail', function (Blueprint $table) {
+        Schema::connection('shard')->create('registration_tail', function (Blueprint $table) {
             $table->id();
             $table->json('tail');
             $table->integer('updated_by')->nullable();
@@ -28,6 +28,6 @@ return new class  extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('registration_tail');
+        Schema::connection('shard')->dropIfExists('registration_tail');
     }
 };

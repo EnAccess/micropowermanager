@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('upgrades', static function (Blueprint $table) {
+        Schema::connection('shard')->create('upgrades', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('restriction_id');
             $table->integer('cost'); // 100 times the price to handle two digit floating numbers
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        $this->addDefault();
+
     }
 
     /**
@@ -33,11 +33,13 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('upgrades');
+        Schema::connection('shard')->dropIfExists('upgrades');
     }
 
+    // TODO : add to seeders
     public function addDefault()
     {
+
         DB::table('upgrades')->insert([
             'restriction_id' => 1,
             'cost' => 36000,
@@ -57,7 +59,5 @@ return new class extends Migration
             'amount' => 5,
             'period_in_months' => 12
         ]);
-
-
     }
 };

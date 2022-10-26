@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('micropowermanager')->create('asset_types', static function (Blueprint $table) {
+        Schema::connection('shard')->create('asset_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('price')->unsigned();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('micropowermanager')->dropIfExists('asset_types');
+        Schema::connection('shard')->dropIfExists('asset_types');
     }
 };

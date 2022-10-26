@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('customers', function (Blueprint $table) {
+        Schema::connection('shard')->create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('role_owner');
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('customers');
+        Schema::connection('shard')->dropIfExists('customers');
     }
 };

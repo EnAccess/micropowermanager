@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection('micropowermanager')->create('plugins', function (Blueprint $table) {
+        Schema::connection('shard')->create('plugins', function (Blueprint $table) {
             $table->id();
             $table->integer('mpm_plugin_id');
             $table->boolean('status')->default(false);
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('plugins');
+        Schema::connection('shard')->dropIfExists('plugins');
     }
 };
