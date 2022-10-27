@@ -32,14 +32,15 @@
                         <div
                             class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100">
 
-                            <md-button class="md-primary save-button" @click="saveCluster()">{{ $tc('words.save') }}</md-button>
+                            <md-button class="md-primary save-button" @click="saveCluster()">{{
+                                    $tc('words.save')
+                                }}
+                            </md-button>
                         </div>
-
-                        <div
-                            class="md-layout-item md-xlarge-size-33 md-large-size-100 md-medium-size-100 md-small-size-100">
+                        <div class="md-layout-item md-size-100">
                             <md-list>
                                 <div v-if="geoDataItems.length>0">
-                                    <md-subheader v-if="typed  && clusterName!==''">Search results for {{clusterName}}
+                                    <md-subheader v-if="typed  && clusterName!==''">Search results for {{ clusterName }}
                                     </md-subheader>
                                     <md-list-item
 
@@ -53,17 +54,17 @@
                                         <md-icon v-if="geo.draw_type==='draw'"
                                                  v-bind:class="{ 'selected-list-item': geo.selected }">edit
                                         </md-icon>
-                                        <span class="md-list-item-text">{{geo.display_name}} </span>
+                                        <span class="md-list-item-text">{{ geo.display_name }} </span>
 
                                     </md-list-item>
                                 </div>
                                 <div v-if="geoDataItems.length<1 && typed===true && clusterName!==''">
-                                    <h4 style="color:#797979;margin-left: 1rem">{{$tc('phrases.newCluster',2,{clusterName: clusterName})}}</h4>
+                                    <h4 style="color:#797979;margin-left: 1rem">
+                                        {{ $tc('phrases.newCluster', 2, { clusterName: clusterName }) }}</h4>
                                 </div>
                             </md-list>
                         </div>
-                        <div
-                            class="md-layout-item md-xlarge-size-33 md-large-size-100 md-medium-size-100 md-small-size-100 map-area">
+                        <div class="md-layout-item md-size-100 map-area">
                             <Map
                                 :geoData="geoData"
                                 :clusterName="clusterName"
@@ -92,7 +93,7 @@
                 <div class="md-layout md-gutter">
                     <div class="md-layout-item md-large-size-100 md-medium-size-100 md-small-size-100">
                         <p>
-                            {{ $tc('phrases.newClusterNotify',0) }}
+                            {{ $tc('phrases.newClusterNotify', 0) }}
                         </p>
 
                     </div>
@@ -111,7 +112,10 @@
                     </div>
                     <div class="md-layout-item md-large-size-100 md-medium-size-100 md-small-size-100">
 
-                        <md-button class="md-primary save-button" @click="saveCluster()">{{ $tc('words.save') }}</md-button>
+                        <md-button class="md-primary save-button" @click="saveCluster()">{{
+                                $tc('words.save')
+                            }}
+                        </md-button>
                     </div>
                 </div>
             </md-dialog-content>
@@ -142,7 +146,7 @@ export default {
         return {
             clusterService: new ClusterService(),
             mappingService: new MappingService(),
-            center: [this.$store.getters['settings/getMapSettings'].latitude,this.$store.getters['settings/getMapSettings'].longitude],
+            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
             geoData: null,
             clusterName: '',
             user: null,
@@ -165,8 +169,8 @@ export default {
                         this.geoDataItems.splice(i, 1)
                     } else if (
                         item.draw_type === 'set' &&
-                            this.clusterName !== '' &&
-                            !item.display_name.toLowerCase().includes(this.clusterName.toLowerCase())) {
+                        this.clusterName !== '' &&
+                        !item.display_name.toLowerCase().includes(this.clusterName.toLowerCase())) {
                         this.geoDataItems.splice(i, 1)
                     }
                 }
@@ -235,16 +239,16 @@ export default {
             if (this.selectedLocation === null || this.selectedLocation === undefined) {
                 this.$swal({
                     type: 'error',
-                    title: this.$tc('phrases.newClusterNotify',1),
-                    text: this.$tc('phrases.newClusterNotify',2),
+                    title: this.$tc('phrases.newClusterNotify', 1),
+                    text: this.$tc('phrases.newClusterNotify', 2),
                 })
                 return
             }
             if (this.user === null) {
                 this.$swal({
                     type: 'error',
-                    title:  this.$tc('phrases.newClusterNotify2',0),
-                    text:  this.$tc('phrases.newClusterNotify2',1),
+                    title: this.$tc('phrases.newClusterNotify2', 0),
+                    text: this.$tc('phrases.newClusterNotify2', 1),
                 })
                 return
             }
@@ -254,7 +258,7 @@ export default {
             }
             try {
                 await this.clusterService.createCluster(this.selectedLocation.type, this.selectedLocation, this.clusterName, this.user)
-                this.alertNotify('success',  this.$tc('phrases.newClusterNotify2',2))
+                this.alertNotify('success', this.$tc('phrases.newClusterNotify2', 2))
                 await this.$router.replace('/clusters')
             } catch (e) {
                 this.alertNotify('error', e.message)
@@ -293,22 +297,22 @@ export default {
 </script>
 
 <style scoped>
-    .map-area {
-        z-index: 1 !important
-    }
+.map-area {
+    z-index: 1 !important
+}
 
-    .save-button {
-        background-color: #325932 !important;
-        color: #fefefe !important;
-        top: 0.5rem;
-        float: right;
-    }
+.save-button {
+    background-color: #325932 !important;
+    color: #fefefe !important;
+    top: 0.5rem;
+    float: right;
+}
 
-    .selected-list-item {
-        color: red !important;
-    }
+.selected-list-item {
+    color: red !important;
+}
 
-    cluster-input {
-        color: #747474 !important
-    }
+cluster-input {
+    color: #747474 !important
+}
 </style>
