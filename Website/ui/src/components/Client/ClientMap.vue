@@ -57,7 +57,7 @@ export default {
             loading: false,
             show: true,
             geoData: null,
-            center: [this.$store.getters['settings/getMapSettings'].latitude,this.$store.getters['settings/getMapSettings'].longitude],
+            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
             miniGrids: null,
             clusterLayer: null,
             clusterGeo: {}
@@ -69,8 +69,8 @@ export default {
         this.getMeterPoints(this.meterIds)
         EventBus.$on('getEditedGeoDataItems', (editedItems) => {
             this.$swal({
-                title: this.$tc('phrases.relocateMeter',0),
-                text: this.$tc('phrases.relocateMeter',1),
+                title: this.$tc('phrases.relocateMeter', 0),
+                text: this.$tc('phrases.relocateMeter', 1),
                 type: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -80,20 +80,31 @@ export default {
             }).then((result) => {
 
                 if (result) {
+                    let meters = []
                     editedItems.forEach(async (e) => {
-                        try {
-                            await this.meterService.updateMeter(e.id, e.lat, e.lng)
-                            this.alertNotify('success', this.$tc('phrases.relocateMeter',2))
-                        } catch (e) {
-                            this.alertNotify('error', e.message)
+                        let meter = {
+                            id: e.id,
+                            lat: e.lat.toFixed(5),
+                            lng: e.lng.toFixed(5),
                         }
+                        meters.push(meter)
                     })
+                    this.updateEditedMeters(meters)
                 }
             })
 
         })
     },
     methods: {
+        async updateEditedMeters (meters) {
+            try {
+
+                await this.meterService.updateMeter(meters)
+                this.alertNotify('success', this.$tc('phrases.relocateMeter', 3))
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
         async getGeoData () {
             this.clusterGeo = {}
             let clusters = await this.clusterService.getClusters()
@@ -121,7 +132,7 @@ export default {
                     let points = this.meters[i].geo
                     this.meterLatLng.lat = points[0]
                     this.meterLatLng.lon = points[1]
-                    let markingInfo = this.mappingService.createMarkingInformation(this.meters[i].id, null, this.meters[i].serial_number, points[0], points[1],-1)
+                    let markingInfo = this.mappingService.createMarkingInformation(this.meters[i].id, null, this.meters[i].serial_number, points[0], points[1], -1)
                     this.markingInfos.push(markingInfo)
 
                     this.markerLocations.push([this.meterLatLng.lat, this.meterLatLng.lon])
