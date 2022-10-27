@@ -24,54 +24,58 @@
         <md-dialog :md-active.sync="showModal">
             <md-dialog-title>{{ $tc('phrases.newTicket') }}</md-dialog-title>
             <md-dialog-content class="md-scrollbar">
-                <form novalidate class="md-layout md-gutter" >
-                        <div class="md-layout-item md-size-100 ">
-                            <md-field name="title">
-                                <label for="title">{{ $tc('words.title') }}</label>
-                                <md-input type="text" v-model="newTicket.title" id="title" name="title" />
-                            </md-field>
-                        </div>
+                <form novalidate class="md-layout md-gutter">
+                    <div class="md-layout-item md-size-100 ">
+                        <md-field name="title">
+                            <label for="title">{{ $tc('words.title') }}</label>
+                            <md-input type="text" v-model="newTicket.title" id="title" name="title"/>
+                        </md-field>
+                    </div>
 
-                        <div class="md-layout-item md-size-100 " style="display:inline-flex;">
-                            <md-datepicker
-                                name="ticketDueDate"
-                                md-immediately
-                                id="ticketDueDate"
-                                v-model="newTicket.dueDate"> <label for="ticketDueDate">{{ $tc('phrases.dueDate') }}</label></md-datepicker>
-                        </div>
-                        <div class="md-layout-item md-size-100 ">
-                            <md-field name="ticketPriority">
-                                <label for="ticketPriority">{{ $tc('words.category') }}</label>
-                                <md-select v-model="newTicket.label" name="ticketPriority" id="ticketPriority">
-                                    <md-option value="0" disabled>-- {{ $tc('words.select') }} --</md-option>
-                                    <md-option
-                                        v-for="(label,index) in labels"
-                                        :value="label.id"
-                                        :key="index"
+                    <div class="md-layout-item md-size-100 " style="display:inline-flex;">
+                        <md-datepicker
+                            name="ticketDueDate"
+                            md-immediately
+                            id="ticketDueDate"
+                            v-model="newTicket.dueDate"><label for="ticketDueDate">{{ $tc('phrases.dueDate') }}</label>
+                        </md-datepicker>
+                    </div>
+                    <div class="md-layout-item md-size-100 ">
+                        <md-field name="ticketPriority">
+                            <label for="ticketPriority">{{ $tc('words.category') }}</label>
+                            <md-select v-model="newTicket.label" name="ticketPriority" id="ticketPriority">
+                                <md-option value="0" disabled>-- {{ $tc('words.select') }} --</md-option>
+                                <md-option
+                                    v-for="(label,index) in labels"
+                                    :value="label.id"
+                                    :key="index"
 
-                                    >{{label.label_name}}</md-option>
-                                </md-select>
-                            </md-field>
-                        </div>
+                                >{{ label.label_name }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
+                    </div>
 
-                        <div  class="md-layout-item md-size-100 ">
-                            <md-field name="ticketAssignedTo">
-                                <label for="ticketAssignedTo">{{ $tc('phrases.assignTo',0) }}</label>
-                                <md-select name="ticketAssignedTo" id="ticketAssignedTo" v-model="newTicket.assignedPerson">
-                                    <md-option disabled selected>{{ $tc('phrases.noOne') }}</md-option>
-                                    <md-option v-for="user in users" :value="user.id" :key="user.id">{{user.name}}</md-option>
-                                </md-select>
+                    <div class="md-layout-item md-size-100 ">
+                        <md-field name="ticketAssignedTo">
+                            <label for="ticketAssignedTo">{{ $tc('phrases.assignTo', 0) }}</label>
+                            <md-select name="ticketAssignedTo" id="ticketAssignedTo" v-model="newTicket.assignedPerson">
+                                <md-option disabled selected>{{ $tc('phrases.noOne') }}</md-option>
+                                <md-option v-for="user in users" :value="user.id" :key="user.id">{{ user.name }}
+                                </md-option>
+                            </md-select>
 
-                            </md-field>
-                        </div>
+                        </md-field>
+                    </div>
 
-                        <div class="md-layout-item md-size-100">
-                            <md-field>
-                                <label for="description">{{ $tc('words.description') }}</label>
-                                <md-textarea type="text" id="description" name="description" v-model="newTicket.description"/>
-                            </md-field>
-                        </div>
-                        <md-dialog-actions class="md-layout-item md-size-100" >
+                    <div class="md-layout-item md-size-100">
+                        <md-field>
+                            <label for="description">{{ $tc('words.description') }}</label>
+                            <md-textarea type="text" id="description" name="description"
+                                         v-model="newTicket.description"/>
+                        </md-field>
+                    </div>
+                    <md-dialog-actions class="md-layout-item md-size-100">
                         <md-button class="md-accent" @click="closeModal()">{{ $tc('words.close') }}</md-button>
 
                         <md-button class="md-primary btn-lg" @click="saveTicket()">{{ $tc('words.save') }}</md-button>
@@ -93,15 +97,14 @@ import { EventBus } from '@/shared/eventbus'
 import { Paginator } from '@/classes/paginator'
 import moment from 'moment'
 import { TicketUserService } from '@/services/TicketUserService'
-import { TicketLabelService} from '@/services/TicketLabelService'
+import { TicketLabelService } from '@/services/TicketLabelService'
 import TicketItem from '../../shared/TicketItem'
-import {baseUrl} from "@/repositories/Client/AxiosClient";
-
+import { baseUrl } from '@/repositories/Client/AxiosClient'
 
 export default {
     name: 'Ticket',
-    components: { TicketItem,  Widget },
-    data() {
+    components: { TicketItem, Widget },
+    data () {
         return {
             ticketLabelService: new TicketLabelService(),
             ticketUserService: new TicketUserService(),
@@ -109,7 +112,7 @@ export default {
             tickets: new UserTickets(this.$store.getters.person.id),
             showPriceInput: false,
             paginator: null,
-            tableHeads:[this.$tc('words.subject'), this.$tc('words.category'),
+            tableHeads: [this.$tc('words.subject'), this.$tc('words.category'),
                 this.$tc('words.status'), this.$tc('words.date')],
             // tickets: [],
             currentPage: 0,
@@ -138,21 +141,21 @@ export default {
             resetKey: 0,
         }
     },
-    beforeDestroy() {
+    beforeDestroy () {
         EventBus.$off('pageLoaded', this.reloadList)
     },
 
-    mounted() {
+    mounted () {
         EventBus.$on('pageLoaded', this.reloadList)
         //this.getTickets();
         this.getUsers()
         this.getLabels()
-        this.$on('close', function() {
+        this.$on('close', function () {
             this.showModal = false
         })
     },
     methods: {
-        ticketCategoryChange(label) {
+        ticketCategoryChange (label) {
             // is needed for outsourcing.
 
             let category = this.labels.filter(l => {
@@ -169,29 +172,29 @@ export default {
                 this.showPriceInput = true
             }
         },
-        reloadList(sub, data) {
+        reloadList (sub, data) {
             if (sub !== this.subscriber) return
             this.tickets.updateList(data)
-            EventBus.$emit('widgetContentLoaded',this.subscriber,this.tickets.list.length)
+            EventBus.$emit('widgetContentLoaded', this.subscriber, this.tickets.list.length)
         },
-        closeModal() {
+        closeModal () {
             this.showModal = false
         },
-        openModal() {
+        openModal () {
             this.showModal = true
         },
-        setToday() {
+        setToday () {
             let date = new Date()
             let year = date.getUTCFullYear()
             let month =
-                    date.getUTCMonth() + 1 < 10
-                        ? '0' + (date.getUTCMonth() + 1)
-                        : date.getUTCMonth() + 1
+                date.getUTCMonth() + 1 < 10
+                    ? '0' + (date.getUTCMonth() + 1)
+                    : date.getUTCMonth() + 1
             let day =
-                    date.getUTCDate() < 10 ? '0' + date.getUTCDate() : date.getUTCDate()
+                date.getUTCDate() < 10 ? '0' + date.getUTCDate() : date.getUTCDate()
             this.newTicket.dueDate = day + '.' + month + '.' + year
         },
-        getTickets(pageNumber = 1) {
+        getTickets (pageNumber = 1) {
             let personId = this.$store.getters.person.id
             this.loaded = false
 
@@ -210,24 +213,24 @@ export default {
                 }
             })
         },
-        closeTicket(ticket) {
+        closeTicket (ticket) {
             ticket.close()
         },
-        fetchTicket() {},
-        dateForHumans(date, format = 'YYYY-MM-DD HH:mm:ss') {
+        fetchTicket () {},
+        dateForHumans (date, format = 'YYYY-MM-DD HH:mm:ss') {
             return moment(date, format).fromNow()
         },
-        async getUsers() {
+        async getUsers () {
             this.users = await this.ticketUserService.getUsers()
 
         },
-        async getLabels() {
+        async getLabels () {
             this.labels = await this.ticketLabelService.getLabels()
         },
 
-        saveTicket() {
+        saveTicket () {
             //validate ticket
-            if (this.showPriceInput && this.newTicket.outsourcing == 0) {
+            if (this.showPriceInput && this.newTicket.outsourcing === 0) {
                 this.$swal({
                     type: 'error',
                     title: 'Value Error!',
@@ -236,7 +239,7 @@ export default {
                 return
             }
 
-            axios.post(baseUrl+ resources.ticket.create, this.newTicket).then(() => {
+            axios.post(baseUrl + resources.ticket.create, this.newTicket).then(() => {
                 EventBus.$emit('widgetContentLoaded', this.subscriber, this.tickets.list.length)
                 this.resetKey++
             })
