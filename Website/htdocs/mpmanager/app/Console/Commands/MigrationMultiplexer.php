@@ -5,12 +5,12 @@ namespace App\Console\Commands;
 use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 
-class MigrationMultiplexer extends AbstractSharedCommand
+class MigrationMultiplexer extends Command
 {
     protected $signature = 'migrator:copy';
     protected $description = 'Copy elder created migrations to company database folders';
 
-    public function runInCompanyScope(): void
+    public function handle(): void
     {
         $sourcePath = __DIR__ . '/../../../';
         CompanyDatabase::all()->each(function ($companyDatabase) use ($sourcePath) {

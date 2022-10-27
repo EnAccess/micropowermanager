@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 class Migrator extends AbstractSharedCommand
 {
-    protected $signature = 'migrator:migrate {database-name} {company-id}';
+    protected $signature = 'migrator:migrate {database-name}';
     protected $description = 'Migrates all base migrations to provided database name';
 
     public function handle()
