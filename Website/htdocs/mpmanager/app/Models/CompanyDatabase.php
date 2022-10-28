@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property int $id;
  * @property int $database_name;
+ * @property int $company_id;
  */
 class CompanyDatabase extends MasterModel
 {
@@ -43,5 +44,10 @@ class CompanyDatabase extends MasterModel
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getCompanyId(): int
+    {
+        return $this->company_id;
     }
 }
