@@ -25,7 +25,6 @@ export class TicketService {
             this.closedList = []
 
         const result  =  data?.data?.map((ticket) => {
-            console.log('MAP', ticket)
             return {
                 created: ticket.created_at,
                 id: ticket.id,
