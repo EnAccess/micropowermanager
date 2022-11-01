@@ -1,6 +1,6 @@
 <template>
     <div>
-        <widget :title="$tc('phrases.newVillage')" color="green" >
+        <widget :title="$tc('phrases.newVillage')" color="green">
             <md-card class="md-layout-item md-size-100">
                 <md-card-content>
                     <div class="md-layout md-gutter md-size-100">
@@ -27,7 +27,7 @@
                                 >
                                     <md-option v-for="mg in miniGrids" :value="mg.id"
                                                :key="mg.id">
-                                        {{mg.name}}
+                                        {{ mg.name }}
                                     </md-option>
                                 </md-select>
                                 <span class="md-error">{{ errors.first($tc('words.miniGrid')) }}</span>
@@ -37,9 +37,10 @@
                     </div>
 
                     <div class="md-layout md-gutter md-size-100">
-                        <div class="md-layout md-gutter md-size-60 md-small-size-100" style="padding-left: 1.5rem !important;">
+                        <div class="md-layout md-gutter md-size-60 md-small-size-100"
+                             style="padding-left: 1.5rem !important;">
                             <form class="md-layout md-gutter" @submit.prevent="validatePoints"
-                                   style="padding-left: 1.5rem !important;"
+                                  style="padding-left: 1.5rem !important;"
                             >
                                 <div class="md-layout-item md-size-30 md-small-size-100">
                                     <md-field :class="{'md-invalid': errors.has($tc('words.latitude'))}">
@@ -69,7 +70,10 @@
                                     </md-field>
                                 </div>
                                 <div class="md-layout-item md-size-40 md-small-size-100">
-                                    <md-button type="submit" class="md-primary set-button">{{ $tc('phrases.setPoints') }}</md-button>
+                                    <md-button type="submit" class="md-primary set-button">{{
+                                            $tc('phrases.setPoints')
+                                        }}
+                                    </md-button>
 
                                 </div>
                             </form>
@@ -77,7 +81,10 @@
                         </div>
 
                         <div class="md-layout-item md-size-40 md-small-size-100">
-                            <md-button class="md-primary save-button" @click="getValidateVillage()">{{ $tc('words.save') }}</md-button>
+                            <md-button class="md-primary save-button" @click="getValidateVillage()">{{
+                                    $tc('words.save')
+                                }}
+                            </md-button>
 
                         </div>
                     </div>
@@ -139,7 +146,7 @@ export default {
             miniGridService: new MiniGridService(),
             mappingService: new MappingService(),
             geoData: null,
-            center: [this.$store.getters['settings/getMapSettings'].latitude,this.$store.getters['settings/getMapSettings'].longitude],
+            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
             villageSaved: false,
             loading: false,
             lastVillage: null,
@@ -208,7 +215,7 @@ export default {
                     this.miniGridLatLng.lat = Points[0]
                     this.miniGridLatLng.lon = Points[1]
                     await this.getGeoData(miniGridGeoData.cluster_id)
-                    let markingInfo = this.mappingService.createMarkingInformation(miniGridGeoData.id, miniGridGeoData.name, null, Points[0], Points[1],-1)
+                    let markingInfo = this.mappingService.createMarkingInformation(miniGridGeoData.id, miniGridGeoData.name, null, Points[0], Points[1], -1)
                     this.markingInfos.push(markingInfo)
                     this.constantLocations.push([this.miniGridLatLng.lat, this.miniGridLatLng.lon])
                 } else {
@@ -236,9 +243,10 @@ export default {
                 try {
                     this.loading = true
                     const city = await this.cityService.createCity(this.cityName, this.clusterId, this.selectedMiniGridId, this.geoData)
-                    this.alertNotify('success', this.$tc('phrases.newVillageNotify',1))
+                    this.alertNotify('success', this.$tc('phrases.newVillageNotify', 1))
                     this.loading = false
-                    await this.$router.replace('/dashboards/mini-grid/' + city.mini_grid.id)
+
+                    await this.$router.replace('/dashboards/mini-grid/' + city.mini_grid_id)
                 } catch (e) {
                     this.loading = false
                     this.alertNotify('error', e.message)
@@ -262,7 +270,7 @@ export default {
             this.miniGridLatLng.lat = Points[0]
             this.miniGridLatLng.lon = Points[1]
             await this.getGeoData(miniGridGeoData.cluster_id)
-            let markingInfo = this.mappingService.createMarkingInformation(miniGridGeoData.id, miniGridGeoData.name, Points[0], Points[1]-1)
+            let markingInfo = this.mappingService.createMarkingInformation(miniGridGeoData.id, miniGridGeoData.name, Points[0], Points[1] - 1)
             this.markingInfos.push(markingInfo)
             this.constantLocations.push([this.miniGridLatLng.lat, this.miniGridLatLng.lon])
         },
@@ -287,29 +295,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .md-progress-bar {
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-    }
+.md-progress-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+}
 
-    .save-button {
-        background-color: #325932 !important;
-        color: #fefefe !important;
-        top: 0.5rem;
-        float: right;
-    }
+.save-button {
+    background-color: #325932 !important;
+    color: #fefefe !important;
+    top: 0.5rem;
+    float: right;
+}
 
-    .set-button {
-        background-color: #448aff !important;
-        color: #fefefe !important;
-        top: 0.5rem;
-        float: left;
-    }
+.set-button {
+    background-color: #448aff !important;
+    color: #fefefe !important;
+    top: 0.5rem;
+    float: left;
+}
 
-    .map-area {
-        z-index: 1 !important
-    }
+.map-area {
+    z-index: 1 !important
+}
 
 </style>
