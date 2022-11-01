@@ -92,16 +92,13 @@ export default {
         },
         filterTickets () {
             let query = ''
-            if (this.selectedCategory !== '') {
+            if (this.selectedCategory && this.selectedCategory !== '') {
                 query += '&category=' + this.selectedCategory
             }
-            if (this.selectedPerson !== '') {
+            if (this.selectedPerson && this.selectedPerson !== '') {
                 query += '&person=' + this.selectedPerson
             }
-
-            if (query !== '') {
-                this.$emit('filtering', query)
-            }
+            this.$emit('filtering', query)
         },
         closeFilter () {
             EventBus.$emit('filterClosed')

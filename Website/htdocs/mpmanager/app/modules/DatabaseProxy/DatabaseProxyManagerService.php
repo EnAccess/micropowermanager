@@ -31,7 +31,7 @@ class DatabaseProxyManagerService
 
     public function queryAllConnections(): Builder
     {
-        return $this->databaseProxy->newQuery();
+        return $this->companyDatabase->newQuery();
     }
 
 

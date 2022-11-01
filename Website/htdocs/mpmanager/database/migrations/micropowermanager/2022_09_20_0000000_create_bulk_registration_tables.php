@@ -9,7 +9,7 @@ return new class  extends Migration
     public function up()
     {
         if (!Schema:: hasTable('bulk_registration_csv_datas')) {
-            Schema::connection('micropowermanager')->create('bulk_registration_csv_datas', function (Blueprint $table) {
+            Schema::connection('shard')->create('bulk_registration_csv_datas', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id');
                 $table->string('csv_filename');

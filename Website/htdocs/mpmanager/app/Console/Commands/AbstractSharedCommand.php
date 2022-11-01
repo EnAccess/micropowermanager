@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\DatabaseProxy;
+use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -34,8 +34,8 @@ abstract class AbstractSharedCommand extends Command
     private function runForAllShards(DatabaseProxyManagerService $databaseProxyManagerService, InputInterface $input, OutputInterface $output): void
     {
         $databaseProxyManagerService->queryAllConnections()->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-            $modelCollection->map(function (DatabaseProxy $databaseProxy) use ($databaseProxyManagerService, $input, $output) {
-                $this->runForCompany($databaseProxyManagerService, $databaseProxy->getCompanyId(), $input, $output);
+            $modelCollection->map(function (CompanyDatabase $companyDatabase) use ($databaseProxyManagerService, $input, $output) {
+                $this->runForCompany($databaseProxyManagerService, $companyDatabase->getCompanyId(), $input, $output);
             });
         });
     }

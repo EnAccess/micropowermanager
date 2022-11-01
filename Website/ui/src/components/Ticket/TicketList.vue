@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     async reloadList(subscriber, data) {
-      console.log("RELOAD LIST TICKET LIST.vue")
       if (subscriber !== 'ticketListOpened' && subscriber !== 'ticketListClosed') {
         return
       }
