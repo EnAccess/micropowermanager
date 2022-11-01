@@ -18,7 +18,7 @@ class PersonService extends CreatorService
     {
         $personConfig = config('bulk-registration.csv_fields.person');
         $personData = [
-            'name' => $csvData[$personConfig['name']] . ' ' . $csvData[$personConfig['m-name']],
+            'name' => $csvData[$personConfig['name']],
             'surname' => $csvData[$personConfig['surname']]
         ];
         return $this->createRelatedDataIfDoesNotExists($personData);
