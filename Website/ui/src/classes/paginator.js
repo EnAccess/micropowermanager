@@ -1,9 +1,10 @@
-import { baseUrl } from '@/repositories/Client/AxiosClient';
+import { baseUrl } from '@/repositories/Client/AxiosClient'
+
 export class Paginator {
 
-    constructor(url) {
+    constructor (url) {
         //when the consumer passes a fully qualified url use it, otherwise use the base url from axiosClient
-        this.url = url.startsWith('http')  ? url :  `${baseUrl}${url}`;
+        this.url = url.startsWith('http') ? url : `${baseUrl}/${url}`
         this._initialize()
         this.postData = null
 
@@ -41,9 +42,10 @@ export class Paginator {
         param['page'] = page
         param['per_page'] = this.perPage
         return axios.get(this.url, {
-            params: param
-        }
+                params: param
+            }
         ).then(response => {
+            debugger
             let data = response.data
             this.from = data.from
             this.to = data.to
