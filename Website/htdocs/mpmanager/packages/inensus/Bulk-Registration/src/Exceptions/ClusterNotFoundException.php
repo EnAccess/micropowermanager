@@ -2,7 +2,7 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class ClusterNotFoundException extends \Exception
+class ClusterNotFoundException extends MissingDataException
 {
 
 }

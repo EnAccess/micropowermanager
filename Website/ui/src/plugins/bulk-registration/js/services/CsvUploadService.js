@@ -27,14 +27,20 @@ export class CsvUploadService {
         formData.append('csv', csvData)
         try {
             const { data, status } = await this.repository.post(formData, { header: { 'Content-Type': 'csv' } })
+            if (data.data.attributes.alert !== '') {
+                return new ErrorHandler(data.data.attributes.alert, 'http', 422)
+            }
             if (!status === 201) {
                 return new ErrorHandler('Failed', status)
             }
             this.fillRecentlyCreatedRecords(data.data.attributes.recently_created_records)
             return data.data
 
-        } catch (e) {
-            let errorMessage = e.response.data.data.message
+        } catch (error) {
+            if (error.status_code && error.status_code === 422) {
+                return new ErrorHandler(error.message, 'http', 422)
+            }
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
 

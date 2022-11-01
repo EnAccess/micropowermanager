@@ -2,7 +2,7 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class VillageNotFoundException extends \Exception
+class VillageNotFoundException extends MissingDataException
 {
 
 }

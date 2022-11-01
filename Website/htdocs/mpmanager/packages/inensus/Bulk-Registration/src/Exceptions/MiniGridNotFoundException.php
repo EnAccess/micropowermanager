@@ -2,7 +2,7 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class MiniGridNotFoundException extends \Exception
+class MiniGridNotFoundException extends MissingDataException
 {
 
 }
