@@ -4,7 +4,7 @@
 ############### Function declarations #############################
 ###################################################################
 function check_if_docker_compose_installed() {
-  if ! [ -x "$(command -v docker-compose)" ]; then
+  if ! [ -x "$(command -v docker compose)" ]; then
     echo 'Error: docker-compose is not installed.' >&2
     exit 1
   fi
@@ -46,7 +46,7 @@ function make_dummy_certificate() {
   echo "### Creating dummy certificate for domains ${domains[*]} ..."
   path="/etc/letsencrypt/live/${domains[0]}"
   mkdir -p "$data_path/conf/live/${domains[0]}"
-  docker-compose -f docker-compose-prod.yml run --rm --entrypoint " \
+  docker compose -f docker-compose-prod.yml run --rm --entrypoint " \
     openssl req -x509 -nodes -newkey rsa:1024 -days 1 \
       -keyout '$path/privkey.pem' \
       -out '$path/fullchain.pem' \
@@ -56,14 +56,14 @@ function make_dummy_certificate() {
 
 function start_nginx() {
   echo "### Starting nginx ..."
-  docker-compose -f docker-compose-prod.yml up --build --force-recreate -d
+  docker compose -f docker-compose-prod.yml up --build --force-recreate -d
   echo
 }
 
 function delete_dummy_certificate() {
   local dummy_certificate_domain=$1
   echo "### Deleting dummy certificate for $dummy_certificate_domain ..."
-  docker-compose -f docker-compose-prod.yml run --rm --entrypoint " \
+  docker compose -f docker-compose-prod.yml run --rm --entrypoint " \
     rm -Rf /etc/letsencrypt/live/$dummy_certificate_domain && \
     rm -Rf /etc/letsencrypt/archive/$dummy_certificate_domain && \
     rm -Rf /etc/letsencrypt/renewal/$dummy_certificate_domain.conf" certbot
@@ -93,7 +93,7 @@ function request_new_certificate() {
     staging_arg="--staging"
   fi
 
-  docker-compose -f docker-compose-prod.yml run --rm --entrypoint " \
+  docker compose -f docker-compose-prod.yml run --rm --entrypoint " \
     certbot certonly --webroot -w /var/www/certbot \
       $staging_arg \
       $email_arg \
@@ -106,7 +106,7 @@ function request_new_certificate() {
 
 function reload_nginx() {
   echo "### Reloading nginx ..."
-  docker-compose -f docker-compose-prod.yml exec nginx nginx -s reload
+  docker compose -f docker-compose-prod.yml exec nginx nginx -s reload
 }
 function make_config_file() {
    touch ./NginxProxy/conf.p/app.conf
@@ -209,7 +209,7 @@ if [ "$decision" != "Y" ] && [ "$decision" != "y" ] && [ "$decision" != "" ]; th
 
   if [ "$webservice" == "Y" ] || [ "$webservice" == "y" ]; then
     echo " Starting web services please wait."
-    echo $( docker-compose -f docker-compose-prod.yml up --build --force-recreate -d )
+    echo $( docker compose -f docker-compose-prod.yml up --build --force-recreate -d )
     echo "Web services started "
   fi
 
@@ -264,7 +264,7 @@ else
   done
   if [ "$n_renewals" -eq "0" ]; then
     echo "No new renewals, starting web services and quiting."
-    echo $( docker-compose -f docker-compose-prod.yml up --build --force-recreate -d )
+    echo $( docker compose -f docker-compose-prod.yml up --build --force-recreate -d )
     echo "Web services started "
     exit
   fi
@@ -301,7 +301,7 @@ echo ""
 
 echo " MicroPowerManager is starting please wait."
 
- echo $( docker-compose -f docker-compose-prod-non-domain.yml up --build --force-recreate -d)
+ echo $( docker compose -f docker-compose-prod-non-domain.yml up --build --force-recreate -d)
   echo "MicroPowerManager started. "
 
 exit
