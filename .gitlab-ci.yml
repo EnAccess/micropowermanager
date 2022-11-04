@@ -1,0 +1,57 @@
+#default image
+image: php:8.1-apache
+
+#default before_script
+before_script:
+  - apt-get update && apt-get install rsync -y
+  - 'which ssh-agent || (apt-get update && apt-get install openssh-client -y)'
+  - mkdir -p ~/.ssh
+  - eval $(ssh-agent -s)
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+stages:
+  - build
+  - deploy
+  - release
+
+
+deploy_production_api:
+  stage: release
+  only:
+    refs:
+      - tags
+  when: manual
+
+  script:
+    - export project_root=$(pwd)
+    - export ssh_connect="-p22 $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST"
+    - ssh-add <(echo "$PRODUCTION_PRIVATE_SSH_KEY")
+    - ssh $ssh_connect "mkdir -p $PRODUCTION_API_TARGET_DIRECTORY/releases/$CI_COMMIT_SHA"
+    - cd $project_root/Website/htdocs/mpmanager && rm -rf .env && mv .env-production .env
+
+    # upload files
+    - rsync -az -e ssh $project_root/Website/htdocs/mpmanager/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_API_TARGET_DIRECTORY/
+    # restart containers worker, laravel and redis
+    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart laravel'
+    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart mpmanager-cloud_redis_1'
+    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart worker'
+
+
+deploy_production_ui:
+  stage: release
+  only:
+    - master
+
+  when: manual
+
+  script:
+    - export project_root=$(pwd)
+    - export ssh_connect="-p22 $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST"
+    - ssh-add <(echo "$PRODUCTION_PRIVATE_SSH_KEY")
+    - ssh $ssh_connect "mkdir -p $PRODUCTION_API_TARGET_DIRECTORY/releases/$CI_COMMIT_SHA"
+    - cd $project_root/Website/htdocs/mpmanager && rm -rf .env && mv .env-production .env
+
+    # upload files
+    - rsync -az -e ssh $project_root/Website/ui/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_UI_TARGET_DIRECTORY/
+    # restart containers worker, laravel and redis
+    - ssh $ssh_connect 'cd '$PRODUCTION_UI_TARGET_DIRECTORY && docker restart ui'
