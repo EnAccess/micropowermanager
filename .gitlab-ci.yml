@@ -8,10 +8,8 @@ before_script:
   - mkdir -p ~/.ssh
   - eval $(ssh-agent -s)
   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
 stages:
-  - build
-  - deploy
+  - staging
   - release
 
 
@@ -19,37 +17,87 @@ deploy_production_api:
   stage: release
   only:
     - master
+    - MPM-84-fix
+  when: manual
+  script:
+    - export project_root=$(pwd)
+    - ssh-add <(echo "$PRODUCTION_PRIVATE_SSH_KEY")
+    - export ssh_connect="-p22 $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST"
+    - ssh $ssh_connect "mkdir -p $PRODUCTION_API_TARGET_DIRECTORY/"
+    - cd $project_root/Website/htdocs/mpmanager && pwd
+    - cd $project_root/Website/htdocs/mpmanager && ls -la
+    # delete .env file as it used for the development environment
+    - cd $project_root/Website/htdocs/mpmanager && rm  .env
+    - cd $project_root/Website/htdocs/mpmanager && ls -la
+    # rename .env-production to .env
+    - cd $project_root/Website/htdocs/mpmanager && mv .env_production .env
+    # remove not related docker-compose files
+    - cd $project_root/ && rm docker-compose.yml
+    - cd $project_root/ && rm docker-compose-prod-non-domain.yml
+    # rename docker-compose-prod.yml to docker.compose.yml
+    - cd $project_root/ && mv docker-compose-prod.yml docker-compose.yml
+    # upload files
+    - rsync -az -e ssh $project_root/Website/htdocs/mpmanager/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_API_TARGET_DIRECTORY/
+    # restart containers worker, laravel and redis
+    - ssh $ssh_connect 'docker ps'
+    - ssh $ssh_connect 'docker restart mpmanager_composer'
+    - ssh $ssh_connect 'docker restart laravel'
+    - ssh $ssh_connect 'docker restart mpmanager-cloud_redis_1'
+    - ssh $ssh_connect 'docker restart worker'
+
+deploy_staging_api:
+  stage: staging
+  only:
+    - master
+    - MPM-84-fix
   when: manual
 
   script:
     - export project_root=$(pwd)
-    - export ssh_connect="-p22 $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST"
-    - ssh-add <(echo "$PRODUCTION_PRIVATE_SSH_KEY")
-    - ssh $ssh_connect "mkdir -p $PRODUCTION_API_TARGET_DIRECTORY/releases/$CI_COMMIT_SHA"
-    - cd $project_root/Website/htdocs/mpmanager && rm -rf .env && mv .env-production .env
+    - ssh-add <(echo "$STAGING_PRIVATE_SSH_KEY")
+    - export ssh_connect="-p22 $STAGING_SSH_USER@$STAGING_SSH_HOST"
+    - ssh $ssh_connect "mkdir -p $STAGING_API_TARGET_DIRECTORY/"
+    - cd $project_root/Website/htdocs/mpmanager && pwd
+    - cd $project_root/Website/htdocs/mpmanager && ls -la
+    # delete .env file as it used for the development environment
+    - cd $project_root/Website/htdocs/mpmanager && rm  .env
+    # rename .env-staging to .env
+    - cd $project_root/Website/htdocs/mpmanager && mv .env_staging .env
+      # upload files
+    - rsync -az -e ssh $project_root/Website/htdocs/mpmanager/ $STAGING_SSH_USER@$STAGING_SSH_HOST:$STAGING_API_TARGET_DIRECTORY/
+    # remove not related docker-compose files
+    - cd $project_root/ && rm docker-compose.yml
+    - cd $project_root/ && rm docker-compose-prod-non-domain.yml
+    # rename docker-compose-prod.yml to docker.compose.yml
+    - cd $project_root/ && mv docker-compose-prod.yml docker-compose.yml
 
+deploy_staging_ui:
+  stage: staging
+  only:
+    - master
+    - MPM-84-fix
+  when: manual
+  script:
+    - export project_root=$(pwd)
+    - export ssh_connect="-p22 $STAGING_SSH_USER@$STAGING_SSH_HOST"
+    - ssh-add <(echo "$STAGING_PRIVATE_SSH_KEY")
+    - ssh $ssh_connect "mkdir -p $STAGING_UI_TARGET_DIRECTORY"
     # upload files
-    - rsync -az -e ssh $project_root/Website/htdocs/mpmanager/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_API_TARGET_DIRECTORY/
-    # restart containers worker, laravel and redis
-    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart laravel'
-    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart mpmanager-cloud_redis_1'
-    - ssh $ssh_connect 'cd '$PRODUCTION_API_TARGET_DIRECTORY && docker restart worker'
-
+    - rsync -az -e ssh $project_root/Website/ui/ $STAGING_SSH_USER@$STAGING_SSH_HOST:$STAGING_UI_TARGET_DIRECTORY/
+    # restart ui
+    - ssh $ssh_connect 'docker restart ui'
 
 deploy_production_ui:
   stage: release
   only:
     - master
-
   when: manual
-
   script:
     - export project_root=$(pwd)
     - export ssh_connect="-p22 $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST"
     - ssh-add <(echo "$PRODUCTION_PRIVATE_SSH_KEY")
-    - ssh $ssh_connect "mkdir -p $PRODUCTION_API_TARGET_DIRECTORY/releases/$CI_COMMIT_SHA"
-
+    - ssh $ssh_connect "mkdir -p $PRODUCTION_UI_TARGET_DIRECTORY"
     # upload files
     - rsync -az -e ssh $project_root/Website/ui/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_UI_TARGET_DIRECTORY/
-    # restart containers worker, laravel and redis
-    - ssh $ssh_connect 'cd '$PRODUCTION_UI_TARGET_DIRECTORY && docker restart ui'
+    # restart ui
+    - ssh $ssh_connect 'docker restart ui'

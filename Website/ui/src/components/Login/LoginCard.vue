@@ -1,7 +1,7 @@
 <template>
     <div class="content-field">
         <div class="header">
-            <h1 class="title">MicroPowerManager</h1>
+            <h1 class="title">MicroPowerManager hebele</h1>
             <h5 class="subtitle">{{ $tc('phrases.loginNotify', 1) }}</h5>
             <div class="title-divider">&nbsp;</div>
             <div class="description" v-if="authError">{{ $tc('phrases.loginNotify', 2) }}</div>
