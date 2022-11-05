@@ -1,14 +1,14 @@
 <template>
     <div class="content-field">
         <div class="header">
-            <h1 class="title">MicroPowerManager hebele</h1>
+            <h1 class="title">MicroPowerManager - kamuran ci calisiyor</h1>
             <h5 class="subtitle">{{ $tc('phrases.loginNotify', 1) }}</h5>
             <div class="title-divider">&nbsp;</div>
             <div class="description" v-if="authError">{{ $tc('phrases.loginNotify', 2) }}</div>
         </div>
         <div class="content">
             <form class="md-layout" @submit.prevent="validateUser">
-                <md-card class="md-layout-item">
+                <md-card ifcoclass="md-layout-item">
                     <md-card-header>
                         <div class="md-title"></div>
                     </md-card-header>

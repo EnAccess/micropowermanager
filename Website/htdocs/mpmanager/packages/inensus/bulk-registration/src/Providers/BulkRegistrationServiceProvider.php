@@ -8,8 +8,6 @@ use Inensus\BulkRegistration\Console\Commands\InstallPackage;
 use Inensus\BulkRegistration\Console\Commands\UpdatePackage;
 
 
-
-
 class BulkRegistrationServiceProvider extends ServiceProvider
 {
     public function boot(Filesystem $filesystem)

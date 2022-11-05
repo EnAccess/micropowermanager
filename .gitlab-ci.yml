@@ -57,8 +57,6 @@ deploy_staging_api:
     - ssh-add <(echo "$STAGING_PRIVATE_SSH_KEY")
     - export ssh_connect="-p22 $STAGING_SSH_USER@$STAGING_SSH_HOST"
     - ssh $ssh_connect "mkdir -p $STAGING_API_TARGET_DIRECTORY/"
-    - cd $project_root/Website/htdocs/mpmanager && pwd
-    - cd $project_root/Website/htdocs/mpmanager && ls -la
     # delete .env file as it used for the development environment
     - cd $project_root/Website/htdocs/mpmanager && rm  .env
     # rename .env-staging to .env
@@ -70,6 +68,16 @@ deploy_staging_api:
     - cd $project_root/ && rm docker-compose-prod-non-domain.yml
     # rename docker-compose-prod.yml to docker.compose.yml
     - cd $project_root/ && mv docker-compose-prod.yml docker-compose.yml
+    # upload docker files
+    - rsync -avz -e ssh $project_root/docker-compose.yml $STAGING_SSH_USER@$STAGING_SSH_HOST:$STAGING_BASE_TARGET_DIRECTORY/
+    - rsync -avz -e ssh $project_root/Docker/ $STAGING_SSH_USER@$STAGING_SSH_HOST:$STAGING_BASE_TARGET_DIRECTORY/Docker/
+    # restart containers worker, laravel and redis
+    - ssh $ssh_connect 'docker ps'
+    - ssh $ssh_connect 'docker restart mpmanager_composer'
+    - ssh $ssh_connect 'docker restart laravel'
+    - ssh $ssh_connect 'docker restart mpmanager-cloud_redis_1'
+    - ssh $ssh_connect 'docker restart worker'
+    - ssh $ssh_connect 'docker restart cron_job'
 
 deploy_staging_ui:
   stage: staging
@@ -85,7 +93,8 @@ deploy_staging_ui:
     # upload files
     - rsync -az -e ssh $project_root/Website/ui/ $STAGING_SSH_USER@$STAGING_SSH_HOST:$STAGING_UI_TARGET_DIRECTORY/
     # restart ui
-    - ssh $ssh_connect 'docker restart ui'
+    - ssh $ssh_connect 'cd /var/www/MPManager-Cloud/Website/ui && docker-compose build --no-cache  ui'
+    - ssh $ssh_connect 'cd /var/www/MPManager-Cloud/Website/ui && docker-compose up -d ui'
 
 deploy_production_ui:
   stage: release
@@ -100,4 +109,5 @@ deploy_production_ui:
     # upload files
     - rsync -az -e ssh $project_root/Website/ui/ $PRODUCTION_SSH_USER@$PRODUCTION_SSH_HOST:$PRODUCTION_UI_TARGET_DIRECTORY/
     # restart ui
-    - ssh $ssh_connect 'docker restart ui'
+    - ssh $ssh_connect 'docker stop ui && docker rm ui'
+    - ssh $ssh_connect 'cd /var/www/MPManager-Cloud/Website/ui && docker-compose up --build --force-recreate --no-deps -d ui'

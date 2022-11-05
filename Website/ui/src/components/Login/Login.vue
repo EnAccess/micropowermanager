@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <login-card header-color="green">
-            <h4 slot="title" class="card-title">{{$tc('words.login')}}- test</h4>
+            <h4 slot="title" class="card-title">{{$tc('words.login')}}</h4>
             <md-button
                 slot="buttons"
                 href="javascript:void(0)"

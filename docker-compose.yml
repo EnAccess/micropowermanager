@@ -23,7 +23,7 @@ services:
     container_name: ui
     build:
       context: ./Website/ui/
-      dockerfile: :w
+      dockerfile: DockerfileServe
     environment:
       VIRTUAL_HOST: mpmanager.local
 
