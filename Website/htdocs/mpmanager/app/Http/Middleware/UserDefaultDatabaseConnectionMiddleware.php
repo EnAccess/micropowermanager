@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Jobs\AbstractJob;
-use App\Services\CompanyDatabaseService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -17,7 +16,7 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
  */
 class UserDefaultDatabaseConnectionMiddleware
 {
-    public function __construct(private DatabaseProxyManagerService $databaseProxyManager, private CompanyDatabaseService $companyDatabaseService)
+    public function __construct(private DatabaseProxyManagerService $databaseProxyManager)
     {
     }
 
@@ -25,7 +24,7 @@ class UserDefaultDatabaseConnectionMiddleware
     {
         if ($request instanceof Request) {
             return $this->handleApiRequest($request, $next);
-        } elseif ($request instanceof  AbstractJob) {
+        } elseif ($request instanceof AbstractJob) {
             return $this->handleJob($request, $next);
         }
     }
@@ -49,6 +48,9 @@ class UserDefaultDatabaseConnectionMiddleware
 
         //getting mpm plugins should not be proxied. It should use the base database to create the record
         if ($request->path() === 'api/mpm-plugins' && $request->isMethod('get')) {
+            return $next($request);
+        }
+        if (str_contains($request->path(), 'api/viber-messaging/webhook') && $request->isMethod('get')) {
             return $next($request);
         }
         //webclient login

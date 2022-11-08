@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRegistrationRequest;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
@@ -34,7 +35,7 @@ class CompanyController extends Controller
     ) {
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(CompanyRegistrationRequest $request): JsonResponse
     {
         $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id']);
         $company = $this->companyService->create($companyData);

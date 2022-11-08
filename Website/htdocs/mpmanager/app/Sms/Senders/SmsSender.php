@@ -3,10 +3,17 @@
 namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
+use App\Models\Address\Address;
 use App\Models\AssetRate;
+use App\Models\MpmPlugin;
+use App\Models\Person\Person;
+use App\Models\Plugins;
+use App\Models\Sms;
 use App\Models\Transaction\Transaction;
+use App\Services\PluginsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Inensus\ViberMessaging\Services\ViberContactService;
 use Webpatser\Uuid\Uuid;
 
 abstract class SmsSender
@@ -45,15 +52,33 @@ abstract class SmsSender
                 return;
             }
         }
-        //add sms to sms_gateway
-        resolve('SmsProvider')
-            ->sendSms(
-                $this->receiver,
-                $this->body,
-                $this->callback,
-                $this->smsAndroidSettings
-            );
+
+        $viberId = $this->checkForViberIdOfReceiverIfPluginIsActive();
+
+        if ($viberId) {
+
+            resolve('ViberGateway')
+                ->sendSms(
+                    $this->body,
+                    $viberId,
+                    Sms::query()->where('receiver', $this->receiver)->where(
+                        'body',
+                        $this->body
+                    )->latest()->first()
+                );
+        } else {
+            //add sms to sms_gateway
+            resolve('SmsProvider')
+                ->sendSms(
+                    $this->receiver,
+                    $this->body,
+                    $this->callback,
+                    $this->smsAndroidSettings
+                );
+        }
+
     }
+
     public function prepareHeader()
     {
         try {
@@ -168,5 +193,23 @@ abstract class SmsSender
         }
         $this->callback = sprintf($callback, $uuid);
         return $uuid;
+    }
+
+    private function checkForViberIdOfReceiverIfPluginIsActive()
+    {
+        $pluginsService = app()->make(PluginsService::class);
+        $viberContactService = app()->make(ViberContactService::class);
+        $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
+
+        if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
+            $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
+
+            if (!$viberContact) {
+                return null;
+            }
+
+            return $viberContact->viber_id;
+        }
+        return null;
     }
 }

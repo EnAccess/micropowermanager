@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class MpmPlugin extends MasterModel
 {
+    const SPARK_METER = 1;
+    const STEAMACO_METER = 2;
+    const CALIN_METER = 3;
+    const CALIN_SMART_METER = 4;
+    const KELIN_METER = 5;
+    const STRON_METER = 6;
+    const SWIFTA_PAYMENT_PROVIDER = 7;
+    const MESOMB_PAYMENT_PROVIDER = 8;
+    const BULK_REGISTRATION = 9;
+    const VIBER_MESSAGING = 10;
+
     use HasFactory;
 
     protected $table = 'mpm_plugins';

@@ -14,6 +14,7 @@ use Inensus\SteamaMeter\Console\Commands\InstallPackage as InstallStemacoMeterPa
 use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
 use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
+use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -34,6 +35,7 @@ class Kernel extends ConsoleKernel
         InstallSwiftaPaymentProviderPackage::class,
         InstallMsombPaymentProviderPackage::class,
         InstallBulkRegistrationPackage::class,
+        InstallViberMessagingPackage::class,
     ];
 
     /**

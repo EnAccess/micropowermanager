@@ -48,7 +48,7 @@ class AgentWebController extends Controller
             'agent_commission_id' => $request['agent_commission_id'],
             'device_id' => '-',
             'fire_base_token' => '-',
-            'connection' => auth('api')->user()->company->database->database_name
+            'connection' =>' ' // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
 
         return ApiResource::make($this->agentService->create(
