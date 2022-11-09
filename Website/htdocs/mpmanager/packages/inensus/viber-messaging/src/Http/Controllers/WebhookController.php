@@ -35,21 +35,10 @@ class WebhookController extends Controller
     public function index(string $slug)
     {
         Log::info("Webhook called");
-        $companyId = (int)explode('v', $slug)[1];
 
-        try {
-            $company = $this->companyService->getById($companyId);
-        } catch (\Exception $exception) {
-            Log::error("Company not found with slug: $slug", ['message' => $exception->getMessage()]);
-            throw $exception;
-        }
-
-        $this->databaseProxyManagerService->runForCompany($companyId, function () use ($companyId) {
-            $credential = $this->credentialService->getCredentials();
-            $apiKey = $credential->api_token;
-            $this->bot = new Bot(['token' => $apiKey]);
-        });
-
+        $credential = $this->credentialService->getCredentials();
+        $apiKey = $credential->api_token;
+        $this->bot = new Bot(['token' => $apiKey]);
         $bot = $this->bot;
         $botSender = $this->botSender;
 
@@ -57,7 +46,7 @@ class WebhookController extends Controller
             ->onConversation(function ($event) use ($bot, $botSender) {
                 return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText("Can I help you?");
             })
-            ->onText('|register+.*|si', function ($event) use ($bot, $botSender, $company) {
+            ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
 
                 try {

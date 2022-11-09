@@ -9,6 +9,6 @@ Route::group(['prefix' => 'viber-messaging'], function () {
     });
 
     Route::group(['prefix' => 'webhook'], function () {
-        Route::get('/{slug}', 'WebhookController@index');
+        Route::post('/{slug}', 'WebhookController@index');
     });
 });

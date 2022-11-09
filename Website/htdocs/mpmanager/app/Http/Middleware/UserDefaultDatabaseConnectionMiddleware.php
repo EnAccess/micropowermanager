@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App\Jobs\AbstractJob;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -48,10 +49,15 @@ class UserDefaultDatabaseConnectionMiddleware
 
         //getting mpm plugins should not be proxied. It should use the base database to create the record
         if ($request->path() === 'api/mpm-plugins' && $request->isMethod('get')) {
+
             return $next($request);
         }
-        if (str_contains($request->path(), 'api/viber-messaging/webhook') && $request->isMethod('get')) {
-            return $next($request);
+        Log::info("path: " . $request->path());
+        if (str_contains($request->path(), 'api/viber-messaging/webhook')) {
+            $companyId = (int)explode('/webhook/v', $request->path())[1];
+            return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request) {
+                return $next($request);
+            });
         }
         //webclient login
         if ($request->path() === 'api/auth/login') {
@@ -82,4 +88,5 @@ class UserDefaultDatabaseConnectionMiddleware
     {
         return Str::startsWith($path, 'api/app/');
     }
+
 }
