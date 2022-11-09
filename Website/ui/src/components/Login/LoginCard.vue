@@ -8,7 +8,7 @@
         </div>
         <div class="content">
             <form class="md-layout" @submit.prevent="validateUser">
-                <md-card ifcoclass="md-layout-item">
+                <md-card coclass="md-layout-item">
                     <md-card-header>
                         <div class="md-title"></div>
                     </md-card-header>
