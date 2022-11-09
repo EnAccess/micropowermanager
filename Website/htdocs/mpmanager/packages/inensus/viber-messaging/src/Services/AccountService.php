@@ -15,7 +15,7 @@ class AccountService
         try {
             $client = new Client(['token' => $apiKey]);
             $result = $client->getAccountInfo();
-            return $result['uri'];
+            return $result->getData()['uri'];
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             throw new \Exception($e->getMessage());
