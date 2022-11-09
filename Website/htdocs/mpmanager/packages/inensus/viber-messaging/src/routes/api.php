@@ -7,7 +7,6 @@ Route::group(['prefix' => 'viber-messaging'], function () {
         Route::get('/', 'ViberCredentialController@show');
         Route::put('/', 'ViberCredentialController@update');
     });
-
     Route::group(['prefix' => 'webhook'], function () {
         Route::post('/{slug}', 'WebhookController@index');
     });
