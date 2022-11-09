@@ -22,6 +22,7 @@ import CalinSmart from '@/plugins/calin-smart-meter/js/components/Overview/Crede
 import Kelin from '@/plugins/kelin-meter/js/components/Overview/Credential'
 import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
 import Settings from '@/components/Settings/MainSettings'
+import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
 
 Vue.component('default', Default)
 Vue.component('Spark-Meter', Spark)
@@ -31,6 +32,7 @@ Vue.component('CalinSmart-Meter', CalinSmart)
 Vue.component('Kelin-Meter', Kelin)
 Vue.component('Stron-Meter', Stron)
 Vue.component('Settings', Settings)
+Vue.component('Viber-Messaging', Viber)
 
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']

@@ -10,15 +10,20 @@ class CompanyService implements IBaseService
     {
     }
 
+    public function getByName($name): Company
+    {
+        return $this->company->where('name', $name)->firstOrFail();
+    }
+
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+       return $this->company->newQuery()->findOrFail($id);
     }
 
     public function create($data): Company
     {
         /** @var Company $company */
-        $company =  $this->company->newQuery()->create($data);
+        $company = $this->company->newQuery()->create($data);
 
         return $company;
     }

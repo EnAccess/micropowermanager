@@ -1,0 +1,29 @@
+{
+  "name": "inensus/viber-messaging",
+  "description": "Viber messaging integration for MicroPowerManager",
+  "type": "package",
+  "require": {
+    "bogdaan/viber-bot-php": "^0.0.15"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "ke@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\ViberMessaging\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\ViberMessaging\\Providers\\ViberMessagingServiceProvider"
+      ]
+    }
+  }
+}

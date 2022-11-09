@@ -1,0 +1,127 @@
+<?php
+
+namespace Inensus\ViberMessaging\Http\Controllers;
+
+use App\Models\Meter\Meter;
+use App\Services\CompanyService;
+use App\Services\DatabaseProxyService;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
+use Inensus\ViberMessaging\Services\ViberContactService;
+use Inensus\ViberMessaging\Services\ViberCredentialService;
+use Inensus\ViberMessaging\Services\WebhookService;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
+use Viber\Bot;
+use Viber\Api\Sender;
+
+class WebhookController extends Controller
+{
+    private $bot;
+    private $botSender;
+
+    public function __construct(
+        private ViberCredentialService $credentialService,
+        private ViberContactService $viberContactService,
+        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService
+
+    ) {
+        $credential = $this->credentialService->getCredentials();
+        $apiKey = $credential->api_token;
+        $this->botSender = new Sender([
+            'name' => 'MicroPowerManager',
+            'avatar' => 'https://micropowermanager.com/assets/images/Icon_2_5Icon_2_2.png',
+        ]);
+        $this->bot = new Bot(['token' => $apiKey]);
+    }
+
+    public function index(string $slug)
+    {
+        Log::info("Webhook called");
+        $companyId = (int)explode('v', $slug)[1];
+
+        try {
+            $company = $this->companyService->getById($companyId);
+        } catch (\Exception $exception) {
+            Log::error("Company not found with slug: $slug", ['message' => $exception->getMessage()]);
+            throw $exception;
+        }
+
+        $bot = $this->bot;
+        $botSender = $this->botSender;
+
+        $this->bot
+            ->onConversation(function ($event) use ($bot, $botSender) {
+                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText("Can I help you?");
+            })
+            ->onText('|register+.*|si', function ($event) use ($bot, $botSender, $company) {
+                $message = $event->getMessage()->getText();
+
+                try {
+                    $message = explode('+', $message);
+                    $meterSerialNumber = $message[1];
+                } catch (\Exception $e) {
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setWrongFormatMessage());
+
+                    return;
+                }
+
+                $companyId = $company->id;
+
+                $this->databaseProxyManagerService->runForCompany($companyId, function () use (
+                    $companyId,
+                    $meterSerialNumber,
+                    $bot,
+                    $botSender,
+                    $event
+                ) {
+                    $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
+
+                    if (!$meter) {
+                        $this->answerToCustomer($bot, $botSender, $event, $this->setMeterNotFoundMessage());
+
+                        return;
+                    }
+
+                    $person = $meter->meterParameter->owner;
+
+                    if ($person) {
+                        $this->viberContactService->createContact($person->id, $event->getSender()->getId());
+                        $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
+                    } else {
+                        Log::info("Someone who is not a customer tried to register with viber");
+                    }
+                });
+            })
+            ->run();
+
+        Log::info("Webhook is working incoming data :", request()->all());
+
+        return response()->json(['success' => 'success'], 200);
+    }
+
+    private function setWrongFormatMessage(): string
+    {
+        return "Please enter your meter serial number after register+";
+    }
+
+    private function setMeterNotFoundMessage(): string
+    {
+        return "We couldn't find your meter. Please check your meter serial number and try again.";
+    }
+
+    private function setSuccessMessage(): string
+    {
+        return "You have successfully registered with MicroPowerManager.";
+    }
+
+    private function answerToCustomer($bot, $botSender, $event, $message)
+    {
+        $bot->getClient()->sendMessage(
+            (new \Viber\Api\Message\Text())
+                ->setSender($botSender)
+                ->setReceiver($event->getSender()->getId())
+                ->setText("Hello, {$event->getSender()->getName()}! {$message}")
+        );
+    }
+}

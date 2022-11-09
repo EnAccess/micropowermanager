@@ -481,4 +481,9 @@ export const exportedRoutes = [
         component: require('./plugins/bulk-registration/js/components/Csv').default,
         meta: { layout: 'default' },
     },
+    {
+        path: '/viber-messaging/viber-overview',
+        component: require('./plugins/viber-messaging/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
+    }
 ]
