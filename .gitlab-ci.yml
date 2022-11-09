@@ -17,7 +17,6 @@ deploy_production_api:
   stage: release
   only:
     - master
-    - MPM-84-fix
   when: manual
   script:
     - export project_root=$(pwd)
@@ -49,7 +48,6 @@ deploy_staging_api:
   stage: staging
   only:
     - master
-    - MPM-84-fix
   when: manual
 
   script:
@@ -83,7 +81,6 @@ deploy_staging_ui:
   stage: staging
   only:
     - master
-    - MPM-84-fix
   when: manual
   script:
     - export project_root=$(pwd)
