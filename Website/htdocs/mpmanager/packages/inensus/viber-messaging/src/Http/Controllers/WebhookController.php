@@ -26,13 +26,10 @@ class WebhookController extends Controller
         private DatabaseProxyManagerService $databaseProxyManagerService
 
     ) {
-        $credential = $this->credentialService->getCredentials();
-        $apiKey = $credential->api_token;
         $this->botSender = new Sender([
             'name' => 'MicroPowerManager',
             'avatar' => 'https://micropowermanager.com/assets/images/Icon_2_5Icon_2_2.png',
         ]);
-        $this->bot = new Bot(['token' => $apiKey]);
     }
 
     public function index(string $slug)
@@ -46,6 +43,12 @@ class WebhookController extends Controller
             Log::error("Company not found with slug: $slug", ['message' => $exception->getMessage()]);
             throw $exception;
         }
+
+        $this->databaseProxyManagerService->runForCompany($companyId, function () use ($companyId) {
+            $credential = $this->credentialService->getCredentials();
+            $apiKey = $credential->api_token;
+            $this->bot = new Bot(['token' => $apiKey]);
+        });
 
         $bot = $this->bot;
         $botSender = $this->botSender;
@@ -66,32 +69,22 @@ class WebhookController extends Controller
                     return;
                 }
 
-                $companyId = $company->id;
+                $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
 
-                $this->databaseProxyManagerService->runForCompany($companyId, function () use (
-                    $companyId,
-                    $meterSerialNumber,
-                    $bot,
-                    $botSender,
-                    $event
-                ) {
-                    $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
+                if (!$meter) {
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setMeterNotFoundMessage());
 
-                    if (!$meter) {
-                        $this->answerToCustomer($bot, $botSender, $event, $this->setMeterNotFoundMessage());
+                    return;
+                }
 
-                        return;
-                    }
+                $person = $meter->meterParameter->owner;
 
-                    $person = $meter->meterParameter->owner;
-
-                    if ($person) {
-                        $this->viberContactService->createContact($person->id, $event->getSender()->getId());
-                        $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
-                    } else {
-                        Log::info("Someone who is not a customer tried to register with viber");
-                    }
-                });
+                if ($person) {
+                    $this->viberContactService->createContact($person->id, $event->getSender()->getId());
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
+                } else {
+                    Log::info("Someone who is not a customer tried to register with viber");
+                }
             })
             ->run();
 
