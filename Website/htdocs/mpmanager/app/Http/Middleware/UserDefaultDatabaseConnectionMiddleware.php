@@ -52,6 +52,7 @@ class UserDefaultDatabaseConnectionMiddleware
 
             return $next($request);
         }
+
         Log::info("path: " . $request->path());
         if (str_contains($request->path(), 'api/viber-messaging/webhook')) {
             $companyId = (int)explode('/webhook/v', $request->path())[1];
