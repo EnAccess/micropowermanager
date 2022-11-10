@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SocialTariffPiggyBankManager implements ShouldQueue
+class SocialTariffPiggyBankManager extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TariffPricingComponentsCalculator implements ShouldQueue
+class TariffPricingComponentsCalculator extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

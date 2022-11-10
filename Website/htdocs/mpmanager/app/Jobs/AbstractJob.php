@@ -28,6 +28,6 @@ class AbstractJob implements ShouldQueue
 
     public function getCompanyId(): int
     {
-        return (app()->make(UserService::class))->getCompanyId();
+        return $this->companyId;
     }
 }
