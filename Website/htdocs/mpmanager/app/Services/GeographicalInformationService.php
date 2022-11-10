@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\GeographicalInformation;
 
-class GeographicalInformationService implements IBaseService
+class GeographicalInformationService
 {
     public function __construct(
         private GeographicalInformation $geographicalInformation

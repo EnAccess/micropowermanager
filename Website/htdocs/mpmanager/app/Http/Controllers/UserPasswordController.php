@@ -6,13 +6,13 @@ use App\Http\Requests\AdminResetPasswordRequest;
 use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
-use App\Services\IUserService;
+use App\Services\UserService;
 use Illuminate\Http\Response;
 
 class UserPasswordController extends Controller
 {
     private $userService;
-    public function __construct(IUserService $userService)
+    public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
