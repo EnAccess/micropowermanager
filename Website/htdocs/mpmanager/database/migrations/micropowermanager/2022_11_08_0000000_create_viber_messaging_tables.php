@@ -31,6 +31,7 @@ return new class extends Migration {
                 $table->increments('id');
                 $table->integer('person_id');
                 $table->string('viber_id');
+                $table->string('registered_meter_serial_number');
                 $table->timestamps();
             });
         }

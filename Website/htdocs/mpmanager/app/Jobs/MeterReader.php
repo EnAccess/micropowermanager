@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class MeterReader implements ShouldQueue
+class MeterReader extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

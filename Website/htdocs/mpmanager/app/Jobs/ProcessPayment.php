@@ -14,7 +14,7 @@ use Illuminate\Queue\SerializesModels;
 
 use function config;
 
-class ProcessPayment implements ShouldQueue
+class ProcessPayment extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

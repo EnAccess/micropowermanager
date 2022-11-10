@@ -16,7 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SmsProcessor implements ShouldQueue
+class SmsProcessor extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -36,11 +36,12 @@ class SmsProcessor implements ShouldQueue
      * @param int $smsType
      * @param $smsConfigs
      */
-    public function __construct($data, int $smsType, $smsConfigs)
+    public function __construct($data, int $smsType, $smsConfigs, $companyId = null)
     {
         $this->data = $data;
         $this->smsType = $smsType;
         $this->smsConfigs = $smsConfigs;
+        $this->companyId = $companyId;
     }
 
     /**

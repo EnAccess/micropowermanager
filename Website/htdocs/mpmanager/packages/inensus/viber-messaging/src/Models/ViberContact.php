@@ -11,6 +11,6 @@ class ViberContact extends BaseModel
 
     public function mpmPerson()
     {
-        return $this->belongsTo(Person::class, 'person_d');
+        return $this->belongsTo(Person::class, 'person_id');
     }
 }

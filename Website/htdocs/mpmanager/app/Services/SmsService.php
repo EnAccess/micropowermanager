@@ -53,16 +53,27 @@ class SmsService
     public function createSms($smsData): Sms
     {
         /** @var Sms $sms */
-        $sms =  $this->sms->newQuery()->create($smsData);
+        $sms = $this->sms->newQuery()->create($smsData);
         return $sms;
     }
 
     public function sendSms($data, $smsType, $SmsConfigClass)
     {
-         SmsProcessor::dispatch(
-             $data,
-             $smsType,
-             $SmsConfigClass
-         )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        if ($smsType == SmsTypes::MANUAL_SMS) {
+            $companyId = auth()->user()->getCompanyId();
+            SmsProcessor::dispatch(
+                $data,
+                $smsType,
+                $SmsConfigClass,
+                $companyId
+            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        } else {
+            SmsProcessor::dispatch(
+                $data,
+                $smsType,
+                $SmsConfigClass
+            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        }
+
     }
 }

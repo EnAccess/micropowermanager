@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 use function config;
 
-class TokenProcessor implements ShouldQueue
+class TokenProcessor extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

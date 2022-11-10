@@ -15,7 +15,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class EnergyTransactionProcessor implements ShouldQueue
+class EnergyTransactionProcessor extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

@@ -18,7 +18,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class SmsLoadBalancer implements ShouldQueue
+class SmsLoadBalancer extends AbstractJob
 {
     use Dispatchable;
     use InteractsWithQueue;

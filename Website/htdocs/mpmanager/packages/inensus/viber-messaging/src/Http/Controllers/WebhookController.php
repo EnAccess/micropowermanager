@@ -21,10 +21,7 @@ class WebhookController extends Controller
 
     public function __construct(
         private ViberCredentialService $credentialService,
-        private ViberContactService $viberContactService,
-        private CompanyService $companyService,
-        private DatabaseProxyManagerService $databaseProxyManagerService
-
+        private ViberContactService $viberContactService
     ) {
         $this->botSender = new Sender([
             'name' => 'MicroPowerManager',
@@ -66,10 +63,19 @@ class WebhookController extends Controller
                     return;
                 }
 
+                $viberContact = $this->viberContactService->getByRegisteredMeterSerialNumber($meterSerialNumber);
+
+                if ($viberContact) {
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setAlreadyRegisteredMessage($meterSerialNumber));
+
+                    return;
+                }
+
                 $person = $meter->meterParameter->owner;
 
                 if ($person) {
-                    $this->viberContactService->createContact($person->id, $event->getSender()->getId());
+                    $data = ['person_id' => $person->id, 'viber_id' => $event->getSender()->getId()];
+                    $this->viberContactService->create($data);
                     $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
                 } else {
                     Log::info("Someone who is not a customer tried to register with viber");
@@ -95,6 +101,11 @@ class WebhookController extends Controller
     private function setSuccessMessage(): string
     {
         return "You have successfully registered with MicroPowerManager.";
+    }
+
+    private function setAlreadyRegisteredMessage($meterSerialNumber)
+    {
+        return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
 
     private function answerToCustomer($bot, $botSender, $event, $message)

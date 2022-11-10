@@ -4,6 +4,7 @@ namespace Inensus\ViberMessaging\Services;
 
 use App\Models\Person\Person;
 use App\Services\IBaseService;
+use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Models\ViberContact;
 
 class ViberContactService implements IBaseService
@@ -22,12 +23,12 @@ class ViberContactService implements IBaseService
 
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        return $this->viberContact->newQuery()->find($id);
     }
 
     public function create($data)
     {
-        // TODO: Implement create() method.
+        return $this->viberContact->newQuery()->create($data);
     }
 
     public function update($model, $data)
@@ -47,13 +48,19 @@ class ViberContactService implements IBaseService
 
     public function getByReceiverPhoneNumber($receiver)
     {
+
         return $this->viberContact->newQuery()
             ->whereHas('mpmPerson', function ($q) use ($receiver) {
-                $q->whereHas('addresses',
-                    function ($q) use ($receiver) {
-                        $q->where('phone', 'LIKE', '%' . $receiver . '%');
-                    }
-                );
-        })->first();
+                $q->whereHas('addresses', static function ($q) use ($receiver) {
+                    $q->where('phone', $receiver)->orWhere('phone', ltrim($receiver, '+'));
+                });
+            })->first();
+
+    }
+
+
+    public function getByRegisteredMeterSerialNumber($meterSerialNumber)
+    {
+        return $this->viberContact->newQuery()->where('registered_meter_serial_number', $meterSerialNumber)->first();
     }
 }
