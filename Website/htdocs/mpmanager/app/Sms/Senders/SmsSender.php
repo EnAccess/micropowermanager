@@ -61,7 +61,10 @@ abstract class SmsSender
                 ->sendSms(
                     $this->body,
                     $viberId,
-                    Sms::query()->where('receiver', $this->receiver)->where(
+                    Sms::query()
+                        ->where('receiver', $this->receiver)
+                        ->orWhere('receiver', ltrim($this->receiver, '+'))
+                        ->where(
                         'body',
                         $this->body
                     )->latest()->first()

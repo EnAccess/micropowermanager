@@ -33,9 +33,14 @@ class UserDefaultDatabaseConnectionMiddleware
     {
         $companyId = $job->getCompanyId();
 
-        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $job) {
-            return $next($job);
-        });
+        if ($companyId) {
+
+            return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $job) {
+                return $next($job);
+            });
+        }
+
+        return $next($job);
     }
 
     private function handleApiRequest(Request $request, Closure $next)

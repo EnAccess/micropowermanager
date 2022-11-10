@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
 use App\Models\User;
+use App\Services\CompanyService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,6 +21,10 @@ class AbstractJob implements ShouldQueue
 
     protected int $companyId;
 
+    public function __construct(private CompanyService $companyService)
+    {
+    }
+
 
     public function middleware(): array
     {
@@ -28,6 +33,14 @@ class AbstractJob implements ShouldQueue
 
     public function getCompanyId(): int
     {
+        if (!$this->companyId) {
+            $companyName = config('database.connections.shard.database');
+            $company = $this->companyService->getByName($companyName);
+
+            return $company->id;
+        }
         return $this->companyId;
     }
+
+
 }
