@@ -16,8 +16,4 @@ class SeedDatabaseCommand extends AbstractSharedCommand
         }
     }
 
-    public function runInCompanyScope(): void
-    {
-        // TODO: Implement runInCompanyScope() method.
-    }
 }
