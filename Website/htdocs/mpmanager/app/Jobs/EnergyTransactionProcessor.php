@@ -53,43 +53,44 @@ class EnergyTransactionProcessor extends AbstractJob
             return;
         }
 
+        $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
+
+        if ($minimumPurchaseAmount > 0) {
+
+            $validator = resolve('MinimumPurchaseAmountValidator');
+
+            try {
+                if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
+                    event('transaction.failed', [$this->transaction, 'Minimum purchase amount not reached']);
+                    return;
+                }
+            } catch (\Exception $e) {
+                event('transaction.failed', [$this->transaction, $e->getMessage()]);
+                return;
+            }
+
+        }
+
+
         $loanContainer = resolve('LoanDataContainerProvider');
         $loanContainer->initialize($transactionData->transaction);
         $transactionData->transaction->amount = $loanContainer->loanCost();
         $transactionData->totalAmount = $transactionData->transaction->amount;
+
         if (empty($loanContainer->paid_rates)) {
             $transactionData->paid_rates = $loanContainer->paid_rates;
         }
+
         if ($transactionData->transaction->amount > 0) {
             // pay if necessary access rate
             $transactionData = AccessRate::payAccessRate($transactionData);
         }
+
         if ($transactionData->transaction->amount > 0) {
             //give transaction to token processor
-            $meterParameter = $transactionData->meterParameter;
-            $transactionData->amount  = $transactionData->transaction->amount;
-            $kWhToBeCharged = 0.0;
-            // get piggy-bank energy
-            try {
-                $bankAccount = $meterParameter->socialTariffPiggyBank()->firstOrFail();
-                // calculate the cost of savings. To achive that, the price (for kWh.) should converted to Wh. (/1000)
-                // the price is x100 in the database to keep the price as integer. The last two digits are decimal parts
-                $savingsCost = $bankAccount->savings * (($bankAccount->socialTariff->price / 1000) / 100);
-                if ($transactionData->amount >= $savingsCost) {
-                    $kWhToBeCharged += $bankAccount->savings / 1000;
-                    $transactionData->amount -= $savingsCost;
-                } else {
-                    $transactionData->amount = 0;
-                    $kWhToBeCharged += $bankAccount->savings / 1000;
-                    $bankAccount->savings -= $transactionData->amount
-                        / (($bankAccount->socialTariff->price / 1000) / 100);
-                }
-                $bankAccount->update();
-            } catch (ModelNotFoundException $exception) {
-                // meter has no piggy bank account
-            }
-
+            $kWhToBeCharged = $this->getChargedEnergyForSocialTariffPiggyBanks($transactionData);
             $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
+
             TokenProcessor::dispatch($transactionData)
                 ->allOnConnection('redis')
                 ->onQueue(\config('services.queues.token'));
@@ -101,5 +102,42 @@ class EnergyTransactionProcessor extends AbstractJob
                 SmsConfigs::class
             )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
         }
+    }
+
+    /**
+     * @param int|TransactionDataContainer $transactionData
+     * @return float|int
+     */
+    private function getChargedEnergyForSocialTariffPiggyBanks(int|TransactionDataContainer $transactionData): int|float
+    {
+        $meterParameter = $transactionData->meterParameter;
+        $transactionData->amount = $transactionData->transaction->amount;
+        $kWhToBeCharged = 0.0;
+        // get piggy-bank energy
+        try {
+            $bankAccount = $meterParameter->socialTariffPiggyBank()->firstOrFail();
+            // calculate the cost of savings. To achive that, the price (for kWh.) should converted to Wh. (/1000)
+
+            $savingsCost = $bankAccount->savings * (($bankAccount->socialTariff->price / 1000));
+            if ($transactionData->amount >= $savingsCost) {
+                $kWhToBeCharged += $bankAccount->savings / 1000;
+                $transactionData->amount -= $savingsCost;
+            } else {
+                $transactionData->amount = 0;
+                $kWhToBeCharged += $bankAccount->savings / 1000;
+                $bankAccount->savings -= $transactionData->amount
+                    / (($bankAccount->socialTariff->price / 1000));
+            }
+            $bankAccount->update();
+        } catch (ModelNotFoundException $exception) {
+            // meter has no piggy bank account
+        }
+        return $kWhToBeCharged;
+    }
+
+    private function getTariffMinimumPurchaseAmount($transactionData)
+    {
+        return $transactionData->tariff->minimum_purchase_amount;
+
     }
 }

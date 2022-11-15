@@ -9,18 +9,13 @@ use PhpParser\Node\Stmt\Throw_;
 
 class AppliancePersonService implements IBaseService, IAssociative
 {
-    private $mainSettings;
-    private $cashTransactionService;
 
     public function __construct(
-        MainSettings $mainSettings,
+        private MainSettings $mainSettings,
         private AssetPerson $assetPerson,
-        CashTransactionService $cashTransactionService,
+        private CashTransactionService $cashTransactionService,
     ) {
 
-
-        $this->mainSettings = $mainSettings;
-        $this->cashTransactionService = $cashTransactionService;
     }
 
     private function checkDownPaymentIsBigger($downPayment, $cost)
@@ -135,6 +130,11 @@ class AppliancePersonService implements IBaseService, IAssociative
         });
 
         return $appliance;
+    }
+
+    public function getLoanIdsForCustomerId($customerId)
+    {
+        return $this->assetPerson->newQuery()->where('person_id', $customerId)->pluck('id');
     }
 
     public function make($data)
