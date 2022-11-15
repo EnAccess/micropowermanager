@@ -15,6 +15,7 @@ export class TariffService {
             price: null,
             currency: null,
             factor: 1,
+            minimumPurchaseAmount: 0,
             accessRate: {
                 id: null,
                 amount: null,
@@ -44,6 +45,7 @@ export class TariffService {
             price: tariffData.price,
             currency: tariffData.currency,
             factor: tariffData.factor ? tariffData.factor : 1,
+            minimumPurchaseAmount: tariffData.minimum_purchase_amount,
             accessRate: {
                 id: null,
                 amount: null,
@@ -56,8 +58,8 @@ export class TariffService {
                 initialEnergyBudget: null,
                 maximumStackedEnergy: null
             },
-            components: [],
-            tous: []
+            components: tariffData.pricing_component,
+            tous: tariffData.tou
         }
 
         if (tariffData.access_rate !== undefined && tariffData.access_rate !== null) {
@@ -135,6 +137,7 @@ export class TariffService {
             if (response.status === 200) {
                 let tariffData = response.data.data
                 this.tariff = this.fromJson(tariffData)
+
                 return this.tariff
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -151,6 +154,7 @@ export class TariffService {
             price: Number(this.tariff.price),
             currency: this.currency,
             factor: this.tariff.factor,
+            minimum_purchase_amount: Number(this.tariff.minimumPurchaseAmount)
         }
         if (this.tariff.components.length > 0)
             tariffPM.components = this.tariff.components
@@ -173,7 +177,6 @@ export class TariffService {
                 access_rate_amount: this.tariff.accessRate.amount
             }
         }
-
         try {
             let response
             if (method === 'create') {
@@ -181,12 +184,6 @@ export class TariffService {
             } else {
                 tariffPM.id = this.tariff.id
                 response = await this.repository.update(tariffPM)
-            }
-            if (response.status === 200 || response.status === 201) {
-                let tariffData = response.data
-                return this.getTariff(tariffData.id)
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
             }
 
         } catch (e) {
@@ -343,6 +340,7 @@ export class TariffService {
             price: null,
             currency: null,
             factor: 1,
+            minimumPurchaseAmount: null,
             accessRate: {
                 id: null,
                 amount: null,
@@ -356,7 +354,8 @@ export class TariffService {
                 maximumStackedEnergy: null
             },
             components: [],
-            tous: []
+            tous: [],
+
         }
     }
 

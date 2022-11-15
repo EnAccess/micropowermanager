@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\TariffPricingComponentsCalculator;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Meter\MeterTariff;
 use App\Models\SocialTariff;
@@ -82,7 +81,6 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($this->meterTariffs[0]->id, SocialTariff::query()->first()->tariff_id);
         $this->assertEquals($this->meterTariffs[0]->id, TimeOfUsage::query()->first()->tariff_id);
         $this->assertEquals($this->meterTariffs[0]->id, AccessRate::query()->first()->tariff_id);
-        Queue::assertPushed(TariffPricingComponentsCalculator::class);
     }
 
     public function test_user_creates_basic_tariff(): void
@@ -119,8 +117,6 @@ class MeterTariffTest extends TestCase
         $response = $this->actingAs($this->user)->post('/api/tariffs', $tariffData);
         $response->assertStatus(201);
         $this->assertCount(1, MeterTariff::all());
-
-        Queue::assertPushed(TariffPricingComponentsCalculator::class);
     }
 
     public function test_user_creates_tariff_with_social_inputs(): void
@@ -225,9 +221,6 @@ class MeterTariffTest extends TestCase
                 'name' => 'Some other component',
                 'price' => 100000
             ]];
-
-        $pricingCalculator = new TariffPricingComponentsCalculator($tariff,$componentsData,$tariffPricingComponentService);
-        $pricingCalculator->handle();
         $updatedTariff = $tariff->fresh();
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
 
