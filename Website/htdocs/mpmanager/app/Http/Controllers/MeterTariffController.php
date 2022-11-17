@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Meter\MeterTariff;
+use App\Services\AccessRateService;
 use App\Services\MeterTariffService;
+use App\Services\SocialTariffService;
+use App\Services\TimeOfUsageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MeterTariffController extends Controller
 {
-    public function __construct(private MeterTariffService $meterTariffService)
-    {
+    public function __construct(
+        private MeterTariffService $meterTariffService
+    ) {
     }
 
     /**
@@ -40,7 +44,6 @@ class MeterTariffController extends Controller
      */
     public function show(Request $request, $meterTariffId): ApiResource
     {
-
         return ApiResource::make($this->meterTariffService->getById($meterTariffId));
     }
 
@@ -50,22 +53,17 @@ class MeterTariffController extends Controller
      * @bodyParam name string required
      * @bodyParam factor int. The factor between two different sub tariffs. Like day/night sub-tariffs.
      * @bodyParam currency string
-     * @bodyParam price int required. kWh-price X 100 . The last two digits are basically the amount after comma.
+     * @bodyParam price int required.
      * @param TariffCreateRequest $request
      * @return ApiResource
      */
     public function store(TariffCreateRequest $request): JsonResponse
     {
-        $meterTariffData = $request->only(['name', 'factor', 'currency', 'price']);
+        $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
         $newTariff = $this->meterTariffService->create($meterTariffData);
-        $tariff = MeterTariff::with(
-            [
-                'accessRate',
-                'pricingComponent',
-                'socialTariff',
-                'tou'
-            ]
-        )->find($newTariff->id);
+
+        $calculator = resolve('TariffPriceCalculator');
+        $calculator->calculateTotalPrice($newTariff, $request);
 
         return ApiResource::make($this->meterTariffService->getById($newTariff->id))->response()->setStatusCode(201);
     }
@@ -79,10 +77,14 @@ class MeterTariffController extends Controller
             'currency' => $request->input('currency'),
             'price' => $request->input('price'),
             'total_price' => $request->input('price'),
+            'minimum_purchase_amount' => $request->input('minimum_purchase_amount')
         ];
-        $result = $this->meterTariffService->update($meterTariff, $meterTariffData);
 
-        return ApiResource::make($result);
+        $meterTariff = $this->meterTariffService->update($meterTariff, $meterTariffData);
+        $calculator = resolve('TariffPriceCalculator');
+        $calculator->calculateTotalPrice($meterTariff, $request);
+
+        return ApiResource::make($meterTariff);
     }
 
     public function destroy($meterTariffId): ?bool
@@ -91,4 +93,5 @@ class MeterTariffController extends Controller
 
         return $this->meterTariffService->delete($meterTariff);
     }
+
 }

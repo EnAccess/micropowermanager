@@ -180,7 +180,7 @@
     "newTarget": "New Target | Select destination for target ",
     "newTargetNotify": "Please fill all required field | Target stored successfully",
     "newTariff": "New Tariff | New tariff registered successfully.",
-    "newTariffLabels": "kWh Price (last two digits represents two decimals ex: 100 =1.00) | In order to use this field, the meters that will use the tariff must be suitable for time of usages.",
+    "newTariffLabels": "kWh Price | In order to use this field, the meters that will use the tariff must be suitable for time of usages.",
     "newTicket": "New Ticket",
     "newTicketingUser": "New Ticketing User",
     "newUser": "New User | New user created.",
@@ -301,7 +301,9 @@
     "Low Balance Limit Notify": "Low Balance Limit Notify",
     "Meter Reset Feedback": "Meter Reset Feedback",
     "Meter Reset Failed Feedback": "Meter Reset Failed Feedback",
-    "Balance Feedback": "Balance Feedback"
+    "Balance Feedback": "Balance Feedback",
+    "minimumPurchaseAmountDescription": "This field represents minimum price of the purchase the customer can do. You can leave it as zero If you do not want to apply this feature",
+    "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount"
   },
   "words": {
     "access": "Access",
@@ -474,6 +476,7 @@
     "callback": "Callback",
     "host": "Host",
     "port": "Port",
-    "encryption": "Encryption"
+    "encryption": "Encryption",
+    "minimumPurchaseAmount": "Minimum Purchase Amount"
   }
 }

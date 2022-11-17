@@ -52,8 +52,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
     public function chargeMeter($transactionContainer): array
     {
         $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount
-            / ($meterParameter->tariff()->first()->total_price / 100);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($meterParameter->tariff()->first()->total_price);
         Log::critical('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Calin Smart');
         if (config('app.debug')) {

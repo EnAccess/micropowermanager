@@ -62,7 +62,7 @@ class SparkMeterApi implements IManufacturerAPI
             $meterParameter->tariff()->first()->id
         )->first();
         $tariff = $this->tariffService->singleSync($smTariff);
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price / 100);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
         Log::critical('ENERGY TO BE CHARGED float ' .
             (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Spark');

@@ -14,20 +14,23 @@
                 :paginator="tariffService.paginator">
 
             <md-table
-                    v-model="tariffService.list"
-                    md-sort="id"
-                    md-sort-order="asc"
-                    md-card>
+                v-model="tariffService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card>
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <md-table-cell :md-label="$tc('words.id')" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">{{ item.name }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.price') + '/ kWh'" md-numeric>
-                        {{ readable(item.price/100)}} {{item.currency}}
+                        {{ readable(item.price) }} {{ item.currency }}
+                    </md-table-cell>
+                    <md-table-cell :md-label="$tc('words.minimumPurchaseAmount')" md-numeric>
+                        {{ readable(item.minimumPurchaseAmount) }} {{ item.currency }}
                     </md-table-cell>
                     <md-table-cell md-label="Access Rate" md-numeric md-sort-by="accessRate.amount">
                         <div v-if="item.accessRate">
-                            {{ readable(item.accessRate.amount) }} {{item.currency}}
+                            {{ readable(item.accessRate.amount) }} {{ item.currency }}
                         </div>
                         <div v-else>-</div>
                     </md-table-cell>
@@ -88,7 +91,7 @@ export default {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-    
+
         reloadList (subscriber, data) {
 
             if (subscriber !== this.subscriber) {
@@ -139,7 +142,7 @@ export default {
         },
         async showConfirmation (id) {
             let countObject = await this.tariffService.tariffUsageCount(id)
-            let usageCount = countObject[0].count
+            let usageCount = countObject.count
             let tariffs = this.tariffService.list
             let tariffObj = tariffs.reduce((acc, value) => {
                 if (value.id !== id) {

@@ -44,8 +44,8 @@ class StronMeterApi implements IManufacturerAPI
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
         $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount
-            / ($meterParameter->tariff()->first()->total_price / 100);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount /
+            ($meterParameter->tariff()->first()->total_price);
 
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => StronMeterApi');
@@ -62,7 +62,7 @@ class StronMeterApi implements IManufacturerAPI
             $postParams = [
                 "CustomerId" => strval($meterParameter->owner->id),
                 "MeterId" => $meter->serial_number,
-                "Price" => strval($meterParameter->tariff->total_price / 100),
+                "Price" => strval($meterParameter->tariff->total_price),
                 "Rate" => "1",
                 "Amount" => $transactionContainer->amount,
                 "AmountTmp" => $mainSettings ? $mainSettings->currency : 'USD',
@@ -110,9 +110,9 @@ class StronMeterApi implements IManufacturerAPI
         TransactionDataContainer $transactionContainer,
         $transactionResult = []
     ) {
-            $manufacturerTransaction = $this->stronTransaction->newQuery()->create([
-                'transaction_id' => $transactionContainer->transaction->id,
-            ]);
+        $manufacturerTransaction = $this->stronTransaction->newQuery()->create([
+            'transaction_id' => $transactionContainer->transaction->id,
+        ]);
         $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
     }
 }

@@ -60,7 +60,7 @@ class KelinMeterApi implements IManufacturerAPI
     {
         $meterParameter = $transactionContainer->meterParameter;
         $tariff = $meterParameter->tariff()->first();
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price / 100);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
         Log::critical('ENERGY TO BE CHARGED float ' .
             (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Kelin');
@@ -82,7 +82,7 @@ class KelinMeterApi implements IManufacturerAPI
         }
         $queryParams = [
             'meterNo' => $kelinMeter->meter_address,
-            'tariff' => $tariff->total_price / 100,
+            'tariff' => $tariff->total_price,
             'recharge' => $amount,
             'energy'=>$transactionContainer->chargedEnergy,
             'rechargeTime' => Carbon::now()->format('Y-m-d'),

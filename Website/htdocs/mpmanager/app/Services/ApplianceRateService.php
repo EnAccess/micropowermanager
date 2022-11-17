@@ -8,11 +8,11 @@ use Carbon\Carbon;
 
 class ApplianceRateService implements IBaseService
 {
-    private $mainSettings;
 
-    public function __construct(private AssetRate $applianceRate, MainSettings $mainSettings)
+
+    public function __construct(private AssetRate $applianceRate, private MainSettings $mainSettings)
     {
-        $this->mainSettings = $mainSettings;
+
     }
 
     public function getCurrencyFromMainSettings()
@@ -31,9 +31,9 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $applianceRate->assetPerson,
                     'action' => 'Appliance rate ' . date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ) . ' cost updated. From '
+                            'd-m-Y',
+                            strtotime($applianceRate->due_date)
+                        ) . ' cost updated. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]
@@ -44,6 +44,7 @@ class ApplianceRateService implements IBaseService
         $applianceRate->save();
         return $applianceRate->fresh();
     }
+
     public function deleteUpdatedApplianceRateIfCostZero($applianceRate, $creatorId, $cost, $newCost)
     {
         $currency = $this->getCurrencyFromMainSettings();
@@ -56,15 +57,23 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
                     'action' => 'Appliance rate ' . date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ) . ' deleted. From '
+                            'd-m-Y',
+                            strtotime($applianceRate->due_date)
+                        ) . ' deleted. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]
         );
     }
 
+    public function getByLoanIdsForDueDate($loanIds)
+    {
+        return $this->applianceRate->newQuery()->with('assetPerson.assetType')
+            ->whereIn('asset_person_id', $loanIds)
+            ->where('remaining', '>', 0)
+            ->whereDate('due_date', '<', date('Y-m-d'))
+            ->get();
+    }
 
     public function getById($id)
     {
