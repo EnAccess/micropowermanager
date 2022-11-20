@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+class CreateWaveMoneyPaymentProviderTables extends Migration
+{
+    public function up()
+    {
+
+        if (!Schema:: hasTable('wave_money_transactions')) {
+            Schema::create('wave_money_transactions', static function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('status')->default(-2);
+                $table->decimal('amount');
+                $table->text('order_id');
+                $table->text('reference_id');
+                $table->text('currency');
+                $table->integer("customer_id");
+                $table->integer("meter_serial")->nullable();
+                $table->string("external_transaction_id");
+                $table->timestamps();
+            });
+        }
+        if (!Schema:: hasTable('wave_money_credentials')) {
+            Schema::create('wave_money_credentials', static function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('merchant_id')->nullable();
+                $table->string('secret_key')->nullable();
+                $table->string('api_url')->default('https://preprodpayments.wavemoney.io:8107/'); //https://payment.wavemoney.io/payment
+                $table->timestamps();
+            });
+        }
+    }
+    public function down()
+    {
+        Schema::dropIfExists('wave_money_transactions');
+        Schema::dropIfExists('wave_money_credentials');
+    }
+}

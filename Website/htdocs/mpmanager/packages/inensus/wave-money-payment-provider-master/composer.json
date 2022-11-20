@@ -1,0 +1,27 @@
+{
+  "name": "inensus/wave-money-payment-provider",
+  "description": "WaveMoney payment provider integration for MicroPowerManager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "inensus",
+      "email": "developer@inensus.com",
+      "role": "developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\WaveMoneyPaymentProvider\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\WaveMoneyPaymentProvider\\Providers\\WaveMoneyPaymentProviderServiceProvider"
+      ]
+    }
+  }
+}
