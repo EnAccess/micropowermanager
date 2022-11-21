@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\MailHelper;
+use App\Utils\MinimumPurchaseAmountValidator;
 use App\ManufacturerApi\CalinApi;
 use App\ManufacturerApi\CalinSmartApi;
 use App\Misc\LoanDataContainer;
@@ -32,6 +33,7 @@ use App\Services\SmsAndroidSettingService;
 use App\Sms\AndroidGateway;
 use App\Transaction\AgentTransaction;
 use App\Transaction\AirtelTransaction;
+use App\Utils\TariffPriceCalculator;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
@@ -86,20 +88,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
-        $this->app->bind(
-            'CalinSmartApi',
-            static function ($app) {
-                $client = new Client();
-                $transaction = new Transaction();
-                return new CalinSmartApi($client, $transaction);
-            }
-        );
-        $this->app->bind('CalinApi', function () {
-            $client = new Client();
-            $transaction = new Transaction();
-            return new CalinApi($client, $transaction);
-        });
 
         $this->app->bind('AndroidSettingsService', function ($app) {
             return new SmsAndroidSettingService($app->make(SmsAndroidSetting::class));
@@ -157,5 +145,7 @@ class AppServiceProvider extends ServiceProvider
                 );
             }
         );
+        $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
+        $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
     }
 }

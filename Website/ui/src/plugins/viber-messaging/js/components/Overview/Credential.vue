@@ -72,6 +72,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
@@ -97,7 +98,8 @@ export default {
             try {
                 this.loading = true
                 await this.credentialService.updateCredential()
-
+                this.alertNotify('success', 'Token updated successfully')
+                EventBus.$emit('Viber Messaging')
             } catch (e) {
                 this.alertNotify('error', 'MPM failed to verify your request')
             }

@@ -31,7 +31,7 @@ class TariffCreateRequest extends FormRequest
 
         return [
             'name' => 'required',
-            'price' => 'required|integer', // 100 times of original price to support 2 decimal numbers.
+            'price' => 'required|numeric', // 100 times of original price to support 2 decimal numbers.
             'currency' => 'required|string|max:20',
             'factor' => 'sometimes|integer',
             'access_rate_period' => 'integer|min:1',
@@ -39,6 +39,7 @@ class TariffCreateRequest extends FormRequest
             'social_tariff' => 'sometimes|required',
             'components' => 'sometimes|required|array',
             'tous' => 'sometimes|required|array',
+            'minimum_purchase_amount' => 'numeric',
         ];
     }
 
