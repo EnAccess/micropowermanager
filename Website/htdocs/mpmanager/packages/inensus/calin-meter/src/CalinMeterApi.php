@@ -20,10 +20,11 @@ use Inensus\CalinMeter\Models\CalinTransaction;
 
 class CalinMeterApi implements IManufacturerAPI
 {
+    const CREDIT_TOKEN = 'CreditToken';
     protected $api;
     private $meterParameter;
     private $transaction;
-    private $rootUrl = '/token/';
+    private $rootUrl = '/tokennew';
     private $calinTransaction;
     private $mainSettings;
     private $credentials;
@@ -69,28 +70,19 @@ class CalinMeterApi implements IManufacturerAPI
             $credentials = $this->credentials->newQuery()->firstOrFail();
             $energy = (float)$transactionContainer->chargedEnergy;
 
-            $timestamp = time();
-            $cipherText = $this->apiHelpers->generateCipherText(
-                $meter->id,
-                $credentials->user_id,
-                $meter->serial_number,
-                'CreditToken',
-                $energy,
-                $timestamp,
-                $credentials->api_key
-            );
             $tokenParams = [
-                'serial_id' => $meter->id,
                 'user_id' => $credentials->user_id,
+                'password' => $credentials->api_key,
                 'meter_id' => $meter->serial_number,
-                'token_type' => 'CreditToken',
+                'token_type' => self::CREDIT_TOKEN,
                 'amount' => $energy,
-                'timestamp' => $timestamp,
-                'ciphertext' => $cipherText,
             ];
 
-            $token = $this->calinMeterApiRequests->post($credentials->api_url.$this->rootUrl,$tokenParams);
+            $url = $credentials->api_url . $this->rootUrl;
+            $token = $this->calinMeterApiRequests->post($url,$tokenParams);
+
             $this->associateManufacturerTransaction($transactionContainer);
+
             return [
                 'token' => $token,
                 'energy' => $energy

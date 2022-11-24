@@ -1,16 +1,17 @@
 <?php
+
 namespace Inensus\WaveMoneyPaymentProvider\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage;
+use Inensus\WaveMoneyPaymentProvider\Console\Commands\TransactionStatusChecker;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\UpdatePackage;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use Inensus\WaveMoneyPaymentProvider\Providers\EventServiceProvider;
-use Inensus\WaveMoneyPaymentProvider\Providers\RouteServiceProvider;
-use Inensus\WaveMoneyPaymentProvider\Providers\ObserverServiceProvider;
+
 
 class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
 {
@@ -21,8 +22,13 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
             $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
-            $this->commands([InstallPackage::class,UpdatePackage::class]);
+            $this->commands([InstallPackage::class, UpdatePackage::class, TransactionStatusChecker::class]);
         }
+        $this->app->booted(function ($app) {
+            $app->make(Schedule::class)->command('wave-money-payment-provider:transactionStatusCheck')
+                ->withoutOverlapping(10)->everyFiveMinutes()
+                ->appendOutputTo(storage_path('logs/cron.log'));;
+        });
         Relation::morphMap(
             [
                 'wave_money_transaction' => WaveMoneyTransaction::class,
@@ -72,10 +78,12 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
                 if (count($filesystem->glob($path . '*_create_wave_money_payment_provider_tables.php'))) {
                     $file = $filesystem->glob($path . '*_create_wave_money_payment_provider_tables.php')[0];
 
-                    file_put_contents($file, file_get_contents(__DIR__ . '/../../database/migrations/create_wave_money_payment_provider_tables.php'));
+                    file_put_contents($file, file_get_contents(__DIR__ .
+                        '/../../database/migrations/create_wave_money_payment_provider_tables.php'));
                 }
                 return $filesystem->glob($path . '*_create_wave_money_payment_provider_tables.php');
-            })->push($this->app->databasePath() . "/migrations/{$timestamp}_create_wave_money_payment_provider_tables.php")
+            })->push($this->app->databasePath() .
+                "/migrations/{$timestamp}_create_wave_money_payment_provider_tables.php")
             ->first();
     }
 }

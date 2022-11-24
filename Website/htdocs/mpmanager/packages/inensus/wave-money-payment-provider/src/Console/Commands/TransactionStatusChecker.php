@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\SparkMeter\Console\Commands;
+namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Exceptions\TransactionNotInitializedException;

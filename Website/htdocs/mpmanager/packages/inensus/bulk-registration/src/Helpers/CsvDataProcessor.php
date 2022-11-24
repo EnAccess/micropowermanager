@@ -34,7 +34,7 @@ class CsvDataProcessor
     {
         Collect($csvData)->each(function ($row) {
             try {
-                DB::beginTransaction();
+                DB::connection('shard')->beginTransaction();
                 $person = $this->createRecordFromCsv($row, $this->reflections['PersonService']);
                 $row['person_id'] = $person->id;
                 $this->checkRecordWasRecentlyCreated($person, 'customer');
@@ -89,10 +89,10 @@ class CsvDataProcessor
                         $address->save();
                     }
                 }
-                DB::commit();
+                DB::connection('shard')->commit();
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
-                DB::rollBack();
+                DB::connection('shard')->rollBack();
                 throw $exception;
             }
 
