@@ -39,9 +39,9 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('viber_credentials');
-        Schema::dropIfExists('viber_messages');
-        Schema::dropIfExists('viber_contacts');
+        Schema::connection('shard')->dropIfExists('viber_credentials');
+        Schema::connection('shard')->dropIfExists('viber_messages');
+        Schema::connection('shard')->dropIfExists('viber_contacts');
 
     }
 };

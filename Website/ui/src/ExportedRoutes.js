@@ -5,7 +5,8 @@ import LoginFooter from './components/Login/LoginFooter'
 import ForgotPassword from './components/Login/ForgotPassword'
 import Welcome from './components/Welcome/Welcome'
 import Register from './components/Register/Register'
-
+import Payment from './plugins/wave-money-payment-provider/js/components/Payment/Payment'
+import Result from './plugins/wave-money-payment-provider/js/components/Payment/Result'
 /*eslint-disable */
 export const exportedRoutes = [
     {
@@ -485,5 +486,28 @@ export const exportedRoutes = [
         path: '/viber-messaging/viber-overview',
         component: require('./plugins/viber-messaging/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
+    },
+    {
+        path: '/wave-money/wave-money-overview',
+        component: require('./plugins/wave-money-payment-provider/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
+    },
+    {
+        path: '/wave-money/payment/:name/:id',
+        components: { default: Payment, header: LoginHeader, footer: LoginFooter },
+        name: '/wave-money/payment',
+        props: {
+            header: { colorOnScroll: 400 }
+        },
+        meta: { requireAuth: false }
+    },
+    {
+        path: '/wave-money/result/:name/:id',
+        name: '/wave-money/result',
+        components: { default: Result, header: LoginHeader, footer: LoginFooter },
+        props: {
+            header: { colorOnScroll: 400 }
+        },
+        meta: { requireAuth: false }
     }
 ]

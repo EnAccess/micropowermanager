@@ -177,7 +177,8 @@ return [
         \Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider::class,
         \Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
         \Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider::class,
-        \Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class
+        \Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
+        \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class
 
     ],
 

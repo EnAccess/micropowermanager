@@ -15,6 +15,7 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
+use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -36,6 +37,7 @@ class Kernel extends ConsoleKernel
         InstallMsombPaymentProviderPackage::class,
         InstallBulkRegistrationPackage::class,
         InstallViberMessagingPackage::class,
+        InstallWaveMoneyPaymentProviderPackage::class,
     ];
 
     /**

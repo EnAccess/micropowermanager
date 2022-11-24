@@ -13,6 +13,7 @@ use App\Lib\ITransactionProvider;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\VodacomTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 class TransactionAdapter
 {
@@ -36,6 +37,11 @@ class TransactionAdapter
         }
         if ($transactionProvider instanceof AgentTransaction) {
             $baseTransaction = resolve('AgentPaymentProvider');
+            $baseTransaction->init($transactionProvider);
+            return $baseTransaction;
+        }
+        if ($transactionProvider instanceof WaveMoneyTransaction) {
+            $baseTransaction = resolve('WaveMoneyPaymentProvider');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         }

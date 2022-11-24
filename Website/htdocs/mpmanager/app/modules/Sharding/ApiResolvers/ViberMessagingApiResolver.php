@@ -7,7 +7,6 @@ namespace MPM\Sharding\ApiResolvers;
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 
-// test-api passes the company id within the callback url
 class ViberMessagingApiResolver implements ApiResolverInterface
 {
 

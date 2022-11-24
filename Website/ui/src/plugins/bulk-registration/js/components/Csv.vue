@@ -186,12 +186,7 @@ export default {
                 this.fileUploaded = true
 
             } catch (error) {
-                if (error.status_code === 422) {
-                    this.$swal.fire(error.message)
-                } else {
-                    this.alertNotify('error', error.message[0])
-                }
-
+                this.$swal.fire(error.message)
             }
 
             this.loading = false

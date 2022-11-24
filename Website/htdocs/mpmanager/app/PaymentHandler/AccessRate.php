@@ -104,6 +104,7 @@ class AccessRate
     /**
      * @param TransactionDataContainer $transactionData
      * @return int
+     * @deprecated
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer
     {

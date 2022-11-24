@@ -107,8 +107,8 @@ export let resources = {
         'getMeters': '/api/meters/',
         'delete': '/api/meters/',
         'revenue': '/api/meters/',
-        'transactions': 'api/meters/',
-        'consumptions': 'api/meters/',
+        'transactions': '/api/meters/',
+        'consumptions': '/api/meters/',
         'geo': '/api/meters/geoList'
     },
     meterparameters: {
@@ -169,6 +169,6 @@ export let resources = {
         sold_appliances: 'api/agents/sold/',
         transactions: 'api/agents/transactions/',
         tickets: '/tickets/api/agents',
-        receipts: 'api/agents/receipt'
+        receipts: '/api/agents/receipt'
     }
 }

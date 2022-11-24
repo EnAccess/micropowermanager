@@ -19,6 +19,7 @@ use PDO;
  * @property string serial_number
  * @property int id;
  * @property int in_use;
+ * @property MeterParameter $MeterParameter
  */
 class Meter extends BaseModel
 {
@@ -102,5 +103,14 @@ class Meter extends BaseModel
 
     public function averageTransactionPeriod($limit = 50): void
     {
+    }
+
+    public function findBySerialNumber(string $meterSerialNumber): ?self
+    {
+        /** @var null|Meter $result */
+        $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)
+            ->first();
+
+        return $result;
     }
 }

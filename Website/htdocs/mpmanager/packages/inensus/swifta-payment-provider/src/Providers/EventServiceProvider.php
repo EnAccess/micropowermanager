@@ -7,8 +7,9 @@ use Inensus\SwiftaPaymentProvider\Listeners\TransactionListener;
 
 class EventServiceProvider  extends ServiceProvider
 {
+    // commended out because it is not used for cloud
     protected $subscribe = [
-        TransactionListener::class
+        //TransactionListener::class
     ];
 
     /**

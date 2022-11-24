@@ -243,12 +243,12 @@
 
 
                     <!--Social-Tariffs-->
-                    <div class="md-layout-item  md-size-100">
-                        <a @click="showSocialOptions()" v-if="!tariffService.socialOptions"
-                           class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 1) }}</a>
-                        <a @click="showSocialOptions()" v-else
-                           class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 2) }}</a>
-                    </div>
+                    <!--                    <div class="md-layout-item  md-size-100">
+                                            <a @click="showSocialOptions()" v-if="!tariffService.socialOptions"
+                                               class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 1) }}</a>
+                                            <a @click="showSocialOptions()" v-else
+                                               class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 2) }}</a>
+                                        </div>-->
                     <div class="md-layout-item md-size-100"
                          v-if="tariffService.socialOptions">
                         <form class="md-layout md-gutter" data-vv-scope="Social-Form">
@@ -523,7 +523,7 @@ export default {
         touValueChange (tou) {
             if (this.tariffService.tariff.price) {
                 let price = this.tariffService.tariff.price
-                tou.cost = (price ) * tou.value
+                tou.cost = (price) * tou.value
             }
         },
         tariffPriceChange () {
