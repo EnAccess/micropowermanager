@@ -17,11 +17,11 @@ class MinimumPurchaseAmountValidator
         $this->restAmount = $this->transactionData->transaction->amount;
 
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
-        $applianceInstallmentPayer->initialize($transactionData->transaction);
+        $applianceInstallmentPayer->initialize($transactionData);
         $this->restAmount = $applianceInstallmentPayer->consumeAmount();
 
         $accessRatePayer = resolve('AccessRatePayer');
-        $accessRatePayer->initialize($transactionData->transaction);
+        $accessRatePayer->initialize($transactionData);
         $this->restAmount = $accessRatePayer->consumeAmount();
 
         return $this->restAmount >= $minimumPurchaseAmount;
