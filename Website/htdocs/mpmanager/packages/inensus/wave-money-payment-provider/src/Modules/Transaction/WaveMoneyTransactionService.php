@@ -66,6 +66,12 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             ->firstOrFail();
     }
 
+    public function getByExternalTransactionId(string $externalTransactionId)
+    {
+        return $this->waveMoneyTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)
+            ->firstOrFail();
+    }
+
     public function getByStatus($status)
     {
         return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
@@ -79,7 +85,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
 
     public function update($waveMoneyTransaction, $waveMoneyTransactionData)
     {
-        $waveMoneyTransaction->update($waveMoneyTransaction);
+        $waveMoneyTransaction->update($waveMoneyTransactionData);
         $waveMoneyTransaction->fresh();
 
         return $waveMoneyTransaction;

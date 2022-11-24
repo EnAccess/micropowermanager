@@ -23,13 +23,13 @@ class TransactionCallbackData
         private string  $frontendResultUrl,
         private string  $backEndResultUrl,
         private ?string $initiatorMsisdn,
-        private int     $amount,
+        private float     $amount,
         private int     $timeToLiveSeconds,
         private string  $paymentDescription,
         private string  $currency,
         private string  $hash,
         private ?string $transactionId,
-        private string  $paymentRequestId,
+        private string|int  $paymentRequestId,
         private string  $requestTime,
         private ?string $additional1,
         private ?string $additional2,
@@ -75,7 +75,7 @@ class TransactionCallbackData
         return $this->initiatorMsisdn;
     }
 
-    public function getAmount(): int
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -105,7 +105,7 @@ class TransactionCallbackData
         return $this->transactionId;
     }
 
-    public function getPaymentRequestId(): string
+    public function getPaymentRequestId(): string|int
     {
         return $this->paymentRequestId;
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequest;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionInitializeRequest;
 use Inensus\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\WaveMoneyApiService;
@@ -28,7 +28,7 @@ class WaveMoneyController extends Controller
         return WaveMoneyResource::make($this->apiService->requestPayment($transaction));
     }
 
-    public function transactionCallBack(TransactionCallbackRequest $request)
+    public function transactionCallBack(Request $request)
     {
         $transaction = $request->get('waveMoneyTransaction');
         $status = $request->get('status');

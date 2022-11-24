@@ -2,11 +2,12 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
+use Illuminate\Http\Request;
 use App\Jobs\ProcessPayment;
 use Closure;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequest;
+use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequestMapper;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Data\TransactionCallbackData;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
@@ -17,14 +18,15 @@ class WaveMoneyTransactionCallbackMiddleware
     {
     }
 
-    public function handle(TransactionCallbackRequest $request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $callbackData = $request->getMappedObject();
-
+        $mapper = new TransactionCallbackRequestMapper();
+        $callbackData = $mapper->getMappedObject($request);
         try {
             $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->getOrderId());
 
-            if ($callbackData->mapTransactionStatus($callbackData->getStatus()) === TransactionCallbackData::STATUS_FAILURE) {
+            if ($callbackData->mapTransactionStatus($callbackData->getStatus()) ===
+                TransactionCallbackData::STATUS_FAILURE) {
                 $status = WaveMoneyTransaction::STATUS_FAILED;
             } else {
                 // we set the transaction status as completed by wave money, but we don't process it yet
