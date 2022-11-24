@@ -40,8 +40,11 @@
                                 </div>
                                 <div v-if="credentialService.credential.paymentUrl"
                                      class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
-                                    <p> Please share  <br>
-                                        <span style="font-weight: bold"> {{ credentialService.credential.paymentUrl }}</span>
+                                    <p> Please share <br>
+
+                                        <a target="_blank" :href="credentialService.credential.paymentUrl">{{
+                                                credentialService.credential.paymentUrl
+                                            }}</a>
                                         <br> with your customers for making their online payments.
 
                                     </p>
@@ -63,6 +66,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
@@ -88,7 +92,8 @@ export default {
             try {
                 this.loading = true
                 await this.credentialService.updateCredential()
-
+                this.alertNotify('success', 'Credentials updated successfully')
+                EventBus.$emit('WaveMoney PaymentProvider')
             } catch (e) {
                 this.alertNotify('error', 'MPM failed to verify your request')
             }

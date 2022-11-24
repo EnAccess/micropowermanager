@@ -6,8 +6,9 @@ namespace Inensus\WaveMoneyPaymentProvider\Modules\Api;
 
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Exceptions\ApiRequestFailedException;
-use Inensus\WaveMoneyPaymentProvider\Modules\Api\Resource\AbstractApiResource;
+use Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources\AbstractApiResource;
 
 abstract class AbstractApi
 {
@@ -19,15 +20,17 @@ abstract class AbstractApi
     public function doRequest(AbstractApiResource $resource): AbstractApiResource
     {
         if ($resource->getRequestMethod() === RequestMethod::POST) {
-            $response = $this->client->post($resource->getUri() . 'payment', [
-                'body' => $resource->getBodyData(),
+            $response = $this->client->post($resource->getPaymentUri(), [
+                'form_params' => $resource->getBodyData(),
                 'headers' => $resource->getHeaders()
             ]);
         } else {
             $response = $this->client->get($resource->getUri(), ['headers' => $resource->getHeaders()]);
         }
 
-        if ($response->getStatusCode() !== 200 || $response->getStatusCode() !== 201) {
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode !== 200 && $statusCode !== 201) {
             throw new ApiRequestFailedException($response->getStatusCode(), $resource->getUri(),
                 $response->getBody()->getContents());
         }
@@ -35,6 +38,5 @@ abstract class AbstractApi
         $resource->setBody($response->getBody()->getContents());
 
         return $resource;
-
     }
 }

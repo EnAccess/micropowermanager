@@ -74,7 +74,8 @@
       "Inensus\\SwiftaPaymentProvider\\": "packages/inensus/swifta-payment-provider/src",
       "Inensus\\MesombPaymentProvider\\": "packages/inensus/mesomb-payment-provider/src",
       "Inensus\\BulkRegistration\\": "packages/inensus/bulk-registration/src",
-      "Inensus\\ViberMessaging\\": "packages/inensus/viber-messaging/src"
+      "Inensus\\ViberMessaging\\": "packages/inensus/viber-messaging/src",
+      "Inensus\\WaveMoneyPaymentProvider\\": "packages/inensus/wave-money-payment-provider/src"
     }
   },
   "minimum-stability": "dev",

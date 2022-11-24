@@ -5,12 +5,12 @@ let routes = [
         meta: { layout: 'default' },
     },
     {
-        path: '/wave-money/payment/:id',
+        path: '/wave-money/payment/:name/:id',
         component: require('./plugins/wave-money-payment-provider/js/components/Payment/Payment').default,
         meta: { layout: 'default' },
     },
     {
-        path: '/wave-money/result/:id',
+        path: '/wave-money/result/:name/:id',
         component: require('./plugins/wave-money-payment-provider/js/components/Payment/Result').default,
         meta: { layout: 'default' },
     }

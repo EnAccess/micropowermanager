@@ -3,6 +3,9 @@
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
 use App\Models\BaseModel;
+use App\Models\Transaction\IRawTransaction;
+use App\Models\Transaction\Transaction;
+use App\Models\Transaction\TransactionConflicts;
 
 /**
  * @property int id
@@ -15,12 +18,14 @@ use App\Models\BaseModel;
  * @property int customer_id
  * @property null|string meter_serial
  */
-class WaveMoneyTransaction extends BaseModel
+class WaveMoneyTransaction extends BaseModel implements IRawTransaction
 {
 
-    public const STATUS_REQUESTED = 2;
+    public const STATUS_REQUESTED = 0;
     public const STATUS_FAILED = -1;
-    public const STATUS_SUCCESS = 0;
+    public const STATUS_SUCCESS = 1;
+    public const STATUS_COMPLETED_BY_WAVE_MONEY = 2;
+    public const MAX_ATTEMPTS = 5;
 
     protected $table = 'wave_money_transactions';
 
@@ -59,15 +64,6 @@ class WaveMoneyTransaction extends BaseModel
         $this->external_transaction_id = $transactionId;
     }
 
-    public function findByOrderId(string $orderId): ?self
-    {
-        /** @var null|WaveMoneyTransaction $result */
-        $result =  $this->newQuery()->where('order_id', '=', $orderId)
-            ->first();
-
-        return $result;
-    }
-
     public function setOrderId(string $orderId)
     {
         $this->order_id = $orderId;
@@ -91,5 +87,21 @@ class WaveMoneyTransaction extends BaseModel
     public function setAmount(float $amount)
     {
         $this->amount = $amount;
+    }
+
+
+    public function transaction()
+    {
+        return $this->morphOne(Transaction::class, 'original_transaction');
+    }
+
+    public function manufacturerTransaction()
+    {
+        return $this->morphTo();
+    }
+
+    public function conflicts()
+    {
+        return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 }

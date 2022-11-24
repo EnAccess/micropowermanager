@@ -34,9 +34,10 @@ class WaveMoneyCredentialController extends Controller
         $merchantId = $request->input('merchant_id');
         $secretKey = $request->input('secret_key');
         $id = $request->input('id');
+        $merchantName = explode('_1', $company->name)[0];
         $callbackUrl = URL::to('/') . "/api/wave-money/wave-money-transaction/callback/$companyId";
-        $paymentUrl = URL::to('/') . "/wave-money/payment/$companyId";
-        $resultUrl = URL::to('/') . "/wave-money/result/$companyId/";
+        $paymentUrl = str_replace("api.","",URL::to('/'))  . "/#/wave-money/payment/$merchantName/$companyId";
+        $resultUrl = str_replace("api.","",URL::to('/')) . "/#/wave-money/result/$merchantName/$companyId";
 
         $credentials = $this->credentialService->updateCredentials([
             'id' => $id,
@@ -45,7 +46,7 @@ class WaveMoneyCredentialController extends Controller
             'callback_url' => $callbackUrl,
             'payment_url' => $paymentUrl,
             'result_url' => $resultUrl,
-            'merchant_name' => explode('_1', $company->name)[0],
+            'merchant_name' => $merchantName,
         ]);
 
         return WaveMoneyResource::make($credentials);

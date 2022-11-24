@@ -36,7 +36,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
             'wave-money-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
+        $this->app->singleton('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
     }
 
     public function publishConfigFiles()

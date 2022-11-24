@@ -246,12 +246,12 @@
                         </div>
 
                         <!--Social-Tariffs-->
-                        <div class="md-layout-item md-size-100">
+<!--                        <div class="md-layout-item md-size-100">
                             <a @click="showSocialOptions()" v-if="!tariffService.socialOptions"
                                class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 1) }}</a>
                             <a @click="showSocialOptions()" v-else
                                class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 2) }}</a>
-                        </div>
+                        </div>-->
                         <div class="md-layout-item md-size-100"
                              v-if="socialOptions">
                             <form class="md-layout md-gutter" data-vv-scope="Social-Form">

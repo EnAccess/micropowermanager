@@ -25,9 +25,6 @@ class TransactionListener
             return;
         }
         $baseTransaction->addConflict($message);
-        if (config('app.debug')) {
-            Log::debug('Transaction failed');
-        }
         $baseTransaction->sendResult(false, $transaction);
     }
 
@@ -39,7 +36,6 @@ class TransactionListener
         }
         $baseTransaction->sendResult(true, $transaction);
     }
-
 
     public function subscribe(Dispatcher $events): void
     {

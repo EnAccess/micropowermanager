@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Helpers\MailHelper;
+use App\Utils\AccessRatePayer;
+use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\ManufacturerApi\CalinApi;
 use App\ManufacturerApi\CalinSmartApi;
@@ -147,5 +149,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
+        $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
+        $this->app->bind('AccessRatePayer', AccessRatePayer::class);
     }
 }

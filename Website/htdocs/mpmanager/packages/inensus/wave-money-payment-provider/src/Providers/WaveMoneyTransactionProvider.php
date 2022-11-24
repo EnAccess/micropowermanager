@@ -2,10 +2,14 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Providers;
 
+use App\Jobs\SmsProcessor;
 use App\Lib\ITransactionProvider;
-use App\Models\Address\Address;
 use App\Models\Transaction\Transaction;
+use App\Models\Transaction\TransactionConflicts;
+use App\Sms\Senders\SmsConfigs;
+use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 
@@ -14,36 +18,60 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
     private $validData = [];
 
     public function __construct(
-      //  private Transaction $transaction,
-      //  private WaveMoneyTransaction $waveMoneyTransaction,
+        private Transaction $transaction,
         private WaveMoneyTransactionService $waveMoneyTransactionService,
-      //  private Address $address
-    )
-    {
+        private TransactionConflicts $transactionConflicts,
+    ) {
     }
 
     public function validateRequest($request)
     {
-        $this->validData = array_merge($this->validData, $request->all());
+        $meterSerial = $request->input('meterSerial');
+        $amount = $request->input('amount');
 
         try {
-            $this->waveMoneyTransactionService->validatePaymentOwner($this->validData['meterSerial']);
-            $this->waveMoneyTransactionService->imitateTransactionForValidation($this->validData);
-        }catch (\Exception $exception){
+            $this->waveMoneyTransactionService->validatePaymentOwner($meterSerial, $amount);
+            $waveMoneyTransactionData = $this->waveMoneyTransactionService->initializeTransactionData();
+
+            // We need to make sure that the payment is fully processable from our end .
+            $this->waveMoneyTransactionService->imitateTransactionForValidation($waveMoneyTransactionData);
+
+        } catch (\Exception $exception) {
             throw  new \Exception($exception->getMessage());
         }
+
+        $this->setValidData($waveMoneyTransactionData);
+
     }
 
     public function saveTransaction()
     {
-        // TODO: Implement saveTransaction() method.
+        $this->waveMoneyTransactionService->saveTransaction();
     }
 
     public function sendResult(bool $requestType, Transaction $transaction)
     {
-        // TODO: Implement sendResult() method.
-    }
+        if ($requestType) {
+            $waveMoneyTransaction = $transaction->originalTransaction()->first();
+            $updateData = [
+                'status' => WaveMoneyTransaction::STATUS_SUCCESS
+            ];
+            $this->waveMoneyTransactionService->update($waveMoneyTransaction, $updateData);
+            SmsProcessor::dispatch(
+                $transaction,
+                SmsTypes::TRANSACTION_CONFIRMATION,
+                SmsConfigs::class
+            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        } else {
+            Log::critical('WaveMoney transaction is been cancelled from MicroPowerManager.
+             It will be retired again in scheduled job.',
+                [
+                    'transaction_id' => $transaction->id,
+                    'original_transaction_id' => $transaction->originalTransaction()->first()->id
+                ]);
+        }
 
+    }
 
     public function confirm(): void
     {
@@ -57,12 +85,12 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function getAmount(): int
     {
-        // TODO: Implement getAmount() method.
+        $this->getTransaction()->amount;
     }
 
     public function getSender(): string
     {
-        // TODO: Implement getSender() method.
+        return $this->getTransaction()->message;
     }
 
     public function saveCommonData(): Model
@@ -72,16 +100,37 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function init($transaction): void
     {
-        // TODO: Implement init() method.
+        $this->waveMoneyTransaction = $transaction;
+        $this->transaction = $transaction->transaction()->first();
     }
 
     public function addConflict(?string $message): void
     {
-        // TODO: Implement addConflict() method.
+        $conflict = $this->transactionConflicts->newQuery()->make([
+            'state' => $message
+        ]);
+        $conflict->transaction()->associate($this->getSubTransaction());
+        $conflict->save();
     }
 
     public function getTransaction(): Transaction
     {
-        // TODO: Implement getTransaction() method.
+        return $this->transaction;
     }
+
+    public function setValidData($waveMoneyTransactionData)
+    {
+        $this->validData = $waveMoneyTransactionData;
+    }
+
+    public function getValidData()
+    {
+        return $this->validData;
+    }
+
+    public function getSubTransaction()
+    {
+        return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
+    }
+
 }

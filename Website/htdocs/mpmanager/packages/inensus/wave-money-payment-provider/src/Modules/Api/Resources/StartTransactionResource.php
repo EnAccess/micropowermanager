@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resource;
+namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources;
 
 use App\Models\Company;
 use App\Services\CompanyService;
@@ -19,6 +19,7 @@ class StartTransactionResource extends AbstractApiResource
         private WaveMoneyCredential $waveMoneyCredential,
         private WaveMoneyTransaction $waveMoneyTransaction
     ) {
+
     }
 
     public function getRequestMethod(): string
@@ -41,7 +42,7 @@ class StartTransactionResource extends AbstractApiResource
             'hash' => $this->generatePayloadHash(),
             'merchant_name' => $this->getMerchantName(),
             'items' => json_encode([
-                ['payment' => $this->waveMoneyTransaction->getAmount()]
+                ['name' => "payment", 'amount' => $this->waveMoneyTransaction->getAmount()],
             ]),
         ];
     }

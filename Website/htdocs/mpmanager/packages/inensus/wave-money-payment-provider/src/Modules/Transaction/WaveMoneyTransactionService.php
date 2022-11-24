@@ -3,56 +3,111 @@ declare(strict_types=1);
 
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Transaction;
 
-use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
-use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
+use App\Services\IBaseService;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use Inensus\WaveMoneyPaymentProvider\Modules\Api\WaveMoneyApiService;
 use Ramsey\Uuid\Uuid;
 
-class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService
+class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
 
+    private Meter $meter;
+    private Address $address;
+    private Transaction $transaction;
+    private MeterParameter $meterParameter;
+    private WaveMoneyTransaction $waveMoneyTransaction;
+
     public function __construct(
-        private Meter $meter,
-        private WaveMoneyApiService $apiService,
-        private Person $owner,
-        private Address $address,
-        private Transaction $transaction,
-        private MeterParameter $meterParameter,
+        Meter $meter,
+        Address $address,
+        Transaction $transaction,
+        MeterParameter $meterParameter,
+        WaveMoneyTransaction $waveMoneyTransaction,
     ) {
-        parent::__construct($meter, $owner, $address, $transaction, $meterParameter);
+        $this->meterParameter = $meterParameter;
+        $this->transaction = $transaction;
+        $this->address = $address;
+        $this->meter = $meter;
+        $this->waveMoneyTransaction = $waveMoneyTransaction;
+
+        parent::__construct(
+            $this->meter,
+            $this->address,
+            $this->transaction,
+            $this->meterParameter,
+            $this->waveMoneyTransaction
+        );
     }
 
-    public function initializeTransactionRequest(string $meterSerialNumber, float $amount): void
+    public function initializeTransactionData(): array
     {
-        $meter = $this->meter->findBySerialNumber($meterSerialNumber);
-
-        // try to find the customer data based on the request data
-        $customerId = $meter->MeterParameter->owner_id;
-
-        if (!$customerId) {
-            throw new ModelNotFoundException('Customer not found with meter serial number: ' . $meterSerialNumber);
-        }
-
         $orderId = Uuid::uuid4()->toString(); // need to store somewhere
         $referenceId = Uuid::uuid4()->toString(); // need to store somewhere
-        $transaction = new WaveMoneyTransaction();
-        $transaction->setAmount($amount);
-        $transaction->setOrderId($orderId);
-        $transaction->setReferenceId($referenceId);
-        $transaction->setCustomerId($customerId);
-        $transaction->setMeterSerial($meterSerialNumber);
-        $transaction->setStatus(WaveMoneyTransaction::STATUS_REQUESTED);
-        $transaction->save();
 
-       // $this->apiService->requestPayment($transaction);
+        return [
+            'order_id' => $orderId,
+            'reference_id' => $referenceId,
+            'meter_serial' => $this->getMeterSerialNumber(),
+            'status' => WaveMoneyTransaction::STATUS_REQUESTED,
+            'currency' => 'MMK',
+            'customer_id' => $this->getCustomerId(),
+            'amount' => $this->getAmount()
+        ];
     }
 
+    public function getByOrderId(string $orderId)
+    {
+        return $this->waveMoneyTransaction->newQuery()->where('order_id', '=', $orderId)
+            ->firstOrFail();
+    }
 
+    public function getByStatus($status)
+    {
+        return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
+            ->get();
+    }
+
+    public function getById($id)
+    {
+        return $this->waveMoneyTransaction->newQuery()->find($id);
+    }
+
+    public function update($waveMoneyTransaction, $waveMoneyTransactionData)
+    {
+        $waveMoneyTransaction->update($waveMoneyTransaction);
+        $waveMoneyTransaction->fresh();
+
+        return $waveMoneyTransaction;
+    }
+
+    public function create($waveMoneyTransactionData)
+    {
+        return $this->waveMoneyTransaction->newQuery()->create($waveMoneyTransactionData);
+    }
+
+    public function delete($waveMoneyTransaction)
+    {
+        return $waveMoneyTransaction->delete();
+    }
+
+    public function getAll($limit = null)
+    {
+        $query = $this->waveMoneyTransaction->newQuery();
+
+        if ($limit) {
+            return $query->paginate($limit);
+        }
+
+        return $this->waveMoneyTransaction->newQuery()->get();
+    }
+
+    public function getWaveMoneyTransaction()
+    {
+        return $this->getPaymentAggregatorTransaction();
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resource;
+namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources;
 
 abstract class AbstractApiResource
 {
@@ -22,6 +22,11 @@ abstract class AbstractApiResource
     public function getUri(): string
     {
         return config('wave-money-payment-provider.api_uri');
+    }
+
+    public function getPaymentUri(): string
+    {
+        return config('wave-money-payment-provider.api_uri') . '/payment';
     }
 
     public function getHeaders(): array
@@ -44,5 +49,9 @@ abstract class AbstractApiResource
         return json_decode($this->body, true);
     }
 
+    public function getAuthenticateUri():string
+    {
+        return config('wave-money-payment-provider.api_uri') . '/authenticate?transaction_id=';
+     }
 
 }

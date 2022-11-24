@@ -3,7 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class PaymentService {
     constructor () {
-        this.repository = Repository.get('credential')
+        this.repository = Repository.get('payment')
         this.paymentRequest = {
             meterSerial: null,
             amount: null,
@@ -12,18 +12,21 @@ export class PaymentService {
 
     async startTransaction (companyId) {
         try {
-            let paymentRequest  = {
+            let paymentRequest = {
                 meterSerial: this.paymentRequest.meterSerial,
                 amount: this.paymentRequest.amount,
             }
-            let response = await this.repository.post(paymentRequest,companyId)
-            if (response.status === 200 || response.status === 201) {
-                return  response.data
+            const { data } = await this.repository.post(paymentRequest, companyId)
+
+            if (!data.data.error) {
+                return data.data
             } else {
-                return new ErrorHandler(response.error, 'http', response.status)
+                return new ErrorHandler(data.data.error, 'http', 400)
             }
-        } catch (e) {
-            let errorMessage = e.response.data.data.message
+
+        } catch (error) {
+            const errorMessage = error.response.data.message
+
             return new ErrorHandler(errorMessage, 'http')
         }
     }

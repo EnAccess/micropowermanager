@@ -8,6 +8,7 @@ namespace Inensus\WaveMoneyPaymentProvider\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequest;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionInitializeRequest;
+use Inensus\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\WaveMoneyApiService;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 
@@ -15,21 +16,26 @@ class WaveMoneyController extends Controller
 {
 
     public function __construct(
-        private WaveMoneyTransactionService $transactionService)
-    {
+        private WaveMoneyTransactionService $transactionService,
+        private WaveMoneyApiService $apiService
+    ) {
     }
 
-    public function startTransaction($slug,TransactionInitializeRequest $request)
+    public function startTransaction(TransactionInitializeRequest $request): WaveMoneyResource
     {
-        $meterSerial = $request->input('meterSerial');
-        $amount = $request->input('amount');
-        $companyId = $request->input('slug');
-        $this->transactionService->initializeTransactionRequest(strval($meterSerial), floatval($amount), $companyId);
+        $transaction = $request->get('waveMoneyTransaction');
+
+        return WaveMoneyResource::make($this->apiService->requestPayment($transaction));
     }
 
     public function transactionCallBack(TransactionCallbackRequest $request)
     {
-        $data = $request->getMappedObject();
+        $transaction = $request->get('waveMoneyTransaction');
+        $status = $request->get('status');
 
+        $this->transactionService->update($transaction, [
+            'status' => $status,
+            'attempts' => $transaction->attempts + 1
+        ]);
     }
 }
