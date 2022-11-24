@@ -7,6 +7,7 @@ use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
 use App\Services\AccessRateService;
+use Illuminate\Support\Facades\Log;
 
 class AccessRatePayer implements IPayer
 {
@@ -24,8 +25,12 @@ class AccessRatePayer implements IPayer
     public function initialize(TransactionDataContainer $transactionData)
     {
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($transactionData->meter);
-        $this->debtAmount = $accessRatePayment ? $accessRatePayment->debt : 0;
-        $this->accessRatePayment = $accessRatePayment;
+
+        if ($accessRatePayment) {
+            $this->debtAmount =  $accessRatePayment->debt;
+            $this->accessRatePayment = $accessRatePayment;
+        }
+
         $this->transactionData = $transactionData;
         $this->transaction = $transactionData->transaction;
 
@@ -62,9 +67,8 @@ class AccessRatePayer implements IPayer
 
     public function consumeAmount()
     {
-        $accessRatePayment = $this->transactionData->meter->accessRatePayment()->first();
-        $accessRateDebt = $accessRatePayment ? $accessRatePayment->debt : 0;
-        $this->transaction->amount -= $accessRateDebt;
+        $this->transaction->amount -= $this->debtAmount;
+
         return $this->transaction->amount;
     }
 }

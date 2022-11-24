@@ -107,7 +107,7 @@ class EnergyTransactionProcessor extends AbstractJob
     private function payApplianceInstallments(array|TransactionDataContainer $transactionData):TransactionDataContainer
     {
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
-        $applianceInstallmentPayer->initialize($transactionData->transaction);
+        $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->pay();
         $transactionData->totalAmount = $transactionData->transaction->amount;
 
@@ -123,7 +123,7 @@ class EnergyTransactionProcessor extends AbstractJob
         if ($transactionData->transaction->amount > 0) {
             // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
-            $accessRatePayer->initialize($transactionData->transaction);
+            $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
         }
         return $transactionData;
