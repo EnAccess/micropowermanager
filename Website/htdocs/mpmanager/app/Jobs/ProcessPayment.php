@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use App\PaymentHandler\AccessRate;
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,16 +23,17 @@ class ProcessPayment extends AbstractJob
     /**
      * @var Transaction
      */
-    protected $transactionID;
+    protected $transactionId;
 
     /**
      * Create a new job instance.
      *
      * @param int $transaction_id
      */
-    public function __construct(int $transaction_id)
+    public function __construct(int $transactionId)
     {
-        $this->transactionID = $transaction_id;
+        $this->transactionId = $transactionId;
+
         parent::__construct(get_class($this));
     }
 
@@ -44,8 +44,7 @@ class ProcessPayment extends AbstractJob
      */
     public function executeJob(): void
     {
-        $transaction = Transaction::find($this->transactionID);
-        EnergyTransactionProcessor::dispatch($transaction)
+        EnergyTransactionProcessor::dispatch($this->transactionId)
             ->allOnConnection('redis')
             ->onQueue(config('services.queues.energy'));
     }

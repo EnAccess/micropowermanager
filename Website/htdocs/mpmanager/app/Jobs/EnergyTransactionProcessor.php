@@ -5,36 +5,29 @@ namespace App\Jobs;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
+
 use App\Models\Transaction\Transaction;
 use App\PaymentHandler\AccessRate;
 use App\Services\SmsAndroidSettingService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 class EnergyTransactionProcessor extends AbstractJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
     private $transaction;
 
     /**
      * Create a new job instance.
      *
-     * @param \App\Models\Transaction\Transaction $transaction
+     * @param $transaction
      */
-    public function __construct(Transaction $transaction)
+    public function __construct(private $transactionId)
     {
-        $this->transaction = $transaction;
         parent::__construct(get_class($this));
     }
 
@@ -46,6 +39,7 @@ class EnergyTransactionProcessor extends AbstractJob
      */
     public function executeJob()
     {
+        $this->transaction = Transaction::query()->find($this->transactionId);
         //set transaction type to energy
         $this->transaction->type = 'energy';
         $this->transaction->save();
@@ -61,7 +55,7 @@ class EnergyTransactionProcessor extends AbstractJob
             $this->completeTransactionWithNotification($transactionData);
         }
     }
-    
+
     /**
      * @return array
      */
@@ -105,7 +99,7 @@ class EnergyTransactionProcessor extends AbstractJob
      * @param array|TransactionDataContainer $transactionData
      * @return void
      */
-    private function payApplianceInstallments(array|TransactionDataContainer $transactionData):TransactionDataContainer
+    private function payApplianceInstallments(array|TransactionDataContainer $transactionData): TransactionDataContainer
     {
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
         $applianceInstallmentPayer->initialize($transactionData);

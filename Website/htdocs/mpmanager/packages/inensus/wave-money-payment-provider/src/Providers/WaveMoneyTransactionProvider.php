@@ -18,6 +18,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
     private $validData = [];
 
     public function __construct(
+        private WaveMoneyTransaction $waveMoneytransaction,
         private Transaction $transaction,
         private WaveMoneyTransactionService $waveMoneyTransactionService,
         private TransactionConflicts $transactionConflicts,
@@ -100,7 +101,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function init($transaction): void
     {
-        $this->waveMoneyTransaction = $transaction;
+        $this->waveMoneytransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
@@ -109,8 +110,9 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         $conflict = $this->transactionConflicts->newQuery()->make([
             'state' => $message
         ]);
-        $conflict->transaction()->associate($this->getSubTransaction());
+        $conflict->transaction()->associate($this->waveMoneytransaction);
         $conflict->save();
+
     }
 
     public function getTransaction(): Transaction

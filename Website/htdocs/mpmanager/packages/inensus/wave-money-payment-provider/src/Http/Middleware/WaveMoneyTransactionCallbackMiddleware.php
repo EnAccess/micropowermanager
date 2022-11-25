@@ -32,21 +32,18 @@ class WaveMoneyTransactionCallbackMiddleware
                 // we set the transaction status as completed by wave money, but we don't process it yet
                 $status = WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY;
             }
+            $transactionProvider = resolve('WaveMoneyPaymentProvider');
+            $transactionProvider->init($waveMoneyTransaction);
 
             $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);
             $request->attributes->add(['status' => $status]);
 
-
-            if (config('app.env') === 'production') {//production queue
-                $queue = 'payment';
-            } elseif (config('app.env') === 'staging') {
-                $queue = 'staging_payment';
-            } else { // local queue‚
-                $queue = 'local_payment';
-            }
-
             $transaction = $waveMoneyTransaction->transaction()->first();
-            ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue($queue);
+
+
+            ProcessPayment::dispatch($transaction->id)
+                ->allOnConnection('redis')
+                ->onQueue(config('services.queues.payment'));
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId ' . $callbackData->getOrderId());
 
