@@ -19,12 +19,6 @@ class AbstractJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected int $companyId;
-
-    public function __construct(private CompanyService $companyService)
-    {
-    }
-
 
     public function middleware(): array
     {
@@ -33,14 +27,7 @@ class AbstractJob implements ShouldQueue
 
     public function getCompanyId(): int
     {
-        if (!$this->companyId) {
-            $companyName = config('database.connections.shard.database');
-            $company = $this->companyService->getByName($companyName);
-
-            return $company->id;
-        }
-        return $this->companyId;
+         return app()->make(UserService::class)->getCompanyId();
     }
-
 
 }

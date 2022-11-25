@@ -59,21 +59,10 @@ class SmsService
 
     public function sendSms($data, $smsType, $SmsConfigClass)
     {
-        if ($smsType == SmsTypes::MANUAL_SMS) {
-            $companyId = auth()->user()->getCompanyId();
-            SmsProcessor::dispatch(
-                $data,
-                $smsType,
-                $SmsConfigClass,
-                $companyId
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
-        } else {
-            SmsProcessor::dispatch(
-                $data,
-                $smsType,
-                $SmsConfigClass
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
-        }
-
+        SmsProcessor::dispatch(
+            $data,
+            $smsType,
+            $SmsConfigClass
+        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
     }
 }
