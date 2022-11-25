@@ -84,7 +84,7 @@ class AssetRateChecker extends AbstractSharedCommand
             $assetRate,
             SmsTypes::APPLIANCE_RATE,
             SmsConfigs::class
-        )->allOnConnection('database')->onQueue(\config('services.queues.sms'));
+        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
     }
 
     private function sendReminders($dueAssetRates, $smsType)

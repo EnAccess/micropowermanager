@@ -46,7 +46,7 @@ class ProcessPayment extends AbstractJob
     {
         $transaction = Transaction::find($this->transactionID);
         EnergyTransactionProcessor::dispatch($transaction)
-            ->allOnConnection('database')
+            ->allOnConnection('redis')
             ->onQueue(config('services.queues.energy'));
     }
 }

@@ -46,7 +46,7 @@ class WaveMoneyTransactionCallbackMiddleware
             }
 
             $transaction = $waveMoneyTransaction->transaction()->first();
-            ProcessPayment::dispatch($transaction->id)->allOnConnection('database')->onQueue($queue);
+            ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue($queue);
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId ' . $callbackData->getOrderId());
 
