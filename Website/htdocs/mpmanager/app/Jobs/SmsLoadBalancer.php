@@ -35,9 +35,10 @@ class SmsLoadBalancer extends AbstractJob
     public function __construct($smsBody)
     {
         $this->smsBody = $smsBody;
+        parent::__construct(get_class($this));
     }
 
-    public function handle(): void
+    public function executeJob(): void
     {
         Redis::throttle('smsgateway')->allow(1)->every(1)->block(1)->then(
             function () {

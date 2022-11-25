@@ -8,6 +8,7 @@ use App\Models\CompanyDatabase;
 use App\Models\DatabaseProxy;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseProxyManagerService
 {
@@ -37,6 +38,7 @@ class DatabaseProxyManagerService
 
     private function buildDatabaseConnection(string $databaseName): void
     {
+        Log::info('Building database connection for ' . $databaseName);
         $databaseConnections = config()->get('database.connections');
         $databaseConnections['shard'] = [
             'driver' => 'mysql',
@@ -54,5 +56,6 @@ class DatabaseProxyManagerService
         ];
         config()->set('database.connections', $databaseConnections);
         $this->databaseManager->purge('shard');
+        $this->databaseManager->reconnect('shard');
     }
 }

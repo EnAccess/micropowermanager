@@ -35,6 +35,7 @@ class EnergyTransactionProcessor extends AbstractJob
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -43,7 +44,7 @@ class EnergyTransactionProcessor extends AbstractJob
      * @return void
      * @throws TransactionNotInitializedException
      */
-    public function handle()
+    public function executeJob()
     {
         //set transaction type to energy
         $this->transaction->type = 'energy';

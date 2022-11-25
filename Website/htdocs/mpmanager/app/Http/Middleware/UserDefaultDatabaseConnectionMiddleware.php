@@ -30,19 +30,8 @@ class UserDefaultDatabaseConnectionMiddleware
     {
         if ($request instanceof Request) {
             return $this->handleApiRequest($request, $next);
-        } elseif ($request instanceof AbstractJob) {
-            return $this->handleJob($request, $next);
         }
         throw new ValidationException("was not able to handle the request");
-    }
-
-    private function handleJob(AbstractJob $job, Closure $next)
-    {
-        $companyId = $job->getCompanyId();
-
-        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $job) {
-            return $next($job);
-        });
     }
 
     private function handleApiRequest(Request $request, Closure $next)

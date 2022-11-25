@@ -54,6 +54,7 @@ class TokenProcessor extends AbstractJob
         $this->transactionContainer = $container;
         $this->reCreate = $reCreate;
         $this->counter = $counter;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -62,7 +63,7 @@ class TokenProcessor extends AbstractJob
      * @return void
      * @throws Exception
      */
-    public function handle(): void
+    public function executeJob(): void
     {
         try {
             $api = resolve($this->transactionContainer->manufacturer->api_name);

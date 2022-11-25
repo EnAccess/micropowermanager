@@ -36,12 +36,12 @@ class SmsProcessor extends AbstractJob
      * @param int $smsType
      * @param $smsConfigs
      */
-    public function __construct($data, int $smsType, $smsConfigs, $companyId = null)
+    public function __construct($data, int $smsType, $smsConfigs)
     {
         $this->data = $data;
         $this->smsType = $smsType;
         $this->smsConfigs = $smsConfigs;
-        $this->companyId = $companyId;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -49,7 +49,7 @@ class SmsProcessor extends AbstractJob
      *
      * @return void
      */
-    public function handle()
+    public function executeJob()
     {
         try {
             $this->getSmsAndroidSettings();

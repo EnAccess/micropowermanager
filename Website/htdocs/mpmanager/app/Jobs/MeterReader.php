@@ -36,6 +36,7 @@ class MeterReader extends AbstractJob
     {
         $this->meterReader = $meterReader;
         $this->meters = $meters;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -43,7 +44,7 @@ class MeterReader extends AbstractJob
      *
      * @return void
      */
-    public function handle(): void
+    public function executeJob(): void
     {
         $this->meterReader->readBatch($this->meters->get(), $this->meterReader::READ_DAILY, ['date' => date('Y-m-d')]);
     }

@@ -34,4 +34,9 @@ class Company extends MasterModel
     {
         return $this->name;
     }
+    // has many company jobs
+    public function jobs()
+    {
+        return $this->hasMany(CompanyJob::class);
+    }
 }

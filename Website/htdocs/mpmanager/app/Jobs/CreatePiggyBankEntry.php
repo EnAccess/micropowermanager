@@ -8,9 +8,10 @@ class CreatePiggyBankEntry extends AbstractJob
 {
     public function __construct(private MeterParameter $meterParameter)
     {
+        parent::__construct(get_class($this));
     }
 
-    public function handle()
+    public function executeJob()
     {
         if ($socialTariff = $this->meterParameter->tariff()->first()->socialTariff) {
             $this->meterParameter->socialTariffPiggyBank()->create(
@@ -21,4 +22,5 @@ class CreatePiggyBankEntry extends AbstractJob
             );
         }
     }
+
 }

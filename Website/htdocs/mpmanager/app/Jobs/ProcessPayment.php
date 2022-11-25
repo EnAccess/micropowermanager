@@ -34,6 +34,7 @@ class ProcessPayment extends AbstractJob
     public function __construct(int $transaction_id)
     {
         $this->transactionID = $transaction_id;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -41,7 +42,7 @@ class ProcessPayment extends AbstractJob
      *
      * @return void
      */
-    public function handle(): void
+    public function executeJob(): void
     {
         $transaction = Transaction::find($this->transactionID);
         EnergyTransactionProcessor::dispatch($transaction)

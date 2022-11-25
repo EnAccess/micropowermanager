@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::connection('shard')->table('database_proxies', function (Blueprint $table) {
+        Schema::table('database_proxies', function (Blueprint $table) {
 
             $table->string('email')->unique()->change();
         });
@@ -25,7 +25,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::connection('shard')->table('database_proxies', function (Blueprint $table) {
+        Schema::table('database_proxies', function (Blueprint $table) {
             //
         });
     }

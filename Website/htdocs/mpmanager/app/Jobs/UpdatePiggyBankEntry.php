@@ -29,6 +29,7 @@ class UpdatePiggyBankEntry extends AbstractJob
     public function __construct(MeterParameter $meterParameter)
     {
         $this->meterParameter = $meterParameter;
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -36,7 +37,7 @@ class UpdatePiggyBankEntry extends AbstractJob
      *
      * @return void
      */
-    public function handle()
+    public function executeJob()
     {
         $socialTariff = $this->meterParameter->tariff()->first()->socialTariff;
         if (!$socialTariff) {

@@ -24,7 +24,7 @@ class SocialTariffPiggyBankManager extends AbstractJob
      */
     public function __construct()
     {
-        //
+        parent::__construct(get_class($this));
     }
 
     /**
@@ -32,7 +32,7 @@ class SocialTariffPiggyBankManager extends AbstractJob
      *
      * @return void
      */
-    public function handle()
+    public function executeJob()
     {
         //get all social tariffs
         $socialTariffs = SocialTariff::all();

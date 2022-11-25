@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompanyController;
 use App\Http\Requests\AndroidAppRequest;
 use App\Http\Resources\ApiResource;
+use App\Jobs\TestJob;
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 //Routes for City resource
 require 'resources/Cities.php';
@@ -33,11 +35,6 @@ require 'api_paths/transactions.php';
 require 'resources/AgentApp.php';
 // Agent Web panel routes
 require 'resources/AgentWeb.php';
-
-//TODO delete after 3rdparty api integration works.
-Route::get('/testapi', function () {
-    dump(\App\Models\User::get()->toArray());
-});
 
 //JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
