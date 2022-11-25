@@ -61,7 +61,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
                 $transaction,
                 SmsTypes::TRANSACTION_CONFIRMATION,
                 SmsConfigs::class
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            )->allOnConnection('database')->onQueue(\config('services.queues.sms'));
         } else {
             Log::critical('WaveMoney transaction is been cancelled from MicroPowerManager.
              It will be retired again in scheduled job.',

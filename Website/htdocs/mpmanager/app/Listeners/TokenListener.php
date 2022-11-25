@@ -76,7 +76,7 @@ class TokenListener
             $transactionContainer->transaction,
             SmsTypes::TRANSACTION_CONFIRMATION,
             SmsConfigs::class
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        )->allOnConnection('database')->onQueue(\config('services.queues.sms'));
 
         //payment successful
         event(

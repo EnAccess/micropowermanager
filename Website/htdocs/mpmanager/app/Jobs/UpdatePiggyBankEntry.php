@@ -53,7 +53,7 @@ class UpdatePiggyBankEntry extends AbstractJob
             $piggyBank->savings = $socialTariff->initial_energy_budget;
         } else {
             CreatePiggyBankEntry::dispatch($this->meterParameter)
-                ->allOnConnection('redis')
+                ->allOnConnection('database')
                 ->onQueue(config('services.queues.misc'));
         }
     }

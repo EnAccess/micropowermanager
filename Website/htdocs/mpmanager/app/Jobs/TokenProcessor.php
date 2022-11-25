@@ -93,7 +93,7 @@ class TokenProcessor extends AbstractJob
                         $this->transactionContainer,
                         false,
                         $this->counter
-                    )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
+                    )->allOnConnection('database')->onQueue(config('services.queues.token'))->delay(5);
                     return;
                 }
                 Log::critical(

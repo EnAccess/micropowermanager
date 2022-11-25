@@ -31,7 +31,7 @@ Route::group(['prefix' => '/jobs', 'middleware' => 'auth'],
             $recreate = (bool)request('recreate');
             TokenProcessor::dispatch(
                 TransactionDataContainer::initialize(Transaction::find($id)),
-                $recreate, 1)->allOnConnection('redis')->onQueue(
+                $recreate, 1)->allOnConnection('database')->onQueue(
                 config('services.queues.token')
             );
         })->where('id', '[0-9]+')->name('jobs.token');
@@ -40,7 +40,7 @@ Route::group(['prefix' => '/jobs', 'middleware' => 'auth'],
         Route::get('energy/{id}', function () {
             $id = request('id');
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction)->allOnConnection('redis')->onQueue('energy_payment');
+            EnergyTransactionProcessor::dispatch($transaction)->allOnConnection('database')->onQueue('energy_payment');
         });
     });
 

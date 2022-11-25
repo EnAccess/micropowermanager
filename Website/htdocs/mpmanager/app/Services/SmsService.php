@@ -63,6 +63,6 @@ class SmsService
             $data,
             $smsType,
             $SmsConfigClass
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        )->allOnConnection('database')->onQueue(\config('services.queues.sms'));
     }
 }

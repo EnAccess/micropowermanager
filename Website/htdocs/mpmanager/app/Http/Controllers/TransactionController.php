@@ -303,7 +303,7 @@ class TransactionController extends Controller
             $queue = 'local_payment';
         }
 
-        ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue($queue);
+        ProcessPayment::dispatch($transaction->id)->allOnConnection('database')->onQueue($queue);
     }
 
 

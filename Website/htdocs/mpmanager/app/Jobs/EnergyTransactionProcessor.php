@@ -141,7 +141,7 @@ class EnergyTransactionProcessor extends AbstractJob
             $transactionData->transaction,
             SmsTypes::TRANSACTION_CONFIRMATION,
             SmsConfigs::class
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        )->allOnConnection('database')->onQueue(\config('services.queues.sms'));
     }
 
     /**
@@ -154,7 +154,7 @@ class EnergyTransactionProcessor extends AbstractJob
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
         TokenProcessor::dispatch($transactionData)
-            ->allOnConnection('redis')
+            ->allOnConnection('database')
             ->onQueue(\config('services.queues.token'));
     }
 

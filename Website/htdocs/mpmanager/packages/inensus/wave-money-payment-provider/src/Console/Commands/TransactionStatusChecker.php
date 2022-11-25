@@ -53,7 +53,7 @@ class TransactionStatusChecker extends AbstractSharedCommand
 
             $transaction = $waveMoneyTransaction->transaction()->first();
             TokenProcessor::dispatch($this->initializeTransactionDataContainer($transaction))
-                ->allOnConnection('redis')
+                ->allOnConnection('database')
                 ->onQueue(\config('services.queues.token'));
         });
     }
