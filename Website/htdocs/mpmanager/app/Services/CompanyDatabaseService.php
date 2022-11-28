@@ -14,7 +14,7 @@ class CompanyDatabaseService implements IBaseService
 
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        return $this->companyDatabase->newQuery()->find($id);
     }
 
     public function create($data): CompanyDatabase

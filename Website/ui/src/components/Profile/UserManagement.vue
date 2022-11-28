@@ -33,10 +33,10 @@
                                 :key="user.id"
                                 style="cursor:pointer;"
                             >
-                                <md-table-cell>{{ user.id}}</md-table-cell>
-                                <md-table-cell>{{ user.name}}</md-table-cell>
-                                <md-table-cell>{{ user.email}}</md-table-cell>
-                                <md-table-cell>{{ user.phone}}</md-table-cell>
+                                <md-table-cell>{{ user.id }}</md-table-cell>
+                                <md-table-cell>{{ user.name }}</md-table-cell>
+                                <md-table-cell>{{ user.email }}</md-table-cell>
+                                <md-table-cell>{{ user.phone }}</md-table-cell>
                             </md-table-row>
                         </md-table>
                     </div>
@@ -54,6 +54,7 @@ import { UserService } from '@/services/UserService'
 import { CityService } from '@/services/CityService'
 import NewUser from './NewUser'
 import EditUser from './EditUser'
+
 export default {
     name: 'ProfileManagement',
     components: { Widget, NewUser, EditUser },
@@ -128,7 +129,7 @@ export default {
                 this.showNewUser = false
                 this.resetKey++
             } catch (error) {
-                this.alertNotify('error', error)
+                this.alertNotify('error', error.message)
             }
             this.sending = false
         },
