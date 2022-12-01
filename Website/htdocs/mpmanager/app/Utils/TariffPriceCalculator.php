@@ -29,6 +29,9 @@ class TariffPriceCalculator
         $timeOfUsage = $request->input('time_of_usage');
         $additionalComponents = $request->input('components');
 
+        $meterTariff->total_price = $meterTariff->price;
+        $meterTariff->save();
+
         $this->setAccessRate($accessRate, $meterTariff);
         $this->setSocialTariff($socialTariff, $meterTariff);
         $this->setTimeOfUsages($timeOfUsage, $meterTariff);
