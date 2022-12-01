@@ -38,13 +38,7 @@ abstract class SmsSender
     public function sendSms()
     {
         $this->validateReferences();
-        if (config('app.debug')) {
-            Log::debug(
-                'Send sms on debug is not allowed in debug mode',
-                ['number' => $this->receiver, 'message' => $this->body]
-            );
-            return;
-        }
+
         if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
             $nullSmsBodies = $this->smsBodyService->getNullBodies();
             if (count($nullSmsBodies)) {
@@ -56,7 +50,6 @@ abstract class SmsSender
         $viberId = $this->checkForViberIdOfReceiverIfPluginIsActive();
 
         if ($viberId) {
-
             resolve('ViberGateway')
                 ->sendSms(
                     $this->body,
@@ -70,8 +63,8 @@ abstract class SmsSender
                     )->latest()->first()
                 );
         } else {
-            //add sms to sms_gateway
-            resolve('SmsProvider')
+            //add sms to default sms provider
+            resolve('AndroidGateway')
                 ->sendSms(
                     $this->receiver,
                     $this->body,
@@ -188,13 +181,11 @@ abstract class SmsSender
         return $this->receiver;
     }
 
-    public function generateCallback($callback)
+    public function generateCallbackAndGetUuid($callback)
     {
         $uuid = (string)Uuid::generate(4);
-        if (!($this->data instanceof Transaction) && ($this->data instanceof AssetRate)) {
-            $this->callback = 'manual';
-        }
         $this->callback = sprintf($callback, $uuid);
+
         return $uuid;
     }
 

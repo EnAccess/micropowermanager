@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\Log;
 
 class SmsAndroidSettingService
 {
-    private $smsAndroidSetting;
 
-    public function __construct(SmsAndroidSetting $smsAndroidSetting)
+    private string $fireBaseKey;
+    private string $callbackUrl;
+
+    public function __construct(private SmsAndroidSetting $smsAndroidSetting, private UserService $userService)
     {
-        $this->smsAndroidSetting = $smsAndroidSetting;
+        $this->fireBaseKey = config('services.sms.android.key');
+        $this->callbackUrl = config('services.sms.callback') . $this->userService->getCompanyId();
     }
 
 
@@ -23,19 +26,27 @@ class SmsAndroidSettingService
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function createSmsAndroidSetting($smsAndroidSettingData)
+    public function createSmsAndroidSetting($androidPhoneToken)
     {
+        $smsAndroidSettingData = [
+            'callback' => $this->callbackUrl,
+            'token' => $androidPhoneToken,
+            'key' => $this->fireBaseKey,
+        ];
         $this->smsAndroidSetting->newQuery()->create($smsAndroidSettingData);
+
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, $smsAndroidSettingData)
+    public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, $androidPhoneToken)
     {
+        $fireBaseKey = config('services.sms.android.key');
+        $callbackUrl = config('services.sms.android.callback_url') . $this->userService->getCompanyId();
 
         $smsAndroidSetting->update([
-            'callback' => $smsAndroidSettingData['callback'],
-            'token' => $smsAndroidSettingData['token'],
-            'key' => $smsAndroidSettingData['key']
+            'callback' => $this->callbackUrl,
+            'token' => $androidPhoneToken,
+            'key' => $this->fireBaseKey,
         ]);
         return $this->smsAndroidSetting->newQuery()->get();
     }
@@ -46,19 +57,4 @@ class SmsAndroidSettingService
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
-    public function getResponsible()
-    {
-        $smsAndroidSettings = SmsAndroidSetting::all();
-        if ($smsAndroidSettings->count()) {
-            try {
-                $lastSms = Sms::query()->latest()->select('id')->take(1)->firstOrFail()->id;
-                $responsibleGateway = $smsAndroidSettings[$lastSms % $smsAndroidSettings->count()];
-            } catch (ModelNotFoundException $e) {
-                $responsibleGateway = $smsAndroidSettings[0];
-            }
-            return $responsibleGateway;
-        } else {
-            throw new SmsAndroidSettingNotExistingException('No SMS android setting registered.');
-        }
-    }
 }

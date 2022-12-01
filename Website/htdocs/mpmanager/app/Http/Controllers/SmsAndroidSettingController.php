@@ -9,33 +9,32 @@ use App\Services\SmsAndroidSettingService;
 
 class SmsAndroidSettingController extends Controller
 {
-    private $smsAndroidSettingService;
 
-    public function __construct(SmsAndroidSettingService $smsAndroidSettingService)
+    public function __construct(private SmsAndroidSettingService $smsAndroidSettingService)
     {
         $this->smsAndroidSettingService = $smsAndroidSettingService;
     }
 
     public function index(): ApiResource
     {
-        return new ApiResource($this->smsAndroidSettingService->getSmsAndroidSetting());
+        return ApiResource::make($this->smsAndroidSettingService->getSmsAndroidSetting());
     }
 
     public function store(SmsAndroidSettingRequest $request): ApiResource
     {
-        return new ApiResource($this->smsAndroidSettingService->createSmsAndroidSetting($request->all()));
+        return ApiResource::make($this->smsAndroidSettingService->createSmsAndroidSetting($request->input('token')));
     }
 
-    public function update(SmsAndroidSetting $smsAndroidSetting, SmsAndroidSettingRequest $request)
+    public function update(SmsAndroidSetting $smsAndroidSetting, SmsAndroidSettingRequest $request): ApiResource
     {
-        return new ApiResource($this->smsAndroidSettingService->updateSmsAndroidSetting(
+        return ApiResource::make($this->smsAndroidSettingService->updateSmsAndroidSetting(
             $smsAndroidSetting,
-            $request->only(['token', 'key', 'callback'])
+            $request->input('token')
         ));
     }
 
     public function destroy(SmsAndroidSetting $smsAndroidSetting): ApiResource
     {
-        return new ApiResource($this->smsAndroidSettingService->deleteSmsAndroidSetting($smsAndroidSetting));
+        return ApiResource::make($this->smsAndroidSettingService->deleteSmsAndroidSetting($smsAndroidSetting));
     }
 }
