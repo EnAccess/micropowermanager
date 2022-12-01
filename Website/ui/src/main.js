@@ -23,6 +23,7 @@ import Kelin from '@/plugins/kelin-meter/js/components/Overview/Credential'
 import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
 import Settings from '@/components/Settings/MainSettings'
 import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
+import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
 
 Vue.component('default', Default)
@@ -35,6 +36,7 @@ Vue.component('Stron-Meter', Stron)
 Vue.component('Settings', Settings)
 Vue.component('Viber-Messaging', Viber)
 Vue.component('WaveMoney-PaymentProvider', WaveMoney)
+Vue.component('MicroStar-Meter', MicroStar)
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 

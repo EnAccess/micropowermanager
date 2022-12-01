@@ -9,6 +9,9 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Inensus\MesombPaymentProvider\Models\MesombTransaction;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 class SmTransaction extends BaseModel implements ISubTransaction
 {
@@ -23,14 +26,14 @@ class SmTransaction extends BaseModel implements ISubTransaction
     {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }
-    public function agentTransaction(): MorphOne
+    public function agentTransaction()
     {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
     }
 
     public function vodacomTransaction()
     {
-        return $this->morphOne(VodacomTransaction::class, 'manufacturer_transaction');
+        return $this->morphOne(\App\Transaction\VodacomTransaction::class, 'manufacturer_transaction');
     }
 
     public function airtelTransaction()
@@ -41,5 +44,19 @@ class SmTransaction extends BaseModel implements ISubTransaction
     public function thirdPartyTransaction()
     {
         return $this->morphOne(ThirdPartyTransaction::class, 'manufacturer_transaction');
+    }
+
+    public function mesombTransaction()
+    {
+        return $this->morphOne(MesombTransaction::class, 'manufacturer_transaction');
+    }
+
+    public function swiftaTransaction()
+    {
+        return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
+    }
+    public function waveMoneyTransaction()
+    {
+        return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
     }
 }

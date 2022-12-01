@@ -16,6 +16,7 @@ use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsom
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
+use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         InstallBulkRegistrationPackage::class,
         InstallViberMessagingPackage::class,
         InstallWaveMoneyPaymentProviderPackage::class,
+        InstallMicroStarMeterPackage::class
     ];
 
     /**
