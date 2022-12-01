@@ -90,63 +90,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
-        $this->app->bind('AndroidSettingsService', function ($app) {
-            return new SmsAndroidSettingService($app->make(SmsAndroidSetting::class));
-        });
-
-        $this->app->singleton(
-            'MailProvider',
-            static function ($app) {
-                return new MailHelper(new PHPMailer());
-            }
-        );
-
-        /**
- * Use the current sms provider
-*/
-        //$this->app->singleton('SmsProvider', function ($app) {
-        //   return new \App\Sms\Bongo();
-        //});
-        /*Use android device as sms gateway*/
-        $this->app->singleton(
-            'SmsProvider',
-            static function ($app) {
-                return new AndroidGateway();
-            }
-        );
-        $this->app->singleton(
-            'LoanDataContainerProvider',
-            static function ($app) {
-                return new LoanDataContainer();
-            }
-        );
-        $this->app->singleton(
-            'VodacomPaymentProvider',
-            static function () {
-                return new \App\Transaction\VodacomTransaction();
-            }
-        );
-
-        $this->app->singleton(
-            'AirtelPaymentProvider',
-            static function () {
-                return new AirtelTransaction(
-                    new \App\Models\Transaction\AirtelTransaction(),
-                    new Transaction()
-                );
-            }
-        );
-        $this->app->singleton(
-            'AgentPaymentProvider',
-            static function () {
-                return new AgentTransaction(
-                    new \App\Models\Transaction\AgentTransaction(),
-                    new Transaction(),
-                    new FirebaseService()
-                );
-            }
-        );
+        $this->app->singleton('MailProvider', MailHelper::class);
+        $this->app->singleton('AndroidGateway',AndroidGateway::class);
+        $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
+        $this->app->singleton('AgentPaymentProvider',AgentTransaction::class);
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);

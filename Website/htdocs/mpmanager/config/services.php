@@ -80,11 +80,10 @@ return [
         ],
         'android' => [
             'url' => 'https://fcm.googleapis.com/fcm/send',
-            'token' => 'FIREBASE_TOKEN',
-            'key' => 'PHONE_KEY',
+            'key' => 'AAAARAca1HM:APA91bHTTU2ksDRKWf7O7zsN5KZebDHVdnM_GeTAmFWtZp3R4__n0g8b3s9Vu7hWEEBfYpOq5_CmMMfJlLmW5FjNatp__4G3m1Mim7fRp-3CFs2ByKnvzXC8X9V1kxKZuBT_UK_bmQYO',
 
         ],
-        'callback' => 'https://mpmanager.local/api/sms/%s/confirm',
+        'callback' => 'https://cloud.micropowermanager.com/api/sms-android-callback/%s/confirm/',
     ],
 
     'queues' => [

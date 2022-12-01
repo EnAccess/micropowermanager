@@ -14,7 +14,6 @@ class SmsAndroidSettingRequest extends FormRequest
     public function rules()
     {
         return [
-            'key' => 'required',
             'token' => 'required',
         ];
     }

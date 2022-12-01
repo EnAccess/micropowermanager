@@ -261,7 +261,7 @@ Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static funct
 Route::group(['prefix' => 'sms', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/{number}', 'SmsController@show');
     Route::get('/phone/{number}', 'SmsController@byPhone');
-    Route::get('/{uuid}/confirm', 'SmsController@update');
+
     Route::get('/', 'SmsController@index');
     Route::get('search/{search}', 'SmsController@search');
     Route::post('/storeandsend', 'SmsController@storeAndSend');
@@ -269,6 +269,10 @@ Route::group(['prefix' => 'sms', 'middleware' => 'jwt.verify'], static function 
     Route::post('/bulk', 'SmsController@storeBulk');
 
 });
+Route::group(['prefix' => 'sms-android-callback'], static function () {
+    Route::get('/{uuid}/confirm', 'SmsController@update');
+});
+
 // Solar
 Route::group(['prefix' => 'solar'], static function () {
     Route::post('/', 'SolarController@store');

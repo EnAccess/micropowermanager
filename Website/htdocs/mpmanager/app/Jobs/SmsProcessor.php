@@ -6,6 +6,7 @@ use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
 use App\Models\Sms;
+use App\Models\SmsAndroidSetting;
 use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsSender;
 use Exception;
@@ -54,13 +55,7 @@ class SmsProcessor extends AbstractJob
         try {
             $this->getSmsAndroidSettings();
             $smsType = $this->resolveSmsType();
-        } catch (SmsTypeNotFoundException $exception) {
-            Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
-            return;
-        } catch (SmsBodyParserNotExtendedException $exception) {
-            Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
-            return;
-        } catch (SmsAndroidSettingNotExistingException $exception) {
+        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
             return;
         }
@@ -76,12 +71,15 @@ class SmsProcessor extends AbstractJob
                 ]);
                 $sms->trigger()->associate($this->data);
                 $sms->save();
-                return;
             }
+            Log::debug('Send sms on debug is not allowed in debug mode',
+                ['number' => $receiver, 'message' => $smsType->body]);
+
+            return;
         }
         try {
             //set the uuid for the callback
-            $uuid = $smsType->generateCallback($this->smsAndroidSettings->callback);
+            $uuid = $smsType->generateCallbackAndGetUuid($this->smsAndroidSettings->callback);
             //sends sms or throws exception
             $smsType->sendSms();
         } catch (Exception $e) {
@@ -115,8 +113,11 @@ class SmsProcessor extends AbstractJob
 
     private function getSmsAndroidSettings()
     {
-        $smsAndroidSettingsService = resolve('AndroidSettingsService');
-        $this->smsAndroidSettings = $smsAndroidSettingsService->getResponsible();
+        try {
+            $this->smsAndroidSettings = SmsAndroidSetting::getResponsible();
+        } catch (SmsAndroidSettingNotExistingException $exception) {
+            throw $exception;
+        }
     }
 
     private function resolveSmsType()
@@ -127,9 +128,11 @@ class SmsProcessor extends AbstractJob
         }
         $smsBodyService = resolve($configs->servicePath);
         $reflection = new \ReflectionClass($configs->smsTypes[$this->smsType]);
+
         if (!$reflection->isSubclassOf(SmsSender::class)) {
             throw new  SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
         }
+
         return $reflection->newInstanceArgs([
             $this->data,
             $smsBodyService,
