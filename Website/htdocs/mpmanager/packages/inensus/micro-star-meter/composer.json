@@ -1,0 +1,27 @@
+{
+  "name": "inensus/micro-star-meter",
+  "description": "MicroStar Meter API integration for Micropowermanager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\MicroStarMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\MicroStarMeter\\Providers\\MicroStarMeterServiceProvider"
+      ]
+    }
+  }
+}

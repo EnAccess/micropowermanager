@@ -178,7 +178,8 @@ return [
         \Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
         \Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider::class,
         \Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
-        \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class
+        \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
+        \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
 
     ],
 

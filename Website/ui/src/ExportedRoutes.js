@@ -509,5 +509,10 @@ export const exportedRoutes = [
             header: { colorOnScroll: 400 }
         },
         meta: { requireAuth: false }
+    },
+    {
+        path: '/micro-star-meters/micro-star-overview',
+        component: require('./plugins/micro-star-meter/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
     }
 ]

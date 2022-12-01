@@ -8,4 +8,7 @@ interface ISubTransaction
     public function airtelTransaction();
     public function agentTransaction();
     public function thirdPartyTransaction();
+    public function swiftaTransaction();
+    public function mesombTransaction();
+    public function waveMoneyTransaction();
 }
