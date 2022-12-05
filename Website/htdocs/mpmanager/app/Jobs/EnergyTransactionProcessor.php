@@ -89,7 +89,7 @@ class EnergyTransactionProcessor extends AbstractJob
                 }
             } catch (\Exception $e) {
                 event('transaction.failed', [$this->transaction, $e->getMessage()]);
-
+                   throw new TransactionAmountNotEnoughException($e->getMessage());
             }
 
         }
