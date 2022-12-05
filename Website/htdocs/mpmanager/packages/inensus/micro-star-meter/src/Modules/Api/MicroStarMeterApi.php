@@ -35,26 +35,25 @@ class MicroStarMeterApi implements IManufacturerAPI
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => MicroStarMeterApi');
 
-        if (config('app.debug')) {
-            return [
-                'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
-            ];
+
+        $meter = $transactionContainer->meter;
+        $energy = (float)$transactionContainer->chargedEnergy;
+        $params = ['deviceNo' => $meter->serial_number, 'rechargeAmount' => $energy]; // if they accepts
+        // rechargeAmount as money, then we have to convert it to money
+        $credentials = $this->credentialService->getCredentials();
+        if (config('app.env') === 'local' || config('app.env') === 'development') {
+            //debug token for development
+            $response['token'] = '48725997619297311927';
         } else {
-
-            $meter = $transactionContainer->meter;
-            $energy = (float)$transactionContainer->chargedEnergy;
-            $params = ['deviceNo' => $meter->serial_number, 'rechargeAmount' => $energy]; // if they accepts
-            // rechargeAmount as money, then we have to convert it to money
-            $credentials = $this->credentialService->getCredentials();
-
             $response = $this->apiRequests->get($credentials, $params, self::API_CALL_CHARGE_METER);
-            $this->associateManufacturerTransaction($transactionContainer);
-            return [
-                'token' => $response['token'],
-                'energy' => $energy
-            ];
         }
+
+        $this->associateManufacturerTransaction($transactionContainer);
+        return [
+            'token' => $response['token'],
+            'energy' => $energy
+        ];
+
     }
 
     /**
@@ -73,9 +72,7 @@ class MicroStarMeterApi implements IManufacturerAPI
      */
     public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
     {
-        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create([
-            'transaction_id' => $transactionContainer->transaction->id,
-        ]);
+        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create();
         $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
     }
 }

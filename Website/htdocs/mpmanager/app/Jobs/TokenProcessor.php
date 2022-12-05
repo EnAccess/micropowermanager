@@ -71,7 +71,7 @@ class TokenProcessor extends AbstractJob
             //no api found
             Log::critical(
                 'No Api is registered for ' . $this->transactionContainer->manufacturer->name,
-                ['id' => '34758734658734567885458923', 'message' => $e->getMessage()]
+                ['message' => $e->getMessage()]
             );
             event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
             return;
@@ -98,12 +98,9 @@ class TokenProcessor extends AbstractJob
                 }
                 Log::critical(
                     $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
-                    $this->counter . 'times ',
-                    ['id' => '4627573927', 'message' => $e->getMessage()]
+                    $this->counter . ' times ', ['message' => $e->getMessage()]
                 );
-                event(
-                    'transaction.failed',
-                    [
+                event('transaction.failed', [
                         $this->transactionContainer->transaction,
                         'Manufacturer Api did not succeeded after 3 times with following error : ' . $e->getMessage()
                     ]
