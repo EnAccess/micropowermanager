@@ -28,6 +28,8 @@ Route::group(['prefix' => 'meters',], function () {
     Route::get('{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
 
     Route::get('/{migiGrid}/geoList', 'MeterGeographicalInformationController@index');
+    // created for customer registration App /since do not have to create new apk
+    Route::get('/types', 'MeterTypeController@index');
 });
 
 /* Meter types */
@@ -38,5 +40,4 @@ Route::group(['prefix' => 'meter-types'], function () {
     Route::put('/{meterTypeId}', 'MeterTypeController@update');
     Route::get('/{meterTypeId}/list', 'MeterTypeMeterController@show');
 });
-// created for customer registration App /since do not have to create new apk
-Route::get('/types', 'MeterTypeController@index');
+
