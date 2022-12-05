@@ -15,7 +15,7 @@ class SmsBodyService
 
     public function getSmsBodyByReference($reference)
     {
-        return  $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
+        return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
     public function getSmsBodies()
@@ -27,7 +27,7 @@ class SmsBodyService
     {
 
         $smsBodies = $this->smsBody->newQuery()->get();
-        collect($smsBodiesData)->each(function ($smsBody) use ($smsBodies) {
+        collect($smsBodiesData[0])->each(function ($smsBody) use ($smsBodies) {
             $smsBodies->filter(function ($body) use ($smsBody) {
                 return $body['id'] === $smsBody['id'];
             })->first()->update([

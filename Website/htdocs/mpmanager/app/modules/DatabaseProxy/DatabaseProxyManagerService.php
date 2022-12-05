@@ -38,7 +38,6 @@ class DatabaseProxyManagerService
 
     private function buildDatabaseConnection(string $databaseName): void
     {
-        Log::info('Building database connection for ' . $databaseName);
         $databaseConnections = config()->get('database.connections');
         $databaseConnections['shard'] = [
             'driver' => 'mysql',
