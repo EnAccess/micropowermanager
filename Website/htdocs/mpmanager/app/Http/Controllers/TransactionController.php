@@ -290,20 +290,12 @@ class TransactionController extends Controller
         $transactionProvider->saveTransaction();
         // store common data
         $transaction = $transactionProvider->saveCommonData();
-
         //fire transaction.saved -> confirms the transaction
         event('transaction.saved', $transactionProvider);
 
-
-        if (config('app.env') === 'production') {//production queue
-            $queue = 'payment';
-        } elseif (config('app.env') === 'staging') {
-            $queue = 'staging_payment';
-        } else { // local queue‚
-            $queue = 'local_payment';
-        }
-
-        ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue($queue);
+        ProcessPayment::dispatch($transaction->id)
+            ->allOnConnection('redis')
+            ->onQueue(config('services.queues.payment'));
     }
 
 

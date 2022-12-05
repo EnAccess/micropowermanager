@@ -227,6 +227,7 @@ class AgentTransaction implements ITransactionProvider
         $conflict->state = $message;
         $conflict->transaction()->associate($this->agentTransaction);
         $conflict->save();
+        $this->agentTransaction->update(['status' => -1]);
     }
 
     public function getTransaction(): Transaction
