@@ -38,3 +38,5 @@ Route::group(['prefix' => 'meter-types'], function () {
     Route::put('/{meterTypeId}', 'MeterTypeController@update');
     Route::get('/{meterTypeId}/list', 'MeterTypeMeterController@show');
 });
+// created for customer registration App /since do not have to create new apk
+Route::get('/types', 'MeterTypeController@index');
