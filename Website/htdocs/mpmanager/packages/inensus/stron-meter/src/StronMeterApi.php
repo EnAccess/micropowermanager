@@ -50,28 +50,29 @@ class StronMeterApi implements IManufacturerAPI
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => StronMeterApi');
 
-        if (config('app.debug')) {
-            return [
-                'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
-            ];
+
+        $meter = $transactionContainer->meter;
+        $credentials = $this->credentials->newQuery()->firstOrFail();
+        $mainSettings = $this->mainSettings->newQuery()->first();
+        $postParams = [
+            "CustomerId" => strval($meterParameter->owner->id),
+            "MeterId" => $meter->serial_number,
+            "Price" => strval($meterParameter->tariff->total_price),
+            "Rate" => "1",
+            "Amount" => $transactionContainer->amount,
+            "AmountTmp" => $mainSettings ? $mainSettings->currency : 'USD',
+            "Company" => $credentials->company_name,
+            "Employee" => $credentials->username,
+            "ApiToken" => $credentials->api_token
+        ];
+
+        if (config('app.env') === 'local' || config('app.env') === 'development') {
+            //debug token for development
+            $transactionResult = ['48725997619297311927'];
         } else {
-            $meter = $transactionContainer->meter;
-            $credentials = $this->credentials->newQuery()->firstOrFail();
-            $mainSettings = $this->mainSettings->newQuery()->first();
-            $postParams = [
-                "CustomerId" => strval($meterParameter->owner->id),
-                "MeterId" => $meter->serial_number,
-                "Price" => strval($meterParameter->tariff->total_price),
-                "Rate" => "1",
-                "Amount" => $transactionContainer->amount,
-                "AmountTmp" => $mainSettings ? $mainSettings->currency : 'USD',
-                "Company" => $credentials->company_name,
-                "Employee" => $credentials->username,
-                "ApiToken" => $credentials->api_token
-            ];
             try {
-                $request = $this->api->post(
+
+                $response = $this->api->post(
                     $credentials->api_url . $this->rootUrl,
                     [
                         'body' => json_encode($postParams),
@@ -80,7 +81,7 @@ class StronMeterApi implements IManufacturerAPI
                         ],
                     ]
                 );
-                $transactionResult = explode(",", (string)$request->getBody());
+                $transactionResult = explode(",", (string)$response->getBody());
             } catch (GuzzleException $gException) {
                 Log::critical(
                     'Stron API Transaction Failed',
@@ -92,13 +93,14 @@ class StronMeterApi implements IManufacturerAPI
                 );
                 throw new StronApiResponseException($gException->getMessage());
             }
-            $this->associateManufacturerTransaction($transactionContainer, $transactionResult);
-            $token = $transactionResult[0];
-            return [
-                'token' => $token,
-                'energy' => $transactionContainer->chargedEnergy
-            ];
         }
+        $this->associateManufacturerTransaction($transactionContainer, $transactionResult);
+        $token = $transactionResult[0];
+        return [
+            'token' => $token,
+            'energy' => $transactionContainer->chargedEnergy
+        ];
+
     }
 
     public function clearMeter(Meter $meter)
@@ -110,9 +112,7 @@ class StronMeterApi implements IManufacturerAPI
         TransactionDataContainer $transactionContainer,
         $transactionResult = []
     ) {
-        $manufacturerTransaction = $this->stronTransaction->newQuery()->create([
-            'transaction_id' => $transactionContainer->transaction->id,
-        ]);
+        $manufacturerTransaction = $this->stronTransaction->newQuery()->create();
         $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
     }
 }

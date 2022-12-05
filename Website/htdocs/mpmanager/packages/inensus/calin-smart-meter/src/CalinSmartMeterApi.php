@@ -49,43 +49,48 @@ class CalinSmartMeterApi implements IManufacturerAPI
         $this->calinSmartMeterApiRequests = $calinSmartMeterApiRequests;
         $this->apiHelpers = $apiHelpers;
     }
+
     public function chargeMeter($transactionContainer): array
     {
         $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($meterParameter->tariff()->first()->total_price);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount /
+            ($meterParameter->tariff()->first()->total_price);
         Log::critical('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Calin Smart');
-        if (config('app.debug')) {
-            return [
-                'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
-            ];
-        } else {
-            $meter = $transactionContainer->meter;
-            $energy = (float)$transactionContainer->chargedEnergy;
-            try {
-                $credentials = $this->credentials->newQuery()->firstOrFail();
-            } catch (ModelNotFoundException $e) {
-                throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
-            }
-            $url = $credentials->api_url . $this->rootUrl;
-            $tokenParams = [
-                'company_name' => $credentials->company_name,
-                'user_name' => $credentials->user_name,
-                'password' =>  $credentials->password,
-                'password_vend' => $credentials->password_vend,
-                'meter_number' => $meter->serial_number,
-                'is_vend_by_unit' => true,
-                'amount' => $energy
-            ];
-            $token = $this->calinSmartMeterApiRequests->post($url, $tokenParams);
-            $this->associateManufacturerTransaction($transactionContainer);
-            return [
-                'token' => $token,
-                'energy' => $energy
-            ];
+
+
+        $meter = $transactionContainer->meter;
+        $energy = (float)$transactionContainer->chargedEnergy;
+        try {
+            $credentials = $this->credentials->newQuery()->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
         }
+        $url = $credentials->api_url . $this->rootUrl;
+        $tokenParams = [
+            'company_name' => $credentials->company_name,
+            'user_name' => $credentials->user_name,
+            'password' => $credentials->password,
+            'password_vend' => $credentials->password_vend,
+            'meter_number' => $meter->serial_number,
+            'is_vend_by_unit' => true,
+            'amount' => $energy
+        ];
+        if (config('app.env') === 'local' || config('app.env') === 'development') {
+            //debug token for development
+            $token = '48725997619297311927';
+        } else {
+            $token = $this->calinSmartMeterApiRequests->post($url, $tokenParams);
+        }
+
+        $this->associateManufacturerTransaction($transactionContainer);
+        return [
+            'token' => $token,
+            'energy' => $energy
+        ];
+
     }
+
     /**
      * @param Meter $meter
      *
@@ -111,15 +116,14 @@ class CalinSmartMeterApi implements IManufacturerAPI
             'result_code' => $this->calinSmartMeterApiRequests->post($url, $tokenParams)
         ];
     }
+
     /**
      * @param TransactionDataContainer $transactionContainer
      * @return void
      */
     public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
     {
-        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([
-            'transaction_id' => $transactionContainer->transaction->id,
-        ]);
+        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create();
         $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
     }
 }

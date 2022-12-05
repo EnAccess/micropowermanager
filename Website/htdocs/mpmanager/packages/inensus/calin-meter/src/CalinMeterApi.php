@@ -17,7 +17,6 @@ use Inensus\CalinMeter\Models\CalinCredential;
 use Inensus\CalinMeter\Models\CalinTransaction;
 
 
-
 class CalinMeterApi implements IManufacturerAPI
 {
     const CREDIT_TOKEN = 'CreditToken';
@@ -47,7 +46,7 @@ class CalinMeterApi implements IManufacturerAPI
         $this->transaction = $transaction;
         $this->mainSettings = $mainSettings;
         $this->credentials = $credentials;
-        $this->calinMeterApiRequests =$calinMeterApiRequests;
+        $this->calinMeterApiRequests = $calinMeterApiRequests;
         $this->apiHelpers = $apiHelpers;
     }
 
@@ -59,35 +58,34 @@ class CalinMeterApi implements IManufacturerAPI
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => CalinMeterApi');
 
-        if (config('app.debug')) {
-            return [
-                'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
-            ];
+        $meter = $transactionContainer->meter;
+        $credentials = $this->credentials->newQuery()->firstOrFail();
+        $energy = (float)$transactionContainer->chargedEnergy;
+
+        $tokenParams = [
+            'user_id' => $credentials->user_id,
+            'password' => $credentials->api_key,
+            'meter_id' => $meter->serial_number,
+            'token_type' => self::CREDIT_TOKEN,
+            'amount' => $energy,
+        ];
+
+        Log::debug('TOKEN PARAMS ', $tokenParams);
+        $url = $credentials->api_url . $this->rootUrl;
+        if (config('app.env') === 'local' || config('app.env') === 'development') {
+            //debug token for development
+            $token = '48725997619297311927';
         } else {
-
-            $meter = $transactionContainer->meter;
-            $credentials = $this->credentials->newQuery()->firstOrFail();
-            $energy = (float)$transactionContainer->chargedEnergy;
-
-            $tokenParams = [
-                'user_id' => $credentials->user_id,
-                'password' => $credentials->api_key,
-                'meter_id' => $meter->serial_number,
-                'token_type' => self::CREDIT_TOKEN,
-                'amount' => $energy,
-            ];
-
-            $url = $credentials->api_url . $this->rootUrl;
-            $token = $this->calinMeterApiRequests->post($url,$tokenParams);
-
-            $this->associateManufacturerTransaction($transactionContainer);
-
-            return [
-                'token' => $token,
-                'energy' => $energy
-            ];
+            $token = $this->calinMeterApiRequests->post($url, $tokenParams);
         }
+
+        $this->associateManufacturerTransaction($transactionContainer);
+
+        return [
+            'token' => $token,
+            'energy' => $energy
+        ];
+
     }
 
     /**
@@ -106,9 +104,7 @@ class CalinMeterApi implements IManufacturerAPI
      */
     public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
     {
-        $manufacturerTransaction = $this->calinTransaction->newQuery()->create([
-            'transaction_id' => $transactionContainer->transaction->id,
-        ]);
+        $manufacturerTransaction = $this->calinTransaction->newQuery()->create();
         $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
     }
 }
