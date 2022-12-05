@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 // Android App Services
 Route::group([
-    'middleware' => ['agent_api',],
     'prefix' => 'app'
 ], function () {
 
@@ -11,7 +10,7 @@ Route::group([
     Route::post('logout', 'AgentAuthController@logout');
     Route::post('refresh', 'AgentAuthController@refresh');
     Route::get('me', 'AgentAuthController@me');
-    Route::group(['prefix' => 'agents', 'middleware' => ['jwt.verify:agent'],], function () {
+    Route::group(['prefix' => 'agents', 'middleware' => ['jwt.verify:agent','agent_api']], function () {
         Route::post('/firebase', 'AgentFirebaseController@update');
         Route::get('/balance', 'AgentBalanceController@show');
         Route::group(['prefix' => 'customers'], function () {

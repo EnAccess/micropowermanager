@@ -6,7 +6,9 @@ use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AddressesService;
 use App\Services\AgentService;
+use App\Services\CompanyDatabaseService;
 use App\Services\CountryService;
+use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
@@ -19,7 +21,9 @@ class AgentWebController extends Controller
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-        private CountryService $countryService
+        private CountryService $countryService,
+        private CompanyDatabaseService $companyDatabaseService,
+        private DatabaseProxyService $databaseProxyService
     ) {
     }
 
@@ -50,7 +54,14 @@ class AgentWebController extends Controller
             'fire_base_token' => '-',
             'connection' =>' ' // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-
+        $companyId = auth('api')->payload()->get('companyId');
+        $companyDatabase = $this->companyDatabaseService->getById($companyId);
+        $databaseProxyData = [
+            'email' => $request['email'],
+            'fk_company_id' => $companyId,
+            'fk_company_database_id' => $companyDatabase->getId(),
+        ];
+        $this->databaseProxyService->create($databaseProxyData);
         return ApiResource::make($this->agentService->create(
             $agentData,
             $addressData,

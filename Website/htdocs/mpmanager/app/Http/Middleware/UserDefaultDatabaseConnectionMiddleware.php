@@ -19,11 +19,11 @@ use MPM\Sharding\ApiResolvers\Data\ApiResolverMap;
  */
 class UserDefaultDatabaseConnectionMiddleware
 {
-    public function __construct(private DatabaseProxyManagerService $databaseProxyManager,
+    public function __construct(
+        private DatabaseProxyManagerService $databaseProxyManager,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
-    )
-    {
+    ) {
     }
 
     public function handle($request, Closure $next)
@@ -47,7 +47,7 @@ class UserDefaultDatabaseConnectionMiddleware
             return $next($request);
         }
         //webclient login
-        if ($request->path() === 'api/auth/login') {
+        if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { //agent app login
