@@ -94,8 +94,14 @@ class StronMeterApi implements IManufacturerAPI
                 throw new StronApiResponseException($gException->getMessage());
             }
         }
-        $this->associateManufacturerTransaction($transactionContainer, $transactionResult);
+
+        $manufacturerTransaction = $this->stronTransaction->newQuery()->create();
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'stron_transaction'
+        ]);
         $token = $transactionResult[0];
+
         return [
             'token' => $token,
             'energy' => $transactionContainer->chargedEnergy
@@ -108,14 +114,4 @@ class StronMeterApi implements IManufacturerAPI
         // TODO: Implement clearMeter() method.
     }
 
-    public function associateManufacturerTransaction(
-        TransactionDataContainer $transactionContainer,
-        $transactionResult = []
-    ) {
-        $manufacturerTransaction = $this->stronTransaction->newQuery()->create();
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-    }
 }

@@ -89,7 +89,23 @@ class SteamaMeterApi implements IManufacturerAPI
                     ]
                 );
                 $transactionResult = json_decode((string)$request->getBody(), true);
-                $this->associateManufacturerTransaction($transactionContainer, $transactionResult);
+
+                $manufacturerTransaction = $this->steamaTransaction->newQuery()->create([
+                    'transaction_id' => $transactionResult['id'],
+                    'site_id' => $transactionResult['site_id'],
+                    'customer_id' => $transactionResult['customer_id'],
+                    'amount' => $transactionResult['amount'],
+                    'category' => $transactionResult['category'],
+                    'provider' => $transactionResult['provider'] ?? 'AP',
+                    'timestamp' => $transactionResult['timestamp'],
+                    'synchronization_status' => $transactionResult['synchronization_status']
+                ]);
+
+                $transactionContainer->transaction->originalTransaction()->first()->update([
+                    'manufacturer_transaction_id' => $manufacturerTransaction->id,
+                    'manufacturer_transaction_type' => 'steama_transaction'
+                ]);
+
             } catch (SteamaApiResponseException $e) {
                 Log::critical(
                     'Steama API Transaction Failed',
@@ -113,24 +129,4 @@ class SteamaMeterApi implements IManufacturerAPI
     {
     }
 
-    public function associateManufacturerTransaction(
-        TransactionDataContainer $transactionContainer,
-        $transactionResult = []
-    ) {
-        $manufacturerTransaction = $this->steamaTransaction->newQuery()->create([
-            'transaction_id' => $transactionResult['id'],
-            'site_id' => $transactionResult['site_id'],
-            'customer_id' => $transactionResult['customer_id'],
-            'amount' => $transactionResult['amount'],
-            'category' => $transactionResult['category'],
-            'provider' => $transactionResult['provider'] ?? 'AP',
-            'timestamp' => $transactionResult['timestamp'],
-            'synchronization_status' => $transactionResult['synchronization_status']
-        ]);
-
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-    }
 }

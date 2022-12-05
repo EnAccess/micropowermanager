@@ -48,7 +48,12 @@ class MicroStarMeterApi implements IManufacturerAPI
             $response = $this->apiRequests->get($credentials, $params, self::API_CALL_CHARGE_METER);
         }
 
-        $this->associateManufacturerTransaction($transactionContainer);
+        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create();
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'micro_star_transaction',
+        ]);
+
         return [
             'token' => $response['token'],
             'energy' => $energy
@@ -66,16 +71,4 @@ class MicroStarMeterApi implements IManufacturerAPI
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
-    /**
-     * @param TransactionDataContainer $transactionContainer
-     * @return void
-     */
-    public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
-    {
-        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create();
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-    }
 }

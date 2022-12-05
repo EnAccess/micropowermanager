@@ -129,7 +129,19 @@ class SparkMeterApi implements IManufacturerAPI
                     'external_id' => intval($transactionInformation['external_id']),
                 ];
 
-                $this->associateManufacturerTransaction($transactionContainer, $transactionResult);
+
+                $manufacturerTransaction = $this->smTransaction->newQuery()->create([
+                    'transaction_id' => $transactionResult['transaction_id'],
+                    'site_id' => $transactionResult['site_id'],
+                    'customer_id' => $transactionResult['customer_id'],
+                    'status' => $transactionResult['status'],
+                    'external_id' => $transactionResult['external_id']
+                ]);
+
+                $transactionContainer->transaction->originalTransaction()->first()->update([
+                    'manufacturer_transaction_id' => $manufacturerTransaction->id,
+                    'manufacturer_transaction_type' => 'sm_transaction'
+                ]);
             }
             $token = $smCustomer->site->site_id . '-' .
                 $transactionInformation['source'] . '-' .
@@ -146,21 +158,4 @@ class SparkMeterApi implements IManufacturerAPI
         // TODO: Implement clearMeter() method.
     }
 
-    public function associateManufacturerTransaction(
-        TransactionDataContainer $transactionContainer,
-        $transactionResult = []
-    ) {
-        $manufacturerTransaction = $this->smTransaction->newQuery()->create([
-            'transaction_id' => $transactionResult['transaction_id'],
-            'site_id' => $transactionResult['site_id'],
-            'customer_id' => $transactionResult['customer_id'],
-            'status' => $transactionResult['status'],
-            'external_id' => $transactionResult['external_id']
-        ]);
-
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-    }
 }

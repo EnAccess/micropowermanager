@@ -83,7 +83,13 @@ class CalinSmartMeterApi implements IManufacturerAPI
             $token = $this->calinSmartMeterApiRequests->post($url, $tokenParams);
         }
 
-        $this->associateManufacturerTransaction($transactionContainer);
+
+        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create();
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'calin_smart_transaction'
+        ]);
+
         return [
             'token' => $token,
             'energy' => $energy
@@ -117,16 +123,4 @@ class CalinSmartMeterApi implements IManufacturerAPI
         ];
     }
 
-    /**
-     * @param TransactionDataContainer $transactionContainer
-     * @return void
-     */
-    public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
-    {
-        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create();
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-    }
 }

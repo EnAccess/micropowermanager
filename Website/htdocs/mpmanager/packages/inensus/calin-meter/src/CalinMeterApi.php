@@ -79,13 +79,17 @@ class CalinMeterApi implements IManufacturerAPI
             $token = $this->calinMeterApiRequests->post($url, $tokenParams);
         }
 
-        $this->associateManufacturerTransaction($transactionContainer);
+        $manufacturerTransaction = $this->calinTransaction->newQuery()->create();
+
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'calin_transaction'
+        ]);
 
         return [
             'token' => $token,
             'energy' => $energy
         ];
-
     }
 
     /**
@@ -98,19 +102,4 @@ class CalinMeterApi implements IManufacturerAPI
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
-    /**
-     * @param TransactionDataContainer $transactionContainer
-     * @return void
-     */
-    public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
-    {
-        Log::debug('ASSOCIATE MANUFACTURER TRANSACTION CALLED');
-        $manufacturerTransaction = $this->calinTransaction->newQuery()->create();
-        Log::debug($manufacturerTransaction);
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
-        ])->save();
-        Log::debug($transactionContainer->transaction->originalTransaction()->first());
-    }
 }

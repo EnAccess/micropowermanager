@@ -23,5 +23,4 @@ interface IManufacturerAPI
 
     public function clearMeter(Meter $meter);
 
-    public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer);
 }
