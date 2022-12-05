@@ -33,7 +33,7 @@ class AgentCustomersPaymentHistoryService
                 break;
         }
 
-        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", ' . $period . ') as aperiod from' .
+        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", ' . $period . ') as period from' .
             ' payment_histories where payer_id=:payer_id and payer_type=:payer_type ' .
             'GROUP by concat( ' . $period . '), payment_type ORDER BY created_at  ' . $order;
 
