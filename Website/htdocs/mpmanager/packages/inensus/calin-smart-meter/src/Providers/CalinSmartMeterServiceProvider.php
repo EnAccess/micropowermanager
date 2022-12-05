@@ -2,6 +2,7 @@
 
 namespace Inensus\CalinSmartMeter\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Inensus\CalinSmartMeter\CalinSmartMeterApi;
 use Inensus\CalinSmartMeter\Console\Commands\InstallPackage;
 use Inensus\CalinSmartMeter\Console\Commands\UpdatePackage;
+use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 
 
 class CalinSmartMeterServiceProvider extends ServiceProvider
@@ -22,6 +24,10 @@ class CalinSmartMeterServiceProvider extends ServiceProvider
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class,UpdatePackage::class]);
         }
+        Relation::morphMap(
+            [
+                'calin_smart_transaction' => CalinSmartTransaction::class
+            ]);
     }
 
     public function register()

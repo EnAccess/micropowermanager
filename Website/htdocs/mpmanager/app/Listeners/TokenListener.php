@@ -63,8 +63,7 @@ class TokenListener
             $transactionContainer->token = $this->token;
         } catch (Exception $e) {
             Log::critical(
-                $transactionContainer->manufacturer->name . ' Token listener fails ',
-                ['id' => '4627573927', 'message' => $e->getMessage()]
+                $transactionContainer->manufacturer->name . ' Token listener fails ', ['message' => $e->getMessage()]
             );
             event('transaction.failed', $transactionContainer->transaction);
             return;

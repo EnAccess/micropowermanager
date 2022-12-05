@@ -6,6 +6,7 @@ use App\Models\Manufacturer;
 use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,10 @@ class CalinMeterServiceProvider extends ServiceProvider
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class,UpdatePackage::class]);
         }
+        Relation::morphMap(
+            [
+                'calin_transaction' => CalinTransaction::class
+            ]);
     }
 
     public function register()
