@@ -45,9 +45,15 @@ Route::group([
             Route::post('/', 'AgentTicketController@store');
         });
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::get('/boxes',  'AgentDashboardBoxesController@show');
-            Route::get('/graph',  'AgentDashboardBalanceHistoryController@show');
-            Route::get('/revenue','AgentDashboardRevenueController@show');
+            Route::group(['prefix' => 'boxes'], function () {
+                Route::get('/', 'AgentDashboardBoxesController@show');
+            });
+            Route::group(['prefix' => 'graph'], function () {
+                Route::get('/', 'AgentDashboardBalanceHistoryController@show');
+            });
+            Route::group(['prefix' => 'revenue'], function () {
+                Route::get('/', 'AgentDashboardRevenueController@show');
+            });
 
         });
     });

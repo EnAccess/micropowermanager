@@ -15,6 +15,7 @@ class AgentCustomersPaymentHistoryService
 
     public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC')
     {
+        $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
         switch ($period) {
@@ -42,11 +43,18 @@ class AgentCustomersPaymentHistoryService
 
         $payments = $this->executeSqlCommand($sql, $customerId, null, 'person');
 
+        if (empty($payments)) {
+            $flowList = [];
+            $flowList[$periodParam][''] = 0;
+            return $flowList;
+        }
+
         return $this->preparePaymentFlow($payments);
     }
 
     public function getPaymentFlows($period, $agentId, $limit, $order = 'ASC')
     {
+        $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
         switch ($period) {
@@ -65,7 +73,7 @@ class AgentCustomersPaymentHistoryService
                 break;
         }
 
-        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", ' . $period . ') as aperiod ' .
+        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", ' . $period . ') as period ' .
             'from payment_histories inner join addresses on payment_histories.payer_id = addresses.owner_id ' .
             'inner JOIN cities on addresses.city_id=cities.id inner JOIN mini_grids on ' .
             'cities.mini_grid_id=mini_grids.id inner JOIN agents on agents.mini_grid_id=mini_grids.id ' .
@@ -78,6 +86,12 @@ class AgentCustomersPaymentHistoryService
         }
         $payments = $this->executeSqlCommand($sql, null, $agentId, 'person');
 
+        if (empty($payments)) {
+            $flowList = [];
+            $flowList[$periodParam][''] = 0;
+            return $flowList;
+        }
+
         return $this->preparePaymentFlow($payments);
     }
 
@@ -85,7 +99,7 @@ class AgentCustomersPaymentHistoryService
     {
         $flowList = [];
         foreach ($payments as $payment) {
-            $flowList[$payment['aperiod']][$payment['payment_type']] = $payment['amount'];
+            $flowList[$payment['period']][$payment['payment_type']] = $payment['amount'];
         }
         return $flowList;
     }

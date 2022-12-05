@@ -9,6 +9,7 @@ use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
 use App\Models\Transaction\AgentTransaction;
+use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -61,9 +62,9 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
     public function getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId)
     {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
-        ->where('id', '>', $agentBalanceHistoryId)
-        ->whereIn('trigger_type', ['agent_appliance', 'agent_transaction'])
-        ->sum('amount');
+            ->where('id', '>', $agentBalanceHistoryId)
+            ->whereIn('trigger_type', ['agent_appliance', 'agent_transaction'])
+            ->sum('amount');
     }
 
     public function getTransactionAverage($agent, $lastReceipt)
@@ -96,13 +97,20 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
             ->where('created_at', '>=', $periodDate)
             ->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
                 ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\'),date,id,trigger_Type,amount,' .
-                'available_balance,due_to_supplier'))->get();
+                    'available_balance,due_to_supplier'))->get();
 
         if (count($history) === 1 && $history[0]->trigger_Type === 'agent_receipt') {
             $period[$history[0]->date]['balance'] = -1 * ($history[0]->due_to_supplier - $history[0]->amount);
             $period[$history[0]->date]['due'] = $history[0]->due_to_supplier - $history[0]->amount;
         } elseif (count($history) === 0) {
-            return json_encode(json_decode("{}", true));
+            $date = new DateTime();
+            $key = $date->format('Y-m-d');
+            $period[$key] = [
+                'balance' => 0,
+                'due' => 0
+            ];
+
+            return $period;
         } else {
             foreach ($period as $key => $value) {
                 foreach ($history as $h) {
