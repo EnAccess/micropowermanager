@@ -84,7 +84,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
         }
 
 
-        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create();
+        $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'calin_smart_transaction'

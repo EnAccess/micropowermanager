@@ -48,7 +48,7 @@ class MicroStarMeterApi implements IManufacturerAPI
             $response = $this->apiRequests->get($credentials, $params, self::API_CALL_CHARGE_METER);
         }
 
-        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create();
+        $manufacturerTransaction = $this->microStarTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'micro_star_transaction',

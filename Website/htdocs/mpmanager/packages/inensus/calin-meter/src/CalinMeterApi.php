@@ -70,7 +70,6 @@ class CalinMeterApi implements IManufacturerAPI
             'amount' => $energy,
         ];
 
-        Log::debug('TOKEN PARAMS ', $tokenParams);
         $url = $credentials->api_url . $this->rootUrl;
         if (config('app.env') === 'local' || config('app.env') === 'development') {
             //debug token for development
@@ -79,7 +78,7 @@ class CalinMeterApi implements IManufacturerAPI
             $token = $this->calinMeterApiRequests->post($url, $tokenParams);
         }
 
-        $manufacturerTransaction = $this->calinTransaction->newQuery()->create();
+        $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
 
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,

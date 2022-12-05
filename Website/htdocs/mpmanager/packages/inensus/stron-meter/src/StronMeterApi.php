@@ -95,7 +95,7 @@ class StronMeterApi implements IManufacturerAPI
             }
         }
 
-        $manufacturerTransaction = $this->stronTransaction->newQuery()->create();
+        $manufacturerTransaction = $this->stronTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'stron_transaction'

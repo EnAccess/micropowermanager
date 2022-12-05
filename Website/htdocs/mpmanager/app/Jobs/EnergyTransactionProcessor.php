@@ -45,14 +45,18 @@ class EnergyTransactionProcessor extends AbstractJob
         $this->transaction->save();
         $transactionData = $this->initializeTransactionDataContainer();
 
-        $this->checkForMinimumPurchaseAmount($transactionData);
-        $transactionData = $this->payApplianceInstallments($transactionData);
-        $transactionData = $this->payAccessRateIfExists($transactionData);
-
-        if ($transactionData->transaction->amount > 0) {
-            $this->callTokenProcessor($transactionData);
-        } else {
-            $this->completeTransactionWithNotification($transactionData);
+        try {
+            $this->checkForMinimumPurchaseAmount($transactionData);
+            $transactionData = $this->payApplianceInstallments($transactionData);
+            $transactionData = $this->payAccessRateIfExists($transactionData);
+            if ($transactionData->transaction->amount > 0) {
+                $this->callTokenProcessor($transactionData);
+            } else {
+                $this->completeTransactionWithNotification($transactionData);
+            }
+        }catch (\Exception $e){
+            Log::info('Transaction failed.: '.$e->getMessage());
+            event('transaction.failed', [$this->transaction, $e->getMessage()]);
         }
     }
 
@@ -84,11 +88,9 @@ class EnergyTransactionProcessor extends AbstractJob
             $validator = resolve('MinimumPurchaseAmountValidator');
             try {
                 if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
-                    event('transaction.failed', [$this->transaction, 'Minimum purchase amount not reached']);
                     throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->meter->serial_number}");
                 }
             } catch (\Exception $e) {
-                event('transaction.failed', [$this->transaction, $e->getMessage()]);
                    throw new TransactionAmountNotEnoughException($e->getMessage());
             }
 
