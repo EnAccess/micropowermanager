@@ -10,8 +10,8 @@ namespace Inensus\SparkMeter\Providers;
 class EventServiceProvider extends ServiceProvider
 {
     protected $subscribe = [
-        MeterParameterListener::class,
-        TransactionListener::class,
+      //  MeterParameterListener::class,
+      //  TransactionListener::class,
         SmsListener::class
     ];
 

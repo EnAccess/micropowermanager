@@ -9,7 +9,7 @@ use Inensus\SteamaMeter\Listeners\SmsListener;
 class EventServiceProvider extends ServiceProvider
 {
     protected $subscribe = [
-        MeterParameterListener::class,
+        //  MeterParameterListener::class,
         SmsListener::class
     ];
     /**

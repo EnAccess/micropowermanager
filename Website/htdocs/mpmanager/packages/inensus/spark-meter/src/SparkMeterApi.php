@@ -157,6 +157,10 @@ class SparkMeterApi implements IManufacturerAPI
             'status' => $transactionResult['status'],
             'external_id' => $transactionResult['external_id']
         ]);
-        $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
+
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
+        ])->save();
     }
 }

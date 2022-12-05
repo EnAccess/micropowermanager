@@ -104,7 +104,13 @@ class CalinMeterApi implements IManufacturerAPI
      */
     public function associateManufacturerTransaction(TransactionDataContainer $transactionContainer): void
     {
+        Log::debug('ASSOCIATE MANUFACTURER TRANSACTION CALLED');
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create();
-        $transactionContainer->transaction->originalTransaction()->associate($manufacturerTransaction)->save();
+        Log::debug($manufacturerTransaction);
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => get_class($manufacturerTransaction)
+        ])->save();
+        Log::debug($transactionContainer->transaction->originalTransaction()->first());
     }
 }
