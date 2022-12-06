@@ -71,7 +71,7 @@ class MenuItemsSeeder extends Seeder
                     'menu_order' => '9',
                 ],
                 [
-                    'name' => 'Sms',
+                    'name' => 'Messages',
                     'url_slug' => '',
                     'md_icon' => 'sms',
                     'menu_order' => '10',
