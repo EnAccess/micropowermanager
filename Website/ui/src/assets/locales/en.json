@@ -13,6 +13,7 @@
     "Spark Meter": "Spark Meter",
     "Steamaco Meter": "Steamaco Meter",
     "Connection Types": "Connection Types",
+    "Messages": "Messages",
     "subMenu": {
       "Add Cluster": "Add Cluster",
       "Add MiniGrid": "Add MiniGrid",
@@ -35,7 +36,8 @@
       "Meters": "Meters",
       "Agents": "Agents",
       "Settings": "Settings",
-      "Sales Accounts": "Sales Accounts"
+      "Sales Accounts": "Sales Accounts",
+      "New Message": "New Message"
     },
     "Targets": "Targets",
     "Tariffs": "Tariffs",
