@@ -3,10 +3,10 @@
         <widget v-if="newUser"
                 :title="$tc('phrases.newMaintenanceUser')"
                 color="red"
-              >
+        >
             <div>
 
-                <form @submit.prevent="submitNewUserForm" >
+                <form @submit.prevent="submitNewUserForm">
                     <md-card>
                         <md-card-content>
                             <div class="md-layout md-gutter">
@@ -16,7 +16,7 @@
 
                                         <md-input type="text" :name="$tc('words.name')" id="name"
                                                   v-model="maintenanceService.personData.name"
-                                                  placeholder="Name"
+                                                  :placeholder="$tc('words.name')"
                                                   v-validate="'required|min:3'"/>
                                         <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
                                     </md-field>
@@ -29,23 +29,27 @@
                                                   v-model="maintenanceService.personData.surname"
                                                   id="surname"
                                                   :name="$tc('words.surname')"
-                                                  placeholder="Surname"/>
+                                                  :placeholder="$tc('words.surname')"/>
                                         <span class="md-error">{{ errors.first($tc('words.surname')) }}</span>
                                     </md-field>
                                 </div>
 
                                 <div class="md-layout-item md-size-50 md-small-size-100">
                                     <md-field :class="{'md-invalid': errors.has($tc('words.miniGrid'))}">
-                                        <label for="mini-grids" class="control-label">{{ $tc('words.miniGrid') }}</label>
+                                        <label for="mini-grids" class="control-label">{{
+                                                $tc('words.miniGrid')
+                                            }}</label>
 
                                         <md-select v-validate="'required'" id="mini-grids" :name="$tc('words.miniGrid')"
                                                    v-model="maintenanceService.personData.mini_grid_id">
-                                            <md-option value selected disabled>&#45;&#45; {{ $tc('words.select') }} &#45;&#45;</md-option>
+                                            <md-option value selected disabled>&#45;&#45; {{ $tc('words.select') }}
+                                                &#45;&#45;
+                                            </md-option>
                                             <md-option
                                                 v-for="(miniGrid,index) in miniGrids"
                                                 :value="miniGrid.id"
                                                 :key="index"
-                                            >{{miniGrid.name}}
+                                            >{{ miniGrid.name }}
                                             </md-option>
                                         </md-select>
                                         <span class="md-error">{{ errors.first($tc('words.miniGrid')) }}</span>
@@ -68,16 +72,18 @@
                                 </div>
                                 <div class="md-layout-item md-size-50 md-small-size-100">
                                     <md-field :class="{'md-invalid': errors.has($tc('words.city'))}">
-                                        <label >{{ $tc('phrases.livingIn') }}</label>
+                                        <label>{{ $tc('phrases.livingIn') }}</label>
 
                                         <md-select id="city" v-validate="'required'" :name="$tc('words.city')"
                                                    v-model="maintenanceService.personData.city_id">
-                                            <md-option value selected disabled>&#45;&#45; {{ $tc('words.select') }} &#45;&#45;</md-option>
+                                            <md-option value selected disabled>&#45;&#45; {{ $tc('words.select') }}
+                                                &#45;&#45;
+                                            </md-option>
                                             <md-option
                                                 v-for="(city,index) in cities"
                                                 :value="city.id"
                                                 :key="index"
-                                            >{{city.name}}
+                                            >{{ city.name }}
                                             </md-option>
 
                                         </md-select>
@@ -88,7 +94,10 @@
                             <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                         </md-card-content>
                         <md-card-actions>
-                            <md-button class="md-primary btn-lg" :disabled="loading" type="submit">{{ $tc('words.save') }}</md-button>
+                            <md-button class="md-primary btn-lg" :disabled="loading" type="submit">{{
+                                    $tc('words.save')
+                                }}
+                            </md-button>
                             <md-button class="md-accent" @click="onClose()">{{ $tc('words.close') }}</md-button>
                         </md-card-actions>
                     </md-card>
@@ -127,8 +136,8 @@ export default {
     components: { widget, Stepper, RedirectionModal },
     props: {
         newUser: {
-            type:Boolean,
-            default:false
+            type: Boolean,
+            default: false
         }
     },
 
@@ -155,7 +164,7 @@ export default {
         EventBus.$on('closeModal', this.closeModal)
     },
     methods: {
-        closeModal(){
+        closeModal () {
             this.ModalVisibility = false
         },
         async getMiniGrids () {
@@ -188,7 +197,7 @@ export default {
                 this.loading = true
                 await this.maintenanceService.createMaintenance(this.maintenanceService.personData)
                 this.loading = false
-                this.alertNotify('success', this.$tc('phrases.newMaintenanceUser',2))
+                this.alertNotify('success', this.$tc('phrases.newMaintenanceUser', 2))
                 this.maintenanceService.resetPersonData()
                 this.onClose()
             } catch (e) {
@@ -219,7 +228,7 @@ export default {
 </script>
 
 <style scoped>
-    .full-width {
-        width: 100% !important;
-    }
+.full-width {
+    width: 100% !important;
+}
 </style>

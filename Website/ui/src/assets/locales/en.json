@@ -13,12 +13,20 @@
     "Spark Meter": "Spark Meter",
     "Steamaco Meter": "Steamaco Meter",
     "Connection Types": "Connection Types",
+    "Bulk Registration": "Bulk Registration",
+    "CalinSmart Meter": "CalinSmart Meter",
+    "Kelin Meter": "Kelin Meter",
+    "Viber Messaging": "Viber Messaging",
+    "Wave Money": "Wave Money",
+    "Stron Meter": "Stron Meter",
+    "MicroStar Meter": "MicroStar Meter",
+    "Calin Meter": "Calin Meter",
     "Messages": "Messages",
     "Appliances" : "Appliances",
     "subMenu": {
-      "Add Cluster": "Add Cluster",
-      "Add MiniGrid": "Add MiniGrid",
-      "Add Village": "Add Village",
+      "addCluster": "Add Cluster",
+      "addMiniGrid": "Add MiniGrid",
+      "addVillage": "Add Village",
       "Categories": "Categories",
       "Clusters": "Clusters",
       "Commission Types": "Commission Types",
@@ -38,7 +46,8 @@
       "Agents": "Agents",
       "Settings": "Settings",
       "Sales Accounts": "Sales Accounts",
-      "New Message": "New Message"
+      "New Message": "New Message",
+      "Config": "Config"
     },
     "Targets": "Targets",
     "Tariffs": "Tariffs",
@@ -308,7 +317,18 @@
     "minimumPurchaseAmountDescription": "This field represents minimum price of the purchase the customer can do. You can leave it as zero If you do not want to apply this feature",
     "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount",
     "appliance": "Appliance | Appliances",
-    "newAppliance": "New Appliance | Appliance Registered Successfully"
+    "newAppliance": "New Appliance | Appliance Registered Successfully",
+    "logOut": "Log Out",
+    "clustersDashboard": "Clusters Dashboard",
+    "refreshData": "Refresh Data",
+    "minimumPurchaseAmount": "Minimum Purchase Amount",
+    "apiToken": "API Token",
+    "distributeThis": "Please distribute this to your customers and ask them to send their meter number to register our Viber communication system.",
+    "secretKey": "Secret Key",
+    "pleaseShareThis": "Please share this link with your customers for making their online payments.",
+    "merchantId": "Merchant ID",
+    "userId": "User ID",
+    "apiKey": "API Key"
   },
   "words": {
     "access": "Access",
@@ -482,6 +502,7 @@
     "host": "Host",
     "port": "Port",
     "encryption": "Encryption",
-    "minimumPurchaseAmount": "Minimum Purchase Amount"
+    "authorized": "Authorized",
+    "unauthorized": "Unauthorized"
   }
 }

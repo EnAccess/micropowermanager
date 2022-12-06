@@ -12,24 +12,24 @@
                         md-direction="bottom-end"
                         md-size="big"
                         class="menu-item">
-                        <md-button  class=" md-dense nav-button md-raised" md-menu-trigger>
-                            <md-tooltip md-direction="bottom">{{$tc('words.location',2)}}</md-tooltip>
-                             <md-icon class="c-white">add_location_alt</md-icon>
-                            <small>Locations</small>
+                        <md-button class=" md-dense nav-button md-raised" md-menu-trigger>
+                            <md-tooltip md-direction="bottom">{{ $tc('words.location', 2) }}</md-tooltip>
+                            <md-icon class="c-white">add_location_alt</md-icon>
+                            <small> {{ $tc('words.location', 2) }}</small>
                         </md-button>
                         <md-menu-content>
                             <md-menu-item disabled>
-                                <span>{{$tc('words.location',2)}}</span>
+                                <span>{{ $tc('words.location', 2) }}</span>
                                 <md-icon>add_location_alt</md-icon>
                             </md-menu-item>
                             <md-menu-item @click="replaceRoute('/locations/add-cluster')">
-                                          {{$tc('menu.subMenu.Add Cluster')}}
+                                {{ $tc('menu.subMenu.addCluster') }}
                             </md-menu-item>
                             <md-menu-item @click="replaceRoute('/locations/add-mini-grid')">
-                                {{$tc('menu.subMenu.Add MiniGrid')}}
+                                {{ $tc('menu.subMenu.addMiniGrid') }}
                             </md-menu-item>
                             <md-menu-item @click="replaceRoute('/locations/add-village')">
-                                {{$tc('menu.subMenu.Add Village')}}
+                                {{ $tc('menu.subMenu.addVillage') }}
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
@@ -38,24 +38,25 @@
                         md-direction="bottom-end"
                         md-size="big">
                         <md-button class=" md-dense nav-button md-raised" md-menu-trigger>
-                            <md-tooltip md-direction="bottom">Settings</md-tooltip>
+                            <md-tooltip md-direction="bottom">{{ $tc('menu.subMenu.Settings') }}</md-tooltip>
                             <md-icon class="c-white">settings</md-icon>
-                            <small>Settings</small>
+                            <small>{{ $tc('menu.subMenu.Settings') }}</small>
                         </md-button>
                         <md-menu-content>
                             <md-menu-item @click="replaceRoute('/settings')">
-                                <span>Config</span>
+                                <span>{{ $tc('menu.subMenu.Config') }}</span>
                                 <md-icon>settings</md-icon>
                             </md-menu-item>
                             <md-divider></md-divider>
                             <md-menu-item disabled="">
-                                <span>{{$tc('words.connection')}}</span>
+                                <span>{{ $tc('words.connection') }}</span>
                                 <md-icon>cast</md-icon>
                             </md-menu-item>
                             <md-menu-item @click="replaceRoute('/connection-groups')">
-                                {{$tc('words.group',2)}}</md-menu-item>
+                                {{ $tc('words.group', 2) }}
+                            </md-menu-item>
                             <md-menu-item @click="replaceRoute('/connection-types')">
-                                {{$tc('words.type',2)}}
+                                {{ $tc('words.type', 2) }}
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
@@ -78,14 +79,14 @@
                                 </div>
                                 <hr>
                             </div>
-                            <md-menu-item  @click="replaceRoute('/profile')">
-                                {{$tc('words.profile')}}
+                            <md-menu-item @click="replaceRoute('/profile')">
+                                {{ $tc('words.profile') }}
                             </md-menu-item>
                             <md-menu-item @click="replaceRoute('/profile/management')">
-                                {{$tc('phrases.userManagement')}}
+                                {{ $tc('phrases.userManagement') }}
                             </md-menu-item>
                             <md-menu-item @click="logout()">
-                                Log Out
+                                {{ $tc('phrases.logOut') }}
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
@@ -99,6 +100,7 @@
 
 <script>
 import Breadcrumb from '../shared/Breadcrumb'
+
 export default {
     components: {
         Breadcrumb
@@ -120,7 +122,7 @@ export default {
         toggle () {
             this.toggleCard = !this.toggleCard
         },
-        replaceRoute(route){
+        replaceRoute (route) {
             this.$router.replace(route)
         }
 
@@ -136,15 +138,17 @@ export default {
 
 <style lang="css">
 
-.nav-button{
-    background-color: #3d3d3d!important;
-    color: white!important;
+.nav-button {
+    background-color: #3d3d3d !important;
+    color: white !important;
 }
-.menu-item{
+
+.menu-item {
     padding-right: 1vh
 }
-.author-card{
-    min-width: 30%!important;
+
+.author-card {
+    min-width: 30% !important;
     text-align: center;
     color: #3d3d3d;
     font-size: 1rem;
@@ -152,7 +156,8 @@ export default {
     padding: 1vh;
     margin-top: 0;
 }
-.c-white{
+
+.c-white {
     color: white;
 }
 
