@@ -185,4 +185,33 @@ class PersonService implements IBaseService
             'meters.meter',
         ])->where('is_customer', $customerType)->paginate($limit);
     }
+
+    public function createFromRequest(Request $request): Model
+    {
+        $person = $this->person->newQuery()->create($request->only([
+            'title',
+            'education',
+            'name',
+            'surname',
+            'birth_date',
+            'sex',
+            'is_customer',
+        ]));
+
+        $addressService = app()->make(AddressesService::class);
+        $addressParams = [
+            'city_id' => $request->get('city_id') ?? 1,
+            'email' =>  $request->get('email') ?? "",
+            'phone' =>  $request->get('phone') ?? "",
+            'street' =>  $request->get('street') ?? "",
+            'is_primary' => 1,
+        ];
+
+        $address = $addressService->instantiate($addressParams);
+        $addressService->assignAddressToOwner($person, $address);
+
+        return $person;
+    }
+
+
 }

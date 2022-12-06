@@ -363,13 +363,12 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
             $person = Person::query()->whereHas('meters', static function ($q) use ($meterParameter) {
                 return $q->where('id', $meterParameter->id);
             })->first();
-
         }
 
         if ($person === null) {
+            $r->attributes->add(['is_customer' => 1]);
             $personService = App::make(PersonService::class);
-            $personData = $personService->createPersonDataFromRequest($r);
-            $person = $personService->create($personData);
+            $person = $personService->createFromRequest($r);
         }
 
         $meter->serial_number = $r->get('serial_number');
@@ -378,13 +377,11 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
         $meter->updated_at = date('Y-m-d h:i:s');
         $meter->save();
 
-
         $geoLocation->points = $r->get('geo_points');
 
-
         $meterParameter->meter()->associate($meter);
-
-
+        $meterParameter->connection_type_id = $r->get('connection_type_id');
+        $meterParameter->connection_group_id = $r->get('connection_group_id');
         $meterParameter->owner()->associate($person);
         $meterParameter->tariff()->associate(MeterTariff::query()->findOrFail($r->get('tariff_id')));
         $meterParameter->save();
