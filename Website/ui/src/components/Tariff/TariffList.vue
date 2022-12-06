@@ -25,10 +25,10 @@
                     <md-table-cell :md-label="$tc('words.price') + '/ kWh'" md-numeric>
                         {{ readable(item.price) }} {{ item.currency }}
                     </md-table-cell>
-                    <md-table-cell :md-label="$tc('words.minimumPurchaseAmount')" md-numeric>
+                    <md-table-cell :md-label="$tc('phrases.minimumPurchaseAmount')" md-numeric>
                         {{ readable(item.minimumPurchaseAmount) }} {{ item.currency }}
                     </md-table-cell>
-                    <md-table-cell md-label="Access Rate" md-numeric md-sort-by="accessRate.amount">
+                    <md-table-cell :md-label="$tc('phrases.accessRate')" md-numeric md-sort-by="accessRate.amount">
                         <div v-if="item.accessRate">
                             {{ readable(item.accessRate.amount) }} {{ item.currency }}
                         </div>

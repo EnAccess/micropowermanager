@@ -4,32 +4,35 @@
             <md-card>
                 <md-card-content>
                     <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-100">
+                        <div
+                            class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-100">
                             <div class="md-layout md-gutter">
-                                <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                <div
+                                    class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
                                     <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.userId')}">
-                                        <label for="username">User ID</label>
+                                        :class="{'md-invalid': errors.has('Credential-Form.userId')}">
+                                        <label for="username">{{ $tc('phrases.userId') }}</label>
                                         <md-input
-                                                id="userId"
-                                                name="userId"
-                                                v-model="credentialService.credential.userId"
-                                                v-validate="'required|min:3'"
+                                            id="userId"
+                                            name="userId"
+                                            v-model="credentialService.credential.userId"
+                                            v-validate="'required|min:3'"
                                         />
                                         <span
-                                                class="md-error">{{ errors.first('Credential-Form.userId') }}</span>
+                                            class="md-error">{{ errors.first('Credential-Form.userId') }}</span>
                                     </md-field>
                                 </div>
-                                <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                <div
+                                    class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
                                     <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.apiKey')}">
-                                        <label for="apiKey">API Key</label>
+                                        :class="{'md-invalid': errors.has('Credential-Form.apiKey')}">
+                                        <label for="apiKey">{{ $tc('phrases.apiKey') }}</label>
                                         <md-input
-                                                id="apiKey"
-                                                type="password"
-                                                name="apiKey"
-                                                v-model="credentialService.credential.apiKey"
-                                                v-validate="'required|min:3'"
+                                            id="apiKey"
+                                            type="password"
+                                            name="apiKey"
+                                            v-model="credentialService.credential.apiKey"
+                                            v-validate="'required|min:3'"
                                         />
                                         <span class="md-error">{{ errors.first('Credential-Form.apiKey') }}</span>
                                     </md-field>
@@ -42,7 +45,7 @@
                 </md-card-content>
                 <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                 <md-card-actions>
-                    <md-button class="md-raised md-primary" type="submit">Save</md-button>
+                    <md-button class="md-raised md-primary" type="submit">{{ $tc('words.save') }}</md-button>
                 </md-card-actions>
             </md-card>
 
@@ -98,11 +101,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .md-card {
-        height: 100% !important;
-    }
+.md-card {
+    height: 100% !important;
+}
 
-    .Credential-Form {
-        height: 100% !important;
-    }
+.Credential-Form {
+    height: 100% !important;
+}
 </style>

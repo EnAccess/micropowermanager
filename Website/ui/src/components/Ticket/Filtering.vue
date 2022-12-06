@@ -8,14 +8,14 @@
                     @md-selected="setCategory"
                     id="ticket_categories"
                     name="ticket_categories"
-                    placeholder="Category"
+                    :placeholder="$tc('phrases.anyCategory')"
                 >
                     <md-option value>-- {{ $tc('phrases.anyCategory') }} --</md-option>
                     <md-option
                         :key="index"
                         :value="category.id"
                         v-for="(category,index) in ticketService.categories"
-                    >{{category.label_name}}
+                    >{{ category.label_name }}
                     </md-option>
                 </md-select>
             </md-field>
@@ -30,7 +30,7 @@
                         :key="person.id"
                         :value="person.id"
                         v-for="person in ticketUserService.list"
-                    >{{person.name}}
+                    >{{ person.name }}
                     </md-option>
                 </md-select>
             </md-field>
@@ -49,7 +49,7 @@
 <script>
 import { EventBus } from '@/shared/eventbus'
 import { TicketService } from '@/services/TicketService'
-import { TicketUserService} from '@/services/TicketUserService'
+import { TicketUserService } from '@/services/TicketUserService'
 
 export default {
     name: 'Filtering',
@@ -77,7 +77,7 @@ export default {
         async getCategories () {
             try {
                 await this.ticketService.getCategories()
-            }catch (e) {
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
 
@@ -85,7 +85,7 @@ export default {
         async getPeople () {
             try {
                 await this.ticketUserService.getUsers()
-            }catch (e) {
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
 
@@ -109,12 +109,12 @@ export default {
 </script>
 
 <style scoped>
-    .chic-button {
-        background-color: #0a0a0c !important;
-        color: #fefefe !important;
-    }
+.chic-button {
+    background-color: #0a0a0c !important;
+    color: #fefefe !important;
+}
 
-    .filter-grid {
-        padding: 1rem;
-    }
+.filter-grid {
+    padding: 1rem;
+}
 </style>

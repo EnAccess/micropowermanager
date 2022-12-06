@@ -11,7 +11,7 @@
                                     class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
                                     <md-field
                                         :class="{'md-invalid': errors.has('Credential-Form.apiToken')}">
-                                        <label for="apiToken">API TOKEN</label>
+                                        <label for="apiToken">{{ $tc('phrases.apiToken') }}</label>
                                         <md-input
                                             id="apiToken"
                                             name="apiToken"
@@ -25,12 +25,11 @@
 
                                 <div v-if="credentialService.credential.deepLink"
                                      class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
-                                    <p> Please distribute <br>
-                                        <span style="font-weight: bold"> {{ credentialService.credential.deepLink }}</span>
-                                        <br> to your customers and
-                                        ask them to send their meter number to register our Viber communication
-                                        system.
+                                    <p>
+                                        {{ $tc('phrases.distributeThis') }}
                                     </p>
+                                    <br>
+                                    <span style="font-weight: bold"> {{ credentialService.credential.deepLink }}</span>
                                 </div>
 
                             </div>
@@ -44,12 +43,16 @@
                                 <div class="md-layout-item  md-size-100">
                                     <div v-if="credentialService.credential.hasWebhookCreated" class="authorize-div">
                                         <img src="../../../icons/authorized.png"/>
-                                        <label style="padding-left: 2rem !important;"> Authorized</label>
+                                        <label style="padding-left: 2rem !important;"> {{
+                                                $tc('words.authorized')
+                                            }} </label>
                                     </div>
 
                                     <div v-if="!credentialService.credential.hasWebhookCreated" class="authorize-div">
                                         <img src="../../../icons/unauthorized.png"/>
-                                        <label style="padding-left: 2rem !important;"> Unauthorized</label>
+                                        <label style="padding-left: 2rem !important;"> {{
+                                                $tc('words.unauthorized')
+                                            }}</label>
                                     </div>
 
                                 </div>
@@ -62,7 +65,7 @@
                 </md-card-content>
                 <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                 <md-card-actions>
-                    <md-button class="md-raised md-primary" type="submit">Save</md-button>
+                    <md-button class="md-raised md-primary" type="submit">{{ $tc('words.save') }}</md-button>
                 </md-card-actions>
             </md-card>
 

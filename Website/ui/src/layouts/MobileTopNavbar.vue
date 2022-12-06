@@ -17,7 +17,7 @@
               class="menu-item">
             <md-button class=" md-dense nav-button" md-menu-trigger>
               <md-icon class="c-white">add_location_alt</md-icon>
-              <small class="mobile-menu-text">Locations</small>
+                <small> {{ $tc('words.location', 2) }}</small>
             </md-button>
             <md-menu-content>
               <md-menu-item disabled>
@@ -25,13 +25,13 @@
                 <md-icon>add_location_alt</md-icon>
               </md-menu-item>
               <md-menu-item @click="replaceRoute('/locations/add-cluster')">
-                <span class="mobile-sub-menu-text"> {{ $tc('menu.subMenu.Add Cluster') }} </span>
+                <span class="mobile-sub-menu-text"> {{ $tc('menu.subMenu.addCluster') }} </span>
               </md-menu-item>
               <md-menu-item @click="replaceRoute('/locations/add-mini-grid')">
-                <span class="mobile-sub-menu-text"> {{ $tc('menu.subMenu.Add MiniGrid') }} </span>
+                <span class="mobile-sub-menu-text"> {{ $tc('menu.subMenu.addMiniGrid') }} </span>
               </md-menu-item>
               <md-menu-item @click="replaceRoute('/locations/add-village')">
-                <span class="mobile-sub-menu-text">   {{ $tc('menu.subMenu.Add Village') }} </span>
+                <span class="mobile-sub-menu-text">   {{ $tc('menu.subMenu.addVillage') }} </span>
               </md-menu-item>
             </md-menu-content>
           </md-menu>
@@ -41,11 +41,11 @@
               md-size="medium">
             <md-button class=" md-dense nav-button " md-menu-trigger>
               <md-icon class="c-white">settings</md-icon>
-              <small class="mobile-menu-text">Settings</small>
+              <small class="mobile-menu-text">{{ $tc('menu.subMenu.Settings') }}</small>
             </md-button>
             <md-menu-content>
               <md-menu-item @click="replaceRoute('/settings')">
-                <span class="mobile-sub-menu-text">Config</span>
+                <span class="mobile-sub-menu-text">{{ $tc('menu.subMenu.Config') }}</span>
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
