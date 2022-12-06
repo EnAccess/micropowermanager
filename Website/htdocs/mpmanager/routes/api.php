@@ -342,7 +342,8 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::post('androidApp', static function (AndroidAppRequest $r) {
     try {
-        DB::beginTransaction();
+
+        DB::connection('shard')->beginTransaction();
         //check if the meter id or the phone already exists
         $meter = Meter::query()->where('serial_number', $r->get('serial_number'))->first();
         $person = null;
@@ -367,7 +368,8 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
 
         if ($person === null) {
             $personService = App::make(PersonService::class);
-            $person = $personService->createFromRequest($r);
+            $personData = $personService->createPersonDataFromRequest($r);
+            $person = $personService->create($personData);
         }
 
         $meter->serial_number = $r->get('serial_number');
@@ -402,14 +404,15 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
         event('accessRatePayment.initialize', $meterParameter);
         // changes in_use parameter of the meter
         event('meterparameter.saved', $meterParameter->meter_id);
-        DB::commit();
+        DB::connection('shard')->commit();
 
-        return (new ApiResource($person))->response()->setStatusCode(201);
-    } catch (Exception $e) {
-        DB::rollBack();
+        return ApiResource::make($person)->response()->setStatusCode(201);
+
+    } catch (\Exception $e) {
+        DB::connection('shard')->rollBack();
         Log::critical('Error while adding new Customer', ['message' => $e->getMessage()]);
 
-        return (new Response($e->getMessage()))->setStatusCode(409);
+        return Response::make($e->getMessage())->setStatusCode(409);
     }
 });
 
