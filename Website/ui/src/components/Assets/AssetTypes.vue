@@ -1,7 +1,8 @@
 <template>
     <widget
         :id="'asset_type_list'"
-        :title="'List of Asset Types'"
+
+        :title="$tc('phrases.appliance',1)"
         :button="true"
         :buttonText="'New Type'"
         :paginator="assets.paginator"

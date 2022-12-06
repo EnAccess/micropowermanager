@@ -75,7 +75,7 @@ class MenuItemsSeeder extends Seeder
                     'menu_order' => '10',
                 ],
                 [
-                    'name' => 'Asset Types',
+                    'name' => 'Appliances',
                     'url_slug' => '/assets/types/page/1',
                     'md_icon' => 'devices_other',
                     'menu_order' => '11',

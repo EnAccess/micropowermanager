@@ -14,6 +14,7 @@
     "Steamaco Meter": "Steamaco Meter",
     "Connection Types": "Connection Types",
     "Messages": "Messages",
+    "Appliances" : "Appliances",
     "subMenu": {
       "Add Cluster": "Add Cluster",
       "Add MiniGrid": "Add MiniGrid",
@@ -305,7 +306,9 @@
     "Meter Reset Failed Feedback": "Meter Reset Failed Feedback",
     "Balance Feedback": "Balance Feedback",
     "minimumPurchaseAmountDescription": "This field represents minimum price of the purchase the customer can do. You can leave it as zero If you do not want to apply this feature",
-    "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount"
+    "enableMinimumPurchaseAmount": "Enable Minimum Purchase Amount",
+    "appliance": "Appliance | Appliances",
+    "newAppliance": "New Appliance | Appliance Registered Successfully"
   },
   "words": {
     "access": "Access",

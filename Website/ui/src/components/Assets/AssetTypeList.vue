@@ -2,11 +2,11 @@
     <div>
         <add-asset-type :addNewAssetType="addNewAssetType"/>
         <widget
-            :title="$tc('phrases.assetType')"
+            :title="$tc('phrases.appliance',1)"
             :subscriber="subscriber"
             :route_name="'/assets/types'"
             :button="true"
-            :button-text="$tc('phrases.newAssetType')"
+            :button-text="$tc('phrases.newAppliance')"
             @widgetAction="showAddAssetType"
             :paginator="assetService.paginator"
             color="green"

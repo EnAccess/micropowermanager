@@ -2,7 +2,7 @@
     <div>
         <widget
                 :hidden="!addNewAssetType"
-                :title="$tc('phrases.newAssetType')"
+                :title="$tc('phrases.appliance', 1)"
                 color="red"
         >
             <md-card>
@@ -94,7 +94,7 @@ export default {
                 await this.assetService.createAsset()
 
                 this.loading = false
-                this.alertNotify('success', this.$tc('phrases.newAssetType', 2))
+                this.alertNotify('success', this.$tc('phrases.newAppliance', 1))
 
                 EventBus.$emit('AssetTypeAdded',)
             } catch (e) {

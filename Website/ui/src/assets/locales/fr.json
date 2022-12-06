@@ -12,6 +12,7 @@
     "Sms": "Sms",
     "Connection Types": "Types de Connexion",
     "Messages": "Messages",
+    "Appliances": "Appareils",
     "subMenu": {
       "Add Cluster": "Ajouter un regroupement de mini-réseaux",
       "Add MiniGrid": "Ajouter un mini-réseau",
@@ -282,7 +283,9 @@
     "weeklyReports": "Rapports hebdomadaires",
     "wholeVillage": "Tout le village",
     "writeMessage": "Rédiger un message...",
-    "wrongPassword": "Mot de passe erroné"
+    "wrongPassword": "Mot de passe erroné",
+    "appliance": "Appareil | Appareils",
+    "newAppliance": "Nouvel appareil | Nouvel appareil ajouté avec succès."
   },
   "words": {
     "access": "Accès",
