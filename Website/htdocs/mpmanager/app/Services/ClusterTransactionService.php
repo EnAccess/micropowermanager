@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transaction\Transaction;
 use App\Models\Cluster;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ClusterTransactionService
 {
@@ -14,7 +15,6 @@ class ClusterTransactionService
 
     public function getById($clusterId, array $range)
     {
-
         return $this->transaction->newQuery()->whereHas(
             'meter',
             function ($q) use ($clusterId) {
@@ -42,7 +42,8 @@ class ClusterTransactionService
                 $q->where('status', 1);
             }
         )
-            ->whereBetween('created_at', $range)
+            ->whereDate('created_at','>=', $range[0])
+            ->whereDate('created_at','<=', $range[1])
             ->sum('amount');
     }
 }

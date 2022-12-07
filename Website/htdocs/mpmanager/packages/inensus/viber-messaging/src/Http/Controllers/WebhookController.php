@@ -3,8 +3,13 @@
 namespace Inensus\ViberMessaging\Http\Controllers;
 
 use App\Models\Meter\Meter;
+use App\Models\Transaction\Transaction;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
+use App\Services\SmsResendInformationKeyService;
+use App\Services\SmsService;
+use App\Sms\Senders\SmsConfigs;
+use App\Sms\SmsTypes;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
@@ -21,7 +26,9 @@ class WebhookController extends Controller
 
     public function __construct(
         private ViberCredentialService $credentialService,
-        private ViberContactService $viberContactService
+        private ViberContactService $viberContactService,
+        private SmsResendInformationKeyService $smsResendInformationKeyService,
+        private SmsService $smsService,
     ) {
         $this->botSender = new Sender([
             'name' => 'MicroPowerManager',
@@ -38,7 +45,7 @@ class WebhookController extends Controller
         $this->bot = new Bot(['token' => $apiKey]);
         $bot = $this->bot;
         $botSender = $this->botSender;
-
+        $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
         $this->bot
             ->onConversation(function ($event) use ($bot, $botSender) {
                 return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText("Can I help you?");
@@ -66,7 +73,8 @@ class WebhookController extends Controller
                 $viberContact = $this->viberContactService->getByRegisteredMeterSerialNumber($meterSerialNumber);
 
                 if ($viberContact) {
-                    $this->answerToCustomer($bot, $botSender, $event, $this->setAlreadyRegisteredMessage($meterSerialNumber));
+                    $this->answerToCustomer($bot, $botSender, $event,
+                        $this->setAlreadyRegisteredMessage($meterSerialNumber));
 
                     return;
                 }
@@ -74,11 +82,42 @@ class WebhookController extends Controller
                 $person = $meter->meterParameter->owner;
 
                 if ($person) {
-                    $data = ['person_id' => $person->id, 'viber_id' => $event->getSender()->getId()];
+
+                    $data = [
+                        'person_id' => $person->id,
+                        'viber_id' => $event->getSender()->getId(),
+                        'registered_meter_serial_number' => $meterSerialNumber
+                    ];
                     $this->viberContactService->create($data);
                     $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
                 } else {
                     Log::info("Someone who is not a customer tried to register with viber");
+                }
+            })
+            ->onText("|$resendInformationKey.*|si", function ($event) use ($bot, $botSender, $resendInformationKey) {
+
+                if (!$resendInformationKey) {
+                    return;
+                }
+                $meterSerial = $this->viberContactService->getByViberId($event->getSender()
+                    ->getId())->registered_meter_serial_number;
+
+                if (!$meterSerial) {
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setNotRegisteredMessage());
+                    return;
+                }
+                $transaction = Transaction::with('paymentHistories')
+                    ->where('message', $meterSerial)->latest()->first();
+
+                if (!$transaction) {
+                    $this->answerToCustomer($bot, $botSender, $event, $this->setNoTransactionMessage($meterSerial));
+                    return;
+                }
+                try {
+                    $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
+                } catch (\Exception $ex) {
+                    Log::error("Resend transaction information message not send to customer", ['error' => $ex->getMessage()]);
+                    return;
                 }
             })
             ->run();
@@ -107,7 +146,10 @@ class WebhookController extends Controller
     {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
-
+    private function setNoTransactionMessage($meterSerial)
+    {
+        return "No transaction found for meter serial: $meterSerial";
+    }
     private function answerToCustomer($bot, $botSender, $event, $message)
     {
         $bot->getClient()->sendMessage(

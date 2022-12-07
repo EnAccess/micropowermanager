@@ -4,7 +4,7 @@
             <h3 class="md-title" style="flex: 1">{{ $tc('phrases.clustersDashboard') }}</h3>
             <md-button class="md-raised" @click="updateCacheData">
                 <md-icon>update</md-icon>
-                {{ $tc('phrases.refreshDate') }}
+                {{ $tc('phrases.refreshData') }}
                 <md-progress-bar v-if="updateProgress" md-mode="indeterminate"></md-progress-bar>
             </md-button>
         </md-toolbar>

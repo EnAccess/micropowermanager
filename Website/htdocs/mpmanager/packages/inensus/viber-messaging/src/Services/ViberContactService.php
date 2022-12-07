@@ -63,4 +63,9 @@ class ViberContactService implements IBaseService
     {
         return $this->viberContact->newQuery()->where('registered_meter_serial_number', $meterSerialNumber)->first();
     }
+    public function getByViberId($viberId)
+    {
+        return $this->viberContact->newQuery()->where('viber_id', $viberId)->first();
+    }
+
 }

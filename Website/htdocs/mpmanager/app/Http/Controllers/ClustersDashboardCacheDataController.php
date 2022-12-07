@@ -44,8 +44,8 @@ class ClustersDashboardCacheDataController extends Controller
     public function update(Request $request)
     {
         $dateRange = [];
-        $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
-        $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
+        $dateRange[0] = date('Y-m-d H:i:s', strtotime('today - 30 days'));
+        $dateRange[1] = date('Y-m-d H:i:s', strtotime('today'));
         $clusters = $this->clusterService->getClusterList();
         $connectionTypes = $this->connectionTypeService->getAll();
         foreach ($clusters as $index => $cluster) {

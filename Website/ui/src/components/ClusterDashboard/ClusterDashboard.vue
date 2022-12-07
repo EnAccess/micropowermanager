@@ -9,7 +9,7 @@
                 <div class="md-toolbar-section-end">
                     <md-button class="md-raised" @click="updateCacheData">
                         <md-icon>update</md-icon>
-                        Refresh Data
+                        {{ $tc('phrases.refreshData') }}
                         <md-progress-bar v-if="updateProgress" md-mode="indeterminate"></md-progress-bar>
                     </md-button>
                 </div>

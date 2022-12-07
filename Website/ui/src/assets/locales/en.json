@@ -328,7 +328,10 @@
     "pleaseShareThis": "Please share this link with your customers for making their online payments.",
     "merchantId": "Merchant ID",
     "userId": "User ID",
-    "apiKey": "API Key"
+    "apiKey": "API Key",
+    "orderId": "Order ID",
+    "referenceId": "Reference ID",
+    "waveMoneyTransaction": "Wave Money Transaction"
   },
   "words": {
     "access": "Access",

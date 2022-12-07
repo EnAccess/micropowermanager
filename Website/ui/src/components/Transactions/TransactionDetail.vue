@@ -23,6 +23,10 @@
                                     <third-party-transaction :ot="ot"
                                                              v-if="transaction.original_transaction_type === 'third_party_transaction'"
                                     />
+                                    <wave-money-transaction :ot="ot"
+                                                             v-if="transaction.original_transaction_type === 'wave_money_transaction'"
+                                    />
+
                                 </md-card-content>
                             </md-card>
                         </widget>
@@ -206,10 +210,12 @@ import Widget from '../../shared/widget'
 import { TransactionService } from '@/services/TransactionService'
 import { PersonService } from '@/services/PersonService'
 import ThirdPartyTransaction from './ThirdPartyTransaction'
+import WaveMoneyTransaction from '@/components/Transactions/WaveMoneyTransaction'
 
 export default {
     name: 'TransactionDetail',
     components: {
+        WaveMoneyTransaction,
         ThirdPartyTransaction,
         AirtelTransactionDetail,
         Widget,
