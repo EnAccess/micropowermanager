@@ -68,7 +68,7 @@ class SmsService
         }
     }
 
-    private function sendSms($data, $smsType, $smsConfigs)
+    public function sendSms($data, $smsType, $smsConfigs)
     {
         try {
             $smsAndroidSettings = $this->getSmsAndroidSettings();
