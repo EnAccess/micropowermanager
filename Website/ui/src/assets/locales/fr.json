@@ -323,7 +323,18 @@
     "refreshData": "Refresh Data",
     "minimumPurchaseAmount": "Minimum Purchase Amount",
     "apiToken": "API Token",
-    "distributeThis": "Please distribute this to your customers and ask them to send their meter number to register our Viber communication system."
+    "distributeThis": "Please distribute this to your customers and ask them to send their meter number to register our Viber communication system.",
+    "secretKey": "Secret Key",
+    "pleaseShareThis": "Please share this link with your customers for making their online payments.",
+    "merchantId": "Merchant ID",
+    "userId": "User ID",
+    "apiKey": "API Key",
+    "orderId": "Order ID",
+    "referenceId": "Reference ID",
+    "waveMoneyTransaction": "Wave Money Transaction",
+    "untraceableTransaction": "Untraceable transaction",
+    "transactionCancelled": "Transaction cancelled",
+    "outgoingSms": "Outgoing sms"
   },
   "words": {
     "access": "Access",
@@ -497,6 +508,7 @@
     "host": "Host",
     "port": "Port",
     "encryption": "Encryption",
-    "minimumPurchaseAmount": "Minimum Purchase Amount"
+    "authorized": "Authorized",
+    "unauthorized": "Unauthorized"
   }
 }

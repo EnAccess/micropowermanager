@@ -20,10 +20,10 @@
         <hr class="hr-d">
         <div class="md-layout">
             <div class="md-layout-item md-subheader">
-                {{ $tc('words.transactionId') }}
+                {{ $tc('phrases.referenceId') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                {{ot.external_transaction_id}}
+                {{ot.reference_id}}
             </div>
         </div>
     </div>

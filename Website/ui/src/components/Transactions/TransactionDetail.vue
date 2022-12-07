@@ -34,8 +34,7 @@
 
                 </div>
 
-                <div
-                        class="md-layout-item  md-xlarge-size-50  md-large-size-50 md-medium-size-50  md-small-size-100 md-xsmall-size-100">
+                <div class="md-layout-item  md-xlarge-size-50  md-large-size-50 md-medium-size-50  md-small-size-100 md-xsmall-size-100">
                     <div class="transaction-detail-card">
                         <widget
                                 :title="$tc('words.detail',2)"
@@ -112,7 +111,7 @@
                                     <md-card-content>
                                         <div class="md-layout md-gutter md-size-100">
                                            <ul  style="margin: auto">
-                                               <li>Untraceable transaction</li>
+                                               <li>{{ $tc('phrases.untraceableTransaction') }}</li>
                                            </ul>
 
 
@@ -147,7 +146,7 @@
                                     <md-card-content v-if="ot.status===-1">
                                         <h2>Transaction cancelled</h2>
                                         <md-list class="md-double-line">
-                                            <md-subheader style="color:#a81e10">Transaction cancelled</md-subheader>
+                                            <md-subheader style="color:#a81e10"> {{ $tc('phrases.transactionCancelled') }}</md-subheader>
 
                                             <md-list-item :key="conflict.id" v-for="conflict in ot.conflicts">
                                                 <span class="margin-top-5">{{conflict.state}}</span>
@@ -162,8 +161,7 @@
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                     <div class="transaction-detail-card">
-                        <widget
-                                title="Outgoing sms"
+                        <widget :title="$tc('phrases.outgoingSms')"
                                 :show-spinner="false"
                                 v-show="(transaction.original_transaction_type !== 'agent_transaction' && transaction.original_transaction_type !== 'third_party_transaction')"
                         >

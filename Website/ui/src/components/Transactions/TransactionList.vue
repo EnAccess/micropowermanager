@@ -213,11 +213,15 @@
                                     <img v-if="transaction.service==='third_party_transaction'" class="logo" alt="logo"
                                          :src="thirdPartyLogo" style="max-height: 18px;"/>
                                     <img v-if="transaction.service==='agent_transaction'"
-                                         src="https://image.flaticon.com/icons/svg/99/99395.svg"
+                                         :src="agentIcon"
                                          style="max-height:18px;"
                                     />
                                     <img v-if="transaction.service==='cash_transaction'"
-                                         src="https://image.flaticon.com/icons/png/512/631/631200.png"
+                                         :src="moneyIcon"
+                                         style="max-height:18px;"
+                                    />
+                                    <img v-if="transaction.service==='wave_money_transaction'"
+                                         :src="waveMoneyLogo"
                                          style="max-height:18px;"
                                     />
 
@@ -272,6 +276,9 @@ import { TransactionService } from '@/services/TransactionService'
 
 import airtelLogo from '../../assets/icons/airtel.png'
 import vodacomLogo from '../../assets/icons/vodacom.png'
+import waveMoneyLogo  from '../../assets/icons/WaveMoney.png'
+import agentIcon  from '../../assets/icons/agent-icon.png'
+import moneyIcon  from '../../assets/icons/money-icon.png'
 import thirdPartyLogo from '../../assets/icons/third_party_transaction_icon.png'
 
 export default {
@@ -299,7 +306,10 @@ export default {
             ],
             airtelLogo: airtelLogo,
             vodacomLogo: vodacomLogo,
-            thirdPartyLogo: thirdPartyLogo
+            thirdPartyLogo: thirdPartyLogo,
+            waveMoneyLogo: waveMoneyLogo,
+            agentIcon: agentIcon,
+            moneyIcon: moneyIcon
         }
     },
     mounted () {

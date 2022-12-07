@@ -330,7 +330,10 @@
     "apiKey": "API Key",
     "orderId": "Order ID",
     "referenceId": "Reference ID",
-    "waveMoneyTransaction": "Wave Money Transaction"
+    "waveMoneyTransaction": "Wave Money Transaction",
+    "untraceableTransaction": "Untraceable transaction",
+    "transactionCancelled": "Transaction cancelled",
+    "outgoingSms": "Outgoing sms"
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",
