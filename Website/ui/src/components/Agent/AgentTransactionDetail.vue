@@ -5,8 +5,7 @@
                 {{ $tc('phrases.agentTransaction') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                <img class="logo" alt="logo" src="https://image.flaticon.com/icons/svg/99/99395.svg"
-                     style="max-height: 35px;"/>
+                <img class="logo" alt="logo" :src="agentLogo" style="max-height: 35px;"/>
             </div>
         </div>
         <hr class="hr-d">
@@ -55,15 +54,6 @@
             </div>
         </div>
         <hr class="hr-d">
-        <div class="md-layout">
-            <div class="md-layout-item md-subheader">
-                {{ $tc('words.token') }}
-            </div>
-            <div class="md-layout-item md-subheader n-font">
-                6664 8965 0265 8232 7729
-            </div>
-        </div>
-
     </div>
 </template>
 
@@ -71,13 +61,14 @@
 
 
 import { AgentService } from '@/services/AgentService'
-
+import agentLogo  from '../../assets/icons/agent-icon.png'
 export default {
     name: 'AgentTransactionDetail',
     props: ['ot'],
     data () {
         return {
-            agentService: new AgentService()
+            agentService: new AgentService(),
+            agentLogo: agentLogo
         }
     },
     mounted () {

@@ -5,7 +5,7 @@
                 {{ $tc('phrases.waveMoneyTransaction') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                {{ot.manufacturer_transaction_type}}
+                <img class="logo" alt="logo" :src="waveMoneyLogo" style="max-height: 35px;"/>
             </div>
         </div>
         <hr class="hr-d">
@@ -30,12 +30,13 @@
 </template>
 
 <script>
+import waveMoneyLogo  from '../../assets/icons/WaveMoney.png'
 export default {
     name: 'WaveMoneyTransaction',
     props: ['ot'],
     data () {
         return {
-
+            waveMoneyLogo: waveMoneyLogo,
 
         }
     }
