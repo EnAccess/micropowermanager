@@ -38,12 +38,14 @@ class WaveMoneyTransactionCallbackMiddleware
             $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);
             $request->attributes->add(['status' => $status]);
 
-            $transaction = $waveMoneyTransaction->transaction()->first();
+            if($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
+                //we process the transaction in the background
+                $transaction = $waveMoneyTransaction->transaction()->first();
+                ProcessPayment::dispatch($transaction->id)
+                    ->allOnConnection('redis')
+                    ->onQueue(config('services.queues.payment'));
+            }
 
-
-            ProcessPayment::dispatch($transaction->id)
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
         } catch (\Exception $exception) {
             Log::critical('WaveMoney transaction callback called with wrong orderId ' . $callbackData->getOrderId());
 

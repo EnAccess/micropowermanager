@@ -24,11 +24,6 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class, UpdatePackage::class]);
         }
-        $this->app->booted(function ($app) {
-            $app->make(Schedule::class)->command('wave-money-payment-provider:transactionStatusCheck')
-                ->withoutOverlapping(10)->everyFiveMinutes()
-                ->appendOutputTo(storage_path('logs/cron.log'));;
-        });
         Relation::morphMap(
             [
                 'wave_money_transaction' => WaveMoneyTransaction::class,
