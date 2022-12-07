@@ -29,7 +29,7 @@
                     </md-field>
                     <md-field
                         :class="{'md-invalid': errors.has('Payment-Form.amount')}">
-                        <label for="amount">Amount</label>
+                        <label for="amount">Amount (MMK)</label>
                         <md-input
                             id="amount"
                             name="amount"

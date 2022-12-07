@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use PDO;
 
 /**
@@ -40,10 +41,10 @@ class Transaction extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function originalVodacom(): BelongsToMorph
-    {
-        return BelongsToMorph::build($this, VodacomTransaction::class, 'originalTransaction');
-    }
+    /*    public function originalVodacom(): BelongsToMorph
+        {
+            return BelongsToMorph::build($this, VodacomTransaction::class, 'originalTransaction');
+        }*/
 
 
     /**
@@ -51,25 +52,30 @@ class Transaction extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function originalAirtel(): BelongsToMorph
-    {
+    /*    public function originalAirtel(): BelongsToMorph
+        {
 
-        return BelongsToMorph::build($this, AirtelTransaction::class, 'originalTransaction');
-    }
+            return BelongsToMorph::build($this, AirtelTransaction::class, 'originalTransaction');
+        }*/
 
     public function originalAgent(): BelongsToMorph
     {
         return BelongsToMorph::build($this, AgentTransaction::class, 'originalTransaction');
     }
 
-    public function originalThirdParty(): BelongsToMorph
-    {
-        return BelongsToMorph::build($this, ThirdPartyTransaction::class, 'originalTransaction');
-    }
+    /* public function originalThirdParty(): BelongsToMorph
+        {
+            return BelongsToMorph::build($this, ThirdPartyTransaction::class, 'originalTransaction');
+        }*/
 
     public function originalCash(): BelongsToMorph
     {
         return BelongsToMorph::build($this, CashTransaction::class, 'originalTransaction');
+    }
+
+    public function originalWaveMoney(): BelongsToMorph
+    {
+        return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
     }
 
     public function token(): HasOne
