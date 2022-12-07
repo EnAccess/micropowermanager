@@ -22,7 +22,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
             $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
-            $this->commands([InstallPackage::class, UpdatePackage::class, TransactionStatusChecker::class]);
+            $this->commands([InstallPackage::class, UpdatePackage::class]);
         }
         $this->app->booted(function ($app) {
             $app->make(Schedule::class)->command('wave-money-payment-provider:transactionStatusCheck')

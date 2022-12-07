@@ -37,17 +37,17 @@ abstract class AbstractPaymentAggregatorTransactionService
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
     {
         if (!$meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
-            throw new ModelNotFoundException('Meter not found with serial number: ' . $meterSerialNumber);
+            throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
         if (!$meterTariff = $meter->meterParameter->tariff) {
-            throw new ModelNotFoundException('Tariff not found with meter serial number: ' . $meterSerialNumber);
+            throw new ModelNotFoundException('Tariff not found with meter serial number you entered' );
         }
 
         $customerId = $meter->MeterParameter->owner_id;
 
         if (!$customerId) {
-            throw new ModelNotFoundException('Customer not found with meter serial number: ' . $meterSerialNumber);
+            throw new ModelNotFoundException('Customer not found with meter serial number you entered');
         }
 
         $this->meterSerialNumber = $meterSerialNumber;
@@ -99,8 +99,7 @@ abstract class AbstractPaymentAggregatorTransactionService
 
         try {
             if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
-                throw new TransactionAmountNotEnoughException(sprintf("Transaction amount not enough amount: %s",
-                    $transactionData->transaction->amount));
+                throw new TransactionAmountNotEnoughException("Transaction amount is not enough");
             }
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
