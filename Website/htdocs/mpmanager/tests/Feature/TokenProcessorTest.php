@@ -17,6 +17,7 @@ use App\Models\SmsAndroidSetting;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use App\Services\SmsAndroidSettingService;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Database\Factories\MeterTariffFactory;
@@ -83,13 +84,11 @@ class TokenProcessorTest extends TestCase
         $transactionContainer->chargedEnergy = 1;
         $tp = new TokenProcessor($transactionContainer);
         $tp->handle();
-        SmsProcessor::dispatch(
-            $transaction,
-            SmsTypes::TRANSACTION_CONFIRMATION,
-            SmsConfigs::class
-        );
+
+        $smsService = app()->make(SmsService::class);
+        $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         $this->assertCount(1, MeterToken::all());
         $this->assertCount(1, PaymentHistory::all());
-        Queue::assertPushed(SmsProcessor::class);
+
     }
 }

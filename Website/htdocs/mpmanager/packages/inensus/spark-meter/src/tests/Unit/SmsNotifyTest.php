@@ -15,6 +15,7 @@ use App\Models\SmsBody;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
@@ -81,11 +82,8 @@ class SmsNotifyTest extends TestCase
                 return true;
             }
 
-            SmsProcessor::dispatch(
-                $customer,
-                SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
-                SparkSmsConfig::class
-            );
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,SparkSmsConfig::class);
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
@@ -93,7 +91,6 @@ class SmsNotifyTest extends TestCase
             ]);
             return true;
         });
-        Queue::assertPushed(SmsProcessor::class);
     }
 
     /** @test */
@@ -140,11 +137,10 @@ class SmsNotifyTest extends TestCase
             ) {
                 return true;
             }
-            SmsProcessor::dispatch(
-                $sparkTransaction->thirdPartyTransaction->transaction,
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            );
+
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($sparkTransaction->thirdPartyTransaction->transaction,  SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,
                 'notify_type' => 'transaction',
@@ -152,7 +148,7 @@ class SmsNotifyTest extends TestCase
             ]);
             return true;
         });
-        Queue::assertPushed(SmsProcessor::class);
+
     }
 
     /** @test */
@@ -187,12 +183,10 @@ class SmsNotifyTest extends TestCase
                          It is going to be retried at ' . $nextSync,
                     'phone' => $adminAddress->phone
                 ];
-                SmsProcessor::dispatch(
-                    $data,
-                    SmsTypes::MANUAL_SMS,
-                    SmsConfigs::class
-                );
+                $smsService = app()->make(SmsService::class);
+                $smsService->sendSms($data,  SmsTypes::MANUAL_SMS, SmsConfigs::class);
             }
+
             return true;
         });
         $this->assertLessThan($oldNextSync, $newNextSync);

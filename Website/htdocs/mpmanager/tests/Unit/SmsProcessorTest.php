@@ -18,6 +18,7 @@ use App\Models\SmsBody;
 use App\Models\Transaction\VodacomTransaction;
 
 
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Database\Factories\MainSettingsFactory;
@@ -56,11 +57,9 @@ class SmsProcessorTest extends TestCase
         $transaction->sender = '905494322161';
         //create sms-bodies
         $this->addSmsBodies();
-        SmsProcessor::dispatch(
-            $transaction,
-            SmsTypes::TRANSACTION_CONFIRMATION,
-            SmsConfigs::class
-        );
+
+        $smsService = app()->make(SmsService::class);
+        $smsService->sendSms($transaction,  SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         Queue::assertPushed(SmsProcessor::class);
 
 
@@ -78,11 +77,9 @@ class SmsProcessorTest extends TestCase
             'phone' => '905494322161',
             'meter' => $transaction->message
         ];
-        SmsProcessor::dispatch(
-            $data,
-            SmsTypes::RESEND_INFORMATION,
-            SmsConfigs::class
-        );
+
+        $smsService = app()->make(SmsService::class);
+        $smsService->sendSms($data,  SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
         Queue::assertPushed(SmsProcessor::class);
 
     }

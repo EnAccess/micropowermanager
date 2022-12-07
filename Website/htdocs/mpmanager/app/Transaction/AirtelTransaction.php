@@ -14,6 +14,7 @@ use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsAndroidSettingService;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use GuzzleHttp\Client;
@@ -79,11 +80,9 @@ class AirtelTransaction implements ITransactionProvider
         if ($requestType) {
             $this->airtelTransaction->status = 1;
             $this->airtelTransaction->save();
-            SmsProcessor::dispatch(
-                $transaction,
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+
         } else { //send cancellation to airtel gateway server and this will send the final request to airtel
             $requestContent = $this->prepareRequest($this->transaction, $this->airtelTransaction);
 

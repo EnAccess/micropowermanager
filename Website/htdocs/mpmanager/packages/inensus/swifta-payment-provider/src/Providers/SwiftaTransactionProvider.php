@@ -9,6 +9,7 @@ use App\Lib\ITransactionProvider;
 use App\Models\Address\Address;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
@@ -60,11 +61,8 @@ class SwiftaTransactionProvider implements ITransactionProvider
         if ($requestType) {
             $this->swiftaTransaction->status = 1;
             $this->swiftaTransaction->save();
-            SmsProcessor::dispatch(
-                $transaction,
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::debug('swifta transaction is been cancelled',);
             $this->swiftaTransaction->status = -1;

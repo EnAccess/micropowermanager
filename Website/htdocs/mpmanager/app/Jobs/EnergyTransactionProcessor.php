@@ -133,11 +133,6 @@ class EnergyTransactionProcessor extends AbstractJob
     private function completeTransactionWithNotification(array|TransactionDataContainer $transactionData): void
     {
         event('transaction.successful', [$transactionData->transaction]);
-        SmsProcessor::dispatch(
-            $transactionData->transaction,
-            SmsTypes::TRANSACTION_CONFIRMATION,
-            SmsConfigs::class
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
     }
 
     /**

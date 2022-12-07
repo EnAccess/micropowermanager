@@ -45,7 +45,7 @@ class WebhookController extends Controller
         $this->bot = new Bot(['token' => $apiKey]);
         $bot = $this->bot;
         $botSender = $this->botSender;
-        $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
+        $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
             ->onConversation(function ($event) use ($bot, $botSender) {
                 return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText("Can I help you?");

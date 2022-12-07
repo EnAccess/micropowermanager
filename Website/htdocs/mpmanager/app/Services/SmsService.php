@@ -2,11 +2,18 @@
 
 namespace App\Services;
 
+use App\Exceptions\SmsAndroidSettingNotExistingException;
+use App\Exceptions\SmsBodyParserNotExtendedException;
+use App\Exceptions\SmsTypeNotFoundException;
 use App\Jobs\SmsProcessor;
 use App\Models\Sms;
+use App\Models\SmsAndroidSetting;
 use App\Models\Transaction\Transaction;
+use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsConfigs;
+use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
+use Illuminate\Support\Facades\Log;
 
 class SmsService
 {
@@ -14,15 +21,10 @@ class SmsService
     public const FEEDBACK = 2;
     public const DIRECTION_OUTGOING = 1;
 
-    private $sms;
-    private $transaction;
-
     public function __construct(
-        Transaction $transaction,
-        Sms $sms
+        private Sms $sms
     ) {
-        $this->transaction = $transaction;
-        $this->sms = $sms;
+
     }
 
     public function checkMessageType($message)
@@ -57,12 +59,79 @@ class SmsService
         return $sms;
     }
 
-    public function sendSms($data, $smsType, $SmsConfigClass)
+    private function getSmsAndroidSettings()
     {
-        SmsProcessor::dispatch(
+        try {
+            return SmsAndroidSetting::getResponsible();
+        } catch (SmsAndroidSettingNotExistingException $exception) {
+            throw $exception;
+        }
+    }
+
+    private function sendSms($data, $smsType, $smsConfigs)
+    {
+        try {
+            $smsAndroidSettings = $this->getSmsAndroidSettings();
+            $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
+        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
+            Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
+            return;
+        }
+        $receiver = $smsType->getReceiver();
+        //set the uuid for the callback
+        $uuid = $smsType->generateCallbackAndGetUuid($smsAndroidSettings->callback);
+        try {
+            //sends sms or throws exception
+            $smsType->validateReferences();
+        } catch (\Exception $e) {
+            Log::error('Sms Service failed ' . $receiver, ['reason' => $e->getMessage()]);
+            throw $e;
+        }
+        SmsProcessor::dispatch($smsType)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        $this->associateSmsWithForSmsType($smsType, $data, $uuid, $receiver);
+    }
+
+    private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings)
+    {
+        $configs = resolve($smsConfigs);
+        if (!array_key_exists($smsType, $configs->smsTypes)) {
+            throw new  SmsTypeNotFoundException('SmsType could not resolve.');
+        }
+        $smsBodyService = resolve($configs->servicePath);
+        $reflection = new \ReflectionClass($configs->smsTypes[$smsType]);
+
+        if (!$reflection->isSubclassOf(SmsSender::class)) {
+            throw new  SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
+        }
+
+        return $reflection->newInstanceArgs([
             $data,
-            $smsType,
-            $SmsConfigClass
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            $smsBodyService,
+            $configs->bodyParsersPath,
+            $smsAndroidSettings
+        ]);
+    }
+
+    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver)
+    {
+        if (!($smsType instanceof ManualSms)) {
+            $sms = Sms::query()->make([
+                'uuid' => $uuid,
+                'body' => $smsType->body,
+                'receiver' => $receiver
+            ]);
+            $sms->trigger()->associate($data);
+            $sms->save();
+        } else {
+            $lastSentManualSms = Sms::query()->where('receiver', $receiver)->where(
+                'body',
+                $smsType->body
+            )->latest()->first();
+            if ($lastSentManualSms) {
+                $lastSentManualSms->update([
+                    'uuid' => $uuid,
+                ]);
+            }
+        }
     }
 }

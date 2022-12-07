@@ -6,6 +6,7 @@ use App\Jobs\SmsProcessor;
 use App\Models\AssetRate;
 use App\Models\User;
 use App\Services\SmsApplianceRemindRateService;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\Carbon;
@@ -80,11 +81,8 @@ class AssetRateChecker extends AbstractSharedCommand
 
     private function sendReminderSms(AssetRate $assetRate): void
     {
-        SmsProcessor::dispatch(
-            $assetRate,
-            SmsTypes::APPLIANCE_RATE,
-            SmsConfigs::class
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+       $smsService = app()->make(SmsService::class);
+       $smsService->sendSms($assetRate, SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
     }
 
     private function sendReminders($dueAssetRates, $smsType)

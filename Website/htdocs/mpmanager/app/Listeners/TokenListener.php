@@ -6,6 +6,7 @@ use App\Jobs\SmsProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Meter\MeterToken;
 use App\Services\SmsAndroidSettingService;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Exception;
@@ -70,12 +71,8 @@ class TokenListener
         }
 
         //send token via sms
-
-        SmsProcessor::dispatch(
-            $transactionContainer->transaction,
-            SmsTypes::TRANSACTION_CONFIRMATION,
-            SmsConfigs::class
-        )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+        $smsService = app()->make(SmsService::class);
+        $smsService->sendSms($transactionContainer->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
 
         //payment successful
         event(

@@ -15,6 +15,7 @@ use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsAndroidSettingService;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Exception;
@@ -108,11 +109,9 @@ class VodacomTransaction implements ITransactionProvider
                         ]
                     );
                 } else {
-                    SmsProcessor::dispatch(
-                        $transaction,
-                        SmsTypes::TRANSACTION_CONFIRMATION,
-                        SmsConfigs::class
-                    )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+                    $smsService = app()->make(SmsService::class);
+                    $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+
                 }
 
                 //make response xml object

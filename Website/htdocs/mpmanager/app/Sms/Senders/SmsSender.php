@@ -37,18 +37,7 @@ abstract class SmsSender
 
     public function sendSms()
     {
-        $this->validateReferences();
-
-        if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
-            $nullSmsBodies = $this->smsBodyService->getNullBodies();
-            if (count($nullSmsBodies)) {
-                Log::critical('Send sms rejected, some of sms bodies are null', ['Sms Bodies' => $nullSmsBodies]);
-                return;
-            }
-        }
-
         $viberId = $this->checkForViberIdOfReceiverIfPluginIsActive();
-
         if ($viberId) {
             resolve('ViberGateway')
                 ->sendSms(
@@ -58,9 +47,9 @@ abstract class SmsSender
                         ->where('receiver', $this->receiver)
                         ->orWhere('receiver', ltrim($this->receiver, '+'))
                         ->where(
-                        'body',
-                        $this->body
-                    )->latest()->first()
+                            'body',
+                            $this->body
+                        )->latest()->first()
                 );
         } else {
             //add sms to default sms provider
@@ -81,15 +70,17 @@ abstract class SmsSender
             $smsBody = $this->getSmsBody('header');
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Header preparing failed.', ['message : ' => $exception->getMessage()]);
-            return;
+            throw new MissingSmsReferencesException($exception->getMessage());
         }
+
         $className = $this->parserSubPath . $this->references['header'];
         $smsObject = new  $className($this->data);
+
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
         } catch (\Exception $exception) {
             Log::error('SMS Header parsing failed.', ['message : ' => $exception->getMessage()]);
-            return;
+            throw new MissingSmsReferencesException($exception->getMessage());
         }
     }
 
@@ -99,7 +90,7 @@ abstract class SmsSender
             $smsBody = $this->getSmsBody('body');
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
-            return;
+            throw new MissingSmsReferencesException($exception->getMessage());
         }
         $className = $this->parserSubPath . $this->references['body'];
         $smsObject = new  $className($this->data);
@@ -107,7 +98,7 @@ abstract class SmsSender
             $this->body .= $smsObject->parseSms($smsBody->body);
         } catch (\Exception $exception) {
             Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
-            return;
+            throw new MissingSmsReferencesException($exception->getMessage());
         }
     }
 
@@ -118,7 +109,7 @@ abstract class SmsSender
             $this->body .= ' ' . $smsBody->body;
         } catch (MissingSmsReferencesException $exception) {
             Log::error('SMS Footer preparing failed.', ['message : ' => $exception->getMessage()]);
-            return;
+            throw new MissingSmsReferencesException($exception->getMessage());
         }
     }
 
@@ -132,29 +123,29 @@ abstract class SmsSender
         return $smsBody;
     }
 
-    private function validateReferences()
+    public function validateReferences()
     {
-        if (array_key_exists('header', $this->references)) {
-            try {
+        if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
+            $nullSmsBodies = $this->smsBodyService->getNullBodies();
+            if (count($nullSmsBodies)) {
+                Log::critical('Send sms rejected, some of sms bodies are null', ['Sms Bodies' => $nullSmsBodies]);
+                throw  new MissingSmsReferencesException('Send sms rejected, some of sms bodies are null');
+            }
+        }
+        try {
+            if (array_key_exists('header', $this->references)) {
                 $this->prepareHeader();
-            } catch (MissingSmsReferencesException $exception) {
-                Log::critical($exception->getMessage());
             }
-        }
-        if (array_key_exists('body', $this->references)) {
-            try {
+            if (array_key_exists('body', $this->references)) {
                 $this->prepareBody();
-            } catch (MissingSmsReferencesException $exception) {
-                Log::critical($exception->getMessage());
             }
-        }
-        if (array_key_exists('footer', $this->references)) {
-            try {
+            if (array_key_exists('footer', $this->references)) {
                 $this->prepareFooter();
-            } catch (MissingSmsReferencesException $exception) {
-                Log::critical($exception->getMessage());
             }
+        } catch (MissingSmsReferencesException $exception) {
+            throw  new $exception;
         }
+
     }
 
     public function getReceiver()

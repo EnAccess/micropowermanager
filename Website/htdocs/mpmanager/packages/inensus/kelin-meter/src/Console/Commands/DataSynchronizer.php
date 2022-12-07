@@ -6,6 +6,7 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Jobs\SmsProcessor;
 use App\Models\Address\Address;
 use App\Models\Cluster;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
@@ -77,11 +78,8 @@ class DataSynchronizer extends AbstractSharedCommand
                             $nextSync,
                         'phone' => $adminAddress->phone
                     ];
-                    SmsProcessor::dispatch(
-                        $data,
-                        SmsTypes::MANUAL_SMS,
-                        SmsConfigs::class
-                    )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+                    $smsService = app()->make(SmsService::class);
+                    $smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
                 } else {
                     switch ($syncSetting->action_name) {
                         case 'Customers':

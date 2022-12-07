@@ -24,10 +24,6 @@ class SmsProcessor extends AbstractJob
     use Queueable;
     use SerializesModels;
 
-    public $data;
-    public $smsType;
-    private $smsConfigs;
-    private $smsAndroidSettings;
 
 
     /**
@@ -37,11 +33,9 @@ class SmsProcessor extends AbstractJob
      * @param int $smsType
      * @param $smsConfigs
      */
-    public function __construct($data, int $smsType, $smsConfigs)
+    public function __construct(private SmsSender $smsSender)
     {
-        $this->data = $data;
-        $this->smsType = $smsType;
-        $this->smsConfigs = $smsConfigs;
+
         parent::__construct(get_class($this));
     }
 
@@ -53,91 +47,11 @@ class SmsProcessor extends AbstractJob
     public function executeJob()
     {
         try {
-            $this->getSmsAndroidSettings();
-            $smsType = $this->resolveSmsType();
+            $this->smsSender->sendSms();
         } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
             return;
         }
 
-        $receiver = $smsType->getReceiver();
-        //dont send sms if debug
-        if (config('app.debug')) {
-            if (!($smsType instanceof ManualSms)) {
-                $sms = Sms::query()->make([
-                    'body' => $smsType->body,
-                    'receiver' => $receiver,
-                    'uuid' => "debug"
-                ]);
-                $sms->trigger()->associate($this->data);
-                $sms->save();
-            }
-            Log::debug('Send sms on debug is not allowed in debug mode',
-                ['number' => $receiver, 'message' => $smsType->body]);
-
-            return;
-        }
-        try {
-            //set the uuid for the callback
-            $uuid = $smsType->generateCallbackAndGetUuid($this->smsAndroidSettings->callback);
-            //sends sms or throws exception
-            $smsType->sendSms();
-        } catch (Exception $e) {
-            //slack failure
-            Log::critical(
-                'Sms Service failed ' . $receiver,
-                ['id' => '58365682988725', 'reason' => $e->getMessage()]
-            );
-            return;
-        }
-        if (!($smsType instanceof ManualSms)) {
-            $sms = Sms::query()->make([
-                'uuid' => $uuid,
-                'body' => $smsType->body,
-                'receiver' => $receiver
-            ]);
-            $sms->trigger()->associate($this->data);
-            $sms->save();
-        } else {
-            $lastSentManualSms = Sms::query()->where('receiver', $receiver)->where(
-                'body',
-                $smsType->body
-            )->latest()->first();
-            if ($lastSentManualSms) {
-                $lastSentManualSms->update([
-                    'uuid' => $uuid,
-                ]);
-            }
-        }
-    }
-
-    private function getSmsAndroidSettings()
-    {
-        try {
-            $this->smsAndroidSettings = SmsAndroidSetting::getResponsible();
-        } catch (SmsAndroidSettingNotExistingException $exception) {
-            throw $exception;
-        }
-    }
-
-    private function resolveSmsType()
-    {
-        $configs = resolve($this->smsConfigs);
-        if (!array_key_exists($this->smsType, $configs->smsTypes)) {
-            throw new  SmsTypeNotFoundException('SmsType could not resolve.');
-        }
-        $smsBodyService = resolve($configs->servicePath);
-        $reflection = new \ReflectionClass($configs->smsTypes[$this->smsType]);
-
-        if (!$reflection->isSubclassOf(SmsSender::class)) {
-            throw new  SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
-        }
-
-        return $reflection->newInstanceArgs([
-            $this->data,
-            $smsBodyService,
-            $configs->bodyParsersPath,
-            $this->smsAndroidSettings
-        ]);
     }
 }

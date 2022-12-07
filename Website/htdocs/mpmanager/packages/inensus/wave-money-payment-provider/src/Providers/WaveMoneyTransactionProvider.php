@@ -6,6 +6,7 @@ use App\Jobs\SmsProcessor;
 use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
@@ -58,11 +59,8 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
                 'status' => WaveMoneyTransaction::STATUS_SUCCESS
             ];
             $this->waveMoneyTransactionService->update($waveMoneyTransaction, $updateData);
-            SmsProcessor::dispatch(
-                $transaction,
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($transaction,  SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::critical('WaveMoney transaction is been cancelled from MicroPowerManager.
              It will be retired again in scheduled job.',

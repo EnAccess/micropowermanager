@@ -57,7 +57,6 @@ class PaymentProcessTests extends TestCase
             ->where('payment_service','mesomb_transaction')
             ->where('payment_type','energy')->get()->count();
         $this->assertEquals(1,$mesombPaymentCount);
-        Queue::assertPushed(SmsProcessor::class);
     }
 
     private function initializeTransaction()

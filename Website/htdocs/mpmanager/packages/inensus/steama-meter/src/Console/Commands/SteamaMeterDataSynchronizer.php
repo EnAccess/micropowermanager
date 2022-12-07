@@ -8,6 +8,8 @@ use App\Models\Address\Address;
 use App\Models\User;
 use App\Models\Cluster;
 use App\Models\Person\Person;
+use App\Services\SmsService;
+use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -107,10 +109,9 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                             $nextSync,
                         'phone' => $adminAddress->phone
                     ];
-                    SmsProcessor::dispatch(
-                        $data,
-                        SmsTypes::MANUAL_SMS
-                    )->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
+
+                    $smsService = app()->make(SmsService::class);
+                    $smsService->sendSms($data,  SmsTypes::MANUAL_SMS, SmsConfigs::class);
                 } else {
                     switch ($syncSetting->action_name) {
                         case 'Sites':
