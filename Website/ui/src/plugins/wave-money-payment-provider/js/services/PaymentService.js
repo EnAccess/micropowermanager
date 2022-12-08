@@ -27,7 +27,7 @@ export class PaymentService {
         } catch (error) {
             let errorMessage = ''
 
-            if (error.response) {
+            if (error.response.data) {
                 errorMessage = error.response.data.message
             } else {
                 errorMessage = error.message
