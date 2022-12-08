@@ -45,15 +45,6 @@
             </div>
         </div>
         <hr class="hr-d">
-        <div class="md-layout">
-            <div class="md-layout-item md-subheader">
-                {{ $tc('words.transaction') }}
-            </div>
-            <div class="md-layout-item md-subheader n-font">
-                {{ot.id}}
-            </div>
-        </div>
-        <hr class="hr-d">
     </div>
 </template>
 

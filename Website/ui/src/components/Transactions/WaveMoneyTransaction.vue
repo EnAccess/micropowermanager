@@ -5,7 +5,7 @@
                 {{ $tc('phrases.waveMoneyTransaction') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                <img class="logo" alt="logo" :src="waveMoneyLogo" style="max-height: 35px;"/>
+                <img class="logo" alt="logo" :src="waveMoneyLogo" style="max-height: 135px;"/>
             </div>
         </div>
         <hr class="hr-d">
