@@ -44,7 +44,6 @@
                 {{agentService.agent.miniGrid}}
             </div>
         </div>
-        <hr class="hr-d">
     </div>
 </template>
 

@@ -201,6 +201,10 @@ export default {
             },
         }
     },
+    mounted () {
+        // Todo: get this from cache
+        this.getClusterFinancialData()
+    },
     methods: {
         showPeriod () {
             this.setPeriod = !this.setPeriod
@@ -276,6 +280,7 @@ export default {
             this.loaded = true
         }
     }
+
 }
 </script>
 
