@@ -16,17 +16,22 @@ export class PaymentService {
                 meterSerial: this.paymentRequest.meterSerial,
                 amount: this.paymentRequest.amount,
             }
-            const response = await this.repository.post(paymentRequest, companyId)
+            const { data } = await this.repository.post(paymentRequest, companyId)
 
-            if (response.redirectionUrl) {
-                return response
+            if (data.redirectionUrl) {
+                return data
             } else {
-                return new ErrorHandler(response.error, 'http', 400)
+                return new ErrorHandler(data.error, 'http', 400)
             }
 
         } catch (error) {
-            const errorMessage = error.response.data.message
+            let errorMessage = ''
 
+            if (error.response) {
+                errorMessage = error.response.data.message
+            } else {
+                errorMessage = error.message
+            }
             return new ErrorHandler(errorMessage, 'http')
         }
     }
