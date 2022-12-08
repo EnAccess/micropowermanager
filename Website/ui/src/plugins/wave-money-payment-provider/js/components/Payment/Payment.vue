@@ -39,7 +39,8 @@
                         <span
                             class="md-error">{{ errors.first('Payment-Form.amount') }}</span>
                     </md-field>
-                    <md-button class="md-raised md-primary" type="submit" style="margin: inherit">Make Payment</md-button>
+                    <md-button class="md-raised md-primary" type="submit" style="margin: inherit">Make Payment
+                    </md-button>
                 </div>
 
             </form>
@@ -76,7 +77,7 @@ export default {
                 const data = await this.paymentService.startTransaction(companyId)
                 this.$swal({
                     title: 'Success!',
-                    text: "Success! you will be redirected to the payment page",
+                    text: 'Success! you will be redirected to the payment page',
                     type: 'success',
                     timer: 2000,
                     timerProgressBar: true,

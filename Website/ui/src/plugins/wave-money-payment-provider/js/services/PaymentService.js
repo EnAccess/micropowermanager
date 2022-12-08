@@ -18,10 +18,10 @@ export class PaymentService {
             }
             const { data } = await this.repository.post(paymentRequest, companyId)
 
-            if (!data.data.error) {
-                return data.data
+            if (data.redirectionUrl) {
+                return data
             } else {
-                return new ErrorHandler(data.data.error, 'http', 400)
+                return new ErrorHandler(data.error, 'http', 400)
             }
 
         } catch (error) {
