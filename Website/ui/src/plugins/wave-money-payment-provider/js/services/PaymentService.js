@@ -18,6 +18,7 @@ export class PaymentService {
             }
             const { data } = await this.repository.post(paymentRequest, companyId)
 
+            console.log(data)
             if (data.redirectionUrl) {
                 return data
             } else {
@@ -26,7 +27,7 @@ export class PaymentService {
 
         } catch (error) {
             let errorMessage = ''
-
+            console.log(error)
             if (error.response.data) {
                 errorMessage = error.response.data.message
             } else {
