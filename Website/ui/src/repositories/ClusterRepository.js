@@ -5,8 +5,8 @@ const resource = `${baseUrl}/api/clusters`
 
 export default {
 
-    create(cluster){
-        return Client.post(`${resource}`,cluster)
+    create (cluster) {
+        return Client.post(`${resource}`, cluster)
     },
     list () {
         return Client.get(`${resource}`)
@@ -21,13 +21,13 @@ export default {
         return Client.get(`${resource}/${clusterId}/revenue`)
     },
     getClusterCitiesRevenue (clusterId, terms) {
-        return Client.get(`${resource}/${clusterId}/cities-revenue/${terms}`)
+        return Client.get(`${resource}/${clusterId}/cities-revenue${terms}`)
     },
     getAllRevenues (terms) {
-        return Client.get(`${resource}/revenue/${terms}`)
+        return Client.get(`${resource}/revenue${terms}`)
     },
-    getClusterTrends (clusterId, terms){
-        return Client.get(`${resource}/${clusterId}/revenue/analysis/${terms}`)
+    getClusterTrends (clusterId, terms) {
+        return Client.get(`${resource}/${clusterId}/revenue/analysis${terms}`)
     }
 
 }
