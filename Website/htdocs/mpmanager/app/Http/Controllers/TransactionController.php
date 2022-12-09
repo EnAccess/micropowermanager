@@ -6,15 +6,10 @@ use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use App\Lib\ITransactionProvider;
 use App\Misc\TransactionDataContainer;
-use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-use App\Models\Transaction\VodacomTransaction;
 use DateInterval;
 use DateTime;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 use function count;
