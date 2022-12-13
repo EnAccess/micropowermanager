@@ -6,7 +6,7 @@ namespace Inensus\SparkMeter\Services;
 
 class MenuItemService
 {
-
+    const MENU_ITEM = 'Spark Meter';
     public function createMenuItems()
     {
         $menuItem = [

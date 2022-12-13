@@ -5,6 +5,7 @@ namespace Inensus\StronMeter\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'Stron Meter';
 
     public function createMenuItems()
     {

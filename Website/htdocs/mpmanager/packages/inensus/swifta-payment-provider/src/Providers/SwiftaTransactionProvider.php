@@ -17,71 +17,93 @@ use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Http\Exceptions\SwiftaValidationFailedException;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
+use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 class SwiftaTransactionProvider implements ITransactionProvider
 {
-    private $transaction;
-    private $swiftaTransaction;
-    private $swiftaTransactionService;
     private $validData = [];
-    private $address;
 
     public function __construct(
-        Transaction $transaction,
-        SwiftaTransaction $swiftaTransaction,
-        SwiftaTransactionService $swiftaTransactionService,
-        Address $address
+        private SwiftaTransaction $swiftaTransaction,
+        private Transaction $transaction,
+        private SwiftaTransactionService $swiftaTransactionService,
+        private TransactionConflicts $transactionConflicts,
     ) {
-        $this->swiftaTransaction = $swiftaTransaction;
-        $this->transaction = $transaction;
-        $this->swiftaTransactionService = $swiftaTransactionService;
-        $this->address = $address;
+
     }
 
     public function validateRequest($request)
     {
-        $this->validData = array_merge($this->validData, $request->all());
+        $meterSerial = $request->input('meter_number');
+        $amount = $request->input('amount');
+
         try {
-            $this->swiftaTransactionService->validateInComingTransaction($this->validData);
-        }catch (\Exception $exception){
-          throw  new \Exception($exception->getMessage());
+            $this->swiftaTransactionService->validatePaymentOwner($meterSerial, $amount);
+            $swiftaTransactionData = $this->swiftaTransactionService->initializeTransactionData($request->all());
+
+            // We need to make sure that the payment is fully processable from our end .
+            $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
+        } catch (\Exception $exception) {
+            throw  new \Exception($exception->getMessage());
         }
 
+        $this->setValidData($swiftaTransactionData);
     }
 
     public function saveTransaction()
     {
-        $this->swiftaTransaction = $this->swiftaTransactionService->assignIncomingDataToSwiftaTransaction($this->validData);
-        $this->transaction = $this->swiftaTransactionService->assignIncomingDataToTransaction($this->validData);
+        $this->swiftaTransactionService->saveTransaction();
     }
 
     public function sendResult(bool $requestType, Transaction $transaction)
     {
-        $this->swiftaTransaction = $transaction->originalTransaction()->first();
+        $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
-            $this->swiftaTransaction->status = 1;
-            $this->swiftaTransaction->save();
+            $updateData = [
+                'status' => SwiftaTransaction::STATUS_SUCCESS
+            ];
+            $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
-            Log::debug('swifta transaction is been cancelled',);
-            $this->swiftaTransaction->status = -1;
-            $this->swiftaTransaction->save();
+            Log::error('swifta transaction is been cancelled');
+
         }
+    }
+
+    public function addConflict(?string $message): void
+    {
+        $conflict = $this->transactionConflicts->newQuery()->make([
+            'state' => $message
+        ]);
+        $conflict->transaction()->associate($this->swiftaTransaction);
+        $conflict->save();
+    }
+
+    public function getTransaction(): Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function setValidData($swiftaTransactionData)
+    {
+        $this->validData = $swiftaTransactionData;
+    }
+
+    public function getSubTransaction()
+    {
+        return $this->swiftaTransactionService->getSwiftaTransaction();
+    }
+
+    public function init($transaction): void
+    {
+        $this->swiftaTransaction = $transaction;
+        $this->transaction = $transaction->transaction()->first();
     }
 
     public function confirm(): void
     {
-        echo $xmlResponse =
-            '<?xml version="1.0" encoding="UTF-8"?>' .
-            '<Response>' .
-            '<TYPE>MESOMB PAYMENT</TYPE>' .
-            '<REFERENCE>' . $this->swiftaTransaction->transaction_reference . '</REFERENCE>' . // the PK from original request
-            '<TXNSTATUS>$this->swiftaTransaction->status</TXNSTATUS>' .
-            '<AMOUNT>' . $this->swiftaTransaction->amount . '</AMOUNT>' .
-            '<CIPHER>' . $this->swiftaTransaction->cipher . '</CIPHER>' .
-            '<TIMESTAMB>' . $this->swiftaTransaction->timestamp . '</TIMESTAMB>' .
-            '</Response>';
+        // TODO: Implement getMessage() method.
     }
 
     public function getMessage(): string
@@ -91,44 +113,18 @@ class SwiftaTransactionProvider implements ITransactionProvider
 
     public function getAmount(): int
     {
-        // TODO: Implement getAmount() method.
+      return   $this->getTransaction()->amount;
     }
 
     public function getSender(): string
     {
-        // TODO: Implement getSender() method.
+        return $this->getTransaction()->message;
     }
 
     public function saveCommonData(): Model
     {
-        return $this->swiftaTransactionService->associateSwiftaTransactionWithTransaction($this->swiftaTransaction,
-            $this->transaction);
+        // TODO: Implement getSender() method.
     }
 
-    public function init($transaction): void
-    {
-        // TODO: Implement init() method.
-    }
 
-    public function conflict(?string $message,$transaction): void
-    {
-        $this->swiftaTransaction = $transaction->originalTransaction()->first();
-        $conflict = new TransactionConflicts();
-        $conflict->state = $message;
-        $conflict->transaction()->associate($this->swiftaTransaction);
-        $conflict->save();
-    }
-    public function addConflict(?string $message): void
-    {
-        // TODO: Implement getTransaction() method.
-    }
-    public function getTransaction(): Transaction
-    {
-        // TODO: Implement getTransaction() method.
-    }
-
-    public function setValidData($request)
-    {
-        $this->validData = array_merge($this->validData, $request->all());
-    }
 }

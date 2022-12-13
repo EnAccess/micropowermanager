@@ -5,6 +5,8 @@ namespace Inensus\BulkRegistration\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'Bulk Registration';
+
     public function createMenuItems()
     {
         $menuItem = [

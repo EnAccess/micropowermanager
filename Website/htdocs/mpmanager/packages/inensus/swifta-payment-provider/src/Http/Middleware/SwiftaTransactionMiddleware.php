@@ -1,0 +1,43 @@
+<?php
+
+namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
+
+use App\Models\Meter\Meter;
+use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+use Inensus\SwiftaPaymentProvider\Http\Exceptions\SwiftaValidationFailedException;
+
+
+class SwiftaTransactionMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $transactionProvider = resolve('SwiftaPaymentProvider');
+
+        try {
+            $transactionProvider->validateRequest($request);
+            $transactionProvider->saveTransaction();
+        } catch (\Exception $exception) {
+
+            $data = collect([
+                'success' => 0,
+                'message' => $exception->getMessage()
+            ]);
+            return new Response($data, 400);
+        }
+
+        $swiftaTransaction = $transactionProvider->getSubTransaction();
+        $transaction = $swiftaTransaction->transaction()->first();
+        $owner = $transaction->meter->meterParameter->owner;
+
+        $request->attributes->add(['transactionId' => $transaction->id]);
+        $request->attributes->add(['customerName' =>$owner->name.' '.$owner->surname]);
+
+        return $next($request);
+    }
+
+
+}

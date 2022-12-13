@@ -5,6 +5,7 @@ namespace Inensus\CalinSmartMeter\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'CalinSmart Meter';
 
     public function createMenuItems()
     {

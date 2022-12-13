@@ -6,6 +6,8 @@ use App\Models\MenuItems;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'Steamaco Meter';
+
     public function createMenuItems()
     {
         $menuItem = [

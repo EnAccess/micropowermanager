@@ -5,6 +5,8 @@ namespace Inensus\ViberMessaging\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'Viber Messaging';
+
     public function createMenuItems()
     {
         $menuItem = [
