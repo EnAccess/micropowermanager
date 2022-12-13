@@ -84,7 +84,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function getAmount(): int
     {
-        $this->getTransaction()->amount;
+       return $this->getTransaction()->amount;
     }
 
     public function getSender(): string

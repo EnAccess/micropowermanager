@@ -19,7 +19,8 @@ export class MpmPluginService {
                         id:plugin.id,
                         name:plugin.name,
                         description:plugin.description,
-                        checked:false
+                        checked:false,
+                        root_class:plugin.root_class,
 
                     }
                 })

@@ -35,7 +35,7 @@ Vue.component('Kelin-Meter', Kelin)
 Vue.component('Stron-Meter', Stron)
 Vue.component('Settings', Settings)
 Vue.component('Viber-Messaging', Viber)
-Vue.component('WaveMoney-PaymentProvider', WaveMoney)
+Vue.component('WaveMoney', WaveMoney)
 Vue.component('MicroStar-Meter', MicroStar)
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']

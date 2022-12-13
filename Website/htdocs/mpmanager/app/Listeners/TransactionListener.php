@@ -21,9 +21,6 @@ class TransactionListener
     public function onTransactionFailed(Transaction $transaction, $message = null): void
     {
         $baseTransaction = TransactionAdapter::getTransaction($transaction->originalTransaction()->first());
-        if (!$baseTransaction) {
-            return;
-        }
         $baseTransaction->addConflict($message);
         $baseTransaction->sendResult(false, $transaction);
     }
@@ -31,9 +28,6 @@ class TransactionListener
     public function onTransactionSuccess(Transaction $transaction): void
     {
         $baseTransaction = TransactionAdapter::getTransaction($transaction->originalTransaction()->first());
-        if (!$baseTransaction) {
-            return;
-        }
         $baseTransaction->sendResult(true, $transaction);
     }
 

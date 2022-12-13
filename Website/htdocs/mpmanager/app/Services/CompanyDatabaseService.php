@@ -66,9 +66,9 @@ class CompanyDatabaseService implements IBaseService
 
     public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null)
     {
-        $pluginName = $plugin['name'];
+        $rootClass = $plugin['root_class'];
         try {
-            $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $pluginName));
+            $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
         } catch (\Exception $exception) {
             // we return here if company chooses a plugin which does not have UI components
             return 0;

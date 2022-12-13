@@ -51,16 +51,32 @@ class MenuItemsService
         }
     }
 
-    public function checkMenuItemIsExistsForTag($tag)
+    public function checkMenuItemIsExistsForTag($plugin)
     {
-        return $this->menuItems->newQuery()->where('name', $tag)->first();
+        $rootClass = $plugin['root_class'];
+        try {
+            $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
+        } catch (\Exception $exception) {
+            // we return here if company chooses a plugin which does not have UI components
+            return 0;
+        }
+        $menuItem = $menuItemService::MENU_ITEM;
+
+        return $this->menuItems->newQuery()->where('name', $menuItem)->first();
     }
 
-    public function removeMenuItemAndSubmenuItemForMenuItemName($menuItemName)
+    public function removeMenuItemAndSubmenuItemForMenuItemName($plugin)
     {
 
+        $rootClass = $plugin['root_class'];
+        try {
+            $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
+        } catch (\Exception $exception) {
+            // we return here if company chooses a plugin which does not have UI components
+            return 0;
+        }
+        $menuItemName = $menuItemService::MENU_ITEM;
         $menuItem = $this->menuItems->newQuery()->where('name', $menuItemName)->first();
-
         if ($menuItem) {
             $this->subMenuItems->newQuery()->where('parent_id', $menuItem->id)->each(function ($subMenuItem) {
                 $subMenuItem->delete();

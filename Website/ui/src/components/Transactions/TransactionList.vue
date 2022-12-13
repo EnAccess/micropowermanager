@@ -224,6 +224,10 @@
                                          :src="waveMoneyLogo"
                                          style="max-height:18px;"
                                     />
+                                    <img v-if="transaction.service==='swifta_transaction'"
+                                         :src="swiftaLogo"
+                                         style="max-height:18px;"
+                                    />
 
                                 </md-table-cell>
                                 <md-table-cell>{{ transaction.sender }}</md-table-cell>
@@ -276,9 +280,10 @@ import { TransactionService } from '@/services/TransactionService'
 
 import airtelLogo from '../../assets/icons/airtel.png'
 import vodacomLogo from '../../assets/icons/vodacom.png'
-import waveMoneyLogo  from '../../assets/icons/WaveMoney.png'
-import agentIcon  from '../../assets/icons/agent-icon.png'
-import moneyIcon  from '../../assets/icons/money-icon.png'
+import waveMoneyLogo from '../../assets/icons/WaveMoney.png'
+import swifta from '../../assets/icons/Swifta.png'
+import agentIcon from '../../assets/icons/agent-icon.png'
+import moneyIcon from '../../assets/icons/money-icon.png'
 import thirdPartyLogo from '../../assets/icons/third_party_transaction_icon.png'
 
 export default {
@@ -309,7 +314,8 @@ export default {
             thirdPartyLogo: thirdPartyLogo,
             waveMoneyLogo: waveMoneyLogo,
             agentIcon: agentIcon,
-            moneyIcon: moneyIcon
+            moneyIcon: moneyIcon,
+            swiftaLogo: swifta
         }
     },
     mounted () {
@@ -398,24 +404,24 @@ export default {
         getPeriod (period = 'Yesterday') {
 
             switch (period) {
-            case 'Yesterday':
-                this.analyticsPeriod = 0
-                break
+                case 'Yesterday':
+                    this.analyticsPeriod = 0
+                    break
 
-            case 'Same day last week':
-                this.analyticsPeriod = 1
-                break
+                case 'Same day last week':
+                    this.analyticsPeriod = 1
+                    break
 
-            case 'Past 7 days':
-                this.analyticsPeriod = 2
-                break
+                case 'Past 7 days':
+                    this.analyticsPeriod = 2
+                    break
 
-            case 'Past 30 days':
-                this.analyticsPeriod = 3
-                break
+                case 'Past 30 days':
+                    this.analyticsPeriod = 3
+                    break
 
-            default:
-                break
+                default:
+                    break
             }
 
             this.loadAnalytics()
