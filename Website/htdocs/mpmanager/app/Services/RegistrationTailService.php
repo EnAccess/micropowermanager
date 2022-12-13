@@ -63,8 +63,7 @@ class RegistrationTailService implements IBaseService
                 "-",
                 $mpmPlugin->tail_tag
             ) : null,
-            'adjusted' =>
-                false
+            'adjusted' => !isset($mpmPlugin->tail_tag),
         ]);
         $this->update(
             $registrationTail,

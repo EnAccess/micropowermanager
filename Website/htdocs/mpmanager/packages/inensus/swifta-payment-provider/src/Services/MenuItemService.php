@@ -1,30 +1,27 @@
 <?php
 
-namespace Inensus\CalinMeter\Services;
-
-
-use App\Models\MenuItems;
+namespace Inensus\SwiftaPaymentProvider\Services;
 
 class MenuItemService
 {
-    const MENU_ITEM = 'Calin Meter';
-
+    const MENU_ITEM = 'Swifta';
     public function createMenuItems()
     {
         $menuItem = [
-            'name' =>'Calin Meter',
-            'url_slug' =>'',
-            'md_icon' =>'bolt'
+            'name' => 'Swifta',
+            'url_slug' => '',
+            'md_icon' => 'money'
         ];
         $subMenuItems= array();
 
-        $subMenuItem1 = [
+        $subMenuItem1=[
             'name' => 'Overview',
-            'url_slug' => '/calin-meters/calin-overview',
+            'url_slug' => '/swifta-payment/swifta-payment-overview',
         ];
         array_push($subMenuItems, $subMenuItem1);
 
         return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
+
 
     }
 }

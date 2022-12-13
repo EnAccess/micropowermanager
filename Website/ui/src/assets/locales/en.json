@@ -334,7 +334,10 @@
     "waveMoneyTransaction": "Wave Money Transaction",
     "untraceableTransaction": "Untraceable transaction",
     "transactionCancelled": "Transaction cancelled",
-    "outgoingSms": "Outgoing sms"
+    "outgoingSms": "Outgoing sms",
+    "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
+    "swiftaTransaction": "SwiftaTransaction",
+    "transactionReference": "Transaction Reference"
   },
   "words": {
     "access": "Access",

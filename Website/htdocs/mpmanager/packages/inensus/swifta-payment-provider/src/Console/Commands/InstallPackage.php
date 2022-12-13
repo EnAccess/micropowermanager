@@ -3,35 +3,42 @@
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 
 use App\Models\User;
+use App\Services\CompanyDatabaseService;
+use App\Services\CompanyService;
+use App\Services\DatabaseProxyService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
+use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
+use Inensus\SwiftaPaymentProvider\Services\MenuItemService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class InstallPackage extends Command
 {
     protected $signature = 'swifta-payment-provider:install';
     protected $description = 'Install SwiftaPaymentProvider Package';
-    private $user;
-    private $authentication;
 
-    public function __construct(User $user, SwiftaAuthentication $authentication)
-    {
+
+    public function __construct(
+        private User $user,
+        private SwiftaAuthentication $authentication,
+        private CompanyService $companyService,
+        private CompanyDatabaseService $companyDatabaseService,
+        private DatabaseProxyService $databaseProxyService,
+        private MenuItemService $menuItemService
+    ) {
         parent::__construct();
-        $this->user = $user;
-        $this->authentication = $authentication;
+
     }
 
     public function handle(): void
     {
         $this->info('Installing SwiftaPaymentProvider Integration Package\n');
-        //$this->publishConfigurations();
-        //$this->publishMigrations();
-        //$this->createDatabaseTables();
-        //$this->createPluginRecord();
-        //$token = $this->generateAuthenticationToken();
-        //$this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
+        $this->createMenuItems();
+        $token = $this->generateAuthenticationToken();
+        $this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
         $this->info('Package installed successfully..');
     }
 
@@ -70,17 +77,24 @@ class InstallPackage extends Command
 
     private function generateAuthenticationToken()
     {
-
         $password = $this->generateRandomNumber();
-        $user = $this->user->newQuery()->create([
+        $companyId = app()->make(UserService::class)->getCompanyId();
+        $company = $this->companyService->getById($companyId);
+        $user = $this->user->newQuery()->firstOrCreate([
             'name' => 'swifta-user',
             'password' => $password,
-            'email' => 'swifta-user'
+            'email' => $company->getName() . '-swifta-user-' . Carbon::now()->timestamp,
+            'company_id' => $companyId
         ]);
-
-        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
+        $companyDatabase = $this->companyDatabaseService->getById($companyId);
+        $databaseProxyData = [
+            'email' => $user->getEmail(),
+            'fk_company_id' => $user->getCompanyId(),
+            'fk_company_database_id' => $companyDatabase->getId(),
+        ];
+        $this->databaseProxyService->create($databaseProxyData);
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
-
         $payload = JWTAuth::setToken($token)->getPayload();
         $expirationTime = $payload['exp'];
         $this->authentication->newQuery()->create([
@@ -102,5 +116,14 @@ class InstallPackage extends Command
             return '0';
         }
         return $number;
+    }
+
+    private function createMenuItems()
+    {
+        $menuItems = $this->menuItemService->createMenuItems();
+        $this->call('menu-items:generate', [
+            'menuItem' => $menuItems['menuItem'],
+            'subMenuItems' => $menuItems['subMenuItems'],
+        ]);
     }
 }

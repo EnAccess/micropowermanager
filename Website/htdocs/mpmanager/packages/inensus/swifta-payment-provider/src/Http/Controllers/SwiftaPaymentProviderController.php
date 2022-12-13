@@ -7,20 +7,19 @@ use Illuminate\Routing\Controller;
 use Inensus\SwiftaPaymentProvider\Http\Requests\SwiftaTransactionRequest;
 use Inensus\SwiftaPaymentProvider\Http\Requests\SwiftaValidationRequest;
 use Illuminate\Http\Response;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaPaymentProviderController extends Controller
 {
-    private $swiftaTransactionService;
 
-    public function __construct(SwiftaTransactionService $swiftaTransactionService)
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
     {
-        $this->swiftaTransactionService = $swiftaTransactionService;
+
     }
 
     public function validation(SwiftaValidationRequest $request)
     {
-
         $transactionId = $request->get('transactionId');
         $customerName = $request->get('customerName');
         $data = collect([
@@ -38,7 +37,15 @@ class SwiftaPaymentProviderController extends Controller
     {
 
         $transaction = $request->get('transaction');
-        $this->swiftaTransactionService->setStatusPending($transaction);
+        $reference = $request->get('reference');
+        $swiftaTransaction = $transaction->originalTransaction()->first();
+        $updateData = [
+            'status' => SwiftaTransaction::STATUS_PENDING,
+            'transaction_reference' => $reference
+        ];
+
+        $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
+
         $data = collect(
             [
                 'success' => 1,

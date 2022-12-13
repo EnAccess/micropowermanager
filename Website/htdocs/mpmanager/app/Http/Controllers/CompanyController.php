@@ -45,7 +45,8 @@ class CompanyController extends Controller
 
         $companyDatabaseData = [
             'company_id' => $company->getId(),
-            'database_name' => str_replace(" ", "", preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' . Carbon::now()->timestamp,
+            'database_name' => str_replace(" ", "", preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' .
+                Carbon::now()->timestamp,
         ];
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
         $databaseProxyData = [
@@ -62,6 +63,12 @@ class CompanyController extends Controller
             function () use ($databaseName, $adminData, $company, $plugins) {
                 $this->companyDatabaseService->doMigrations($databaseName);
                 $this->companyDatabaseService->runSeeders();
+                $this->userService->create([
+                    'name' => $adminData['name'],
+                    'password' => $adminData['password'],
+                    'email' => $adminData['email'],
+                    'company_id' => $company->getId(),
+                ], $company->getId());
                 $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]];
 
                 foreach ($plugins as $plugin) {
@@ -70,7 +77,8 @@ class CompanyController extends Controller
                         'status' => 1
                     ];
                     $this->pluginsService->create($pluginData);
-                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($plugin, $company->getId());
+                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($plugin,
+                        $company->getId());
 
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
                     array_push($registrationTail, [
@@ -80,18 +88,11 @@ class CompanyController extends Controller
                             "-",
                             $mpmPlugin->tail_tag
                         ) : null,
-                        'adjusted' =>
-                            false
+                        'adjusted' => !isset($mpmPlugin->tail_tag)
+
                     ]);
                     Artisan::call($mpmPlugin->installation_command);
                 }
-
-                $this->userService->create([
-                    'name' => $adminData['name'],
-                    'password' => $adminData['password'],
-                    'email' => $adminData['email'],
-                    'company_id' => $company->getId(),
-                ], $company->getId());
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
                 $mainSettings = $this->mainSettingsService->getAll()->first();

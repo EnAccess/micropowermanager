@@ -8,6 +8,7 @@ use App\Exceptions\ValidationException;
 use App\Jobs\AbstractJob;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\Sharding\ApiCompanyResolverService;
@@ -62,6 +63,7 @@ class UserDefaultDatabaseConnectionMiddleware
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { //web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
+
             if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }

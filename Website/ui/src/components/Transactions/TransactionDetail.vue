@@ -27,6 +27,9 @@
                                                              v-if="transaction.original_transaction_type === 'wave_money_transaction'"
                                     />
 
+                                    <swifta-transaction :ot="ot"
+                                                        v-if="transaction.original_transaction_type === 'swifta_transaction'"
+                                    />
                                 </md-card-content>
                             </md-card>
                         </widget>
@@ -209,10 +212,12 @@ import { TransactionService } from '@/services/TransactionService'
 import { PersonService } from '@/services/PersonService'
 import ThirdPartyTransaction from './ThirdPartyTransaction'
 import WaveMoneyTransaction from '@/components/Transactions/WaveMoneyTransaction'
+import SwiftaTransaction from '@/components/Transactions/SwiftaTransaction'
 
 export default {
     name: 'TransactionDetail',
     components: {
+        SwiftaTransaction,
         WaveMoneyTransaction,
         ThirdPartyTransaction,
         AirtelTransactionDetail,

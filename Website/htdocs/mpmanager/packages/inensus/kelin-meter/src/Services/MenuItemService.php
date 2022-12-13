@@ -5,6 +5,8 @@ namespace Inensus\KelinMeter\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'Kelin Meter';
+
     public function createMenuItems()
     {
         $menuItem = [

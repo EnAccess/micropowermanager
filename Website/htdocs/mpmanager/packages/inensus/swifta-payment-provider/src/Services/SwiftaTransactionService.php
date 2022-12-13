@@ -11,210 +11,114 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use App\Services\AbstractPaymentAggregatorTransactionService;
+use App\Services\IBaseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaction\TransactionConflicts;
 
-class SwiftaTransactionService
+class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
-    private $swiftaTransaction;
-    private $transaction;
-    private $address;
-    private $meter;
-    private $owner;
-    private $assetPerson;
-    private $assetRate;
 
     public function __construct(
-        SwiftaTransaction $swiftaTransaction,
-        Transaction $transaction,
-        Address $address,
-        Meter $meter,
-        Person $owner,
-        AssetPerson $assetPerson,
-        AssetRate $assetRate
+        private Meter $meter,
+        private Address $address,
+        private Transaction $transaction,
+        private MeterParameter $meterParameter,
+        private SwiftaTransaction $swiftaTransaction,
     ) {
-        $this->swiftaTransaction = $swiftaTransaction;
-        $this->transaction = $transaction;
-        $this->address = $address;
-        $this->meter = $meter;
-        $this->owner = $owner;
-        $this->assetPerson = $assetPerson;
-        $this->assetRate = $assetRate;
+        parent::__construct(
+            $this->meter,
+            $this->address,
+            $this->transaction,
+            $this->meterParameter,
+            $this->swiftaTransaction
+        );
     }
 
-    public function assignIncomingDataToSwiftaTransaction(array $data)
+    public function initializeTransactionData($data): array
     {
-        $transactionReference = null;
-        if (array_key_exists('transaction_reference', $data)) {
-            $transactionReference = $data['transaction_reference'];
-        }
-        return $this->swiftaTransaction->newQuery()->create([
-            'transaction_reference' => $transactionReference,
+        return [
             'amount' => $data['amount'],
             'cipher' => $data['cipher'],
+            'status' => SwiftaTransaction::STATUS_REQUESTED,
             'timestamp' => $data['timestamp'],
-        ]);
+        ];
     }
 
-    public function assignIncomingDataToTransaction(array $data)
+    public function setRequestedTransactionsStatusFailed()
     {
-        $meterSerial = $data['meter_number'];
-        try {
-            $sender = $this->getTransactionSender($meterSerial);
-            return $this->transaction->newQuery()->make([
-                'amount' => (int)$data['amount'],
-                'sender' => $sender,
-                'message' => $data['meter_number'],
-                'type' => 'energy',
-                'original_transaction_type' => 'swifta_transaction',
-            ]);
-        } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
-        }
-    }
-
-    public function associateSwiftaTransactionWithTransaction($swiftaTransaction, $transaction)
-    {
-        return $swiftaTransaction->transaction()->save($transaction);
-    }
-
-    public function validateInComingTransaction($transactionData)
-    {
-
-        $meterSerial = $transactionData['meter_number'];
-
-        try {
-            $sender = $this->getTransactionSender($meterSerial);
-        } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
-        }
-        $swiftaTransaction = $this->swiftaTransaction->newQuery()->make([
-            'transaction_reference' => null,
-            'amount' => $transactionData['amount'],
-            'cipher' => $transactionData['cipher'],
-            'timestamp' => $transactionData['timestamp'],
-        ]);
-
-        $transaction = $this->transaction->newQuery()->make([
-            'amount' => (int)$transactionData['amount'],
-            'sender' => $sender,
-            'message' => $meterSerial,
-            'type' => 'energy',
-            'original_transaction_type' => 'swifta_transaction',
-        ]);
-
-        $transaction->originalTransaction()->associate($swiftaTransaction);
-        try {
-            $transactionData = TransactionDataContainer::initialize($transaction);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-        $transactionData = $this->payLoanDebt($transactionData);
-        $transactionData = $this->processTransaction($transactionData);
-        if ($transactionData->transaction->amount < 0) {
-            throw new \Exception('Amount validation field.');
-        }
-
-    }
-
-    private function getTransactionSender($meterSerial)
-    {
-        $meterParameter = MeterParameter::query()->whereHas('meter', function ($q) use ($meterSerial) {
-            $q->where('serial_number', $meterSerial);
-        })->first();
-        $personId = $meterParameter->owner_id;
-        $this->owner = $meterParameter->owner;
-        try {
-            $address = Address::query()->whereHasMorph('owner', [Person::class], function ($q) use ($personId) {
-                $q->where('owner_id', $personId);
-            })->where('is_primary', 1)->firstOrFail();
-            return $address->phone;
-
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('No phone number record found by customer.');
-        }
-
-
-    }
-
-    private function payLoanDebt(TransactionDataContainer $transactionData): TransactionDataContainer
-    {
-
-        $loans = $this->getCustomerDueRates($this->owner);
-        foreach ($loans as $loan) {
-            $transactionData->transaction->amount -= $loan->remaining;
-        }
-
-        return $transactionData;
-    }
-
-    public function setStatusPending($transaction)
-    {
-
-        $swiftaTransaction = $transaction->originalTransaction()->first();
-        $swiftaTransaction->update([
-            'status' => 0
-        ]);
-    }
-
-    public function setUnProcessedTransactionsStatusAsRejected()
-    {
-        $this->swiftaTransaction->newQuery()->where('status', -2)->get()->each(function ($transaction) {
+        $this->swiftaTransaction->newQuery()->where('status', SwiftaTransaction::STATUS_REQUESTED)->get()->each(function ($transaction) {
             $transaction->update([
-                'status' => -1
+                'status' => SwiftaTransaction::STATUS_FAILED
             ]);
-            $message= "The transaction that stayed as Unprocessed more than 24 hours, updated to canceled.";
+            $message = "The transaction that stayed as Unprocessed more than 24 hours, updated to canceled.";
             $conflict = new TransactionConflicts();
             $conflict->state = $message;
             $conflict->transaction()->associate($transaction);
             $conflict->save();
-            Log::debug($message." Transaction Id : {$transaction->id}");
+            Log::debug($message . " Transaction Id : {$transaction->id}");
         });
     }
 
-    private function processTransaction(TransactionDataContainer $transactionData)
+    public function getSwiftaTransaction()
     {
-        $transactionData = $this->payAccessRate($transactionData);
-        return $this->handleSocialTariffPiggyBankSavingsIfMeterHas($transactionData);
+        return $this->getPaymentAggregatorTransaction();
     }
 
-    private function getCustomerDueRates($owner)
+    public function getTransactionById($transactionId)
     {
-        $loans = $this->assetPerson->newQuery()->where('person_id', $owner->id)->pluck('id');
-        return $this->assetRate->newQuery()->with('assetPerson.assetType')
-            ->whereIn('asset_person_id', $loans)
-            ->where('remaining', '>', 0)
-            ->whereDate('due_date', '<', date('Y-m-d'))
-            ->get();
-    }
+        try {
 
-    private function payAccessRate(TransactionDataContainer $transactionData)
-    {
-        $accessRatePayment = $transactionData->meter->accessRatePayment()->first();
-
-        if ($accessRatePayment === null) {
-            $debt_amount = 0;
-        } else {
-            $debt_amount = $accessRatePayment->debt;
-        }
-        $transactionData->transaction->amount -= $debt_amount;
-        return $transactionData;
-    }
-
-    private function handleSocialTariffPiggyBankSavingsIfMeterHas($transactionData)
-    {
-        $meterParameter = $transactionData->meterParameter;
-        $bankAccount = $meterParameter->socialTariffPiggyBank()->first();
-        if ($bankAccount) {
-            $savingsCost = $bankAccount->savings * (($bankAccount->socialTariff->price / 1000) / 100);
-            $transactionData->transaction->amount -= $savingsCost;
-            return $transactionData;
+            return $this->transaction->newQuery()->findOrFail($transactionId);
+        } catch (ModelNotFoundException $exception) {
+            throw  new \Exception('transaction_id validation field.');
         }
 
-        return $transactionData;
     }
 
+    public function checkAmountIsSame($amount, $transaction)
+    {
+        if ($amount != (int)$transaction->amount) {
+            throw new \Exception('amount validation field.');
+        }
+    }
+
+    public function getById($id)
+    {
+        return $this->swiftaTransaction->newQuery()->find($id);
+    }
+
+
+    public function update($swiftaTransaction, $swiftaTransactionData)
+    {
+        $swiftaTransaction->update($swiftaTransactionData);
+        $swiftaTransaction->fresh();
+
+        return $swiftaTransaction;
+    }
+
+    public function create($swiftaTransactionData)
+    {
+        return $this->swiftaTransaction->newQuery()->create($swiftaTransactionData);
+    }
+
+    public function delete($swiftaTransaction)
+    {
+        return $swiftaTransaction->delete();
+    }
+
+    public function getAll($limit = null)
+    {
+        $query = $this->swiftaTransaction->newQuery();
+
+        if ($limit) {
+            return $query->paginate($limit);
+        }
+
+        return $this->swiftaTransaction->newQuery()->get();
+    }
 }
 

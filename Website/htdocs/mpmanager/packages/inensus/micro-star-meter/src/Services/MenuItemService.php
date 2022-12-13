@@ -5,6 +5,8 @@ namespace Inensus\MicroStarMeter\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'MicroStar Meter';
+
     public function createMenuItems()
     {
         $menuItem = [

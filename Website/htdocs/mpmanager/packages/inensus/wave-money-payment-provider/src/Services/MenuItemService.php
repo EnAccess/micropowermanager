@@ -5,10 +5,12 @@ namespace Inensus\WaveMoneyPaymentProvider\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'WaveMoney';
+
     public function createMenuItems()
     {
         $menuItem = [
-            'name' => 'Wave Money',
+            'name' => 'WaveMoney',
             'url_slug' => '',
             'md_icon' => 'money'
         ];

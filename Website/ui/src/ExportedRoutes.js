@@ -514,5 +514,10 @@ export const exportedRoutes = [
         path: '/micro-star-meters/micro-star-overview',
         component: require('./plugins/micro-star-meter/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
+    },
+    {
+        path: '/swifta-payment/swifta-payment-overview',
+        component: require('./plugins/swifta-payment-provider/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
     }
 ]

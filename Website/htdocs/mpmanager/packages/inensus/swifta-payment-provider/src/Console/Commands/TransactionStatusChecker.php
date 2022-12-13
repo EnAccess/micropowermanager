@@ -15,7 +15,7 @@ class TransactionStatusChecker extends AbstractSharedCommand
     use ScheduledPluginCommand;
 
     protected $signature = 'swifta-payment-provider:transactionStatusCheck';
-    protected $description = 'Update the Swifta Transaction status if still -2 at 00:00';
+    protected $description = 'Update the Swifta Transaction status if still REQUESTED at 00:00';
 
 
     public function __construct(private SwiftaTransactionService $swiftaTransactionService)
@@ -35,7 +35,7 @@ class TransactionStatusChecker extends AbstractSharedCommand
         $this->info('# Swifta Transaction Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('transactionStatusCheck command started at ' . $startedAt);
-        $this->swiftaTransactionService->setUnProcessedTransactionsStatusAsRejected();
+        $this->swiftaTransactionService->setRequestedTransactionsStatusFailed();
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
         $this->info("Took " . $totalTime . " seconds.");

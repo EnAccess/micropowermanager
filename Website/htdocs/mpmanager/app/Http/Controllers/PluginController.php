@@ -54,7 +54,7 @@ class PluginController extends Controller
             }
 
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
-            $ExistingMenuItem = $this->menuItemsService->checkMenuItemIsExistsForTag($mpmPlugin->tail_tag);
+            $ExistingMenuItem = $this->menuItemsService->checkMenuItemIsExistsForTag($mpmPlugin);
 
             if (!$ExistingMenuItem) {
                 $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
@@ -63,18 +63,10 @@ class PluginController extends Controller
             $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
         } else {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
-
-            //since we do not force the user to configure bulk registrations.
-            if ($mpmPlugin->name === 'BulkRegistration') {
-                $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName('Bulk Registration');
-            } else {
-                $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin->tail_tag);
-            }
-
-
+            $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin);
             $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {
                 return $item['tag'] !== $mpmPlugin->tail_tag;
-            }) ;
+            });
 
             $this->registrationTailService->update(
                 $registrationTail,

@@ -9,9 +9,9 @@ use Illuminate\Support\ServiceProvider;
 use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage;
 use Inensus\SwiftaPaymentProvider\Console\Commands\TransactionStatusChecker;
 use Inensus\SwiftaPaymentProvider\Console\Commands\UpdatePackage;
-use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaTransactionRequest;
-use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaValidationBeforeTransactionRequest;
-use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaValidationRequest;
+use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaTransactionCallbackMiddleware;
+use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaTransactionMiddleware;
+use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaMiddleware;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Illuminate\Console\Scheduling\Schedule;
 

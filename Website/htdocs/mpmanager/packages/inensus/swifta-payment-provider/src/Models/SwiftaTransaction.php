@@ -11,7 +11,18 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class SwiftaTransaction extends BaseModel implements IRawTransaction
 {
+    const STATUS_SUCCESS = 1;
+    const STATUS_PENDING = 0;
+    const STATUS_FAILED = -1;
+    const STATUS_REQUESTED = -2;
+
     protected $table = 'swifta_transactions';
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
     /**
      * @return MorphOne
      */
