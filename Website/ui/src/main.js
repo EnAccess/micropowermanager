@@ -24,6 +24,7 @@ import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
 import Settings from '@/components/Settings/MainSettings'
 import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
 import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credential'
+import SunKing from '@/plugins/sun-king-meter/js/components/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
 
 Vue.component('default', Default)
@@ -37,6 +38,8 @@ Vue.component('Settings', Settings)
 Vue.component('Viber-Messaging', Viber)
 Vue.component('WaveMoney', WaveMoney)
 Vue.component('MicroStar-Meter', MicroStar)
+Vue.component('SunKing-Meter', SunKing)
+
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 

@@ -519,5 +519,10 @@ export const exportedRoutes = [
         path: '/swifta-payment/swifta-payment-overview',
         component: require('./plugins/swifta-payment-provider/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
+    },
+    {
+        path: '/sun-king-meters/sun-king-overview',
+        component: require('./plugins/sun-king-meter/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
     }
 ]
