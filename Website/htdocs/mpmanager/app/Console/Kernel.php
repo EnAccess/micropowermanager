@@ -17,6 +17,7 @@ use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegis
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
+use Inensus\SunKingMeter\Console\Commands\InstallPackage as InstallSunKingMeterPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -39,7 +40,8 @@ class Kernel extends ConsoleKernel
         InstallBulkRegistrationPackage::class,
         InstallViberMessagingPackage::class,
         InstallWaveMoneyPaymentProviderPackage::class,
-        InstallMicroStarMeterPackage::class
+        InstallMicroStarMeterPackage::class,
+        InstallSunKingMeterPackage::class,
     ];
 
     /**

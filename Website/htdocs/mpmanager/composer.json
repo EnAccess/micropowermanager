@@ -76,7 +76,8 @@
       "Inensus\\BulkRegistration\\": "packages/inensus/bulk-registration/src",
       "Inensus\\ViberMessaging\\": "packages/inensus/viber-messaging/src",
       "Inensus\\WaveMoneyPaymentProvider\\": "packages/inensus/wave-money-payment-provider/src",
-        "Inensus\\MicroStarMeter\\": "packages/inensus/micro-star-meter/src"
+      "Inensus\\MicroStarMeter\\": "packages/inensus/micro-star-meter/src",
+      "Inensus\\SunKingMeter\\": "packages/inensus/sun-king-meter/src"
     }
   },
   "minimum-stability": "dev",
