@@ -24,12 +24,9 @@ class CreateAgentReceiptRequest extends FormRequest
      */
     public function rules()
     {
-        $sessionService = app()->make(SessionService::class);
-        $database = $sessionService->getAuthenticatedUserDatabaseName();
         return [
             'agent_id' => 'required',
-            'amount' => 'required|numeric',
-
+            'amount' => 'required',
         ];
     }
 }
