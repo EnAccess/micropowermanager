@@ -8,7 +8,7 @@ use Inensus\SunKingMeter\Models\SunKingCredential;
 class SunKingCredentialService
 {
     public function __construct(
-       private SunKingCredential $credential
+        private SunKingCredential $credential
     ) {
     }
 
@@ -44,8 +44,16 @@ class SunKingCredentialService
     public function isAccessTokenValid($credential)
     {
         $accessToken = $credential->getAccessToken();
-          $tokenExpirationTime = $credential->getExpirationTime();
 
-          return $accessToken && $tokenExpirationTime > time();
+        if ($accessToken == null) {
+            return false;
+        }
+        $tokenExpirationTime = $credential->getExpirationTime();
+
+        if ($tokenExpirationTime == null || $tokenExpirationTime < time()) {
+            return false;
+        }
+
+        return true;
     }
 }
