@@ -52,7 +52,7 @@ class SunKingMeterApi implements IManufacturerAPI
 
             if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
-                $credentials->update([$authResponse]);
+                $this->credentialService->updateCredentials($credentials, $authResponse);
             }
 
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);

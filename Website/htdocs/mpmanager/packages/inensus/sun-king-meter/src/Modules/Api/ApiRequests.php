@@ -32,7 +32,7 @@ class ApiRequests
             $body = json_decode((string)$response->getBody(), true);
             $token = $body['access_token'];
             $expiresIn = time() + (int)$body['expires_in'];
-
+            Log::info('Authentication token: ' . $token);
             return [
                 'access_token' => $token,
                 'token_expires_in' => $expiresIn
@@ -78,12 +78,12 @@ class ApiRequests
             $request = $this->httpClient->post(
                 $url,
                 [
-                    'body' => json_encode($params),
                     'headers' => [
-                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json',
                         'Authorization' => 'Bearer ' . $credentials->getAccessToken(),
-                        'Content-Type' => 'application/json;charset=utf-8',
+
                     ],
+                    'body' => json_encode($params),
                 ]
             );
             return (json_decode((string)$request->getBody(), true));
