@@ -37,6 +37,10 @@ export class AgentReceiptService {
     async addNewReceipt () {
         try {
 
+            const receiptPM = {
+                agent_id: this.newReceipt.agentId,
+                amount: this.newReceipt.amount
+            }
             let response = await this.repository.create(this.newReceipt)
             if (response.status === 200 || response.status === 201) {
                 this.resetNewReceipt()

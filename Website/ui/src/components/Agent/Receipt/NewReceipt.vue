@@ -90,8 +90,8 @@ export default {
     methods: {
 
         async saveReceipt () {
-            if ((-1 * this.agentReceiptService.newReceipt.amount) > this.agent.dueToEnergySupplier) {
-                this.alertNotify('warn', this.$tc('phrases.addReceiptNotify',2, {dueToEnergySupplier: this.agent.dueToEnergySupplier}))
+            if (this.agentReceiptService.newReceipt.amount > (-1 * this.agent.dueToEnergySupplier)) {
+                this.alertNotify('warn', this.$tc('phrases.addReceiptNotify',2, { dueToEnergySupplier: this.agent.dueToEnergySupplier}))
 
             } else {
 

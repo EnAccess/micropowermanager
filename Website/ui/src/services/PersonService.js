@@ -67,6 +67,7 @@ export class PersonService {
                 this.person.birthDate = this.isoYear(this.person.birthDate)
             }
             const personPM = {
+                'id': this.person.id,
                 'title': this.person.title,
                 'education': this.person.education,
                 'birth_date': this.person.birthDate,

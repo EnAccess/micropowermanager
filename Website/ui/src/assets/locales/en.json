@@ -65,7 +65,7 @@
     "addCommissionType": "Add Commission Type | Agent commission added successfully",
     "addNewType": "Add New Type",
     "addReceipt": "Add Receipt | Receipt Added successfully | This agent does not owe the energy provider. ",
-    "addReceiptNotify": "Suggested receipt amount is  {energySupplier} |  Max receipt amount must be equal to { dueToEnergySupplier }",
+    "addReceiptNotify": "Suggested receipt amount is  {energySupplier} |  Max receipt amount must be equal to {dueToEnergySupplier}",
     "addTou": "Add TOU (Time of Usage)",
     "agentCommissionDeleted": "Agent Commission Deleted!",
     "agentCommissionUpdated": "Agent Commission Updated!",
