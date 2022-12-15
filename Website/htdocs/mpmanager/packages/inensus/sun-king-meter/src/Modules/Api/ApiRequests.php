@@ -32,7 +32,6 @@ class ApiRequests
             $body = json_decode((string)$response->getBody(), true);
             $token = $body['access_token'];
             $expiresIn = time() + (int)$body['expires_in'];
-            Log::info('Authentication token: ' . $token);
             return [
                 'access_token' => $token,
                 'token_expires_in' => $expiresIn
@@ -88,6 +87,7 @@ class ApiRequests
             );
             return (json_decode((string)$request->getBody(), true));
         } catch (GuzzleException $e) {
+
             Log::critical(
                 'SunKing API Transaction Failed',
                 [

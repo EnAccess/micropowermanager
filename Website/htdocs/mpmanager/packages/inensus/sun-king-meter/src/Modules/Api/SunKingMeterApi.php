@@ -7,6 +7,7 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Facades\Log;
+use Inensus\SunKingMeter\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingMeter\Models\SunKingTransaction;
 use Inensus\SunKingMeter\Services\SunKingCredentialService;
 
@@ -55,7 +56,14 @@ class SunKingMeterApi implements IManufacturerAPI
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }
 
-            $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
+            try {
+                $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
+            } catch (SunKingApiResponseException $e) {
+                $this->credentialService->updateCredentials($credentials,
+                    ['access_token' => null, 'token_expires_in' => null]);
+                throw new SunKingApiResponseException($e->getMessage());
+            }
+
 
             $manufacturerTransaction = $this->sunKingTransaction->newQuery()->create([]);
             $transactionContainer->transaction->originalTransaction()->first()->update([

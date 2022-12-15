@@ -52,6 +52,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
@@ -78,6 +79,7 @@ export default {
                 this.loading = true
                 await this.credentialService.updateCredential()
                 this.alertNotify('success', 'Authentication Successful')
+                EventBus.$emit('SunKing Meter')
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
