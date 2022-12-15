@@ -17,7 +17,7 @@ class SunKingMeterApi implements IManufacturerAPI
     const COMMAND_ADD_CREDIT = 'add_credit';
 
     public function __construct(
-        private SunKingCdentialService $credentialService,
+        private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
         private ApiRequests $apiRequests
     ) {
