@@ -5,6 +5,7 @@ use Illuminate\Support\ServiceProvider;
 use Inensus\SunKingMeter\Console\Commands\InstallPackage;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Inensus\SunKingMeter\Modules\Api\SunKingMeterApi;
 
 
 class SunKingMeterServiceProvider extends ServiceProvider

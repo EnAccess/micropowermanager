@@ -11,6 +11,7 @@ class Migrator extends AbstractSharedCommand
     {
         $this->call('optimize:clear');
         $this->call('migrate', [
+            '--force' => true,
             '--database' => 'shard',
             '--path' => '/database/migrations/micropowermanager',
         ]);

@@ -54,6 +54,7 @@ class CompanyDatabaseService implements IBaseService
     public function doMigrations($databaseName)
     {
         Artisan::call('migrate', [
+            '--force' => true,
             '--database' => 'shard',
             '--path' => '/database/migrations/' . $databaseName,
         ]);
