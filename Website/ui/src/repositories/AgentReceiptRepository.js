@@ -9,8 +9,8 @@ export default {
         return Client.get(`${resource}/${agentId}`)
 
     },
-    create(newReceipt){
-        return Client.post(`${resource}/${newReceipt.agentId}`,newReceipt)
+    create(newReceipt, agentId){
+        return Client.post(`${resource}/${agentId}`,newReceipt)
 
     }
 }
