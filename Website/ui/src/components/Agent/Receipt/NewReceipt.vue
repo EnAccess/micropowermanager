@@ -14,7 +14,7 @@
                             <md-icon style="color: green">done</md-icon>
                         </span>
                             <div class="md-layout-item md-size-100 exclamation-div">
-                                <span>{{$tc('phrases.addReceiptNotify',1, {energySupplier: agent.dueToEnergySupplier})}} </span>
+                                <span>{{$tc('phrases.addReceiptNotify',1, {energySupplier: (-1 * agent.dueToEnergySupplier)})}} </span>
                             </div>
                         </div>
                         <md-field :class="{'md-invalid': errors.has($tc('words.amount'))}">
@@ -90,10 +90,11 @@ export default {
     methods: {
 
         async saveReceipt () {
-            if (this.agentReceiptService.newReceipt.amount > this.agent.dueToEnergySupplier) {
-                this.alertNotify('warn', this.$tc('phrases.addReceiptNotify',2,{dueToEnergySupplier: this.agent.dueToEnergySupplier}))
-                this.agentReceiptService.newReceipt.amount = this.agent.dueToEnergySupplier
+            if ((-1 * this.agentReceiptService.newReceipt.amount) > this.agent.dueToEnergySupplier) {
+                this.alertNotify('warn', this.$tc('phrases.addReceiptNotify',2, {dueToEnergySupplier: this.agent.dueToEnergySupplier}))
+
             } else {
+
                 let validator = await this.$validator.validateAll()
                 if (validator) {
                     try {

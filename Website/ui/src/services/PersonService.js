@@ -66,7 +66,15 @@ export class PersonService {
             if (this.person.birthDate !== null) {
                 this.person.birthDate = this.isoYear(this.person.birthDate)
             }
-            let response = await this.repository.update(this.person)
+            const personPM = {
+                'title': this.person.title,
+                'education': this.person.education,
+                'birth_date': this.person.birthDate,
+                'name': this.person.name,
+                'surname': this.person.surname,
+                'gender': this.person.gender
+            }
+            let response = await this.repository.update(personPM)
             if (response.status === 200 || response.status === 201) {
                 return response.data.data
             } else {

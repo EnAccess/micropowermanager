@@ -166,8 +166,8 @@ export let resources = {
         list: '/api/agents',
         search: '/api/agents/search',
         balance_histories: '/api/agents/balance/history/',
-        sold_appliances: 'api/agents/sold/',
-        transactions: 'api/agents/transactions/',
+        sold_appliances: '/api/agents/sold/',
+        transactions: '/api/agents/transactions/',
         tickets: '/tickets/api/agents',
         receipts: '/api/agents/receipt'
     }
