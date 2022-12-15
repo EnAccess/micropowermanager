@@ -33,7 +33,7 @@ class SunKingCredential extends BaseModel
         return $this->access_token;
     }
 
-    public function getExpressionTime()
+    public function getExpirationTime()
     {
         return $this->token_expires_in;
     }
