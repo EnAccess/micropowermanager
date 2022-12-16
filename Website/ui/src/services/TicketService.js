@@ -40,7 +40,6 @@ export class TicketService {
                 title: ticket.title,
             };
         });
-        console.log("mapping resul", result);
         if (type === 'ticketListOpened')
             this.openedList = result;
         else

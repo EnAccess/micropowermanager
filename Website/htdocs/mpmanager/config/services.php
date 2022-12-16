@@ -109,5 +109,11 @@ return [
     'bingMapApi' => [
         'url' => 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=',
     ],
+    'sunKing'=>[
+        'url' => env('SUNKING_API_URL'),
+    ],
+    'waveMoney'=>[
+        'url' => env('WAVEMONEY_API_URL'),
+    ],
 
 ];

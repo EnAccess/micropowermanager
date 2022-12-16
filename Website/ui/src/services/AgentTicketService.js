@@ -11,10 +11,8 @@ export class AgentTicketService {
     }
 
     async updateList (data) {
-        console.log('update list with ', data)
         this.list = []
-        if(data && data.length>0) {
-            this.list =  data?.map((ticket) => {
+        this.list = data?.data?.map((ticket) => {
                 return {
                     created: ticket.created_at,
                     id: ticket.id,
@@ -26,14 +24,9 @@ export class AgentTicketService {
                     comments: ticket.comments,
                     category: ticket.category.label_name,
                     owner: ticket.owner.name + ticket.owner.surname,
-                    assigned: ticket.assigned_id && ticket.assigned_to ? ticket.assigned_to.user_name : null,
+                    assigned: ticket.assigned_id &&  ticket.assigned_to? ticket.assigned_to.user_name : null,
                     title: ticket.title,
                 };
             });
-        } else {
-
-        }
-        console.log("mapping result agent", this.list);
-        console.log(this.list)
     }
 }
