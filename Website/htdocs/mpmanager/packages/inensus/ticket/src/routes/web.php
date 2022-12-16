@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/{trelloId}', 'TicketController@show');
+
 
 Route::group(['prefix' => 'api'], function () {
     Route::get('/', 'TicketController@index');
+    Route::get('/{trelloId}', 'TicketController@show');
     Route::post('/ticket', 'TicketCustomerController@store');
     Route::delete('/ticket/{ticketId}', 'TicketController@destroy');
 
