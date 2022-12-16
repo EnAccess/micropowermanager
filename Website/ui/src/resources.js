@@ -61,8 +61,8 @@ export let resources = {
         'create': '/api/tariffs',
     },
     ticket: {
-        'list': '/tickets/api',
-        'detail': '/tickets/api/',
+        'list': '/tickets/api/ticket',
+        'detail': '/tickets/api/ticket/',
         'close': '/tickets/api/ticket',
         'create': '/tickets/api/ticket',
         'createMaintenance': '/tickets/api/ticket',

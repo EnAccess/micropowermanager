@@ -34,7 +34,7 @@ class TicketController extends Controller
 
     public function show(int $id ): TicketResource
     {
-        $ticket = $this->ticketService->findById($id);
+        $ticket = $this->ticketService->getById($id);
 
         return TicketResource::make(collect($ticket));
     }

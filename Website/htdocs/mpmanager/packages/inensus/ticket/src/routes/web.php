@@ -6,10 +6,14 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['prefix' => 'api'], function () {
-    Route::get('/', 'TicketController@index');
-    Route::get('/{trelloId}', 'TicketController@show');
-    Route::post('/ticket', 'TicketCustomerController@store');
-    Route::delete('/ticket/{ticketId}', 'TicketController@destroy');
+
+
+    Route::group(['prefix' => 'ticket'], function () {
+        Route::post('/', 'TicketCustomerController@store');
+        Route::delete('/{ticketId}', 'TicketController@destroy');
+        Route::get('/', 'TicketController@index');
+        Route::get('/{trelloId}', 'TicketController@show');
+    });
 
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', 'TicketUserController@index');
