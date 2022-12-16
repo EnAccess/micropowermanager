@@ -1,7 +1,6 @@
 import { TicketTrelloService } from './TicketTrelloService'
 import { Paginator } from '@/classes/paginator'
 import { resources } from '@/resources'
-import {Ticket} from "@/classes/person/ticket";
 
 export class AgentTicketService {
     constructor (agentId) {
@@ -13,13 +12,23 @@ export class AgentTicketService {
 
     async updateList (data) {
         this.list = []
-        console.log("data", data);
-        debugger
         if(data && data.length>0) {
-            const tickets = data?.data.map(function (ticket) {
-                return (new Ticket()).fromJson(ticket)
+            this.list = data?.data?.map((ticket) => {
+                return {
+                    created: ticket.created_at,
+                    id: ticket.id,
+                    name: ticket.name,
+                    description: ticket.content,
+                    due: ticket.due,
+                    closed: ticket.status === 1,
+                    lastActivity: null,
+                    comments: ticket.comments,
+                    category: ticket.category.label_name,
+                    owner: ticket.owner.name + ticket.owner.surname,
+                    assigned: ticket.assigned_id && ticket.assigned_to ? ticket.assigned_to.user_name : null,
+                    title: ticket.title,
+                };
             });
-            this.list = tickets ?? [];
         } else {
 
         }
