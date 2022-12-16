@@ -32,5 +32,7 @@ export class AgentTicketService {
         } else {
 
         }
+        console.log("mapping result agent", this.list);
+        console.log(this.list)
     }
 }
