@@ -11,9 +11,10 @@ export class AgentTicketService {
     }
 
     async updateList (data) {
+        console.log('update list with ', data)
         this.list = []
         if(data && data.length>0) {
-            this.list = data?.data?.map((ticket) => {
+            this.list =  data?.map((ticket) => {
                 return {
                     created: ticket.created_at,
                     id: ticket.id,
