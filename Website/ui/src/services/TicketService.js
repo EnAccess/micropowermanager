@@ -18,7 +18,7 @@ export class TicketService {
     }
 
     async updateList(data, type) {
-        console.log('updatelist ticket', data, type)
+
         if (type === 'ticketListOpened')
             this.openedList = []
         else
