@@ -13,7 +13,8 @@ export class AgentTicketService {
 
     async updateList (data) {
         this.list = []
-
+        console.log("data", data);
+        debugger
         if(data && data.length>0) {
             const tickets = data?.data.map(function (ticket) {
                 return (new Ticket()).fromJson(ticket)

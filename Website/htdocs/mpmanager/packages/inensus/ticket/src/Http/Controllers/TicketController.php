@@ -28,7 +28,6 @@ class TicketController extends Controller
         $categoryId = $request->input('category');
         $status = $request->input('status');
         $limit = 5;
-
         return TicketResource::make($this->ticketService->getAll(limit:$limit, status:$status, assignedId: $assignedId,  categoryId: $categoryId));
     }
 

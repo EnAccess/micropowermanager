@@ -9,9 +9,9 @@ Route::group(['prefix' => 'api'], function () {
 
 
     Route::group(['prefix' => 'ticket'], function () {
+        Route::get('/', 'TicketController@index');
         Route::post('/', 'TicketCustomerController@store');
         Route::delete('/{ticketId}', 'TicketController@destroy');
-        Route::get('/', 'TicketController@index');
         Route::get('/{trelloId}', 'TicketController@show');
     });
 
