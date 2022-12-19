@@ -21,14 +21,22 @@ class TicketService implements IAssociative
     {
     }
 
-    public function create(string $title, string $content, int $categoryId, int $assignedId, ?string $dueDate, mixed $owner)
-    {
+    public function create(
+        string $title,
+        string $content,
+        int $categoryId,
+        int $assignedId,
+        ?string $dueDate,
+        mixed $owner
+    ) {
         $ticket = $this->ticket->newQuery()->create(
-            ['title' => $title,
+            [
+                'title' => $title,
                 'content' => $content,
                 'category_id' => $categoryId,
                 'due_date' => $dueDate,
-                'assigned_id' => $assignedId,]
+                'assigned_id' => $assignedId,
+            ]
         );
 
         $ticket->owner()->associate($owner);
@@ -68,9 +76,14 @@ class TicketService implements IAssociative
         return $ticket;
     }
 
-    public function getAll($limit = null, $status = null, $agentId = null, $customerId = null,
-                           $assignedId = null, $categoryId = null)
-    {
+    public function getAll(
+        $limit = null,
+        $status = null,
+        $agentId = null,
+        $customerId = null,
+        $assignedId = null,
+        $categoryId = null
+    ) {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 
         if ($agentId) {
@@ -107,11 +120,10 @@ class TicketService implements IAssociative
         }
 
 
-        if ($tickets->count()) {
-            //get ticket details from trello
-            $ticketData = $this->getBatch($tickets);
-            $tickets->setCollection(Collection::make($ticketData));
-        }
+        //get ticket details from trello
+        $ticketData = $this->getBatch($tickets);
+        $tickets->setCollection(Collection::make($ticketData));
+
 
         return $tickets;
     }
@@ -137,5 +149,26 @@ class TicketService implements IAssociative
             })
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
+    }
+
+    public function getForAgent($agentId, $customerId = null)
+    {
+        $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
+
+        if ($agentId) {
+            $query->whereHasMorph(
+                'creator',
+                [Agent::class],
+                static function ($q) use ($agentId) {
+                    $q->where('id', $agentId);
+                }
+            );
+        }
+
+        if ($customerId) {
+            $query->where('owner_id', $customerId);
+        }
+
+        return $query->paginate();
     }
 }
