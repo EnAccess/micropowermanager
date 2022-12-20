@@ -21,6 +21,6 @@ class PersonService extends CreatorService
             'name' => $csvData[$personConfig['name']],
             'surname' => $csvData[$personConfig['surname']]
         ];
-        return $this->createRelatedDataIfDoesNotExists($personData);
+        return  Person::query()->create($personData);
     }
 }

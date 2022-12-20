@@ -17,6 +17,7 @@ class ImportCsvController extends Controller
 
     public function __construct(CsvDataService $csvDataService)
     {
+        set_time_limit(8000000);
         $this->csvDataService = $csvDataService;
     }
 
