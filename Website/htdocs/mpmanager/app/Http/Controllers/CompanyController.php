@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CompanyRegistrationRequest;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
-use App\Services\DatabaseProxyService;
 use App\Services\MainSettingsService;
 use App\Services\MenuItemsService;
 use App\Services\MpmPluginService;
@@ -14,9 +13,7 @@ use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyController extends Controller
@@ -24,7 +21,6 @@ class CompanyController extends Controller
     public function __construct(
         private CompanyService $companyService,
         private CompanyDatabaseService $companyDatabaseService,
-        private DatabaseProxyService $databaseProxyService,
         private PluginsService $pluginsService,
         private MenuItemsService $menuItemsService,
         private UserService $userService,
@@ -49,19 +45,13 @@ class CompanyController extends Controller
                 Carbon::now()->timestamp,
         ];
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
-        $databaseProxyData = [
-            'email' => $adminData['email'],
-            'fk_company_id' => $company->getId(),
-            'fk_company_database_id' => $companyDatabase->getId()
-        ];
         $databaseName = $companyDatabase->database_name;
-        $this->databaseProxyService->create($databaseProxyData);
         $this->companyDatabaseService->createNewDatabaseForCompany($databaseName, $company->getId());
 
         return $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            function () use ($databaseName, $adminData, $company, $plugins) {
-                $this->companyDatabaseService->doMigrations($databaseName);
+            function () use ($adminData, $company, $plugins) {
+                $this->companyDatabaseService->doMigrations();
                 $this->companyDatabaseService->runSeeders();
                 $this->userService->create([
                     'name' => $adminData['name'],
@@ -81,7 +71,7 @@ class CompanyController extends Controller
                         $company->getId());
 
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
-                    array_push($registrationTail, [
+                    $registrationTail[] = [
                         'tag' => $mpmPlugin->tail_tag,
                         'component' => isset($mpmPlugin->tail_tag) ? str_replace(
                             " ",
@@ -90,7 +80,7 @@ class CompanyController extends Controller
                         ) : null,
                         'adjusted' => !isset($mpmPlugin->tail_tag)
 
-                    ]);
+                    ];
                     Artisan::call($mpmPlugin->installation_command);
                 }
 

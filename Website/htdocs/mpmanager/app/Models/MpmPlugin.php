@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property null|string $tail_tag
+ * @property null|string $installation_command
+ */
 class MpmPlugin extends MasterModel
 {
     const SPARK_METER = 1;
