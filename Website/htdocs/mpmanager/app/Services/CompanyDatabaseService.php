@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
+use Exception;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -12,9 +13,12 @@ class CompanyDatabaseService implements IBaseService
     {
     }
 
-    public function getById($id)
+    public function getById($id): CompanyDatabase
     {
-        return $this->companyDatabase->newQuery()->find($id);
+        /** @var CompanyDatabase $result */
+        $result =  $this->companyDatabase->newQuery()->find($id);
+
+        return $result;
     }
 
     public function create($data): CompanyDatabase
@@ -25,17 +29,17 @@ class CompanyDatabaseService implements IBaseService
         return $result;
     }
 
-    public function update($model, $data)
+    public function update($model, $data): void
     {
         // TODO: Implement update() method.
     }
 
-    public function delete($model)
+    public function delete($model): void
     {
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null)
+    public function getAll($limit = null): void
     {
         // TODO: Implement getAll() method.
     }
@@ -47,32 +51,28 @@ class CompanyDatabaseService implements IBaseService
             . $databaseName . ' --user=root' . ' --path=' . $sourcePath . ' --company_id=' . $companyId);
     }
 
-    public function setDatabaseConnectionForCompany($databaseName)
-    {
-    }
-
-    public function doMigrations($databaseName)
+    public function doMigrations(): void
     {
         Artisan::call('migrate', [
             '--force' => true,
             '--database' => 'shard',
-            '--path' => '/database/migrations/' . $databaseName,
+            '--path' => '/database/migrations/micropowermanager',
         ]);
     }
 
-    public function runSeeders()
+    public function runSeeders(): void
     {
         Artisan::call('db:seed', ['--force' => true]);
     }
 
-    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null)
+    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null): void
     {
         $rootClass = $plugin['root_class'];
         try {
             $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             // we return here if company chooses a plugin which does not have UI components
-            return 0;
+            return;
         }
         $menuItems = $menuItemService->createMenuItems();
 
