@@ -17,9 +17,8 @@ class UserPasswordController extends Controller
         $this->userService = $userService;
     }
 
-    public function forgotPassword(AdminResetPasswordRequest $request, Response $response)
+    public function forgotPassword(AdminResetPasswordRequest $request, Response $response): Response
     {
-
         if (!$this->userService->resetPassword($request->input('email'))) {
             return $response->setStatusCode(422)->setContent(
                 [

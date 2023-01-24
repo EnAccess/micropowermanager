@@ -4,14 +4,22 @@ declare(strict_types=1);
 
 namespace MPM\User;
 
+use App\Helpers\MailHelper;
 use App\Services\CompanyDatabaseService;
+use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
 use Inensus\Ticket\Services\TicketUserService;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserListener
 {
-    public function __construct(private DatabaseProxyService $databaseProxyService, private CompanyDatabaseService $companyDatabaseService, private TicketUserService $ticketUserService)
+    public function __construct(
+        private DatabaseProxyService $databaseProxyService,
+        private CompanyDatabaseService $companyDatabaseService,
+        private TicketUserService $ticketUserService,
+        private CompanyService $companyService,
+        private MailHelper $mailHelper,
+    )
     {
     }
 
@@ -23,7 +31,7 @@ class UserListener
     }
 
 
-    public function handleUserCreatedEvent(UserCreatedEvent $event)
+    public function handleUserCreatedEvent(UserCreatedEvent $event): void
     {
         if ($event->shouldSyncUser) {
             $companyDatabase = $this->companyDatabaseService->findByCompanyId($event->user->getCompanyId());
@@ -37,6 +45,10 @@ class UserListener
             $this->databaseProxyService->create($databaseProxyData);
         }
 
+        $company = $this->companyService->getById($event->user->getCompanyId());
         $this->ticketUserService->findOrCreateByUser($event->user);
+
+        $this->mailHelper->sendViaTemplate($event->user->getEmail(), 'Welcome to MicroPowerManager',
+            'templates.mail.register_welcome', ['userName' => $event->user->getName(), 'companyName'=> $company->getName()]);
     }
 }

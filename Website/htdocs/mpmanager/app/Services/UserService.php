@@ -3,13 +3,12 @@
 namespace App\Services;
 
 use App\Exceptions\MailNotSentException;
+use App\Helpers\MailHelper;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserService
@@ -42,7 +41,7 @@ class UserService
         return $user->fresh();
     }
 
-    public function resetPassword(string $email)
+    public function resetPassword(string $email): ?User
     {
         try {
             $newPassword = PasswordGenerator::generatePassword();
@@ -50,40 +49,30 @@ class UserService
             $newPassword = time();
         }
 
-        try {
-            $user = $this->buildQuery()
-                ->where('email', $email)
-                ->firstOrFail();
-        } catch (ModelNotFoundException $x) {
+        /** @var User $user */
+        $user = $this->buildQuery()->where('email', $email)->firstOrFail();
+
+        if ($user === null) {
             return null;
         }
         $user->update(['password' => $newPassword]);
 
-
-        //send the new password
-        //this part can not extracted as a job, jobs are working async and in case of any issues the system wont be
-        // able to send bad http status
+        /** @var MailHelper $mailer */
         $mailer = resolve('MailProvider');
         try {
-            $mailer->sendPlain(
-                $user->email,
-                'Your new Password | Micro Power Manager',
-                'You can use ' . $newPassword . ' to Login. <br> Please don\'t forget to change your password.'
-            );
+            $mailer->sendViaTemplate($user->getEmail(), 'Your new Password | Micro Power Manager',
+                'templates.mail.forgot_password',
+                ["userName" => $user->getName(), 'password' => $newPassword]);
         } catch (MailNotSentException $exception) {
-            Log::debug(
-                'Failed to reset password',
-                [
-                    'id' => '4
-                78efhd3497gvfdhjkwgsdjkl4ghgdf',
-                    'message' => 'Password reset email for ' . $user->email . ' failed',
-                    'reason' => $exception->getMessage(),
-                ]
-            );
+            report($exception);
             return null;
         }
 
-        return $user->fresh()->with(['addressDetails']);
+        /** @var User|null $user */
+        $user = $user->fresh()->with(['addressDetails'])->first();
+
+        return $user;
+
     }
 
     public function list(): LengthAwarePaginator

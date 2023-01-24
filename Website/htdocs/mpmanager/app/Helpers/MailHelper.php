@@ -70,5 +70,28 @@ class MailHelper
         }
     }
 
-    //TODO: add sendHTMLTemplate
+    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null ): void
+    {
+        //don't send any mails while  testing
+        if (config('app.env') === 'testing') {
+            return;
+        }
+        $this->mailer->setFrom($this->mailSettings['default_sender']);
+        $this->mailer->addReplyTo($this->mailSettings['default_sender']);
+
+        $this->mailer->addAddress($to);
+
+        $this->mailer->Subject = $title;
+        $this->mailer->isHTML(true);
+        $this->mailer->Body = view($templatePath, $variables, ['title' => $title])->render();
+
+        if ($attachmentPath) {
+            $this->mailer->addAttachment($attachmentPath);
+        }
+
+        if (!$this->mailer->send()) {
+            throw new MailNotSentException($this->mailer->ErrorInfo);
+        }
+    }
+
 }
