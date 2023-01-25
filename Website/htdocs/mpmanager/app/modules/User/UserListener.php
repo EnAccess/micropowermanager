@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MPM\User;
 
-use App\Helpers\MailHelper;
+use App\Helpers\MailHelperInterface;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\DatabaseProxyService;
@@ -18,7 +18,7 @@ class UserListener
         private CompanyDatabaseService $companyDatabaseService,
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
-        private MailHelper $mailHelper,
+        private MailHelperInterface $mailHelper,
     )
     {
     }

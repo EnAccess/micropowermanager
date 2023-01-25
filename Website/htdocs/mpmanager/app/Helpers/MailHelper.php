@@ -6,7 +6,7 @@ use App\Exceptions\MailNotSentException;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class MailHelper
+class MailHelper implements MailHelperInterface
 {
     /**
      * @var PHPMailer
@@ -19,7 +19,6 @@ class MailHelper
     {
         $this->mailer = $mailer;
         $this->mailSettings = config('mail.mailers.strato');
-
         $this->configure();
     }
 
