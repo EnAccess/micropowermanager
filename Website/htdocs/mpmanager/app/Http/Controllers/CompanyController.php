@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRegistrationRequest;
+use App\Http\Resources\ApiResource;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
@@ -33,7 +34,7 @@ class CompanyController extends Controller
 
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {
-        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id']);
+        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id','protected_page_password']);
         $company = $this->companyService->create($companyData);
 
         $adminData = $request->input('user');
@@ -96,4 +97,11 @@ class CompanyController extends Controller
             }
         );
     }
+
+    public function get($email): ApiResource
+    {
+        $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
+        return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));
+    }
+
 }

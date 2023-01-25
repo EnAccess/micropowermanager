@@ -18,7 +18,8 @@ class CompanyRegistrationRequest extends FormRequest
             'name'  => 'required',
             'address'  => 'required',
             'phone'  => 'required' ,
-            'email'  => 'required|unique:database_proxies'
+            'email'  => 'required|unique:database_proxies',
+            'protected_page_password'  => 'required',
         ];
     }
 }

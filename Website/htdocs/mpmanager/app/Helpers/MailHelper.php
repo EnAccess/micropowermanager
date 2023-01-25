@@ -20,7 +20,10 @@ class MailHelper
         $this->mailer = $mailer;
         $this->mailSettings = config('mail');
 
-        $this->configure();
+        if (!$this->isDevelopment()) {
+            $this->configure();
+        }
+
     }
 
 
@@ -40,58 +43,69 @@ class MailHelper
      * @param  $to
      * @param  $title
      * @param  $body
-     * @param  null $attachment
+     * @param null $attachment
      * @throws MailNotSentException
      * @throws PHPMailerException
      */
     public function sendPlain($to, $title, $body, $attachment = null): void
     {
-        //don't send any mails while  testing
-        if (config('app.env') === 'testing') {
-            return;
-        }
-        $this->mailer->setFrom($this->mailSettings['default_sender']);
-        $this->mailer->addReplyTo($this->mailSettings['default_sender']);
+        if (!$this->isDevelopment()) {
+            $this->mailer->setFrom($this->mailSettings['default_sender']);
+            $this->mailer->addReplyTo($this->mailSettings['default_sender']);
 
-        $this->mailer->addAddress($to);
+            $this->mailer->addAddress($to);
 
-        $this->mailer->Subject = $title;
-        $this->mailer->Body = $body;
+            $this->mailer->Subject = $title;
+            $this->mailer->Body = $body;
 
-        if ($attachment) {
-            $this->mailer->addAttachment($attachment);
-        }
+            if ($attachment) {
+                $this->mailer->addAttachment($attachment);
+            }
 
-        $this->mailer->AltBody = $this->mailSettings['default_message'];
+            $this->mailer->AltBody = $this->mailSettings['default_message'];
 
 
-        if (!$this->mailer->send()) {
-            throw new MailNotSentException($this->mailer->ErrorInfo);
+            if (!$this->mailer->send()) {
+                throw new MailNotSentException($this->mailer->ErrorInfo);
+            }
         }
     }
 
-    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null ): void
+    public function sendViaTemplate(
+        string $to,
+        string $title,
+        string $templatePath,
+        ?array $variables = null,
+        ?string $attachmentPath = null
+    ): void {
+
+        if (!$this->isDevelopment()) {
+            $this->mailer->setFrom($this->mailSettings['default_sender']);
+            $this->mailer->addReplyTo($this->mailSettings['default_sender']);
+
+            $this->mailer->addAddress($to);
+
+            $this->mailer->Subject = $title;
+            $this->mailer->isHTML(true);
+            $this->mailer->Body = view($templatePath, $variables, ['title' => $title])->render();
+
+            if ($attachmentPath) {
+                $this->mailer->addAttachment($attachmentPath);
+            }
+
+            if (!$this->mailer->send()) {
+                throw new MailNotSentException($this->mailer->ErrorInfo);
+            }
+        }
+    }
+
+    private function isDevelopment()
     {
-        //don't send any mails while  testing
-        if (config('app.env') === 'testing') {
-            return;
-        }
-        $this->mailer->setFrom($this->mailSettings['default_sender']);
-        $this->mailer->addReplyTo($this->mailSettings['default_sender']);
 
-        $this->mailer->addAddress($to);
-
-        $this->mailer->Subject = $title;
-        $this->mailer->isHTML(true);
-        $this->mailer->Body = view($templatePath, $variables, ['title' => $title])->render();
-
-        if ($attachmentPath) {
-            $this->mailer->addAttachment($attachmentPath);
+        if (config('app.env') === 'local' || config('app.env') === 'development' || config('app.env') === 'testing') {
+            return true;
         }
 
-        if (!$this->mailer->send()) {
-            throw new MailNotSentException($this->mailer->ErrorInfo);
-        }
+        return false;
     }
-
 }

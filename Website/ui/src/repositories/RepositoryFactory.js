@@ -65,6 +65,7 @@ import CompanyRepository from '@/repositories/CompanyRepository'
 import SidebarRepository from '@/repositories/SidebarRepository'
 import RegistrationTailRepository from '@/repositories/RegistrationTailRepository'
 import PluginRepository from '@/repositories/PluginRepository'
+import ProtectedPageRepository from '@/repositories/ProtectedPageRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -134,6 +135,7 @@ const repositories = {
     'sidebar': SidebarRepository,
     'registrationTail':RegistrationTailRepository,
     'plugin':PluginRepository,
+    'protectedPage':ProtectedPageRepository,
 }
 
 export default {

@@ -416,7 +416,9 @@ Route::post('androidApp', static function (AndroidAppRequest $r) {
 Route::get('/clusterlist', 'ClusterController@index');
 
 Route::post('/restrictions', 'RestrictionController@store');
+Route::get('/protected-pages', 'ProtectedPageController@index');
 
 Route::group(['prefix' => 'companies'], static function () {
-    Route::post('/', [CompanyController::class, 'store']);
+    Route::post('/', 'CompanyController@store');
+    Route::get('/{email}', 'CompanyController@get');
 });
