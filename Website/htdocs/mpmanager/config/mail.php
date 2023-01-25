@@ -44,6 +44,16 @@ return [
             'timeout' => null,
             'auth_mode' => null,
         ],
+        'strato' => [
+            'host' => 'smtp.strato.de', //your host to send through
+            'smtp_auth' => true, // enable SMTP authentication
+            'username' => 'MPM@micropowermanager.com',// SMTP username
+            'password' => 'V6UHSTIHM3508SAUJ6TV', //SMTP username
+            'smtp_secure' => 'tls',
+            'port' => '587',
+            'default_sender' => 'MPM@micropowermanager.com',
+            'default_message' => 'Please do not reply to this email', // adds a small footer text to your email
+        ],
 
         'ses' => [
             'transport' => 'ses',
