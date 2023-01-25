@@ -47,7 +47,7 @@ return [
         'strato' => [
             'host' => 'smtp.strato.de', //your host to send through
             'smtp_auth' => true, // enable SMTP authentication
-            'username' => 'MPM@micropowermanager.com',// SMTP username
+            'username' => 'mpm@jumeme.com',// SMTP username
             'password' => 'V6UHSTIHM3508SAUJ6TV', //SMTP username
             'smtp_secure' => 'tls',
             'port' => '587',

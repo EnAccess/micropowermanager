@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Helpers\MailHelper;
+use App\Helpers\MailHelperInterface;
+use App\Helpers\MailHelperMock;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
@@ -38,6 +40,7 @@ use App\Transaction\AirtelTransaction;
 use App\Utils\TariffPriceCalculator;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -90,7 +93,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('MailProvider', MailHelper::class);
+        if($this->app->environment('development') || $this->app->environment('local')){
+            $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
+        } else {
+            $this->app->singleton(MailHelperInterface::class, MailHelper::class);
+        }
+
         $this->app->singleton('AndroidGateway',AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
         $this->app->singleton('AgentPaymentProvider',AgentTransaction::class);
