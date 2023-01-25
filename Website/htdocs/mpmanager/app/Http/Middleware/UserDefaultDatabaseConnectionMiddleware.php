@@ -39,7 +39,7 @@ class UserDefaultDatabaseConnectionMiddleware
     {
 
         //adding new company should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/companies' && $request->isMethod('post')) {
+        if ($request->path() === 'api/companies' ) {
             return $next($request);
         }
 
@@ -47,6 +47,12 @@ class UserDefaultDatabaseConnectionMiddleware
         if ($request->path() === 'api/mpm-plugins' && $request->isMethod('get')) {
             return $next($request);
         }
+
+        //getting protected pages  should not be proxied. It should use the base database to create the record
+        if ($request->path() === 'api/protected-pages' && $request->isMethod('get')) {
+            return $next($request);
+        }
+
         //webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));

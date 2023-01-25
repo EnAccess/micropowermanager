@@ -82,9 +82,9 @@ export default {
         sending: false,
         service: new AuthenticationService()
     }),
-    mounted() {
-          this.$store.dispatch('auth/logOut')
-          this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
+    mounted () {
+        this.$store.dispatch('auth/logOut')
+        this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
     },
     methods: {
         clearForm () {
@@ -98,6 +98,8 @@ export default {
                 let password = this.form.password
                 await this.$store.dispatch('auth/authenticate', { email, password })
                 await this.$store.dispatch('registrationTail/getRegistrationTail')
+                await this.$store.dispatch('protection/getProtectedPages')
+                await this.$store.dispatch('protection/getProtectedPagePassword')
                 this.sending = false
                 this.$router.push('/')
             } catch (e) {
