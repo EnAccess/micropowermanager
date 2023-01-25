@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import { EventBus } from '@/shared/eventbus'
+
 require('./bootstrap')
 import router from './routes'
 import App from './App'
@@ -40,23 +42,29 @@ Vue.component('WaveMoney', WaveMoney)
 Vue.component('MicroStar-Meter', MicroStar)
 Vue.component('SunKing-Meter', SunKing)
 
-
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']
     const intervalId = store.getters['auth/getIntervalId']
     if (unauthorizedPaths.includes(to.name)) {
+        EventBus.$emit('checkPageProtection',to)
         return next()
     }
     if (authToken === undefined || authToken === '') {
         return next({ name: 'welcome' })
     }
+
     store.dispatch('auth/refreshToken', authToken, intervalId).then((result) => {
-        return result ? next() : next({ name: 'login' })
+        if (result){
+            EventBus.$emit('checkPageProtection',to)
+            return next()
+        }
+        next({ name: 'login' })
     }).catch(() => {
         return next({ name: 'welcome' })
     })
+
 })
 
 /*eslint-disable */
