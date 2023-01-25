@@ -24,6 +24,5 @@ class MailService
                 $message->attach($attachment);
             }
         });
-        dump("mail sent successfuly");
     }
 }

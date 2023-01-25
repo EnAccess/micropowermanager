@@ -18,7 +18,7 @@ class MailHelper
     public function __construct(PHPMailer $mailer)
     {
         $this->mailer = $mailer;
-        $this->mailSettings = config('mail');
+        $this->mailSettings = config('mail.mailers.strato');
 
         $this->configure();
     }
