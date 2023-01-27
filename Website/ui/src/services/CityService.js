@@ -5,7 +5,6 @@ export class CityService {
     constructor () {
         this.repository = Repository.get('city')
         this.cities = []
-        this.cities = []
         this.city = {
             id: 0,
             name: '',

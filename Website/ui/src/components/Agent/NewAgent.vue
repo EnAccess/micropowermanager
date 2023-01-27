@@ -72,7 +72,7 @@
                                             :name="$tc('words.phone')"
                                             v-validate="'required'"
                                             v-model="agentService.agent.phone"
-                                            placeholder="(+___ _+9___ ____)"
+                                            placeholder="(+___ ____ ____)"
                                         />
                                         <span class="md-error">{{ errors.first($tc('words.phone')) }}</span>
                                     </md-field>

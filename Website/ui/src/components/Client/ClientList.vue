@@ -1,13 +1,15 @@
 <template>
     <div class="page-container">
-
+      <add-customer/>
 
         <widget
             :id="'client-list-widget'"
             :title="$tc('phrases.customerList')"
             :search="true"
             :subscriber="subscriber"
-            :button="false"
+            :button="true"
+            @widgetAction="showAddCustomer"
+            :button-text="'Add customer'"
             :paginator="people.paginator"
             :route_name="'/people'"
             color="green"
@@ -37,7 +39,7 @@
                         <md-table-cell v-if="client.meters.length>0">
                             {{meterList(client.meters)}}
                         </md-table-cell>
-                        <md-table-cell v-if="client.meters.length==0">
+                        <md-table-cell v-if="client.meters.length===0">
                             -
                         </md-table-cell>
                         <md-table-cell class="hidden-xs"> {{ dateForHumans( client.lastUpdate) }}</md-table-cell>
@@ -58,11 +60,12 @@ import { EventBus } from '@/shared/eventbus'
 import Widget from '../../shared/widget'
 import { People } from '@/classes/people'
 import moment from 'moment'
+import AddCustomer from '@/components/Client/AddCustomer'
 const debounce = require('debounce')
 
 export default {
     name: 'ClientList',
-    components: { Widget },
+    components: {AddCustomer, Widget },
     data () {
         return {
             subscriber: 'client.list',
@@ -107,6 +110,10 @@ export default {
     },
 
     methods: {
+        showAddCustomer() {
+          console.log("show add customer ");
+            EventBus.$emit('addNewCustomer')
+        },
         reloadList (subscriber, data) {
             if (subscriber !== this.subscriber){
                 return

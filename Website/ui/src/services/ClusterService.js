@@ -3,6 +3,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
 
 export class ClusterService {
+
     constructor () {
         this.repository = RepositoryFactory.get('cluster')
         this.clusters = []
@@ -29,7 +30,8 @@ export class ClusterService {
     async getClusters () {
         try {
             const response = await this.repository.list()
-            return this.responseValidator(response)
+            this.clusters =  this.responseValidator(response)
+            return this.clusters
         } catch (e) {
             return new ErrorHandler(e.response.data.data.message, 'http')
         }

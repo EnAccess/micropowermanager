@@ -1,21 +1,21 @@
 import Repository from '../repositories/RepositoryFactory'
-import { ErrorHandler } from '@/Helpers/ErrorHander'
+import {ErrorHandler} from '@/Helpers/ErrorHander'
 
 export class MeterTypeService {
     constructor () {
         this.repository = Repository.get('meterType')
         this.meterTypesList = []
+        this.meterTypeListLoaded = false;
     }
 
     prepareMeterType(meterType){
         let meterTypeOnline = meterType.online === 1 ? 'Online' : 'Offline'
-        let meterTypes = {
+        return {
             id: meterType.id,
             name: meterType.max_current + 'A ' + meterType.phase + 'P ' + meterTypeOnline,
             max_current: meterType.max_current,
             online: meterType.online
         }
-        return meterTypes
     }
 
     async getMeterTypes (){
@@ -25,6 +25,7 @@ export class MeterTypeService {
             if( response.status === 200 ){
                 let data = response.data.data
                 this.meterTypesList = data.map(this.prepareMeterType)
+                this.meterTypeListLoaded = true;
                 return this.meterTypesList
             }else{
                 return new ErrorHandler(response.error, 'http', response.status)
