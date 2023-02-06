@@ -28,6 +28,7 @@ import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
 import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credential'
 import SunKing from '@/plugins/sun-king-meter/js/components/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
+import GomeLong from '@/plugins/gome-long-meter/js/components/Overview/Credential'
 
 Vue.component('default', Default)
 Vue.component('Spark-Meter', Spark)
@@ -41,6 +42,8 @@ Vue.component('Viber-Messaging', Viber)
 Vue.component('WaveMoney', WaveMoney)
 Vue.component('MicroStar-Meter', MicroStar)
 Vue.component('SunKing-Meter', SunKing)
+Vue.component('SunKing-Meter', SunKing)
+Vue.component('GomeLong-Meter', GomeLong)
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 
@@ -48,7 +51,7 @@ router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']
     const intervalId = store.getters['auth/getIntervalId']
     if (unauthorizedPaths.includes(to.name)) {
-        EventBus.$emit('checkPageProtection',to)
+        EventBus.$emit('checkPageProtection', to)
         return next()
     }
     if (authToken === undefined || authToken === '') {
@@ -56,8 +59,8 @@ router.beforeEach((to, from, next) => {
     }
 
     store.dispatch('auth/refreshToken', authToken, intervalId).then((result) => {
-        if (result){
-            EventBus.$emit('checkPageProtection',to)
+        if (result) {
+            EventBus.$emit('checkPageProtection', to)
             return next()
         }
         next({ name: 'login' })

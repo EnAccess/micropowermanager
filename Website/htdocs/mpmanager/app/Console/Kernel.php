@@ -18,6 +18,7 @@ use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessag
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
 use Inensus\SunKingMeter\Console\Commands\InstallPackage as InstallSunKingMeterPackage;
+use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         InstallWaveMoneyPaymentProviderPackage::class,
         InstallMicroStarMeterPackage::class,
         InstallSunKingMeterPackage::class,
+        InstallGomeLongMeterPackage::class,
     ];
 
     /**
