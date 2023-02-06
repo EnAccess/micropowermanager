@@ -524,5 +524,10 @@ export const exportedRoutes = [
         path: '/sun-king-meters/sun-king-overview',
         component: require('./plugins/sun-king-meter/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
+    },
+    {
+        path: '/gome-long-meters/gome-long-overview',
+        component: require('./plugins/gome-long-meter/js/components/Overview/Overview').default,
+        meta: { layout: 'default' },
     }
 ]

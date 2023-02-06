@@ -22,6 +22,8 @@ class MpmPlugin extends MasterModel
     const VIBER_MESSAGING = 10;
     const WAVE_MONEY_PAYMENT_PROVIDER = 11;
     const MICRO_STAR_METERS = 12;
+    const SUN_KING_METERS = 13;
+    const GOME_LONG_METERS = 14;
 
     use HasFactory;
 

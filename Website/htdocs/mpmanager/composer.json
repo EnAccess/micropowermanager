@@ -79,7 +79,8 @@
       "Inensus\\ViberMessaging\\": "packages/inensus/viber-messaging/src",
       "Inensus\\WaveMoneyPaymentProvider\\": "packages/inensus/wave-money-payment-provider/src",
       "Inensus\\MicroStarMeter\\": "packages/inensus/micro-star-meter/src",
-      "Inensus\\SunKingMeter\\": "packages/inensus/sun-king-meter/src"
+      "Inensus\\SunKingMeter\\": "packages/inensus/sun-king-meter/src",
+      "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src"
     }
   },
   "minimum-stability": "dev",

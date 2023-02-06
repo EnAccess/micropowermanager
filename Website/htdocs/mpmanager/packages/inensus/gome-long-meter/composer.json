@@ -1,0 +1,27 @@
+{
+  "name": "inensus/gome-long-meter",
+  "description": "Gomelong meter integration for MicroPowerManager Mini-Grid management system.",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "inensus",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\GomeLongMeter\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\GomeLongMeter\\Providers\\GomelongMeterServiceProvider"
+      ]
+    }
+  }
+}

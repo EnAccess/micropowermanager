@@ -181,6 +181,7 @@ return [
         \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
         \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
         \Inensus\SunKingMeter\Providers\SunKingMeterServiceProvider::class,
+        \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
 
     ],
 

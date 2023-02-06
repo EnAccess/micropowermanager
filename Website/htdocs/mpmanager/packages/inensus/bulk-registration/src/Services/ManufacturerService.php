@@ -9,7 +9,14 @@ use Inensus\BulkRegistration\Exceptions\ManufacturerNotSupportedException;
 
 class ManufacturerService extends CreatorService
 {
-    private $manufacturers = ['Calin Meter', 'Calin Smart Meter', 'Kelin Meter', 'Stron Meter'];
+    private $manufacturers = [
+        'Calin Meter',
+        'Calin Smart Meter',
+        'Kelin Meter',
+        'Stron Meter',
+        'GomeLong Meter',
+        'SunKing Meter'
+    ];
 
     public function __construct(Manufacturer $manufacturer)
     {
@@ -30,7 +37,7 @@ class ManufacturerService extends CreatorService
         if (strlen(preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']])) > 0) {
 
             $manufacturerData = [
-                'name' => $csvData[$manufacturerConfig['name']].'s',
+                'name' => $csvData[$manufacturerConfig['name']] . 's',
                 'api_name' => preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]) . 'Api'
             ];
             return $this->createRelatedDataIfDoesNotExists($manufacturerData);
