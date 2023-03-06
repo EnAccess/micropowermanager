@@ -23,9 +23,7 @@ class MicroStarCredentialController extends Controller
     public function update(MicroStarCredentialRequest $request): MicroStarResource
     {
         $credentials = $this->credentialService->updateCredentials($request->only([
-            'id',
-            'user_id',
-            'api_key'
+            'api_url'
         ]));
         return MicroStarResource::make($credentials);
     }

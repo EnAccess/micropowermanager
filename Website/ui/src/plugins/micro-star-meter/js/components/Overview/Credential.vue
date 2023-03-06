@@ -8,30 +8,16 @@
                             <div class="md-layout md-gutter">
                                 <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
                                     <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.userId')}">
-                                        <label for="username">User ID</label>
+                                            :class="{'md-invalid': errors.has('Credential-Form.apiUrl')}">
+                                        <label for="username">API URL</label>
                                         <md-input
-                                                id="userId"
-                                                name="userId"
-                                                v-model="credentialService.credential.userId"
+                                                id="apiUrl"
+                                                name="apiUrl"
+                                                v-model="credentialService.credential.apiUrl"
                                                 v-validate="'required|min:3'"
                                         />
                                         <span
-                                                class="md-error">{{ errors.first('Credential-Form.userId') }}</span>
-                                    </md-field>
-                                </div>
-                                <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
-                                    <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.apiKey')}">
-                                        <label for="apiKey">API Key</label>
-                                        <md-input
-                                                id="apiKey"
-                                                type="password"
-                                                name="apiKey"
-                                                v-model="credentialService.credential.apiKey"
-                                                v-validate="'required|min:3'"
-                                        />
-                                        <span class="md-error">{{ errors.first('Credential-Form.apiKey') }}</span>
+                                                class="md-error">{{ errors.first('Credential-Form.apiUrl') }}</span>
                                     </md-field>
                                 </div>
 

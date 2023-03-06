@@ -11,9 +11,7 @@ return new class extends Migration {
         if (!Schema:: hasTable('micro_star_api_credentials')) {
             Schema::connection('shard')->create('micro_star_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('api_url')->default('http://api.xxxxx.com/api');
-                $table->string('user_id')->nullable();
-                $table->string('api_key')->nullable();
+                $table->string('api_url')->nullable();
                 $table->timestamps();
             });
         }

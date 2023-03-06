@@ -5,4 +5,5 @@ Route::group(['prefix' => 'micro-star-meters'], function () {
         Route::get('/', 'MicroStarCredentialController@show');
         Route::put('/', 'MicroStarCredentialController@update');
     });
+    Route::get('/test', 'MicroStarTestController@show');
 });
