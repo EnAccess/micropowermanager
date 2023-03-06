@@ -1,0 +1,85 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=DE, ST=Federal Republic of Germany, L=Goslar, O=INENSUS GmbH, OU=IT department, CN=cloud.micropowermanager.com/emailAddress=info@inensus.com
+        Validity
+            Not Before: Feb  8 09:58:00 2023 GMT
+            Not After : Feb  8 09:58:00 2024 GMT
+        Subject: C=DE, ST=Federal Republic of Germany, O=INENSUS GmbH, OU=IT department, CN=cloud.micropowermanager.com/emailAddress=info@inensus.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:ec:e5:c6:58:3c:80:46:c6:ca:97:b3:7b:c9:2a:
+                    1a:a1:85:9c:63:a7:6b:79:44:5b:bc:d6:23:e6:65:
+                    00:8a:00:d7:c1:5a:41:06:6a:88:2a:40:a1:04:19:
+                    de:0c:74:b9:85:76:09:ca:01:01:80:ac:b9:82:f1:
+                    43:0e:87:90:15:f5:3a:63:99:7f:fd:a6:a5:72:bb:
+                    e4:12:ed:06:20:dd:ae:b4:ad:99:88:9c:66:1f:2a:
+                    e7:75:3a:b2:32:05:59:25:74:87:fe:9f:c0:3d:a9:
+                    6d:2c:c7:70:4e:7e:d7:54:d0:f3:ab:e7:10:1d:ba:
+                    cd:3e:dc:0c:3d:8f:9c:d1:ac:44:8f:a3:e4:e3:f0:
+                    e6:76:3a:ac:38:52:82:3c:c0:4e:9c:36:78:0e:ef:
+                    0e:c6:d3:8e:92:48:85:04:d5:aa:c1:0a:49:8e:e8:
+                    7b:48:e4:c5:f9:ec:84:5c:f1:e9:6d:dd:7c:ae:a9:
+                    d1:3b:3f:71:84:ff:a0:2c:62:bf:38:bf:0a:e3:26:
+                    2a:85:59:a8:18:5f:95:22:d1:f0:5d:87:3e:42:a4:
+                    5e:2c:e1:6d:84:e9:be:f3:8a:ae:9b:ca:cc:ac:42:
+                    12:d2:ce:37:35:52:ef:c9:02:56:bd:2f:61:68:c4:
+                    1e:2c:81:fe:76:85:46:47:ef:77:44:54:0a:91:c3:
+                    fa:ff
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                3D:AD:1C:C2:90:4B:2B:22:A5:D8:5B:49:B3:C3:D1:90:90:36:3C:96
+            X509v3 Authority Key Identifier: 
+                keyid:54:E4:AD:B9:BC:63:8D:23:F7:99:53:C9:C7:50:42:D7:51:8F:AF:4C
+
+    Signature Algorithm: sha256WithRSAEncryption
+         5e:9e:fa:80:50:85:98:81:a8:ed:c6:83:92:be:b1:63:90:5b:
+         30:48:5a:2e:1b:a5:3c:22:ec:7d:a2:37:18:9e:67:a4:eb:d3:
+         35:2a:b9:14:30:3c:70:57:c5:2d:75:06:b4:cd:b3:b7:29:e2:
+         26:89:a3:8e:c5:9c:9a:19:55:3f:72:11:74:dd:f7:83:24:c0:
+         51:82:e5:b6:47:a5:0c:8a:6a:df:89:bd:90:74:7a:7b:fa:fc:
+         37:f9:b6:ca:dd:89:56:42:39:bd:74:c6:8d:eb:4a:ee:a9:65:
+         21:a5:3c:18:fd:fd:98:f8:31:e9:f4:70:23:b7:d7:c2:01:a3:
+         b5:89:56:14:dd:f9:c2:1e:0b:91:9c:36:97:1e:56:83:68:e2:
+         9d:7c:1a:63:b1:e3:16:9c:d1:f3:db:68:05:7c:1a:21:e0:a4:
+         58:ac:9e:a6:2a:ca:6e:95:09:9c:d4:e7:bf:66:ca:15:6f:12:
+         e7:50:6a:2b:00:be:77:13:65:d9:e8:9f:b7:92:f8:db:aa:ea:
+         6c:f3:54:e3:ad:81:d4:0c:91:5c:9f:36:34:30:ee:d2:6f:73:
+         f6:5c:81:9e:15:53:fb:10:47:c6:5a:8b:8e:16:03:1e:e1:e3:
+         4b:4c:9f:bc:4e:17:80:e5:b8:a0:f9:ef:c5:ee:10:13:6a:9a:
+         17:cd:e1:65
+-----BEGIN CERTIFICATE-----
+MIIEWzCCA0OgAwIBAgIBAjANBgkqhkiG9w0BAQsFADCBujELMAkGA1UEBhMCREUx
+JDAiBgNVBAgMG0ZlZGVyYWwgUmVwdWJsaWMgb2YgR2VybWFueTEPMA0GA1UEBwwG
+R29zbGFyMRUwEwYDVQQKDAxJTkVOU1VTIEdtYkgxFjAUBgNVBAsMDUlUIGRlcGFy
+dG1lbnQxJDAiBgNVBAMMG2Nsb3VkLm1pY3JvcG93ZXJtYW5hZ2VyLmNvbTEfMB0G
+CSqGSIb3DQEJARYQaW5mb0BpbmVuc3VzLmNvbTAeFw0yMzAyMDgwOTU4MDBaFw0y
+NDAyMDgwOTU4MDBaMIGpMQswCQYDVQQGEwJERTEkMCIGA1UECAwbRmVkZXJhbCBS
+ZXB1YmxpYyBvZiBHZXJtYW55MRUwEwYDVQQKDAxJTkVOU1VTIEdtYkgxFjAUBgNV
+BAsMDUlUIGRlcGFydG1lbnQxJDAiBgNVBAMMG2Nsb3VkLm1pY3JvcG93ZXJtYW5h
+Z2VyLmNvbTEfMB0GCSqGSIb3DQEJARYQaW5mb0BpbmVuc3VzLmNvbTCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAOzlxlg8gEbGypeze8kqGqGFnGOna3lE
+W7zWI+ZlAIoA18FaQQZqiCpAoQQZ3gx0uYV2CcoBAYCsuYLxQw6HkBX1OmOZf/2m
+pXK75BLtBiDdrrStmYicZh8q53U6sjIFWSV0h/6fwD2pbSzHcE5+11TQ86vnEB26
+zT7cDD2PnNGsRI+j5OPw5nY6rDhSgjzATpw2eA7vDsbTjpJIhQTVqsEKSY7oe0jk
+xfnshFzx6W3dfK6p0Ts/cYT/oCxivzi/CuMmKoVZqBhflSLR8F2HPkKkXizhbYTp
+vvOKrpvKzKxCEtLONzVS78kCVr0vYWjEHiyB/naFRkfvd0RUCpHD+v8CAwEAAaN7
+MHkwCQYDVR0TBAIwADAsBglghkgBhvhCAQ0EHxYdT3BlblNTTCBHZW5lcmF0ZWQg
+Q2VydGlmaWNhdGUwHQYDVR0OBBYEFD2tHMKQSysipdhbSbPD0ZCQNjyWMB8GA1Ud
+IwQYMBaAFFTkrbm8Y40j95lTycdQQtdRj69MMA0GCSqGSIb3DQEBCwUAA4IBAQBe
+nvqAUIWYgajtxoOSvrFjkFswSFouG6U8Iux9ojcYnmek69M1KrkUMDxwV8UtdQa0
+zbO3KeImiaOOxZyaGVU/chF03feDJMBRguW2R6UMimrfib2QdHp7+vw3+bbK3YlW
+Qjm9dMaN60ruqWUhpTwY/f2Y+DHp9HAjt9fCAaO1iVYU3fnCHguRnDaXHlaDaOKd
+fBpjseMWnNHz22gFfBoh4KRYrJ6mKspulQmc1Oe/ZsoVbxLnUGorAL53E2XZ6J+3
+kvjbqups81TjrYHUDJFcnzY0MO7Sb3P2XIGeFVP7EEfGWouOFgMe4eNLTJ+8TheA
+5big+e/F7hATapoXzeFl
+-----END CERTIFICATE-----

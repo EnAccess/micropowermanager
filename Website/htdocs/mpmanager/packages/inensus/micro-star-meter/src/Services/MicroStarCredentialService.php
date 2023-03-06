@@ -18,8 +18,7 @@ class MicroStarCredentialService
     public function createCredentials()
     {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
-            'user_id' => null,
-            'api_key' => null,
+            'api_url' => null
         ]);
     }
 
@@ -32,8 +31,7 @@ class MicroStarCredentialService
     {
         $credential = $this->credential->newQuery()->find($data['id']);
         $credential->update([
-            'user_id' => $data['user_id'],
-            'api_key' => $data['api_key'],
+            'api_url' => $data['api_url'],
         ]);
         return $credential->fresh();
     }

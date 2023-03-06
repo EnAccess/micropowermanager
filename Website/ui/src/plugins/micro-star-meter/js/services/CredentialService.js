@@ -6,15 +6,13 @@ export class CredentialService {
         this.repository = Repository.get('credential')
         this.credential = {
             id: null,
-            userId: null,
-            apiKey: null,
+            apiUrl: null,
         }
     }
     fromJson (credentialData) {
         this.credential = {
             id: credentialData.id,
-            userId: credentialData.user_id,
-            apiKey: credentialData.api_key,
+            apiUrl: credentialData.api_url
         }
         return this.credential
     }
@@ -35,9 +33,7 @@ export class CredentialService {
         try {
             let credentialPM = {
                 id: this.credential.id,
-                user_id: this.credential.userId,
-                api_key: this.credential.apiKey,
-
+                api_url: this.credential.apiUrl,
             }
             let response = await this.repository.put(credentialPM)
             if (response.status === 200 || response.status === 201) {
