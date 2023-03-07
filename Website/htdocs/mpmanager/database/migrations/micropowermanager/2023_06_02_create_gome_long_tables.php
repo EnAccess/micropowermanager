@@ -11,7 +11,7 @@ return new class extends Migration
         if (!Schema:: hasTable('gome_long_api_credentials')) {
             Schema::create('gome_long_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('api_url')->default('http://60.205.216.142:8086/api/EKPower');
+                $table->string('api_url')->default('http://60.205.216.142:8085/api/EKPower');
                 $table->string('user_id')->nullable();
                 $table->string('user_password')->nullable();
                 $table->timestamps();

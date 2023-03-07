@@ -19,7 +19,9 @@ class GomeLongMeterServiceProvider extends ServiceProvider
             $this->publishConfigFiles();
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
-            $this->commands([InstallPackage::class,GomeLongMeterDataSynchronizer::class]);
+            // removed the following line since it is not needed
+           // $this->commands([InstallPackage::class,GomeLongMeterDataSynchronizer::class]);
+            $this->commands([InstallPackage::class]);
         }
         $this->app->booted(function ($app) {
             $app->make(Schedule::class)->command('gome-long-meter:dataSync')->withoutOverlapping(50)
