@@ -17,8 +17,7 @@ class GomeLongMeterApi implements IManufacturerAPI
     public function __construct(
         private GomeLongCredentialService $credentialService,
         private GomeLongTransaction $gomeLongTransaction,
-        private ApiRequests $apiRequests,
-        private GomeLongTariff  $gomeLongTariff
+        private ApiRequests $apiRequests
     ) {
 
     }
@@ -45,9 +44,8 @@ class GomeLongMeterApi implements IManufacturerAPI
             $params = [
                 "U" => $credentials->getUserId(),
                 "K" => $credentials->getUserPassword(),
-                "OP" => "vend",
                 "meter" => $meter->serial_number,
-                "Amount" => $transactionContainer->amount
+                "amt" => (float)$transactionContainer->chargedEnergy,
             ];
 
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
