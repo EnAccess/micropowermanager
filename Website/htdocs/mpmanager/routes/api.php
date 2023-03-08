@@ -270,7 +270,7 @@ Route::group(['prefix' => 'sms', 'middleware' => 'jwt.verify'], static function 
 
 });
 Route::group(['prefix' => 'sms-android-callback'], static function () {
-    Route::get('/{uuid}/confirm', 'SmsController@update');
+    Route::get('/{uuid}/confirm/{slug}', 'SmsController@update');
 });
 
 // Solar

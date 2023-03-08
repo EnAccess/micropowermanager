@@ -30,11 +30,19 @@ class AndroidGateway implements ISmsProvider
             Log::debug('Send sms on debug is not allowed', ['number' => $number, 'message' => $body]);
             return;
         }
+        try {
+            $callbackWithoutProtocolRoot = explode("micropowermanager.com/api/",$callback)[1];
+        } catch (\Exception $e) {
+            Log::error('Error while sending sms', ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]);
+
+            throw new \Exception('Error while sending sms');
+        }
+
         //add sms to sms_gateway job
         SmsLoadBalancer::dispatch([
             'number' => $number,
             'message' => $body,
-            'sms_id' => $callback,
+            'callback' => $callbackWithoutProtocolRoot,
             'setting' => $smsAndroidSetting,
         ])->onConnection('redis')->onQueue('sms_gateway');
     }
