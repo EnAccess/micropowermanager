@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,28 +23,13 @@ use Illuminate\Support\Facades\Storage;
  */
 class SolarDataListener
 {
-    /**
-     * @var IWeatherDataProvider
-     */
-    private $weatherDataProvider;
-    /**
-     * @var MiniGrid
-     */
-    private $miniGrid;
-
-    /**
-     * @var WeatherData
-     */
-    private $weatherData;
 
     public function __construct(
-        WeatherData $weatherData,
-        IWeatherDataProvider $weatherDataProvider,
-        MiniGrid $miniGrid
+        private WeatherData $weatherData,
+        private IWeatherDataProvider $weatherDataProvider,
+        private MiniGrid $miniGrid
     ) {
-        $this->weatherData = $weatherData;
-        $this->weatherDataProvider = $weatherDataProvider;
-        $this->miniGrid = $miniGrid;
+
     }
 
     /**
@@ -64,7 +50,6 @@ class SolarDataListener
                 " $miniGridId. Reading of geo location points failed");
             return;
         }
-
 
         $currentWeather = $this->weatherDataProvider->getCurrentWeatherData($miniGridPoints);
         if ($currentWeather->getStatusCode() !== 200) {
@@ -98,14 +83,22 @@ class SolarDataListener
                 ]
             );
 
-        $this->storeWeatherData($currentWeatherFileName, (string)$currentWeatherData);
-        $this->storeWeatherData($forecastWeatherFileName, (string)$forecastWeatherData);
+        $this->storeWeatherData($currentWeatherFileName, (string)$currentWeatherData, $solar);
+        $this->storeWeatherData($forecastWeatherFileName, (string)$forecastWeatherData, $solar);
     }
 
 
-    private function storeWeatherData(string $fileName, string $data): void
+    private function storeWeatherData(string $fileName, string $data, $solar): void
     {
-        Storage::disk('local')->put('solar-reading/' . $fileName, $data);
+        $storageFileName = $solar->storage_file_name;
+        $miniGridId = $solar->mini_grid_id;
+        $path = base_path()."/public/$storageFileName/$miniGridId";
+
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        }
+
+        Storage::disk('local')->put("/public/$storageFileName/$miniGridId". $fileName, $data);
     }
 
     /**

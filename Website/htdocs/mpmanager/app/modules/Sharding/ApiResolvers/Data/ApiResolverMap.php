@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MPM\Sharding\ApiResolvers\Data;
 
 use MPM\Sharding\ApiResolvers\AndroidGatewayCallbackApiResolver;
+use MPM\Sharding\ApiResolvers\JetsonApiResolver;
 use MPM\Sharding\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\Sharding\ApiResolvers\TestApiResolver;
 use MPM\Sharding\ApiResolvers\ViberMessagingApiResolver;
@@ -17,6 +18,7 @@ class ApiResolverMap
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
     public const ANDROID_GATEWAY_CALLBACK_API = 'api/sms-android-callback';
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
+    public const  JETSON_API = 'api/jetson';
 
 
     public const RESOLVABLE_APIS = [
@@ -25,6 +27,7 @@ class ApiResolverMap
         self::WAVE_MONEY_API,
         self::ANDROID_GATEWAY_CALLBACK_API,
         self::SWIFTA_PAYMENT_API,
+        self::JETSON_API
     ];
 
     private const API_RESOLVER = [
@@ -32,7 +35,8 @@ class ApiResolverMap
         self::VIBER_API => ViberMessagingApiResolver::class,
         self::WAVE_MONEY_API => WaveMoneyApiResolver::class,
         self::ANDROID_GATEWAY_CALLBACK_API => AndroidGatewayCallbackApiResolver::class,
-        self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class
+        self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class,
+        self::JETSON_API => JetsonApiResolver::class
     ];
 
 

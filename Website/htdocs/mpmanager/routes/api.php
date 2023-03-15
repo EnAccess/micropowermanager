@@ -127,7 +127,6 @@ Route::group(['prefix' => 'energies', 'middleware' => 'jwt.verify'], static func
 });
 // Generation-Assets
 Route::group(['prefix' => 'generation-assets', 'middleware' => 'jwt.verify'], static function () {
-    Route::post('/grid', 'MiniGridFrequencyController@store');
     Route::get('/{miniGridId}/readings', 'GenerationAssetsController@show');
 });
 // Maintenance
@@ -156,12 +155,21 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
 
 });
 // these routes are for the forecast-tool in jetson nano.
-Route::group(['prefix' => 'mini-grids'], static function () {
-    Route::get('/{miniGridId}/battery-readings', 'JetsonMiniGridBatteryController@show');
-    Route::get('/{miniGridId}/energy-readings', 'JetsonMiniGridEnergyController@show');
-    Route::get('/{miniGridId}/solar-readings', 'JetsonMiniGridSolarController@show');
-    Route::get('/{miniGridId}/pv-readings', 'JetsonMiniGridPVController@show');
-    Route::get('/{miniGridId}/weather-readings', 'JetsonMiniGridSolarController@show');
+Route::group(['prefix' => 'jetson'], static function () {
+    Route::group(['prefix' => 'mini-grids'], static function () {
+        Route::get('/{miniGridId}/battery-readings/{slug}', 'JetsonMiniGridBatteryController@show');
+        Route::get('/{miniGridId}/energy-readings/{slug}', 'JetsonMiniGridEnergyController@show');
+        Route::get('/{miniGridId}/solar-readings/{slug}', 'JetsonMiniGridSolarController@show');
+        Route::get('/{miniGridId}/pv-readings/{slug}', 'JetsonMiniGridPVController@show');
+        Route::get('/{miniGridId}/weather-readings/{slug}', 'JetsonMiniGridSolarController@show');
+        Route::get('/{miniGridId}/proxy/{slug}/{gate}', 'JetsonMiniGridProxyController@proxy');
+
+        Route::post('/{miniGridId}/battery/{slug}', 'JetsonMiniGridBatteryController@store');
+        Route::post('/{miniGridId}/generation-assets/{slug}', 'JetsonMiniGridFrequencyController@store');
+        Route::post('/{miniGridId}/pv/{slug}', 'JetsonMiniGridPVController@store')->middleware('data.controller');;
+        Route::post('/{miniGridId}/solar/{slug}', 'JetsonMiniGridFrequencyController@store');
+        Route::post('/{miniGridId}/energy/{slug}', 'JetsonMiniGridEnergyController@store');
+    });
 });
 // PaymentHistories
 Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], function () {
@@ -195,9 +203,7 @@ Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static functi
 });
 // PV
 Route::group(['prefix' => 'pv'], static function () {
-    Route::post('/', 'PVController@store')->middleware('data.controller');
     Route::get('/{miniGridId}', ['middleware' => 'jwt.verify', 'uses' => 'PVController@show']);
-
 });
 // Map Settings
 Route::group(['prefix' => 'map-settings'], static function () {
@@ -273,10 +279,6 @@ Route::group(['prefix' => 'sms-android-callback'], static function () {
     Route::get('/{uuid}/confirm/{slug}', 'SmsController@update');
 });
 
-// Solar
-Route::group(['prefix' => 'solar'], static function () {
-    Route::post('/', 'SolarController@store');
-});
 // Sub-Connection-Types
 Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/{connectionTypeId?}', 'SubConnectionTypeController@index');

@@ -52,56 +52,6 @@ class PVController extends Controller
     }
 
     /**
-     * Create
-     *
-     * @param PVRequest $request
-     * @param Response  $response
-     *
-     * @bodyParam mini_grid_id int required
-     * @bodyParam node_id int required
-     * @bodyParam device_id int required
-     * @bodyParam pv array required
-     *
-     * @return Response|null
-     */
-    public function store(PVRequest $request, Response $response): ?Response
-    {
-        $pv = $request->input('pv');
-
-        if (!array_key_exists('daily', $pv) || !array_key_exists('total', $pv)) {
-            return $response->setStatusCode(422)->setContent(
-                [
-                'data' => [
-                    'message' => 'daily , total are required',
-                    'status_code' => 422
-                ]
-                ]
-            );
-        }
-
-        $dailyGeneratedEnergy = $this->formatEnergyData($pv['daily']['energy']);
-        $totalGeneratedEnergy = $this->formatEnergyData($pv['total']['energy']);
-
-
-        $this->pv
-            ->newQuery()
-            ->create(
-                [
-                'mini_grid_id' => $request->input('mini_grid_id'),
-                'node_id' => $request->input('node_id'),
-                'device_id' => $request->input('device_id'),
-                'reading_date' => Carbon::createFromFormat('d.m.Y H:i', $pv['time_stamp'])->toDateTimeString(),
-                'daily' => $dailyGeneratedEnergy,
-                'daily_unit' => $pv['daily']['unit'],
-                'total' => $totalGeneratedEnergy,
-                'total_unit' => $pv['total']['unit'],
-                'new_generated_energy' => 0,
-                'new_generated_energy_unit' => 'Wh'
-                ]
-            );
-    }
-
-    /**
      * List for Mini-Grid
      *
      * @urlParam limit int Default = 50

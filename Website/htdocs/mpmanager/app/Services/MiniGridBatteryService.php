@@ -67,4 +67,12 @@ class MiniGridBatteryService
 
         return $batteryReadings->get();
     }
+
+
+    public function create($data)
+    {
+      return  $this->battery
+            ->newQuery()
+            ->create($data);
+    }
 }

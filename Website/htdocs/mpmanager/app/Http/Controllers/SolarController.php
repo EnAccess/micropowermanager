@@ -41,12 +41,4 @@ class SolarController extends Controller
         return response()->setStatusCode(404)->json(['data' => 'Nothing found']);
     }
 
-    public function store(SolarCreateRequest $request): ApiResource
-    {
-        //unused parameter $request is needed for validation
-
-        $solar = $this->solarService->create();
-
-        return new ApiResource($solar);
-    }
 }
