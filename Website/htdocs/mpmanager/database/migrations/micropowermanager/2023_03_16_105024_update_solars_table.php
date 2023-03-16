@@ -14,7 +14,6 @@ return  new class extends Migration
     public function up()
     {
         Schema::connection('shard')->table('solars', function (Blueprint $table) {
-            $table->text('token')->change();
             $table->renameColumn('storage_file_name', 'storage_folder')->change();
         });
     }
