@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class JetsonMiniGridProxyController extends Controller
 {
-    const INTERNAL_API_URL = 'http://localhost:3000/api';
+    const INTERNAL_API_URL = 'http://localhost:3000/api/jetson';
     public function __construct(
         private Client $httpClient
     ) {
