@@ -157,7 +157,7 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
 // these routes are for the forecast-tool in jetson nano.
 Route::group(['prefix' => 'jetson'], static function () {
     Route::group(['prefix' => 'mini-grids'], static function () {
-        Route::get('/{miniGridId}/weather-data/{slug}/{storageFolder}/{file}', 'JetsonMiniGridWeatherDataController@proxy');
+        Route::get('/{miniGridId}/weather-data/{slug}/{storageFolder}/{file}', 'JetsonMiniGridWeatherDataController@index');
         Route::get('/{miniGridId}/battery-readings/{slug}', 'JetsonMiniGridBatteryController@show');
         Route::get('/{miniGridId}/energy-readings/{slug}', 'JetsonMiniGridEnergyController@show');
         Route::get('/{miniGridId}/solar-readings/{slug}', 'JetsonMiniGridSolarController@show');
