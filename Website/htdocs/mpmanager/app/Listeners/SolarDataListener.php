@@ -90,15 +90,15 @@ class SolarDataListener
 
     private function storeWeatherData(string $fileName, string $data, $solar): void
     {
-        $storageFileName = $solar->storage_file_name;
+        $storageFolder = $solar->storage_folder;
         $miniGridId = $solar->mini_grid_id;
-        $path = base_path()."/public/$storageFileName/$miniGridId/public";
+        $path = storage_path("/app/public/$storageFolder/$miniGridId/public");
 
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
 
-        Storage::disk('local')->put("/public/$storageFileName/$miniGridId/public". $fileName, $data);
+        Storage::disk('local')->put("/public/$storageFolder/$miniGridId/public/". $fileName, $data);
     }
 
     /**
