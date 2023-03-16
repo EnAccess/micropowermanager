@@ -92,13 +92,13 @@ class SolarDataListener
     {
         $storageFileName = $solar->storage_file_name;
         $miniGridId = $solar->mini_grid_id;
-        $path = base_path()."/public/$storageFileName/$miniGridId";
+        $path = base_path()."/public/$storageFileName/$miniGridId/public";
 
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
 
-        Storage::disk('local')->put("/public/$storageFileName/$miniGridId". $fileName, $data);
+        Storage::disk('local')->put("/public/$storageFileName/$miniGridId/public". $fileName, $data);
     }
 
     /**
