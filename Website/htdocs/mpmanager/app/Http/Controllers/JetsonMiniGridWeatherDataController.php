@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 
-class JetsonMiniGridWeatherDataController extends controller
+class JetsonMiniGridWeatherDataController extends Controller
 {
 
     public function index($miniGridId, $slug, $storageFolder, $file)

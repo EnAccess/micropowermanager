@@ -7,7 +7,7 @@ use App\Http\Resources\ApiResource;
 use App\Services\MiniGridSolarService;
 use Illuminate\Http\Request;
 
-class JetsonMiniGridSolarController extends controller
+class JetsonMiniGridSolarController extends Controller
 {
     public function __construct(private MiniGridSolarService $miniGridSolarService)
     {

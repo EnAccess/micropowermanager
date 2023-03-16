@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
-class JetsonMiniGridProxyController extends controller
+class JetsonMiniGridProxyController extends Controller
 {
     const INTERNAL_API_URL = 'http://localhost:3000/api';
     public function __construct(
