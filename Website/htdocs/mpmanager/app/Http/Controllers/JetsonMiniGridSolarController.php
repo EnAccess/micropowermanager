@@ -32,7 +32,7 @@ class JetsonMiniGridSolarController extends controller
         $deviceId = $request->input('device_id');
         $nodeId = $request->input('node_id');
         $timestamp = $request->input('time_stamp');
-        $storageFileName = $request->input('storage_file_name');
+        $storageFolder = $request->input('storage_folder');
 
         if ($frequencyStr !== "0" && $frequencyStr !== 0) {
             $frequency = (int)str_replace('\n', '', $frequencyStr);
@@ -60,7 +60,7 @@ class JetsonMiniGridSolarController extends controller
             'readings' => $solarData['readings'],
             'frequency' => $frequency,
             'pv_power' => $pvPower,
-            'storage_file_name' => $storageFileName
+            'storage_folder' => $storageFolder
         ];
 
         return ApiResource::make($this->miniGridSolarService->create($solarData));

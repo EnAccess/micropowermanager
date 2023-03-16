@@ -49,7 +49,7 @@ data_frequency = 15Min
 [data_weather_forecast]
 data_cache_folder = resources/01_measurements/weather_data/forecast/
 data_cache_name = forecast-1jetson-nsambya1663855661.json
-url = https://cloud.micropowermanager.com/storage/volt-terra-nsambya/1/public
+url = https://cloud.micropowermanager.com/api/jetson/mini-grids/1/weather-data/22/volt-terra-nsambya
 timezone_origin = UTC
 time_column_server_data = Timestamp
 
