@@ -13,6 +13,10 @@ class JetsonMiniGridWeatherDataController extends Controller
         $companyId = $slug;
         try {
             $file = Storage::disk('local')->get("/public/$storageFolder/$miniGridId/public/$fileName");
+
+            if (!$file){
+                return response()->json(['error' => 'File not found'], 404);
+            }
             return json_decode($file, true);
         }catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
