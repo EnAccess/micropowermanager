@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SolarCreateRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Solar;
 use App\Services\MiniGridSolarService;
 use Illuminate\Http\Request;
 
@@ -19,8 +20,30 @@ class JetsonMiniGridSolarController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $weatherData = $request->input('weather');
+        $startDate = request()->input('start_date');
+        $endDate = request()->input('end_date');
+        $limit = request()->input('per_page');
+        $withWeather = request()->input('weather');
 
-        return  ApiResource::make($this->miniGridSolarService->getForJetsonById($miniGridId, $startDate, $endDate, $limit, $weatherData));
+        $query = Solar::query()->where('mini_grid_id', '=', $miniGridId);
+
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+
+        if ($withWeather) {
+            $query->with('weatherData');
+        }
+
+        if ($limit) {
+            $query->take($limit);
+        }
+
+        return  ApiResource::make($query->get());
     }
 
     public function store(SolarCreateRequest $request): ApiResource

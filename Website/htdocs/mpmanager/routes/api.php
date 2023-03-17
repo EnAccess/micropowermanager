@@ -168,7 +168,7 @@ Route::group(['prefix' => 'jetson'], static function () {
         Route::post('/{miniGridId}/battery/{slug}', 'JetsonMiniGridBatteryController@store');
         Route::post('/{miniGridId}/generation-assets/{slug}', 'JetsonMiniGridFrequencyController@store');
         Route::post('/{miniGridId}/pv/{slug}', 'JetsonMiniGridPVController@store')->middleware('data.controller');;
-        Route::post('/{miniGridId}/solar/{slug}', 'JetsonMiniGridFrequencyController@store');
+        Route::post('/{miniGridId}/solar/{slug}', 'JetsonMiniGridSolarController@store');
         Route::post('/{miniGridId}/energy/{slug}', 'JetsonMiniGridEnergyController@store');
     });
 });

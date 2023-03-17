@@ -9,6 +9,7 @@ use App\Models\Energy;
 use App\Services\MiniGridEnergyService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class JetsonMiniGridEnergyController extends Controller
 {
@@ -21,7 +22,32 @@ class JetsonMiniGridEnergyController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        return ApiResource::make($this->miniGridEnergyService->getById($miniGridId, $startDate, $endDate));
+        $startDate = request()->input('start_date');
+        $endDate = request()->input('end_date');
+        $limit = request()->input('per_page');
+        $withWeather = request()->input('weather');
+
+        $query = Energy::query()
+            ->where('mini_grid_id', $miniGridId);
+
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+
+        if ($withWeather)
+        {
+            $query->with('weatherData');
+        }
+
+        if ($limit) {
+            $query->take($limit);
+        }
+
+        return new ApiResource($query->get());
     }
 
     public function store(StoreEnergyRequest $request): ApiResource
@@ -82,6 +108,7 @@ class JetsonMiniGridEnergyController extends Controller
                 ]
             );
         }
-        return ApiResource::make(['result' => 'success']);
+        return new ApiResource(['result' => 'success']);
     }
+
 }
