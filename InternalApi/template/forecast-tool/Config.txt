@@ -5,7 +5,7 @@ test_period = 5D
 
 [general]
 timezone_site = {{timeZone}}
-app_path = /var/www/MPManager-Cloud/company/{{companyId}}/miniGrid/{{miniGridId}}/forecast-tool
+app_path = /var/www/MPManager-Cloud/InternalApi/company/{{companyId}}/miniGrid/{{miniGridId}}/forecast-tool
 forecasting_mode = False
 clean_start = False
 timezone_results = {{timeZone}}
@@ -40,7 +40,7 @@ clean_start = False
 data_cache_folder = resources/01_measurements/weather_data/historical/
 data_cache_name = weather_measurements.csv
 update_historical_data = True
-update_server_url = https://cloud.micropowermanager.com/storage/
+update_server_url = https://cloud.micropowermanager.com/api/jetson/mini-grids/{{miniGridId}}/weather-data/{{companyId}}/{{storageFolder}}/
 time_column_server_data = timestamp
 timezone_server = {{timeZone}}
 raw_data_frequency = 2H
@@ -49,7 +49,7 @@ data_frequency = 15Min
 [data_weather_forecast]
 data_cache_folder = resources/01_measurements/weather_data/forecast/
 data_cache_name = starter.json
-url = https://cloud.micropowermanager.com/api/jetson/mini-grids/{{miniGridId}}/weather-data/{{companyId}}/{{storageFolder}}
+url = https://cloud.micropowermanager.com/api/jetson/mini-grids/{{miniGridId}}/weather-data/{{companyId}}/{{storageFolder}}/
 timezone_origin = UTC
 time_column_server_data = Timestamp
 

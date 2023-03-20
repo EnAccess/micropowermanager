@@ -65,12 +65,24 @@ def main():
 
         Nothing to Return
     '''
+    path = Configuration.getConfigValue('general', 'app_path')
+    # create a file handler
+    handler = logging.FileHandler(path +'/forecast_tool.log')
+    handler.setLevel(logging.INFO)
+
+    # create a logging format
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # add the file handler to the logger
+    logger.addHandler(handler)
     # get current system time and add Timezone. Timezone has to be changed if wrong!
     timezone_site = Configuration.getConfigValue('general', 'timezone_site')
     time_now = pd.to_datetime(datetime.datetime.now().astimezone().isoformat(timespec='seconds')).tz_convert(
         timezone_site)
     # read app path for socket server
-    path = Configuration.getConfigValue('general', 'app_path')
+
     # Initialize forecasting module
     fm = ForecastingModule(current_path=path)
     # update data (get data from server or somewhere else)
@@ -104,6 +116,18 @@ def reset_datasets(date: str, path_pre=''):
     Notes
         Function should be used only in testing and troubleshooting before using main_test_run function.
     '''
+    path = Configuration.getConfigValue('general', 'app_path')
+    # create a file handler
+    handler = logging.FileHandler(path +'/forecast_tool.log')
+    handler.setLevel(logging.INFO)
+
+    # create a logging format
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # add the file handler to the logger
+    logger.addHandler(handler)
 
     timezone_site = Configuration.getConfigValue('general', 'timezone_site')
     # string date to pandas datetime

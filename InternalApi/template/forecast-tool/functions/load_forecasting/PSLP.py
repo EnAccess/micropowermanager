@@ -495,12 +495,12 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             day_character = season + day_info
             cached_data = self.cache_dict.get(day_character)
             used_recency = self.recency.get(day_character)
-            profile = cached_data.iloc[:, -used_recency:].mean(axis=1)
+            profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
             if profile.empty:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -used_recency:].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
             data_for_day = forecast_data.loc[forecast_data['date'] == date].copy()
             data_for_day.loc[:, 'index'] = data_for_day.index
             data_for_day.index = data_for_day['time']
@@ -621,7 +621,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             cached_data = self.cache_dict.get(day_character)
             used_recency = self.recency.get(day_character)
             if used_recency is not None:
-                profile = cached_data.iloc[:, -used_recency:].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
             else:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
@@ -631,7 +631,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                     self.test_recency(historical_data, day_character)
                 used_recency = self.recency.get(day_character)
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -used_recency:].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
             if profile.empty or profile.dropna().shape[0] < self.steps_per_day:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
@@ -641,7 +641,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                     self.test_recency(historical_data, day_character)
                 used_recency = self.recency.get(day_character)
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -used_recency:].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
             data_for_day = forecast_data.loc[forecast_data['date'] == date].copy()
             data_for_day.loc[:, 'index'] = data_for_day.index
             data_for_day.index = data_for_day['time']

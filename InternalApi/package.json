@@ -27,6 +27,7 @@
     "node-xlsx": "^0.21.0",
     "nodemon": "^2.0.15",
     "pusher": "^5.1.2",
+    "python-shell": "^5.0.0",
     "shelljs": "^0.8.4"
   }
 }

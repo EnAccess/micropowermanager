@@ -1,59 +1,33 @@
-import { spawn } from 'child_process'
-import path from 'path'
-import  Pusher  from 'pusher'
+import { Worker } from 'worker_threads'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const pusher = new Pusher({
-    appId: process.env.APP_ID,
-    key: process.env.KEY,
-    secret: process.env.SECRET,
-    cluster: process.env.CLUSTER,
-    useTLS: true
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const ProcessService = {
 
     async forecast (companyId, miniGridId) {
-        const forecastPath = `../company/${companyId}/miniGrid/${miniGridId}/forecast-tool`
         try {
-            return new Promise((resolve, reject) => {
-                const pythonProcess = spawn('python3', [
-                    path.join(__dirname, `${forecastPath}/main.py`),
-                    '-c',
-                    `${forecastPath}/Config.txt`
-                ])
-                pythonProcess.stderr.on('data', (data) => {
-                    reject('error')
-                })
-                pythonProcess.on('close', () => {
-                    pusher.trigger("micro-power-manager", "forecast-tool",{
-                        'companyId':companyId,
-                        'miniGridId':miniGridId
-                    });
-
-                })
+            const worker = new Worker(`${__dirname}/Worker.js`, {
+                workerData: {
+                    companyId: companyId,
+                    miniGridId: miniGridId
+                }
             })
-        } catch (error) {
-            throw error
-        }
-    },
-    async optimization (companyId, miniGridId) {
-        const optimizationPath = `../company/${companyId}/miniGrid/${miniGridId}/optimization_model`
-        try {
-            return new Promise((resolve, reject) => {
-                const pythonProcess = spawn('python3', [
-                    path.join(__dirname, `${optimizationPath}/miners_base.py`),
-                ])
-                pythonProcess.stderr.on('data', (data) => {
-                    reject('error')
-                })
-                pythonProcess.on('close', () => {
-                    pusher.trigger("micro-power-manager", "optimization-tool",{
-                        'companyId':companyId,
-                        'miniGridId':miniGridId
-                    });
-                })
+            worker.on('message', (message) => {
+                return message
+            })
+            worker.on('error', (error) => {
+                throw error
+            })
+            worker.on('exit', (code) => {
+                console.log(code)
+                if (code !== 0)
+                    throw new Error(`stopped with  ${code} exit code`)
             })
         } catch (error) {
             throw error
         }
     }
+
 }
