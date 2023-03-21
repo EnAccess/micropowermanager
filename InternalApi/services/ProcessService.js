@@ -20,6 +20,9 @@ export const ProcessService = {
             worker.on('error', (error) => {
                 throw error
             })
+            worker.on('unhandledRejection', (error) => {
+                throw error
+            })
             worker.on('exit', (code) => {
                 console.log(code)
                 if (code !== 0)
