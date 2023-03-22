@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class JetsonMiniGridProxyController extends Controller
@@ -17,14 +18,18 @@ class JetsonMiniGridProxyController extends Controller
     /**
      * @throws GuzzleException
      */
-    public function proxy($miniGridId, $slug, $gate)
+    public function proxy(Request $request, $miniGridId, $slug, $gate)
     {
        $companyId = $slug;
+       $efficiencyCurve = $request->get('efficiencyCurve');
         try {
             $data = [
                 'miniGridId' => $miniGridId,
-                'companyId' => $companyId
+                'companyId' => $companyId,
+                'efficiencyCurve' => json_encode($efficiencyCurve),
+                'socVal' => $request->get('socVal'),
             ];
+
             $this->httpClient->post(self::INTERNAL_API_URL.'/'.$gate,
                 [
                     'headers' => [

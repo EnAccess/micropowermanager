@@ -6,12 +6,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export const ProcessService = {
 
-    async forecast (companyId, miniGridId) {
+    async forecast (companyId, miniGridId, efficiencyCurve, socVal) {
         try {
+
             const worker = new Worker(`${__dirname}/Worker.js`, {
                 workerData: {
                     companyId: companyId,
-                    miniGridId: miniGridId
+                    miniGridId: miniGridId,
+                    efficiencyCurve: efficiencyCurve,
+                    socVal: socVal
                 }
             })
             worker.on('message', (message) => {

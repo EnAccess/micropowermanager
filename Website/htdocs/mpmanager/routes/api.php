@@ -163,7 +163,7 @@ Route::group(['prefix' => 'jetson'], static function () {
         Route::get('/{miniGridId}/solar-readings/{slug}', 'JetsonMiniGridSolarController@show');
         Route::get('/{miniGridId}/pv-readings/{slug}', 'JetsonMiniGridPVController@show');
         Route::get('/{miniGridId}/weather-readings/{slug}', 'JetsonMiniGridSolarController@show');
-        Route::get('/{miniGridId}/proxy/{slug}/{gate}', 'JetsonMiniGridProxyController@proxy');
+        Route::post('/{miniGridId}/proxy/{slug}/{gate}', 'JetsonMiniGridProxyController@proxy');
 
         Route::post('/{miniGridId}/battery/{slug}', 'JetsonMiniGridBatteryController@store');
         Route::post('/{miniGridId}/generation-assets/{slug}', 'JetsonMiniGridFrequencyController@store');

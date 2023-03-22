@@ -1,11 +1,11 @@
 import express from 'express'
 import { ProcessService } from '../services/ProcessService.js'
 import { FileService } from '../services/FileService.js'
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const jetsonRouter = express.Router()
 
@@ -28,13 +28,15 @@ jetsonRouter.post('/configure', async (req, res) => {
         })
     }
 })
-jetsonRouter.post('/forecast',  async (req, res) => {
+jetsonRouter.post('/forecast', async (req, res) => {
     const params = req.body
     const companyId = params.companyId
     const miniGridId = params.miniGridId
+    const efficiencyCurve = params.efficiencyCurve
+    const socVal = params.socVal
 
     try {
-        await ProcessService.forecast(companyId, miniGridId)
+        await ProcessService.forecast(companyId, miniGridId, efficiencyCurve, socVal)
 
         res.send({ success: true })
     } catch (error) {
