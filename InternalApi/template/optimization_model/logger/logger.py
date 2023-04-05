@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import logging
 
-PATH = '/home/inensus/ZIM-Docker/backend/logs/'
+PATH = os.getcwd() + '/../logs/'
 
 
 class Logger:
