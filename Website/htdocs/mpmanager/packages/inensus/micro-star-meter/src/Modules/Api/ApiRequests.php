@@ -53,14 +53,14 @@ class ApiRequests
         $billingInfo = '/TMRDataService/billingData?deviceNo=0101189004654&dataRecordMonth=2022-10';
         $event ='/TMRDataService/eventInfo/event';
         $eventCode = '/TMRDataService/eventInfo/event?eventCode=1408';
-        $token = '/TMRDataService/getStsVendingToken?deviceNo=0600140100281&customerAccount=1234 56789&sgc=600415&ti=2&rechargeAmount=100';
+        $token = '/TMRDataService/getStsVendingToken?deviceNo=0600140100281&customerAccount=123456789&sgc=600415&ti=2&rechargeAmount=100';
         try {
-            $request = $this->httpClient->get($url . $token,
+            $request = $this->httpClient->get($url . $meterList,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
-                    'cert' => [__DIR__ . '/Certs/client.staging.p12', self::PASSWORD]
+                    'cert' => [__DIR__ . '/Certs/client.ympt.p12', self::PASSWORD]
                 ]);
 
             return $this->responseResolver->checkResponse(json_decode((string)$request->getBody(), true));
