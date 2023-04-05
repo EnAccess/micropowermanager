@@ -52,7 +52,6 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
     }
 
 
-
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
     {
         $this->smTransactionService->getSparkTransactions($transactionMin)
@@ -123,7 +122,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         });
     }
 
-   public function handle(): void
+    public function handle(): void
     {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
@@ -136,18 +135,34 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         $this->info('smsNotifier command started at ' . $startedAt);
         try {
             $smsSettings = $this->smsSettingsService->getSmsSettings();
-            $transactionMin = $smsSettings->where('state', 'Transactions')->first()->not_send_elder_than_mins;
-            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')->first()->not_send_elder_than_mins;
+            $transactionsSettings = $smsSettings->where('state', 'Transactions')->first();
+
+            if (!$transactionsSettings) {
+                throw new CronJobException('Transaction min is not set');
+            }
+            $transactionMin = $transactionsSettings->not_send_elder_than_mins;
+
+            $lowBalanceWarningSetting = $smsSettings->where('state', 'Low Balance Warning')->first();
+
+            if (!$lowBalanceWarningSetting) {
+                throw new CronJobException('Low balance min is not set');
+            }
+
+            $lowBalanceMin = $lowBalanceWarningSetting->not_send_elder_than_mins;
             $smsNotifiedCustomers = $this->smSmsNotifiedCustomerService->getSmsNotifiedCustomers();
             $customers = $this->smCustomerService->getSparkCustomersWithAddress();
-            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
-            $this->sendLowBalanceWarningNotifySms($customers
-                ->where(
-                    'updated_at',
-                    '>=',
-                    Carbon::now()->subMinutes($lowBalanceMin)
-                ), $smsNotifiedCustomers, $lowBalanceMin);
-        } catch (CronJobException $e) {
+
+            if ($customers->count() && $smsNotifiedCustomers->count()) {
+                $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
+                $this->sendLowBalanceWarningNotifySms($customers
+                    ->where(
+                        'updated_at',
+                        '>=',
+                        Carbon::now()->subMinutes($lowBalanceMin)
+                    ), $smsNotifiedCustomers, $lowBalanceMin);
+            }
+
+        } catch (CronJobException|\Exception $e) {
             $this->warn('dataSync command is failed. message => ' . $e->getMessage());
         }
         $timeEnd = microtime(true);

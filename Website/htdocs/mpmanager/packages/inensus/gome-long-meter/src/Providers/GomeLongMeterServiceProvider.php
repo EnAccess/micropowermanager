@@ -24,8 +24,8 @@ class GomeLongMeterServiceProvider extends ServiceProvider
             $this->commands([InstallPackage::class]);
         }
         $this->app->booted(function ($app) {
-            $app->make(Schedule::class)->command('gome-long-meter:dataSync')->withoutOverlapping(50)
-                ->appendOutputTo(storage_path('logs/cron.log'));
+            //$app->make(Schedule::class)->command('gome-long-meter:dataSync')->withoutOverlapping(50)
+              //  ->appendOutputTo(storage_path('logs/cron.log'));
         });
     }
 
