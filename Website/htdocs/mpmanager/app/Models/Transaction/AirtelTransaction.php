@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * Class AirtelTransaction
@@ -18,8 +19,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $status
  * @property string $tr_id
  */
-class AirtelTransaction extends BaseModel implements IRawTransaction
+class AirtelTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
+
+    public const RELATION_NAME = 'airtel_transaction';
     /**
      * @return MorphOne
      */
@@ -36,5 +39,10 @@ class AirtelTransaction extends BaseModel implements IRawTransaction
     public function conflicts(): MorphMany
     {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string
+    {
+        return self::RELATION_NAME;
     }
 }

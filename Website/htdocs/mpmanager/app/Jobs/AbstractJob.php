@@ -2,10 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Http\Middleware\UserDefaultDatabaseConnectionMiddleware;
 use App\Models\CompanyJob;
-use App\Models\User;
-use App\Services\CompanyService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,18 +21,23 @@ abstract class AbstractJob implements ShouldQueue
     protected int $companyId;
     protected CompanyJob $companyJob;
 
+    public ?string $parentId = null;
+
     abstract public function executeJob();
 
     public function __construct($jobName)
     {
+        $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();
-        $this->companyJob = CompanyJob::query()->create([
-            'company_id' => $this->companyId,
-            'status' => CompanyJob::STATUS_PENDING,
-            'job_name' => $jobName,
-            'job_id' => null
-        ]);
 
+            $this->companyJob = CompanyJob::query()->create(
+                [
+                    'company_id' => $this->companyId,
+                    'status' => CompanyJob::STATUS_PENDING,
+                    'job_name' => $jobName,
+                    'job_id' => $this->parentId
+                ]
+            );
 
     }
 
@@ -51,9 +53,10 @@ abstract class AbstractJob implements ShouldQueue
         $this->setJobStatus(CompanyJob::STATUS_SUCCESS);
     }
 
-    public function failed()
+    public function failed(\Throwable $t = null)
     {
-        $this->setJobStatus(CompanyJob::STATUS_FAILED);
+        $trace = $t !== null ? explode('#15', $t->getTraceAsString(), 1000)[0] : null;
+        $this->setJobStatus(CompanyJob::STATUS_FAILED, $t?->getMessage(), $trace);
     }
 
     protected function setJobUuid($jobUuid)
@@ -62,9 +65,12 @@ abstract class AbstractJob implements ShouldQueue
         $this->companyJob->save();
     }
 
-    protected function setJobStatus($status)
+    protected function setJobStatus($status, string $message = null, string $trace = null)
     {
+
         $this->companyJob->status = $status;
+        $this->companyJob->message = $message;
+        $this->companyJob->trace = $trace;
         $this->companyJob->save();
     }
 }

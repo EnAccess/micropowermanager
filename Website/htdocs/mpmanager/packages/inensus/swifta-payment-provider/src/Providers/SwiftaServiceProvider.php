@@ -27,7 +27,7 @@ class SwiftaServiceProvider extends ServiceProvider
         }
         Relation::morphMap(
             [
-                'swifta_transaction' => SwiftaTransaction::class,
+                SwiftaTransaction::RELATION_NAME  => SwiftaTransaction::class,
             ]
         );
         $this->app->make(Schedule::class)->command('swifta-payment-provider:transactionStatusCheck')->dailyAt('00:00')

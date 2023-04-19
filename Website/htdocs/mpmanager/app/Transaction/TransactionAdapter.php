@@ -31,22 +31,22 @@ class TransactionAdapter
             return $baseTransaction;
         }
 
-        if ($transactionProvider instanceof AirtelTransaction) {
+        elseif ($transactionProvider instanceof AirtelTransaction) {
             $baseTransaction = resolve('AirtelPaymentProvider');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         }
-        if ($transactionProvider instanceof AgentTransaction) {
+        elseif ($transactionProvider instanceof AgentTransaction) {
             $baseTransaction = resolve('AgentPaymentProvider');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         }
-        if ($transactionProvider instanceof WaveMoneyTransaction) {
+        elseif ($transactionProvider instanceof WaveMoneyTransaction) {
             $baseTransaction = resolve('WaveMoneyPaymentProvider');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         }
-        if ($transactionProvider instanceof SwiftaTransaction) {
+        elseif ($transactionProvider instanceof SwiftaTransaction) {
             $baseTransaction = resolve('SwiftaPaymentProvider');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;

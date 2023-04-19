@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int id
@@ -18,8 +19,9 @@ use App\Models\Transaction\TransactionConflicts;
  * @property int customer_id
  * @property null|string meter_serial
  */
-class WaveMoneyTransaction extends BaseModel implements IRawTransaction
+class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
+    public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
     public const STATUS_FAILED = -1;
@@ -103,5 +105,10 @@ class WaveMoneyTransaction extends BaseModel implements IRawTransaction
     public function conflicts()
     {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string
+    {
+        return self::RELATION_NAME;
     }
 }

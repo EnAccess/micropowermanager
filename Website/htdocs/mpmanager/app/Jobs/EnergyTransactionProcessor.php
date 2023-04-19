@@ -28,6 +28,7 @@ class EnergyTransactionProcessor extends AbstractJob
      */
     public function __construct(private $transactionId)
     {
+        $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
 

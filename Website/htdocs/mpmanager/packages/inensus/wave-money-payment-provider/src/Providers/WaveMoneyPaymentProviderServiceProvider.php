@@ -26,7 +26,7 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
         }
         Relation::morphMap(
             [
-                'wave_money_transaction' => WaveMoneyTransaction::class,
+                WaveMoneyTransaction::RELATION_NAME => WaveMoneyTransaction::class,
             ]
         );
     }

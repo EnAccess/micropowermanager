@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int agent_id
@@ -15,8 +16,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int status
  * @property string sender
  */
-class AgentTransaction extends BaseModel implements IRawTransaction
+class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
+    public const RELATION_NAME = 'agent_transaction';
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');
@@ -35,5 +37,10 @@ class AgentTransaction extends BaseModel implements IRawTransaction
     public function conflicts(): MorphMany
     {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string
+    {
+        return self::RELATION_NAME;
     }
 }
