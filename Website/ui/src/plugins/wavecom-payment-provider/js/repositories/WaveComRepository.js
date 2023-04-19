@@ -1,11 +1,11 @@
 import { baseUrl } from '@/repositories/Client/AxiosClient'
 
-const resource = `${baseUrl}/api/bulk-register/import-csv`
+const resource = `${baseUrl}/api/wavecom/upload`
 
 import Client from '@/repositories/Client/AxiosClient'
 
 export default {
-    post (csvData) {
-        return Client.post(`${resource}`, csvData)
+    post (transactionFile) {
+        return Client.post(`${resource}`, transactionFile)
     }
 }

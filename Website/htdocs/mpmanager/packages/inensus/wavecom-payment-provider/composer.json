@@ -1,0 +1,27 @@
+{
+  "name": "inensus/wavecom-payment-provider",
+  "description": "WaveCom Payment Provider integration",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Inensus",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\WavecomPaymentProvider\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\WavecomPaymentProvider\\Providers\\WavecomPaymentProviderServiceProvider"
+      ]
+    }
+  }
+}

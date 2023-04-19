@@ -6,15 +6,17 @@ use Illuminate\Database\Schema\Blueprint;
 
 return new class extends Migration
 {
+    private const TABLE_NAME = 'wavecom_transactions';
     public function up()
     {
-        if (!Schema:: hasTable('wavecom_transactions')) {
-            Schema::create('wavecom_transaction', function (Blueprint $table) {
+        if (!Schema:: hasTable(self::TABLE_NAME)) {
+            Schema::create(self::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('transaction_id');
+                $table->string('transaction_id')->unique();
                 $table->string('sender');
                 $table->string('message');
-                $table->integer('amount');
+                $table->integer('amount')->unsigned();
+                $table->integer('status')->unsigned();
                 $table->timestamps();
             });
         }
@@ -22,6 +24,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('wavecom_transactions');
+        Schema::dropIfExists(self::TABLE_NAME);
     }
 };
