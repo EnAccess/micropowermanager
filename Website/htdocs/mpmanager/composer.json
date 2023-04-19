@@ -80,7 +80,8 @@
       "Inensus\\WaveMoneyPaymentProvider\\": "packages/inensus/wave-money-payment-provider/src",
       "Inensus\\MicroStarMeter\\": "packages/inensus/micro-star-meter/src",
       "Inensus\\SunKingMeter\\": "packages/inensus/sun-king-meter/src",
-      "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src"
+      "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src",
+      "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src"
     }
   },
   "minimum-stability": "dev",

@@ -1,5 +1,7 @@
 <?php
 
+use Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider;
+
 return [
 
     /*
@@ -182,6 +184,7 @@ return [
         \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
         \Inensus\SunKingMeter\Providers\SunKingMeterServiceProvider::class,
         \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
+        WavecomPaymentProviderServiceProvider::class
 
     ],
 

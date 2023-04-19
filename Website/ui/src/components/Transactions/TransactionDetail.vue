@@ -30,6 +30,11 @@
                                     <swifta-transaction :ot="ot"
                                                         v-if="transaction.original_transaction_type === 'swifta_transaction'"
                                     />
+                                    <wave-com-transaction :ot="ot"
+                                                        v-if="transaction.original_transaction_type === 'wavecom_transaction'"
+                                    />
+
+                                    <third-party-transaction :ot="ot" v-else />
                                 </md-card-content>
                             </md-card>
                         </widget>
@@ -213,10 +218,12 @@ import { PersonService } from '@/services/PersonService'
 import ThirdPartyTransaction from './ThirdPartyTransaction'
 import WaveMoneyTransaction from '@/components/Transactions/WaveMoneyTransaction'
 import SwiftaTransaction from '@/components/Transactions/SwiftaTransaction'
+import WaveComTransaction from "@/components/Transactions/WaveComTransaction.vue";
 
 export default {
     name: 'TransactionDetail',
     components: {
+        WaveComTransaction,
         SwiftaTransaction,
         WaveMoneyTransaction,
         ThirdPartyTransaction,

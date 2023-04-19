@@ -228,6 +228,10 @@
                                          :src="swiftaLogo"
                                          style="max-height:18px;"
                                     />
+                                    <img v-if="transaction.service==='wavecom_transaction'"
+                                         :src="waveComLogo"
+                                         style="max-height:18px;"
+                                    />
 
                                 </md-table-cell>
                                 <md-table-cell>{{ transaction.sender }}</md-table-cell>
@@ -285,6 +289,7 @@ import swifta from '../../assets/icons/Swifta.png'
 import agentIcon from '../../assets/icons/agent-icon.png'
 import moneyIcon from '../../assets/icons/money-icon.png'
 import thirdPartyLogo from '../../assets/icons/third_party_transaction_icon.png'
+import WaveComLogo from '../../assets/icons/WaveComLogo.png'
 
 export default {
     name: 'transactionList',
@@ -315,7 +320,8 @@ export default {
             waveMoneyLogo: waveMoneyLogo,
             agentIcon: agentIcon,
             moneyIcon: moneyIcon,
-            swiftaLogo: swifta
+            swiftaLogo: swifta,
+            waveComLogo: WaveComLogo,
         }
     },
     mounted () {

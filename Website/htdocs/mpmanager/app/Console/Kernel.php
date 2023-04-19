@@ -18,6 +18,7 @@ use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallW
 use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
 use Inensus\SunKingMeter\Console\Commands\InstallPackage as InstallSunKingMeterPackage;
 use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
+use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel
         InstallMicroStarMeterPackage::class,
         InstallSunKingMeterPackage::class,
         InstallGomeLongMeterPackage::class,
+        InstallWaveComPackage::class,
     ];
 
     /**
