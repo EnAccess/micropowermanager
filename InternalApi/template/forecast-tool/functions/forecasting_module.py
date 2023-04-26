@@ -54,13 +54,17 @@ def mp_function(queue, part, forecasting_mode, current_path, time_now, args):
     ai = AI(forecasting_mode, current_path, part)
     created_data = ai.create_dataset(args.get('data'), args.get('target_column'), time_now, forecasting_mode, part,
                                      args.get('optional_args'))
+    print("Data set created..")
     if created_data.get('enough_data') is True:
+        print('enough data: ', created_data.get('enough_data'))
         ai.train(args.get('eval_rec'), part, created_data.get('datasets_train_forecast'),
                  time_now)
-        prediction = ai.forecast(part, created_data.get('datasets_train_forecast'))
+        prediction = ai.forecast(
+            part, created_data.get('datasets_train_forecast'))
     else:
         prediction = created_data.get('datasets_train_forecast')
-    queue.put({'prediction': prediction, 'optional_data': created_data.get('optional_out')})
+    queue.put({'prediction': prediction,
+              'optional_data': created_data.get('optional_out')})
     # except Exception as e:
     #    module_logger.critical(e, exc_info=True)  # log exception info at CRITICAL log level
 
@@ -142,15 +146,18 @@ class ForecastingModule:
         self.current_path = current_path
         module_logger.info('Initializing Modules')
         # read in selected mode from config
-        self.forecasting_mode = string_to_bool(Configuration.getConfigValue('general', 'forecasting_mode'))
-        module_logger.info(f'Programm is running in forecasting mode: {str(self.forecasting_mode)}')
+        self.forecasting_mode = string_to_bool(
+            Configuration.getConfigValue('general', 'forecasting_mode'))
+        module_logger.info(
+            f'Programm is running in forecasting mode: {str(self.forecasting_mode)}')
         # init all needed modules
         self.weather = Weather(current_path)
         sun_times = self.weather.set_up_sun_times()
         self.pv = PVForecasting(sun_times, current_path)
         self.load = LoadForecasting(current_path)
         self.eval = ForecastEvaluation(current_path)
-        self.predictions = {'pv_short': None, 'pv_long': None, 'lf_short': None, 'lf_long': None}
+        self.predictions = {'pv_short': None,
+                            'pv_long': None, 'lf_short': None, 'lf_long': None}
         module_logger.info('Modules initialized.')
 
     def update_data(self, time_now):
@@ -185,7 +192,8 @@ class ForecastingModule:
 
     def __mp_constructor(self, part, forecasting_mode, current_path, time_now, args):
         queue = mp.Queue()
-        process = mp.Process(target=mp_function, args=(queue, part, forecasting_mode, current_path, time_now, args))
+        process = mp.Process(target=mp_function, args=(
+            queue, part, forecasting_mode, current_path, time_now, args))
         process.start()
         return process, queue
 
@@ -221,17 +229,20 @@ class ForecastingModule:
                         'eval_rec': self.eval.recommendation.get('lf_long'),
                         'target_column': self.load.dm.target_columns,
                         'optional_args': {'data_frequency': self.load.dm.data_frequency}}
-        args = {'pv_short': pv_short_args, 'pv_long': pv_long_args, 'lf_short': lf_short_args, 'lf_long': lf_long_args}
-        for part in ['lf_long', 'pv_long','pv_short', 'lf_short']:
+        args = {'pv_short': pv_short_args, 'pv_long': pv_long_args,
+                'lf_short': lf_short_args, 'lf_long': lf_long_args}
+        for part in ['lf_long', 'pv_long', 'pv_short', 'lf_short']:
             module_logger.info(f'Starting AI Session for: {part}')
             process, queue = self.__mp_constructor(part, self.forecasting_mode, self.current_path, time_now,
                                                    args.get(part))
             self.predictions[part] = queue.get()
-            module_logger.info(f'Results retireved closing AI Session for: {part}')
+            module_logger.info(
+                f'Results retireved closing AI Session for: {part}')
             process.join()
             module_logger.info(f"Session closed for: {part}")
-        self.pv.pv_power_max_short = self.predictions.get('pv_short').get('optional_data')
-        #self.predictions['lf_long']= {'prediction': self.load.recombine_forecast(self.predictions.get('lf_long'))}
+        self.pv.pv_power_max_short = self.predictions.get(
+            'pv_short').get('optional_data')
+        # self.predictions['lf_long']= {'prediction': self.load.recombine_forecast(self.predictions.get('lf_long'))}
         module_logger.info('Retrieved optional data for: pv_short')
 
     def prepare_datasets(self, time_now):
@@ -303,7 +314,8 @@ class ForecastingModule:
                       time_now)
         self.ai.train(self.eval.recommendation.get('pv_short'), 'pv_short', self.pv.dataset_short_term_forecast,
                       time_now)
-        self.ai.train(self.eval.recommendation.get('pv_long'), 'pv_long', self.pv.dataset_long_term_forecast, time_now)
+        self.ai.train(self.eval.recommendation.get('pv_long'),
+                      'pv_long', self.pv.dataset_long_term_forecast, time_now)
         module_logger.info('Algorithms trained if needed.')
 
     def ai_forecast(self):
@@ -325,10 +337,14 @@ class ForecastingModule:
             No returns needed as data is stored in class itself
         """
         module_logger.info('Forecasting stage.')
-        self.ai.forecast('pv_short', self.pv.dataset_short_term_forecast, self.pv.scaler_pv_short)
-        self.ai.forecast('pv_long', self.pv.dataset_long_term_forecast, self.pv.scaler_pv_long)
-        self.ai.forecast('lf_short', self.load.dataset_short_term_forecast, self.load.scaler_load_short)
-        self.ai.forecast('lf_long', self.load.dataset_long_term_forecast, self.load.scaler_long_term)
+        self.ai.forecast(
+            'pv_short', self.pv.dataset_short_term_forecast, self.pv.scaler_pv_short)
+        self.ai.forecast(
+            'pv_long', self.pv.dataset_long_term_forecast, self.pv.scaler_pv_long)
+        self.ai.forecast(
+            'lf_short', self.load.dataset_short_term_forecast, self.load.scaler_load_short)
+        self.ai.forecast(
+            'lf_long', self.load.dataset_long_term_forecast, self.load.scaler_long_term)
         module_logger.info('Forecating stage completed successfully.')
 
     def add_statistical_forecasts(self, time_now):
@@ -391,10 +407,14 @@ class ForecastingModule:
 
         """
         module_logger.info('Beginning evaluation.')
-        self.eval.evaluate_recent_forecasts(time_now, 'pv_short', self.pv.dm.data)
-        self.eval.evaluate_recent_forecasts(time_now, 'pv_long', self.pv.dm.data)
-        self.eval.evaluate_recent_forecasts(time_now, 'lf_short', self.load.dm.data)
-        self.eval.evaluate_recent_forecasts(time_now, 'lf_long', self.load.dm.data)
+        self.eval.evaluate_recent_forecasts(
+            time_now, 'pv_short', self.pv.dm.data)
+        self.eval.evaluate_recent_forecasts(
+            time_now, 'pv_long', self.pv.dm.data)
+        self.eval.evaluate_recent_forecasts(
+            time_now, 'lf_short', self.load.dm.data)
+        self.eval.evaluate_recent_forecasts(
+            time_now, 'lf_long', self.load.dm.data)
         self.eval.recommend()
         module_logger.info('Evaluation finished successfully.')
 

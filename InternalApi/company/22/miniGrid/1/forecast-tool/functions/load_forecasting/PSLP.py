@@ -141,17 +141,21 @@ class PersonalizedStandardizedLoadProfile_variable_length:
 
     """
 
-    def __init__(self, target_column, part = 'short',  data_frequency= '15Min'):
+    def __init__(self, target_column, part='short',  data_frequency='15Min'):
 
         self.target_column = target_column
         self.holiday_times = []
         self.data_frequency = data_frequency
-        self.steps_per_day = int(pd.to_timedelta('1D') / pd.to_timedelta(self.data_frequency))
+        self.steps_per_day = int(pd.to_timedelta(
+            '1D') / pd.to_timedelta(self.data_frequency))
         self.config_part = f'PSLP_{part}'
-        self.seasonal = string_to_bool(Configuration.getConfigValue(self.config_part , 'seasonal'))
-        self.weekly = string_to_bool(Configuration.getConfigValue(self.config_part , 'weekly'))
-        self.set_fixed_recency = Configuration.getConfigValue(self.config_part , 'recency')
-        self.mode = Configuration.getConfigValue(self.config_part , 'mode')
+        self.seasonal = string_to_bool(
+            Configuration.getConfigValue(self.config_part, 'seasonal'))
+        self.weekly = string_to_bool(
+            Configuration.getConfigValue(self.config_part, 'weekly'))
+        self.set_fixed_recency = Configuration.getConfigValue(
+            self.config_part, 'recency')
+        self.mode = Configuration.getConfigValue(self.config_part, 'mode')
         self.daytypes_to_compute = None
         self.recency = None
         self.cache_dict = self.__init_dicts()
@@ -160,11 +164,13 @@ class PersonalizedStandardizedLoadProfile_variable_length:
 
     def __init_dicts(self):
         # initializes data storages
-        times = pd.date_range('00:00:00', '23:59:59', freq=self.data_frequency).time
+        times = pd.date_range('00:00:00', '23:59:59',
+                              freq=self.data_frequency).time
         dict_with_empty_profiles = dict()
         daytypes_to_compute = None
         if self.weekly is True and self.seasonal is True:
-            self.daytypes_to_compute = ['ww', 'wsa', 'wsu', 'tw', 'tsa', 'tsu', 'sw', 'ssa', 'ssu']
+            self.daytypes_to_compute = [
+                'ww', 'wsa', 'wsu', 'tw', 'tsa', 'tsu', 'sw', 'ssa', 'ssu']
         elif self.weekly is False and self.seasonal is True:
             self.daytypes_to_compute = ['ww', 'tw', 'sw']
         elif self.weekly is True and self.seasonal is False:
@@ -172,16 +178,19 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         else:
             self.daytypes_to_compute = ['sw']
         for element in self.daytypes_to_compute:
-            dict_with_empty_profiles[element] = pd.DataFrame(index=times)  # init all daytype profiles
+            dict_with_empty_profiles[element] = pd.DataFrame(
+                index=times)  # init all daytype profiles
         return dict_with_empty_profiles
 
     def __init_recency_test_dicts(self):
         # initializes data storages
-        times = pd.date_range('00:00:00', '23:59:59', freq=self.data_frequency).time
+        times = pd.date_range('00:00:00', '23:59:59',
+                              freq=self.data_frequency).time
         dict_with_empty_profiles = dict()
         daytypes_to_compute = None
         if self.weekly is True and self.seasonal is True:
-            self.daytypes_to_compute = ['ww', 'wsa', 'wsu', 'tw', 'tsa', 'tsu', 'sw', 'ssa', 'ssu']
+            self.daytypes_to_compute = [
+                'ww', 'wsa', 'wsu', 'tw', 'tsa', 'tsu', 'sw', 'ssa', 'ssu']
         elif self.weekly is False and self.seasonal is True:
             self.daytypes_to_compute = ['ww', 'tw', 'su']
         elif self.weekly is True and self.seasonal is False:
@@ -189,7 +198,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         else:
             self.daytypes_to_compute = ['sw']
         for element in self.daytypes_to_compute:
-            dict_with_empty_profiles[element] = 0 # init all daytype profiles
+            dict_with_empty_profiles[element] = 0  # init all daytype profiles
         return dict_with_empty_profiles
 
     def get_season_info(self, date, year):
@@ -214,12 +223,12 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             return 's'
         elif self.seasonal is True:
             if pd.to_datetime(year + '-01-01').date() <= date <= pd.to_datetime(
-                    year + '-03-20').date() or pd.to_datetime(year + '-11-01').date() <= date <= pd.to_datetime(
-                year + '-12-31').date():
+                year + '-03-20').date() or pd.to_datetime(year + '-11-01').date() <= date <= pd.to_datetime(
+                    year + '-12-31').date():
                 season = 'w'  # winter
             elif pd.to_datetime(year + '-03-21').date() <= date <= pd.to_datetime(
-                    year + '-05-14').date() or pd.to_datetime(
-                year + '-09-15').date() <= date <= pd.to_datetime(year + '-10-31').date():
+                year + '-05-14').date() or pd.to_datetime(
+                    year + '-09-15').date() <= date <= pd.to_datetime(year + '-10-31').date():
                 season = 't'  # transition
             elif pd.to_datetime(year + '-05-15').date() <= date <= pd.to_datetime(
                     year + '-09-14').date():
@@ -324,7 +333,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         # sort day into cache to be able to make profiles
         profile_data_cache = self.cache_dict.get(profile)
         data_on_date.index = data_on_date['time']
-        profile_data_cache.loc[data_on_date.index, date] = data_on_date[self.target_column]
+        profile_data_cache.loc[data_on_date.index,
+                               date] = data_on_date[self.target_column]
 
     def preprocess_new_data(self, incoming_data):
         """
@@ -348,7 +358,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             self.last_processed_timestep = last_timestamp
             data = incoming_data.copy(deep=True)
         else:
-            data = incoming_data.loc[incoming_data.index > self.last_processed_timestep]
+            data = incoming_data.loc[incoming_data.index >
+                                     self.last_processed_timestep]
             self.last_processed_timestep = last_timestamp
         data['date'] = pd.to_datetime(data.index).date
         data['time'] = pd.to_datetime(data.index).time
@@ -357,7 +368,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             data_on_date = data.loc[data['date'] == date]
             season, day_info = self.classification_day(date)
             day_character = season + day_info
-            self.sort_data_into_profile_cache(day_character, data_on_date, date)
+            self.sort_data_into_profile_cache(
+                day_character, data_on_date, date)
 
     def round_up(self, time_now):
         """
@@ -378,7 +390,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         # find next timestep which is regular (e.g. 16:56:59 -> 17:00:00)
         time_now_round = time_now.round(self.data_frequency)
         if time_now_round < time_now:
-            time_now_round = time_now_round + pd.to_timedelta(self.data_frequency)
+            time_now_round = time_now_round + \
+                pd.to_timedelta(self.data_frequency)
         return time_now_round
 
     def get_previous_profile(self, season, date):
@@ -433,7 +446,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         # load forecasting part
         time_now_rounded_up = self.round_up(time_now)
         forecast_index = pd.date_range(start=time_now_rounded_up,
-                                       end=pd.to_datetime(time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
+                                       end=pd.to_datetime(
+                                           time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
                                        freq=self.data_frequency)
         forecast_data = pd.DataFrame(index=forecast_index)
         forecast_data['time'] = forecast_data.index.time
@@ -449,12 +463,14 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                 day_character = season + day_info
                 cached_data = self.cache_dict.get(day_character)
                 profile = cached_data.mean(axis=1)
-            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy()
+            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy(
+            )
             data_for_day.loc[:, 'index'] = data_for_day.index
             data_for_day.index = data_for_day['time']
             data_for_day.loc[:, 'forecast'] = profile.loc[data_for_day.index]
             data_for_day.index = data_for_day['index']
-            forecast_data.loc[data_for_day.index, 'forecast'] = data_for_day['forecast']
+            forecast_data.loc[data_for_day.index,
+                              'forecast'] = data_for_day['forecast']
         return forecast_data.drop(columns=['time', 'date'])
 
     def forecast_fixed_recency(self, time_now, forecast_horizon):
@@ -484,7 +500,8 @@ class PersonalizedStandardizedLoadProfile_variable_length:
         # load forecasting part
         time_now_rounded_up = self.round_up(time_now)
         forecast_index = pd.date_range(start=time_now_rounded_up,
-                                       end=pd.to_datetime(time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
+                                       end=pd.to_datetime(
+                                           time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
                                        freq=self.data_frequency)
         forecast_data = pd.DataFrame(index=forecast_index)
         forecast_data['time'] = forecast_data.index.time
@@ -495,18 +512,20 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             day_character = season + day_info
             cached_data = self.cache_dict.get(day_character)
             used_recency = self.recency.get(day_character)
-            profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
+            profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
             if profile.empty:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
-            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy()
+                profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
+            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy(
+            )
             data_for_day.loc[:, 'index'] = data_for_day.index
             data_for_day.index = data_for_day['time']
             data_for_day.loc[:, 'forecast'] = profile.loc[data_for_day.index]
             data_for_day.index = data_for_day['index']
-            forecast_data.loc[data_for_day.index, 'forecast'] = data_for_day['forecast']
+            forecast_data.loc[data_for_day.index,
+                              'forecast'] = data_for_day['forecast']
         return forecast_data.drop(columns=['time', 'date'])
 
     def recency_reset(self):
@@ -529,8 +548,10 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             season, day_info = self.classification_day(date)
             day_character = season + day_info
             k = daytypes_in_hist_data.get(day_character)
-            daytypes_in_hist_data[day_character] = daytypes_in_hist_data.get(day_character) + 1
-            copy_hist_data['day_type'].replace(to_replace=date, value=day_character, inplace=True)
+            daytypes_in_hist_data[day_character] = daytypes_in_hist_data.get(
+                day_character) + 1
+            copy_hist_data['day_type'].replace(
+                to_replace=date, value=day_character, inplace=True)
         return daytypes_in_hist_data, copy_hist_data
 
     def preset_unused_day_types(self, daytype_dataset, day_character):
@@ -551,8 +572,10 @@ class PersonalizedStandardizedLoadProfile_variable_length:
 
     def test_recency(self, historical_data, day_character):
         copy_hist_data = historical_data.copy()
-        daytypes_in_hist_data, classified_data = self.check_dates_in_data(copy_hist_data)
-        recencies_to_set = self.preset_unused_day_types(daytypes_in_hist_data, day_character)
+        daytypes_in_hist_data, classified_data = self.check_dates_in_data(
+            copy_hist_data)
+        recencies_to_set = self.preset_unused_day_types(
+            daytypes_in_hist_data, day_character)
         recency_set = self.recency_set.get(day_character)
         if recency_set is False:
             for daytype in recencies_to_set:
@@ -563,10 +586,14 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                     profile = cached_data.iloc[:, -recency:].mean(axis=1)
                     if cached_data.shape[1] < recency:
                         break
-                    daytype_hist_data = classified_data[classified_data['day_type'] == daytype].copy()
-                    daytype_hist_data = daytype_hist_data.iloc[-7 * self.steps_per_day:, :]
-                    prediction = self.__test_prediction(daytype_hist_data, profile)
-                    mape = mean_squared_error(prediction[self.target_column], prediction['prediction'])
+                    daytype_hist_data = classified_data[classified_data['day_type'] == daytype].copy(
+                    )
+                    daytype_hist_data = daytype_hist_data.iloc[-7 *
+                                                               self.steps_per_day:, :]
+                    prediction = self.__test_prediction(
+                        daytype_hist_data, profile)
+                    mape = mean_squared_error(
+                        prediction[self.target_column], prediction['prediction'])
                     if best_recency is None:
                         best_recency = recency
                     if best_error is None:
@@ -599,11 +626,13 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             forecast as pd.DataFrame
         """
         if self.testing_length is None:
-            raise ValueError('Set testing length by using set_up_variable_recency method')
+            raise ValueError(
+                'Set testing length by using set_up_variable_recency method')
         # load forecasting part
         time_now_rounded_up = self.round_up(time_now)
         forecast_index = pd.date_range(start=time_now_rounded_up,
-                                       end=pd.to_datetime(time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
+                                       end=pd.to_datetime(
+                                           time_now_rounded_up) + pd.to_timedelta(forecast_horizon),
                                        freq=self.data_frequency)
         forecast_data = pd.DataFrame(index=forecast_index)
         forecast_data['time'] = forecast_data.index.time
@@ -621,7 +650,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             cached_data = self.cache_dict.get(day_character)
             used_recency = self.recency.get(day_character)
             if used_recency is not None:
-                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
             else:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
@@ -631,7 +660,7 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                     self.test_recency(historical_data, day_character)
                 used_recency = self.recency.get(day_character)
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
+                profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
             if profile.empty or profile.dropna().shape[0] < self.steps_per_day:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info
@@ -641,13 +670,15 @@ class PersonalizedStandardizedLoadProfile_variable_length:
                     self.test_recency(historical_data, day_character)
                 used_recency = self.recency.get(day_character)
                 cached_data = self.cache_dict.get(day_character)
-                profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
-            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy()
+                profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
+            data_for_day = forecast_data.loc[forecast_data['date'] == date].copy(
+            )
             data_for_day.loc[:, 'index'] = data_for_day.index
             data_for_day.index = data_for_day['time']
             data_for_day.loc[:, 'forecast'] = profile.loc[data_for_day.index]
             data_for_day.index = data_for_day['index']
-            forecast_data.loc[data_for_day.index, 'forecast'] = data_for_day['forecast']
+            forecast_data.loc[data_for_day.index,
+                              'forecast'] = data_for_day['forecast']
         module_logger.info(f'PSLP: recency set to: {self.recency}')
         return forecast_data.drop(columns=['time', 'date'])
 
@@ -660,7 +691,9 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             return self.forecast_fixed_recency(time_now, forecast_horizon)
         elif self.mode == 'infer_recency':
             if self.recency is None:
-                self.set_up_variable_recency(testing_length=int(Configuration.getConfigValue(self.config_part , 'testing_length')))
+                self.set_up_variable_recency(testing_length=int(
+                    Configuration.getConfigValue(self.config_part, 'testing_length')))
             return self.forecast_infer_recency(time_now, historical_data, forecast_horizon)
         else:
-            raise ValueError(f'Mode has to be set to: all, fixed_recency or infer_recency and not {self.mode}.')
+            raise ValueError(
+                f'Mode has to be set to: all, fixed_recency or infer_recency and not {self.mode}.')

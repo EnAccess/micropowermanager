@@ -8,7 +8,7 @@ import datetime
 import logging
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 
 '''
@@ -67,7 +67,7 @@ def main():
     '''
     path = Configuration.getConfigValue('general', 'app_path')
     # create a file handler
-    handler = logging.FileHandler(path +'/forecast_tool.log')
+    handler = logging.FileHandler(path + '/forecast_tool.log')
     handler.setLevel(logging.INFO)
 
     # create a logging format
@@ -118,7 +118,7 @@ def reset_datasets(date: str, path_pre=''):
     '''
     path = Configuration.getConfigValue('general', 'app_path')
     # create a file handler
-    handler = logging.FileHandler(path +'/forecast_tool.log')
+    handler = logging.FileHandler(path + '/forecast_tool.log')
     handler.setLevel(logging.INFO)
 
     # create a logging format

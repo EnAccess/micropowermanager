@@ -5,15 +5,6 @@ from functions.AI.routines import train_multi_input, train_test_loss_graph
 from tensorflow.keras import backend as K
 import tensorflow as tf
 
-physical_devices = tf.config.list_physical_devices('GPU')
-for physical_device in physical_devices:
-    try:
-        tf.config.experimental.set_memory_growth(physical_device, True)
-    except:
-        # Invalid device or cannot modify virtual devices once initialized.
-        pass
-
-
 def train_var():
     """
     Function
@@ -222,9 +213,12 @@ class AI:
 
             keras.model
         """
-        saved_model_path = f'{self.path_pre}/resources/02_models/' + \
-            part + '/ml_model/'
-        return tf.keras.models.load_model(saved_model_path)
+        try:
+            saved_model_path = f'{self.path_pre}/resources/02_models/' + \
+                part + '/ml_model/'
+            return tf.keras.models.load_model(saved_model_path)
+        except Exception as e:
+            raise e
 
     def __load_model_train(self, part):
         """
@@ -244,7 +238,7 @@ class AI:
 
         try:
             return self.__load_saved_model(part)
-        except IOError:
+        except Exception as e:
             self.untrained_model = True
             if part == 'pv_short':
                 return model_short_term_pv_forecasting(5)
@@ -272,8 +266,17 @@ class AI:
         """
 
         if self.forecast_mode is True:
-            self.model = self.__load_saved_model(part)
-
+            try:
+                self.model = self.__load_saved_model(part)
+            except Exception as e:
+                if part == 'pv_short':
+                    self.model = model_short_term_pv_forecasting(5)
+                elif part == 'pv_long':
+                    self.model = model_long_term_pv_forecasting()
+                elif part == 'lf_short':
+                    self.model = model_short_term_load_forecasting(192, 192)
+                elif part == 'lf_long':
+                    self.model = model_long_term_load_forecasting()
         else:
             self.model = self.__load_model_train(part)
 

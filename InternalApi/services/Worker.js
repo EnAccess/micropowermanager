@@ -11,7 +11,7 @@ const pusher = new Pusher({
     key: process.env.KEY,
     secret: process.env.SECRET,
     cluster: process.env.CLUSTER,
-    useTLS: true
+    useTLS: true,
 })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -36,18 +36,27 @@ const OUTPUT_SHEET = 'Mini-grid results'
 const OUTPUT_CELL = 'O2'
 
 const INPUTS_MINER_SHEET = 'INPUTS_Miner'
-const PARAMETERS_SHEET = 'parameters'
+const PARAMETERS_SHEET = 'Parameters'
 
 const doBackgroundJobs = async () => {
+    console.log('Worker started')
+    console.log('-------------------------------')
+    console.log('Efficiency curve: ', efficiencyCurve)
+    console.log('-------------------------------')
 
-    if (!Object.getOwnPropertyNames(efficiencyCurve).length === 0) {
+    if (efficiencyCurve) {
         try {
             const result = await updateEfficiencyCurveForForecasting()
-            console.log('Efficiency curve updated for forecasting tool template file')
+            console.log(
+                'Efficiency curve updated for forecasting tool template file'
+            )
             console.log(result)
             console.log('-------------------------------')
         } catch (error) {
-            throw new Error('Fail at updating efficiency curve file. Error: ' + error.message)
+            throw new Error(
+                'Fail at updating efficiency curve file. Error: ' +
+                error.message
+            )
         }
     }
     try {
@@ -65,7 +74,9 @@ const doBackgroundJobs = async () => {
         console.log(result)
         console.log('-------------------------------')
     } catch (error) {
-        throw new Error('Fail at replacing forecast output. Error: ' + error.message)
+        throw new Error(
+            'Fail at replacing forecast output. Error: ' + error.message
+        )
     }
 
     try {
@@ -85,7 +96,9 @@ const doBackgroundJobs = async () => {
         console.log('-------------------------------')
         consumption = result
     } catch (error) {
-        throw new Error('Fail at reading optimization output. Error: ' + error.message)
+        throw new Error(
+            'Fail at reading optimization output. Error: ' + error.message
+        )
     }
 
     try {
@@ -94,16 +107,15 @@ const doBackgroundJobs = async () => {
         console.log(result)
         console.log('-------------------------------')
     } catch (error) {
-
         throw new Error('Fail at calling pusher. Error: ' + error.message)
     }
     parentPort.postMessage('done')
 }
 const callPusher = async (consumption) => {
     return await pusher.trigger('micro-power-manager', 'forecasting-done', {
-        'companyId': companyId,
-        'miniGridId': miniGridId,
-        'powerConsumptionOutput': consumption
+        companyId: companyId,
+        miniGridId: miniGridId,
+        powerConsumptionOutput: consumption,
     })
 }
 const replaceForecastOutPut = async () => {
@@ -117,7 +129,7 @@ const runForecastTool = async () => {
         mode: 'text',
         pythonPath: '/usr/bin/python3',
         pythonOptions: ['-u'], // get print results in real-time
-        args: [`-c=${forecastPath}/Config.txt`]
+        args: [`-c=${forecastPath}/Config.txt`],
     }
 
     return await PythonShell.run(`${forecastPath}/main.py`, options)
@@ -209,7 +221,6 @@ const updateEfficiencyCurveForForecasting = async () => {
     cSocIni.value = socValue
 
     await workBook.xlsx.writeFile(file)
-
 }
 const setColumnsAsNull = (ws, columnHeader) => {
     ws.getColumn(columnHeader).eachCell(function (cell, rowNumber) {
@@ -248,8 +259,7 @@ const calculateIntercept = (x, y) => {
         squareSum_x += x[i] * x[i]
     }
 
-    let m =
-        (n * sum_xy - sum_x * sum_y) / (n * squareSum_x - sum_x * sum_x)
+    let m = (n * sum_xy - sum_x * sum_y) / (n * squareSum_x - sum_x * sum_x)
     return (sum_y - m * sum_x) / n
 }
 

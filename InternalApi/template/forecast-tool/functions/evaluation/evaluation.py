@@ -125,7 +125,7 @@ class ForecastEvaluation:
                                'pv_long': None, 'lf_short': None, 'lf_long': None}
         self.sheet = {'pv_short': 'EPV', 'pv_long': None,
                       'lf_short': 'loadA', 'lf_long': None}
-        self.excel_path = folder + '/resources/05_output/raw/excel_sheet.xlsx'
+        self.excel_path = folder + '/resources/05_output/raw/excel_sheet.xlsm'
         os.makedirs(
             folder + '/resources/05_output/saved_predictions/', exist_ok=True)
 
@@ -399,4 +399,3 @@ class ForecastEvaluation:
         recommended_data.to_csv(
             self.folder + f'/resources/05_output/saved_predictions/{time_now_cleared}.csv')
         module_logger.info('Forecast written to CSV-Files')
-

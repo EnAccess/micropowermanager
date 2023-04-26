@@ -73,8 +73,8 @@ def supervised_data_pv_long_term(preprocessed_long_weather, dataset_with_horizon
     train_y = train_data  # .iloc[:, :1]
     # preprocessed_long_weather.index = preprocessed_long_weather.index.dt.tz_convert('Africa/Dar_es_Salaam')
     preprocessed_long_weather[preprocessed_long_weather <= -900] = 0
-    if forecast_mode is False:
-        scaler.scaler_fit(preprocessed_long_weather, train_y, save=True)
+    # if forecast_mode is False:
+    scaler.scaler_fit(preprocessed_long_weather, train_y, save=True)
     scaler.set_index(dataset_with_horizon.iloc[-90 * 24:, :1].index)
     weather_data_array = []
     train_true = []
@@ -213,8 +213,8 @@ def function_dataset_short_term_pv_forecast(data, target_column, time_now, scale
         # split data
         train_x, train_y, forecast_x = split_short_term_dataset_pv(
             dataset_short_term_forecast)
-        if forecast_mode is False:
-            scaler.scaler_fit(dataset_y=train_y, dataset_x=train_x, save=True)
+        # if forecast_mode is False:
+        scaler.scaler_fit(dataset_y=train_y, dataset_x=train_x, save=True)
         train_x_scaled, train_y_scaled = scaler.scaler_transform(
             dataset_y=train_y, dataset_x=train_x)
         forecast_x_scaled = scaler.scaler_transform_for_prediction(forecast_x)
@@ -345,7 +345,8 @@ def function_dataset_long_term_pv_forecast(data, target_column, time_now, scaler
         test = preprocessed_long_weather.copy()
         test['pv_data'] = dataset_with_horizon.iloc[:, 0]
         test['pv_data'] = test['pv_data'].fillna(0)
-        dataset_with_horizon = test['pv_data'].loc[dataset_with_horizon.index[0]:dataset_with_horizon.index[-1]].to_frame()
+        dataset_with_horizon = test['pv_data'].loc[dataset_with_horizon.index[0]
+            :dataset_with_horizon.index[-1]].to_frame()
         preprocessed_long_weather = test.loc[dataset_with_horizon.first_valid_index(
         ):dataset_with_horizon.last_valid_index(), :]
         preprocessed_long_weather = preprocessed_long_weather.drop(columns=[
@@ -497,8 +498,8 @@ def function_dataset_short_term_load_forecast(data, target_column, time_now, sca
                                               fill_na=False)
         train_x, train_y, forecast_x = split_short_term_dataset(
             dataset_with_max_days)
-        if forecast_mode is False:
-            scaler.scaler_fit(dataset_y=train_y, dataset_x=train_x, save=True)
+        # if forecast_mode is False:
+        scaler.scaler_fit(dataset_y=train_y, dataset_x=train_x, save=True)
         train_x_scaled, train_y_scaled = scaler.scaler_transform(
             dataset_y=train_y, dataset_x=train_x)
         train_x_scaled[train_y_scaled.columns] = train_y_scaled
@@ -592,9 +593,9 @@ def function_dataset_long_term_load_forecast(data, target_column, time_now, scal
     if data_length_pre_check_result is True:
         dataset_long_term_forecast = to_current_date(time_now, data, opt_args)
         resampled_data = dataset_long_term_forecast.resample('1H').mean()
-        if forecast_mode is False:
-            scaler.scaler_fit(dataset_y=resampled_data,
-                              dataset_x=resampled_data, save=True)
+        # if forecast_mode is False:
+        scaler.scaler_fit(dataset_y=resampled_data,
+                          dataset_x=resampled_data, save=True)
         resampled_data, _ = scaler.scaler_transform(
             dataset_y=resampled_data, dataset_x=resampled_data)
         resampled_data['day'] = resampled_data.index.day
