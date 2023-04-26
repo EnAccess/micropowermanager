@@ -88,8 +88,8 @@ class JetsonMiniGridEnergyController extends Controller
 
             $usedEnergySinceLastInput = $totalEnergy - $lastTotalEnergy;
             $absorbedEnergySinceLastInput =
-                PowerConverter::convert($totalAbsorbedEnergy, $totalAbsorbedEnergyUnit, 'kW') -
-                PowerConverter::convert($lastTotalAbsorbed, $lastTotalAbsorbedUnit, 'kW');
+                PowerConverter::convert($totalAbsorbedEnergy, $totalAbsorbedEnergyUnit, 'Wh') -
+                PowerConverter::convert($lastTotalAbsorbed, $lastTotalAbsorbedUnit, 'Wh');
             Energy::query()->create(
                 [
                     'meter_id' => $meter["id"],
@@ -103,7 +103,7 @@ class JetsonMiniGridEnergyController extends Controller
                     'total_absorbed' => $totalAbsorbedEnergy,
                     'total_absorbed_unit' => $totalAbsorbedEnergyUnit,
                     'absorbed_energy_since_last' => $absorbedEnergySinceLastInput,
-                    'absorbed_energy_since_last_unit' => 'kWh',
+                    'absorbed_energy_since_last_unit' => 'Wh',
 
                 ]
             );
