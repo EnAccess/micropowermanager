@@ -52,8 +52,10 @@ class LoadForecasting:
         self.__init_data_manager()
         self.pslp_short = self.__init_pslp('short', '15Min')
         self.pslp_long = self.__init_pslp('long', '1h')
-        self.scaler_load_short = Scaler(self.folder, name='lf_short', forecasting_mode=True)
-        self.scaler_long_term = Scaler(self.folder, name='lf_long', forecasting_mode=True)
+        self.scaler_load_short = Scaler(
+            self.folder, name='lf_short', forecasting_mode=True)
+        self.scaler_long_term = Scaler(
+            self.folder, name='lf_long', forecasting_mode=True)
 
     def __init_data_manager(self):
         self.dm.read_config_from_file('lf', self.folder)
@@ -61,10 +63,12 @@ class LoadForecasting:
         self.dm.load_cached_file()
 
     def __init_pslp(self, part, data_frequency):
-        pslp = PersonalizedStandardizedLoadProfile_variable_length(self.dm.target_columns, part, data_frequency)
+        pslp = PersonalizedStandardizedLoadProfile_variable_length(
+            self.dm.target_columns, part, data_frequency)
         if not self.dm.data is None:
             if not self.dm.data.empty:
-                pslp.preprocess_new_data(incoming_data=self.dm.data.resample(data_frequency).mean())
+                pslp.preprocess_new_data(
+                    incoming_data=self.dm.data.resample(data_frequency).mean())
         return pslp
 
     def get_data_from_server(self, time_now):
@@ -86,7 +90,7 @@ class LoadForecasting:
         self.dm.update_data(time_now)
         self.dm.standardize_new_data()
         self.dm.data_processing_cache['absorbed_energy_since_last'] = self.dm.data_processing_cache[
-                                                                          'absorbed_energy_since_last'] + 1000
+            'absorbed_energy_since_last'] + 1000
         self.dm.delete_outliers_data_preprocessing_cache(max=9000)
         self.dm.add_data(change_resolution_to='15Min')
         self.dm.resample_data_to_raw_frequency()
@@ -109,10 +113,13 @@ class LoadForecasting:
         data = self.dm.data.copy(deep=True)
         if data.last_valid_index() <= time_now - pd.to_timedelta(self.dm.data_frequency):
             missing_rest_dates = pd.date_range(data.last_valid_index() + pd.to_timedelta(self.dm.data_frequency),
-                                               time_now - pd.to_timedelta(self.dm.data_frequency),
+                                               time_now -
+                                               pd.to_timedelta(
+                                                   self.dm.data_frequency),
                                                freq=self.dm.data_frequency)
             data = pd.concat([data, pd.DataFrame(index=missing_rest_dates)])
-            data = data_augmentation(data, frequency=self.dm.data_frequency, column=data.columns[0])
+            data = data_augmentation(
+                data, frequency=self.dm.data_frequency, column=data.columns[0])
             data = data.groupby(data.index).mean()
         return data
 
@@ -140,7 +147,7 @@ class LoadForecasting:
             Data is stored in class
 
         """
-        self.dm.delete_outliers(max=6000, min=500)
+        self.dm.delete_outliers(max=6000, min=0)
         if not len(self.dm.data) < 20:  # Prevents load of errors
             self.dm.show_missing_values()
             self.dm.missing_values_augmentation()
@@ -150,7 +157,7 @@ class LoadForecasting:
             self.dm.data = pd.DataFrame(index=(
                 pd.date_range(start=self.dm.data.last_valid_index() - pd.to_timedelta('10D'),
                               end=self.dm.data.last_valid_index(), freq='15Min')))
-            self.dm.data['absorbed_energy_since_last'] = 1000
+            self.dm.data['absorbed_energy_since_last'] = 0
             self.dm.data = self.dm.data.asfreq('1s').resample('15Min').mean()
         self.pslp_short.preprocess_new_data(self.dm.data)
         self.pslp_long.preprocess_new_data(self.dm.data.resample('1H').mean())
@@ -184,7 +191,8 @@ class LoadForecasting:
             data with persistency forecast
 
         """
-        data = self.dm.data.loc[self.dm.data.index >= time_now - pd.to_timedelta('2D')].copy(deep=True)
+        data = self.dm.data.loc[self.dm.data.index >=
+                                time_now - pd.to_timedelta('2D')].copy(deep=True)
         data.index = data.index + pd.to_timedelta('2D')
         return data[self.dm.target_columns]
 
@@ -207,7 +215,8 @@ class LoadForecasting:
         """
         data = self.dm.data.copy(deep=True)
         data = data.resample('1H').mean()
-        data = data.loc[data.index >= time_now - pd.to_timedelta('90D')].copy(deep=True)
+        data = data.loc[data.index >= time_now -
+                        pd.to_timedelta('90D')].copy(deep=True)
         data.index = data.index + pd.to_timedelta('90D')
         return data[self.dm.target_columns]
 
@@ -232,7 +241,8 @@ class LoadForecasting:
         """
         if not os.path.isdir(self.folder + f'/resources/03_predictions/{part}/'):
             os.makedirs(self.folder + f'/resources/03_predictions/{part}/')
-        data.to_csv(self.folder + f'/resources/03_predictions/{part}/{time_to_str(time_now)}.csv')
+        data.to_csv(
+            self.folder + f'/resources/03_predictions/{part}/{time_to_str(time_now)}.csv')
 
     def add_statistical_forecasts_short(self, ai_prediction, time_now):
         """
@@ -253,9 +263,11 @@ class LoadForecasting:
                 output of all short term prediction methods in one dataframe
         """
         combined_forecast = ai_prediction.copy(deep=True)
-        pslp_forecast = self.pslp_short.forecast(time_now, forecast_horizon='2D', historical_data=self.dm.data)
+        pslp_forecast = self.pslp_short.forecast(
+            time_now, forecast_horizon='2D', historical_data=self.dm.data)
         combined_forecast['pslp'] = pslp_forecast['forecast']
-        combined_forecast['persistency'] = self.persistency_forecast(round_up(time_now, '15Min'))
+        combined_forecast['persistency'] = self.persistency_forecast(
+            round_up(time_now, '15Min'))
         combined_forecast = combined_forecast.fillna(0)
         self.save_prediction(time_now, combined_forecast, 'lf_short')
         return combined_forecast
@@ -279,9 +291,11 @@ class LoadForecasting:
                 output of all long term prediction methods in one dataframe
         """
         combined_forecast = ai_prediction.copy(deep=True)
-        pslp_forecast = self.pslp_long.forecast(time_now, forecast_horizon='90D', historical_data=self.dm.data.resample('1H').mean())
+        pslp_forecast = self.pslp_long.forecast(
+            time_now, forecast_horizon='90D', historical_data=self.dm.data.resample('1H').mean())
         combined_forecast['pslp'] = pslp_forecast['forecast']
-        combined_forecast['persistency'] = self.persistency_forecast_long(round_up(time_now, '15Min'))
+        combined_forecast['persistency'] = self.persistency_forecast_long(
+            round_up(time_now, '15Min'))
         combined_forecast = combined_forecast.fillna(0)
         self.save_prediction(time_now, combined_forecast, 'lf_long')
         return combined_forecast

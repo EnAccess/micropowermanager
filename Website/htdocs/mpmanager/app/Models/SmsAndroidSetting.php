@@ -25,4 +25,9 @@ class SmsAndroidSetting extends BaseModel
             throw new SmsAndroidSettingNotExistingException('No SMS android setting registered.');
         }
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }

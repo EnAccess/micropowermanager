@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style scoped>
-    .overview-line {
-        margin-top: 1rem;
-    }
+.overview-line {
+    margin-top: 1rem;
+}
 </style>

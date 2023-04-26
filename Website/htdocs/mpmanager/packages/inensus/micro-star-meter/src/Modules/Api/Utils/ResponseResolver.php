@@ -14,6 +14,11 @@ class ResponseResolver
     public function checkResponse($result)
     {
         if (isset($result['errorCode'])) {
+
+            if ($result['errorCode'] == 1000) {
+                return $result;
+            }
+
             $responseMessage = $this->getMessage($result['errorCode']);
 
             throw new MicroStarApiResponseException($responseMessage);

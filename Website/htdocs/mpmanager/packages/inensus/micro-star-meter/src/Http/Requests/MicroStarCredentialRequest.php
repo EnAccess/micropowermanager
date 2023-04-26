@@ -18,7 +18,8 @@ class MicroStarCredentialRequest extends FormRequest
     public function rules()
     {
         return [
-            'api_url' => ['required']
+            'api_url' => ['required'],
+            'certificate_password' => ['required'],
         ];
     }
 }

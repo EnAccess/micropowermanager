@@ -6,7 +6,7 @@ test_period = 5D
 [general]
 timezone_site = {{timeZone}}
 app_path = /var/www/MPManager-Cloud/InternalApi/company/{{companyId}}/miniGrid/{{miniGridId}}/forecast-tool
-forecasting_mode = False
+forecasting_mode = True
 clean_start = False
 timezone_results = {{timeZone}}
 region = {{region}}
