@@ -88,7 +88,7 @@ class SmsService
             throw $e;
         }
         SmsProcessor::dispatch($smsType)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
-        $this->associateSmsWithForSmsType($smsType, $data, $uuid, $receiver);
+        $this->associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings);
     }
 
     private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings)
@@ -112,13 +112,14 @@ class SmsService
         ]);
     }
 
-    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver)
+    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings)
     {
         if (!($smsType instanceof ManualSms)) {
             $sms = Sms::query()->make([
                 'uuid' => $uuid,
                 'body' => $smsType->body,
-                'receiver' => $receiver
+                'receiver' => $receiver,
+                'gateway_id' => $smsAndroidSettings->getId()
             ]);
             $sms->trigger()->associate($data);
             $sms->save();
@@ -130,6 +131,7 @@ class SmsService
             if ($lastSentManualSms) {
                 $lastSentManualSms->update([
                     'uuid' => $uuid,
+                    'gateway_id' => $smsAndroidSettings->getId()
                 ]);
             }
         }
