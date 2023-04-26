@@ -22,7 +22,7 @@
     "MicroStar Meter": "MicroStar Meter",
     "Calin Meter": "Calin Meter",
     "Messages": "Messages",
-    "Appliances" : "Appliances",
+    "Appliances": "Appliances",
     "subMenu": {
       "addCluster": "Add Cluster",
       "addMiniGrid": "Add MiniGrid",
@@ -47,6 +47,7 @@
       "Settings": "Settings",
       "Sales Accounts": "Sales Accounts",
       "New Message": "New Message",
+      "Message List": "Message List",
       "Config": "Config"
     },
     "Targets": "Targets",
