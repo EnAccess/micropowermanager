@@ -12,6 +12,10 @@ return new class extends Migration {
             Schema::connection('shard')->create('micro_star_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->nullable();
+                $table->string('certificate_file_name')->nullable();
+                $table->string('certificate_path')->nullable();
+                $table->string('certificate_password')->nullable();
+
                 $table->timestamps();
             });
         }

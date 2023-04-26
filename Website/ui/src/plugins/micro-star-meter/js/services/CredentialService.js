@@ -9,13 +9,16 @@ export class CredentialService {
             apiUrl: null,
         }
     }
+
     fromJson (credentialData) {
         this.credential = {
             id: credentialData.id,
-            apiUrl: credentialData.api_url
+            apiUrl: credentialData.api_url,
+            certificatePassword: credentialData.certificate_password,
         }
         return this.credential
     }
+
     async getCredential () {
         try {
             let response = await this.repository.get()
@@ -29,11 +32,13 @@ export class CredentialService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
+
     async updateCredential () {
         try {
             let credentialPM = {
                 id: this.credential.id,
                 api_url: this.credential.apiUrl,
+                certificate_password: this.credential.certificatePassword,
             }
             let response = await this.repository.put(credentialPM)
             if (response.status === 200 || response.status === 201) {
