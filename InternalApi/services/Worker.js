@@ -15,7 +15,7 @@ const pusher = new Pusher({
 })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const { companyId, miniGridId, efficiencyCurve, socValue } = workerData
+const { companyId, miniGridId, efficiencyCurve, socVal } = workerData
 const forecastPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/forecast-tool`
 const optimizationPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/optimization_model`
 
@@ -41,16 +41,13 @@ const PARAMETERS_SHEET = 'Parameters'
 const doBackgroundJobs = async () => {
     console.log('Worker started')
     console.log('-------------------------------')
-    console.log('Efficiency curve: ', efficiencyCurve)
-    console.log('-------------------------------')
 
     if (efficiencyCurve) {
         try {
-            const result = await updateEfficiencyCurveForForecasting()
+            await updateEfficiencyCurveForForecasting()
             console.log(
                 'Efficiency curve updated for forecasting tool template file'
             )
-            console.log(result)
             console.log('-------------------------------')
         } catch (error) {
             throw new Error(
@@ -151,7 +148,8 @@ const readPowerConsumptionOutput = async () => {
     return ws.getCell(OUTPUT_CELL).value
 }
 const updateEfficiencyCurveForForecasting = async () => {
-    const file = `${forecastPath}/resources/05_output/raw/excel_sheet.xlsx`
+
+    const file = `${forecastPath}/resources/05_output/raw/excel_sheet.xlsm`
     const workBook = new ExcelJS.Workbook()
     const wb = await workBook.xlsx.readFile(file)
     const ws = wb.getWorksheet(INPUTS_MINER_SHEET)
@@ -170,18 +168,20 @@ const updateEfficiencyCurveForForecasting = async () => {
 
         if (counter === 1) {
             let cRevenue = ws.getCell(`${HEADER_REVENUE}${index}`)
-            cRevenue.value = efficiencyCurve.usd_per_th
-            profit = efficiencyCurve.usd_per_th
+            cRevenue.value = efficiencyCurve.eur_per_th
+            profit = efficiencyCurve.eur_per_th
         }
 
         const hashRate = efficiencyCurve.hashrate_in_th_per_second[key]
         let cHashRate = ws.getCell(`${HEADER_HASH_RATE}${index}`)
         cHashRate.value = hashRate
+        console.log(`cHashRate-${index}: ` , hashRate);
         hashRates.push(hashRate)
 
         const powerConsumption = efficiencyCurve.power_consumption_in_kw[key]
         let cConsumption = ws.getCell(`${HEADER_CONSUMPTION}${index}`)
         cConsumption.value = powerConsumption
+        console.log(`cConsumption-${index}: ` , powerConsumption);
         powerConsumptions.push(powerConsumption)
 
         counter++
@@ -189,38 +189,48 @@ const updateEfficiencyCurveForForecasting = async () => {
 
     const slope = calculateSlope(hashRates, powerConsumptions)
     let cSlope = ws.getCell(SLOPE_CELL)
+    console.log(`cSlope: ` , slope)
     cSlope.value = slope
 
     const intercept = calculateIntercept(hashRates, powerConsumptions)
     let cIntercept = ws.getCell(INTERCEPT_CELL)
+    console.log(`cIntercept: ` , intercept)
     cIntercept.value = intercept
 
     const maximumPowerConsumption = Math.max(...powerConsumptions)
     const interceptCoefficient = intercept / maximumPowerConsumption
 
     let cInterceptCoefficient = ws.getCell(INTERCEPT_COEFFICIENT_CELL)
+    console.log(`cInterceptCoefficient: ` , interceptCoefficient)
     cInterceptCoefficient.value = interceptCoefficient
 
     let cMaxMinerPower = ws.getCell(MAX_MINER_POWER_CELL)
+    console.log(`cMaxMinerPower: ` , maximumPowerConsumption)
     cMaxMinerPower.value = maximumPowerConsumption
 
     const ps = wb.getWorksheet(PARAMETERS_SHEET)
     let cM_mi = ps.getCell(M_MI_CELL)
+    console.log(`cM_mi: ` , slope)
     cM_mi.value = slope
 
     let cB_mi = ps.getCell(B_MI_CELL)
     cB_mi.value = interceptCoefficient
+    console.log(`cB_mi: ` , interceptCoefficient)
 
     let cCrypto_max = ps.getCell(CRYPTO_MAX)
     cCrypto_max.value = maximumPowerConsumption
+    console.log(`cCrypto_max: ` , maximumPowerConsumption)
 
     let cP_mi = ps.getCell(P_MI)
     cP_mi.value = profit
+    console.log(`cP_mi: ` , profit)
 
     let cSocIni = ps.getCell(SOC_INI)
-    cSocIni.value = socValue
+    cSocIni.value = socVal
+    console.log(`cSocIni: ` , socVal)
 
     await workBook.xlsx.writeFile(file)
+    console.log("**********************************************")
 }
 const setColumnsAsNull = (ws, columnHeader) => {
     ws.getColumn(columnHeader).eachCell(function (cell, rowNumber) {

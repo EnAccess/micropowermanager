@@ -53,7 +53,8 @@ class CalinMeterApi implements IManufacturerAPI
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
         $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($meterParameter->tariff->total_price);
+        // we round the energy to be charged to 1 decimal place because the api only accepts 1 decimal place.
+        $transactionContainer->chargedEnergy += round($transactionContainer->amount / ($meterParameter->tariff->total_price), 1);
 
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => CalinMeterApi');

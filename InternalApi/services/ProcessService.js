@@ -13,7 +13,7 @@ export const ProcessService = {
                 workerData: {
                     companyId: companyId,
                     miniGridId: miniGridId,
-                    efficiencyCurve: efficiencyCurve,
+                    efficiencyCurve: JSON.parse(efficiencyCurve),
                     socVal: socVal
                 }
             })
