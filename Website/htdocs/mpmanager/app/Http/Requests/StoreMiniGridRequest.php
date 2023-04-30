@@ -7,8 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMiniGridRequest extends FormRequest
 {
-    const PARAM_CLUSTER_ID = 'cluster_id';
-    const PARAM_NAME = 'name';
+    public const PARAM_CLUSTER_ID = 'cluster_id';
+    public const PARAM_NAME = 'name';
 
     /**
      * Determine if the user is authorized to make this request.

@@ -116,7 +116,6 @@ class TariffPriceCalculator
                     $this->timeOfUsageService->create($touData);
                 }
             }
-
         }
     }
 

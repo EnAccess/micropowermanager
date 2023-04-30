@@ -24,7 +24,6 @@ class SmsService
     public function __construct(
         private Sms $sms
     ) {
-
     }
 
     public function checkMessageType($message)
@@ -73,7 +72,7 @@ class SmsService
         try {
             $smsAndroidSettings = $this->getSmsAndroidSettings();
             $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
-        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
+        } catch (SmsTypeNotFoundException | SmsAndroidSettingNotExistingException | SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
             return;
         }

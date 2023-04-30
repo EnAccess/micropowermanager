@@ -7,7 +7,7 @@
                 {{ $tc('phrases.thirdPartyTransaction') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                {{ot.manufacturer_transaction_type}}
+                {{ot?.manufacturer_transaction_type ?? '-'}}
             </div>
         </div>
         <hr class="hr-d">
@@ -16,7 +16,7 @@
                 {{ $tc('phrases.transactionId') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                {{ot.transaction_id}}
+                {{ot?.transaction_id ?? '-'}}
             </div>
         </div>
         <hr class="hr-d">
@@ -25,7 +25,7 @@
                 {{ $tc('words.description') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                {{ot.description}}
+                {{ot?.description ?? '-'}}
             </div>
         </div>
     </div>

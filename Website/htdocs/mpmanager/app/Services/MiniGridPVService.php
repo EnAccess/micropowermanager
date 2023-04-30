@@ -39,8 +39,6 @@ class MiniGridPVService
 
     public function create($pvData): ApiResource
     {
-       return $this->pv->newQuery()->create($pvData);
-
+        return $this->pv->newQuery()->create($pvData);
     }
-
 }

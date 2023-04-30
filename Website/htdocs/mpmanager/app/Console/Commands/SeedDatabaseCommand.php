@@ -15,5 +15,4 @@ class SeedDatabaseCommand extends AbstractSharedCommand
             $this->info("failed seeding " . $t->getMessage());
         }
     }
-
 }

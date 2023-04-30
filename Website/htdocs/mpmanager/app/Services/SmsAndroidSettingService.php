@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class SmsAndroidSettingService
 {
-
     private string $fireBaseKey;
     private string $callbackUrl;
 
@@ -56,5 +55,4 @@ class SmsAndroidSettingService
         $smsAndroidSetting->delete();
         return $this->smsAndroidSetting->newQuery()->get();
     }
-
 }

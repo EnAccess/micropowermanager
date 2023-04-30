@@ -29,6 +29,7 @@ import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credent
 import SunKing from '@/plugins/sun-king-meter/js/components/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
 import GomeLong from '@/plugins/gome-long-meter/js/components/Overview/Credential'
+import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/components/Component.vue";
 
 Vue.component('default', Default)
 Vue.component('Spark-Meter', Spark)
@@ -44,6 +45,7 @@ Vue.component('MicroStar-Meter', MicroStar)
 Vue.component('SunKing-Meter', SunKing)
 Vue.component('SunKing-Meter', SunKing)
 Vue.component('GomeLong-Meter', GomeLong)
+Vue.component('WaveComTransaction', WaveComTransaction)
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 

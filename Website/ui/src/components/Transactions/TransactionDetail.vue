@@ -30,6 +30,11 @@
                                     <swifta-transaction :ot="ot"
                                                         v-if="transaction.original_transaction_type === 'swifta_transaction'"
                                     />
+                                    <wave-com-transaction :ot="ot"
+                                                        v-if="transaction.original_transaction_type === 'wavecom_transaction'"
+                                    />
+
+                                    <third-party-transaction :ot="ot" v-else />
                                 </md-card-content>
                             </md-card>
                         </widget>
@@ -162,14 +167,14 @@
                         </widget>
                     </div>
                 </div>
-                <div class="md-layout-item md-size-50 md-small-size-100">
+                <div class="md-layout-item md-size-50 md-small-size-100" v-if="transaction.sms">
                     <div class="transaction-detail-card">
                         <widget :title="$tc('phrases.outgoingSms')"
                                 :show-spinner="false"
                                 v-show="(transaction.original_transaction_type !== 'agent_transaction' && transaction.original_transaction_type !== 'third_party_transaction')"
                         >
                             <md-card>
-                                <md-card-content v-if="transaction.sms">
+                                <md-card-content>
 
                                     <div class="md-layout md-gutter md-size-100">
                                         <div class="md-layout-item md-subheader md-size-20">{{ $tc('words.to') }}</div>
@@ -213,10 +218,12 @@ import { PersonService } from '@/services/PersonService'
 import ThirdPartyTransaction from './ThirdPartyTransaction'
 import WaveMoneyTransaction from '@/components/Transactions/WaveMoneyTransaction'
 import SwiftaTransaction from '@/components/Transactions/SwiftaTransaction'
+import WaveComTransaction from "@/components/Transactions/WaveComTransaction.vue";
 
 export default {
     name: 'TransactionDetail',
     components: {
+        WaveComTransaction,
         SwiftaTransaction,
         WaveMoneyTransaction,
         ThirdPartyTransaction,

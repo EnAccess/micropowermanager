@@ -98,13 +98,13 @@ class TokenProcessor extends AbstractJob
                 }
                 Log::critical(
                     $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
-                    $this->counter . ' times ', ['message' => $e->getMessage()]
+                    $this->counter . ' times ',
+                    ['message' => $e->getMessage()]
                 );
                 event('transaction.failed', [
                         $this->transactionContainer->transaction,
                         'Manufacturer Api did not succeeded after 3 times with following error : ' . $e->getMessage()
-                    ]
-                );
+                    ]);
                 return;
             }
 

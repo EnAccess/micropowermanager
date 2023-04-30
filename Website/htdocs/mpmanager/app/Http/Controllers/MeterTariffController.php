@@ -93,5 +93,4 @@ class MeterTariffController extends Controller
 
         return $this->meterTariffService->delete($meterTariff);
     }
-
 }

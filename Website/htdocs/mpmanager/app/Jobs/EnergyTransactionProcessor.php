@@ -5,17 +5,13 @@ namespace App\Jobs;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
-
 use App\Models\Transaction\Transaction;
 use App\PaymentHandler\AccessRate;
 use App\Services\SmsAndroidSettingService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-
 
 class EnergyTransactionProcessor extends AbstractJob
 {
@@ -28,6 +24,7 @@ class EnergyTransactionProcessor extends AbstractJob
      */
     public function __construct(private $transactionId)
     {
+        $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
 
@@ -54,8 +51,8 @@ class EnergyTransactionProcessor extends AbstractJob
             } else {
                 $this->completeTransactionWithNotification($transactionData);
             }
-        }catch (\Exception $e){
-            Log::info('Transaction failed.: '.$e->getMessage());
+        } catch (\Exception $e) {
+            Log::info('Transaction failed.: ' . $e->getMessage());
             event('transaction.failed', [$this->transaction, $e->getMessage()]);
         }
     }
@@ -84,7 +81,6 @@ class EnergyTransactionProcessor extends AbstractJob
         $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
 
         if ($minimumPurchaseAmount > 0) {
-
             $validator = resolve('MinimumPurchaseAmountValidator');
             try {
                 if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
@@ -93,7 +89,6 @@ class EnergyTransactionProcessor extends AbstractJob
             } catch (\Exception $e) {
                    throw new TransactionAmountNotEnoughException($e->getMessage());
             }
-
         }
     }
 
@@ -115,8 +110,8 @@ class EnergyTransactionProcessor extends AbstractJob
      * @param array|TransactionDataContainer $transactionData
      * @return TransactionDataContainer|array
      */
-    private function payAccessRateIfExists(array|TransactionDataContainer $transactionData
-    ): TransactionDataContainer|array {
+    private function payAccessRateIfExists(array|TransactionDataContainer $transactionData): TransactionDataContainer|array
+    {
         if ($transactionData->transaction->amount > 0) {
             // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
@@ -152,7 +147,6 @@ class EnergyTransactionProcessor extends AbstractJob
     private function getTariffMinimumPurchaseAmount($transactionData)
     {
         return $transactionData->tariff->minimum_purchase_amount;
-
     }
 
     /**
@@ -186,5 +180,4 @@ class EnergyTransactionProcessor extends AbstractJob
         }
         return $kWhToBeCharged;
     }
-
 }

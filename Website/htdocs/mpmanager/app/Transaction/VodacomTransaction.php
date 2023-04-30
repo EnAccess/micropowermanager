@@ -111,7 +111,6 @@ class VodacomTransaction implements ITransactionProvider
                 } else {
                     $smsService = app()->make(SmsService::class);
                     $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-
                 }
 
                 //make response xml object

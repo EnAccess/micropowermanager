@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class AgentTransactionsController extends Controller
 {
-    const FOR_APP = true;
+    public const FOR_APP = true;
 
     public function __construct(
         private AgentTransactionService $agentTransactionService,

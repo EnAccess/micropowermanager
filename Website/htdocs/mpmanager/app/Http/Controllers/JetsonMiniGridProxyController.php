@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class JetsonMiniGridProxyController extends Controller
 {
-    const INTERNAL_API_URL = 'http://172.18.0.1:3000/api/jetson';
+    public const INTERNAL_API_URL = 'http://172.18.0.1:3000/api/jetson';
     public function __construct(
         private Client $httpClient
     ) {
@@ -20,8 +20,8 @@ class JetsonMiniGridProxyController extends Controller
      */
     public function proxy(Request $request, $miniGridId, $slug, $gate)
     {
-       $companyId = $slug;
-       $efficiencyCurve = $request->get('efficiencyCurve');
+        $companyId = $slug;
+        $efficiencyCurve = $request->get('efficiencyCurve');
         try {
             $data = [
                 'miniGridId' => $miniGridId,
@@ -30,7 +30,8 @@ class JetsonMiniGridProxyController extends Controller
                 'socVal' => $request->get('socVal'),
             ];
 
-            $this->httpClient->post(self::INTERNAL_API_URL.'/'.$gate,
+            $this->httpClient->post(
+                self::INTERNAL_API_URL . '/' . $gate,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
@@ -38,7 +39,8 @@ class JetsonMiniGridProxyController extends Controller
                     ],
                     'body' => json_encode($data),
 
-                ]);
+                ]
+            );
         } catch (GuzzleException $exception) {
             Log::critical("Error occurred on $gate", [
                 'message :' => $exception->getMessage()
@@ -46,5 +48,4 @@ class JetsonMiniGridProxyController extends Controller
             throw $exception;
         }
     }
-
 }

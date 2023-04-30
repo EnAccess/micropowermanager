@@ -10,7 +10,7 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Collection;
 
-class TransactionService implements IBaseService, IAssociative
+class TransactionService implements IAssociative
 {
     /**
      * @var Meter
@@ -146,29 +146,22 @@ class TransactionService implements IBaseService, IAssociative
     }
 
 
-    public function getById($id)
+    public function findById(int $id): ?Transaction
     {
-        // TODO: Implement getById() method.
-    }
+        /** @var ?Transaction $transaction */
+        $transaction  =  Transaction::with(
+            'token',
+            'originalTransaction',
+            'originalTransaction.conflicts',
+            'sms',
+            'token.meter',
+            'token.meter.meterParameter',
+            'token.meter.meterType',
+            'paymentHistories',
+            'meter.meterParameter.owner'
+        )->where('id', $id)->first();
 
-    public function create($data)
-    {
-        // TODO: Implement create() method.
-    }
-
-    public function update($model, $data)
-    {
-        // TODO: Implement update() method.
-    }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
-
-    public function getAll($limit = null)
-    {
-        // TODO: Implement getAll() method.
+        return $transaction;
     }
 
     public function make($transactionData)

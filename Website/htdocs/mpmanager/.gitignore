@@ -14,4 +14,9 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 /start.sh
-creator.log
+./creator.log
+
+# ignore all company specific migrations
+/database/migrations/**
+!/database/migrations/base/
+!/database/migrations/micropowermanager/

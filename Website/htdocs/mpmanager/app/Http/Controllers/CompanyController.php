@@ -68,8 +68,10 @@ class CompanyController extends Controller
                         'status' => 1
                     ];
                     $this->pluginsService->create($pluginData);
-                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($plugin,
-                        $company->getId());
+                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase(
+                        $plugin,
+                        $company->getId()
+                    );
 
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
                     $registrationTail[] = [
@@ -103,5 +105,4 @@ class CompanyController extends Controller
         $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
         return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));
     }
-
 }

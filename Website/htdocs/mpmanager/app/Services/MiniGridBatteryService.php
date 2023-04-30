@@ -71,7 +71,7 @@ class MiniGridBatteryService
 
     public function create($data)
     {
-      return  $this->battery
+        return  $this->battery
             ->newQuery()
             ->create($data);
     }

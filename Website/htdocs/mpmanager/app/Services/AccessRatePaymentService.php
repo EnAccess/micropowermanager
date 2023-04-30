@@ -6,7 +6,6 @@ use App\Models\AccessRate\AccessRatePayment;
 
 class AccessRatePaymentService implements IBaseService
 {
-    
     public function __construct(private AccessRatePayment $accessRatePayment)
     {
     }
@@ -37,11 +36,11 @@ class AccessRatePaymentService implements IBaseService
     public function getAll($limit = null)
     {
         $query = $this->accessRatePayment->newQuery();
-        
-        if($limit) {
+
+        if ($limit) {
             return $query->paginate($limit);
         }
-        
+
         return $this->accessRatePayment->newQuery()->get();
     }
 
@@ -49,5 +48,4 @@ class AccessRatePaymentService implements IBaseService
     {
         return $meter->accessRatePayment()->first();
     }
-
 }

@@ -82,7 +82,6 @@ class AirtelTransaction implements ITransactionProvider
             $this->airtelTransaction->save();
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-
         } else { //send cancellation to airtel gateway server and this will send the final request to airtel
             $requestContent = $this->prepareRequest($this->transaction, $this->airtelTransaction);
 

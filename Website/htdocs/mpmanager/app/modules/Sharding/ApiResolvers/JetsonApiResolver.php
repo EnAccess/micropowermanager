@@ -7,11 +7,10 @@ use Illuminate\Http\Request;
 
 class JetsonApiResolver implements ApiResolverInterface
 {
-
     public function resolveCompanyId(Request $request): int
     {
         $segments = $request->segments();
-        if(count($segments) < 6) {
+        if (count($segments) < 6) {
             throw new ValidationException('failed to parse company identifier from the webhook');
         }
 

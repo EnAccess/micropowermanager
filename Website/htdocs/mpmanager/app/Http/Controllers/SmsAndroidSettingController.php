@@ -9,7 +9,6 @@ use App\Services\SmsAndroidSettingService;
 
 class SmsAndroidSettingController extends Controller
 {
-
     public function __construct(private SmsAndroidSettingService $smsAndroidSettingService)
     {
         $this->smsAndroidSettingService = $smsAndroidSettingService;

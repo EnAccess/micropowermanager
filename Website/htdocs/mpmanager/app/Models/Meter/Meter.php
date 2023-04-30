@@ -113,4 +113,9 @@ class Meter extends BaseModel
 
         return $result;
     }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MPM\Sharding;
 
-
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -41,5 +40,4 @@ class ApiCompanyResolverService
 
         return $resolver;
     }
-
 }

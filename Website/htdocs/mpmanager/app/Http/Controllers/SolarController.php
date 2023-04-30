@@ -40,5 +40,4 @@ class SolarController extends Controller
 
         return response()->setStatusCode(404)->json(['data' => 'Nothing found']);
     }
-
 }

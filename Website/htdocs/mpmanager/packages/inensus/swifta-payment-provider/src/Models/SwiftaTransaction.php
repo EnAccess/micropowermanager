@@ -8,13 +8,15 @@ use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use MPM\Transaction\FullySupportedTransactionInterface;
 
-class SwiftaTransaction extends BaseModel implements IRawTransaction
+class SwiftaTransaction extends BaseModel implements IRawTransaction,FullySupportedTransactionInterface
 {
-    const STATUS_SUCCESS = 1;
-    const STATUS_PENDING = 0;
-    const STATUS_FAILED = -1;
-    const STATUS_REQUESTED = -2;
+    public const RELATION_NAME = 'swifta_transaction';
+    public const STATUS_SUCCESS = 1;
+    public const STATUS_PENDING = 0;
+    public const STATUS_FAILED = -1;
+    public const STATUS_REQUESTED = -2;
 
     protected $table = 'swifta_transactions';
 
@@ -39,5 +41,10 @@ class SwiftaTransaction extends BaseModel implements IRawTransaction
     public function conflicts(): MorphMany
     {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string
+    {
+        return self::RELATION_NAME;
     }
 }

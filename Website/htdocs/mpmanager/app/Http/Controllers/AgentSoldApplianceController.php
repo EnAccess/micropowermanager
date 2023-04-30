@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class AgentSoldApplianceController extends Controller
 {
-    const FOR_APP = true;
+    public const FOR_APP = true;
 
     public function __construct(
         private AgentSoldApplianceService $agentSoldApplianceService,
