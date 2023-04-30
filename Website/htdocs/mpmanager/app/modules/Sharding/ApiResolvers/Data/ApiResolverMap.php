@@ -40,7 +40,8 @@ class ApiResolverMap
     ];
 
 
-    public  function getResolvableApis(): array {
+    public function getResolvableApis(): array
+    {
         return self::RESOLVABLE_APIS;
     }
 

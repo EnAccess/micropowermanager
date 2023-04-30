@@ -42,8 +42,8 @@ class ClusterTransactionService
                 $q->where('status', 1);
             }
         )
-            ->whereDate('created_at','>=', $range[0])
-            ->whereDate('created_at','<=', $range[1])
+            ->whereDate('created_at', '>=', $range[0])
+            ->whereDate('created_at', '<=', $range[1])
             ->sum('amount');
     }
 }

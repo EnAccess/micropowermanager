@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        if (!Schema:: hasTable('wavecom_transactions')) {
+            Schema::create('wavecom_transaction', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('transaction_id')->unique();
+                $table->string('sender');
+                $table->string('message');
+                $table->integer('amount')->unsigned();
+                $table->integer('status')->unsigned();
+                $table->timestamps();
+            });
+        }
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('wavecom_transactions');
+    }
+};

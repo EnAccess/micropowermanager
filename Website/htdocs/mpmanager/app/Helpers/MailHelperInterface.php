@@ -7,7 +7,6 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 interface MailHelperInterface
 {
-
     /**
      * @param  $to
      * @param  $title
@@ -18,5 +17,5 @@ interface MailHelperInterface
      */
     public function sendPlain($to, $title, $body, $attachment = null): void;
 
-    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null ): void;
+    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void;
 }

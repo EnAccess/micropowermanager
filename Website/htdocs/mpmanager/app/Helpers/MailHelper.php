@@ -69,7 +69,7 @@ class MailHelper implements MailHelperInterface
         }
     }
 
-    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null ): void
+    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void
     {
         //don't send any mails while  testing
         if (config('app.env') === 'testing') {
@@ -92,5 +92,4 @@ class MailHelper implements MailHelperInterface
             throw new MailNotSentException($this->mailer->ErrorInfo);
         }
     }
-
 }

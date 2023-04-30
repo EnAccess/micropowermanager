@@ -9,13 +9,11 @@ use PhpParser\Node\Stmt\Throw_;
 
 class AppliancePersonService implements IBaseService, IAssociative
 {
-
     public function __construct(
         private MainSettings $mainSettings,
         private AssetPerson $assetPerson,
         private CashTransactionService $cashTransactionService,
     ) {
-
     }
 
     private function checkDownPaymentIsBigger($downPayment, $cost)

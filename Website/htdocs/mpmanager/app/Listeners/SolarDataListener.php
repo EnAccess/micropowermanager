@@ -23,13 +23,11 @@ use Illuminate\Support\Facades\Storage;
  */
 class SolarDataListener
 {
-
     public function __construct(
         private WeatherData $weatherData,
         private IWeatherDataProvider $weatherDataProvider,
         private MiniGrid $miniGrid
     ) {
-
     }
 
     /**
@@ -98,7 +96,7 @@ class SolarDataListener
             File::makeDirectory($path, 0777, true, true);
         }
 
-        Storage::disk('local')->put("/public/$storageFolder/$miniGridId/public/". $fileName, $data);
+        Storage::disk('local')->put("/public/$storageFolder/$miniGridId/public/" . $fileName, $data);
     }
 
     /**

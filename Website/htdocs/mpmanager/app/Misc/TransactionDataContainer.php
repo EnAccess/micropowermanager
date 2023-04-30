@@ -98,22 +98,12 @@ class TransactionDataContainer
             $container->tariff = $container->getTariff($container->meterParameter);
             $container->manufacturer = $container->getManufacturer($container->meter);
         } catch (ModelNotFoundException $e) {
-            Log::debug($e->getMessage(), ['id' => '99375672766241233897']);
             throw new Exception('Meter Serial number ' . $transaction->message . 'not found in the database');
         } catch (MeterIsNotInUse $e) {
-            Log::debug($e->getMessage(), ['id' => '462534735267424885838']);
             throw new Exception($e->getMessage());
         } catch (TariffNotFound $e) {
-            Log::critical(
-                'Meter ' . $transaction->message . ' has no assigned tariff ',
-                ['id' => 78243432]
-            );
-            throw new Exception($e->getMessage());
+            throw new Exception($e->getMessage() . 'Meter : ' . $transaction->message);
         } catch (MeterIsNotAssignedToCustomer $e) {
-            Log::critical(
-                'Meter ' . $transaction->message . ' is not assigned to a customer',
-                ['id' => 342434]
-            );
             throw new Exception($e->getMessage());
         }
         if ($withToken) {

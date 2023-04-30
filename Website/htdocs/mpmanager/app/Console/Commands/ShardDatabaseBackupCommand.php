@@ -6,8 +6,7 @@ namespace App\Console\Commands;
 
 class ShardDatabaseBackupCommand extends AbstractSharedCommand
 {
-
-    protected $signature ='shard:db.backup';
+    protected $signature = 'shard:db.backup';
 
     public function handle()
     {
@@ -19,7 +18,7 @@ class ShardDatabaseBackupCommand extends AbstractSharedCommand
 
         $this->call('backup:run', [
             '--only-db' => true,
-            '--filename' => $databaseName['database'].'_'. date('y-m-d H:i:s'). '.zip',
+            '--filename' => $databaseName['database'] . '_' . date('y-m-d H:i:s') . '.zip',
             '--disable-notifications' => true,
             '--db-name' => ['mysql']]);
     }

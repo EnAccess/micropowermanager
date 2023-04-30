@@ -67,7 +67,6 @@ class JetsonMiniGridPVController extends Controller
             'new_generated_energy_unit' => 'Wh'
         ];
 
-        return ApiResource::make( $this->miniGridPVService->create($pvData) );
+        return ApiResource::make($this->miniGridPVService->create($pvData));
     }
-
 }

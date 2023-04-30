@@ -14,7 +14,6 @@ use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 
-
 abstract class AbstractPaymentAggregatorTransactionService
 {
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
@@ -31,7 +30,6 @@ abstract class AbstractPaymentAggregatorTransactionService
         private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
     ) {
-
     }
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
@@ -41,7 +39,7 @@ abstract class AbstractPaymentAggregatorTransactionService
         }
 
         if (!$meterTariff = $meter->meterParameter->tariff) {
-            throw new ModelNotFoundException('Tariff not found with meter serial number you entered' );
+            throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 
         $customerId = $meter->MeterParameter->owner_id;
@@ -103,8 +101,7 @@ abstract class AbstractPaymentAggregatorTransactionService
             }
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new TransactionIsInvalidForProcessingIncomingRequestException(("Invalid Transaction request."));
         }
     }
@@ -112,18 +109,23 @@ abstract class AbstractPaymentAggregatorTransactionService
     private function getTransactionSender($meterSerialNumber)
     {
         $meterParameter = $this->meterParameter->newQuery()
-            ->whereHas('meter',
+            ->whereHas(
+                'meter',
                 function ($q) use ($meterSerialNumber) {
                     $q->where('serial_number', $meterSerialNumber);
-                })->first();
+                }
+            )->first();
 
         $personId = $meterParameter->owner_id;
         try {
             $address = $this->address->newQuery()
-                ->whereHasMorph('owner', [Person::class],
+                ->whereHasMorph(
+                    'owner',
+                    [Person::class],
                     function ($q) use ($personId) {
                         $q->where('owner_id', $personId);
-                    })->where('is_primary', 1)->firstOrFail();
+                    }
+                )->where('is_primary', 1)->firstOrFail();
             return $address->phone;
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('No phone number record found by customer.');
@@ -154,5 +156,4 @@ abstract class AbstractPaymentAggregatorTransactionService
     {
         return $this->paymentAggregatorTransaction;
     }
-
 }

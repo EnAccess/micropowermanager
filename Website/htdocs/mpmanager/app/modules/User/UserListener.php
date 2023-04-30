@@ -19,8 +19,7 @@ class UserListener
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
         private MailHelperInterface $mailHelper,
-    )
-    {
+    ) {
     }
 
     public function handle($event): void
@@ -48,7 +47,11 @@ class UserListener
         $company = $this->companyService->getById($event->user->getCompanyId());
         $this->ticketUserService->findOrCreateByUser($event->user);
 
-        $this->mailHelper->sendViaTemplate($event->user->getEmail(), 'Welcome to MicroPowerManager',
-            'templates.mail.register_welcome', ['userName' => $event->user->getName(), 'companyName'=> $company->getName()]);
+        $this->mailHelper->sendViaTemplate(
+            $event->user->getEmail(),
+            'Welcome to MicroPowerManager',
+            'templates.mail.register_welcome',
+            ['userName' => $event->user->getName(), 'companyName' => $company->getName()]
+        );
     }
 }

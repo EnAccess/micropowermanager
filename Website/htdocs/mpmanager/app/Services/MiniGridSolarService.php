@@ -108,7 +108,6 @@ class MiniGridSolarService
                 Log::error('Error in finding slope: ' . $e->getMessage());
                 return 0;
             }
-
         }
         return 0;
     }

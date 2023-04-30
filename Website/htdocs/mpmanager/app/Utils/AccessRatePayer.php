@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AccessRatePayer implements IPayer
 {
-    const MINIMUM_AMOUNT = 0;
+    public const MINIMUM_AMOUNT = 0;
     private AccessRatePayment $accessRatePayment;
     private TransactionDataContainer $transactionData;
     private Transaction $transaction;
@@ -33,13 +33,11 @@ class AccessRatePayer implements IPayer
 
         $this->transactionData = $transactionData;
         $this->transaction = $transactionData->transaction;
-
     }
 
     public function pay()
     {
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { //there is unpaid amount
-
             if ($this->debtAmount > $this->transactionData->transaction->amount) {
                 $this->debtAmount -= $this->transactionData->transaction->amount;
                 $this->transactionData->transaction->amount = self::MINIMUM_AMOUNT;

@@ -58,9 +58,12 @@ class UserService
         $user->update(['password' => $newPassword]);
 
         try {
-            $this->mailHelper->sendViaTemplate($user->getEmail(), 'Your new Password | Micro Power Manager',
+            $this->mailHelper->sendViaTemplate(
+                $user->getEmail(),
+                'Your new Password | Micro Power Manager',
                 'templates.mail.forgot_password',
-                ["userName" => $user->getName(), 'password' => $newPassword]);
+                ["userName" => $user->getName(), 'password' => $newPassword]
+            );
         } catch (MailNotSentException $exception) {
             report($exception);
             return null;
@@ -70,7 +73,6 @@ class UserService
         $user = $user->fresh()->with(['addressDetails'])->first();
 
         return $user;
-
     }
 
     public function list(): LengthAwarePaginator

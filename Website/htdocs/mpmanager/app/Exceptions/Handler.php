@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        Log::critical(get_class($exception) , ['message' => $exception->getMessage(), 'trace' => array_slice($exception->getTrace(),0,10)]);
+        Log::critical(get_class($exception), ['message' => $exception->getMessage(), 'trace' => array_slice($exception->getTrace(), 0, 10)]);
         parent::report($exception);
     }
 

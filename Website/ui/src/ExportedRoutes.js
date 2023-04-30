@@ -529,5 +529,10 @@ export const exportedRoutes = [
         path: '/gome-long-meters/gome-long-overview',
         component: require('./plugins/gome-long-meter/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
-    }
+    },
+        {
+        path: '/wavecom/transactions',
+        component: require('@/plugins/wavecom-payment-provider/js/components/Component.vue').default,
+        meta: { layout: 'default' },
+    },
 ]

@@ -4,8 +4,6 @@ namespace App\Utils;
 
 use App\Misc\TransactionDataContainer;
 
-
-
 class MinimumPurchaseAmountValidator
 {
     private float $restAmount;
@@ -26,6 +24,4 @@ class MinimumPurchaseAmountValidator
 
         return $this->restAmount >= $minimumPurchaseAmount;
     }
-
-
 }

@@ -17,7 +17,6 @@ use App\Services\MeterService;
 
 class ApplianceInstallmentPayer implements IPayer
 {
-
     private Person $customer;
     private Transaction $transaction;
     public array $paidRates = [];
@@ -129,5 +128,4 @@ class ApplianceInstallmentPayer implements IPayer
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans);
     }
-
 }

@@ -44,7 +44,7 @@ class UserDefaultDatabaseConnectionMiddleware
         }
 
         //adding new company should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/companies' ) {
+        if ($request->path() === 'api/companies') {
             return $next($request);
         }
 
@@ -99,5 +99,4 @@ class UserDefaultDatabaseConnectionMiddleware
     {
         return Str::startsWith($path, 'api/app/');
     }
-
 }

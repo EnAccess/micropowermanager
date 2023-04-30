@@ -48,10 +48,9 @@ class SmsProcessor extends AbstractJob
     {
         try {
             $this->smsSender->sendSms();
-        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
+        } catch (SmsTypeNotFoundException | SmsAndroidSettingNotExistingException | SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
             return;
         }
-
     }
 }

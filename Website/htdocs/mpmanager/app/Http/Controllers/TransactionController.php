@@ -7,6 +7,7 @@ use App\Jobs\ProcessPayment;
 use App\Lib\ITransactionProvider;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
+use App\Services\TransactionService;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -25,14 +26,7 @@ class TransactionController extends Controller
     public const SAME_DAY_LAST_WEEK = 1;
     public const LAST_SEVEN_DAYS = 2;
     public const LAST_THIRTHY_DAYS = 3;
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-    /**
-     * @var TransactionDataContainer
-     */
-    private $container;
+
 
     /**
      * TransactionController constructor.
@@ -40,8 +34,11 @@ class TransactionController extends Controller
      * @param Transaction $transaction
      * @param TransactionDataContainer $container
      */
-    public function __construct(Transaction $transaction, TransactionDataContainer $container)
-    {
+    public function __construct(
+        private Transaction $transaction,
+        private TransactionDataContainer $container,
+        private TransactionService $transactionService,
+    ) {
         $this->transaction = $transaction;
         $this->container = $container;
     }
@@ -309,21 +306,10 @@ class TransactionController extends Controller
      *
      * @return ApiResource
      */
-    public function show($id): ApiResource
+    public function show(int $id): ApiResource
     {
-        return new ApiResource(
-            Transaction::with(
-                'token',
-                'originalTransaction',
-                'originalTransaction.conflicts',
-                'sms',
-                'token.meter',
-                'token.meter.meterParameter',
-                'token.meter.meterType',
-                'paymentHistories',
-                'meter.meterParameter.owner'
-            )->where('id', $id)->first()
-        );
+        $transaction = $this->transactionService->findById($id);
+        return  ApiResource::make($transaction);
     }
 
 
@@ -497,15 +483,6 @@ class TransactionController extends Controller
         // The number of cancelled transactions
         $cancellation = $this->getCancelledTransactions($transactions);
 
-        /*
-                foreach ($transactions as $transaction) {
-                    if ($transaction->originalTransaction->status === -1) {
-                        $cancellation++;
-                    } elseif ($transaction->originalTransaction->status === 1) {
-                        $amount += $transaction->amount;
-                        $confirmation++;
-                    }
-                }*/
 
         $cancellationPercentage = $cancellation * 100 / $total;
         $confirmationPercentage = $confirmation * 100 / $total;

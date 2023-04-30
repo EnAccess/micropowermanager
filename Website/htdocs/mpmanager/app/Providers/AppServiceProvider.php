@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
+use App\Models\Transaction\AirtelTransaction;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
@@ -32,18 +33,13 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
-use App\Services\FirebaseService;
-use App\Services\SmsAndroidSettingService;
 use App\Sms\AndroidGateway;
 use App\Transaction\AgentTransaction;
-use App\Transaction\AirtelTransaction;
 use App\Utils\TariffPriceCalculator;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use PHPMailer\PHPMailer\PHPMailer;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -65,9 +61,9 @@ class AppServiceProvider extends ServiceProvider
                 'meter_parameter' => MeterParameter::class,
                 'token' => MeterToken::class,
                 'transaction' => Transaction::class,
-                'agent_transaction' => \App\Models\Transaction\AgentTransaction::class,
-                'airtel_transaction' => \App\Models\Transaction\AirtelTransaction::class,
-                'vodacom_transaction' => VodacomTransaction::class,
+                \App\Models\Transaction\AgentTransaction::RELATION_NAME => \App\Models\Transaction\AgentTransaction::class,
+                AirtelTransaction::RELATION_NAME => AirtelTransaction::class,
+                VodacomTransaction::RELATION_NAME => VodacomTransaction::class,
                 'access_rate' => AccessRate::class,
                 'asset_loan' => AssetRate::class,
                 'cluster' => Cluster::class,
@@ -81,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
                 'agent_charge' => AgentCharge::class,
                 'meter_tariff' => MeterTariff::class,
                 'third_party_transaction' => ThirdPartyTransaction::class,
-                'cash_transaction' => CashTransaction::class
+                'cash_transaction' => CashTransaction::class,
             ]
         );
     }
@@ -93,15 +89,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if($this->app->environment('development') || $this->app->environment('local')){
+        if ($this->app->environment('development') || $this->app->environment('local')) {
             $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
         } else {
             $this->app->singleton(MailHelperInterface::class, MailHelper::class);
         }
 
-        $this->app->singleton('AndroidGateway',AndroidGateway::class);
+        $this->app->singleton('AndroidGateway', AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
-        $this->app->singleton('AgentPaymentProvider',AgentTransaction::class);
+        $this->app->singleton('AgentPaymentProvider', AgentTransaction::class);
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);

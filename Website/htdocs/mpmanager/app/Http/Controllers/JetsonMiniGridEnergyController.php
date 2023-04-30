@@ -38,8 +38,7 @@ class JetsonMiniGridEnergyController extends Controller
             $query->where('created_at', '<=', $endDate);
         }
 
-        if ($withWeather)
-        {
+        if ($withWeather) {
             $query->with('weatherData');
         }
 
@@ -110,5 +109,4 @@ class JetsonMiniGridEnergyController extends Controller
         }
         return new ApiResource(['result' => 'success']);
     }
-
 }

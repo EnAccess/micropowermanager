@@ -22,5 +22,4 @@ class CreatePiggyBankEntry extends AbstractJob
             );
         }
     }
-
 }
