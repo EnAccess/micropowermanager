@@ -5,6 +5,8 @@ namespace Inensus\GomeLongMeter\Services;
 
 class MenuItemService
 {
+    const MENU_ITEM = 'GomeLong Meter';
+
     public function createMenuItems()
     {
         $menuItem = [
