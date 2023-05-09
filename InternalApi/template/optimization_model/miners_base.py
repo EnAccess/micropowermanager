@@ -355,7 +355,7 @@ if __name__ == "__main__":
     filename_input = os.path.join(dirname, 'Data', 'Data_input_Miners.xlsx')
     filename_output = os.path.join(dirname, 'Data', 'Data_output_Miners.xlsx')
     start_time = time.time()
-    steps = 192  # input('Please enter the number of timesteps:  ')
+    steps = 96  # input('Please enter the number of timesteps:  ')
 
     try:
         data = utils_NO.load_minigrid_data(filename_input, steps)

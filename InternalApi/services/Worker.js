@@ -19,6 +19,7 @@ const { companyId, miniGridId, efficiencyCurve, socVal } = workerData
 const forecastPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/forecast-tool`
 const optimizationPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/optimization_model`
 
+///Inputs_Miner Sheet
 const HEADER_CONSUMPTION = 'H'
 const HEADER_HASH_RATE = 'I'
 const HEADER_REVENUE = 'L'
@@ -26,11 +27,13 @@ const SLOPE_CELL = 'D5'
 const INTERCEPT_CELL = 'D8'
 const INTERCEPT_COEFFICIENT_CELL = 'D11'
 const MAX_MINER_POWER_CELL = 'D14'
-const M_MI_CELL = 'D104'
-const B_MI_CELL = 'D107'
-const CRYPTO_MAX = 'D101'
-const P_MI = 'D98'
-const SOC_INI = 'D68'
+
+///Parameters Sheet
+const M_MI_CELL = 'D103'
+const B_MI_CELL = 'D106'
+const CRYPTO_MAX = 'D100'
+const P_MI = 'D97'
+const SOC_INI = 'D67'
 
 const OUTPUT_SHEET = 'Mini-grid results'
 const OUTPUT_CELL = 'O2'
@@ -58,17 +61,15 @@ const doBackgroundJobs = async () => {
     }
     try {
         const result = await runForecastTool()
-        console.log('Forecasting finished running result: ')
-        console.log(result)
+        console.log('Forecasting finished running')
         console.log('-------------------------------')
     } catch (error) {
         throw new Error('Fail at forecast-tool. Error: ' + error.message)
     }
 
     try {
-        const result = await replaceForecastOutPut()
+        await replaceForecastOutPut()
         console.log('Forecast output replaced')
-        console.log(result)
         console.log('-------------------------------')
     } catch (error) {
         throw new Error(
@@ -78,8 +79,7 @@ const doBackgroundJobs = async () => {
 
     try {
         const result = await runOptimizationTool()
-        console.log('Optimization finished running result: ')
-        console.log(result)
+        console.log('Optimization finished running')
         console.log('-------------------------------')
     } catch (error) {
         throw new Error('Fail at optimization-tool. Error: ' + error.message)
@@ -88,8 +88,7 @@ const doBackgroundJobs = async () => {
     let consumption = 0
     try {
         const result = await readPowerConsumptionOutput()
-        console.log('Power consumption output consumption: ')
-        console.log(result)
+        console.log(`Power consumption output: ${result}`)
         console.log('-------------------------------')
         consumption = result
     } catch (error) {
@@ -101,7 +100,6 @@ const doBackgroundJobs = async () => {
     try {
         const result = await callPusher(consumption)
         console.log('Pusher called')
-        console.log(result)
         console.log('-------------------------------')
     } catch (error) {
         throw new Error('Fail at calling pusher. Error: ' + error.message)
@@ -149,7 +147,7 @@ const readPowerConsumptionOutput = async () => {
 }
 const updateEfficiencyCurveForForecasting = async () => {
 
-    const file = `${forecastPath}/resources/05_output/raw/excel_sheet.xlsm`
+    const file = `${forecastPath}/resources/05_output/raw/excel_sheet.xlsx`
     const workBook = new ExcelJS.Workbook()
     const wb = await workBook.xlsx.readFile(file)
     const ws = wb.getWorksheet(INPUTS_MINER_SHEET)
@@ -157,7 +155,6 @@ const updateEfficiencyCurveForForecasting = async () => {
     setColumnsAsNull(ws, HEADER_CONSUMPTION)
     setColumnsAsNull(ws, HEADER_HASH_RATE)
     setColumnsAsNull(ws, HEADER_REVENUE)
-
     let powerConsumptions = []
     let hashRates = []
     let profit = 0
@@ -175,13 +172,13 @@ const updateEfficiencyCurveForForecasting = async () => {
         const hashRate = efficiencyCurve.hashrate_in_th_per_second[key]
         let cHashRate = ws.getCell(`${HEADER_HASH_RATE}${index}`)
         cHashRate.value = hashRate
-        console.log(`cHashRate-${index}: ` , hashRate);
+        console.log(`cHashRate-${index}: `, hashRate)
         hashRates.push(hashRate)
 
         const powerConsumption = efficiencyCurve.power_consumption_in_kw[key]
         let cConsumption = ws.getCell(`${HEADER_CONSUMPTION}${index}`)
         cConsumption.value = powerConsumption
-        console.log(`cConsumption-${index}: ` , powerConsumption);
+        console.log(`cConsumption-${index}: `, powerConsumption)
         powerConsumptions.push(powerConsumption)
 
         counter++
@@ -189,48 +186,48 @@ const updateEfficiencyCurveForForecasting = async () => {
 
     const slope = calculateSlope(hashRates, powerConsumptions)
     let cSlope = ws.getCell(SLOPE_CELL)
-    console.log(`cSlope: ` , slope)
+    console.log(`cSlope: `, slope)
     cSlope.value = slope
 
     const intercept = calculateIntercept(hashRates, powerConsumptions)
     let cIntercept = ws.getCell(INTERCEPT_CELL)
-    console.log(`cIntercept: ` , intercept)
+    console.log(`cIntercept: `, intercept)
     cIntercept.value = intercept
 
     const maximumPowerConsumption = Math.max(...powerConsumptions)
     const interceptCoefficient = intercept / maximumPowerConsumption
 
     let cInterceptCoefficient = ws.getCell(INTERCEPT_COEFFICIENT_CELL)
-    console.log(`cInterceptCoefficient: ` , interceptCoefficient)
+    console.log(`cInterceptCoefficient: `, interceptCoefficient)
     cInterceptCoefficient.value = interceptCoefficient
 
     let cMaxMinerPower = ws.getCell(MAX_MINER_POWER_CELL)
-    console.log(`cMaxMinerPower: ` , maximumPowerConsumption)
+    console.log(`cMaxMinerPower: `, maximumPowerConsumption)
     cMaxMinerPower.value = maximumPowerConsumption
 
     const ps = wb.getWorksheet(PARAMETERS_SHEET)
     let cM_mi = ps.getCell(M_MI_CELL)
-    console.log(`cM_mi: ` , slope)
+    console.log(`cM_mi: `, slope)
     cM_mi.value = slope
 
     let cB_mi = ps.getCell(B_MI_CELL)
     cB_mi.value = interceptCoefficient
-    console.log(`cB_mi: ` , interceptCoefficient)
+    console.log(`cB_mi: `, interceptCoefficient)
 
     let cCrypto_max = ps.getCell(CRYPTO_MAX)
     cCrypto_max.value = maximumPowerConsumption
-    console.log(`cCrypto_max: ` , maximumPowerConsumption)
+    console.log(`cCrypto_max: `, maximumPowerConsumption)
 
     let cP_mi = ps.getCell(P_MI)
     cP_mi.value = profit
-    console.log(`cP_mi: ` , profit)
+    console.log(`cP_mi: `, profit)
 
     let cSocIni = ps.getCell(SOC_INI)
     cSocIni.value = socVal
-    console.log(`cSocIni: ` , socVal)
+    console.log(`cSocIni: `, socVal)
 
     await workBook.xlsx.writeFile(file)
-    console.log("**********************************************")
+    console.log('**********************************************')
 }
 const setColumnsAsNull = (ws, columnHeader) => {
     ws.getColumn(columnHeader).eachCell(function (cell, rowNumber) {

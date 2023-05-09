@@ -12,7 +12,6 @@ export const FileService = {
                     console.log('Error Found:', err)
                     reject(err)
                 } else {
-                    console.log('File copied successfully!')
                     resolve(true)
                 }
             })
