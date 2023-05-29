@@ -100,6 +100,7 @@ export default {
                 await this.$store.dispatch('registrationTail/getRegistrationTail')
                 await this.$store.dispatch('protection/getProtectedPages')
                 await this.$store.dispatch('protection/getProtectedPagePassword')
+                await this.$store.dispatch('clusterDashboard/update')
                 this.sending = false
                 this.$router.push('/')
             } catch (e) {
