@@ -238,6 +238,12 @@ const setColumnsAsNull = (ws, columnHeader) => {
 }
 const calculateSlope = (x, y) => {
     let n = x.length
+
+    if (n <= 1) {
+        // Handle special case where there is only one item in either array
+        // You can return a specific value or handle it differently based on your requirements
+        return 1; // or throw an error, return 1, etc.
+    }
     let sum_x = 0
     let sum_y = 0
     let sum_xy = 0
@@ -254,6 +260,12 @@ const calculateSlope = (x, y) => {
 }
 const calculateIntercept = (x, y) => {
     let n = x.length
+
+    if (n <= 1) {
+        // Handle special case where there is only one item in either array
+        // You can return a specific value or handle it differently based on your requirements
+        return 0; // or throw an error, return 0, etc.
+    }
     let sum_x = 0
     let sum_y = 0
     let sum_xy = 0

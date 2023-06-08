@@ -6,7 +6,8 @@
             </div>
 
             <p class="cloud-description">
-                This is the cloud version of the MicroPowerManager. It is a web application that allows you to manage your
+                This is the cloud version of the MicroPowerManager. It is a web application that allows you to manage
+                your
                 MiniGrids easily.
             </p>
             <div class="router-box">
@@ -18,6 +19,23 @@
                     If you already have an account, you can
                     <router-link to="/login"><i class="fa fa-sign-in"></i>login</router-link>
                 </p>
+            </div>
+
+            <p class="cloud-description">
+                All required associated files to complete the installation of the software as well as of its associated
+                apps (SMS gateway, Agent/Merchant App and Customer Registration App), can be found below:
+            </p>
+            <div class="router-box">
+                <p>
+                    You can download our applications' .apk files
+
+                </p>
+                <p><a
+                    href="/files/sms-gateway.apk">SMS gateway </a> - <a
+                    href="/files/agent-app.apk">Agent/Merchant </a> - <a href="/files/customer-reg.apk">Customer
+                    Registration</a></p>
+
+
             </div>
 
         </div>
