@@ -7,7 +7,7 @@ use App\Jobs\ProcessPayment;
 //WorkAround for only VOLTTERRA
 class AirtelVoltTerraController extends Controller
 {
-    public function store($request,$meterSerial,$amount)
+    public function store($meterSerial, $amount)
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'response');
         try {
