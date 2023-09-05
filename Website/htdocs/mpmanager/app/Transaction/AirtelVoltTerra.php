@@ -17,10 +17,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
-class AirtelVoltTerra
+class AirtelVoltTerra implements ITransactionProvider
 {
 
     private $validData;
+
     /**
      * DI will initialize the needed models
      *
@@ -46,7 +47,7 @@ class AirtelVoltTerra
     }
 
     /**
-     * @param bool        $requestType
+     * @param bool $requestType
      * @param Transaction $transaction
      */
     public function sendResult(bool $requestType, Transaction $transaction): void
@@ -68,8 +69,10 @@ class AirtelVoltTerra
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function validateRequest($meterSerial, $amount): bool
+    public function validateRequest($request): bool
     {
+        $meterSerial = $request['meterSerial'];
+        $amount = $request['amount'];
         $validator = Validator::make([
             'meterSerial' => $meterSerial,
             'amount' => $amount
@@ -118,6 +121,7 @@ class AirtelVoltTerra
         ];
         return true;
     }
+
     private function getTransactionSender($meterSerial)
     {
 
@@ -163,6 +167,7 @@ class AirtelVoltTerra
         $airtelTransaction->save();
         event('transaction.confirm');
     }
+
     public function saveCommonData(): Model
     {
         return $this->airtelTransaction->transaction()->save($this->transaction);
@@ -174,5 +179,30 @@ class AirtelVoltTerra
         $conflict->state = $message;
         $conflict->transaction()->associate($this->airtelTransaction);
         $conflict->save();
+    }
+
+    public function confirm(): void
+    {
+        // TODO: Implement confirm() method.
+    }
+
+    public function getMessage(): string
+    {
+        // TODO: Implement getMessage() method.
+    }
+
+    public function getAmount(): int
+    {
+        // TODO: Implement getAmount() method.
+    }
+
+    public function getSender(): string
+    {
+        // TODO: Implement getSender() method.
+    }
+
+    public function getTransaction(): Transaction
+    {
+        // TODO: Implement getTransaction() method.
     }
 }

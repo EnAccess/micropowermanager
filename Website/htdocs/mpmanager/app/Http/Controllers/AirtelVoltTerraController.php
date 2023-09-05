@@ -11,19 +11,21 @@ class AirtelVoltTerraController extends Controller
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'response');
         try {
-            $provider =  resolve('AirtelVoltTerra');
-            $provider->validateRequest($meterSerial,$amount);
+            $provider = resolve('AirtelVoltTerra');
+            $request = ['meterSerial' => $meterSerial, 'amount' => $amount];
+            $provider->validateRequest($request);
             $provider->saveTransaction();
             $transaction = $provider->saveCommonData();
             event('transaction.saved', $provider);
-            ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')->onQueue(config('services.queues.payment'));
+            ProcessPayment::dispatch($transaction->id)->allOnConnection('redis')
+                ->onQueue(config('services.queues.payment'));
 
             $jsonData = [
                 'message' => 'transaction process started',
                 'transactionId' => $transaction->id,
             ];
 
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $jsonData = [
                 'message' => 'transaction process can not be started',
                 'transactionId' => null,
