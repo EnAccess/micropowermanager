@@ -31,7 +31,8 @@ class TransactionAdapter
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         } elseif ($transactionProvider instanceof AirtelTransaction) {
-            $baseTransaction = resolve('AirtelPaymentProvider');
+            //workaround for airtel volt terra
+            $baseTransaction = resolve('AirtelVoltTerra');
             $baseTransaction->init($transactionProvider);
             return $baseTransaction;
         } elseif ($transactionProvider instanceof AgentTransaction) {

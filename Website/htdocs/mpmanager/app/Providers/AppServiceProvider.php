@@ -6,6 +6,7 @@ use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
 use App\Models\Transaction\AirtelTransaction;
+use App\Transaction\AirtelVoltTerra;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
@@ -98,6 +99,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('AndroidGateway', AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
         $this->app->singleton('AgentPaymentProvider', AgentTransaction::class);
+        $this->app->singleton('AirtelVoltTerra', AirtelVoltTerra::class); // workaround until airtel problem
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);

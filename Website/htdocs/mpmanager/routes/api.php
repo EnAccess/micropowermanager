@@ -425,3 +425,6 @@ Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', 'CompanyController@store');
     Route::get('/{email}', 'CompanyController@get');
 });
+Route::group(['prefix' => 'airtel-volt-terra'], static function () {
+    Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');
+});

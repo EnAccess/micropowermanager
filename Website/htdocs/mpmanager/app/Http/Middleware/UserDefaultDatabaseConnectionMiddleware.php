@@ -72,6 +72,9 @@ class UserDefaultDatabaseConnectionMiddleware
             }
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
+        } elseif (strpos($request->path(), 'api/airtel-volt-terra') !== false && $request->isMethod('get')) {
+            //a path for only volt-terra airtel transactions workaround for now
+            $companyId = 22; //volt-terra
         } else { //web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
 
