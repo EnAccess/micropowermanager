@@ -650,7 +650,10 @@ class PersonalizedStandardizedLoadProfile_variable_length:
             cached_data = self.cache_dict.get(day_character)
             used_recency = self.recency.get(day_character)
             if used_recency is not None:
-                profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
+                if isinstance(used_recency, str) and used_recency.endswith('D'):
+                   profile = cached_data.iloc[:, -int(used_recency[:-1]):].mean(axis=1)
+                else:
+                   profile = cached_data.iloc[:, -int(used_recency):].mean(axis=1)
             else:
                 season = self.get_previous_profile(season, date)
                 day_character = season + day_info

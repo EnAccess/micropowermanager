@@ -3,8 +3,8 @@ import Pusher from 'pusher'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { PythonShell } from 'python-shell'
-import { FileService } from './FileService.js'
 import ExcelJS from 'exceljs'
+import { OptimizationService } from './OptimizationService.js'
 
 const pusher = new Pusher({
     appId: process.env.APP_ID,
@@ -15,9 +15,8 @@ const pusher = new Pusher({
 })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const { companyId, miniGridId, efficiencyCurve, socVal } = workerData
+const { companyId, miniGridId, efficiencyCurve, socVal, eccMax } = workerData
 const forecastPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/forecast-tool`
-const optimizationPath = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/optimization_model`
 
 ///Inputs_Miner Sheet
 const HEADER_CONSUMPTION = 'H'
@@ -60,45 +59,27 @@ const doBackgroundJobs = async () => {
         }
     }
     try {
-        const result = await runForecastTool()
+        await runForecastTool()
         console.log('Forecasting finished running')
         console.log('-------------------------------')
     } catch (error) {
         throw new Error('Fail at forecast-tool. Error: ' + error.message)
     }
 
+    let availableConsumptionPower = 0
     try {
-        await replaceForecastOutPut()
-        console.log('Forecast output replaced')
-        console.log('-------------------------------')
-    } catch (error) {
-        throw new Error(
-            'Fail at replacing forecast output. Error: ' + error.message
-        )
-    }
-
-    try {
-        const result = await runOptimizationTool()
+        console.log('Optimization params:', companyId, miniGridId, eccMax, socVal)
+        availableConsumptionPower = await OptimizationService.doCalculation(companyId, miniGridId, eccMax, socVal)
         console.log('Optimization finished running')
+        console.log('-------------------------------')
+        console.log(`Power consumption output: ${availableConsumptionPower}`)
         console.log('-------------------------------')
     } catch (error) {
         throw new Error('Fail at optimization-tool. Error: ' + error.message)
     }
 
-    let consumption = 0
     try {
-        const result = await readPowerConsumptionOutput()
-        console.log(`Power consumption output: ${result}`)
-        console.log('-------------------------------')
-        consumption = result
-    } catch (error) {
-        throw new Error(
-            'Fail at reading optimization output. Error: ' + error.message
-        )
-    }
-
-    try {
-        const result = await callPusher(consumption)
+        await callPusher(availableConsumptionPower)
         console.log('Pusher called')
         console.log('-------------------------------')
     } catch (error) {
@@ -113,12 +94,7 @@ const callPusher = async (consumption) => {
         powerConsumptionOutput: consumption,
     })
 }
-const replaceForecastOutPut = async () => {
-    const source = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/forecast-tool/resources/05_output/predictions.xlsm`
-    const destination = `${__dirname}/../company/${companyId}/miniGrid/${miniGridId}/optimization_model/Data/Data_input_Miners.xlsx`
 
-    return await FileService.replaceFile(source, destination)
-}
 const runForecastTool = async () => {
     const options = {
         mode: 'text',
@@ -129,22 +105,7 @@ const runForecastTool = async () => {
 
     return await PythonShell.run(`${forecastPath}/main.py`, options)
 }
-const runOptimizationTool = async () => {
-    const options = {
-        mode: 'text',
-        pythonPath: '/usr/bin/python3',
-        pythonOptions: ['-u'], // get print results in real-time
-    }
 
-    return await PythonShell.run(`${optimizationPath}/miners_base.py`, options)
-}
-const readPowerConsumptionOutput = async () => {
-    const file = `${optimizationPath}/Data/Data_output_Miners.xlsx`
-    const workBook = new ExcelJS.Workbook()
-    let wb = await workBook.xlsx.readFile(file)
-    const ws = wb.getWorksheet(OUTPUT_SHEET)
-    return ws.getCell(OUTPUT_CELL).value
-}
 const updateEfficiencyCurveForForecasting = async () => {
 
     const file = `${forecastPath}/resources/05_output/raw/excel_sheet.xlsx`
@@ -159,6 +120,8 @@ const updateEfficiencyCurveForForecasting = async () => {
     let hashRates = []
     let profit = 0
     let counter = 1
+
+    console.log('efficiencyCurve: ', efficiencyCurve)
 
     for (const key in efficiencyCurve.power_consumption_in_kw) {
         let index = Number(key) + 4
@@ -194,8 +157,14 @@ const updateEfficiencyCurveForForecasting = async () => {
     console.log(`cIntercept: `, intercept)
     cIntercept.value = intercept
 
-    const maximumPowerConsumption = Math.max(...powerConsumptions)
-    const interceptCoefficient = intercept / maximumPowerConsumption
+    let maximumPowerConsumption = Math.max(...powerConsumptions)
+    let interceptCoefficient = 0
+
+    if (maximumPowerConsumption !== Number.NEGATIVE_INFINITY && maximumPowerConsumption !== Number.POSITIVE_INFINITY) {
+        interceptCoefficient = intercept / maximumPowerConsumption
+    } else {
+        maximumPowerConsumption = 0
+    }
 
     let cInterceptCoefficient = ws.getCell(INTERCEPT_COEFFICIENT_CELL)
     console.log(`cInterceptCoefficient: `, interceptCoefficient)
@@ -242,7 +211,7 @@ const calculateSlope = (x, y) => {
     if (n <= 1) {
         // Handle special case where there is only one item in either array
         // You can return a specific value or handle it differently based on your requirements
-        return 1; // or throw an error, return 1, etc.
+        return 1 // or throw an error, return 1, etc.
     }
     let sum_x = 0
     let sum_y = 0
@@ -264,7 +233,7 @@ const calculateIntercept = (x, y) => {
     if (n <= 1) {
         // Handle special case where there is only one item in either array
         // You can return a specific value or handle it differently based on your requirements
-        return 0; // or throw an error, return 0, etc.
+        return 0 // or throw an error, return 0, etc.
     }
     let sum_x = 0
     let sum_y = 0

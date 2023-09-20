@@ -34,9 +34,10 @@ jetsonRouter.post('/forecast', async (req, res) => {
     const miniGridId = params.miniGridId
     const efficiencyCurve = params.efficiencyCurve
     const socVal = params.socVal
+    const eccMax = params.consumptionCapacity
 
     try {
-        await ProcessService.forecast(companyId, miniGridId, efficiencyCurve, socVal)
+        await ProcessService.forecast(companyId, miniGridId, efficiencyCurve, socVal, eccMax)
 
         res.send({ success: true })
     } catch (error) {
