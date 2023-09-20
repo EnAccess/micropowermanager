@@ -66,6 +66,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
         $schedule->job(new SocialTariffPiggyBankManager())->daily();*/
+        $schedule->command('sms:resend-rejected 5')->everyMinute();
     }
 
     /**

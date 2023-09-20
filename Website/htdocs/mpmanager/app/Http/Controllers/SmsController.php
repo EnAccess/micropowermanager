@@ -235,24 +235,58 @@ class SmsController extends Controller
      *
      * @return void
      */
-    public function update($uuid): void
+    public function updateForDelivered($uuid): void
     {
         try {
+            Log::info('Sms has delivered successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = 1;
+            $sms->status = 2;
             $sms->save();
         } catch (ModelNotFoundException $e) {
             Log::critical(
-                'Sms confirmation failed ',
+                'Sms confirmation update failed ',
                 [
                     'uuid' => $uuid,
                     'message' => 'the given uuid is not found in the database',
-                    'id' => 'r4378563zjfhdfkjtwe-rtw423',
+                ]
+            );
+        }
+    }
+    public function updateForFailed($uuid): void
+    {
+        try {
+            Log::warning('Sending Sms failed on AndroidGateway', ['uuid' => $uuid]);
+            $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
+            $sms->status = -1;
+            $sms->save();
+        } catch (ModelNotFoundException $e) {
+            Log::critical(
+                'Sms rejection update failed ',
+                [
+                    'uuid' => $uuid,
+                    'message' => 'the given uuid is not found in the database',
                 ]
             );
         }
     }
 
+    public function updateForSent($uuid): void
+    {
+        try {
+            Log::warning('Sms has sent successfully', ['uuid' => $uuid]);
+            $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
+            $sms->status = 1;
+            $sms->save();
+        } catch (ModelNotFoundException $e) {
+            Log::critical(
+                'Sms rejection update failed ',
+                [
+                    'uuid' => $uuid,
+                    'message' => 'the given uuid is not found in the database',
+                ]
+            );
+        }
+    }
     public function show($person_id): ApiResource
     {
         $personAddresses = $this->person::with(
