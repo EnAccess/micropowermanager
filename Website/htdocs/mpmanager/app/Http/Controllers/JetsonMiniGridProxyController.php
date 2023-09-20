@@ -28,6 +28,7 @@ class JetsonMiniGridProxyController extends Controller
                 'companyId' => $companyId,
                 'efficiencyCurve' => json_encode($efficiencyCurve),
                 'socVal' => $request->get('socVal'),
+                'consumptionCapacity' => $request->get('consumptionCapacity'),
             ];
 
             $this->httpClient->post(

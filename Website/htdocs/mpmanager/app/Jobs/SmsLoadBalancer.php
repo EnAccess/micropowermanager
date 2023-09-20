@@ -40,7 +40,7 @@ class SmsLoadBalancer extends AbstractJob
 
     public function executeJob(): void
     {
-        Redis::throttle('smsgateway')->allow(1)->every(1)->block(1)->then(
+        Redis::throttle('smsgateway')->allow(10)->every(1)->block(1)->then(
             function () {
                 $fireBaseResult = $this->sendSms($this->smsBody);
                 Log::debug('smsgateway', ['data' => $this->smsBody, 'firebase' => $fireBaseResult]);

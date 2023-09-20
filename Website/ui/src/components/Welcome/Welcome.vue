@@ -31,7 +31,7 @@
 
                 </p>
                 <p><a
-                    href="/files/sms-gateway.apk">SMS gateway </a> - <a
+                    href="/files/old-sms-gateway.apk">SMS gateway </a> - <a
                     href="/files/agent-app.apk">Agent/Merchant </a> - <a href="/files/customer-reg.apk">Customer
                     Registration</a></p>
 

@@ -5,16 +5,16 @@
         :subscriber="subscriber"
         :button="true"
         :empty-state-create-button="true"
-        @widgetAction = "hideEmptyStateArea"
+        @widgetAction="hideEmptyStateArea"
     >
         <div>
             <md-content class="md-scrollbar chat-body chat-body-scroll" ref="chat" id="chat-body">
                 <md-list class="md-triple-line">
                     <md-list-item
-                            v-for="sms in smses"
-                            :key="sms.id"
-                            class="md-scrollbar"
-                            :class="sms.direction === 0 ? 'incomming' : ''">
+                        v-for="sms in smses"
+                        :key="sms.id"
+                        class="md-scrollbar"
+                        :class="sms.direction === 0 ? 'incomming' : ''">
                         <md-icon v-if="sms.direction !== 0">textsms</md-icon>
                         <md-icon v-else>mark_email_unread</md-icon>
 
@@ -28,8 +28,9 @@
                                     </div>
                                     <div class="md-layout-item md-size-95 sms-body">
                                         <a v-if="sms.direction === 0 " href="javascript:void(0);"
-                                           class="username">{{ sms.personName}}</a>
-                                        <a v-else href="javascript:void(0);" class="username">{{ $tc('words.system')
+                                           class="username">{{ sms.personName }}</a>
+                                        <a v-else href="javascript:void(0);" class="username">{{
+                                                $tc('words.system')
                                             }}</a>
                                     </div>
                                 </div>
@@ -46,14 +47,18 @@
                     </md-list-item>
                 </md-list>
                 <div class="md-layout md-gutter md-size-100" style="margin: 2vh">
-                    <div class="md-layout-item md-size-85">
+                    <div class="md-layout-item md-size-100">
                         <md-field>
                             <md-textarea :placeholder="$tc('phrases.writeMessage')" v-model="message"></md-textarea>
                         </md-field>
                     </div>
-                    <div class="md-layout-item md-size-15">
-                        <md-button type="submit" class="md-primary md-raised" @click="sendSms">{{$tc('words.send')}}
-                        </md-button>
+                    <div class="md-layout-item md-size-100">
+                        <div class="container">
+                            <div class="content"></div>
+                            <md-button type="submit" class="md-primary md-raised md-alignment-center-right"
+                                       @click="sendSms">{{ $tc('words.send') }}
+                            </md-button>
+                        </div>
                     </div>
                 </div>
 
@@ -70,6 +75,7 @@ import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 import moment from 'moment'
 import { SmsService } from '@/services/SmsService'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'SmsHistory',
@@ -84,7 +90,11 @@ export default {
             required: true
         }
     },
-
+    computed: {
+        ...mapGetters({
+            authUser: 'auth/getAuthenticateUser',
+        })
+    },
     mounted () {
         this.getSmsList()
     },
@@ -97,7 +107,7 @@ export default {
         }
     },
     methods: {
-        hideEmptyStateArea(){
+        hideEmptyStateArea () {
             EventBus.$emit('hideEmptyStateArea', this.subscriber)
         },
         getTimeAgo (date) {
@@ -111,29 +121,28 @@ export default {
         getSmsList () {
             this.smsService.getList(this.personId).then(response => {
                 this.smses = response
-                EventBus.$emit('widgetContentLoaded', this.subscriber,this.smses.length)
-                if (this.smses.length){
+                EventBus.$emit('widgetContentLoaded', this.subscriber, this.smses.length)
+                if (this.smses.length) {
                     this.scrollDown()
                 }
 
             })
         },
-        sendSms () {
+        async sendSms () {
             if (this.message.length <= 3) {
-                alert(this.$tc('phrases.messageNotify'))
+                this.alertNotify('warn', this.$tc('phrases.messageNotify'))
                 return
             }
-            axios
-                .post(resources.sms.send, {
-                    message: this.message,
-                    person_id: this.personId,
-                    senderId: this.$store.state.admin.id
-                })
-                .then(response => {
-                    this.smses.push(response.data.data)
-                    this.message = ''
-                    this.scrollDown()
-                })
+            try {
+                const { data: { data } } = await this.smsService.sendToPerson(this.message, this.personId, this.authUser.id)
+                this.alertNotify('success', this.$tc('words.successful'))
+                this.smses.push(data)
+                this.message = ''
+                this.scrollDown()
+            } catch (e) {
+                console.log(e)
+            }
+
         },
 
         scrollDown () {
@@ -142,7 +151,15 @@ export default {
                 let chat = parent.$refs.chat
                 chat.scrollTop = chat.scrollHeight
             }, 1000)
-        }
+        },
+        alertNotify (type, message) {
+            this.$notify({
+                group: 'notify',
+                type: type,
+                title: type + ' !',
+                text: message
+            })
+        },
 
     }
 }
@@ -150,32 +167,42 @@ export default {
 
 <style scoped>
 
-    .md-content {
-        max-height: 400px;
-        overflow: auto;
-    }
+.md-content {
+    max-height: 400px;
+    overflow: auto;
+}
 
-    .sms-body {
-        float: right;
-        font-weight: bolder;
-        margin-top: 5px;
-    }
+.sms-body {
+    float: right;
+    font-weight: bolder;
+    margin-top: 5px;
+}
 
-    .chat-body-scroll {
-        overflow-y: scroll !important;
-    }
+.chat-body-scroll {
+    overflow-y: scroll !important;
+}
 
-    .md-list {
-        max-width: 100%;
-        display: inline-block;
-        vertical-align: top;
-        border: 1px solid rgba(#000, .12);
-    }
+.md-list {
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+}
 
-    .incomming {
-        margin-left: 5px !important;
-        padding: 10px;
-        background-color: rgba(7, 249, 127, 0.23);
-    }
+.incomming {
+    margin-left: 5px !important;
+    padding: 10px;
+    background-color: rgba(7, 249, 127, 0.23);
+}
 
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
+
+.content {
+    flex-grow: 1;
+}
 </style>
