@@ -20,9 +20,9 @@ class AgentAssignedAppliances extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function applianceType(): BelongsTo
+    public function appliance(): BelongsTo
     {
-        return $this->belongsTo(AssetType::class, 'appliance_type_id', 'id');
+        return $this->belongsTo(Asset::class, 'appliance_id', 'id');
     }
 
     public function soldAppliance(): HasMany

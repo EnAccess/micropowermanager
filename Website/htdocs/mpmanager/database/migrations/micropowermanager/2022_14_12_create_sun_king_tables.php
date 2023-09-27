@@ -15,7 +15,7 @@ return new class extends Migration
                 $table->string('api_url')->default(config('services.sunKing.url'));
                 $table->string('client_id')->nullable();
                 $table->string('client_secret')->nullable();
-                $table->string('access_token')->nullable();
+                $table->text('access_token')->nullable();
                 $table->unsignedBigInteger('token_expires_in')->nullable();
                 $table->timestamps();
             });

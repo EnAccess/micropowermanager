@@ -9,8 +9,8 @@ export class AgentAssignedApplianceService {
             id: null,
             agentId: null,
             personId: null,
-            applianceTypeId: null,
-            applianceType: null,
+            applianceId: null,
+            appliance: null,
             cost: null
         }
     }
@@ -19,9 +19,9 @@ export class AgentAssignedApplianceService {
         this.assignedAppliance = {
             id: data.id,
             personId: data.person_id,
-            applianceTypeId: data.appliance_type_id,
+            applianceId: data.appliance_id,
             cost: data.cost,
-            applianceType: data.appliance_type.name
+            appliance: data.appliance
         }
 
         return this.assignedAppliance
@@ -57,7 +57,7 @@ export class AgentAssignedApplianceService {
             let assignAppliancePM = {
                 agent_id: AgentId,
                 user_id: userId,
-                appliance_type_id: newAppliance.id,
+                appliance_id: newAppliance.id,
                 cost: newAppliance.cost
             }
             let response = await this.repository.create(assignAppliancePM)

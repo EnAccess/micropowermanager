@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\DownPaymentBiggerThanAppliancePriceException;
 use App\Models\AssetPerson;
+use App\Models\AssetType;
 use App\Models\MainSettings;
 use PhpParser\Node\Stmt\Throw_;
 
@@ -25,29 +26,45 @@ class AppliancePersonService implements IBaseService, IAssociative
         }
     }
 
-    public function createFromRequest($request, $person, $assetType)
+    public function createFromRequest($request, $person, $asset)
     {
         $this->checkDownPaymentIsBigger($request->input('downPayment'), $request->input('cost'));
         $assetPerson = $this->assetPerson::query()->make(
             [
                 'person_id' => $person->id,
-                'asset_type_id' => $assetType->id,
+                'asset_id' => $asset->id,
                 'total_cost' => $request->input('cost'),
                 'down_payment' => $request->input('downPayment'),
                 'rate_count' => $request->input('rate'),
                 'creator_id' => $request->input('creatorId')
-
             ]
         );
 
         $buyerAddress = $person->addresses()->where('is_primary', 1)->first();
         $sender = $buyerAddress == null ? '-' : $buyerAddress->phone;
         $transaction = null;
+
+        $meter = null;
+        if ($asset->assetType->id === AssetType::APPLIANCE_TYPE_SHS) {
+            $meterParameter = $person->meters()->whereHas(
+                'meter',
+                static function ($q) {
+                    $q->whereHas(
+                        'manufacturer',
+                        static function ($q) {
+                            $q->where('name', 'SunKing SHS');
+                        }
+                    );
+                }
+            )->first();
+            $meter = $meterParameter?->meter;
+        }
         if ((int)$request->input('downPayment') > 0) {
             $transaction = $this->cashTransactionService->createCashTransaction(
                 $request->input('creatorId'),
                 $request->input('downPayment'),
-                $sender
+                $sender,
+                $meter
             );
         }
 
@@ -61,7 +78,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         }
 
         $this->initSoldApplianceDataContainer(
-            $assetType,
+            $asset,
             $assetPerson,
             $transaction
         );
@@ -69,12 +86,13 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $assetPerson;
     }
 
-    public function initSoldApplianceDataContainer($assetType, $assetPerson, $transaction)
+    public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction)
     {
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',
             [
-                'assetType' => $assetType,
+                'asset' => $asset,
+                'assetType' => $asset->assetType,
                 'assetPerson' => $assetPerson,
                 'transaction' => $transaction
             ]
@@ -107,7 +125,7 @@ class AppliancePersonService implements IBaseService, IAssociative
 
     public function getApplianceDetails($applianceId)
     {
-        $appliance = $this->assetPerson::with('assetType', 'rates.logs', 'logs.owner')
+        $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
             ->where('id', '=', $applianceId)
             ->first();
 

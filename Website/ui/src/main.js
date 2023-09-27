@@ -26,7 +26,7 @@ import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
 import Settings from '@/components/Settings/MainSettings'
 import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
 import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credential'
-import SunKing from '@/plugins/sun-king-meter/js/components/Overview/Credential'
+import SunKing from '@/plugins/sun-king-shs/js/components/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
 import GomeLong from '@/plugins/gome-long-meter/js/components/Overview/Credential'
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/components/Component.vue";
@@ -42,8 +42,7 @@ Vue.component('Settings', Settings)
 Vue.component('Viber-Messaging', Viber)
 Vue.component('WaveMoney', WaveMoney)
 Vue.component('MicroStar-Meter', MicroStar)
-Vue.component('SunKing-Meter', SunKing)
-Vue.component('SunKing-Meter', SunKing)
+Vue.component('SunKing-SHS', SunKing)
 Vue.component('GomeLong-Meter', GomeLong)
 Vue.component('WaveComTransaction', WaveComTransaction)
 

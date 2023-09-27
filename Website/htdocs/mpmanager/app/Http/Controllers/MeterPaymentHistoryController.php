@@ -16,7 +16,7 @@ class MeterPaymentHistoryController
 
     public function show(string $serialNumber)
     {
-        $paginate = request('paginate') ?? 1;
+        $paginate = request('paginate') ?? 50;
 
         return ApiResource::make($this->paymentHistoryService->getBySerialNumber($serialNumber, $paginate));
     }

@@ -35,4 +35,12 @@ class MeterTariffMeterParameterController extends Controller
 
         return ApiResource::make($result);
     }
+
+    public function updateForMeter($meterSerial, $tariffId): ApiResource
+    {
+        $result = $this->meterTariffMeterParameterService->changeMeterTariff($meterSerial, $tariffId);
+
+        return ApiResource::make($result);
+    }
+
 }

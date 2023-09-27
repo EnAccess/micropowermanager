@@ -1,13 +1,13 @@
 import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
-export  class AppliancePaymentService{
+export class AppliancePaymentService {
 
     constructor () {
         this.repository = Repository.get('appliancePayment')
     }
 
-    async getPaymentForAppliance(selectedApplianceId, personId, adminId, rates, amount){
+    async getPaymentForAppliance (selectedApplianceId, personId, adminId, rates, amount) {
         let paymentPm = {
             'personId': personId,
             'adminId': adminId,
@@ -21,9 +21,8 @@ export  class AppliancePaymentService{
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
-            let errorMessage = e.response.data.data.message
-            return new ErrorHandler(errorMessage, 'http')
+        } catch (e) {
+            return new ErrorHandler(e.response.data.message, 'http')
         }
     }
 }

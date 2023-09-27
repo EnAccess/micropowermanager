@@ -180,7 +180,7 @@ return [
         \Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
         \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
         \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
-        \Inensus\SunKingMeter\Providers\SunKingMeterServiceProvider::class,
+        \Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider::class,
         \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
         \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class
 

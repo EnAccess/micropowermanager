@@ -24,7 +24,7 @@ class MpmPlugin extends MasterModel
     public const VIBER_MESSAGING = 10;
     public const WAVE_MONEY_PAYMENT_PROVIDER = 11;
     public const MICRO_STAR_METERS = 12;
-    public const SUN_KING_METERS = 13;
+    public const SUN_KING_SHS = 13;
     public const GOME_LONG_METERS = 14;
     public const WAVECOM_PAYMENT_PROVIDER = 15;
 

@@ -25,5 +25,8 @@ export default {
     },
     change(currentId,changeId){
         return Client.put(`${resource}/${currentId}/change-meters-tariff/${changeId}`)
+    },
+    changeTariffForSpecificMeter(meterSerial,tariffId){
+        return Client.put(`${resource}/${meterSerial}/change-meter-tariff/${tariffId}`)
     }
 }

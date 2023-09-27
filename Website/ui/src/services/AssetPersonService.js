@@ -10,8 +10,8 @@ export class AssetPersonService {
     }
     fromJson(data){
         return {
-            applianceType: data.asset_type,
-            applianceTypeId: data.asset_type_id,
+            applianceType: data.asset,
+            applianceTypeId: data.asset.id,
             creatorId: data.creator_id,
             creatorType: data.creator_type,
             downPayment: data.down_payment,

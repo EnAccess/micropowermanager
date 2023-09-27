@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
+use App\Models\Asset;
 use App\Models\Transaction\AirtelTransaction;
 use App\Transaction\AirtelVoltTerra;
 use App\Utils\AccessRatePayer;
@@ -73,7 +74,7 @@ class AppServiceProvider extends ServiceProvider
                 'agent_appliance' => AgentAssignedAppliances::class,
                 'agent' => Agent::class,
                 'admin' => User::class,
-                'appliance' => AssetType::class,
+                'appliance' => Asset::class,
                 'agent_receipt' => AgentReceipt::class,
                 'agent_charge' => AgentCharge::class,
                 'meter_tariff' => MeterTariff::class,

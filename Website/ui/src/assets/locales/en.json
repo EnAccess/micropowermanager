@@ -22,7 +22,7 @@
     "MicroStar Meter": "MicroStar Meter",
     "Calin Meter": "Calin Meter",
     "Messages": "Messages",
-    "Appliances" : "Appliances",
+    "Appliances": "Appliances",
     "subMenu": {
       "addCluster": "Add Cluster",
       "addMiniGrid": "Add MiniGrid",
@@ -77,8 +77,8 @@
     "allTransactions": "All Transactions",
     "anyCategory": "Any Category",
     "anyUser": "Any User",
-    "applianceCommission": "Appliance Commission",
-    "assetType": "Asset Type | Asset Types",
+    "applianceCommission": "Appliance Commission (sample 0.1)",
+    "applianceType": "Appliance Type | Appliance Types | Add Appliance Type",
     "assignAppliance": "Assign Appliance | Assigned Appliances | Appliance Assigned successfully",
     "assignClusterManager": "Assign Cluster Manager",
     "assignFor": "Assign For | Assigned For",
@@ -127,7 +127,7 @@
     "editSubConnectionType": "Edit Sub Connection Type",
     "editSubConnectionTypeNotify": "Are you sure to changing this sub connection type? | Sub Connection Updated Successfully!",
     "enableAccessRate": "Enable Access Rate",
-    "energyCommission": "Energy Commission",
+    "energyCommission": "Energy Commission (sample 0.1)",
     "expireSession": "Session is about to expire",
     "expireSessionLabel": "If you want to extend your session for the next 60(sixty) minutes, please confirm this window. | Your session expires in {expires_in} seconds.",
     "financeOverview": "Finance Overview (Period:{period})",
@@ -222,7 +222,7 @@
     "processTime": "Process Time",
     "providerSpecificInformation": "Provider Specific Information",
     "purchaseCode": "Purchase Code",
-    "ratesCount": "Rates Count | Asset Rate updated successfully.",
+    "ratesCount": "Installment count | Asset Rate updated successfully.",
     "redirectLabel": "You have to add {imperativeItem} for using this place.",
     "registeredClusters": "Registered Clusters",
     "registeredCustomers": "Registered Customers",
@@ -339,7 +339,9 @@
     "outgoingSms": "Outgoing sms",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "swiftaTransaction": "SwiftaTransaction",
-    "transactionReference": "Transaction Reference"
+    "transactionReference": "Transaction Reference",
+    "selectDevice": "Select a Device to bind with this SHS",
+    "deleteAppliance": "Delete Appliance"
   },
   "words": {
     "access": "Access",
@@ -514,6 +516,8 @@
     "port": "Port",
     "encryption": "Encryption",
     "authorized": "Authorized",
-    "unauthorized": "Unauthorized"
+    "unauthorized": "Unauthorized",
+    "minimumPayableAmount": "Minimum Payable Amount (access to the system for 7 days)",
+    "rateCost": "Installment Cost for Monthly access to the system"
   }
 }
