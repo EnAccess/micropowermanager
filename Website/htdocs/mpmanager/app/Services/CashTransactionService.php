@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
+use Illuminate\Support\Facades\Log;
 
 class CashTransactionService
 {
@@ -16,7 +17,7 @@ class CashTransactionService
         $this->cashTransaction = $cashTransaction;
     }
 
-    public function createCashTransaction($creatorId, $amount, $sender)
+    public function createCashTransaction($creatorId, $amount, $sender, $meter = null)
     {
         $cashTransaction = $this->cashTransaction->newQuery()->create(
             [
@@ -29,7 +30,7 @@ class CashTransactionService
             [
                 'amount' => $amount,
                 'sender' => $sender,
-                'message' => '-',
+                'message' => $meter === null ? '-' : $meter->serial_number,
                 'type' => 'deferred_payment',
             ]
         );

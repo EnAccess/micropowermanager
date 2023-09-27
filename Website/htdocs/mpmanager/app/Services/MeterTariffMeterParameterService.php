@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 
@@ -9,7 +10,8 @@ class MeterTariffMeterParameterService
 {
     public function __construct(
         private MeterTariff $meterTariff,
-        private MeterParameter $meterParameter
+        private MeterParameter $meterParameter,
+        private Meter $meter
     ) {
     }
 
@@ -27,7 +29,6 @@ class MeterTariffMeterParameterService
 
     public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo): array
     {
-
         return  $this->meterParameter->newQuery()->where('tariff_id', $meterTariffIdFrom)
             ->get()
             ->each(function ($meterParameter) use ($meterTariffIdTo) {
@@ -35,5 +36,14 @@ class MeterTariffMeterParameterService
                 $meterParameter->update();
                 $meterParameter->save();
             });
+    }
+    public function changeMeterTariff($meterSerial, $tariffId): MeterParameter
+    {
+        $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->firstOrFail();
+        $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->firstOrFail();
+        $meterParameter->tariff_id = $tariffId;
+        $meterParameter->update();
+        $meterParameter->save();
+        return $meterParameter;
     }
 }

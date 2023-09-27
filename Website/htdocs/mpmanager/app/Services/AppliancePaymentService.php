@@ -4,13 +4,22 @@ namespace App\Services;
 
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
+use App\Exceptions\TransactionAmountNotEnoughException;
+use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\AssetType;
 use App\Models\MainSettings;
+use App\Models\Meter\MeterToken;
 use App\Models\Person\Person;
+use App\Models\Transaction\CashTransaction;
+use App\Models\Transaction\Transaction;
+use App\Traits\ScheduledPluginCommand;
 
 class AppliancePaymentService
 {
+    use ScheduledPluginCommand;
+
+    const SUN_KING_PLUGIN_ID = 13;
     private $cashTransactionService;
     private $applianceType;
     private $person;
@@ -49,11 +58,25 @@ class AppliancePaymentService
         }
         $rates = Collect($soldApplianceDetail->rates);
         $buyer = $appliancePerson->person;
-        $applianceType = $this->applianceType->newQuery()->find($appliancePerson->asset_type_id);
+        $appliance = $appliancePerson->asset;
         $buyerAddress = $buyer->addresses()->where('is_primary', 1)->first();
         $sender = $buyerAddress == null ? '-' : $buyerAddress->phone;
         $transaction = $this->cashTransactionService->createCashTransaction($creatorId, $this->payment, $sender);
-        $rates->map(function ($rate) use ($buyer, $applianceType, $transaction) {
+
+        try {
+            if ($this->isApplianceSHS($appliance) && $this->isSunKingPluginActive()) {
+                $this->processSunKingToken($buyer, $transaction, $appliancePerson);
+            } else {
+                $this->createPaymentLog($appliancePerson, (int)$request->input('amount'), $creatorId);
+            }
+        } catch (\Exception $e) {
+            $cashTransaction = CashTransaction::latest()->first();
+            $cashTransaction->transaction()->delete();
+            $cashTransaction->delete();
+            throw new \Exception($e->getMessage());
+        }
+
+        $rates->map(function ($rate) use ($buyer, $appliance, $transaction) {
             if ($rate['remaining'] > 0 && $this->payment > 0) {
                 if ($rate['remaining'] <= $this->payment) {
                     $this->payment -= $rate['remaining'];
@@ -66,8 +89,6 @@ class AppliancePaymentService
                 }
             }
         });
-
-        $this->createPaymentLog($appliancePerson, (int)$request->input('amount'), $creatorId);
     }
 
     public function updateRateRemaining($id, $amount)
@@ -107,6 +128,68 @@ class AppliancePaymentService
                 'paidFor' => $applianceRate,
                 'payer' => $buyer,
                 'transaction' => $transaction,
+            ]
+        );
+    }
+
+    private function isApplianceSHS($appliance)
+    {
+        return $appliance->assetType()->first()->id === AssetType::APPLIANCE_TYPE_SHS;
+    }
+
+    private function isSunKingPluginActive()
+    {
+        return $this->checkForPluginStatusIsActive(self::SUN_KING_PLUGIN_ID);
+    }
+
+    private function processSunKingToken($buyer, $transaction, $appliancePerson)
+    {
+
+        $meter = $buyer->meters()->whereHas(
+            'meter',
+            static function ($q) {
+                $q->whereHas(
+                    'manufacturer',
+                    static function ($q) {
+                        $q->where('name', 'SunKing SHS');
+                    }
+                );
+            }
+        )->firstOrFail();
+
+        $transaction->message = $meter->meter->serial_number;
+        $transaction->save();
+
+        $transactionData = TransactionDataContainer::initialize($transaction);
+        $tariff = $transactionData->tariff;
+        $minimumPurchaseAmount = $tariff->minimum_purchase_amount;
+
+        if ($minimumPurchaseAmount > 0 && $transactionData->transaction->amount < $minimumPurchaseAmount) {
+            throw new TransactionAmountNotEnoughException("Minimum purchase amount is {$minimumPurchaseAmount}");
+        }
+
+        $api = resolve($transactionData->manufacturer->api_name);
+        $tokenData = $api->chargeMeter($transactionData);
+        $creatorId = auth('api')->user()->id;
+        $token = MeterToken::query()->make(
+            [
+                'token' => $tokenData['token'],
+                'energy' => $tokenData['energy'],
+            ]
+        );
+        $token->transaction()->associate($transactionData->transaction);
+        $token->meter()->associate($transactionData->meter);
+        //save token
+        $token->save();
+        event(
+            'new.log',
+            [
+                'logData' => [
+                    'user_id' => $creatorId,
+                    'affected' => $appliancePerson,
+                    'action' => 'Token: ' . $tokenData['token'] . ' created for ' . $tokenData['energy'] .
+                        ' days usage.'
+                ]
             ]
         );
     }

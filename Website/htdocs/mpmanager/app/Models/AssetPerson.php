@@ -38,9 +38,9 @@ class AssetPerson extends BaseModel
     }
 
 
-    public function assetType(): BelongsTo
+    public function asset(): BelongsTo
     {
-        return $this->belongsTo(AssetType::class, 'asset_type_id');
+        return $this->belongsTo(Asset::class, 'asset_id');
     }
 
     public function rates(): HasMany

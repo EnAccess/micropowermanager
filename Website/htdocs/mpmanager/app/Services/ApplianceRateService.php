@@ -104,7 +104,12 @@ class ApplianceRateService implements IBaseService
             } else {
                 $rateCost = floor($assetPerson->total_cost / $assetPerson->rate_count);
             }
-            $rateDate = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($baseTime)));
+            if($assetPerson->asset()->first()->assetType->id === 1){
+                $rateDate = date('Y-m-d', strtotime('+' . $rate . ' week', strtotime($baseTime)));
+            }else{
+                $rateDate = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($baseTime)));
+            }
+
             $this->applianceRate->newQuery()->create(
                 [
                     'asset_person_id' => $assetPerson->id,

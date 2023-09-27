@@ -294,9 +294,9 @@ export const exportedRoutes = [
         meta: { layout: 'default' }
     },
     {
-        path: '/assets/types',
-        component: require('./components/Assets/AssetTypeList').default,
-        name: 'asset-types',
+        path: '/assets',
+        component: require('./components/Assets/Assets').default,
+        name: 'asset',
         meta: { layout: 'default' },
     },
 
@@ -521,8 +521,8 @@ export const exportedRoutes = [
         meta: { layout: 'default' },
     },
     {
-        path: '/sun-king-meters/sun-king-overview',
-        component: require('./plugins/sun-king-meter/js/components/Overview/Overview').default,
+        path: '/sun-king-shs/sun-king-overview',
+        component: require('./plugins/sun-king-shs/js/components/Overview/Overview').default,
         meta: { layout: 'default' },
     },
     {

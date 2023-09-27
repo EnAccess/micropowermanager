@@ -1,0 +1,27 @@
+{
+  "name": "inensus/sun-king-shs",
+  "description": "SunKing SHS integration for Micropowermanager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\SunKingSHS\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\SunKingSHS\\Providers\\SunKingSHSServiceProvider"
+      ]
+    }
+  }
+}

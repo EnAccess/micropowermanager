@@ -62,17 +62,23 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     });
 });
 Route::post('users/password', 'UserPasswordController@forgotPassword');
+
 // Assets
 Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
+    Route::get('/', 'AssetController@index');
+    Route::post('/', 'AssetController@store');
+    Route::put('/{asset}', 'AssetController@update');
+    Route::delete('/{asset}', 'AssetController@destroy');
+    Route::group(['prefix' => 'person'], function () {
+        Route::post('/{asset}/people/{person}', 'AssetPersonController@store');
+        Route::get('/people/{person}', 'AssetPersonController@index');
+        Route::get('/people/detail/{applianceId}', 'AssetPersonController@show');
+    });
     Route::group(['prefix' => 'types'], function () {
         Route::get('/', 'AssetTypeController@index');
         Route::post('/', 'AssetTypeController@store');
         Route::put('/{asset_type}', 'AssetTypeController@update');
         Route::delete('/{asset_type}', 'AssetTypeController@destroy');
-
-        Route::post('/{asset_type}/people/{person}', 'AssetPersonController@store');
-        Route::get('/people/{person}', 'AssetPersonController@index');
-        Route::get('/people/detail/{applianceId}', 'AssetPersonController@show');
     });
 
     Route::group(['prefix' => 'rates'], static function () {
@@ -306,7 +312,7 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
     Route::delete('/{meterTariffId}', 'MeterTariffController@destroy');
     Route::get('/{meterTariffId}/usage-count', 'MeterTariffMeterParameterController@show');
     Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffMeterParameterController@update');
-
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffMeterParameterController@updateForMeter');
 });
 // Transactions
 Route::group(['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],

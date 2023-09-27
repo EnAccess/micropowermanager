@@ -20,8 +20,8 @@
                         <md-table-head>{{$tc('words.cost')}}</md-table-head>
                     </md-table-row>
                     <md-table-row v-for="(item, index) in assignedApplianceTypes" :key="index">
-                        <md-table-cell md-label="Name" md-sort-by="name">{{item.applianceType}}</md-table-cell>
-                        <md-table-cell md-label="Cost" md-sort-by="total_cost">{{item.cost}}</md-table-cell>
+                        <md-table-cell md-label="Name" md-sort-by="name">{{item.appliance.name}}</md-table-cell>
+                        <md-table-cell md-label="Cost" md-sort-by="total_cost"> {{ moneyFormat(item.cost) + $store.getters['settings/getMainSettings'].currency }}</md-table-cell>
                     </md-table-row>
                 </md-table>
 
@@ -37,9 +37,11 @@ import { AgentAssignedApplianceService } from '@/services/AgentAssignedAppliance
 import { AgentService } from '@/services/AgentService'
 import AssignAppliance from './AssignAppliance'
 import { EventBus } from '@/shared/eventbus'
+import { currency } from '@/mixins/currency'
 
 export default {
     name: 'AssignedApplianceList',
+    mixins: [currency],
     data () {
         return {
             assignedApplianceService: new AgentAssignedApplianceService(),

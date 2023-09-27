@@ -17,6 +17,10 @@ class AppliancePaymentController extends Controller
 
     public function store(AssetPerson $appliancePerson, Request $request)
     {
-        $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);
+        try {
+            $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 }

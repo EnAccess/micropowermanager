@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\Asset;
 use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\Person\Person;
@@ -37,12 +38,12 @@ class AssetPersonController extends Controller
      * @return ApiResource
      */
     public function store(
-        AssetType $assetType,
+        Asset $asset,
         Person $person,
         Request $request
     ): ApiResource {
 
-        $assetPerson = $this->assetPersonService->createFromRequest($request, $person, $assetType);
+        $assetPerson = $this->assetPersonService->createFromRequest($request, $person, $asset);
         return new ApiResource($assetPerson);
     }
 
@@ -55,7 +56,7 @@ class AssetPersonController extends Controller
      */
     public function index(Person $person, Request $request): ApiResource
     {
-        $assets = $this->assetPerson::with('assetType', 'rates.logs', 'logs.owner')
+        $assets = $this->assetPerson::with('asset.assetType', 'rates.logs', 'logs.owner')
             ->where('person_id', $person->id)
             ->get();
         return new ApiResource($assets);

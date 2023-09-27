@@ -30,7 +30,7 @@ class AgentAssignedApplianceWebController extends Controller
         $assignedApplianceData = $request->only([
             'agent_id',
             'user_id',
-            'appliance_type_id',
+            'appliance_id',
             'cost',
         ]);
 

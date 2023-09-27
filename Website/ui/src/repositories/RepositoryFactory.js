@@ -6,7 +6,7 @@ import AgentChargeRepository from './AgentChargeRepository'
 import AgentSoldApplianceRepository from './AgentSoldApplianceRepository'
 import AgentTransactionRepository from './AgentTransactionRepository'
 import AgentReceiptRepository from './AgentReceiptRepository'
-import AssetRepository from './AssetRepository'
+import AssetTypeRepository from './AssetTypeRepository'
 import AssetPersonRepository from './AssetPersonRepository'
 import AssetRateRepository from './AssetRateRepository'
 import AuthenticationRepository from './AuthenticationRepository'
@@ -66,10 +66,11 @@ import SidebarRepository from '@/repositories/SidebarRepository'
 import RegistrationTailRepository from '@/repositories/RegistrationTailRepository'
 import PluginRepository from '@/repositories/PluginRepository'
 import ProtectedPageRepository from '@/repositories/ProtectedPageRepository'
+import ApplianceRepository from '@/repositories/ApplianceRepository'
 
 const repositories = {
     'address': AddressRepository,
-    'asset': AssetRepository,
+    'assetType': AssetTypeRepository,
     'assetPerson': AssetPersonRepository,
     'assetRate': AssetRateRepository,
     'authentication': AuthenticationRepository,
@@ -133,9 +134,10 @@ const repositories = {
     'mpmPlugin': MpmPluginRepository,
     'company': CompanyRepository,
     'sidebar': SidebarRepository,
-    'registrationTail':RegistrationTailRepository,
-    'plugin':PluginRepository,
-    'protectedPage':ProtectedPageRepository,
+    'registrationTail': RegistrationTailRepository,
+    'plugin': PluginRepository,
+    'protectedPage': ProtectedPageRepository,
+    'appliance': ApplianceRepository,
 }
 
 export default {

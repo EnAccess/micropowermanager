@@ -409,4 +409,40 @@ export class TariffService {
         }
         return overlaps
     }
+
+    async createNewShsTariff (name, assignToDeviceSerial, minimumPayableAmount, amount, currency) {
+        let tariffPM = {
+            name: name,
+            price: Number(amount),
+            currency: currency,
+            factor: 2,
+            minimum_purchase_amount: Number(minimumPayableAmount)
+        }
+        try {
+            const response = await this.repository.create(tariffPM)
+            if (response.status === 201) {
+                return response.data
+            } else {
+                return new ErrorHandler(response.error, 'http', response.status)
+            }
+        } catch (e) {
+            let errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
+        }
+    }
+
+    async changeTariffForSpecificMeter (meterSerial, tariffId) {
+        try {
+            const response = await this.repository.changeTariffForSpecificMeter(meterSerial, tariffId)
+            if (response.status === 200) {
+                return response
+            } else {
+                return new ErrorHandler(response.error, 'http', response.status)
+            }
+        } catch (e) {
+
+            let errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
+        }
+    }
 }

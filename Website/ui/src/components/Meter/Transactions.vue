@@ -27,7 +27,7 @@
                             v-if="token.paid_for_type === 'token'"
                         >Token {{ token.paid_for.token }}
                         </md-table-cell>
-                        <md-table-cell v-else>Access Rate</md-table-cell>
+                        <md-table-cell v-else>{{ token.paid_for_type }}</md-table-cell>
                         <md-table-cell
                             v-if="token.paid_for_type === 'token'"
                             v-text="token.paid_for.energy + 'kWh'"
@@ -45,12 +45,13 @@
 <script>
 import Widget from '../../shared/widget'
 import { EventBus } from '@/shared/eventbus'
+
 export default {
     name: 'Transactions.vue',
-    components:{ Widget },
-    props:{
-        transactions:{
-            type:Object
+    components: { Widget },
+    props: {
+        transactions: {
+            type: Object
         }
     },
     computed: {
@@ -61,15 +62,15 @@ export default {
     created () {
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    data(){
-        return{
+    data () {
+        return {
             subscriber: 'meter.transactions',
             headers: [this.$tc('words.id'), this.$tc('words.provider'), this.$tc('words.amount'),
                 this.$tc('phrases.paidFor'), this.$tc('phrases.inReturn'), this.$tc('words.date')],
             tableName: 'Meter Transactions'
         }
     },
-    methods:{
+    methods: {
         reloadList (subscriber, data) {
             if (subscriber !== this.subscriber) {
                 return

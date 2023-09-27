@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class MeterTariff extends BaseModel
 {
+    const DEFAULT_FACTOR = 1; //for energy usage
+    const SHS_FACTOR = 2; //for shs usage
     use SoftDeletes;
 
     protected $table = 'meter_tariffs';

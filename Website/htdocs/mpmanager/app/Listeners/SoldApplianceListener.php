@@ -24,6 +24,7 @@ class SoldApplianceListener
         $assetPerson = $soldAppliance->getAssetPerson();
         $assetType = $soldAppliance->getAssetType();
         $transaction = $soldAppliance->getTransaction();
+        $asset = $soldAppliance->getAsset();
         $buyer = $this->personService->getById($assetPerson->person_id);
 
         $this->applianceRateService->create($assetPerson);
@@ -37,7 +38,7 @@ class SoldApplianceListener
                         $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
                     'paymentType' => 'down payment',
                     'sender' => $transaction->sender,
-                    'paidFor' => $assetType,
+                    'paidFor' => $asset,
                     'payer' => $buyer,
                     'transaction' => $transaction,
                 ]

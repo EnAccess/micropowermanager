@@ -20,7 +20,7 @@ class AgentAssignedApplianceService implements IBaseService
         return $this->agentAssignedAppliance->newQuery()->create([
             'agent_id' => $applianceData['agent_id'],
             'user_id' => $applianceData['user_id'],
-            'appliance_type_id' => $applianceData['appliance_type_id'],
+            'appliance_id' => $applianceData['appliance_id'],
             'cost' => $applianceData['cost'],
         ]);
     }
@@ -45,7 +45,7 @@ class AgentAssignedApplianceService implements IBaseService
         $query = $this->agentAssignedAppliance->newQuery();
 
         if ($agentId) {
-            $query->with(['user', 'agent', 'applianceType'])
+            $query->with(['user', 'agent', 'appliance'])
                 ->whereHas(
                     'agent',
                     function ($q) use ($agentId) {

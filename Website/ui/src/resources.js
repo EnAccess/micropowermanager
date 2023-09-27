@@ -87,7 +87,7 @@ export let resources = {
     paymenthistories: '/api/paymenthistories/',
     debt: '/api/paymenthistories/debt/',
     assets: {
-        list: '/api/assets/types',
+        list: '/api/assets',
         type: {
             list: '/api/assets/types',
             store: '/api/assets/types',

@@ -45,7 +45,7 @@ class PersonService implements IBaseService
                     },
                 'citizenship',
                 'roleOwner.definitions',
-                'meters.meter',
+                'meters.meter.manufacturer',
             ]
         )->find($personID);
     }
@@ -98,7 +98,7 @@ class PersonService implements IBaseService
     {
         $personData['is_customer'] = 0;
         /** @var Person $person */
-        $person =  $this->person->newQuery()->create($personData);
+        $person = $this->person->newQuery()->create($personData);
         return $person;
     }
 
@@ -201,9 +201,9 @@ class PersonService implements IBaseService
         $addressService = app()->make(AddressesService::class);
         $addressParams = [
             'city_id' => $request->get('city_id') ?? 1,
-            'email' =>  $request->get('email') ?? "",
-            'phone' =>  $request->get('phone') ?? "",
-            'street' =>  $request->get('street') ?? "",
+            'email' => $request->get('email') ?? "",
+            'phone' => $request->get('phone') ?? "",
+            'street' => $request->get('street') ?? "",
             'is_primary' => 1,
         ];
 
