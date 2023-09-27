@@ -64,6 +64,7 @@ class ApplianceInstallmentPayer implements IPayer
                     'transaction' => $this->transaction,
                 ]);
                 $installment->remaining -= $this->transaction->amount;
+                $installment->update();
                 $installment->save();
 
                 $this->paidRates[] = [
@@ -90,6 +91,7 @@ class ApplianceInstallmentPayer implements IPayer
                 ];
                 $this->transaction->amount -= $installment->remaining;
                 $installment->remaining = 0;
+                $installment->update();
                 $installment->save();
 
                 return true;
