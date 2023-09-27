@@ -27,7 +27,7 @@ class ApplianceInstallmentPayer implements IPayer
     public array $paidRates = [];
     public AssetPerson|null $shsLoan = null;
     public $shsLoanRates;
-
+    public $consumableAmount;
 
     public function __construct(
         private MeterService $meterService,
@@ -46,6 +46,7 @@ class ApplianceInstallmentPayer implements IPayer
         $this->transaction = $transactionData->transaction;
         $this->customer = $this->getCustomerByMeterSerial($transactionData->transaction->message);
         $this->tariff = $transactionData->tariff;
+        $this->consumableAmount = $this->transaction->amount;
     }
 
     public function pay()
@@ -105,18 +106,19 @@ class ApplianceInstallmentPayer implements IPayer
     {
         $installments = $this->getInstallments();
         $installments->each(function ($installment) {
-            if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                $this->transaction->amount = 0;
+            if ($installment->remaining > $this->consumableAmount) {// money is not enough to cover the
+                // whole rate
+                $this->consumableAmount = 0;
 
                 return false;
             } else {
-                $this->transaction->amount -= $installment->remaining;
+                $this->consumableAmount -= $installment->remaining;
 
                 return true;
             }
         });
 
-        return $this->transaction->amount;
+        return $this->consumableAmount;
     }
 
     private function getCustomerByMeterSerial(string $serialNumber): Person
