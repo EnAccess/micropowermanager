@@ -68,7 +68,7 @@ class SunKingSHSApi implements IManufacturerAPI
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
-        $creatorId = auth('api')->user()->id;
+
         event(
             'new.log',
             [
