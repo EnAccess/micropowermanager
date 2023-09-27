@@ -24,7 +24,7 @@ return  new class extends Migration
             $table->renameColumn('asset_type_id', 'asset_id');
         });
         Schema::connection('shard')->table('agent_assigned_appliances', function (Blueprint $table) {
-            $table->renameColumn('asset_type_id', 'asset_id');
+            $table->renameColumn('appliance_type_id', 'asset_id');
         });
     }
 
