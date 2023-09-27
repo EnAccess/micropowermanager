@@ -46,7 +46,8 @@ class EnergyTransactionProcessor extends AbstractJob
             $this->checkForMinimumPurchaseAmount($transactionData);
             $transactionData = $this->payApplianceInstallments($transactionData);
             $transactionData = $this->payAccessRateIfExists($transactionData);
-            if ($transactionData->transaction->amount > 0) {
+            //TODO: solve that after meeting!
+            if ($transactionData->transaction->amount >= 0) {
                 $this->callTokenProcessor($transactionData);
             } else {
                 $this->completeTransactionWithNotification($transactionData);

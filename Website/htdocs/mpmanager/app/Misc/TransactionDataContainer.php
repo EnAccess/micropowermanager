@@ -76,6 +76,7 @@ class TransactionDataContainer
 
     public $totalAmount;
 
+    public $rawAmount;
     public AssetPerson|null $shsLoan;
     /**
      * @param Transaction $transaction
@@ -93,6 +94,7 @@ class TransactionDataContainer
         $container->transaction = $transaction;
         $container->totalAmount = $transaction->amount;
         $container->amount = $transaction->amount;
+        $container->rawAmount = $transaction->amount;
         //get meter
         try {
             $container->meter = $container->getMeter($transaction->message);

@@ -17,6 +17,7 @@ use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
 use App\Services\AssetService;
 use App\Services\MeterService;
+use Illuminate\Support\Facades\Log;
 
 class ApplianceInstallmentPayer implements IPayer
 {
@@ -25,6 +26,8 @@ class ApplianceInstallmentPayer implements IPayer
     private MeterTariff $tariff;
     public array $paidRates = [];
     public AssetPerson|null $shsLoan = null;
+    public $shsLoanRates;
+
 
     public function __construct(
         private MeterService $meterService,
@@ -132,14 +135,15 @@ class ApplianceInstallmentPayer implements IPayer
     private function getInstallments()
     {
         $loans = $this->appliancePersonService->getLoansForCustomerId($this->customer->id);
+
         $tariffName = $this->tariff->name;
         $loans->each(function ($assetPerson) use ($tariffName) {
             $asset = $this->assetService->getById($assetPerson->asset_id);
             if ($asset) {
-                $shsTariffName = "{$asset->name}-{$this->transaction->message}";
-
+                $assetNameLower  =strtolower($asset->name);
+                $shsTariffName = "{$assetNameLower}-{$this->transaction->message}";
                 if ($tariffName === $shsTariffName) {
-                    $assetRates = $this->applianceRateService->getAllByLoanId($assetPerson->id);
+                    $this->shsLoanRates = $this->applianceRateService->getAllByLoanId($assetPerson->id);
                     $this->shsLoan = $assetPerson;
                     return false;
                 }
@@ -147,8 +151,8 @@ class ApplianceInstallmentPayer implements IPayer
             return true;
         });
 
-        if (isset($assetRates)) {
-            return $assetRates;
+        if (isset($this->shsLoanRates)) {
+            return $this->shsLoanRates;
         }
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans->pluck('id'));

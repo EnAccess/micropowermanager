@@ -31,7 +31,7 @@ class SunKingSHSApi implements IManufacturerAPI
         $minimumPurchaseAmount = $transactionContainer->tariff->minimum_purchase_amount; //This is for 7 days of energy
         $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / 7); //This is for 1 day of energy
         $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->amount / ($minimumPurchaseAmountPerDay));
+        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / ($minimumPurchaseAmountPerDay));
 
         Log::debug('ENERGY TO BE CHARGED as Day ' . $transactionContainer->chargedEnergy .
             ' Manufacturer => SunKingSHSApi');
@@ -58,7 +58,7 @@ class SunKingSHSApi implements IManufacturerAPI
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
         } catch (SunKingApiResponseException $e) {
             $this->credentialService->updateCredentials($credentials,
-                   ['access_token' => null, 'token_expires_in' => null]);
+                ['access_token' => null, 'token_expires_in' => null]);
             throw new SunKingApiResponseException($e->getMessage());
         }
 
@@ -69,17 +69,20 @@ class SunKingSHSApi implements IManufacturerAPI
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
 
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => -1,
-                    'affected' => $transactionContainer->shsLoan,
-                    'action' => 'Token: ' . $response['token'] . ' created for ' . $energy .
-                        ' days usage.'
+        if ($transactionContainer->shsLoan) {
+            event(
+                'new.log',
+                [
+                    'logData' => [
+                        'user_id' => -1,
+                        'affected' => $transactionContainer->shsLoan,
+                        'action' => 'Token: ' . $response['token'] . ' created for ' . $energy .
+                            ' days usage.'
+                    ]
                 ]
-            ]
-        );
+            );
+        }
+
 
         return [
             'token' => $response['token'],
