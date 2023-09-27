@@ -35,7 +35,7 @@ Route::group([
                 'uses' => 'AgentSoldApplianceController@store'
             ])->name('agent-sell-appliance');
         });
-        Route::group(['prefix' => 'applianceTypes'], function () {
+        Route::group(['prefix' => 'appliance_types'], function () {
             Route::get('/', 'AgentAssignedAppliancesController@index');
         });
         Route::group(['prefix' => 'ticket'], function () {

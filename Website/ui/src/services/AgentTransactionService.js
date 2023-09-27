@@ -18,7 +18,7 @@ export class AgentTransactionService{
     }
 
     fromJson (data) {
-        const meterParameter = data.meter.meter_parameter
+        const meterParameter = data.meter ? data.meter.meter_parameter: null
         let transaction = {
             id: data.id,
             amount: data.amount,

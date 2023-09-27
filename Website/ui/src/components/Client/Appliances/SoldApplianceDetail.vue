@@ -160,13 +160,13 @@
                                 <md-table-cell>#</md-table-cell>
                                 <md-table-cell>Log</md-table-cell>
                                 <md-table-cell>Date</md-table-cell>
-                                <md-table-cell>Initiator</md-table-cell>
+<!--                                <md-table-cell>Initiator</md-table-cell>-->
                             </md-table-row>
                             <md-table-row v-for="(log, index) in soldAppliance.logs" :key="log.id">
                                 <md-table-cell>{{ index + 1 }}</md-table-cell>
                                 <md-table-cell>{{ log.action }}</md-table-cell>
                                 <md-table-cell>{{ formatReadableDate(log.created_at) }}</md-table-cell>
-                                <md-table-cell>{{ log.owner.name }}</md-table-cell>
+<!--                                <md-table-cell>{{ log.owner.name }}</md-table-cell>-->
                             </md-table-row>
                         </md-table>
                     </div>

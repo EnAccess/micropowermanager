@@ -132,12 +132,12 @@ class AppliancePaymentService
         );
     }
 
-    private function isApplianceSHS($appliance)
+    public function isApplianceSHS($appliance)
     {
         return $appliance->assetType()->first()->id === AssetType::APPLIANCE_TYPE_SHS;
     }
 
-    private function isSunKingPluginActive()
+    public function isSunKingPluginActive()
     {
         return $this->checkForPluginStatusIsActive(self::SUN_KING_PLUGIN_ID);
     }
@@ -170,7 +170,6 @@ class AppliancePaymentService
 
         $api = resolve($transactionData->manufacturer->api_name);
         $tokenData = $api->chargeMeter($transactionData);
-        $creatorId = auth('api')->user()->id;
         $token = MeterToken::query()->make(
             [
                 'token' => $tokenData['token'],
@@ -181,16 +180,6 @@ class AppliancePaymentService
         $token->meter()->associate($transactionData->meter);
         //save token
         $token->save();
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $appliancePerson,
-                    'action' => 'Token: ' . $tokenData['token'] . ' created for ' . $tokenData['energy'] .
-                        ' days usage.'
-                ]
-            ]
-        );
+
     }
 }

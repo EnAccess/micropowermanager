@@ -9,22 +9,28 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
+use App\Services\AssetService;
 use App\Services\MeterService;
 
 class ApplianceInstallmentPayer implements IPayer
 {
     private Person $customer;
     private Transaction $transaction;
+    private MeterTariff $tariff;
     public array $paidRates = [];
+    public AssetPerson|null $shsLoan = null;
 
     public function __construct(
         private MeterService $meterService,
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
+        private AssetService $assetService
     ) {
     }
 
@@ -36,6 +42,7 @@ class ApplianceInstallmentPayer implements IPayer
     {
         $this->transaction = $transactionData->transaction;
         $this->customer = $this->getCustomerByMeterSerial($transactionData->transaction->message);
+        $this->tariff = $transactionData->tariff;
     }
 
     public function pay()
@@ -57,7 +64,7 @@ class ApplianceInstallmentPayer implements IPayer
                 $installment->save();
 
                 $this->paidRates[] = [
-                    'asset_type_name' => $installment->assetPerson->assetType->name,
+                    'asset_type_name' => $installment->assetPerson->asset->name,
                     'paid' => $this->transaction->amount,
                 ];
                 $this->transaction->amount = 0;
@@ -75,7 +82,7 @@ class ApplianceInstallmentPayer implements IPayer
                     'transaction' => $this->transaction,
                 ]);
                 $this->paidRates[] = [
-                    'asset_type_name' => $installment->assetPerson->assetType->name,
+                    'asset_type_name' => $installment->assetPerson->asset->name,
                     'paid' => $installment->remaining,
                 ];
                 $this->transaction->amount -= $installment->remaining;
@@ -124,8 +131,26 @@ class ApplianceInstallmentPayer implements IPayer
 
     private function getInstallments()
     {
-        $loans = $this->appliancePersonService->getLoanIdsForCustomerId($this->customer->id);
+        $loans = $this->appliancePersonService->getLoansForCustomerId($this->customer->id);
+        $tariffName = $this->tariff->name;
+        $loans->each(function ($assetPerson) use ($tariffName) {
+            $asset = $this->assetService->getById($assetPerson->asset_id);
+            if ($asset) {
+                $shsTariffName = "{$asset->name}-{$this->transaction->message}";
 
-        return $this->applianceRateService->getByLoanIdsForDueDate($loans);
+                if ($tariffName === $shsTariffName) {
+                    $assetRates = $this->applianceRateService->getAllByLoanId($assetPerson->id);
+                    $this->shsLoan = $assetPerson;
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        if (isset($assetRates)) {
+            return $assetRates;
+        }
+
+        return $this->applianceRateService->getByLoanIdsForDueDate($loans->pluck('id'));
     }
 }

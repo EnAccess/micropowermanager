@@ -148,9 +148,9 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $appliance;
     }
 
-    public function getLoanIdsForCustomerId($customerId)
+    public function getLoansForCustomerId($customerId)
     {
-        return $this->assetPerson->newQuery()->where('person_id', $customerId)->pluck('id');
+        return $this->assetPerson->newQuery()->where('person_id', $customerId);
     }
 
     public function make($data)

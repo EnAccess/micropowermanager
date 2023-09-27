@@ -102,6 +102,8 @@ class EnergyTransactionProcessor extends AbstractJob
         $applianceInstallmentPayer->initialize($transactionData);
         $transactionData->transaction->amount = $applianceInstallmentPayer->pay();
         $transactionData->totalAmount = $transactionData->transaction->amount;
+        $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
+        $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
 
         return $transactionData;
     }

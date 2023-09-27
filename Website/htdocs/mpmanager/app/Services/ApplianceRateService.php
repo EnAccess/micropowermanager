@@ -65,13 +65,19 @@ class ApplianceRateService implements IBaseService
 
     public function getByLoanIdsForDueDate($loanIds)
     {
-        return $this->applianceRate->newQuery()->with('assetPerson.assetType')
+        return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->whereIn('asset_person_id', $loanIds)
             ->where('remaining', '>', 0)
             ->whereDate('due_date', '<', date('Y-m-d'))
             ->get();
     }
 
+    public function getAllByLoanId($loanId)
+    {
+        return $this->applianceRate->newQuery()->with('assetPerson.asset')
+            ->where('asset_person_id', $loanId)
+            ->get();
+    }
     public function getById($id)
     {
         // TODO: Implement getById() method.

@@ -14,7 +14,7 @@ class ManufacturerService
 
     public function register()
     {
-        $api = $this->manufacturer->newQuery()->where('api_name', 'SunKingMeterApi')->first();
+        $api = $this->manufacturer->newQuery()->where('api_name', 'SunKingSHSApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'SunKing SHS',

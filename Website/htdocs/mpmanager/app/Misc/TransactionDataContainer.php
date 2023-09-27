@@ -12,6 +12,7 @@ namespace App\Misc;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
 use App\Exceptions\Tariffs\TariffNotFound;
+use App\Models\AssetPerson;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
@@ -64,7 +65,7 @@ class TransactionDataContainer
     /**
      * @var array
      */
-    public $paid_rates;
+    public $paidRates;
 
     /**
      * @var float
@@ -75,6 +76,7 @@ class TransactionDataContainer
 
     public $totalAmount;
 
+    public AssetPerson|null $shsLoan;
     /**
      * @param Transaction $transaction
      *

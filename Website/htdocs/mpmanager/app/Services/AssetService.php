@@ -42,4 +42,9 @@ class AssetService
     {
         $asset->delete();
     }
+
+    public function getById($id)
+    {
+        return $this->asset->newQuery()->with(['assetType'])->find($id);
+    }
 }

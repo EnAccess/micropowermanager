@@ -68,6 +68,18 @@ class SunKingSHSApi implements IManufacturerAPI
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
+        $creatorId = auth('api')->user()->id;
+        event(
+            'new.log',
+            [
+                'logData' => [
+                    'user_id' => -1,
+                    'affected' => $transactionContainer->shsLoan,
+                    'action' => 'Token: ' . $response['token'] . ' created for ' . $energy .
+                        ' days usage.'
+                ]
+            ]
+        );
 
         return [
             'token' => $response['token'],
