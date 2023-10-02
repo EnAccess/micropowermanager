@@ -36,7 +36,7 @@ class PaymentPeriodListener
 
     public function recalculate(Person $person): void
     {
-        $transactions = $person->transactions()
+        $transactions = $person->payments()
             ->with('transaction')
             ->latest()->take(10)
             ->groupBy('transaction_id')->get();

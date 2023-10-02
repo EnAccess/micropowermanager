@@ -181,7 +181,7 @@ Route::group(['prefix' => 'jetson'], static function () {
 // PaymentHistories
 Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], function () {
     Route::get('/{personId}/flow/{year?}', 'PaymentHistoryController@byYear')->where('personId', '[0-9]+');
-    Route::get('/{personId}/period', 'PaymentHistoryController@getPaymentPeriod')->where('personId', '[0-9]+');
+    Route::get('/{person}/period', 'PaymentHistoryController@getPaymentPeriod')->where('personId', '[0-9]+');
     Route::get('/debt/{personId}', 'PaymentHistoryController@debts')->where('personId', '[0-9]+');
     Route::post('/overview', 'PaymentHistoryController@getPaymentRange');
     Route::get('/{personId}/payments/{period}/{limit?}/{order?}', 'PaymentHistoryController@show')->where('personId',

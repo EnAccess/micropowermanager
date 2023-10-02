@@ -20,7 +20,7 @@
                     <div class="md-layout-item">
                         <div v-if="editTariff===false">
                             {{ meter.tariff.name }}
-                            <span style="cursor: pointer" @click="editTariff = true"><md-icon>edit</md-icon></span>
+                            <span style="cursor: pointer" @click="editTariff = true" v-if="meter.tariff.factor!==2"><md-icon>edit</md-icon></span>
                         </div>
                         <div class="md-layout" v-else>
                             <div class="md-layout-item">
@@ -48,7 +48,7 @@
                 <div class="md-layout">
                     <div class="md-layout-item">{{ $tc('phrases.connectionType') }}</div>
                     <div class="md-layout-item">
-                        <div v-if="editConnection===false" >
+                        <div v-if="editConnection===false">
                             {{ meter.connection.name }}
                             <span style="cursor: pointer" @click="editConnection = true"><md-icon>edit</md-icon></span>
                         </div>
@@ -77,10 +77,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="md-layout">
-                    <div class="md-layout-item">{{ $tc('phrases.lastPayment') }}</div>
-                    <div class="md-layout-item">{{ $tc('phrases.3daysAgo') }}</div>
-                </div>
             </div>
         </div>
     </widget>
@@ -91,20 +87,21 @@ import Widget from '../../shared/widget'
 import { TariffService } from '@/services/TariffService'
 import { ConnectionTypes } from '@/classes/connection/ConnectionTypes'
 import { MeterParameterService } from '@/services/MeterParameterService'
+
 export default {
     name: 'Details.vue',
-    components:{ Widget },
-    props:{
-        meter:{
-            type:Object
+    components: { Widget },
+    props: {
+        meter: {
+            type: Object
         }
     },
     mounted () {
         this.getTariffs()
         this.connectionTypes.getSubConnectionTypes()
     },
-    data(){
-        return{
+    data () {
+        return {
             meterParameterService: new MeterParameterService(),
             tariffService: new TariffService(),
             connectionTypes: new ConnectionTypes(),
@@ -114,7 +111,7 @@ export default {
             editConnection: false,
         }
     },
-    methods:{
+    methods: {
         updateTariff (tariffId) {
             this.updateParameter(this.meter.id, { tariffId: tariffId })
         },

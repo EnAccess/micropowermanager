@@ -18,13 +18,14 @@ export class UserService {
         }
     }
     fromJson (user) {
+        debugger
         this.user = {
             id: user.id,
             name: user.name,
             email: user.email,
-            phone: user.address_details !== null ? user.address_details.phone : null,
-            street: user.address_details !== null ? user.address_details.street : null,
-            cityId: user.address_details !== null ? user.address_details.city.id : null,
+            phone: user.address_details ? user.address_details.phone : null,
+            street: user.address_details ? user.address_details.street : null,
+            cityId: (user.address_details && user.address_details.city ) ? user.address_details.city.id : null,
         }
         return this.user
     }

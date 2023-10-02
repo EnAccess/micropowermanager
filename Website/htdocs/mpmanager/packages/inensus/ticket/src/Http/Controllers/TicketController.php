@@ -24,14 +24,18 @@ class TicketController extends Controller
 
     public function index(Request $request): TicketResource
     {
-        $assignedId = $request->input('person');
-        $categoryId = $request->input('category');
-        $status = $request->input('status');
-        $limit = 5;
-        return TicketResource::make($this->ticketService->getAll(limit:$limit, status:$status, assignedId: $assignedId,  categoryId: $categoryId));
+        $assignedId = $request->input('person') ?? null;
+        $categoryId = $request->input('category') ?? null;
+        $status = $request->input('status') ?? null;
+        $limit = $request->input('limit') ?? 5;
+        $agentId = $request->input('agent') ?? null;
+        $customerId = $request->input('customer') ?? null;
+
+        return TicketResource::make($this->ticketService->getAll($limit, $status, $agentId, $customerId, $assignedId,
+            $categoryId));
     }
 
-    public function show(int $id ): TicketResource
+    public function show(int $id): TicketResource
     {
         $ticket = $this->ticketService->getById($id);
 
@@ -39,7 +43,7 @@ class TicketController extends Controller
     }
 
     // TODO: change this on UI side with query parameter $ticketId
-    public function destroy(int $ticketId,Request $request)
+    public function destroy(int $ticketId, Request $request)
     {
         $closed = $this->ticketService->close($ticketId);
 

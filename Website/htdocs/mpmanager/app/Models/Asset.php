@@ -26,6 +26,6 @@ class Asset extends BaseModel
 
     public function smsReminderRate(): HasOne
     {
-        return $this->hasOne(SmsApplianceRemindRate::class, 'appliance_type_id', 'id');
+        return $this->hasOne(SmsApplianceRemindRate::class, 'appliance_id', 'id');
     }
 }

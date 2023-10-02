@@ -124,7 +124,7 @@ export class SmsService {
         try {
             let sendSmsPM = {
                 'person_id': maintenanceData.assigned,
-                'message': maintenanceData.description + '/n Amount : '
+                'message': maintenanceData.description + '\n Amount : '
                     + maintenanceData.amount + '\n Due Date '
                     + maintenanceData.dueDate,
                 'senderId': maintenanceData.id,

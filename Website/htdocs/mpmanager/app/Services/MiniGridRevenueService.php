@@ -6,6 +6,7 @@ use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class MiniGridRevenueService
 {
@@ -33,7 +34,7 @@ class MiniGridRevenueService
                 }
             )
             ->whereIn('message', $miniGridMeters->pluck('serial_number'))
-            ->whereBetween('created_at', [$startDate,$endDate])->get();
+            ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
     }
 
     public function getSoldEnergyById($miniGridId, $startDate, $endDate, $meterService)
@@ -41,7 +42,7 @@ class MiniGridRevenueService
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $meterService->getMetersInMiniGrid($miniGridId);
-        $soldEnergy =  $this->meterToken->newQuery()
+        $soldEnergy = $this->meterToken->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(energy) as energy')
             ->whereIn('meter_id', $miniGridMeters->pluck('id'))
             ->whereBetween('created_at', [$startDate, $endDate])
