@@ -15,10 +15,9 @@
                     <md-table-cell md-sort-by="id" :md-label="$tc('words.id')"> {{ item.id}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.date')"> {{ item.date}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.file')">
-                        <div @click="download(item.id,'/book-keeping')">
-                            <md-icon style="cursor: pointer;">save</md-icon>
-                            <span > {{ $tc('words.download') }}</span>
-                        </div>
+                        <a :href="item.path">Download
+                            <md-icon>save</md-icon>
+                        </a>
 
                     </md-table-cell>
                 </md-table-row>

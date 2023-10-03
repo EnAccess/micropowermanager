@@ -37,6 +37,9 @@ services:
     volumes:
       - ./Website/ui:/app
       - ./Website/htdocs/dist:/app/dist
+      - ./Website/htdocs/mpmanager/storage/monthly/:/usr/app/public/files/reports/monthly:rw
+      - ./Website/htdocs/mpmanager/storage/weekly/:/usr/app/public/files/reports/weekly:rw
+      - ./Website/htdocs/mpmanager/storage/outsourcing/:/usr/app/public/files/reports/outsourcing:rw
     networks:
       micro_power_manager:
         ipv4_address: 172.18.0.3

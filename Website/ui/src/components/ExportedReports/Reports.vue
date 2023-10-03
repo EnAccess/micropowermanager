@@ -18,10 +18,10 @@
                         <md-table-cell :md-label="$tc('words.date')">{{item.date}}</md-table-cell>
                         <md-table-cell :md-label="$tc('words.name')">{{item.name}}</md-table-cell>
                         <md-table-cell :md-label="$tc('words.file')">
-                            <div  style="cursor: pointer;" @click="download(item.id, '/download')">
+                            <a :href="item.path">Download
                                 <md-icon>save</md-icon>
-                                <span> {{ $tc('words.download') }}</span>
-                            </div>
+                            </a>
+
                         </md-table-cell>
                     </md-table-row>
 

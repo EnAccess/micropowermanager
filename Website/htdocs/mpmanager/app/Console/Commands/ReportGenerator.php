@@ -16,7 +16,7 @@ class ReportGenerator extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
+    public function handle(): void
     {
         $startDay = Carbon::now()->format('Y-m-d');
         if ($this->option('start-date') != "") {

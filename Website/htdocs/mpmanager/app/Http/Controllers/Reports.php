@@ -20,7 +20,6 @@ use Generator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -41,6 +40,7 @@ use function count;
  */
 class Reports
 {
+    const REPORT_PATH = '/files/reports';
     /**
      * @var array holds the summary of sold energy and amount
      */
@@ -300,9 +300,9 @@ class Reports
      * @param Worksheet $sheet
      * @param $dateRange
      *
+     * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      *
-     * @return void
      */
     private function addStaticText(Worksheet $sheet, string $dateRange): void
     {
@@ -680,7 +680,7 @@ class Reports
             )
             ->whereHasMorph(
                 'originalTransaction',
-                [VodacomTransaction::class, AirtelTransaction::class, AgentTransaction::class],
+                '*',
                 static function ($q) {
                     $q->where('status', 1);
                 }
@@ -717,16 +717,16 @@ class Reports
 
 
         $writer = new Xlsx($this->spreadsheet);
-        $dirPath = storage_path('./' . $reportType);
+        $dirPath = storage_path($reportType);
         if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
         }
         try {
             $fileName = str_slug($reportType . '-' . $cityName . '-' . $dateRange) . '.xlsx';
-            $writer->save(storage_path('./' . $reportType . '/' . $fileName));
+            $writer->save(storage_path($reportType . '/' . $fileName));
             $this->report->create(
                 [
-                    'path' => storage_path('./' . $reportType . '/' . $fileName),
+                    'path' => self::REPORT_PATH.'/'.$reportType.'/'.$fileName,
                     'type' => $reportType,
                     'date' => $startDate . '---' . $endDate,
                     'name' => $cityName,
@@ -794,28 +794,30 @@ class Reports
 
     public function sumOfTransactions($connectionGroupId, array $dateRange): array
     {
-        return DB::select(
-            DB::raw(
-                "select meter_parameters.connection_group_id, meters.serial_number as meter," .
-                " sum(transactions.amount) as revenue, meter_tariffs.price as tariff_price," .
-                "IFNULL(sum(payment_histories.amount),0) as total
-        from transactions
-        inner JOIN meters  on transactions.message = meters.serial_number
-        left JOIN  airtel_transactions on transactions.original_transaction_id = airtel_transactions.id " .
-                "and transactions.original_transaction_type= 'airtel_transaction'
-        left JOIN vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id " .
-                "and transactions.original_transaction_type= 'vodacom_transaction'
-        left JOIN agent_transactions on transactions.original_transaction_id = agent_transactions.id and" .
-                " transactions.original_transaction_type= 'agent_transaction'
-        inner join meter_parameters on meters.id=meter_parameters.meter_id
-        inner join meter_tariffs on meter_parameters.tariff_id=meter_tariffs.id
-        inner join `payment_histories` on transactions.id = payment_histories.transaction_id
-        where meter_parameters.connection_group_id = $connectionGroupId and " .
-                "transactions.created_at  >=  '$dateRange[0]'  and transactions.created_at <=  '$dateRange[1]'
-         and (vodacom_transactions . status = 1 or airtel_transactions . status = 1 or agent_transactions . status = 1)
-         GROUP by meter_parameters.meter_id"
+
+        return Transaction::query()
+            ->selectRaw('
+        meter_parameters.connection_group_id, 
+        meters.serial_number as meter,
+        SUM(transactions.amount) as revenue, 
+        meter_tariffs.price as tariff_price,
+        IFNULL(SUM(payment_histories.amount), 0) as total
+    ')
+            ->join('meters', 'transactions.message', '=', 'meters.serial_number')
+            ->join('meter_parameters', 'meters.id', '=', 'meter_parameters.meter_id')
+            ->join('meter_tariffs', 'meter_parameters.tariff_id', '=', 'meter_tariffs.id')
+            ->join('payment_histories', 'transactions.id', '=', 'payment_histories.transaction_id', 'left')
+            ->where('meter_parameters.connection_group_id', $connectionGroupId)
+            ->whereBetween('transactions.created_at', $dateRange)
+            ->whereHasMorph(
+                'originalTransaction',
+                '*',
+                static function ($q) {
+                    return $q->where('status', 1);
+                }
             )
-        );
+            ->groupBy('meter_parameters.meter_id')
+            ->get()->toArray();
     }
 
     private function addTargetsToXls(Worksheet $sheet): void
