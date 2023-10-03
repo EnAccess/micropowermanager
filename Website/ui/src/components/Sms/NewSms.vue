@@ -63,7 +63,7 @@
                                          open-direction="bottom"
                                          :options="smsService.resultList"
                                          @tag="addNumberToReceivers"
-                                         :taggable="true"
+                                         :taggable="false"
                                          :multiple="true"
                                          :searchable="true"
                                          :loading="isLoading"
@@ -73,7 +73,7 @@
                                          :options-limit="300"
                                          :limit="10"
                                          :max-height="600"
-                                         :show-no-results="false"
+                                         :show-no-results="true"
                                          :hide-selected="true"
                                          @search-change="searchForPerson">
                                 <template slot="tag" slot-scope="{ option, remove }"><span
@@ -86,7 +86,7 @@
                                          @mousedown.prevent.stop="clearAll(props.search)"></div>
                                 </template>
                                 <span
-                                    slot="noResult">No customer found. Consider changing the search term.</span>
+                                    slot="noResult">No contact found. Consider changing the search term.</span>
 
                             </multiselect>
                         </div>
@@ -191,6 +191,7 @@ export default {
             this.smsService.resultList = []
         },
         addNumberToReceivers (phone) {
+            debugger
             this.smsService.receiverList.push({
                 id: -1,
                 display: phone,
@@ -225,7 +226,9 @@ export default {
                         this.alertNotify('error', 'SMS service failed with following error' + exception.message)
                     }
                 this.message = ''
+                this.$validator.reset()
             })
+
         },
 
         alertNotify (type, message) {

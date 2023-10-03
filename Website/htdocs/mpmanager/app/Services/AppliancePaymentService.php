@@ -161,6 +161,7 @@ class AppliancePaymentService
         $transaction->save();
 
         $transactionData = TransactionDataContainer::initialize($transaction);
+        $transactionData->shsLoan = $appliancePerson;
         $tariff = $transactionData->tariff;
         $minimumPurchaseAmount = $tariff->minimum_purchase_amount;
 

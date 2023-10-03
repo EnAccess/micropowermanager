@@ -15,8 +15,8 @@
                         <md-icon class="md-size-3x">account_circle</md-icon>
                     </div>
                     <div class="md-layout-item md-size-65">
-                        <h3>{{this.personService.person.title }} {{ this.personService.person.name}}
-                            {{this.personService.person.surname}}</h3>
+                        <h3>{{ this.personService.person.title }} {{ this.personService.person.name }}
+                            {{ this.personService.person.surname }}</h3>
                     </div>
                     <div class="md-layout-item md-large-size-20 md-medium-size-15 md-small-size-10">
                         <md-button @click="editPerson=true" class="md-icon-button" style="float: right">
@@ -26,71 +26,76 @@
                     <div class="md-layout-item md-size-100">&nbsp;</div>
                     <div class="md-layout-item md-size-15">
                         <md-icon>wc</md-icon>
-                        {{$tc('words.gender')}}:
+                        {{ $tc('words.gender') }}:
                     </div>
                     <div class="md-layout-item md-size-15">
-                        {{this.personService.person.gender}}
+                        {{ this.personService.person.gender }}
                     </div>
 
                     <div class="md-layout-item md-size-20">
-                        <md-icon>school</md-icon>&nbsp;{{$tc('words.education')}}:
+                        <md-icon>school</md-icon>&nbsp;{{ $tc('words.education') }}:
                     </div>
                     <div class="md-layout-item md-size-15">
-                        {{this.personService.person.education}}
+                        {{ this.personService.person.education }}
                     </div>
 
                     <div class="md-layout-item md-size-15">
-                        <md-icon>cake</md-icon>&nbsp;{{$tc('words.birthday')}}:
+                        <md-icon>cake</md-icon>&nbsp;{{ $tc('words.birthday') }}:
                     </div>
                     <div class="md-layout-item md-size-15">
-                        {{this.personService.person.birthDate}}
+                        {{ this.personService.person.birthDate }}
                     </div>
 
                 </div>
 
                 <div class="md-layout md-gutter" v-else>
                     <div class="md-layout-item md-size-100">
-                        <form novalidate class="md-layout" @submit.prevent="updatePerson">
+                        <form class="md-layout" @submit.prevent="updatePerson">
                             <md-card class="md-layout-item md-size-100">
                                 <md-card-content>
                                     <md-field>
-                                        <label for="person-title">{{$tc('words.title')}}</label>
+                                        <label for="title">{{ $tc('words.title') }}</label>
                                         <md-input
                                             type="text"
                                             name="person-title"
                                             id="person-title"
                                             v-model="personService.person.title"
                                         />
+
                                     </md-field>
 
-                                    <md-field>
-                                        <label for="name">{{$tc('words.name')}}</label>
-                                        <md-input type="text" name="name" id="name"
+                                    <md-field :class="{'md-invalid': errors.has($tc('words.title'))}">
+                                        <label for="name">{{ $tc('words.name') }}</label>
+                                        <md-input type="text" name="name" id="name" v-validate="'required'"
                                                   v-model="personService.person.name"/>
+                                        <span class="md-error">{{ errors.first($tc($tc('words.name'))) }}</span>
                                     </md-field>
 
-                                    <md-field>
-                                        <label for="surname">{{$tc('words.surname')}}</label>
+                                    <md-field :class="{'md-invalid': errors.has($tc('words.surname'))}">
+                                        <label for="surname">{{ $tc('words.surname') }}</label>
                                         <md-input type="text" name="surname" id="surname"
-                                                  v-model="personService.person.surname"/>
+                                                  v-model="personService.person.surname" v-validate="'required'"/>
+                                        <span class="md-error">{{ errors.first($tc($tc('words.surname'))) }}</span>
                                     </md-field>
 
-                                    <md-datepicker md-immediately  name="birthDate" v-model="personService.person.birthDate">
-                                        <label for="birth-date">{{$tc('words.birthday')}} :</label>
+                                    <md-datepicker md-immediately name="birthDate"
+                                                   v-model="personService.person.birthDate">
+                                        <label for="birth-date">{{ $tc('words.birthday') }} :</label>
                                     </md-datepicker>
 
                                     <md-field>
-                                        <label for="gender">{{$tc('words.gender')}} :</label>
+                                        <label for="gender">{{ $tc('words.gender') }} :</label>
                                         <md-select name="gender" id="gender" v-model="personService.person.gender">
-                                            <md-option disabled v-if="personService.person.gender==null">-- {{$tc('words.select')}} --
+                                            <md-option disabled v-if="personService.person.gender==null">--
+                                                {{ $tc('words.select') }} --
                                             </md-option>
-                                            <md-option value="male">{{$tc('words.male')}}</md-option>
-                                            <md-option value=" female">{{$tc('words.female')}}</md-option>
+                                            <md-option value="male">{{ $tc('words.male') }}</md-option>
+                                            <md-option value=" female">{{ $tc('words.female') }}</md-option>
                                         </md-select>
                                     </md-field>
 
                                     <md-field>
-                                        <label for="education">{{$tc('words.education')}}</label>
+                                        <label for="education">{{ $tc('words.education') }}</label>
                                         <md-input
                                             type="text"
                                             name="education"
@@ -100,10 +105,11 @@
                                     </md-field>
                                 </md-card-content>
                                 <md-card-actions>
-                                    <md-button type="submit" @click="updatePerson" class="md-primary btn-save">{{$tc('words.save')}}
+                                    <md-button type="submit" @click="updatePerson" class="md-primary btn-save">
+                                        {{ $tc('words.save') }}
                                     </md-button>
                                     <md-button type="button" @click="editPerson = false" class="md-accent btn-save">
-                                        {{$tc('words.cancel')}}
+                                        {{ $tc('words.cancel') }}
                                     </md-button>
                                 </md-card-actions>
                             </md-card>
@@ -144,27 +150,35 @@ export default {
     },
 
     methods: {
-        updatePerson () {
-            this.editPerson = false
-            this.personService.updatePerson()
+        async updatePerson () {
+
+            let validator = await this.$validator.validateAll()
+
+            if (validator) {
+                await this.personService.updatePerson()
+                this.editPerson = false
+            }
 
         },
         confirmDelete () {
             this.$swal({
                 type: 'question',
-                title: this.$tc('phrases.deleteCustomer',0),
+                title: this.$tc('phrases.deleteCustomer', 0),
                 width: '35%',
                 confirmButtonText: this.$tc('words.confirm'),
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.cancel'),
                 focusCancel: true,
                 html:
-                        '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-                        '  <label>' +
-                        '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-                    this.$tc('phrases.deleteCustomerNotify',0,{name: this.personService.person.name, surname: this.personService.person.surname}) +
-                        '  </label>' +
-                        '</div>'
+                    '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
+                    '  <label>' +
+                    '    <input type="checkbox" name="confirmation" id="confirmation" >' +
+                    this.$tc('phrases.deleteCustomerNotify', 0, {
+                        name: this.personService.person.name,
+                        surname: this.personService.person.surname
+                    }) +
+                    '  </label>' +
+                    '</div>'
             }).then(result => {
                 let answer = document.getElementById('confirmation').checked
                 if ('value' in result) {
@@ -200,7 +214,7 @@ export default {
 
             Toast.fire({
                 type: 'success',
-                title: this.$tc('phrases.deleteCustomer',1)
+                title: this.$tc('phrases.deleteCustomer', 1)
             }).then(x => {
                 console.log(x)
                 window.history.back()

@@ -8,7 +8,7 @@ export class PaymentService {
         this.paymentDetailData = []
         this.chartData = [[i18n.tc('words.month'), i18n.tc('words.sale')]]
         this.flow = []
-        this.monthNames= [
+        this.monthNames = [
             'Jan',
             'Feb',
             'Mar',
@@ -24,76 +24,82 @@ export class PaymentService {
         ]
     }
 
-    async getPaymentDetail(personId, period){
+    async getPaymentDetail (personId, period) {
         try {
             let response = await this.repository.getPaymentDetail(personId, period)
-            if(response.status === 200){
+            if (response.status === 200) {
                 this.fillPaymentDetailChartData(response.data)
                 return response.data
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
 
     }
+
     async getPaymentFlow (personId) {
         try {
             let response = await this.repository.getFlow(personId)
-            if(response.status === 200){
+            if (response.status === 200) {
                 this.fillPaymentFlowChartData(response.data)
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
 
     }
-    async getPeriod(personId){
+
+    async getPeriod (personId) {
         try {
             let response = await this.repository.getPeriod(personId)
-            if(response.status === 200){
+            if (response.status === 200) {
                 return response.data.data
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
     }
-    async getDebt(personId){
+
+    async getDebt (personId) {
         try {
             let response = await this.repository.getDebt(personId)
-            if(response.status === 200){
+            if (response.status === 200) {
                 return response.data.data
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
     }
-    fillPaymentFlowChartData(paymentFlowData){
+
+    fillPaymentFlowChartData (paymentFlowData) {
         this.flow = []
-        paymentFlowData.forEach((i)=>{
-            this.flow.push(parseInt(paymentFlowData[i]))
+        for (const paymentFlowDataKey in paymentFlowData) {
+            this.flow.push(parseInt(paymentFlowData[paymentFlowDataKey]))
             this.chartData.push([
-                this.monthNames[i],
-                parseInt(paymentFlowData[i])
+                this.monthNames[paymentFlowDataKey],
+                parseInt(paymentFlowData[paymentFlowDataKey])
             ])
-        })
+        }
         return this.chartData
     }
-    fillPaymentDetailChartData(paymentDetail){
-        this.paymentDetailData = [[i18n.tc('words.period'), i18n.tc('words.energy'), i18n.tc('phrases.accessRate'), i18n.tc('phrases.loanRate')]]
+
+    fillPaymentDetailChartData (paymentDetail) {
+        this.paymentDetailData = [[i18n.tc('words.period'), i18n.tc('words.energy'), i18n.tc('phrases.accessRate'), i18n.tc('phrases.loanRate'), i18n.tc('phrases.downPayment')]]
         for (let i in paymentDetail) {
             let chartDataItem = [
                 i,
                 'energy' in paymentDetail[i] ? parseInt(paymentDetail[i]['energy']) : 0,
                 'access rate' in paymentDetail[i] ? parseInt(paymentDetail[i]['access rate']) : 0,
                 'loan rate' in paymentDetail[i] ? parseInt(paymentDetail[i]['loan rate']) : 0,
+                'down payment' in paymentDetail[i] ? parseInt(paymentDetail[i]['down payment']) : 0,
             ]
             this.paymentDetailData.push(chartDataItem)
         }

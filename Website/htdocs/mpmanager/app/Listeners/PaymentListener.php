@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Lib\ITransactionProvider;
 use App\Models\AccessRate\AccessRate;
+use App\Models\Asset;
 use App\Models\AssetRate;
 use App\Models\AssetType;
 use App\Models\Meter\MeterParameter;
@@ -94,8 +95,8 @@ class PaymentListener
                 $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->applianceRatePaymentHistoryService->assign();
                 break;
-            case $paidFor instanceof AssetType:
-                $paymentHistory->paid_for_type = AssetType::class;
+            case $paidFor instanceof Asset:
+                $paymentHistory->paid_for_type = Asset::class;
                 $paymentHistory->paid_for_id = $paidFor->id;
                 break;
             case $paidFor instanceof MeterToken:

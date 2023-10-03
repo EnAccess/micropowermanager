@@ -71,8 +71,8 @@ export class ConnectionTypeService {
             let response = await this.repository.show(connectionTypeId)
 
             if (response.status === 200) {
-                this.connectionTypes = response.data.data[0]
-                return this.connectionTypes
+                this.connectionType = response.data.data
+                return this.connectionType
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }

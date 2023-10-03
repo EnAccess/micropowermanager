@@ -3,7 +3,7 @@
         <md-dialog :md-active.sync="modalVisibility" :md-click-outside-to-close="false"
         >
             <md-dialog-title>
-                {{ $tc('phrases.selectMiniGrid',1) }}
+                {{ $tc('phrases.selectMiniGrid', 1) }}
             </md-dialog-title>
             <md-dialog-content>
                 <div class="md-layout md-gutter">
@@ -15,11 +15,11 @@
                                            @md-selected="setMiniGrid">
                                     <md-option v-for="(miniGrid ,key)  in miniGrids" :key="key"
                                                :value="miniGrid.id" style="display:inline-flex">
-                                        &nbsp;<span>{{miniGrid.name}}</span>
+                                        &nbsp;<span>{{ miniGrid.name }}</span>
                                         <div v-show="miniGrid.data_stream === 1"
                                              class="selection-active">
                                             <md-icon>check</md-icon>
-                                            <md-tooltip md-direction="top"> {{ $tc('phrases.selectMiniGrid',2) }}
+                                            <md-tooltip md-direction="top"> {{ $tc('phrases.selectMiniGrid', 2) }}
                                             </md-tooltip>
                                         </div>
 
@@ -39,17 +39,17 @@
 
 <script>
 
-import {MiniGridService} from '@/services/MiniGridService'
+import { MiniGridService } from '@/services/MiniGridService'
 
 export default {
     name: 'Selector',
-    created() {
+    created () {
         this.getMiniGridList()
     },
-    mounted() {
+    mounted () {
 
     },
-    data() {
+    data () {
         return {
             miniGridService: new MiniGridService(),
             modalVisibility: false,
@@ -58,24 +58,29 @@ export default {
         }
     },
     methods: {
-        async getMiniGridList() {
+        async getMiniGridList () {
             try {
                 this.miniGrids = await this.miniGridService.getMiniGrids()
-                this.showSelector()
+                if (this.miniGrids.length > 0) {
+                    this.$router.replace('/dashboards/mini-grid/' + this.miniGrids[0].id)
+                } else {
+                    this.showSelector()
+                }
+
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
 
         },
 
-        showSelector() {
+        showSelector () {
             this.modalVisibility = true
         },
-        setMiniGrid(miniGridId) {
+        setMiniGrid (miniGridId) {
             this.modalVisibility = true
             this.$router.replace('/dashboards/mini-grid/' + miniGridId)
         },
-        alertNotify(type, message) {
+        alertNotify (type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
@@ -88,17 +93,17 @@ export default {
 </script>
 
 <style scoped>
-    .selection {
-        min-width: 300px;
-        margin: auto;
-        align-items: center;
-        text-align: center;
+.selection {
+    min-width: 300px;
+    margin: auto;
+    align-items: center;
+    text-align: center;
 
-    }
+}
 
-    .selection-active {
-        text-align: end;
-        color: green;
-    }
+.selection-active {
+    text-align: end;
+    color: green;
+}
 
 </style>

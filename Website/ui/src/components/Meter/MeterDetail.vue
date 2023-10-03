@@ -34,11 +34,12 @@
 
 <script>
 import { Transactions } from '@/classes/meter/transactions'
-import {MeterDetailService}  from '@/services/MeterDetailService'
+import { MeterDetailService } from '@/services/MeterDetailService'
 import MeterBasic from './Basic'
 import MeterDetails from './Details'
 import MeterTransactions from './Transactions'
 import MeterReadings from './Readings'
+
 export default {
     name: 'MeterDetail',
     components: { MeterBasic, MeterDetails, MeterTransactions, MeterReadings },
@@ -48,14 +49,15 @@ export default {
     },
     mounted () {
         this.transactions = new Transactions(this.$route.params.id)
+        console.log('tr', this.transactions)
     },
-    computed:{
-        showMeterReadings(){
-            if(this.meter === null){
+    computed: {
+        showMeterReadings () {
+            if (this.meter === null) {
                 return false
-            }else if(this.meter.meterType.online === 1){
+            } else if (this.meter.meterType.online === 1) {
                 return true
-            }else{
+            } else {
                 return false
             }
         }
@@ -67,22 +69,22 @@ export default {
             meter: null,
         }
     },
-    methods:{
-        async getMeterDetails(){
+    methods: {
+        async getMeterDetails () {
             try {
                 this.meter = await this.meterDetailService.detail()
-            }catch (e) {
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async getMeterRevenue(){
+        async getMeterRevenue () {
             try {
                 this.meter.totalRevenue = await this.meterDetailService.revenue()
-            }  catch (e) {
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        alertNotify(type, message) {
+        alertNotify (type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,

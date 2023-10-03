@@ -19,7 +19,7 @@ class SmsApplianceRemindRateController extends Controller
 
     public function index(): ApiResource
     {
-        return new ApiResource($this->smsApplianceRemindService->getApplianceRemindRatesWithApplianceTypes());
+        return new ApiResource($this->smsApplianceRemindService->getApplianceRemindRatesWithAppliances());
     }
 
     public function store(SmsApplianceRemindRateRequest $request): ApiResource

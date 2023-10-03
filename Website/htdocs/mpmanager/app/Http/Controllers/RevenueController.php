@@ -24,6 +24,8 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Models\Ticket;
 use stdClass;
@@ -312,7 +314,8 @@ class RevenueController extends Controller
     {
         // the array which holds the final response
         $startDate = $request->input('startDate') ?? date('Y-01-01');
-        $endDate = $request->input('endDate') ?? date('Y-m-d');
+        $end = $request->input('endDate') ?? date('Y-m-d');
+        $endDate = Carbon::parse($end)->endOfDay();
 
         $cities = $this->city::where('mini_grid_id', $id)->get();
         $cityIds = implode(',', $cities->pluck('id')->toArray());
@@ -417,7 +420,7 @@ class RevenueController extends Controller
     public function revenueData(Request $request)
     {
         $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
-        $endDate = date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31'));
+        $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
         $targetType = $request->get('target_type'); // cluster or mini-grid
         if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {

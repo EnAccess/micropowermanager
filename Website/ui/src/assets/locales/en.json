@@ -341,7 +341,8 @@
     "swiftaTransaction": "SwiftaTransaction",
     "transactionReference": "Transaction Reference",
     "selectDevice": "Select a Device to bind with this SHS",
-    "deleteAppliance": "Delete Appliance"
+    "deleteAppliance": "Delete Appliance",
+    "downPayment": "Down Payment"
   },
   "words": {
     "access": "Access",

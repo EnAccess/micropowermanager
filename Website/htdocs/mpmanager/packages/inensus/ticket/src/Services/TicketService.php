@@ -118,12 +118,9 @@ class TicketService implements IAssociative
 
             $tickets = $query->paginate();
         }
-
-
         //get ticket details from trello
         $ticketData = $this->getBatch($tickets);
         $tickets->setCollection(Collection::make($ticketData));
-
 
         return $tickets;
     }

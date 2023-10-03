@@ -50,7 +50,7 @@ class PersonObserver
             $meter->delete();
         }
         // delete all transactions which are belong to that person
-        foreach ($person->transactions()->get() as $transaction) {
+        foreach ($person->payments()->get() as $transaction) {
             $transaction->delete();
         }
     }

@@ -5,7 +5,7 @@ const resource = `${baseUrl}/tickets/api`
 
 export default {
     listCategory () {
-        return Client.get(`${resource}/labels` + '?outsource=1')
+        return Client.get(`${resource}/labels`)
     },
 
     create (maintenanceData) {

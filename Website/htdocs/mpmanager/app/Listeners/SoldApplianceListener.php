@@ -30,6 +30,7 @@ class SoldApplianceListener
         $this->applianceRateService->create($assetPerson);
 
         if ($assetPerson->down_payment > 0) {
+            $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($assetPerson);
             event(
                 'payment.successful',
                 [
@@ -38,7 +39,7 @@ class SoldApplianceListener
                         $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
                     'paymentType' => 'down payment',
                     'sender' => $transaction->sender,
-                    'paidFor' => $asset,
+                    'paidFor' => $applianceRate,
                     'payer' => $buyer,
                     'transaction' => $transaction,
                 ]
