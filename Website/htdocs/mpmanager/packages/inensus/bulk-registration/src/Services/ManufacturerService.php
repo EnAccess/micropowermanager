@@ -15,8 +15,8 @@ class ManufacturerService extends CreatorService
         'Kelin Meter',
         'Stron Meter',
         'GomeLong Meter',
-        'SunKing Meter',
-        'MicroStar Meter'
+        'MicroStar Meter',
+        "SunKing SHS",
     ];
 
     public function __construct(Manufacturer $manufacturer)
