@@ -16,14 +16,17 @@ abstract class AbstractSharedCommand extends Command
 
     protected int $EXECUTION_TYPE = self::EXECUTE_FOR_ALL;
 
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var DatabaseProxyManagerService $databaseProxyManagerService */
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 
-        if (array_key_exists('company-id', $input->getArguments()) && is_numeric($input->getArgument('company-id'))) {
-            $this->runForCompany($databaseProxyManagerService, (int)$input->getArgument('company-id'), $input, $output);
+        $companyId = null;
+        if ($this->hasOption('company-id')) {
+            $companyId = $this->option('company-id');
+        }
+        if ($companyId) {
+            $this->runForCompany($databaseProxyManagerService, (int)$companyId, $input, $output);
         } else {
             $this->runForAllShards($databaseProxyManagerService, $input, $output);
         }
@@ -31,17 +34,30 @@ abstract class AbstractSharedCommand extends Command
         return $this->EXECUTION_TYPE;
     }
 
-    private function runForAllShards(DatabaseProxyManagerService $databaseProxyManagerService, InputInterface $input, OutputInterface $output): void
-    {
-        $databaseProxyManagerService->queryAllConnections()->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-            $modelCollection->map(function (CompanyDatabase $companyDatabase) use ($databaseProxyManagerService, $input, $output) {
-                $this->runForCompany($databaseProxyManagerService, $companyDatabase->getCompanyId(), $input, $output);
+    private function runForAllShards(
+        DatabaseProxyManagerService $databaseProxyManagerService,
+        InputInterface $input,
+        OutputInterface $output
+    ): void {
+        $databaseProxyManagerService->queryAllConnections()
+            ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
+                $modelCollection->map(function (CompanyDatabase $companyDatabase) use (
+                    $databaseProxyManagerService,
+                    $input,
+                    $output
+                ) {
+                    $this->runForCompany($databaseProxyManagerService, $companyDatabase->getCompanyId(), $input,
+                        $output);
+                });
             });
-        });
     }
 
-    private function runForCompany(DatabaseProxyManagerService $databaseProxyManagerService, int $companyId, InputInterface $input, OutputInterface $output): void
-    {
+    private function runForCompany(
+        DatabaseProxyManagerService $databaseProxyManagerService,
+        int $companyId,
+        InputInterface $input,
+        OutputInterface $output
+    ): void {
         $this->info("Running " . $this->name . " for company ID : " . $companyId);
         $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
             parent::execute($input, $output);
