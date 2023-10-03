@@ -8,7 +8,8 @@
                         <md-tabs class="md-primary" md-alignment="left" :md-active-tab="'tab-'+tab">
                             <md-tab id="tab-weekly" :md-label="$tc('words.week',2)" @click="tab = 'weekly'"></md-tab>
                             <md-tab id="tab-monthly" :md-label="$tc('words.month',2)" @click="tab = 'monthly'"></md-tab>
-                            <md-tab id="tab-annually" :md-label="$tc('words.annually')" @click="tab = 'annually'"></md-tab>
+                            <md-tab id="tab-annually" :md-label="$tc('words.annually')"
+                                    @click="tab = 'annually'"></md-tab>
 
                         </md-tabs>
                     </div>
@@ -17,7 +18,10 @@
                         <md-button class="md-raised  md-dense" @click="getBatchData"
                                    :disabled="Object.keys(highlighted.base).length===0">{{ $tc('words.apply') }}
                         </md-button>
-                        <md-button class="md-raised md-accent md-dense" @click="closeDatePicker">{{ $tc('words.close') }}</md-button>
+                        <md-button class="md-raised md-accent md-dense" @click="closeDatePicker">{{
+                                $tc('words.close')
+                            }}
+                        </md-button>
                     </div>
 
                 </md-toolbar>
@@ -39,7 +43,7 @@
                                         :monday-first="true"
                                         :disabledDates="disabled"
                                         v-model="highlighted.tmpBase.from"
-                                        >
+                            >
 
                             </datepicker>
 
@@ -108,7 +112,7 @@
                             <md-menu-content>
                                 <md-menu-item v-for="(miniGrid ,key)  in miniGrids" :key="key"
                                               @click="setMiniGrid(miniGrid.id)">
-                                    <span>{{miniGrid.name}}</span>
+                                    <span>{{ miniGrid.name }}</span>
                                     <md-icon v-if="miniGrid.data_stream === 1">check</md-icon>
                                 </md-menu-item>
 
@@ -117,13 +121,15 @@
 
                         <md-switch v-model="enableDataStream" @change="onDataStreamChange($event)" :disabled="switching"
                                    class="data-stream-switch">
-                            <span v-if="!enableDataStream">{{ $tc('words.activate') }}  {{ $tc('phrases.dataLogger',0) }} </span>
-                            <span v-else> {{ $tc('words.deactivate') }}  {{ $tc('phrases.dataLogger',0) }} </span>
+                            <span v-if="!enableDataStream">{{ $tc('words.activate') }}  {{
+                                    $tc('phrases.dataLogger', 0)
+                                }} </span>
+                            <span v-else> {{ $tc('words.deactivate') }}  {{ $tc('phrases.dataLogger', 0) }} </span>
                         </md-switch>
                         <div class="md-toolbar-section-end">
 
                         <span style="float: left">
-                    {{ $tc('words.period') }} : {{this.startDate}} - {{this.endDate}} {{checkToday()}}
+                    {{ $tc('words.period') }} : {{ this.startDate }} - {{ this.endDate }} {{ checkToday() }}
                 </span>
                             <md-button class="md-raised" @click="openDatePicker" v-show="!selectorOpened">
                                 <md-icon>calendar_today</md-icon>
@@ -199,7 +205,7 @@
                         <div class="modal-container">
                             <md-card class="md-size-100">
                                 <md-card-header>
-                                    <h3>{{ $tc('words.edit') }} {{miniGridData.name}}</h3>
+                                    <h3>{{ $tc('words.edit') }} {{ miniGridData.name }}</h3>
                                 </md-card-header>
                                 <md-card-content>
                                     <md-field>
@@ -302,7 +308,7 @@ export default {
 
     },
     watch: {
-        $route: function(){
+        $route: function () {
             this.$router.go()
         },
         compareData: function () {
@@ -480,19 +486,20 @@ export default {
             labels: ['Base', 'Comparision'],
             chartData: [],
             chartTmpData: [],
-            selectorOpened: false
+            selectorOpened: false,
+            loading: true,
         }
     },
     methods: {
-        checkToday(){
-            if(moment().format('YYYY-MM-DD') === this.endDate){
+        checkToday () {
+            if (moment().format('YYYY-MM-DD') === this.endDate) {
                 return '(Today)'
             }
         },
-        setMiniGrid(miniGridId){
+        setMiniGrid (miniGridId) {
             this.$router.replace('/dashboards/mini-grid/' + miniGridId)
         },
-        async getMiniGridList() {
+        async getMiniGridList () {
             try {
                 this.miniGrids = await this.miniGridService.getMiniGrids()
             } catch (e) {
@@ -588,17 +595,7 @@ export default {
             return moment(date, 'Y-W').format('YYYY MMM Do')
         },
 
-        revenueData (from, to, batchRevenues) {
-            return batchRevenues.revenueForPeriod(
-                this.miniGridId,
-                'mini-grid',
-                from,
-                to,
-            ).then((data) => {
-                return data
-            })
-        },
-        getBatchData(){
+        async getBatchData () {
             this.selectorOpened = false
             this.expanded = true
             let baseDate = moment(this.highlighted.tmpBase.from)
@@ -649,36 +646,37 @@ export default {
             this.highlighted.base = this.highlighted.tmpBase
             if (this.highlighted.base.from < this.highlighted.compared.from) {
                 this.startDate = this.highlighted.base.from
-                if(moment().format('YYYY-MM-DD') < this.highlighted.compared.to){
+                if (moment().format('YYYY-MM-DD') < this.highlighted.compared.to) {
                     this.endDate = moment().format('YYYY-MM-DD')
-                }else{
+                } else {
                     this.endDate = this.highlighted.compared.to
                 }
 
-            } else{
+            } else {
                 this.startDate = this.highlighted.compared.from
-                if(moment().format('YYYY-MM-DD') < this.highlighted.base.to){
+                if (moment().format('YYYY-MM-DD') < this.highlighted.base.to) {
                     this.endDate = moment().format('YYYY-MM-DD')
-                }else{
+                } else {
                     this.endDate = this.highlighted.base.to
                 }
 
             }
-            this.getBatchRevenues()
-            this.$refs.box.getSoldEnergy(this.startDate,this.endDate)
-            this.$refs.box.getTransactionsOverview(this.startDate,this.endDate)
-            this.$refs.revenue.getRevenueTrends(this.startDate,this.endDate,this.tab)
-            this.$refs.tickets.getTicketsData()
+            await this.getBatchRevenues()
+            await this.$refs.box.getSoldEnergy(this.startDate, this.endDate)
+            await this.$refs.box.getTransactionsOverview(this.startDate, this.endDate)
+            await this.$refs.revenue.getRevenueTrends(this.startDate, this.endDate, this.tab)
+            await this.$refs.tickets.getTicketsData()
 
         },
-        async getBatchRevenues(){
+        async getBatchRevenues () {
             try {
-                this.batchRevenues = await this.batchRevenueService.getRevenueForPeriod(this.miniGridId,'mini-grid',this.startDate,this.endDate)
+                this.batchRevenues = await this.batchRevenueService.getRevenueForPeriod(this.miniGridId, 'mini-grid', this.startDate, this.endDate)
                 this.$refs.donut.initDonutData(this.batchRevenues)
                 this.$refs.targetChart.getColumnChartData(this.batchRevenues)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
+            this.loading = false
         },
         formatDates (dateOne, dateTwo) {
             let formattedDates = ''
@@ -841,12 +839,12 @@ div {
     left: 2rem;
 }
 
-    .progress-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #333;
-        margin: 0 0 20px;
-    }
+.progress-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 20px;
+}
 
 .progress {
     height: 10px;

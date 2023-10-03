@@ -10,7 +10,9 @@ function  getBaseUrl () {
 
 export const baseUrl = getBaseUrl()
 
-const axiosClient = axios.create(
+const axiosClient = axios.create({
+        timeout: 120000, // Set the timeout to 120 seconds (adjust as needed)
+    }
 )
 
 axiosClient.interceptors.request.use(
