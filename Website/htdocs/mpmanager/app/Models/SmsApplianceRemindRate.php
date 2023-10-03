@@ -8,8 +8,8 @@ class SmsApplianceRemindRate extends BaseModel
 {
     protected $table = 'sms_appliance_remind_rates';
 
-    public function applianceType(): BelongsTo
+    public function appliance(): BelongsTo
     {
-        return $this->belongsTo(AssetType::class, 'appliance_type_id', 'id');
+        return $this->belongsTo(Asset::class, 'appliance_id', 'id');
     }
 }

@@ -1,7 +1,7 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
-import {ErrorHandler} from '@/Helpers/ErrorHander'
-import {Paginator} from '@/classes/paginator'
-import {resources} from '@/resources'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
+import { Paginator } from '@/classes/paginator'
+import { resources } from '@/resources'
 
 export class SubConnectionTypeService {
     constructor () {
@@ -23,22 +23,22 @@ export class SubConnectionTypeService {
 
     }
 
-    async getSubConnectionTypes(connectionTypeId){
+    async getSubConnectionTypes (connectionTypeId) {
         try {
 
             let response = await this.repository.index(connectionTypeId)
-            if (response.status === 200){
+            if (response.status === 200) {
                 this.subConnectionTypes = response.data.data
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
 
-    async createSubConnectionType(subConnectionType){
+    async createSubConnectionType (subConnectionType) {
         try {
             let subConnectionType_PM = {
                 name: subConnectionType.name,
@@ -46,39 +46,37 @@ export class SubConnectionTypeService {
                 tariff_id: subConnectionType.tariff_id
             }
             let response = await this.repository.store(subConnectionType_PM)
-            if(response.status === 201){
+            if (response.status === 201) {
                 return this.getSubConnectionTypes(subConnectionType_PM.connection_type_id)
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
 
-    async updateSubConnectionType(subConnectionType){
+    async updateSubConnectionType (subConnectionType) {
         try {
 
             let response = await this.repository.update(subConnectionType)
-            if(response.status === 200){
+            if (response.status === 200) {
                 const updatedSubConnectionType = response.data.data
                 this.subConnectionTypes.map(s => {
-                    if(s.id === updatedSubConnectionType.id){
+                    if (s.id === updatedSubConnectionType.id) {
                         s.tariff = updatedSubConnectionType.tariff
                     }
                 })
                 return subConnectionType
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
 
-        }catch (e) {
+        } catch (e) {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
-
-
 
 }

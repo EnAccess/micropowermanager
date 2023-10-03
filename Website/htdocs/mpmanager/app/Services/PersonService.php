@@ -91,7 +91,7 @@ class PersonService implements IBaseService
 
     public function getPersonTransactions($person)
     {
-        return $person->transactions()->with('transaction.token')->latest()->paginate(7);
+        return $person->payments()->with('transaction.token')->latest()->paginate(7);
     }
 
     public function createMaintenancePerson(array $personData): Person

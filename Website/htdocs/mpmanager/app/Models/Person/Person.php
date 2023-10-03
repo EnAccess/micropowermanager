@@ -92,7 +92,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
         return $this->morphMany(Roles::class, 'role_owner');
     }
 
-    public function transactions(): MorphMany
+    public function payments(): MorphMany
     {
         return $this->morphMany(PaymentHistory::class, 'payer');
     }

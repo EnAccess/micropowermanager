@@ -73,7 +73,7 @@ export class PersonService {
                 'birth_date': this.person.birthDate,
                 'name': this.person.name,
                 'surname': this.person.surname,
-                'gender': this.person.gender
+                'sex': this.person.gender
             }
             let response = await this.repository.update(personPM)
             if (response.status === 200 || response.status === 201) {

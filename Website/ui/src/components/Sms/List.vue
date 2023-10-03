@@ -20,13 +20,13 @@
                                           @click="smsDetail( sms.number)">
                                 <md-table-cell :class="sms.number === selectedNumber?  'active':''">
                                     <div class="md-layout md-gutter">
-                                        <div class="md-layout-item md-size-15" v-if="sms.owner">
+                                        <div class="md-layout-item md-size-30" v-if="sms.owner">
                                             <img :data-letters="sms.owner.name[0] +sms.owner.surname[0]" src="" alt="">
                                         </div>
-                                        <div class="md-layout-item md-size-15" v-else>
+                                        <div class="md-layout-item md-size-30" v-else>
                                             <md-icon class="person-icon">person</md-icon>
                                         </div>
-                                        <div class="md-layout-item md-size-70">
+                                        <div class="md-layout-item md-size-55">
                                             <div class="md-layout md-layout-item md-size-100">
                                                 <div class="md-layout-item md-size-100 sms-owner" v-if="sms.owner">
                                                     {{ sms.owner.name }} {{ sms.owner.surname }}
@@ -115,7 +115,8 @@
                             <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                         </div>
                         <div class="md-layout-item md-size-100">
-                            <md-button @click="sendSms" :disabled="loading" class="md-raised md-primary send-button">
+                            <md-button @click="sendSms" :disabled="loading || selectedNumber===''"
+                                       class="md-raised md-primary send-button">
                                 {{ $tc('words.send') }}
                             </md-button>
                         </div>
@@ -140,14 +141,17 @@ export default {
     name: 'List',
     components: { Widget },
     watch: {
+
         filterNumber: debounce(function () {
-            this.searchSms(this.filterNumber)
-        }, 250),
+            if (this.filterNumber.length > 0) {
+                this.searchSms(this.filterNumber)
+            }
+        }, 1000)
     },
 
     mounted () {
         EventBus.$on('pageLoaded', this.reloadList)
-        this.senderId = this.$store.state.admin.id
+        this.senderId = this.$store.getters['auth/authenticationService'].authenticateUser.id
     },
     beforeDestroy () {
         EventBus.$off('pageLoaded', this.reloadList)
@@ -245,7 +249,7 @@ export default {
                 this.loading = false
                 this.alertNotify('error', e.message)
             }
-
+            this.$validator.reset()
         },
         alertNotify (type, message) {
             this.$notify({
@@ -256,6 +260,7 @@ export default {
             })
         },
         searchSms (text) {
+            debugger
             this.numberList = this.smsService.searchSms(text)
         }
     }

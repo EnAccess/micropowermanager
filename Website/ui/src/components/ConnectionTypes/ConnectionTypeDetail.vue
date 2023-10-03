@@ -7,61 +7,69 @@
         >
             <md-card>
                 <md-card-content>
-            <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                   <div class="md-layout">
-                       <div class="md-layout-item md-subheader">{{ $tc('words.id') }}</div>
-                       <div class="md-layout-item md-subheader n-font">{{subConnectionType.connection_type_id}}</div>
-                   </div>
-                    <hr class="hr-d">
-                    <div class="md-layout">
-                       <div class="md-layout-item md-subheader">{{ $tc('words.name') }}</div>
-                       <div v-if="editConnectionType" class="md-layout-item md-subheader n-font">
-                           {{connectionType.name}}
-                           <md-button class="md-icon-button" @click="toggleEditConnectionType">
-                               <md-icon>edit</md-icon>
-                           </md-button>
+                    <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div class="md-layout">
+                                <div class="md-layout-item md-subheader">{{ $tc('words.id') }}</div>
+                                <div class="md-layout-item md-subheader n-font">
+                                    {{ subConnectionType.connection_type_id }}
+                                </div>
+                            </div>
+                            <hr class="hr-d">
+                            <div class="md-layout">
+                                <div class="md-layout-item md-subheader">{{ $tc('words.name') }}</div>
+                                <div v-if="editConnectionType" class="md-layout-item md-subheader n-font">
+                                    {{ connectionType.name }}
+                                    <md-button class="md-icon-button" @click="toggleEditConnectionType">
+                                        <md-icon>edit</md-icon>
+                                    </md-button>
 
-                       </div>
-                        <div v-else class="md-layout-item md-subheader n-font">
-                            <md-field :class="{'md-invalid': errors.has($tc('phrases.connectionType'))}">
-                                <label for="connectionTypeName">{{ $tc('phrases.editConnectionType') }}</label>
-                                <md-input
-                                    id="connectionTypeName"
-                                    :name="$tc('phrases.connectionType')"
-                                    v-model="connectionType.name"
-                                    v-validate="'required|min:3'"
-                                />
-                                <span class="md-error">{{ errors.first($tc('phrases.connectionType')) }}</span>
-                                <md-button class="md-icon-button" @click="editConnectionTypeName">
-                                    <md-icon>save</md-icon>
-                                </md-button>
-                                <md-button class="md-icon-button" @click="toggleEditConnectionType">
-                                    <md-icon>close</md-icon>
-                                </md-button>
-                            </md-field>
+                                </div>
+                                <div v-else class="md-layout-item md-subheader n-font">
+                                    <md-field :class="{'md-invalid': errors.has($tc('phrases.connectionType'))}">
+                                        <label for="connectionTypeName">{{ $tc('phrases.editConnectionType') }}</label>
+                                        <md-input
+                                            id="connectionTypeName"
+                                            :name="$tc('phrases.connectionType')"
+                                            v-model="connectionType.name"
+                                            v-validate="'required|min:3'"
+                                        />
+                                        <span class="md-error">{{ errors.first($tc('phrases.connectionType')) }}</span>
+                                        <md-button class="md-icon-button" @click="editConnectionTypeName">
+                                            <md-icon>save</md-icon>
+                                        </md-button>
+                                        <md-button class="md-icon-button" @click="toggleEditConnectionType">
+                                            <md-icon>close</md-icon>
+                                        </md-button>
+                                    </md-field>
+
+                                </div>
+                            </div>
+                            <hr class="hr-d">
+                            <div class="md-layout">
+                                <div class="md-layout-item md-subheader">{{ $tc('phrases.createdAt') }}</div>
+                                <div class="md-layout-item md-subheader n-font">
+                                    {{ formatReadableDate(connectionType.created_at) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div class="md-layout">
+                                <div class="md-layout-item md-subheader">{{ $tc('words.meter', 2) }}</div>
+                                <div class="md-layout-item md-subheader n-font">
+                                    {{ connectionType.meter_parameters_count }}
+                                </div>
+                            </div>
+                            <hr class="hr-d">
+                            <div class="md-layout">
+                                <div class="md-layout-item md-subheader">{{ $tc('phrases.subTypes') }}</div>
+                                <div class="md-layout-item md-subheader n-font">
+                                    {{ subConnectionTypeService.subConnectionTypes.length }}
+                                </div>
+                            </div>
 
                         </div>
-                   </div>
-                    <hr class="hr-d">
-                    <div class="md-layout">
-                       <div class="md-layout-item md-subheader">{{ $tc('phrases.createdAt') }}</div>
-                       <div class="md-layout-item md-subheader n-font">{{formatReadableDate(connectionType.created_at)}}</div>
-                   </div>
-                </div>
-                <div class="md-layout-item md-size-50 md-small-size-100">
-                    <div class="md-layout">
-                        <div class="md-layout-item md-subheader">{{ $tc('words.meter',2) }}</div>
-                        <div class="md-layout-item md-subheader n-font">{{connectionType.meter_parameters_count}}</div>
                     </div>
-                    <hr class="hr-d">
-                    <div class="md-layout">
-                        <div class="md-layout-item md-subheader">{{ $tc('phrases.subTypes')  }}</div>
-                        <div class="md-layout-item md-subheader n-font">{{subConnectionTypeService.subConnectionTypes.length}}</div>
-                    </div>
-
-                </div>
-            </div>
                 </md-card-content>
             </md-card>
         </widget>
@@ -69,7 +77,7 @@
             :title="$tc('phrases.newSubConnectionType') "
             :id="'add-sub-connection-type'"
             color="red"
-            v-if = "showNewSubType"
+            v-if="showNewSubType"
         >
             <md-card>
 
@@ -77,7 +85,7 @@
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-50 md-small-size-100">
                             <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
-                                <label for="name">{{$tc('words.name')}}</label>
+                                <label for="name">{{ $tc('words.name') }}</label>
                                 <md-input
                                     id="name"
                                     :name="$tc('words.name')"
@@ -101,9 +109,10 @@
                 </md-card-content>
 
                 <md-card-actions>
-                    <md-button role="button" class="md-raised md-primary" @click="saveSubType(subConnectionType)">{{$tc('words.save')}}
+                    <md-button role="button" class="md-raised md-primary" @click="saveSubType(subConnectionType)">
+                        {{ $tc('words.save') }}
                     </md-button>
-                    <md-button role="button" class="md-raised" @click="addSubType">{{$tc('words.close')}}</md-button>
+                    <md-button role="button" class="md-raised" @click="addSubType">{{ $tc('words.close') }}</md-button>
                 </md-card-actions>
             </md-card>
 
@@ -190,37 +199,37 @@
 
 <script>
 import Widget from '../../shared/widget'
-import {SubConnectionTypeService} from '@/services/SubConnectionTypeService'
-import {ConnectionTypeService} from '@/services/ConnectionTypeService'
-import {TariffService} from '@/services/TariffService'
+import { SubConnectionTypeService } from '@/services/SubConnectionTypeService'
+import { ConnectionTypeService } from '@/services/ConnectionTypeService'
+import { TariffService } from '@/services/TariffService'
 import moment from 'moment'
 import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'ConnectionTypeDetail',
-    components: {  Widget },
-    data() {
-        return{
-            subscriber:{
-                detail:'connection-type-detail',
-                subTypes:'sub-connection-types'
+    components: { Widget },
+    data () {
+        return {
+            subscriber: {
+                detail: 'connection-type-detail',
+                subTypes: 'sub-connection-types'
             },
             connectionTypeService: new ConnectionTypeService(),
             subConnectionTypeService: new SubConnectionTypeService(),
             tariffService: new TariffService(),
             showNewSubType: false,
-            newConnectionTypeName:null,
+            newConnectionTypeName: null,
             editConnectionType: true,
-            editSubConnectionType:null,
-            subConnectionType:{
-                name:null,
-                connection_type_id:null,
-                tariff_id:null
+            editSubConnectionType: null,
+            subConnectionType: {
+                name: null,
+                connection_type_id: null,
+                tariff_id: null
             },
-            selectedTariff:{},
-            connectionTypeId:null,
-            connectionType:[],
-            tariff:null,
+            selectedTariff: {},
+            connectionTypeId: null,
+            connectionType: [],
+            tariff: null,
 
         }
     },
@@ -230,14 +239,14 @@ export default {
         this.getConnectionTypeDetail(this.subConnectionType.connection_type_id)
         this.getTariffs()
     },
-    methods:{
-        checkConfirm(result){
+    methods: {
+        checkConfirm (result) {
             return 'value' in result
         },
         formatReadableDate (date) {
             return moment(date).format('MMMM Do YYYY, h:mm:ss a')
         },
-        async updateSubConnectionType(subType){
+        async updateSubConnectionType (subType) {
             let validator = await this.$validator.validateAll()
             if (!validator) {
                 return
@@ -245,25 +254,25 @@ export default {
             this.$swal({
                 type: 'question',
                 title: this.$tc('phrases.editSubConnectionType'),
-                text: this.$tc('phrases.editSubConnectionTypeNotify',1),
+                text: this.$tc('phrases.editSubConnectionTypeNotify', 1),
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.no'),
                 confirmButtonText: this.$tc('words.yes')
             }).then(response => {
-                if(this.checkConfirm(response)){
+                if (this.checkConfirm(response)) {
                     try {
                         this.subConnectionTypeService.updateSubConnectionType(subType)
                         this.editSubConnectionType = null
-                        this.alertNotify('success', this.$tc('phrases.editSubConnectionTypeNotify',2))
-                    }catch (e) {
+                        this.alertNotify('success', this.$tc('phrases.editSubConnectionTypeNotify', 2))
+                    } catch (e) {
                         this.alertNotify('error', e.message)
                     }
-                }else{
+                } else {
                     return
                 }
             })
         },
-        async editConnectionTypeName(){
+        async editConnectionTypeName () {
             let validator = await this.$validator.validateAll()
             if (!validator) {
                 return
@@ -271,81 +280,80 @@ export default {
             this.$swal({
                 type: 'question',
                 title: this.$tc('phrases.editConnectionType'),
-                text: this.$tc('phrases.editConnectionTypeNotify',2,{name: this.connectionType.name}),
+                text: this.$tc('phrases.editConnectionTypeNotify', 2, { name: this.connectionType.name }),
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.no'),
                 confirmButtonText: this.$tc('words.yes')
             }).then(response => {
-                if(this.checkConfirm(response))
-                {
+                if (this.checkConfirm(response)) {
                     try {
                         this.connectionTypeService.updateConnectionType(this.connectionType)
                         this.toggleEditConnectionType()
-                        this.alertNotify('success', this.$tc('phrases.editConnectionTypeNotify',1))
-                    }catch (e) {
+                        this.alertNotify('success', this.$tc('phrases.editConnectionTypeNotify', 1))
+                    } catch (e) {
                         this.alertNotify('error', e.message)
                     }
-                }else{
+                } else {
                     return
                 }
 
             })
 
         },
-        toggleEditConnectionType(){
+        toggleEditConnectionType () {
             this.editConnectionType = !this.editConnectionType
             this.newConnectionTypeName = this.connectionType.name
         },
-        toggleEditSubConnectionType(){
+        toggleEditSubConnectionType () {
             this.editSubConnectionType = !this.editConnectionType
         },
-        addSubType() {
+        addSubType () {
             this.showNewSubType = !this.showNewSubType
         },
-        clearForm(){
-            this.subConnectionType.name=null
-            this.subConnectionType.tariff_id=null
+        clearForm () {
+            this.subConnectionType.name = null
+            this.subConnectionType.tariff_id = null
         },
-        async saveSubType(subConnectionType) {
+        async saveSubType (subConnectionType) {
             let validator = await this.$validator.validateAll()
             if (!validator) {
                 return
             }
             try {
                 await this.subConnectionTypeService.createSubConnectionType(subConnectionType)
-                this.alertNotify('success', this.$tc('phrases.newSubConnectionType',2))
+                this.alertNotify('success', this.$tc('phrases.newSubConnectionType', 2))
                 this.addSubType()
                 this.clearForm()
-            }catch (e) {
-                this.alertNotify('error', e.message)
-            }
-
-        },
-        async getTariffs(){
-            try {
-                this.tariff = await this.tariffService.getTariffs()
-            }catch (e) {
-                this.alertNotify('error', e.message)
-            }
-        },
-        async getConnectionTypeDetail(connectionTypeId){
-            try {
-                this.connectionType = await this.connectionTypeService.getConnectionTypeDetail(connectionTypeId)
-                EventBus.$emit('widgetContentLoaded',this.subscriber.detail,this.connectionType)
-            }catch (e) {
-                this.alertNotify('error', e.message)
-            }
-        },
-        async getSubConnectionTypes(connectionTypeId){
-            try {
-                await this.subConnectionTypeService.getSubConnectionTypes(connectionTypeId)
-                EventBus.$emit('widgetContentLoaded',this.subscriber.subTypes,this.subConnectionTypeService.subConnectionTypes.length)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
 
         },
-        alertNotify(type, message) {
+        async getTariffs () {
+            try {
+                this.tariff = await this.tariffService.getTariffs()
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        async getConnectionTypeDetail (connectionTypeId) {
+            try {
+                this.connectionType = await this.connectionTypeService.getConnectionTypeDetail(connectionTypeId)
+                EventBus.$emit('widgetContentLoaded', this.subscriber.detail, this.connectionType)
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        async getSubConnectionTypes (connectionTypeId) {
+            try {
+                await this.subConnectionTypeService.getSubConnectionTypes(connectionTypeId)
+                EventBus.$emit('widgetContentLoaded', this.subscriber.subTypes, this.subConnectionTypeService.subConnectionTypes.length)
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+
+        },
+        alertNotify (type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,

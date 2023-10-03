@@ -52,11 +52,11 @@ class MeterTariffService implements IBaseService
     {
         if ($limit) {
             return $this->meterTariff->newQuery()
-                ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
+                ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])->where('factor', '!=', 2)
                 ->paginate($limit);
         }
         return $this->meterTariff->newQuery()
-            ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])
+            ->with(['accessRate', 'pricingComponent', 'socialTariff', 'tou'])->where('factor', '!=', 2)
             ->get();
     }
 }

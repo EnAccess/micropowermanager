@@ -41,10 +41,6 @@ class PersonRequest extends FormRequest
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
-            'birth_date' => 'sometimes|date_format:"Y-m-d',
-            'sex' => 'required|in:male,female',
-            'education' => 'sometimes|min:3',
-            'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
             'phone' => 'sometimes|min:11',
         ];

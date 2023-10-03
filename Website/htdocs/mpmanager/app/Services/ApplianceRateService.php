@@ -28,9 +28,9 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $applianceRate->assetPerson,
                     'action' => 'Appliance rate ' . date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ) . ' cost updated. From '
+                            'd-m-Y',
+                            strtotime($applianceRate->due_date)
+                        ) . ' cost updated. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]
@@ -54,9 +54,9 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
                     'action' => 'Appliance rate ' . date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ) . ' deleted. From '
+                            'd-m-Y',
+                            strtotime($applianceRate->due_date)
+                        ) . ' deleted. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]
@@ -78,6 +78,7 @@ class ApplianceRateService implements IBaseService
             ->where('asset_person_id', $loanId)
             ->get();
     }
+
     public function getById($id)
     {
         // TODO: Implement getById() method.
@@ -106,13 +107,13 @@ class ApplianceRateService implements IBaseService
             } elseif ((int)$rate === (int)$assetPerson->rate_count) {
                 //last rate
                 $rateCost = $assetPerson->total_cost
-                    - (($rate - 1) * floor($assetPerson->total_cost / $assetPerson->rate_count));
+                    - (($rate - 1) * ceil($assetPerson->total_cost / $assetPerson->rate_count));
             } else {
-                $rateCost = floor($assetPerson->total_cost / $assetPerson->rate_count);
+                $rateCost = ceil($assetPerson->total_cost / $assetPerson->rate_count);
             }
-            if($assetPerson->asset()->first()->assetType->id === 1){
+            if ($assetPerson->asset()->first()->assetType->id === 1) {
                 $rateDate = date('Y-m-d', strtotime('+' . $rate . ' week', strtotime($baseTime)));
-            }else{
+            } else {
                 $rateDate = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($baseTime)));
             }
 
@@ -141,5 +142,12 @@ class ApplianceRateService implements IBaseService
     public function getAll($limit = null)
     {
         // TODO: Implement getAll() method.
+    }
+
+
+    public function getDownPaymentAsAssetRate($assetPerson): AssetRate
+    {
+        return $this->applianceRate->newQuery()->where('asset_person_id', $assetPerson->id)
+            ->where('rate_cost', $assetPerson->down_payment)->where('remaining',0)->first();
     }
 }
