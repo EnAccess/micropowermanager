@@ -112,7 +112,7 @@ class PaymentListener
             $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
             $this->transactionPaymentHistoryService->assign();
 
-            if ($paymentHistory->payment_service === 'third_party_transaction') {
+            if ($paymentHistory->payment_service === 'third_party_transaction' || $paymentHistory->payment_service === 'web') {
                 $paymentHistory->created_at = $transaction->created_at;
                 $paymentHistory->updated_at = $transaction->updated_at;
             }

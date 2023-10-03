@@ -30,10 +30,9 @@ class CustomerDatabaseParser
 
     public function __construct(private Csv $csv)
     {
-        $this->path = __DIR__ . '/CustomerDb/customer_db_3.csv';
+        $this->path = __DIR__ . '/CustomerDb/customer_db.csv';
         $this->recentlyCreatedRecords = [
             'customer' => 0,
-            'connection_type' => 0,
             'connection_group' => 0,
             'meter' => 0,
             'asset' => 0,
@@ -87,7 +86,7 @@ class CustomerDatabaseParser
 
                 $city = $this->createRecordFromCsv($row, CityService::class);
                 $row['city_id'] = $city->id;
-                $this->checkRecordWasRecentlyCreated($city, 'village');
+
 
                 if(!$isExistingPerson){
                     $this->createRecordFromCsv($row, AddressService::class);

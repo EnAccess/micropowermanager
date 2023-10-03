@@ -26,6 +26,8 @@ class AppliancePersonService extends CreatorService
     private $applianceId = null;
     private $totalPaid = null;
     private $secondPaymentAmount = null;
+    private $createdAt = null;
+    private $lastPaymentDate = null;
 
     public function __construct(AssetPerson $appliancePerson)
     {
@@ -42,7 +44,8 @@ class AppliancePersonService extends CreatorService
             'down_payment' => 'down_payment',
             'paid' => 'paid',
             'minimum_payment_amount' => 'minimum_payment_amount',
-            'created_at' => 'created_at'
+            'created_at' => 'created_at',
+            'last_payment_date' => 'last_payment_date'
         ];
 
         $appliancePersonData = [
@@ -60,13 +63,15 @@ class AppliancePersonService extends CreatorService
         ];
 
         $this->newTarifName = $csvData['appliance_name'] . '-' . $csvData['serial_number'];
-        $this->price = floor((intval($csvData[$appliancePersonConfig['minimum_payment_amount']])/7)*4);
+        $this->price = floor((intval($csvData[$appliancePersonConfig['minimum_payment_amount']]) / 7) * 4);
         $this->minimumAmount = $csvData[$appliancePersonConfig['minimum_payment_amount']];
         $this->meterParameterId = $csvData['meter_parameter_id'];
         $this->personId = $csvData['person_id'];
         $this->downPayment = $csvData[$appliancePersonConfig['down_payment']];
         $this->applianceId = $csvData[$appliancePersonConfig['asset_id']];
         $this->totalPaid = $csvData[$appliancePersonConfig['paid']];
+        $this->createdAt = $csvData[$appliancePersonConfig['created_at']];
+        $this->lastPaymentDate = $csvData[$appliancePersonConfig['last_payment_date']];
         return $this->createRelatedDataIfDoesNotExists($appliancePersonData);
     }
 
@@ -119,19 +124,23 @@ class AppliancePersonService extends CreatorService
             [
                 'user_id' => $creatorId,
                 'status' => 1,
+                'created_at' => $this->createdAt,
+                'updated_at' => $this->createdAt
             ]
         );
-        $transaction =  Transaction::query()->make(
+        $transaction = Transaction::query()->make(
             [
                 'amount' => $this->downPayment,
                 'sender' => $sender,
                 'message' => $meter === null ? '-' : $meter->serial_number,
                 'type' => 'deferred_payment',
+                'created_at' => $this->createdAt,
+                'updated_at' => $this->createdAt
             ]
         );
         $transaction->originalTransaction()->associate($cashTransaction);
         $transaction->save();
-        $appliance =  $appliancePerson->asset;
+        $appliance = $appliancePerson->asset;
         $type = $appliance->assetType()->first();
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',
@@ -149,25 +158,30 @@ class AppliancePersonService extends CreatorService
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
-                    'action' => $this->downPayment . ' ' . $currency . ' of payment is made as down payment. (Migrated payment from Angaza)'
+                    'action' => $this->downPayment . ' ' . $currency .
+                        ' of payment is made as down payment. (Migrated payment from Angaza)'
                 ]
             ]
         );
         $this->secondPaymentAmount = $this->totalPaid - $this->downPayment;
 
-        if($this->secondPaymentAmount > 0){
+        if ($this->secondPaymentAmount > 0) {
             $secondCashTransaction = CashTransaction::query()->create(
                 [
                     'user_id' => $creatorId,
                     'status' => 1,
+                    'created_at'=> $this->lastPaymentDate,
+                    'updated_at'=> $this->lastPaymentDate
                 ]
             );
-            $secondTransaction =  Transaction::query()->make(
+            $secondTransaction = Transaction::query()->make(
                 [
                     'amount' => $this->secondPaymentAmount,
                     'sender' => $sender,
                     'message' => $meter === null ? '-' : $meter->serial_number,
                     'type' => 'deferred_payment',
+                    'created_at' => $this->lastPaymentDate,
+                    'updated_at' => $this->lastPaymentDate
                 ]
             );
             $secondTransaction->originalTransaction()->associate($secondCashTransaction);
@@ -179,19 +193,20 @@ class AppliancePersonService extends CreatorService
                     'logData' => [
                         'user_id' => $creatorId,
                         'affected' => $appliancePerson,
-                        'action' => $this->secondPaymentAmount . ' ' . $currency . ' of payment is made. (Migrated payment from Angaza)'
+                        'action' => $this->secondPaymentAmount . ' ' . $currency .
+                            ' of payment is made. (Migrated payment from Angaza)'
                     ]
                 ]
             );
-            $appliancePerson->rates->map(function ($rate) use ($person, $transaction) {
+            $appliancePerson->rates->map(function ($rate) use ($person, $secondTransaction) {
                 if ($rate['remaining'] > 0 && $this->secondPaymentAmount > 0) {
                     if ($rate['remaining'] <= $this->secondPaymentAmount) {
                         $this->secondPaymentAmount -= $rate['remaining'];
                         $applianceRate = $this->updateRateRemaining($rate['id'], $rate['remaining']);
-                        $this->createPaymentHistory($rate['remaining'], $person, $applianceRate, $transaction);
+                        $this->createPaymentHistory($rate['remaining'], $person, $applianceRate, $secondTransaction);
                     } else {
                         $applianceRate = $this->updateRateRemaining($rate['id'], $this->secondPaymentAmount);
-                        $this->createPaymentHistory($this->secondPaymentAmount, $person, $applianceRate, $transaction);
+                        $this->createPaymentHistory($this->secondPaymentAmount, $person, $applianceRate, $secondTransaction);
                         $this->secondPaymentAmount = 0;
                     }
                 }
@@ -208,9 +223,9 @@ class AppliancePersonService extends CreatorService
         $applianceRate->save();
         return $applianceRate;
     }
+
     private function createPaymentHistory($amount, $buyer, $applianceRate, $transaction)
     {
-        Log::info('creating new payment history with amount: '. $amount);
         event(
             'payment.successful',
             [
