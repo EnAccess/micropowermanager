@@ -22,6 +22,7 @@ export class BatchRevenueService {
             let response  = await this.repository.getRevenueForPeriod(targetPeriod)
             if(response.status === 200){
                 data.revenueList = response.data.data
+
                 data.revenueList.averages = this.calculateAverages(data.revenueList)
                 return data
             }else{

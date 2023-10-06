@@ -4,10 +4,7 @@ export const namespaced = true
 
 export const state = {
     clustersDashboardCacheDataService: new ClustersDashboardCacheDataService(),
-    clustersCacheData: {
-        clustersList: [],
-        clustersRevenue: []
-    },
+    clustersCacheData: [],
     clusterCacheData: {
         id: null,
         citiesRevenue: [],
@@ -20,7 +17,7 @@ export const mutations = {
         state.clustersCacheData = clustersCacheData
     },
     SET_CLUSTER_DATA (state, id) {
-        state.clusterCacheData = state.clustersCacheData.clustersList.reduce((acc, curr) => {
+        state.clusterCacheData = state.clustersCacheData.reduce((acc, curr) => {
             if (curr.id === parseInt(id)) {
                 acc = { ...curr }
             }

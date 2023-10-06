@@ -1,6 +1,6 @@
 <template>
 
-    <div class="md-layout md-gutter">
+    <div class="md-layout md-gutter" v-if="Object.keys(cluster).length">
 
         <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25 small-size-style">
             <box

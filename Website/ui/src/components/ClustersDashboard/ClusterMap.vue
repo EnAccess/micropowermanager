@@ -2,14 +2,20 @@
     <widget
         :title="$tc('phrases.clusterMap')"
         id="cluster-map">
-        <Map
-            :geoData="geoData"
-            :center="center"
-            :constantMarkerUrl="miniGridIcon"
-            :markingInfos="markingInfos"
-            :constantLocations="constantLocations"
-            :parentName="'Top'">
-        </Map>
+        <div v-if="loading">
+            <loader size="sm"/>
+        </div>
+        <div v-else>
+            <Map
+                :geoData="geoData"
+                :center="center"
+                :constantMarkerUrl="miniGridIcon"
+                :markingInfos="markingInfos"
+                :constantLocations="constantLocations"
+                :parentName="'Top'">
+            </Map>
+        </div>
+
     </widget>
 </template>
 
@@ -19,12 +25,20 @@ import Map from '../../shared/Map'
 import { mapGetters } from 'vuex'
 import miniGridIcon from '../../assets/icons/miniGrid.png'
 import { MappingService } from '@/services/MappingService'
+import { EventBus } from '@/shared/eventbus'
+import Loader from '@/shared/Loader.vue'
 
 export default {
     name: 'ClusterMap',
     components: {
+        Loader,
         Map,
         Widget,
+    },
+    props: {
+        clustersData: {
+            required: true
+        },
     },
     data () {
         return {
@@ -36,16 +50,21 @@ export default {
             miniGridIcon: miniGridIcon,
             constantLocations: [],
             markingInfos: [],
+            mapData: [],
+            loading: false
+
         }
     },
+    mounted () {
+        EventBus.$on('clustersCachedDataLoading', (loading) => {
+            this.loading = loading
+        })
+    },
     computed: {
-        ...mapGetters({
-            clustersCacheData: 'clusterDashboard/getClustersData'
-        }),
         geoData () {
             let geoData = []
             this.constantLocations = []
-            this.clustersCacheData.clustersList.forEach((e) => {
+            this.mapData.forEach((e) => {
                 if (e.geo_data !== null) {
                     this.clusterGeo = e.geo_data
                     this.clusterGeo.clusterId = e.id
@@ -62,6 +81,13 @@ export default {
             })
             return geoData
         }
-    }
+    },
+    watch: {
+        clustersData (newVal, oldVal) {
+            this.$nextTick(() => {
+                this.mapData = newVal
+            })
+        }
+    },
 }
 </script>

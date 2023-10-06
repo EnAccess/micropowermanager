@@ -5,32 +5,22 @@
             <md-button class="md-raised" @click="updateCacheData">
                 <md-icon>update</md-icon>
                 {{ $tc('phrases.refreshData') }}
-                <md-progress-bar v-if="updateProgress" md-mode="indeterminate"></md-progress-bar>
+                <md-progress-bar v-if="loading" md-mode="indeterminate"></md-progress-bar>
             </md-button>
         </md-toolbar>
-        <div v-if="clustersCacheData">
-            <div class="row" style="margin-top: 30px">
-                <!-- Holds registered clusters, registered meters etc. -->
-                <box-group :clusters="clustersCacheData.clustersList"/>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <financial-overview :clustersRevenue="clustersCacheData.clustersRevenue"/>
+        <div>
+            <div class="md-layout md-gutter" style="margin-top: 3rem">
+                <div class="md-layout-item md-size-100">
+                    <box-group :clusters="clustersData"/>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12" v-if="clustersCacheData.clustersList.length">
-                    <cluster-map/>
+                <div class="md-layout-item md-size-100">
+                    <financial-overview :revenue="clustersData"
+                                        :periodChanged="financialOverviewPeriodChanged"
+                    />
                 </div>
-                <div class="col-sm-12" v-else>
-                    <cluster-map/>
+                <div class="md-layout-item md-size-100">
+                    <cluster-map :clustersData="clustersData"/>
                 </div>
-            </div>
-        </div>
-        <div v-else>
-            <div style="margin-left: 40vw; margin-top: 20vh;">
-                <img width="48px" src="../../assets/spinner/spinner.gif" alt="">
             </div>
         </div>
 
@@ -42,46 +32,62 @@ import '../../shared/TableList'
 import BoxGroup from './BoxGroup'
 import FinancialOverview from './FinancialOverview'
 import ClusterMap from './ClusterMap'
-import { mapGetters } from 'vuex'
+import Loader from '@/shared/Loader.vue'
+import { notify } from '@/mixins/notify'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'ClusterList',
-    components: { ClusterMap, FinancialOverview, BoxGroup },
+    components: { Loader, ClusterMap, FinancialOverview, BoxGroup },
+    mixins: [notify],
     data () {
         return {
-            updateProgress: false,
+            loading: false,
+            clustersData: [],
         }
     },
-    mounted () {
+    created () {
         this.getClusterList()
     },
     methods: {
+        async getClusterList () {
+            this.loading = true
+            EventBus.$emit('clustersCachedDataLoading', this.loading)
+            await this.$store.dispatch('clusterDashboard/list')
+            this.clustersData = this.$store.getters['clusterDashboard/getClustersData']
+            this.loading = false
+            EventBus.$emit('clustersCachedDataLoading', this.loading)
+        },
         async updateCacheData () {
-            this.updateProgress = true
+            this.loading = true
             try {
+                EventBus.$emit('clustersCachedDataLoading', this.loading)
                 await this.$store.dispatch('clusterDashboard/update')
-                this.alertNotify('success', 'Dashboard refreshed successfully.')
+                this.clustersData = this.$store.getters['clusterDashboard/getClustersData']
+
+                this.alertNotify('success', 'Dashboard data refreshed successfully.')
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
-            this.updateProgress = false
+            this.loading = false
+            EventBus.$emit('clustersCachedDataLoading', this.loading)
         },
-        async getClusterList () {
-            await this.$store.dispatch('clusterDashboard/list')
-        },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
+        financialOverviewPeriodChanged (fromDate, toDate) {
+            const cachedData = this.$store.getters['clusterDashboard/getClustersData']
+            this.clustersData = cachedData.map((cluster) => {
+                const newPeriod = Object.entries(cluster.period).reduce((acc, [period, revenue]) => {
+
+                    if (moment(period).isSameOrAfter(fromDate) && moment(period).isSameOrBefore(toDate)) {
+                        acc = { ...acc, [period]: revenue }
+                    }
+                    return acc
+                }, {})
+                return {
+                    ...cluster,
+                    period: newPeriod
+                }
             })
-        },
-    },
-    computed: {
-        ...mapGetters({
-            clustersCacheData: 'clusterDashboard/getClustersData'
-        })
+        }
     }
 }
 </script>

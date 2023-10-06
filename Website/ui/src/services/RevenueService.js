@@ -27,6 +27,7 @@ export class RevenueService {
 
             if (response.status === 200 || response.status === 201) {
                 this.revenueTrends = response.data.data
+                console.log(this.revenueTrends)
                 this.fillRevenueTrendsOverView()
                 this.fillRevenueTrends(tab)
                 return this.revenueTrends

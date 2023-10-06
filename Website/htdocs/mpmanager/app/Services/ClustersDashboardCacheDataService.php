@@ -4,80 +4,79 @@ namespace App\Services;
 
 use App\Models\Cluster;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Nette\Utils\DateTime;
 
-class ClustersDashboardCacheDataService
+class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService
 {
-    private const CACHE_KEY_CLUSTER_LIST = 'ClustersList';
-    private const CACHE_KEY_CLUSTERS_REVENUE = 'ClustersRevenue';
+    private const CACHE_KEY_CLUSTERS_DATA = 'ClustersData';
 
     public function __construct(
         private PeriodService $periodService,
         private ClusterService $clusterService,
+        private ClusterRevenueService $clusterRevenueService,
+        private ClusterMiniGridService $clusterMiniGridService,
+        private ConnectionTypeService $connectionTypeService,
+        private ClusterMeterService $clusterMetersService,
+        private ClusterTransactionService $clusterTransactionsService,
+        private ClusterPopulationService $clusterPopulationService,
     ) {
+        parent::__construct(self::CACHE_KEY_CLUSTERS_DATA);
     }
 
-    public function setClustersData($clusterData, $clustersWithMeters, $clusterRevenueService)
+    public function setData($dateRange = [])
     {
-        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST, $clusterData);
-        $this->setClustersRevenues(self::CACHE_KEY_CLUSTERS_REVENUE, $clustersWithMeters, $clusterRevenueService);
-    }
-
-    private function setClustersListData($key, $clusterData)
-    {
-        Cache::forever($key, $clusterData);
-    }
-
-    public function setClustersRevenues($key, $clustersWithMeters, $clusterRevenueService)
-    {
-        $startDate = null;
-        if (!$startDate) {
-            $start = new DateTime();
-            $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
-            $start->setTime(0, 0, 0); // Normalize time to midnight
-            $start->sub(new \DateInterval('P12M'));
-            $startDate = $start->format('Y-m-d');
+        if (empty($dateRange)) {
+            $startDate = date('Y-m-d H:i:s', strtotime('today - 2 year'));
+            $endDate = date('Y-m-d H:i:s', strtotime('today'));
+            $dateRange[0] = $startDate;
+            $dateRange[1] = $endDate;
+        } else {
+            list($startDate, $endDate) = $dateRange;
         }
-        $endDate = date('Y-m-t');
-        $period = 'monthly';
-        $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, ['revenue' => 0]);
 
-        //generate initial dataset for revenue
-        foreach ($clustersWithMeters as $clusterIndex => $cluster) {
-            $totalRevenue = 0;
-            $p = $periods;
-            $revenues = $clusterRevenueService->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
 
-            foreach ($revenues as $rIndex => $revenue) {
-                $p[$revenue->period]['revenue'] += $revenue->revenue;
-                $totalRevenue += $revenue->revenue;
-            }
+        $monthlyPeriods = $this->periodService->generatePeriodicList($startDate, $endDate, 'monthly', [
+            'revenue'
+            => 0
+        ]);
+        $weeklyPeriods = $this->periodService->generatePeriodicList($startDate, $endDate, 'weekly', [
+            'revenue'
+            => 0
+        ]);
+        $clusters = $this->clusterMiniGridService->getClustersWithMiniGrids();
+        $connectionTypes = $this->connectionTypeService->getAll();
 
-            $clusters[$clusterIndex]['period'] = $p;
-            $clusters[$clusterIndex]['totalRevenue'] = $totalRevenue;
-
-            Cache::forever($key, $clusters);
+        foreach ($clusters as $index => $cluster) {
+            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
+            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
+            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
+            $clusters[$index]->citiesRevenue =
+                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
+            $clusters[$index]->revenueAnalysis =
+                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
+                    $cluster->id,
+                    $connectionTypes,
+                );
+            $clusters[$index]->clusterData =
+                $this->clusterService->getCluster(
+                    $this->clusterService->getById($cluster->id),
+                    $clusters[$index]->meterCount,
+                    $clusters[$index]->revenue,
+                    $clusters[$index]->population
+                );
+            $periodicRevenue = $this->clusterRevenueService->getPeriodicRevenueForCluster(
+                $cluster,
+                $startDate,
+                $endDate,
+                $monthlyPeriods,
+                $weeklyPeriods
+            );
+            $clusters[$index]->period = $periodicRevenue['period'];
+            $clusters[$index]->periodWeekly = $periodicRevenue['periodWeekly'];
+            $clusters[$index]->totalRevenue = $periodicRevenue['totalRevenue'];
         }
+        Cache::put(self::cacheKeyGenerator(), $clusters, DateTime::from('+ 1 day'));
     }
 
-    public function getData(): array
-    {
-        $data['clustersList'] = Cache::get('ClustersList') ??  $this->buildCachedList();
-        $data['clustersRevenue'] = Cache::get('ClustersRevenue') ?? [];
-        return $data;
-    }
-
-    public function getDataById($clusterId)
-    {
-        return Cache::get('ClustersList') ? collect(Cache::get('ClustersList'))->filter(function ($cluster) use ($clusterId) {
-            return $cluster['id'] == $clusterId;
-        })->first() : [];
-    }
-
-    public function buildCachedList()
-    {
-        $clusters = $this->clusterService->getAll();
-        $this->setClustersListData(self::CACHE_KEY_CLUSTER_LIST, $clusters);
-        return $clusters->toArray();
-    }
 }

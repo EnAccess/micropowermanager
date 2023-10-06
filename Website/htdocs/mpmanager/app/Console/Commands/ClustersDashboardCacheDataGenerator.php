@@ -16,8 +16,8 @@ class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
+    public function handle(): void
     {
-        $this->clustersDashboardCacheDataService->setClustersData();
+        $this->clustersDashboardCacheDataService->setData();
     }
 }

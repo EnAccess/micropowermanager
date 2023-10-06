@@ -28,7 +28,6 @@ class MiniGridRevenueController
                 $endDate,
                 $this->meterService
             ));
-            ;
         }
 
         return ApiResource::make($this->miniGridRevenueService->getById(

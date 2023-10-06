@@ -110,6 +110,9 @@ Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static fu
     Route::get('/clusters', 'ClustersDashboardCacheDataController@index');
     Route::put('/clusters', 'ClustersDashboardCacheDataController@update');
     Route::get('/clusters/{clusterId}', 'ClustersDashboardCacheDataController@show');
+    Route::get('/mini-grids', 'MiniGridDashboardCacheController@index');
+    Route::put('/mini-grids', 'MiniGridDashboardCacheController@update');
+    Route::get('/mini-grids/{miniGridId}', 'MiniGridDashboardCacheController@show');
 });
 // Connection-Groups
 Route::group(['prefix' => 'connection-groups', 'middleware' => 'jwt.verify'], static function () {

@@ -534,6 +534,97 @@ class RevenueController extends Controller
             ]
         );
     }
+    public function revenueData2(Request $request)
+    {
+        $startDate = Carbon::parse($request->input('start_date', '2018-01-01'))->format('Y-m-d');
+        $endDate = Carbon::parse($request->input('end_date', '2018-12-31'))->endOfDay();
+
+        $targetType = $request->input('target_type');
+
+        // Input validation
+        $this->validate($request, [
+            'target_type' => 'required|in:mini-grid,cluster',
+        ]);
+
+        $targets = null;
+
+        if ($targetType === 'mini-grid') {
+            $targets = $this->target->targetForMiniGrid($request->input('target_type_id'), $endDate)->first();
+        } else {
+            $cluster = $this->cluster::find($request->input('target_type_id'));
+            $miniGridIds = $cluster->miniGrids()->get()->pluck('id');
+            $targets = $this->target->targetForCluster($miniGridIds, $endDate)->first();
+        }
+
+        $formattedTarget = [];
+
+        if (!$targets) {
+            $connections = $this->connectionGroup->get();
+            foreach ($connections as $connection) {
+                $formattedTarget[$connection->name] = [
+                    'new_connections' => '-',
+                    'revenue' => '-',
+                    'connected_power' => '-',
+                    'energy_per_month' => '-',
+                    'average_revenue_per_month' => '-',
+                ];
+            }
+        } else {
+            foreach ($targets->subTargets as $subTarget) {
+                $formattedTarget[$subTarget->connectionType->name] = [
+                    'new_connections' => $subTarget->new_connections,
+                    'revenue' => $subTarget->revenue,
+                    'connected_power' => $subTarget->connected_power,
+                    'energy_per_month' => $subTarget->energy_per_month,
+                    'average_revenue_per_month' => $subTarget->average_revenue_per_month,
+                ];
+            }
+            unset($targets->subTargets);
+        }
+
+        $connectionGroups = $this->connectionGroup->select('id', 'name')->get();
+
+        $totalConnections = [];
+        $revenues = [];
+        $connections = [];
+
+        foreach ($connectionGroups as $connectionGroup) {
+            $revenue = $this->revenue->connectionGroupForPeriod(
+                $request->input('target_type_id'),
+                $connectionGroup->id,
+                $startDate,
+                $endDate,
+                $targetType
+            );
+
+            $totalConnectionsData = $this->revenue->registeredMetersForTill(
+                $request->input('target_type_id'),
+                $connectionGroup->id,
+                $endDate,
+                $targetType
+            );
+
+            $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]["registered_connections"];
+            $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
+
+            $connectionsData = $this->revenue->metersByConnectionGroup(
+                $request->input('target_type_id'),
+                $connectionGroup->id,
+                $startDate,
+                $endDate,
+                $targetType
+            );
+
+            $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'];
+        }
+
+        return new ApiResource([
+            'target' => $targets,
+            'total_connections' => $totalConnections,
+            'new_connections' => $connections,
+            'revenue' => $revenues,
+        ]);
+    }
 
     private function addNewConnections(array $baseList, $connections): array
     {

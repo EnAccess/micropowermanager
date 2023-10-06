@@ -101,7 +101,7 @@ class ClusterRevenueService
             ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'),WEEKOFYEAR(created_at)'))->get();
     }
 
-    public function getPeriodicRevenueForClusters(
+    public function getPeriodicRevenueForClustersOld(
         $clusters,
         $startDate,
         $endDate,
@@ -129,6 +129,36 @@ class ClusterRevenueService
             $clusters[$clusterIndex]['totalRevenue'] = $totalRevenue;
         }
         return $clusters;
+    }
+
+    public function getPeriodicRevenueForCluster(
+        $cluster,
+        $startDate,
+        $endDate,
+        $periodsMonthly,
+        $periodsWeekly,
+
+    ) {
+            $totalRevenue = 0;
+            $pM  = $periodsMonthly;
+            $pW = $periodsWeekly;
+            $weeklyRevenues = $this->getTransactionsForWeeklyPeriod($cluster->id, [$startDate, $endDate]);
+            $monthlyRevenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate]);
+
+            foreach ($weeklyRevenues as $rIndex => $revenue) {
+                $pW[$revenue->period][$revenue->week]['revenue'] = $revenue->revenue;
+            }
+
+            foreach ($monthlyRevenues as $rIndex => $revenue) {
+                $pM[$revenue->period]['revenue'] += $revenue->revenue;
+                $totalRevenue += $revenue->revenue;
+            }
+
+        return  [
+            'periodWeekly' => $pW,
+            'period' => $pM,
+            'totalRevenue' => $totalRevenue,
+        ];
     }
 
     public function getRevenueAnalysisForConnectionTypesByCluser(

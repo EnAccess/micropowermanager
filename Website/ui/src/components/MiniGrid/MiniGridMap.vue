@@ -1,20 +1,20 @@
 <template>
 
     <widget
-            :title="$tc('phrases.miniGridMap')"
-            id="miniGrid-map">
+        :title="$tc('phrases.miniGridMap')"
+        id="miniGrid-map">
 
-        <Map
-                :geoData="geoData"
-                :center="center"
-                :markerLocations="markerLocations"
-                :constantLocations="constantLocations"
-                :constantMarkerUrl="miniGridIcon"
-                :markerUrl="meterIcon"
-                :edit="true"
-                :markingInfos="markingInfos"
-                :isMeter="true"
-                :parentName="'MiniGrid'"
+
+        <Map :geoData="geoData"
+             :center="center"
+             :markerLocations="markerLocations"
+             :constantLocations="constantLocations"
+             :constantMarkerUrl="miniGridIcon"
+             :markerUrl="meterIcon"
+             :edit="true"
+             :markingInfos="markingInfos"
+             :isMeter="true"
+             :parentName="'MiniGrid'"
 
         />
 
@@ -30,13 +30,17 @@ import { MeterService } from '@/services/MeterService'
 import miniGridIcon from '../../assets/icons/miniGrid.png'
 import meterIcon from '../../assets/icons/meter.png'
 import { EventBus } from '@/shared/eventbus'
+import { notify } from '@/mixins/notify'
+import Loader from '@/shared/Loader.vue'
 
 export default {
     name: 'MiniGridMap',
     components: {
+        Loader,
         Widget,
         Map,
     },
+    mixins: [notify],
     data () {
         return {
             clusterService: new ClusterService(),
@@ -59,7 +63,7 @@ export default {
             loading: false,
             show: true,
             geoData: null,
-            center: [this.$store.getters['settings/getMapSettings'].latitude,this.$store.getters['settings/getMapSettings'].longitude],
+            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
             miniGrids: null,
             clusterLayer: null,
             clusterId: null,
@@ -89,7 +93,6 @@ export default {
                 confirmButtonText: this.$tc('words.relocate'),
                 cancelButtonText: this.$tc('words.dismiss')
             }).then((result) => {
-
                 if (result) {
                     let meters = []
                     editedItems.forEach((e) => {
@@ -110,7 +113,6 @@ export default {
     methods: {
         async updateEditedMeters (meters) {
             try {
-
                 await this.meterService.updateMeter(meters)
                 this.alertNotify('success', this.$tc('phrases.relocateMeter', 3))
             } catch (e) {
@@ -129,6 +131,7 @@ export default {
         },
         getMiniGrid: async function (miniGridId) {
             try {
+                this.loading = true
                 this.markerLocations = []
                 this.constantLocations = []
                 this.markingInfos = []
@@ -143,6 +146,10 @@ export default {
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
+            this.loading = false
+            this.$nextTick(() => {
+                this.mapData = this.geoData
+            })
         },
         async getMiniGridMeters (miniGridId) {
             try {
@@ -154,7 +161,7 @@ export default {
                     let points = this.meters[i].meter_parameter.address.geo.points.split(',')
                     this.meterLatLng.lat = points[0]
                     this.meterLatLng.lon = points[1]
-                    let markingInfo = this.mappingService.createMarkingInformation(this.meters[i].id, null, this.meters[i].serial_number, points[0], points[1],-1)
+                    let markingInfo = this.mappingService.createMarkingInformation(this.meters[i].id, null, this.meters[i].serial_number, points[0], points[1], -1)
                     this.markingInfos.push(markingInfo)
                     this.markerLocations.push([this.meterLatLng.lat, this.meterLatLng.lon])
                 }
@@ -163,16 +170,6 @@ export default {
                 this.alertNotify('error', e.message)
             }
 
-        },
-
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message,
-                speed: 0
-            })
         },
     },
 

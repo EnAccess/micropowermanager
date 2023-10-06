@@ -53,20 +53,6 @@ export class ClusterService {
         }
     }
 
-    async getClusterCitiesRevenue (clusterId, period, startDate, endDate) {
-        const queryString = `?period=${period}&startDate=${startDate ??
-        ''}&endDate=${endDate ?? ''}`
-        try {
-            const response = await this.repository.getClusterCitiesRevenue(
-                clusterId,
-                queryString)
-            this.financialData = this.responseValidator(response)
-            return this.financialData
-        } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
-        }
-    }
-
     async getClusterRevenues (clusterId) {
         try {
             const response = await this.repository.getClusterRevenues(clusterId)
@@ -83,19 +69,6 @@ export class ClusterService {
             const response = await this.repository.getAllRevenues(queryString)
             this.financialData = this.responseValidator(response, [200, 201])
             return this.financialData
-        } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
-        }
-    }
-
-    async getClusterTrends (clusterId, startDate, endDate) {
-        const queryString = `?period=monthly&startDate=${startDate ??
-        ''}&endDate=${endDate ?? ''}`
-        try {
-            const response = await this.repository.getClusterTrends(clusterId, queryString)
-            this.clusterTrends = this.responseValidator(response, [200])
-            this.fillTrends()
-            return this.clusterTrends
         } catch (e) {
             return new ErrorHandler(e.response.data.data.message, 'http')
         }
@@ -154,7 +127,6 @@ export class ClusterService {
                 sum += this.financialData[i].period[periodName].revenue
             }
             data.push(this.financialData[i].period[periodName].revenue)
-            //data.push(this.financialData[i].period[periodName].revenue)
         }
         if (summary) {
             data.push(sum)

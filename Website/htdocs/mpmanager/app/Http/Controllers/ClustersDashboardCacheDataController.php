@@ -18,15 +18,7 @@ use Illuminate\Support\Facades\Artisan;
 class ClustersDashboardCacheDataController extends Controller
 {
     public function __construct(
-        private ClusterService $clusterService,
         private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
-        private ClusterMeterService $clusterMetersService,
-        private ClusterTransactionService $clusterTransactionsService,
-        private ClusterPopulationService $clusterPopulationService,
-        private ClusterRevenueService $clusterRevenueService,
-        private ClusterMiniGridService $clusterMiniGridService,
-        private MeterRevenueService $meterRevenueService,
-        private ConnectionTypeService $connectionTypeService
     ) {
     }
 
@@ -43,35 +35,15 @@ class ClustersDashboardCacheDataController extends Controller
 
     public function update(Request $request)
     {
-        $dateRange = [];
-        $dateRange[0] = date('Y-m-d H:i:s', strtotime('today - 30 days'));
-        $dateRange[1] = date('Y-m-d H:i:s', strtotime('today'));
-        $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getAll();
-        foreach ($clusters as $index => $cluster) {
-            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
-            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
-            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
-            $clusters[$index]->citiesRevenue =
-                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
-            $clusters[$index]->revenueAnalysis =
-                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
-                    $cluster->id,
-                    $connectionTypes,
-                    $this->meterRevenueService
-                );
-            $clusters[$index]->clusterData =
-                $this->clusterService->getCluster(
-                    $this->clusterService->getById($cluster->id),
-                    $clusters[$index]->meterCount,
-                    $clusters[$index]->revenue,
-                    $clusters[$index]->population
-                );
+        $fromDate = $request->query('from');
+        $toDate = $request->query('to');
+
+        if ($toDate && $fromDate) {
+            $this->clustersDashboardCacheDataService->setData([$fromDate, $toDate]);
+        } else {
+            $this->clustersDashboardCacheDataService->setData();
         }
 
-        $clustersWithMeters = $this->clusterMiniGridService->getClustersWithMiniGrids();
-        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters, $this->clusterRevenueService);
-
-        return ApiResource::make($this->clustersDashboardCacheDataService->getData());
+        return ['data' => $this->clustersDashboardCacheDataService->getData()];
     }
 }

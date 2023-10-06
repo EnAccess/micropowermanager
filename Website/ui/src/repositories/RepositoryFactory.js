@@ -67,6 +67,7 @@ import RegistrationTailRepository from '@/repositories/RegistrationTailRepositor
 import PluginRepository from '@/repositories/PluginRepository'
 import ProtectedPageRepository from '@/repositories/ProtectedPageRepository'
 import ApplianceRepository from '@/repositories/ApplianceRepository'
+import MiniGridDashboardCacheDataRepository from '@/repositories/MiniGridDashboardCacheDataRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -138,6 +139,7 @@ const repositories = {
     'plugin': PluginRepository,
     'protectedPage': ProtectedPageRepository,
     'appliance': ApplianceRepository,
+    'miniGridDashboardCacheData': MiniGridDashboardCacheDataRepository,
 }
 
 export default {

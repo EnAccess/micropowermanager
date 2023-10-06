@@ -1,62 +1,56 @@
 <template>
-<div>
-    <widget :id="'ticketing-trends'" :title="$tc('phrases.ticketsOverview')">
-        <div class="col-sm-12" style="margin: 2vh;">
-            <h5>{{ $tc('phrases.ticketsOverview',2) }}</h5>
-            <GChart
-                type="ColumnChart"
-                :data="revenueService.openedTicketChartData"
-                :options="chartOptions"
-                :resizeDebounce="500"
-            />
+    <div>
+        <widget :id="'ticketing-trends'" :title="$tc('phrases.ticketsOverview')">
+
+            <div v-if="loading">
+                <loader/>
+            </div>
+            <div class="md-layout md-gutter" v-else>
+                <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                    <h5>{{ $tc('phrases.ticketsOverview', 2) }}</h5>
+                    <GChart
+                        type="ColumnChart"
+                        :data="ticketData"
+                        :options="chartOptions"
+                        :resizeDebounce="500"
+                    />
+                </div>
+
+            </div>
 
 
-        </div>
-
-
-    </widget>
-</div>
+        </widget>
+    </div>
 </template>
 
 <script>
 import { RevenueService } from '@/services/RevenueService'
 import Widget from '../../shared/widget'
+import Loader from '@/shared/Loader.vue'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'TicketsOverview',
-    components: { Widget },
-    props:{
-        chartOptions:{
+    components: { Loader, Widget },
+    props: {
+        chartOptions: {
             required: true,
         },
-        miniGridId:{
+        ticketData: {
             required: true
         }
     },
-    data(){
-        return{
-            revenueService: new RevenueService(),
+    mounted () {
+        EventBus.$on('miniGridCachedDataLoading', (loading) => {
+            this.loading = loading
+        })
+    },
+    data () {
+        return {
+            loading: false
         }
     },
-    methods:{
-        async getTicketsData () {
-            try {
-                await this.revenueService.getTicketsData(this.miniGridId)
-            } catch (e) {
-                this.alertNotify('error', e.message)
-            }
-
-        },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message,
-                speed: 0
-            })
-        },
-    }
+    methods: {}
 }
 </script>
 

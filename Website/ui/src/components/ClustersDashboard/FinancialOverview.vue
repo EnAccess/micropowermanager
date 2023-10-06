@@ -12,18 +12,18 @@
             <p>{{ $tc('phrases.selectPeriod') }}</p>
             <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-100">
-                    <md-datepicker v-model="period.from" md-immediately>
+                    <md-datepicker v-model="period.from" md-immediately v-validate="'required'">
                         <label>{{ $tc('phrases.fromDate') }}</label>
                     </md-datepicker>
+                    <span class="md-error">{{ errors.first($tc('phrases.fromDate')) }}</span>
                 </div>
                 <div class="md-layout-item md-size-100">
-                    <md-datepicker v-model="period.to" md-immediately>
+                    <md-datepicker v-model="period.to" md-immediately v-validate="'required'">
                         <label>{{ $tc('phrases.toDate') }}</label>
                     </md-datepicker>
+                    <span class="md-error">{{ errors.first($tc('phrases.toDate')) }}</span>
                 </div>
             </div>
-
-
             <div style="margin-top: 5px;">
                 <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                 <button style="width:100%;" v-if="!loading" class="btn btn-primary" @click="getClusterFinancialData">
@@ -31,101 +31,26 @@
                 </button>
             </div>
         </div>
-        <div v-if="loaded">
-            <div class="md-layout md-gutter" style="padding: 10px">
-                <!-- donut chart-->
-                <div class="md-layout-item md-size-35 md-medium-size-100"
-                     :class="lineChartFullScreen? 'md-size-100' : 'md-size-35' "
-                     v-if="financialData">
-                    <md-card class="chart-card">
-                        <md-card-header>
-                            <md-card-header-text>
-                                {{ $tc('phrases.revenueLine') }}
-                            </md-card-header-text>
-                            <md-menu class="md-medium-hide" md-size="big" md-direction="bottom-end">
-                                <md-button class="md-icon-button" md-menu-trigger
-                                           @click="maximize('lineChartFullScreen')">
-                                    <md-icon>fullscreen</md-icon>
-                                </md-button>
-
-                            </md-menu>
-                        </md-card-header>
-                        <md-card-content>
-                            <GChart
-                                type="LineChart"
-                                :data="financialDataChart('line', true)"
-                                :options="chartOptions"
-                                :resizeDebounce="500"
-                                ref="gChart"
-                                :events="chartEvents"
-                            />
-                        </md-card-content>
-                    </md-card>
-                </div>
-
-                <div class="md-layout-item md-size-35 md-medium-size-100"
-                     :class="barChartFullScreen? 'md-size-100' : 'md-size-35' "
-                     v-if="financialData">
-                    <md-card class="chart-card">
-                        <md-card-header>
-                            <md-card-header-text>
-                                {{ $tc('phrases.revenueColumns') }}
-                            </md-card-header-text>
-                            <md-menu class="md-medium-hide" md-size="big" md-direction="bottom-end">
-                                <md-button class="md-icon-button" md-menu-trigger
-                                           @click="maximize('barChartFullScreen')">
-                                    <md-icon>fullscreen</md-icon>
-                                </md-button>
-
-                            </md-menu>
-                        </md-card-header>
-                        <md-card-content>
-                            <GChart
-                                type="ColumnChart"
-                                :data="financialDataChart('column')"
-                                :options="chartOptions"
-                                :resizeDebounce="500"
-                                ref="gChart"
-                                :events="chartEvents"
-                            />
-                        </md-card-content>
-                    </md-card>
-                </div>
-
-                <div class="md-layout-item  md-size-30 md-medium-size-100"
-                     :class="donutChartFullScreen? 'md-size-100' : 'md-size-30' "
-                     v-if="financialData">
-                    <md-card class="chart-card">
-                        <md-card-header>
-                            <md-card-header-text>
-                                {{ $tc('phrases.revenuePercentiles') }}
-                            </md-card-header-text>
-                            <md-menu class="md-medium-hide" md-size="big" md-direction="bottom-end">
-                                <md-button class="md-icon-button" md-menu-trigger
-                                           @click="maximize('donutChartFullScreen')">
-                                    <md-icon>fullscreen</md-icon>
-                                </md-button>
-
-                            </md-menu>
-                        </md-card-header>
-                        <md-card-content>
-                            <GChart
-                                type="PieChart"
-                                :data="financialDataChart('column')"
-                                :options="chartOptions"
-                                :resizeDebounce="500"
-                                ref="gChart"
-                                :events="chartEvents"
-                            />
-                        </md-card-content>
-                    </md-card>
-                </div>
-            </div>
+        <div class="md-layout md-gutter" style="padding: 10px">
+            <chart-card type="LineChart"
+                        :header-text="$tc('phrases.revenueLine')"
+                        :chartData="lineChartData"
+                        :chartOptions="chartOptions"
+                        :extendable="true"
+            />
+            <chart-card type="ColumnChart"
+                        :header-text="$tc('phrases.revenueColumns')"
+                        :chartData="columnChartData"
+                        :chartOptions="chartOptions"
+                        :extendable="true"
+            />
+            <chart-card type="PieChart"
+                        :header-text="$tc('phrases.revenuePercentiles')"
+                        :chartData="pieChartData"
+                        :chartOptions="chartOptions"
+                        :extendable="true"
+            />
         </div>
-        <div v-else>
-            <h2 class="text-center"> {{ $tc('phrases.loadingData') }}</h2>
-        </div>
-
 
     </widget>
 
@@ -136,58 +61,36 @@
 import Widget from '../../shared/widget'
 import moment from 'moment'
 import { ClusterService } from '@/services/ClusterService'
+import ChartCard from '@/shared/ChartCard.vue'
+import { notify } from '@/mixins/notify'
 
 export default {
     name: 'FinancialOverview',
-    components: { Widget },
+    components: { ChartCard, Widget },
+    mixins: [notify],
     props: {
         clusterId: {
-            type: Number,
-            default: 1,
+            type: Number | null,
+            default: null,
         },
-        clustersRevenue: {
+        revenue: {
             required: true,
+        },
+        periodChanged: {
+            type: Function,
+            required: true
         }
     },
     data () {
         return {
             clusterService: new ClusterService(),
-            lineChartFullScreen: false,
-            barChartFullScreen: false,
-            donutChartFullScreen: false,
             period: {
                 from: null,
                 to: null,
             },
-            loaded: false,
             loading: false,
             setPeriod: false,
-            clicks: 0, //to detect a double click on a chart
-            financialData: [],
-            periodText: '2019.01.01 - Today',
-            chartOptions: {
-                chart: {
-                    title: 'Customer Payment Flow',
-                    subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-                },
-                //colors: ['#FF6384', '#CC6384', '#36A2EB']
-            },
-            chartEvents: {
-                select: () => {
-                },
-                click: () => {
-                    this.clicks++
-                    let parent = this
-                    setTimeout(function () {
-
-                        if (parent.clicks >= 2) {
-                            parent.chartType = parent.toggleChartType()
-
-                        }
-                        parent.clicks = 0
-                    }, 250)
-                },
-            },
+            periodText: '-',
             disabled: {
                 customPredictor:
                     function (date) {
@@ -199,47 +102,44 @@ export default {
                         }
                     }
             },
+            chartOptions: {
+                chart: {
+                    title: '',
+                    subtitle: ''
+                },
+            },
         }
     },
-    mounted () {
-        // Todo: get this from cache
-        this.getClusterFinancialData()
+
+    watch: {
+        revenue (newVal, oldVal) {
+            this.clusterService.financialData = newVal
+        }
     },
     methods: {
         showPeriod () {
+            this.period = {
+                from: null,
+                to: null,
+            }
             this.setPeriod = !this.setPeriod
         },
         async getClusterFinancialData () {
-            try {
-                this.loading = true
-                let from = this.period.from !== null ? moment(this.period.from).format('YYYY-MM-DD') : null
-                let to = this.period.to !== null ? moment(this.period.to).format('YYYY-MM-DD') : null
-
-                this.financialData = await this.clusterService.getAllRevenues('monthly', from, to)
-                this.loaded = true
-
-                if (from !== null) {
-
-                    this.periodText = from + ' - ' + to
-                }
-
-            } catch (e) {
-                this.alertNotify('error', e.message)
-
+            let validator = await this.$validator.validateAll()
+            if (!validator) {
+                return
             }
-
+            this.loading = true
+            const from = this.period.from !== null ? moment(this.period.from).format('YYYY-MM-DD') : null
+            const to = this.period.to !== null ? moment(this.period.to).format('YYYY-MM-DD') : null
+            this.periodChanged(from, to)
+            if (from !== null) {
+                this.periodText = from + ' - ' + to
+            }
             this.setPeriod = false
             this.loading = false
         },
-        financialDataChart (type, summary = false) {
-            let data = []
-            if (type === 'column') {
-                return this.clusterService.columnChartData(summary, type = 'cluster')
-            } else if (type === 'line') {
-                return this.clusterService.lineChartData(summary)
-            }
-            return data
-        },
+
         dateSelectedFrom (date) {
             this.setDate(date, 'from')
         },
@@ -254,30 +154,16 @@ export default {
                 this.period.to = date.format('YYYY-MM-DD')
             }
         },
-        maximize (data) {
-            //eval('this.data = !this.data')
-            if (data === 'lineChartFullScreen') {
-                this.lineChartFullScreen = !this.lineChartFullScreen
-            } else if (data === 'barChartFullScreen') {
-                this.barChartFullScreen = !this.barChartFullScreen
-            } else if (data === 'donutChartFullScreen') {
-                this.donutChartFullScreen = !this.donutChartFullScreen
-            }
-            window.dispatchEvent(new Event('resize'))
+    },
+    computed: {
+        lineChartData () {
+            return this.clusterService.lineChartData(true)
         },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
+        columnChartData () {
+            return this.clusterService.columnChartData(false, 'cluster')
         },
-    }, watch: {
-        clustersRevenue (revenue) {
-            this.financialData = revenue
-            this.clusterService.financialData = revenue
-            this.loaded = true
+        pieChartData () {
+            return this.clusterService.columnChartData(false, 'cluster')
         }
     }
 
@@ -289,7 +175,18 @@ export default {
     right: 0;
 }
 
-.chart-card {
-    margin-bottom: 1vh;
+
+.period-selector {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    margin-right: 1rem;
+    margin-top: 2rem
 }
+
+
 </style>

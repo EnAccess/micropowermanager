@@ -50,7 +50,7 @@ class MiniGridService
 
     public function getAll($limit = null, $dataStream = null)
     {
-        $miniGrids = $this->miniGrid->newQuery();
+        $miniGrids = $this->miniGrid->newQuery()->with(['location']);
         if ($dataStream) {
             $miniGrids->where('data_stream', $dataStream);
         }
