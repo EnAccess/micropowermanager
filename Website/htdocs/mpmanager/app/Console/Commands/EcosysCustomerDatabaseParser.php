@@ -18,6 +18,7 @@ class EcosysCustomerDatabaseParser extends AbstractSharedCommand
     public function handle(): void
     {
         $this->info('Command started');
+        Log::info('command running w '. $this->option('company-id'));
         $result =  $this->customerDatabaseParser->insertFromCsv();
         foreach ($result as $key => $value) {
             $this->info($key . ' : ' . $value);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ReportController
 {
@@ -24,7 +25,8 @@ class ReportController
             return;
         }
         $report = $this->report->find($id);
-        return response()->download($report->path);
+
+        return response()->download(explode('*',$report->path)[0]);
     }
 
     public function index(Request $request): ApiResource

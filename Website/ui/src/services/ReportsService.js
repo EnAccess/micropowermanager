@@ -30,8 +30,8 @@ export class ReportsService {
         return this.list
     }
 
-    exportReport(id, reference) {
-        return this.repository.download(id, reference)
+    exportReport(id, reference, companyId) {
+        return this.repository.download(id, reference, companyId)
     }
 
 }

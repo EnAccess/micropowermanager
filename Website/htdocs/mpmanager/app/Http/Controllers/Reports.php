@@ -7,6 +7,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
+use App\Models\DatabaseProxy;
 use App\Models\Meter\MeterParameter;
 use App\Models\PaymentHistory;
 use App\Models\Report;
@@ -16,10 +17,12 @@ use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
+use App\Models\User;
 use Generator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -40,7 +43,6 @@ use function count;
  */
 class Reports
 {
-    const REPORT_PATH = '/files/reports';
     /**
      * @var array holds the summary of sold energy and amount
      */
@@ -300,9 +302,9 @@ class Reports
      * @param Worksheet $sheet
      * @param $dateRange
      *
-     * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      *
+     * @return void
      */
     private function addStaticText(Worksheet $sheet, string $dateRange): void
     {
@@ -399,7 +401,7 @@ class Reports
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (!count($transaction->meter->meterParameter)) {
+            if (!($transaction->meter) || !($transaction->meter->meterParameter)) {
                 continue;
             }
 
@@ -717,16 +719,20 @@ class Reports
 
 
         $writer = new Xlsx($this->spreadsheet);
-        $dirPath = storage_path($reportType);
+        $dirPath = storage_path('./' . $reportType);
+        $user = User::query()->first();
+        $databaseProxy = app()->make(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
+
         if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
         }
         try {
             $fileName = str_slug($reportType . '-' . $cityName . '-' . $dateRange) . '.xlsx';
-            $writer->save(storage_path($reportType . '/' . $fileName));
+            $writer->save(storage_path('./' . $reportType . '/' . $fileName));
             $this->report->create(
                 [
-                    'path' => self::REPORT_PATH.'/'.$reportType.'/'.$fileName,
+                    'path' => storage_path($reportType . '/' . $fileName.'*'.$companyId),
                     'type' => $reportType,
                     'date' => $startDate . '---' . $endDate,
                     'name' => $cityName,
@@ -794,7 +800,6 @@ class Reports
 
     public function sumOfTransactions($connectionGroupId, array $dateRange): array
     {
-
         return Transaction::query()
             ->selectRaw('
         meter_parameters.connection_group_id, 
@@ -818,6 +823,7 @@ class Reports
             )
             ->groupBy('meter_parameters.meter_id')
             ->get()->toArray();
+
     }
 
     private function addTargetsToXls(Worksheet $sheet): void

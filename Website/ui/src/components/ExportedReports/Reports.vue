@@ -18,10 +18,10 @@
                         <md-table-cell :md-label="$tc('words.date')">{{item.date}}</md-table-cell>
                         <md-table-cell :md-label="$tc('words.name')">{{item.name}}</md-table-cell>
                         <md-table-cell :md-label="$tc('words.file')">
-                            <a :href="item.path">Download
+                            <div  style="cursor: pointer;" @click="download(item.id, 'download', item.path)">
                                 <md-icon>save</md-icon>
-                            </a>
-
+                                <span> {{ $tc('words.download') }}</span>
+                            </div>
                         </md-table-cell>
                     </md-table-row>
 
@@ -71,9 +71,11 @@ export default {
             this.list = this.reportService.updateList(data)
             EventBus.$emit('widgetContentLoaded',this.subscriber,this.reportService.list.length)
         },
-
-        download (id, reference) {
-            window.open(this.reportService.exportReport(id, reference))
+        //workaround!!!
+        download (id, reference, path) {
+            const pathSplitted = path.split('*')
+            const companyId = pathSplitted[1]
+            window.open(this.reportService.exportReport(id, reference, companyId))
         }
     }
 

@@ -69,7 +69,6 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $endDate,
                 $this->meterService
             );
-            Log::info('asdaasd',['asd' =>$miniGrids[$index]->transactions]);
             $targets = $this->target->targetForMiniGrid($miniGridId, $endDate)->first();
             $formattedTarget = [];
             foreach ($connections as $connection) {

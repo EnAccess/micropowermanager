@@ -8,7 +8,7 @@ export default {
     list(type) {
         return Client.get(`${resource}?type=`+type)
     },
-    download(id,reference) {
-        return `${resource}/`+`${id}`+`${reference}`
+    download(id,reference,companyId) {
+        return `${baseUrl}/api/report-downloading/${id}/${reference}/${companyId}`
     }
 }

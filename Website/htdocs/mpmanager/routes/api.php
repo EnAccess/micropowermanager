@@ -166,7 +166,8 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
 // these routes are for the forecast-tool in jetson nano.
 Route::group(['prefix' => 'jetson'], static function () {
     Route::group(['prefix' => 'mini-grids'], static function () {
-        Route::get('/{miniGridId}/weather-data/{slug}/{storageFolder}/{file}', 'JetsonMiniGridWeatherDataController@index');
+        Route::get('/{miniGridId}/weather-data/{slug}/{storageFolder}/{file}',
+            'JetsonMiniGridWeatherDataController@index');
         Route::get('/{miniGridId}/battery-readings/{slug}', 'JetsonMiniGridBatteryController@show');
         Route::get('/{miniGridId}/energy-readings/{slug}', 'JetsonMiniGridEnergyController@show');
         Route::get('/{miniGridId}/solar-readings/{slug}', 'JetsonMiniGridSolarController@show');
@@ -262,9 +263,11 @@ Route::group(['prefix' => 'sms-variable-default-value'], static function () {
     Route::get('/', 'SmsVariableDefaultValueController@index');
 });
 // Reports
-Route::group(['prefix' => 'reports'], function () {
-    Route::get('/', ['uses' => 'ReportController@index', 'middleware' => 'jwt.verify']);
-    Route::get('/{id}/download', 'ReportController@download');
+Route::group(['prefix' => 'reports', 'middleware' => 'jwt.verify'], function () {
+    Route::get('/', ['uses' => 'ReportController@index']);
+});
+Route::group(['prefix' => 'report-downloading'], function () {
+    Route::get('/{id}/download/{slug}', 'ReportController@download');
 });
 // Revenue
 Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {

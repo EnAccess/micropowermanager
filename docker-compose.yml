@@ -29,9 +29,6 @@ services:
 
     volumes:
       - ./Website/ui:/usr/app/
-      - ./Website/htdocs/mpmanager/storage/monthly/:/usr/app/public/files/reports/monthly:rw
-      - ./Website/htdocs/mpmanager/storage/weekly/:/usr/app/public/files/reports/weekly:rw
-      - ./Website/htdocs/mpmanager/storage/outsourcing/:/usr/app/public/files/reports/outsourcing:rw
       - frontend_node_modules:/usr/app/node_modules/
 
 

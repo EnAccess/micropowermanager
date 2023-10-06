@@ -47,7 +47,7 @@
                     </div>
 
                 </div>
-                <div class="md-layout">
+<!--  <div class="md-layout">
                     <div class="md-layout-item">{{ $tc('phrases.totalRevenue') }}</div>
                     <div class="md-layout-item">
                         <div v-if="meter.totalRevenue">{{ readable(meter.totalRevenue) }}
@@ -59,7 +59,7 @@
                 <div class="md-layout">
                     <div class="md-layout-item">{{ $tc('phrases.lastPayment') }}</div>
                     <div class="md-layout-item">{{ $tc('phrases.3daysAgo') }}</div>
-                </div>
+                </div>-->
             </div>
         </div>
     </widget>
@@ -89,6 +89,11 @@ export default {
             newOwner: null,
             searchNames: [],
         }
+    },
+    mounted () {
+       const asd = this.meter
+        console.log(asd)
+        debugger
     },
     methods:{
         saveNewOwner () {

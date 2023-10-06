@@ -6,6 +6,7 @@ use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\BaseModel;
 use App\Models\ConnectionGroup;
+use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
 use App\Models\SocialTariffPiggyBank;
 use App\Models\SubConnectionType;
@@ -31,7 +32,7 @@ class MeterParameter extends BaseModel
 
     public function connectionType(): BelongsTo
     {
-        return $this->belongsTo(SubConnectionType::class, 'connection_type_id', 'id');
+        return $this->belongsTo(ConnectionType::class, 'connection_type_id', 'id');
     }
 
     public function tariff(): BelongsTo
