@@ -67,7 +67,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
-        $schedule->command('dummy:create-data 20 --company-id=11 --type=transaction')->dailyAt('00:00');
+        $schedule->command('dummy:create-data 25 --company-id=11 --type=transaction')->dailyAt('00:00');
         $schedule->command('dummy:create-data 2 --company-id=11 --type=ticket')->dailyAt('00:00');
     }
 
