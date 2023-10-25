@@ -123,7 +123,7 @@ export class SmsService {
     async sendMaintenanceSms (maintenanceData) {
         try {
             let sendSmsPM = {
-                'person_id': maintenanceData.assigned,
+                'person_id': maintenanceData.assigned.person.id,
                 'message': maintenanceData.description + '\n Amount : '
                     + maintenanceData.amount + '\n Due Date '
                     + maintenanceData.dueDate,

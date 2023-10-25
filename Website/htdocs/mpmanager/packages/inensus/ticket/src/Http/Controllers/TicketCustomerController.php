@@ -2,6 +2,9 @@
 
 namespace Inensus\Ticket\Http\Controllers;
 
+use App\Models\MaintenanceUsers;
+use App\Services\MaintenanceUserService;
+use App\Services\MaintenanceUserTicketService;
 use App\Services\PersonService;
 use App\Services\PersonTicketService;
 use App\Services\UserTicketService;
@@ -24,6 +27,8 @@ class TicketCustomerController extends Controller
         private TicketCategoryService $ticketCategoryService,
         private PersonService $personService,
         private TicketOutSourceService $ticketOutSourceService,
+        private MaintenanceUserService $maintenanceUserService,
+        private MaintenanceUserTicketService $maintenanceUserTicketService
 
     ) {
 
@@ -31,27 +36,27 @@ class TicketCustomerController extends Controller
 
     public function store(UserTicketCreateRequest $request): TicketResource
     {
-
         $ticketData = $request->getMappedArray();
-
-        $owner = $this->personService->getById($request->getOwnerId());
-
-        if (!$owner) {
-            throw new TicketOwnerNotFoundException('Ticket owner with following id not found ' . $request->getOwnerId());
-        }
-
         $user = auth('api')->user();
         $ticket = $this->ticketService->make($ticketData);
         $this->userTicketService->setAssigned($ticket);
         $this->userTicketService->setAssigner($user);
         $this->userTicketService->assign();
-        $this->personTicketService->setAssigned($ticket);
-        $this->personTicketService->setAssigner($owner);
-        $this->personTicketService->assign();
+
+        if($request->input('owner_type') ==='maintenance_user') {
+            $owner = $this->maintenanceUserService->getById($request->getOwnerId());
+            $this->maintenanceUserTicketService->setAssigned($ticket);
+            $this->maintenanceUserTicketService->setAssigner($owner);
+            $this->maintenanceUserTicketService->assign();
+        }else{
+            $owner = $this->personService->getById($request->getOwnerId());
+            $this->personTicketService->setAssigned($ticket);
+            $this->personTicketService->setAssigner($owner);
+            $this->personTicketService->assign();
+        }
         $this->ticketService->save($ticket);
         //get category to check outsourcing
         $categoryData = $this->ticketCategoryService->getById($request->getLabel());
-
         if ($categoryData->out_source) {
             $ticketOutsourceData = [
                 'ticket_id' => $ticket->id,

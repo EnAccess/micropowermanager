@@ -72,8 +72,8 @@ export class TicketService {
                 outsourcing: maintenanceData.amount,
                 description: maintenanceData.description,
                 title: maintenanceData.title,
-                owner_id: maintenanceData.assigned,
-                owner_type: 'person',
+                owner_id: maintenanceData.assigned.id,
+                owner_type: 'maintenance_user',
                 creator_type: 'admin'
             }
         try {

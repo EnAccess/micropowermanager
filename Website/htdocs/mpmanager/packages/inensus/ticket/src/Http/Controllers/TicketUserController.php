@@ -44,7 +44,6 @@ class TicketUserController extends Controller
             'out_source' => true,
             'user_id' => null,
         ];
-        dump($ticketUserData);
 
         $this->ticketUserService->create($ticketUserData);
 

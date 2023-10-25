@@ -3,27 +3,34 @@
 namespace App\Console\Commands;
 
 use App\Models\MainSettings;
+use App\Models\MaintenanceUsers;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
+use App\Models\Person\Person;
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
-use App\Transaction\VodacomTransaction;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inensus\CalinMeter\Models\CalinTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
+use Inensus\Ticket\Models\Ticket;
+use Inensus\Ticket\Models\TicketCategory;
+use Inensus\Ticket\Models\TicketOutsource;
+use Inensus\Ticket\Models\TicketUser;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use App\Models\Transaction\AirtelTransaction;
+use App\Models\Transaction\VodacomTransaction;
 
-class TransactionFaker extends AbstractSharedCommand
+
+class DummyDataCreator extends AbstractSharedCommand
 {
     const DEMO_COMPANY_ID = 11;
 
-    protected $signature = 'transaction:create-fake-transactions {amount} {--company-id=}';
-    protected $description = 'create fake transactions';
+    protected $signature = 'dummy:create-data {amount} {--company-id=} {--type=}';
+    protected $description = 'creates dummy data for demo company';
 
     private $transactionTypes = [
         SwiftaTransaction::class,
@@ -40,12 +47,20 @@ class TransactionFaker extends AbstractSharedCommand
         private WaveMoneyTransaction $waveMoneyTransaction,
         private SwiftaTransaction $swiftaTransaction,
         private WaveComTransaction $waveComTransaction,
-        private \App\Models\Transaction\VodacomTransaction $vodacomTransaction,
-        private \App\Models\Transaction\AirtelTransaction $airtelTransaction,
+        private VodacomTransaction $vodacomTransaction,
+        private AirtelTransaction $airtelTransaction,
         private Meter $meter,
         private MeterToken $token,
         private CalinTransaction $calinTransaction,
-        private MainSettings $mainSettings
+        private MainSettings $mainSettings,
+        private TicketCategory $ticketCategory,
+        private User $user,
+        private TicketUser $ticketUser,
+        private Person $person,
+        private Ticket $ticket,
+        private MaintenanceUsers $maintenanceUsers,
+        private TicketOutsource $ticketOutsource
+
     ) {
         parent::__construct();
     }
@@ -53,6 +68,7 @@ class TransactionFaker extends AbstractSharedCommand
     public function handle()
     {
         $companyId = $this->option('company-id');
+        $type = $this->option('type') ?? 'transaction';
         $amount = $this->argument('amount');
 
         if (intval($companyId) !== self::DEMO_COMPANY_ID) {
@@ -65,11 +81,15 @@ class TransactionFaker extends AbstractSharedCommand
             return;
         }
 
-        for ($i = 0; $i < $amount; $i++) {
-            echo "generating $i \n";
+        for ($i = 1; $i <= $amount; $i++) {
+            echo "$type is generating number: $i  \n";
             try {
                 DB::connection('shard')->beginTransaction();
-                $this->generateTransaction();
+                if ($type == 'transaction') {
+                    $this->generateTransaction();
+                } else {
+                    $this->generateTicket();
+                }
                 DB::connection('shard')->commit();
             } catch (\Exception $e) {
 
@@ -102,7 +122,7 @@ class TransactionFaker extends AbstractSharedCommand
             return;
         }
 
-        $dummyDate = date('Y-m-d', strtotime('-' . mt_rand(0, 90) . ' days'));
+        $dummyDate = date('Y-m-d', strtotime('-' . mt_rand(0, 30) . ' days'));
 
         try {
             $meterOwnerPhoneNumber = $randomMeter->meterParameter->owner->addresses()->firstOrFail();
@@ -132,7 +152,7 @@ class TransactionFaker extends AbstractSharedCommand
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
 
         if ($transactionType instanceof AgentTransaction) {
-            $city = $randomMeter->meterParameter->owner->addresses()->first()->city_id;
+            $city = $randomMeter->meterParameter->owner->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
             $agent = $miniGrid->agent()->first();
             $subTransaction = $this->agentTransaction->newQuery()->create([
@@ -144,8 +164,6 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'agent_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
         if ($transactionType instanceof SwiftaTransaction) {
@@ -160,8 +178,6 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'swifta_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
         if ($transactionType instanceof WaveMoneyTransaction) {
@@ -182,8 +198,6 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'wave_money_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
         if ($transactionType instanceof WaveComTransaction) {
@@ -198,11 +212,9 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'wavecom_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
-        if ($transactionType instanceof \App\Models\Transaction\VodacomTransaction) {
+        if ($transactionType instanceof VodacomTransaction) {
             $subTransaction = $this->vodacomTransaction->newQuery()->create([
                 'conversation_id' => Str::random(20),
                 'originator_conversation_id' => Str::random(20),
@@ -214,11 +226,9 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'vodacom_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
-        if ($transactionType instanceof AgentTransaction) {
+        if ($transactionType instanceof AirtelTransaction) {
             $subTransaction = $this->airtelTransaction->newQuery()->create([
                 'interface_id' => Str::random(20),
                 'business_number' => Str::random(20),
@@ -230,12 +240,10 @@ class TransactionFaker extends AbstractSharedCommand
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);
-            $transaction->original_transaction_type = 'airtel_transaction';
-            $transaction->original_transaction_id = $subTransaction->id;
         }
 
+        $transaction->originalTransaction()->associate($subTransaction);
         $transaction->save();
-        $transactionType->transaction()->save($transaction);
 
         try {
             //create an object for the token job
@@ -295,5 +303,73 @@ class TransactionFaker extends AbstractSharedCommand
     private function getTransactionTypeRandomlyFromTransactionTypes()
     {
         return $this->transactionTypes[array_rand($this->transactionTypes)];
+    }
+
+    private function generateTicket()
+    {
+        $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
+        $fakeSentence = $this->generateFakeSentence();
+        $randomCreator = $this->user->inRandomOrder()->first();
+        $dummyDate = date('Y-m-d', strtotime('-' . mt_rand(0, 30) . ' days'));
+        $ticketUser = $this->ticketUser->inRandomOrder()->first();
+        $randomMaintenanceUser = $this->maintenanceUsers->inRandomOrder()->first();
+        $randomPerson = $this->person->inRandomOrder()->where('is_customer', 1)->first();
+        $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($dummyDate)));
+        $status = rand(0, 1);
+
+        $ticket = $this->ticket->newQuery()->make([
+            'ticket_id' => Str::random(10),
+            'creator_type' => 'admin',
+            'creator_id' => $randomCreator->id,
+            'status' => $status,
+            'due_date' => $dueDate,
+            'title' => 'Dummy Ticket',
+            'content' => $fakeSentence,
+            'category_id' => $randomCategory->id,
+            'created_at' => $dummyDate,
+            'updated_at' => $dummyDate,
+        ]);
+
+        if ($randomCategory->out_source) {
+            $ticket->assigned_id = null;
+            $ticket->owner_id = $randomMaintenanceUser->id;
+            $ticket->owner_type = 'maintenance_user';
+            $ticket->save();
+            try {
+                $amount = random_int(10, 200);
+            } catch (\Exception $e) {
+                $amount = 50;
+            }
+            $this->ticketOutsource->newQuery()->create([
+                'ticket_id' => $ticket->id,
+                'amount' => $amount,
+                'created_at' => $dummyDate,
+                'updated_at' => $dummyDate,
+            ]);
+        } else {
+            $ticket->assigned_id = $ticketUser->id;
+            $ticket->owner_id = $randomPerson->id;
+            $ticket->owner_type = 'person';
+            $ticket->save();
+        }
+    }
+
+    private function generateFakeSentence($minWords = 5, $maxWords = 15)
+    {
+        $loremIpsum =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        $words = explode(" ", $loremIpsum);
+        $numWords = rand($minWords, $maxWords);
+
+        shuffle($words);
+        $fakeSentence = implode(" ", array_slice($words, 0, $numWords));
+
+        // Capitalize the first letter of the sentence.
+        $fakeSentence = ucfirst($fakeSentence);
+
+        // Add a period at the end.
+        $fakeSentence .= '.';
+
+        return $fakeSentence;
     }
 }

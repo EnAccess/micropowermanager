@@ -36,9 +36,9 @@
                                         <md-option value="" disabled selected>-- {{ $tc('words.select') }} --
                                         </md-option>
                                         <template v-for="employee in employees">
-                                            <md-option :key="employee.person.id"
+                                            <md-option :key="employee.id"
                                                        v-if="employee.person"
-                                                       :value="employee.person.id"
+                                                       :value="employee"
                                             >
                                                 {{ employee.person.name }}
                                                 {{ employee.person.surname }}
@@ -157,7 +157,7 @@ export default {
         },
         async getCategories () {
             try {
-                this.categories = await this.ticketService.getCategories()
+                this.categories = await this.ticketService.getCategories().filter(x => x.out_source === 1)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }

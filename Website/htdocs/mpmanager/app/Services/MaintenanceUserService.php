@@ -22,7 +22,7 @@ class MaintenanceUserService implements IBaseService
 
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        return $this->maintenanceUser->newQuery()->find($id);
     }
 
     public function update($model, $data)

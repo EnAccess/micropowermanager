@@ -79,10 +79,11 @@ class PaymentListener
             'sender' => $sender,
         ];
         $paymentHistory = $this->paymentHistoryService->make($paymentHistoryData);
+        $paymentHistory->created_at = $transaction->created_at;
+        $paymentHistory->updated_at = $transaction->updated_at;
         $this->personPaymentHistoryService->setAssigner($payer);
         $this->personPaymentHistoryService->setAssigned($paymentHistory);
         $this->personPaymentHistoryService->assign();
-
 
         switch (true) {
             case $paidFor instanceof AccessRate:
@@ -106,18 +107,9 @@ class PaymentListener
                 break;
         }
 
-
-        if ($transaction !== null) {
-            $this->transactionPaymentHistoryService->setAssigner($transaction);
-            $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
-            $this->transactionPaymentHistoryService->assign();
-
-            if ($paymentHistory->payment_service === 'third_party_transaction' || $paymentHistory->payment_service === 'web') {
-                $paymentHistory->created_at = $transaction->created_at;
-                $paymentHistory->updated_at = $transaction->updated_at;
-            }
-        }
-
+        $this->transactionPaymentHistoryService->setAssigner($transaction);
+        $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
+        $this->transactionPaymentHistoryService->assign();
         $this->paymentHistoryService->save($paymentHistory);
     }
 
