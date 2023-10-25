@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
@@ -55,7 +56,7 @@ class AgentWebController extends Controller
             'connection' => ' ' // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
         $companyId = auth('api')->payload()->get('companyId');
-        $companyDatabase = $this->companyDatabaseService->getById($companyId);
+        $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
         $databaseProxyData = [
             'email' => $request['email'],
             'fk_company_id' => $companyId,

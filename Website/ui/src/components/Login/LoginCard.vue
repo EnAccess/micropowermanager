@@ -68,14 +68,16 @@
 import { validationMixin } from 'vuelidate'
 import { AuthenticationService } from '@/services/AuthenticationService'
 
+import { config } from '@/config'
+
 export default {
     name: 'login-card',
     mixins: [validationMixin],
     data: () => ({
         authError: false,
         form: {
-            email: null,
-            password: null
+            email: config.env === 'demo' ? 'demo@inensus.com' : null,
+            password: config.env === 'demo' ? '123123' : null
         },
 
         userSaved: false,

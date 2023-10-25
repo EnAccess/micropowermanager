@@ -26,14 +26,16 @@ class AndroidGateway implements ISmsProvider
      */
     public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting)
     {
-        if (config('app.debug')) {
-            Log::debug('Send sms on debug is not allowed', ['number' => $number, 'message' => $body]);
+        if (!config('app.env') == 'production') {
+            Log::debug('Send sms on allowed in production', ['number' => $number, 'message' => $body]);
+
             return;
         }
         try {
             $callbackWithoutProtocolRoot = explode("micropowermanager.com/api/", $callback)[1];
         } catch (\Exception $e) {
-            Log::error('Error while sending sms', ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]);
+            Log::error('Error while sending sms',
+                ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]);
 
             throw new \Exception('Error while sending sms');
         }

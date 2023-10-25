@@ -46,7 +46,7 @@ class MailHelper implements MailHelperInterface
     public function sendPlain($to, $title, $body, $attachment = null): void
     {
         //don't send any mails while  testing
-        if (config('app.env') === 'testing') {
+        if (config('app.env') === 'local') {
             return;
         }
         $this->mailer->setFrom($this->mailSettings['default_sender']);
@@ -72,7 +72,7 @@ class MailHelper implements MailHelperInterface
     public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void
     {
         //don't send any mails while  testing
-        if (config('app.env') === 'testing') {
+        if (config('app.env') === 'demo') {
             return;
         }
         $this->mailer->setFrom($this->mailSettings['default_sender']);

@@ -49,13 +49,11 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
 
 
         $miniGrids = $this->miniGridService->getAll();
-        $connections = $this->connectionGroupService->getAll();
-
-        //get list of tariffs
-        $connectionsTypes = $this->connectionTypeService->getAll();
-        $connectionNames = $connectionsTypes->pluck('name')->toArray();
 
         foreach ($miniGrids as $index => $miniGrid) {
+            $connections = $this->connectionGroupService->getAll();
+            $connectionsTypes = $this->connectionTypeService->getAll();
+            $connectionNames = $connectionsTypes->pluck('name')->toArray();
             $miniGridId = $miniGrid->id;
             $miniGrids[$index]->soldEnergy = $this->miniGridRevenueService->getSoldEnergyById(
                 $miniGridId,
@@ -121,7 +119,6 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'];
             }
 
-
             $cities = $this->city::where('mini_grid_id', $miniGridId)->get();
             $cityIds = implode(',', $cities->pluck('id')->toArray());
             $initialData = array_fill_keys($connectionNames, ['revenue' => 0]);
@@ -148,8 +145,6 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     ];
                 }
             }
-
-
             $begin = date_create('2018-08-01');
             $end = date_create();
             $end->add(new DateInterval('P1D')); //
@@ -168,13 +163,11 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $result[$day][$tC->label_name]['closed'] = 0;
                 }
             }
-
             foreach ($closedTicketsWithCategories as $closedTicketsWithCategory) {
                 $date = $this->reformatPeriod($closedTicketsWithCategory["period"]);
                 $result[$date][$closedTicketsWithCategory["label_name"]]["closed"]
                     = $closedTicketsWithCategory["closed_tickets"];
             }
-
             foreach ($openedTicketsWithCategories as $openedTicketsWithCategory) {
                 $date = $this->reformatPeriod($openedTicketsWithCategory["period"]);
                 $result[$date][$openedTicketsWithCategory["label_name"]]["opened"]
