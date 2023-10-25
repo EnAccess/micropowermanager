@@ -43,8 +43,14 @@
 </template>
 
 <script>
+import { config } from '@/config'
 export default {
     name: 'Welcome',
+    created() {
+        if (config.env=== 'demo') {
+            this.$router.push('/login')
+        }
+    }
 }
 </script>
 

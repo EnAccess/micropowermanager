@@ -61,7 +61,7 @@
 import { BatteryService } from '@/services/BatteryService'
 import CustomChart from '../../shared/CustomChart'
 import { GenerationAssetsService } from '@/services/GenerationAssetsService'
-
+import { config } from '@/config'
 export default {
     name: 'EnergyChartBox',
     components: { CustomChart },
@@ -99,17 +99,19 @@ export default {
 
         },
         initBatteryChart () {
-            this.batteryService.getBatteryUsageList(this.miniGridId, true).
+            const mgId = config.env === 'demo' ? 1 : this.miniGridId
+            this.batteryService.getBatteryUsageList(mgId, true).
                 then((result) => {
                     if (!result) {
 
                         return
                     }
-                    // this.batteryService.prepareChartData()
+                     this.batteryService.prepareChartData()
                 })
         },
         initPVChart () {
-            this.generationAssetsService.getList(this.miniGridId).then((result) => {
+            const mgId = config.env === 'demo' ? 1 : this.miniGridId
+            this.generationAssetsService.getList(mgId).then((result) => {
                 if (!result) {
 
                     return
