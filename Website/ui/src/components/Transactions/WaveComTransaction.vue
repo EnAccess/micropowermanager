@@ -5,7 +5,7 @@
                 {{ $tc('phrases.waveComTransaction') }}
             </div>
             <div class="md-layout-item md-subheader n-font">
-                <img class="logo" alt="logo" :src="waveComLogo" style="max-height: 22px;"/>
+                <img class="logo" alt="logo" :src="waveComLogo" style="max-height: 36px;"/>
             </div>
         </div>
         <hr class="hr-d">

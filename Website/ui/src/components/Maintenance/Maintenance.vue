@@ -157,7 +157,9 @@ export default {
         },
         async getCategories () {
             try {
-                this.categories = await this.ticketService.getCategories().filter(x => x.out_source === 1)
+
+                await this.ticketService.getCategories()
+                this.categories = this.ticketService.categories.filter((cat) => cat.out_source === 1)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }

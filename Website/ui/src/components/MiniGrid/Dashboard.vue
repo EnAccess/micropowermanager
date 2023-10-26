@@ -71,7 +71,7 @@
                         :miniGridData="miniGridData"
                     ></box-group>
                 </div>
-                <div class="md-layout-item md-size-100" v-if="enableDataStream ">
+                <div class="md-layout-item md-size-100" v-if="enableDataStream" style="margin-top: 3rem">
                     <energy-chart-box :mini-grid-id="miniGridId"/>
                 </div>
 
@@ -197,19 +197,6 @@ export default {
         RevenuePerCustomerType
     },
     mixins: [currency, notify],
-    created () {
-        this.miniGridId = this.$route.params.id
-        this.redirectionUrl += '/' + this.miniGridId
-    },
-    mounted () {
-        this.getMiniGridData()
-        EventBus.$on('closeModal', this.closeModal)
-    },
-    watch: {
-        $route: function () {
-            this.$router.go()
-        },
-    },
     data () {
         return {
             miniGridService: new MiniGridService(),
@@ -266,6 +253,20 @@ export default {
             },
             periodText: '-',
         }
+    },
+    created () {
+        this.miniGridId = this.$route.params.id
+        this.redirectionUrl += '/' + this.miniGridId
+    },
+    mounted () {
+        this.getMiniGridData()
+        EventBus.$on('closeModal', this.closeModal)
+        this.miniGrids = this.miniGridService.getMiniGrids()
+    },
+    watch: {
+        $route: function () {
+            this.$router.go()
+        },
     },
     methods: {
         async getMiniGridData () {

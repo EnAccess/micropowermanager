@@ -207,30 +207,30 @@
                                 <md-table-cell style="text-align: center !important;">
 
                                     <img v-if="transaction.service==='vodacom_transaction'" class="logo" alt="logo"
-                                         :src="vodacomLogo" style="max-height: 18px;"/>
+                                         :src="vodacomLogo" style="max-height: 20px;"/>
                                     <img v-if="transaction.service==='airtel_transaction'" class="logo" alt="logo"
-                                         :src="airtelLogo" style="max-height: 18px;"/>
+                                         :src="airtelLogo" style="max-height: 32px;"/>
                                     <img v-if="transaction.service==='third_party_transaction'" class="logo" alt="logo"
-                                         :src="thirdPartyLogo" style="max-height: 18px;"/>
+                                         :src="thirdPartyLogo" style="max-height: 24px;"/>
                                     <img v-if="transaction.service==='agent_transaction'"
                                          :src="agentIcon"
-                                         style="max-height:18px;"
+                                         style="max-height:32px;"
                                     />
                                     <img v-if="transaction.service==='cash_transaction'"
                                          :src="moneyIcon"
-                                         style="max-height:18px;"
+                                         style="max-height:32px;"
                                     />
                                     <img v-if="transaction.service==='wave_money_transaction'"
                                          :src="waveMoneyLogo"
-                                         style="max-height:18px;"
+                                         style="max-height:34px;"
                                     />
                                     <img v-if="transaction.service==='swifta_transaction'"
                                          :src="swiftaLogo"
-                                         style="max-height:18px;"
+                                         style="max-height:20px;"
                                     />
                                     <img v-if="transaction.service==='wavecom_transaction'"
                                          :src="waveComLogo"
-                                         style="max-height:18px;"
+                                         style="max-height:32px;"
                                     />
 
                                 </md-table-cell>

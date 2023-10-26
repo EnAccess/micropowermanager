@@ -30,7 +30,7 @@
 
 import { EventBus } from './eventbus'
 
-//google.charts.load('current', {'packages':['corechart', 'controls']})
+google.charts.load('current', { 'packages': ['corechart', 'controls'] })
 export default {
     name: 'CustomChart',
     props: {

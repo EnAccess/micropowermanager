@@ -32,7 +32,6 @@ export class BatteryService {
             this.fetchBatteryData(battery, withChartData)
         ))
         if (withChartData) {
-            console.log('battery serviceden yolladim', this.subscriber)
             EventBus.$emit('chartLoaded', this.subscriber)
         }
 
@@ -76,7 +75,6 @@ export class BatteryService {
         this.batteryData.map((battery) => (
             this.chartDataDistributor(battery)
         ))
-        console.log('battery den yollama!!°°!!!!!! yolladim', this.subscriber)
         EventBus.$emit('chartLoaded', this.subscriber)
 
     }

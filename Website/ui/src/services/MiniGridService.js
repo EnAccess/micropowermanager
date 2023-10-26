@@ -9,8 +9,6 @@ export class MiniGridService {
         this.currentTransaction= null
         this.soldEnergy=0
 
-
-
     }
 
     async getMiniGrids () {
