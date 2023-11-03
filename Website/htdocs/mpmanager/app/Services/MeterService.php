@@ -300,8 +300,11 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with('meterType', 'meterParameter.tariff')->paginate($limit);
     }
 
-    public function update($model, $data)
+    public function update($meter, $meterData)
     {
-        // TODO: Implement update() method.
+        $meter->update($meterData);
+        $meter->fresh();
+
+        return $meter;
     }
 }

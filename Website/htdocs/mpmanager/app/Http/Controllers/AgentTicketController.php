@@ -75,10 +75,10 @@ class AgentTicketController extends Controller
         ];
         $ticket = $this->ticketService->make($ticketData);
         $this->agentTicketService->setAssigned($ticket);
-        $this->agentTicketService->setAssigner($agent);
+        $this->agentTicketService->setAssignee($agent);
         $this->agentTicketService->assign();
         $this->personTicketService->setAssigned($ticket);
-        $this->personTicketService->setAssigner($owner);
+        $this->personTicketService->setAssignee($owner);
         $this->personTicketService->assign();
         $this->ticketService->save($ticket);
 

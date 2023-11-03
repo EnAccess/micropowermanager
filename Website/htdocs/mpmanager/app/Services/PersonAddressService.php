@@ -17,7 +17,6 @@ class PersonAddressService implements IAssignationService
         return $this->person;
     }
 
-
     public function getPersonAddresses($person)
     {
         return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
@@ -28,7 +27,7 @@ class PersonAddressService implements IAssignationService
         $this->address = $address;
     }
 
-    public function setAssigner($person)
+    public function setAssignee($person)
     {
         $this->person = $person;
     }
@@ -36,7 +35,6 @@ class PersonAddressService implements IAssignationService
     public function assign()
     {
         $this->address->owner()->associate($this->person);
-        ;
 
         return $this->address;
     }

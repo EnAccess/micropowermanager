@@ -145,7 +145,7 @@ class AgentService implements IBaseService
         $agentData['person_id'] = $person->id;
         $agentData['name'] = $person->name;
         $address = $addressService->make($addressData);
-        $personAddressService->setAssigner($person);
+        $personAddressService->setAssignee($person);
         $personAddressService->setAssigned($address);
         $personAddressService->assign();
         $addressService->save($address);

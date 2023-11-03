@@ -15,7 +15,7 @@ class TransactionPaymentHistoryService implements IAssignationService
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssigner($transaction)
+    public function setAssignee($transaction)
     {
         $this->transaction = $transaction;
     }

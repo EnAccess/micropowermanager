@@ -14,7 +14,7 @@ class MeterParameterAddressService implements IAssignationService
     private MeterParameter $meterParameter;
 
 
-    public function setAssigner($meterParameter)
+    public function setAssignee($meterParameter)
     {
         $this->meterParameter = $meterParameter;
     }

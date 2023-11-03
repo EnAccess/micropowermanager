@@ -48,7 +48,7 @@ class ManufacturerController extends Controller
         $manufacturer = $this->manufacturerService->create($manufacturerData);
         $address = $this->addressService->make($addressData);
         $this->manufacturerAddressService->setAssigned($address);
-        $this->manufacturerAddressService->setAssigner($manufacturer);
+        $this->manufacturerAddressService->setAssignee($manufacturer);
         $this->manufacturerAddressService->assign();
         $this->addressService->save($address);
 

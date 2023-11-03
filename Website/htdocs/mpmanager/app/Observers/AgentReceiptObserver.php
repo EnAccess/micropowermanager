@@ -62,7 +62,7 @@ class AgentReceiptObserver
             'due_to_supplier' => $agent->due_to_energy_supplier
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
-        $this->agentReceiptHistoryBalanceService->setAssigner($receipt);
+        $this->agentReceiptHistoryBalanceService->setAssignee($receipt);
         $this->agentReceiptHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentReceiptHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);

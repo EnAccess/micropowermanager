@@ -15,7 +15,7 @@ class AgentTicketService implements IAssignationService
         $this->ticket = $ticket;
     }
 
-    public function setAssigner($agent)
+    public function setAssignee($agent)
     {
         $this->agent = $agent;
     }

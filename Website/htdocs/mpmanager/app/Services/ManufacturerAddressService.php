@@ -15,7 +15,7 @@ class ManufacturerAddressService implements IAssignationService
         $this->address = $address;
     }
 
-    public function setAssigner($manufacturer)
+    public function setAssignee($manufacturer)
     {
         $this->manufacturer = $manufacturer;
     }

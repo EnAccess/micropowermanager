@@ -28,7 +28,7 @@ class AgentChargeObserver
         ];
         $agentBalanceHistory =  $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentChargeHistoryBalanceService->setAssigned($agentBalanceHistory);
-        $this->agentChargeHistoryBalanceService->setAssigner($agentCharge);
+        $this->agentChargeHistoryBalanceService->setAssignee($agentCharge);
         $this->agentChargeHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
     }

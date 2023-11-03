@@ -72,7 +72,7 @@ class AgentSoldApplianceObserver
         ];
 
         $transaction = $this->transactionService->make($transactionData);
-        $this->agentTransactionTransactionService->setAssigner($agentTransaction);
+        $this->agentTransactionTransactionService->setAssignee($agentTransaction);
         $this->agentTransactionTransactionService->setAssigned($transaction);
         $this->agentTransactionTransactionService->assign();
         $this->transactionService->save($transaction);
@@ -87,7 +87,7 @@ class AgentSoldApplianceObserver
             'asset_type_id' => $assignedAppliance->applianceType->id,
         ];
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
-        $this->agentAppliancePersonService->setAssigner($agent);
+        $this->agentAppliancePersonService->setAssignee($agent);
         $this->agentAppliancePersonService->setAssigned($appliancePerson);
         $this->agentAppliancePersonService->assign();
         $this->appliancePersonService->save($appliancePerson);
@@ -113,7 +113,7 @@ class AgentSoldApplianceObserver
 
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
-        $this->agentAssignedApplianceHistoryBalanceService->setAssigner($assignedAppliance);
+        $this->agentAssignedApplianceHistoryBalanceService->setAssignee($assignedAppliance);
         $this->agentAssignedApplianceHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentAssignedApplianceHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
@@ -131,7 +131,7 @@ class AgentSoldApplianceObserver
 
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
-        $this->agentCommissionHistoryBalanceService->setAssigner($agentCommission);
+        $this->agentCommissionHistoryBalanceService->setAssignee($agentCommission);
         $this->agentCommissionHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentCommissionHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);

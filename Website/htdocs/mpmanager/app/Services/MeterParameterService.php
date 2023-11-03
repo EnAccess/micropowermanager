@@ -34,4 +34,14 @@ class MeterParameterService
         event('meterparameter.saved', $meterParameter->meter_id);
         return $meterParameter;
     }
+
+    public function getAll()
+    {
+        return $this->meterParameter->newQuery()->get();
+    }
+
+    public function delete($meterParameter)
+    {
+        return $meterParameter->delete();
+    }
 }

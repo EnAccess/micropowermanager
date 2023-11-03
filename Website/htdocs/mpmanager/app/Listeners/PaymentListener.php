@@ -81,18 +81,18 @@ class PaymentListener
         $paymentHistory = $this->paymentHistoryService->make($paymentHistoryData);
         $paymentHistory->created_at = $transaction->created_at;
         $paymentHistory->updated_at = $transaction->updated_at;
-        $this->personPaymentHistoryService->setAssigner($payer);
+        $this->personPaymentHistoryService->setAssignee($payer);
         $this->personPaymentHistoryService->setAssigned($paymentHistory);
         $this->personPaymentHistoryService->assign();
 
         switch (true) {
             case $paidFor instanceof AccessRate:
-                $this->accessRatePaymentHistoryService->setAssigner($paidFor);
+                $this->accessRatePaymentHistoryService->setAssignee($paidFor);
                 $this->accessRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->accessRatePaymentHistoryService->assign();
                 break;
             case $paidFor instanceof AssetRate:
-                $this->applianceRatePaymentHistoryService->setAssigner($paidFor);
+                $this->applianceRatePaymentHistoryService->setAssignee($paidFor);
                 $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->applianceRatePaymentHistoryService->assign();
                 break;
@@ -101,13 +101,13 @@ class PaymentListener
                 $paymentHistory->paid_for_id = $paidFor->id;
                 break;
             case $paidFor instanceof MeterToken:
-                $this->meterTokenPaymentHistoryService->setAssigner($paidFor);
+                $this->meterTokenPaymentHistoryService->setAssignee($paidFor);
                 $this->meterTokenPaymentHistoryService->setAssigned($paymentHistory);
                 $this->meterTokenPaymentHistoryService->assign();
                 break;
         }
 
-        $this->transactionPaymentHistoryService->setAssigner($transaction);
+        $this->transactionPaymentHistoryService->setAssignee($transaction);
         $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
         $this->transactionPaymentHistoryService->assign();
         $this->paymentHistoryService->save($paymentHistory);

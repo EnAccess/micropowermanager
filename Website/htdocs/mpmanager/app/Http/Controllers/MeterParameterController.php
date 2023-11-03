@@ -80,7 +80,7 @@ class MeterParameterController extends Controller
         );
 
         $address = $this->addressService->make($addressData);
-        $this->meterParameterAddressService->setAssigner($meterParameter);
+        $this->meterParameterAddressService->setAssignee($meterParameter);
         $this->meterParameterAddressService->setAssigned($address);
         $this->meterParameterAddressService->assign();
         $this->addressService->save($address);

@@ -9,7 +9,7 @@ interface IAssignationService
 {
     public function setAssigned($assigned);
 
-    public function setAssigner($assigning);
+    public function setAssignee($assignee);
 
     public function assign();
 }
