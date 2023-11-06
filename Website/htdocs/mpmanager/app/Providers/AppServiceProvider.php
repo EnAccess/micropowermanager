@@ -7,6 +7,7 @@ use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
 use App\Models\Asset;
 use App\Models\MaintenanceUsers;
+use App\Models\Meter\Meter;
 use App\Models\Transaction\AirtelTransaction;
 use App\Transaction\AirtelVoltTerra;
 use App\Transaction\VodacomTransaction;
@@ -83,6 +84,7 @@ class AppServiceProvider extends ServiceProvider
                 'third_party_transaction' => ThirdPartyTransaction::class,
                 'cash_transaction' => CashTransaction::class,
                 'maintenance_user' => MaintenanceUsers::class,
+                'meter' => Meter::class
             ]
         );
     }
