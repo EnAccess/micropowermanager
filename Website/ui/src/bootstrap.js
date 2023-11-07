@@ -97,7 +97,7 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css' // This line here
 Vue.use(VueMaterial)
 
-import SidebarComponent from './components/Sidebar'
+import SidebarComponent from './modules/Sidebar'
 
 Vue.use(SidebarComponent)
 import '../src/assets/sass/mpm.scss'
