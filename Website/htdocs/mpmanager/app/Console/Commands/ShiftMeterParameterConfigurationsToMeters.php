@@ -38,6 +38,8 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         private MeterDeviceService $meterDeviceService,
         private DeviceService $deviceService,
         private DeviceAddressService $deviceAddressService,
+        private AddressService $addressService
+
     ) {
         parent::__construct();
     }
@@ -81,8 +83,8 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             $this->deviceAddressService->setAssigned($address);
             $this->deviceAddressService->setAssignee($device);
             $this->deviceAddressService->assign();
+            $this->deviceService->save($address);
 
-            $address->delete();
             $this->meterParameterService->delete($meterParameter);
             $this->info('Meter parameter values are shifted to meters, devices and addresses.');
             DB::connection('shard')->commit();

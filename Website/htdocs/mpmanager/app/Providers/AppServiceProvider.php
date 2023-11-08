@@ -6,6 +6,7 @@ use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
 use App\Models\Asset;
+use App\Models\Device;
 use App\Models\MaintenanceUsers;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\AirtelTransaction;
@@ -84,7 +85,8 @@ class AppServiceProvider extends ServiceProvider
                 'third_party_transaction' => ThirdPartyTransaction::class,
                 'cash_transaction' => CashTransaction::class,
                 'maintenance_user' => MaintenanceUsers::class,
-                'meter' => Meter::class
+                'meter' => Meter::class,
+                'device' => Device::class
             ]
         );
     }

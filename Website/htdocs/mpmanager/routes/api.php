@@ -271,9 +271,8 @@ Route::group(['prefix' => 'report-downloading'], function () {
 });
 // Revenue
 Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {
-    Route::post('/analysis/', 'RevenueController@analysis');
-    Route::post('/trends/{id}', 'RevenueController@trending');
     Route::post('/', 'RevenueController@revenueData');
+    Route::post('/trends/{id}', 'RevenueController@trending');
     Route::get('/tickets/{id}', 'RevenueController@ticketData');
 });
 // Sms

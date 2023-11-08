@@ -13,7 +13,7 @@
                                 {{ $tc('words.miniGrid') }}: {{ miniGridData.name }}
                             </md-button>
                             <md-menu-content>
-                                <md-menu-item v-for="(miniGrid ,key)  in miniGrids" :key="key"
+                                <md-menu-item v-for="(miniGrid ,key)  in miniGridList" :key="key"
                                               @click="setMiniGrid(miniGrid.id)">
                                     <span>{{ miniGrid.name }}</span>
                                     <md-icon v-if="miniGrid.data_stream === 1">check</md-icon>
@@ -105,6 +105,7 @@
                     <tickets-overview :chart-options="chartOptions" :ticketData="openedTicketChartData"/>
                 </div>
             </div>
+
             <transition name="modal" v-if="showModal">
                 <div class="modal-mask">
                     <div class="modal-wrapper">
@@ -206,7 +207,6 @@ export default {
             showModal: false,
             miniGridData: {},
             miniGridId: null,
-            miniGrids: [],
             chartOptions: {
                 isStacked: true,
                 chart: {
@@ -253,7 +253,6 @@ export default {
     mounted () {
         this.getMiniGridData()
         EventBus.$on('closeModal', this.closeModal)
-        this.miniGrids = this.miniGridService.getMiniGrids()
     },
     watch: {
         $route: function () {
@@ -485,6 +484,17 @@ export default {
             if (current + compared === 0) return -1
             return Math.round(current * 100 / compared)
         }
+    },
+    computed: {
+        miniGridList () {
+            return this.$store.getters['miniGridDashboard/getMiniGridsData'].map((miniGrid) => {
+                return {
+                    id: miniGrid.id,
+                    name: miniGrid.name,
+                    data_stream: miniGrid.data_stream
+                }
+            })
+        },
     }
 }
 </script>
@@ -503,140 +513,15 @@ export default {
     margin-top: 3rem
 }
 
-.asd__inner-wrapper {
-    margin-left: 0 !important;
-}
-
-.date-button {
-    overflow: hidden;
-    max-width: 100%;
-}
-
-.base-color, .green {
-    color: #739e73
-}
-
-.compare-color {
-    color: #448aff;
-}
-
-.red {
-    color: #ba0f0d;
-}
-
-.base-color-bg {
-    background-color: #739e73 !important;
-    color: whitesmoke !important;
-}
-
-.compare-color-bg {
-    background-color: #448aff !important;
-    color: whitesmoke !important;
-}
-
-.progress {
-    margin-bottom: 6px !important;
-}
-
-.close-period {
-    transition: all 600ms;
-    -webkit-transition: all 0.5s; /* Safari */
-    cursor: pointer;
-    background-color: #1b1e21;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    color: whitesmoke;
-    padding: 10px;
-    border: 1px solid;
-    font-size: 1.2rem;
-    position: absolute;
-    left: -12%;
-    top: 0;
-}
-
-.close-period:hover {
-    left: 0;
-    padding-left: 48px;
-    margin-left: -50px;
-}
-
 .close-period > button {
     font-size: 2rem;
     background-color: #7f9919;
     color: whitesmoke;
 }
 
-.open-period {
-    cursor: pointer;
-    background-color: #1b1e21;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    color: whitesmoke;
-    padding: 10px;
-    border: 1px solid;
-    font-size: 1.2rem;
-    position: absolute;
-    top: 1rem;
-    -webkit-transition: padding-right 0.5s, color 0.5s, background-color 0.5s; /* Safari */
-    transition: padding-right 0.5s, color 0.5s, background-color 0.5s;
-    right: 0;
-}
-
-.open-period:hover {
-    padding-right: 250px;
-    background-color: #c7cfdc;
-    border: #cccccc;
-    color: #1b1e21;
-}
-
-div {
-    transition: all 600ms;
-    -webkit-transition: all 0.5s; /* Safari */
-}
-
-.period-indicator {
-    opacity: 0.8;
-    cursor: pointer;
-}
-
-.pull-left.navigation-padding {
-    padding-left: 15px;
-}
-
-.pull-right.navigation-padding {
-    padding-right: 15px;
-}
-
-.period-navigation {
-    background-color: #448aff;
-    padding: 5px;
-    color: white;
-    border: 1px;
-    font-weight: 600;
-    letter-spacing: 4.2px;
-    border-radius: 11px;
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-}
-
 .period-navigation > .arrows {
     position: absolute;
     top: 1.5rem;
-}
-
-.arrows.right {
-    right: 2rem;
-}
-
-.arrows.left {
-    left: 2rem;
-}
-
-.progress-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #333;
-    margin: 0 0 20px;
 }
 
 .progress {
@@ -677,23 +562,6 @@ div {
     right: -25px;
 }
 
-@-webkit-keyframes animate-positive {
-    0% {
-        width: 0;
-    }
-}
-
-@keyframes animate-positive {
-    0% {
-        width: 0;
-    }
-}
-
-.tooltip {
-    display: block !important;
-    z-index: 10000;
-}
-
 .tooltip .tooltip-inner {
     background: black;
     color: white;
@@ -711,10 +579,6 @@ div {
     z-index: 1;
 }
 
-.tooltip[x-placement^="top"] {
-    margin-bottom: 5px;
-}
-
 .tooltip[x-placement^="top"] .tooltip-arrow {
     border-width: 5px 5px 0 5px;
     border-left-color: transparent !important;
@@ -724,10 +588,6 @@ div {
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
-}
-
-.tooltip[x-placement^="bottom"] {
-    margin-top: 5px;
 }
 
 .tooltip[x-placement^="bottom"] .tooltip-arrow {
@@ -741,10 +601,6 @@ div {
     margin-bottom: 0;
 }
 
-.tooltip[x-placement^="right"] {
-    margin-left: 5px;
-}
-
 .tooltip[x-placement^="right"] .tooltip-arrow {
     border-width: 5px 5px 5px 0;
     border-left-color: transparent !important;
@@ -756,9 +612,6 @@ div {
     margin-right: 0;
 }
 
-.tooltip[x-placement^="left"] {
-    margin-right: 5px;
-}
 
 .tooltip[x-placement^="left"] .tooltip-arrow {
     border-width: 5px 0 5px 5px;
@@ -783,36 +636,6 @@ div {
     border-color: #f9f9f9;
 }
 
-.tooltip[aria-hidden='true'] {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .15s, visibility .15s;
-}
-
-.tooltip[aria-hidden='false'] {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity .15s;
-}
-
-.vdp-datepicker__calendar {
-    width: 100% !important;
-}
-
-.dot {
-    height: 1.5rem;
-    width: 1.5rem;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dot.revenue {
-    background-color: #739e73;
-}
-
-.dot.new-connection {
-    background-color: #c79121;
-}
 
 .modal-mask {
     position: fixed;
@@ -860,52 +683,10 @@ div {
     color: #42b983;
 }
 
-.modal-body {
-    margin: 20px 0;
-}
-
-.modal-default-button {
-    float: right;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-.modal-enter {
-    opacity: 0;
-}
-
-.modal-leave-active {
-    opacity: 0;
-}
-
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
-}
-
-.exclamation {
-    margin: auto;
-    align-items: center;
-    display: inline-grid;
-    text-align: center;
-}
-
-.watched-miniGrid-List {
-    font-size: 11px;
-    width: 15%;
-    margin: auto;
-    font-weight: bold;
-}
-
-.exclamation-div {
-    margin-top: 2% !important;
 }
 
 .data-stream-switch {

@@ -31,6 +31,7 @@ class MiniGridDashboardCacheController extends Controller
         if ($toDate && $fromDate) {
             $this->miniGridDashboardCacheDataService->setData([$fromDate, $toDate]);
         } else {
+
             $this->miniGridDashboardCacheDataService->setData();
         }
         return ['data' => $this->miniGridDashboardCacheDataService->getData()];

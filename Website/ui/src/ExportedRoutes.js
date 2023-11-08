@@ -55,6 +55,15 @@ export const exportedRoutes = [
         },
     },
     {
+        path: '/dashboards/mini-grid/',
+        component: require('./pages/Dashboard/MiniGrid/index.vue').default,
+        meta: {
+            layout: 'default', breadcrumb:
+                { level: 'base', name: 'Mini-Grids', link: '/dashboards/mini-grid' },
+        },
+    },
+
+    {
         path: '/dashboards/mini-grid/:id',
         component: require('./pages/Dashboard/MiniGrid/_id.vue').default,
         meta: {

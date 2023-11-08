@@ -8,7 +8,6 @@ use App\Services\IAssignationService;
 
 class MeterDeviceService implements IAssignationService
 {
-
     private Device $device;
     private Meter $meter;
 
@@ -28,4 +27,5 @@ class MeterDeviceService implements IAssignationService
 
         return $this->device;
     }
+
 }
