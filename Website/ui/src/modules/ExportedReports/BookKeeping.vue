@@ -12,7 +12,6 @@
                   <md-table-head v-for="(item, index) in headers" :key="index">{{item}}</md-table-head>
               </md-table-row>
                 <md-table-row  slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-sort-by="id" :md-label="$tc('words.id')"> {{ item.id}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.date')"> {{ item.date}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.file')">
                         <div @click="download(item.id,'/book-keeping')">
@@ -52,7 +51,7 @@ export default {
             bookKeepingService: new BookKeepingService(),
             list: [],
             subscriber: 'bookKeeping',
-            headers: [this.$tc('words.id'), this.$tc('words.date'), this.$tc('words.file')],
+            headers: [this.$tc('words.date'), this.$tc('words.file')],
         }
     },
     methods: {

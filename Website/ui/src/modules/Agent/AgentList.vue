@@ -18,10 +18,6 @@
                 </md-table-row>
                 <md-table-row v-for="(agent) in agentService.list" style="cursor:pointer;" :key="agent.id"
                               @click="detail(agent.id)">
-
-                    <md-table-cell> {{ agent.id }}
-                    </md-table-cell>
-
                     <md-table-cell> {{ agent.name }}
                     </md-table-cell>
                     <md-table-cell> {{ agent.email }}
@@ -54,7 +50,7 @@ export default {
             addNewAgent: false,
             agentService: new AgentService(),
             searchTerm: '',
-            headers: [this.$tc('words.id'), this.$tc('words.name'), this.$tc('words.email'), this.$tc('words.miniGrid'), this.$tc('words.balance')],
+            headers: [this.$tc('words.name'), this.$tc('words.email'), this.$tc('words.miniGrid'), this.$tc('words.balance')],
             tableName: 'Agent'
         }
     },

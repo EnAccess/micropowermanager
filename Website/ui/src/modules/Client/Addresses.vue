@@ -12,7 +12,6 @@
         >
             <md-table style="width:100%" v-model="addresses.list" md-card md-fixed-header>
                 <md-table-row @click="editAddress(item, index)" slot="md-table-row" slot-scope="{ item, index }">
-                    <md-table-cell :md-label="$tc('words.id')" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.street')" md-sort-by="street">{{ item.street }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.city')" md-sort-by="city">{{ item.city }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.phone')" md-sort-by="phone">{{ item.phone }}</md-table-cell>

@@ -59,13 +59,11 @@
 
             <md-table>
                 <md-table-row>
-                    <md-table-head>{{ $tc('words.id') }}</md-table-head>
                     <md-table-head>{{ $tc('words.name') }}</md-table-head>
                     <md-table-head>{{ $tc('phrases.maxCurrent') }}</md-table-head>
                     <md-table-head>{{ $tc('words.connectivity') }}</md-table-head>
                 </md-table-row>
                 <md-table-row v-for="(type,index) in meterTypesList" :key="index">
-                    <md-table-cell>{{index+1}}</md-table-cell>
                     <md-table-cell>{{type.name}}</md-table-cell>
                     <md-table-cell>{{type.max_current}}</md-table-cell>
                     <md-table-cell>

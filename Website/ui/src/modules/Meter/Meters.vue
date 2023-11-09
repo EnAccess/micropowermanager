@@ -11,7 +11,6 @@
         >
           <md-table md-card style="margin-left: 0">
                         <md-table-row>
-                            <md-table-head>{{ $tc('words.id') }}</md-table-head>
                             <md-table-head>
                                 <md-icon>add</md-icon>
                                 {{ $tc('phrases.serialNumber') }}
@@ -32,7 +31,6 @@
                             style="cursor:pointer;"
                             @click="meterDetail( meter.serialNumber)"
                         >
-                            <md-table-cell>{{ meter.id}}</md-table-cell>
                             <md-table-cell>{{ meter.serialNumber}}</md-table-cell>
                             <md-table-cell>{{meter.tariff}}</md-table-cell>
                             <md-table-cell>{{ meter.manufacturer.manufacturerName}}</md-table-cell>

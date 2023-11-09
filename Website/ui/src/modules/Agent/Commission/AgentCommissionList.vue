@@ -13,109 +13,108 @@
 
             <md-progress-bar md-mode="indeterminate" v-if="loading"/>
 
-                    <md-table md-sort="id" md-sort-order="asc">
-                        <md-table-row>
-                            <md-table-head v-for="(item, index) in headers" :key="index">{{item}}</md-table-head>
-                        </md-table-row>
-                        <md-table-row v-for="(item, index) in agentCommissionService.list" :key="index">
-                            <md-table-cell md-sort-by="id" md-label="ID">{{item.id}}</md-table-cell>
-                            <md-table-cell md-label="Name">
-                                <div v-if="editCommission === item.id">
-                                    <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
-                                        <label for="name">{{$tc('words.name')}} </label>
-                                        <md-input :name="$tc('words.name')" id="name"
-                                                  v-model="item.name"
-                                                  v-validate="'required|min:3'"
-                                        />
-                                        <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
-                                    </md-field>
+            <md-table md-sort="id" md-sort-order="asc">
+                <md-table-row>
+                    <md-table-head v-for="(item, index) in headers" :key="index">{{ item }}</md-table-head>
+                </md-table-row>
+                <md-table-row v-for="(item, index) in agentCommissionService.list" :key="index">
+                    <md-table-cell md-label="Name">
+                        <div v-if="editCommission === item.id">
+                            <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
+                                <label for="name">{{ $tc('words.name') }} </label>
+                                <md-input :name="$tc('words.name')" id="name"
+                                          v-model="item.name"
+                                          v-validate="'required|min:3'"
+                                />
+                                <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
+                            </md-field>
 
-                                </div>
-                                <div v-else>
-                                    {{item.name}}
-                                </div>
-                            </md-table-cell>
-                            <md-table-cell md-label="Energy Commission">
+                        </div>
+                        <div v-else>
+                            {{ item.name }}
+                        </div>
+                    </md-table-cell>
+                    <md-table-cell md-label="Energy Commission">
 
-                                <div v-if="editCommission === item.id">
+                        <div v-if="editCommission === item.id">
 
-                                    <md-field :class="{'md-invalid': errors.has($tc('phrases.energyCommission'))}">
-                                        <label>{{$tc('phrases.energyCommission')}} </label>
-                                        <md-input :name="$tc('phrases.energyCommission')" id="energyCommission"
-                                                  v-model="item.energyCommission"
-                                                  v-validate="'required|min_value:0'" type="number"
-                                        />
-                                        <span class="md-error">{{ errors.first($tc('phrases.energyCommission')) }}</span>
-                                    </md-field>
+                            <md-field :class="{'md-invalid': errors.has($tc('phrases.energyCommission'))}">
+                                <label>{{ $tc('phrases.energyCommission') }} </label>
+                                <md-input :name="$tc('phrases.energyCommission')" id="energyCommission"
+                                          v-model="item.energyCommission"
+                                          v-validate="'required|min_value:0'" type="number"
+                                />
+                                <span class="md-error">{{ errors.first($tc('phrases.energyCommission')) }}</span>
+                            </md-field>
 
-                                </div>
-                                <div v-else>
-                                    {{item.energyCommission}}
-                                </div>
-                            </md-table-cell>
-                            <md-table-cell md-label="Appliance Commission">
-                                <div v-if="editCommission === item.id">
+                        </div>
+                        <div v-else>
+                            {{ item.energyCommission }}
+                        </div>
+                    </md-table-cell>
+                    <md-table-cell md-label="Appliance Commission">
+                        <div v-if="editCommission === item.id">
 
-                                    <md-field :class="{'md-invalid': errors.has($tc('phrases.applianceCommission'))}">
-                                        <label>{{ $tc('phrases.applianceCommission') }} </label>
-                                        <md-input :name="$tc('phrases.applianceCommission')" id="applianceCommission"
-                                                  v-model="item.applianceCommission"
-                                                  v-validate="'required|min_value:0'" type="number"
-                                        />
-                                        <span
-                                            class="md-error">{{ errors.first($tc('phrases.applianceCommission')) }}</span>
-                                    </md-field>
+                            <md-field :class="{'md-invalid': errors.has($tc('phrases.applianceCommission'))}">
+                                <label>{{ $tc('phrases.applianceCommission') }} </label>
+                                <md-input :name="$tc('phrases.applianceCommission')" id="applianceCommission"
+                                          v-model="item.applianceCommission"
+                                          v-validate="'required|min_value:0'" type="number"
+                                />
+                                <span
+                                    class="md-error">{{ errors.first($tc('phrases.applianceCommission')) }}</span>
+                            </md-field>
 
-                                </div>
-                                <div v-else>
-                                    {{item.applianceCommission}}
-                                </div>
-                            </md-table-cell>
-                            <md-table-cell md-label="Risk Balance">
-                                <div v-if="editCommission === item.id">
+                        </div>
+                        <div v-else>
+                            {{ item.applianceCommission }}
+                        </div>
+                    </md-table-cell>
+                    <md-table-cell md-label="Risk Balance">
+                        <div v-if="editCommission === item.id">
 
-                                    <md-field :class="{'md-invalid': errors.has($tc('phrases.riskBalance'))}">
-                                        <label>{{ $tc('phrases.riskBalance')}} ({{ $tc('phrases.mustBeNegative') }})</label>
-                                        <md-input :name="$tc('phrases.riskBalance')"
-                                                  id="riskBalance"
-                                                  max="0"
-                                                  v-model="item.riskBalance"
-                                                  v-validate="'required|max_value:0'" type="number"
-                                        />
-                                        <span class="md-error">{{ errors.first($tc('phrases.riskBalance')) }}</span>
-                                    </md-field>
+                            <md-field :class="{'md-invalid': errors.has($tc('phrases.riskBalance'))}">
+                                <label>{{ $tc('phrases.riskBalance') }} ({{ $tc('phrases.mustBeNegative') }})</label>
+                                <md-input :name="$tc('phrases.riskBalance')"
+                                          id="riskBalance"
+                                          max="0"
+                                          v-model="item.riskBalance"
+                                          v-validate="'required|max_value:0'" type="number"
+                                />
+                                <span class="md-error">{{ errors.first($tc('phrases.riskBalance')) }}</span>
+                            </md-field>
 
-                                </div>
-                                <div v-else>
-                                    {{item.riskBalance}}
-                                </div>
-                            </md-table-cell>
-                            <md-table-cell md-label="#">
-                                <div v-if="editCommission === item.id">
+                        </div>
+                        <div v-else>
+                            {{ item.riskBalance }}
+                        </div>
+                    </md-table-cell>
+                    <md-table-cell md-label="#">
+                        <div v-if="editCommission === item.id">
 
-                                    <md-button class="md-icon-button" @click="updateCommission(item)">
-                                        <md-tooltip md-direction="top">{{ $tc('words.save') }}</md-tooltip>
-                                        <md-icon>save</md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" @click="editCommission = null">
-                                        <md-tooltip md-direction="top">{{ $tc('words.close') }}</md-tooltip>
-                                        <md-icon>close</md-icon>
-                                    </md-button>
+                            <md-button class="md-icon-button" @click="updateCommission(item)">
+                                <md-tooltip md-direction="top">{{ $tc('words.save') }}</md-tooltip>
+                                <md-icon>save</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" @click="editCommission = null">
+                                <md-tooltip md-direction="top">{{ $tc('words.close') }}</md-tooltip>
+                                <md-icon>close</md-icon>
+                            </md-button>
 
-                                </div>
-                                <div v-else>
-                                    <md-button class="md-icon-button" @click="editCommission = item.id">
-                                        <md-tooltip md-direction="top">{{ $tc('words.edit') }}</md-tooltip>
-                                        <md-icon>edit</md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" @click="confirmDelete(item)">
-                                        <md-tooltip md-direction="top">{{ $tc('words.delete') }}</md-tooltip>
-                                        <md-icon>delete</md-icon>
-                                    </md-button>
-                                </div>
-                            </md-table-cell>
-                        </md-table-row>
-                    </md-table>
+                        </div>
+                        <div v-else>
+                            <md-button class="md-icon-button" @click="editCommission = item.id">
+                                <md-tooltip md-direction="top">{{ $tc('words.edit') }}</md-tooltip>
+                                <md-icon>edit</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" @click="confirmDelete(item)">
+                                <md-tooltip md-direction="top">{{ $tc('words.delete') }}</md-tooltip>
+                                <md-icon>delete</md-icon>
+                            </md-button>
+                        </div>
+                    </md-table-cell>
+                </md-table-row>
+            </md-table>
         </widget>
     </div>
 </template>
@@ -129,10 +128,10 @@ export default {
     name: 'AgentCommissionList',
     data () {
         return {
-            subscriber:'agent-commission-list',
+            subscriber: 'agent-commission-list',
             agentCommissionService: new AgentCommissionService(),
             showNewCommission: false,
-            headers: [this.$tc('words.id'), this.$tc('words.name'),
+            headers: [this.$tc('words.name'),
                 this.$tc('phrases.energyCommission'), this.$tc('phrases.applianceCommission'),
                 this.$tc('phrases.riskBalance'), '#'],
             tableName: 'Agent Commission Types',
@@ -167,7 +166,7 @@ export default {
         async getAgentCommissions () {
             try {
                 await this.agentCommissionService.getAgentCommissions()
-                EventBus.$emit('widgetContentLoaded',this.subscriber,this.agentCommissionService.list.length)
+                EventBus.$emit('widgetContentLoaded', this.subscriber, this.agentCommissionService.list.length)
             } catch (e) {
                 this.loading = false
                 this.alertNotify('error', e.message)
@@ -196,12 +195,12 @@ export default {
                 cancelButtonText: this.$tc('words.cancel'),
                 focusCancel: true,
                 html:
-                        '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-                        '  <label>' +
-                        '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-                        this.$tc('phrases.deleteAgentCommission',2,{ commissionName: commission.name }) +
-                        '  </label>' +
-                        '</div>'
+                    '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
+                    '  <label>' +
+                    '    <input type="checkbox" name="confirmation" id="confirmation" >' +
+                    this.$tc('phrases.deleteAgentCommission', 2, { commissionName: commission.name }) +
+                    '  </label>' +
+                    '</div>'
             }).then(result => {
                 let answer = document.getElementById('confirmation').checked
                 if ('value' in result) {

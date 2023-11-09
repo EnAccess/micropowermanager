@@ -13,7 +13,6 @@
                 </md-table-row>
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-sort-by="id" :md-label="$tc('words.id')">{{item.id}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.date')">{{item.date}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.name')">{{item.name}}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.file')">
@@ -48,7 +47,7 @@ export default {
         return {
             reportService: new ReportsService(),
             list: [],
-            headers: [this.$tc('words.id'), this.$tc('words.date'), this.$tc('words.name'), this.$tc('words.file')],
+            headers: [this.$tc('words.date'), this.$tc('words.name'), this.$tc('words.file')],
         }
     },
     mounted () {

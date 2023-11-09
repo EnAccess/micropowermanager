@@ -17,17 +17,16 @@
                 md-card>
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell :md-label="$tc('words.id')" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">{{ item.name }}</md-table-cell>
                     <md-table-cell :md-label="$tc('words.price') + '/ kWh'" md-numeric>
-                        {{ readable(item.price) }} {{ item.currency }}
+                        {{ moneyFormat(item.price) }}
                     </md-table-cell>
                     <md-table-cell :md-label="$tc('phrases.minimumPurchaseAmount')" md-numeric>
-                        {{ readable(item.minimumPurchaseAmount) }} {{ item.currency }}
+                        {{ moneyFormat(item.minimumPurchaseAmount) }}
                     </md-table-cell>
                     <md-table-cell :md-label="$tc('phrases.accessRate')" md-numeric md-sort-by="accessRate.amount">
                         <div v-if="item.accessRate">
-                            {{ readable(item.accessRate.amount) }} {{ item.currency }}
+                            {{ moneyFormat(item.accessRate.amount) }}
                         </div>
                         <div v-else>-</div>
                     </md-table-cell>
@@ -65,6 +64,7 @@ import Add from '@/modules/Tariff/Add'
 import { EventBus } from '@/shared/eventbus'
 import { TariffService } from '@/services/TariffService'
 import { notify } from '@/mixins/notify'
+
 export default {
     name: 'Tariffs',
     mixins: [currency, notify],
