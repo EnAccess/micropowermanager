@@ -7,7 +7,6 @@ export default {
 
     list () {
         return Client.get(`${resource}`)
-
     },
     analytics (period) {
         return Client.get(`${resource}/analytics/${period}`)

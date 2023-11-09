@@ -2,8 +2,6 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Providers;
 
-use App\Jobs\SmsProcessor;
-use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -13,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class WaveMoneyTransactionProvider implements ITransactionProvider
 {

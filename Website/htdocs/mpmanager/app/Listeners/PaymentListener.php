@@ -2,11 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Lib\ITransactionProvider;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Asset;
 use App\Models\AssetRate;
-use App\Models\AssetType;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterToken;
 use App\Services\AccessRatePaymentHistoryService;
@@ -18,6 +16,7 @@ use App\Services\TransactionPaymentHistoryService;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class PaymentListener
 {

@@ -19,10 +19,9 @@
                               :class="selectedApplianceId === item.id  ? 'selected-row' : ''">
                     <md-table-cell md-label="Name" md-sort-by="name">{{ item.asset.name }}</md-table-cell>
                     <md-table-cell md-label="Cost" md-sort-by="total_cost">{{ moneyFormat(item.total_cost) }}
-                        {{ currency }}
                     </md-table-cell>
                     <md-table-cell md-label="Down Payment" md-sort-by="Down Payment">
-                        {{ moneyFormat(item.down_payment) }} {{ currency }}
+                        {{ moneyFormat(item.down_payment) }}
                     </md-table-cell>
                     <md-table-cell md-label="Rates" md-sort-by="rate_count">
                         {{ item.rate_count }}

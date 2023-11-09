@@ -7,7 +7,7 @@ use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ISubTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
-use App\Transaction\VodacomTransaction;
+use App\Models\Transaction\VodacomTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;

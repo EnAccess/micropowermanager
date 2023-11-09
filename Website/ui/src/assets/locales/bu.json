@@ -513,6 +513,11 @@
     "port": "ဝင်ေရာက်ရနေ်နရာ",
     "encryption": "ကုဒ်ဝှက်ြခင်း",
     "authorized": "Authorized",
-    "unauthorized": "Unauthorized"
+    "unauthorized": "Unauthorized",
+    "minimumPayableAmount": "Minimum Payable Amount (access to the system for 7 days)",
+    "rateCost": "Installment Cost for Monthly access to the system",
+    "device": "device",
+    "solar_home_system": "Solar Home System",
+    "deviceType": "Device Type"
   }
 }

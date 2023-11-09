@@ -113,9 +113,9 @@
         </widget>
         <md-dialog :md-active.sync="showRates">
             <md-dialog-title>
-                Cost: {{ moneyFormat(newAppliance.cost) + $store.getters['settings/getMainSettings'].currency }} <br>
+                Cost: {{ moneyFormat(newAppliance.cost)}} <br>
                 Down Payment :
-                {{ moneyFormat(newAppliance.downPayment) + $store.getters['settings/getMainSettings'].currency }}<br>
+                {{ moneyFormat(newAppliance.downPayment) }}<br>
                 Rates: {{ newAppliance.rate }}
 
             </md-dialog-title>

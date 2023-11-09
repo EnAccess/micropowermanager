@@ -323,11 +323,9 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
 Route::group(['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
     static function () {
         Route::post('/airtel', 'TransactionController@store');
-
         Route::post('/vodacom', ['as' => 'vodacomTransaction', 'uses' => 'TransactionController@store']);
         Route::post('/agent',
             ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']);
-
     });
 
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {

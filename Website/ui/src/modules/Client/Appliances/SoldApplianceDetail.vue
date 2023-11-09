@@ -47,12 +47,12 @@
                     <div class="md-layout-item md-layout md-gutter md-size-100 " style="padding: 2vw">
                         <div class="md-layout-item md-size-50">
                             <h2><b>{{ $tc('phrases.totalCost') }}: </b>
-                                {{ moneyFormat(soldAppliance.totalCost) + currency }} </h2>
-                            <h4><b>Down Payment:</b> {{ moneyFormat(soldAppliance.downPayment) + ' ' + currency }}</h4>
-                            <h4><b>Total Payments :</b> {{ moneyFormat(soldAppliance.totalPayments) + ' ' + currency }}
+                                {{ moneyFormat(soldAppliance.totalCost) }} </h2>
+                            <h4><b>Down Payment:</b> {{ moneyFormat(soldAppliance.downPayment)}}</h4>
+                            <h4><b>Total Payments :</b> {{ moneyFormat(soldAppliance.totalPayments)}}
                             </h4>
                             <h4><b>Total Remaining Amount:</b>
-                                {{ moneyFormat(soldAppliance.totalRemainingAmount) + ' ' + currency }}</h4>
+                                {{ moneyFormat(soldAppliance.totalRemainingAmount)}}</h4>
                         </div>
                         <div class="md-layout-item md-size-50">
                             <h3><b>{{ $tc('phrases.soldDate') }}: </b> {{ formatReadableDate(soldAppliance.createdAt) }}
@@ -110,8 +110,8 @@
                                         <span class="md-error">{{ errors.first($tc('words.cost')) }}</span>
                                     </md-field>
                                 </md-table-cell>
-                                <md-table-cell v-else>{{ moneyFormat(rate.rate_cost) }} {{ currency }}</md-table-cell>
-                                <md-table-cell>{{ moneyFormat(rate.remaining) }} {{ currency }}</md-table-cell>
+                                <md-table-cell v-else>{{ moneyFormat(rate.rate_cost) }}</md-table-cell>
+                                <md-table-cell>{{ moneyFormat(rate.remaining) }}</md-table-cell>
 
                                 <md-table-cell>{{ formatReadableDate(rate.due_date) }}</md-table-cell>
 

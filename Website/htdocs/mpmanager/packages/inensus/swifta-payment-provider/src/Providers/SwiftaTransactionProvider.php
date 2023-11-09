@@ -4,9 +4,6 @@
 namespace Inensus\SwiftaPaymentProvider\Providers;
 
 
-use App\Jobs\SmsProcessor;
-use App\Lib\ITransactionProvider;
-use App\Models\Address\Address;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -14,10 +11,9 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
-use Inensus\SwiftaPaymentProvider\Http\Exceptions\SwiftaValidationFailedException;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class SwiftaTransactionProvider implements ITransactionProvider
 {

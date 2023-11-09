@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\AgentBalanceHistory;
-use App\Models\AgentCharge;
-use App\Transaction\AgentTransaction;
+use App\Models\Transaction\AgentTransaction;
+
 
 class AgentTransactionHistoryBalanceService implements IAssignationService
 {

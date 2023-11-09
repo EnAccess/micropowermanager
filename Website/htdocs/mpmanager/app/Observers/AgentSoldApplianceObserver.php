@@ -2,15 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Agent;
-use App\Models\AgentAssignedAppliances;
-use App\Models\AgentBalanceHistory;
-use App\Models\AgentCommission;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetPerson;
-use App\Models\Person\Person;
-use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\Transaction;
 use App\Services\AgentAppliancePersonService;
 use App\Services\AgentAssignedApplianceHistoryBalanceService;
 use App\Services\AgentAssignedApplianceService;
@@ -21,8 +13,7 @@ use App\Services\AgentService;
 use App\Services\AgentTransactionService;
 use App\Services\AgentTransactionTransactionService;
 use App\Services\AppliancePersonService;
-use App\Services\PersonService;
-use App\Services\TransactionService;
+use MPM\Transaction\TransactionService;
 
 class AgentSoldApplianceObserver
 {

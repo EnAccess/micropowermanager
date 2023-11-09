@@ -66,7 +66,7 @@ class StronMeterApi implements IManufacturerAPI
             "ApiToken" => $credentials->api_token
         ];
 
-        if (config('app.env') === 'local' || config('app.env') === 'development') {
+        if (config('app.env') === 'demo' || config('app.env') === 'development') {
             //debug token for development
             $transactionResult = ['48725997619297311927'];
         } else {

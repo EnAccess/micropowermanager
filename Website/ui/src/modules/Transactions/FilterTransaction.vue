@@ -9,20 +9,34 @@
                     <div
                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
+                            <label for="device">Device Type</label>
+                            <md-select v-model="selectedDevice" name="device" id="device" @md-selected="setDeviceType">
+
+                                <md-option v-for="device in deviceTypes" :value="device.type" :key="device.type">
+                                    {{ device.display }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
+                    </div>
+                    <div
+                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        <md-field>
+                            <label for="serial_number">Serial Number</label>
                             <md-input
                                 type="text"
-                                placeholder="Meter Serial Number"
+                                name="serial_number"
                                 v-model="filter.serial_number"
                                 v-on:keyup.enter="submitFilter"
                             ></md-input>
                         </md-field>
                     </div>
-                    <div
+                    <div v-if="selectedDevice === 'meter'"
                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
-                            <md-select v-model="tarrif_" name="tariff" id="tariff" @md-selected="setTariff">
-
-                                <md-option v-for="tariff in tariffs" :value="tariff.id" :key="tariff.id">{{tariff.name}}
+                            <label for="tariff">Tariff Name</label>
+                            <md-select v-model="selectedTariff" name="tariff" id="tariff" @md-selected="setTariff">
+                                <md-option v-for="tariff in tariffs" :value="tariff.id" :key="tariff.id">
+                                    {{ tariff.name }}
                                 </md-option>
                             </md-select>
                         </md-field>
@@ -30,10 +44,12 @@
                     <div
                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
+                            <label for="provider">Transaction Provider</label>
                             <md-select name="provider" id="provider"
                                        v-model="selectedProvider"
                             >
-                                <md-option v-for="(p,i) in transactionProviderService.list" :key="i" :value="p.value">{{p.name}}
+                                <md-option v-for="(p,i) in transactionProviders" :key="i" :value="p.value">
+                                    {{ p.name }}
                                 </md-option>
 
                             </md-select>
@@ -44,13 +60,14 @@
                     <div
                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
+                            <label for="transaction">Status</label>
                             <md-select
                                 v-model="transaction_"
                                 name="transaction"
                                 id="transaction"
                                 @md-selected="seTransaction"
                             >
-                                <md-option value="All Transactions">{{ $tc('phrases.allTransactions') }}</md-option>
+                                <md-option value="All">All</md-option>
                                 <md-option value="Only Approved">{{ $tc('phrases.onlyApproved') }}</md-option>
                                 <md-option value="Only Rejected">{{ $tc('phrases.onlyRejected') }}</md-option>
                             </md-select>
@@ -94,6 +111,7 @@ import { TransactionService } from '@/services/TransactionService'
 import { TariffService } from '@/services/TariffService'
 import { EventBus } from '@/shared/eventbus'
 import { TransactionProviderService } from '@/services/TransactionProviderService'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'FilterTransaction',
@@ -103,18 +121,18 @@ export default {
         this.getTransactionProviders()
         EventBus.$on('dataLoaded', this.dataLoaded)
     },
-
     data () {
         return {
             transactionService: new TransactionService(),
             transactionProviderService: new TransactionProviderService(),
             tariffService: new TariffService(),
-            selectedProvider: '',
+            selectedProvider: '-1',
+            selectedDevice: 'meter',
             tariffs: [],
-            tarrif_: '',
+            selectedTariff: '',
             loading: false,
-            provider_: 'All Network Providers',
-            transaction_: 'All Transactions',
+            provider_: 'All',
+            transaction_: 'All',
             filterFrom: null,
             filterTo: null,
             filter: {
@@ -124,10 +142,11 @@ export default {
                 provider: null,
                 from: null,
                 to: null,
-            }
+                deviceType: null,
+            },
+            transactionProviders: [],
         }
     },
-
     methods: {
         dataLoaded () {
             this.loading = false
@@ -142,37 +161,39 @@ export default {
                 }
                 this.tariffs.push(tariff)
             })
-            this.tariffs.unshift({ id: 'all', name: 'All Tariffs' })
-            this.tarrif_ = this.tariffs[0].id
+            this.tariffs.unshift({ id: 'all', name: 'All' })
+            this.selectedTariff = this.tariffs[0].id
 
         },
         async getTransactionProviders () {
-            await this.transactionProviderService.getTransactionProviders()
-            this.selectedProvider = this.transactionProviderService.list
-                .filter(x => x.value === '-1')
-                .map(x => x.value)[0]
-
+            this.transactionProviders = [{
+                name: 'All',
+                value: '-1'
+            }, ...await this.transactionProviderService.getTransactionProviders(),]
+        },
+        setDeviceType (type) {
+            this.filter.deviceType = type
         },
         setTariff (tariff) {
             this.filter.tariff = tariff
         },
-        closeFilter(){
+        closeFilter () {
             EventBus.$emit('transactionFilterClosed')
         },
         seTransaction (transaction) {
             switch (transaction) {
-            case 'All Transactions':
-                this.filter.status = 'all'
-                break
-            case 'Only Approved':
-                this.filter.status = '1'
-                break
-            case 'Only Rejected':
-                this.filter.status = '-1'
-                break
+                case 'All':
+                    this.filter.status = 'all'
+                    break
+                case 'Only Approved':
+                    this.filter.status = '1'
+                    break
+                case 'Only Rejected':
+                    this.filter.status = '-1'
+                    break
 
-            default:
-                break
+                default:
+                    break
             }
         },
         submitFilter () {
@@ -201,7 +222,6 @@ export default {
             this.$emit('searchSubmit', this.filter)
 
         },
-
         getSearch () {
             let search = this.$store.getters.search
 
@@ -217,15 +237,12 @@ export default {
                 }
             }
         }
-    }
+    },
+    computed: {
+        ...mapGetters({
+            deviceTypes: 'device/getDeviceTypes'
+        })
+    },
 }
 </script>
 
-<style scoped>
-    .filter-header {
-        text-align: center;
-        font-size: large;
-        text-decoration: underline;
-        font-weight: 500
-    }
-</style>

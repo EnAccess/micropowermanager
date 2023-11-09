@@ -1,6 +1,5 @@
 <template>
   <div>
-
       <component :is="layout">
       <router-view/>
       <notifications group="notify" position="bottom right" ></notifications>
@@ -10,24 +9,17 @@
 </template>
 
 <script>
-const default_layout = 'default'
-
+const defaultLayout = 'default'
 export default {
     name:'App.vue',
     computed: {
         layout() {
-            if (this.$route.meta.layout==default_layout) {
-                return default_layout
+            if (this.$route.meta.layout === defaultLayout) {
+                return defaultLayout
             }
 
             return 'div'
         }
     },
-
 }
 </script>
-
-
-<style lang="scss">
-
-</style>

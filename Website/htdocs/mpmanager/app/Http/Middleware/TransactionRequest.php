@@ -3,13 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\VodacomHeartBeatException;
-use App\Transaction\AirtelTransaction;
-use App\Transaction\VodacomTransaction;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class TransactionRequest
 {

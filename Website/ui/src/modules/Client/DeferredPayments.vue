@@ -23,12 +23,9 @@
                     <md-table-row v-for="(item, index) in assetPersonService.list" :key="index">
                         <md-table-cell md-label="Name" md-sort-by="name">{{ item.asset.name }}</md-table-cell>
                         <md-table-cell md-label="Cost" md-sort-by="total_cost">{{ moneyFormat(item.total_cost) }}
-                            {{ $store.getters['settings/getMainSettings'].currency }}
                         </md-table-cell>
                         <md-table-cell md-label="Down Payment" md-sort-by="down_payment">
-                            {{ moneyFormat(item.down_payment) }} {{
-                                $store.getters['settings/getMainSettings'].currency
-                            }}
+                            {{ moneyFormat(item.down_payment) }}
                         </md-table-cell>
                         <md-table-cell md-label="Rates" md-sort-by="rate_count">
                             {{ item.rate_count }}

@@ -29,7 +29,14 @@ import MicroStar from '@/plugins/micro-star-meter/js/modules/Overview/Credential
 import SunKing from '@/plugins/sun-king-shs/js/modules/Overview/Credential'
 import WaveMoney from '@/plugins/wave-money-payment-provider/js/modules/Overview/Credential'
 import GomeLong from '@/plugins/gome-long-meter/js/modules/Overview/Credential'
-import WaveComTransaction from '@/plugins/wavecom-payment-provider/js/modules/Component.vue'
+import WaveComTransaction from '@/plugins/wavecom-payment-provider/js/modules/Component'
+import WaveComTransactionDetail from '@/modules/Transactions/WaveComTransactionDetail'
+import AirtelTransactionDetail from '@/modules/Transactions/AirtelTransactionDetail'
+import SwiftaTransactionDetail from '@/modules/Transactions/SwiftaTransactionDetail'
+import ThirdPartyTransactionDetail from '@/modules/Transactions/ThirdPartyTransactionDetail'
+import VodacomTransactionDetail from '@/modules/Transactions/VodacomTransactionDetail'
+import WaveMoneyTransactionDetail from '@/modules/Transactions/WaveMoneyTransactionDetail'
+import AgentTransactionDetail from '@/modules/Agent/AgentTransactionDetail'
 
 Vue.component('default', Default)
 Vue.component('Spark-Meter', Spark)
@@ -45,6 +52,14 @@ Vue.component('MicroStar-Meter', MicroStar)
 Vue.component('SunKing-SHS', SunKing)
 Vue.component('GomeLong-Meter', GomeLong)
 Vue.component('WaveComTransaction', WaveComTransaction)
+Vue.component('WaveComTransactionDetail', WaveComTransactionDetail)
+Vue.component('AirtelTransactionDetail', AirtelTransactionDetail)
+Vue.component('SwiftaTransactionDetail', SwiftaTransactionDetail)
+Vue.component('ThirdPartyTransactionDetail', ThirdPartyTransactionDetail)
+Vue.component('VodacomTransactionDetail', VodacomTransactionDetail)
+Vue.component('WaveMoneyTransactionDetail', WaveMoneyTransactionDetail)
+Vue.component('AgentTransactionDetail', AgentTransactionDetail)
+
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 

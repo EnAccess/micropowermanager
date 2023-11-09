@@ -52,8 +52,6 @@
                         </div>
 
                     </div>
-
-
                 </div>
                 <div class="md-toolbar-section-end md-small-size-100 summary">
                     <md-button class="md-dense md-button-icon" @click="showBoxes = !showBoxes">
@@ -131,7 +129,7 @@
         </div>
         <div class="md-layout">
             <div class="transaction-filter" v-if="showFilter">
-                <filter-transaction @searchSubmit="filterTransaction"></filter-transaction>
+                <filter-transaction @searchSubmit="filterTransaction"/>
             </div>
             <div class="md-layout-item  md-size-100">
 
@@ -226,7 +224,7 @@
                                          :src="swiftaLogo"
                                          style="max-height:20px;"
                                     />
-                                    <img v-if="transaction.service==='wavecom_transaction'"
+                                    <img v-if="transaction.service ==='wavecom_transaction'"
                                          :src="waveComLogo"
                                          style="max-height:32px;"
                                     />
@@ -243,7 +241,9 @@
                                 <md-table-cell>
                                     <div v-if="transaction!=undefined">
                                         {{ timeForHuman(transaction.sentDate) }}
-                                        <small>{{ transaction.sentDate }}</small>
+                                        <small style="margin-left: 0.2rem">({{
+                                                timeForTimeZone(transaction.sentDate)
+                                            }})</small>
                                     </div>
                                 </md-table-cell>
                                 <md-table-cell>

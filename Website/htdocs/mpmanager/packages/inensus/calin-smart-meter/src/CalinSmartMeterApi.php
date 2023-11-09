@@ -76,7 +76,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
             'is_vend_by_unit' => true,
             'amount' => $energy
         ];
-        if (config('app.env') === 'local' || config('app.env') === 'development') {
+        if (config('app.env') === 'demo' || config('app.env') === 'development') {
             //debug token for development
             $token = '48725997619297311927';
         } else {

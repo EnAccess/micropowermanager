@@ -5,36 +5,10 @@
                 <div
                     class="md-layout-item  md-xlarge-size-50  md-large-size-50 md-medium-size-50  md-small-size-100 md-xsmall-size-100">
                     <div class="transaction-detail-card">
-                        <widget :title="$tc('phrases.providerSpecificInformation')" :show-spinner="false">
+                        <widget :title="$tc('phrases.providerSpecificInformation')" :show-spinner="false" color="green">
                             <md-card>
                                 <md-card-content>
-                                    <vodacom-transaction-detail
-                                        :ot="ot"
-                                        v-if="transaction.original_transaction_type === 'vodacom_transaction'"
-                                    />
-                                    <airtel-transaction-detail
-                                        :ot="ot"
-                                        v-if="transaction.original_transaction_type === 'airtel_transaction'"
-                                    />
-                                    <agent-transaction-detail
-                                        :ot="ot"
-                                        v-if="transaction.original_transaction_type === 'agent_transaction'"
-                                    />
-                                    <third-party-transaction :ot="ot"
-                                                             v-if="transaction.original_transaction_type === 'third_party_transaction'"
-                                    />
-                                    <wave-money-transaction :ot="ot"
-                                                            v-if="transaction.original_transaction_type === 'wave_money_transaction'"
-                                    />
-
-                                    <swifta-transaction :ot="ot"
-                                                        v-if="transaction.original_transaction_type === 'swifta_transaction'"
-                                    />
-                                    <wave-com-transaction :ot="ot"
-                                                          v-if="transaction.original_transaction_type === 'wavecom_transaction'"
-                                    />
-
-                                    <third-party-transaction :ot="ot" v-else/>
+                                    <component :is="providerDetail" :ot="ot"/>
                                 </md-card-content>
                             </md-card>
                         </widget>
@@ -47,7 +21,8 @@
                     <div class="transaction-detail-card">
                         <widget
                             :title="$tc('words.detail',2)"
-                            :show-spinner="false">
+                            :show-spinner="false"
+                        >
                             <md-card>
                                 <md-card-content>
                                     <div class="md-layout">
@@ -58,21 +33,31 @@
                                     <div class="md-layout">
                                         <div class="md-layout-item md-subheader">{{ $tc('words.amount') }}</div>
                                         <div class="md-layout-item md-subheader n-font">
-                                            {{ readable(transaction.amount) }}
+                                            {{ moneyFormat(transaction.amount) }}
                                         </div>
                                     </div>
                                     <hr class="hr-d">
                                     <div class="md-layout">
                                         <div class="md-layout-item md-subheader">{{ $tc('phrases.paymentType') }}</div>
-                                        <div class="md-layout-item md-subheader n-font"><span
-                                            v-text="transaction.type === 'energy' ? $tc('words.energy') : $tc('phrases.deferredPayment')"></span>
+                                        <div class="md-layout-item md-subheader n-font">
+                                            <span
+                                                v-text="transaction.type === 'energy' ? $tc('words.energy') : $tc('phrases.deferredPayment')"></span>
+                                            <small style="margin-left: 0.2em"
+                                                   v-if="transaction.type === 'energy' && transaction.token">({{ readable(transaction.token.energy) }}kWh)</small>
                                         </div>
                                     </div>
                                     <hr class="hr-d">
                                     <div class="md-layout">
-                                        <div class="md-layout-item md-subheader">{{ $tc('words.meter') }}</div>
+                                        <div class="md-layout-item md-subheader">{{ $tc('words.deviceType') }}</div>
+                                        <div class="md-layout-item md-subheader n-font">
+                                            {{ $tc(`words.${transaction.device.device_type}`) }}
+                                        </div>
+                                    </div>
+                                    <hr class="hr-d">
+                                    <div class="md-layout">
+                                        <div class="md-layout-item md-subheader">{{ $tc('words.device') }}</div>
                                         <div class="md-layout-item md-subheader n-font"
-                                             v-if="transaction.payment_histories[0].paymentHistory">
+                                             v-if="transaction.payment_histories[0].paymentHistory && transaction.device.device_type==='meter' ">
                                             <router-link
                                                 :to="{path: '/meters/' + transaction.message}"
                                                 class="nav-link"
@@ -103,7 +88,9 @@
                                         <div class="md-layout-item md-subheader">{{ $tc('words.date') }}</div>
                                         <div class="md-layout-item md-subheader n-font">
                                             {{ timeForHuman(transaction.created_at) }}
-                                            <small>{{ transaction.created_at }}</small></div>
+                                            <small style="margin-left: 0.2rem">({{
+                                                    timeForTimeZone(transaction.created_at)
+                                                }})</small></div>
                                     </div>
                                 </md-card-content>
                             </md-card>
@@ -116,7 +103,8 @@
                     <div class="transaction-detail-card">
                         <widget
                             title="Transaction Processing"
-                            :show-spinner="false">
+                            :show-spinner="false"
+                            color="green">
                             <md-card>
                                 <div v-if="transaction.original_transaction_type === 'third_party_transaction'">
                                     <md-card-content>
@@ -178,6 +166,7 @@
                         <widget :title="$tc('phrases.outgoingSms')"
                                 :show-spinner="false"
                                 v-show="(transaction.original_transaction_type !== 'agent_transaction' && transaction.original_transaction_type !== 'third_party_transaction')"
+                                color="red"
                         >
                             <md-card>
                                 <md-card-content>
@@ -221,22 +210,14 @@ import AgentTransactionDetail from '@/modules/Agent/AgentTransactionDetail'
 import Widget from '@/shared/widget'
 import { TransactionService } from '@/services/TransactionService'
 import { PersonService } from '@/services/PersonService'
-import ThirdPartyTransaction from '@/modules/Transactions/ThirdPartyTransaction'
-import WaveMoneyTransaction from '@/modules/Transactions/WaveMoneyTransaction'
-import SwiftaTransaction from '@/modules/Transactions/SwiftaTransaction'
-import WaveComTransaction from '@/modules/Transactions/WaveComTransaction.vue'
+
 import { notify } from '@/mixins/notify'
+
 export default {
     name: 'Transaction',
     mixins: [timing, currency, notify],
     components: {
-        WaveComTransaction,
-        SwiftaTransaction,
-        WaveMoneyTransaction,
-        ThirdPartyTransaction,
-        AirtelTransactionDetail,
         Widget,
-        VodacomTransactionDetail,
         AgentTransactionDetail,
         PaymentHistoryChart
     },
@@ -258,15 +239,34 @@ export default {
         }
     },
     computed: {
-        ot: function () {
-            return this.transaction.original_transaction
-        }
+        ot () {return this.transaction.original_transaction},
+        providerDetail () {
+            const transactionType = this.transaction.original_transaction_type
+            switch (transactionType) {
+                case 'vodacom_transaction':
+                    return 'VodacomTransactionDetail'
+                case 'airtel_transaction':
+                    return 'AirtelTransactionDetail'
+                case 'agent_transaction':
+                    return 'AgentTransactionDetail'
+                case 'third_party_transaction':
+                    return 'ThirdPartyTransactionDetail'
+                case 'wave_money_transaction':
+                    return 'WaveMoneyTransactionDetail'
+                case 'swifta_transaction':
+                    return 'SwiftaTransactionDetail'
+                case 'wavecom_transaction':
+                    return 'WaveComTransactionDetail'
+                default:
+                    return null
+            }
+        },
     },
     methods: {
         async getDetail (id) {
-
             try {
                 this.transaction = await this.transactionService.getTransaction(id)
+                console.log(this.transaction)
                 if (this.transaction.payment_histories[0].paymentHistory === true) {
                     await this.getRelatedPerson(this.transaction.payment_histories[0].payer_id)
                 }

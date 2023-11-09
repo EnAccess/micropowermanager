@@ -46,9 +46,9 @@ class Meter extends BaseModel
         return $this->belongsTo(Manufacturer::class);
     }
 
-    public function meterTariff()
+    public function meterTariff(): BelongsTo
     {
-        return $this->meterParameter->tariff;
+        return $this->belongsTo(MeterTariff::class);
     }
 
     public function accessRatePayment(): HasOne
