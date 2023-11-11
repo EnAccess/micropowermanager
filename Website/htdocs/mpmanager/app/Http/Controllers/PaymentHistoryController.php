@@ -10,6 +10,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\Device;
+use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use Carbon\Carbon;
@@ -133,15 +135,22 @@ class PaymentHistoryController
      */
     public function debts($personId)
     {
-        $ad = 0;
-        $accessDebt = Person::with('meters.meter.accessRatePayment')->find($personId);
-        foreach ($accessDebt->meters as $m) {
-            if ($ad += $m->meter->accessRatePayment) {
-                $ad += $m->meter->accessRatePayment->debt;
+        $accessRateDebt = 0;
+        $meters = Device::query()->with('device')
+            ->whereHasMorph(
+                'device',
+                Meter::class
+            )
+            ->where('person_id', $personId)
+            ->get()->pluck('device');
+
+        foreach ($meters as $meter) {
+            if ($accessRateDebt += $meter->accessRatePayment) {
+                $accessRateDebt += $meter->accessRatePayment->debt;
             }
         }
         $deferredDebt = 0;
-        return ApiResource::make(['access_rate' => $ad, 'deferred' => $deferredDebt]);
+        return ApiResource::make(['access_rate' => $accessRateDebt, 'deferred' => $deferredDebt]);
     }
 
     /**

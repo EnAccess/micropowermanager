@@ -9,39 +9,36 @@
             :route_name="'/meters'"
             color="green"
         >
-          <md-table md-card style="margin-left: 0">
-                        <md-table-row>
-                            <md-table-head>
-                                <md-icon>add</md-icon>
-                                {{ $tc('phrases.serialNumber') }}
-                            </md-table-head>
-                            <md-table-head>
-                                <md-icon>add</md-icon>
-                                {{ $tc('words.add') }}
-                            </md-table-head>
-                            <md-table-head>{{ $tc('words.manufacturer') }}</md-table-head>
-                            <md-table-head>{{ $tc('words.type') }}</md-table-head>
-                            <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
-                        </md-table-row>
+            <md-table md-card style="margin-left: 0">
+                <md-table-row>
+                    <md-table-head>
+                        <md-icon>add</md-icon>
+                        {{ $tc('phrases.serialNumber') }}
+                    </md-table-head>
+                    <md-table-head>
+                        {{ $tc('words.tariff') }}
+                    </md-table-head>
+                    <md-table-head>{{ $tc('words.manufacturer') }}</md-table-head>
+                    <md-table-head>{{ $tc('words.type') }}</md-table-head>
+                    <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
+                </md-table-row>
+                <md-table-row
+                    v-for="meter in meters.list"
+                    :key="meter.id"
+                    style="cursor:pointer;"
+                    @click="meterDetail( meter.serialNumber)"
+                >
+                    <md-table-cell>{{ meter.serialNumber }}</md-table-cell>
+                    <md-table-cell>{{ meter.tariff }}</md-table-cell>
+                    <md-table-cell>{{ meter.manufacturer.manufacturerName }}</md-table-cell>
+                    <md-table-cell>
+                        {{ meter.type }}
+                        <md-icon v-if="meter.online">wifi</md-icon>
 
-                        <md-table-row
-                            v-for="meter in meters.list"
-                            :key="meter.id"
-                            :class="meter.inUse===1 ? 'active': 'warning'"
-                            style="cursor:pointer;"
-                            @click="meterDetail( meter.serialNumber)"
-                        >
-                            <md-table-cell>{{ meter.serialNumber}}</md-table-cell>
-                            <md-table-cell>{{meter.tariff}}</md-table-cell>
-                            <md-table-cell>{{ meter.manufacturer.manufacturerName}}</md-table-cell>
-                            <md-table-cell>
-                                {{meter.type}}
-                                <md-icon v-if="meter.online">wifi</md-icon>
-
-                            </md-table-cell>
-                            <md-table-cell>{{meter.lastUpdate}}</md-table-cell>
-                        </md-table-row>
-                    </md-table>
+                    </md-table-cell>
+                    <md-table-cell> {{ timeForTimeZone(meter.lastUpdate) }}</md-table-cell>
+                </md-table-row>
+            </md-table>
         </widget>
     </div>
 </template>
@@ -51,9 +48,11 @@ import Widget from '@/shared/widget'
 import { Meters } from '@/classes/Meters'
 import { Manufacturers } from '@/classes/Manufacturer'
 import { EventBus } from '@/shared/eventbus'
+import { timing } from '@/mixins/timing'
 
 export default {
     name: 'Meters',
+    mixins: [timing],
     components: { Widget },
     data () {
         return {
@@ -75,11 +74,11 @@ export default {
     },
     methods: {
         async reloadList (subscriber, data) {
-            if (subscriber !== this.subscriber){
+            if (subscriber !== this.subscriber) {
                 return
             }
             await this.meters.updateList(data)
-            EventBus.$emit('widgetContentLoaded',this.subscriber,this.meters.list.length)
+            EventBus.$emit('widgetContentLoaded', this.subscriber, this.meters.list.length)
         },
         confirmDelete (meter) {
             this.$swal({
@@ -91,12 +90,12 @@ export default {
                 cancelButtonText: this.$tc('words.cancel'),
                 focusCancel: true,
                 html:
-                        '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-                        '  <label>' +
-                        '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-                        this.$tc('phrases.deleteMeter',2,{serialNumber: meter.serialNumber}) +
-                        '  </label>' +
-                        '</div>'
+                    '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
+                    '  <label>' +
+                    '    <input type="checkbox" name="confirmation" id="confirmation" >' +
+                    this.$tc('phrases.deleteMeter', 2, { serialNumber: meter.serialNumber }) +
+                    '  </label>' +
+                    '</div>'
             }).then(result => {
                 let answer = document.getElementById('confirmation').checked
                 if ('value' in result) {
@@ -118,7 +117,7 @@ export default {
 
                         Toast.fire({
                             type: 'warning',
-                            title: this.$tc('phrases.deleteMeterNotify',1)
+                            title: this.$tc('phrases.deleteMeterNotify', 1)
                         })
                     }
                 }
@@ -137,7 +136,7 @@ export default {
 
                 Toast.fire({
                     type: 'success',
-                    title: this.$tc('phrases.deleteMeterNotify',2)
+                    title: this.$tc('phrases.deleteMeterNotify', 2)
                 }).then(() => {
                     location.reload()
                 })

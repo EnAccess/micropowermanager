@@ -4,18 +4,17 @@
             <div class="md-subheading">{{ $tc('words.basic') }}</div>
             <div class="meter-overview-detail" v-if="meter!==null && meter.loaded===true">
                 <div class="md-layout">
-                    <div class="md-layout-item">{{ $tc('words.register', 2) }}</div>
-                    <div class="md-layout-item">{{ meter.registered }}</div>
+                    <div class="md-layout-item">{{ $tc('words.register', 2) }}:</div>
+                    <div class="md-layout-item">{{ timeForTimeZone(meter.registered) }}</div>
                 </div>
                 <div class="md-layout">
-                    <div class="md-layout-item">{{ $tc('words.owner') }}</div>
+                    <div class="md-layout-item  ">{{ $tc('words.owner') }}:</div>
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div v-if="!showOwnerEdit">
-                                <a href="javascript:void(0)" @click="navigateOwner(meter.owner.id)">
-                                    {{ meter.owner.name }}
+                                <router-link :to="`/people/${meter.owner.id}`">{{ meter.owner.name }}
                                     {{ meter.owner.surname }}
-                                </a>
+                                </router-link>
                                 <span style="cursor:pointer" @click="showOwnerEdit = true"><md-icon>edit</md-icon></span>
                             </div>
 
@@ -23,8 +22,8 @@
                                 <md-autocomplete
                                     v-model="customerSearchTerm"
                                     :md-options="searchNames"
-                                    @md-changed="searchFor"
-                                    @md-opened="searchFor"
+                                    @md-changed="searchForPerson"
+                                    @md-opened="searchForPerson"
                                     @md-selected="selectCustomer"
                                 >
                                     <label>{{ $tc('phrases.newOwner') }}</label>
@@ -34,54 +33,55 @@
                                     </template>
                                 </md-autocomplete>
                                 <md-button v-if="showOwnerEdit" class="md-icon-button"
-                                           @click="saveNewOwner()">
+                                           @click="updateOwner()">
                                     <md-icon class="md-primary">save</md-icon>
                                 </md-button>
-                                <md-button class="md-icon-button" @click="closeOwnerEdit()">
+                                <md-button class="md-icon-button" @click="resetOwnerEditing()">
                                     <md-icon class="md-accent">cancel</md-icon>
                                 </md-button>
                             </div>
                         </div>
-
-
                     </div>
-
                 </div>
-<!--  <div class="md-layout">
-                    <div class="md-layout-item">{{ $tc('phrases.totalRevenue') }}</div>
+                <div class="md-layout">
+                    <div class="md-layout-item ">{{ $tc('phrases.totalRevenue') }}:</div>
                     <div class="md-layout-item">
-                        <div v-if="meter.totalRevenue">{{ readable(meter.totalRevenue) }}
-                            {{ $store.getters['settings/getMainSettings'].currency }}
+                        <div v-if="meter.totalRevenue">{{ moneyFormat(meter.totalRevenue) }}
                         </div>
                         <div v-else>{{ $tc('phrases.noData') }}</div>
                     </div>
                 </div>
                 <div class="md-layout">
-                    <div class="md-layout-item">{{ $tc('phrases.lastPayment') }}</div>
-                    <div class="md-layout-item">{{ $tc('phrases.3daysAgo') }}</div>
-                </div>-->
+                    <div class="md-layout-item ">{{ $tc('phrases.lastPayment') }}:</div>
+                    <div class="md-layout-item">{{ timeForHuman(meter.lastPaymentDate) }}</div>
+                </div>
             </div>
         </div>
     </widget>
 </template>
 
 <script>
-import Widget from '../../shared/widget'
+import Widget from '@/shared/widget'
 import { currency } from '@/mixins/currency'
 import { PersonService } from '@/services/PersonService'
-import { MeterParameterService } from '@/services/MeterParameterService'
+import { timing } from '@/mixins/timing'
+import { MeterDetailService } from '@/services/MeterDetailService'
+import { notify } from '@/mixins/notify'
+import { DeviceService } from '@/services/DeviceService'
+
 export default {
-    name: 'MeterBasic.vue',
+    name: 'MeterBasic',
     components: { Widget },
-    mixins: [currency],
-    props:{
-        meter:{
-            type:Object,
+    mixins: [currency, timing, notify],
+    props: {
+        meter: {
+            type: Object,
         },
     },
-    data(){
-        return{
-            meterParameterService: new MeterParameterService(),
+    data () {
+        return {
+            deviceService: new DeviceService(),
+            meterDetailService: new MeterDetailService(),
             personService: new PersonService(),
             showOwnerEdit: false,
             customerSearchTerm: '',
@@ -90,13 +90,19 @@ export default {
             searchNames: [],
         }
     },
-    mounted () {
-       const asd = this.meter
-        console.log(asd)
-        debugger
-    },
-    methods:{
-        saveNewOwner () {
+    methods: {
+        async searchForPerson (term) {
+            if (term !== undefined && term.length > 2) {
+                try {
+                    this.searchNames = await this.meterDetailService.searchPersonForNewOwner(this.personService, term)
+                } catch (e) {
+                    this.alertNotify('error', e.message)
+                }
+            } else {
+                this.hideSearch = true
+            }
+        },
+        async updateOwner () {
             if (this.newOwner === null) {
                 this.$swal({
                     type: 'error',
@@ -113,72 +119,46 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: this.$tc('words.confirm'),
                 cancelButtonText: this.$tc('words.cancel'),
-            }).then(result => {
+            }).then(async (result) => {
                 if (result.value) {
-                    this.meterParameterService.update(this.meter.id, { personId: this.newOwner.id })
-                        .then(response => {
-                            if (response.status === 200) {
-                                this.meter.owner = response.data.data.owner
-                                this.showOwnerEdit = false
-                                this.resetOwner()
-                            } else {
-                                this.$swal({
-                                    type: 'error',
-                                    title: this.$tc('phrases.meterDetailNotify'),
-                                    text: this.$tc('phrases.meterDetailNotify', 2)
-                                })
-                            }
+
+                    try {
+                        const device = await this.deviceService.update(this.meter.deviceId, {
+                            id: this.meter.deviceId,
+                            personId: this.newOwner.id,
+                            deviceId: this.meter.id,
+                            deviceType: 'meter',
+                            deviceSerial: this.meter.serialNumber
                         })
-                }
-            })
-        },
-        navigateOwner (ownerId) {
-            this.$router.push('/people/' + ownerId)
-        },
-        searchFor (term) {
-            if (term != undefined && term.length > 2) {
-                this.personService.searchPerson({ params: { term: term, paginate: 0 } }).then(response => {
-                    this.searchNames = []
-                    for (let i in response.data.data) {
-                        let person = response.data.data[i]
-                        this.searchNames.push({
-                            id: person.id,
-                            name: person.name + ' ' + person.surname
+                        this.meter.owner = device.person
+                        console.log(this.meter.owner)
+                        debugger
+                        this.alertNotify('success', 'Updated Successfully.')
+                        this.resetOwnerEditing()
+                    } catch (e) {
+                        this.$swal({
+                            type: 'error',
+                            title: this.$tc('phrases.meterDetailNotify'),
+                            text: this.$tc('phrases.meterDetailNotify', 2)
                         })
                     }
-                    this.hideSearch = false
-                    return this.searchNames.map(x => ({
-                        id: x.id,
-                        name: x.name,
-                        toLowerCase: () => x.name.toLowerCase(),
-                        toString: () => x.name
-                    }))
-                    // return this.searchNames;
-                })
-            } else {
-                this.hideSearch = true
-            }
+                }
+            })
         },
         setOwner (owner) {
             this.newOwner = owner
         },
-        closeOwnerEdit () {
-            this.resetOwner()
+        resetOwnerEditing () {
+            this.searchTerm = ''
+            this.hideSearch = true
+            this.searchNames = []
             this.showOwnerEdit = false
         },
         selectCustomer (c) {
             this.customerSearchTerm = c.name
             this.newOwner = c
-        },
-        resetOwner () {
-            this.searchTerm = ''
-            this.hideSearch = true
-            this.newOwner = null
-            this.searchNames = []
-        },
+        }
     }
 }
 </script>
 
-<style scoped>
-</style>

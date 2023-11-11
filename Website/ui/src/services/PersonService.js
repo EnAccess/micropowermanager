@@ -15,7 +15,7 @@ export class PersonService {
             gender: null,
             nationality: null,
             city: null,
-            meters: []
+            devices: []
         }
         this.fullName = null
     }
@@ -23,10 +23,9 @@ export class PersonService {
     async getPerson (personId) {
         try {
 
-            let response = await this.repository.get(personId)
-
+            const response = await this.repository.get(personId)
             if (response.status === 200 || response.status === 201) {
-                let personData = response.data.data
+                const { data : personData} = response.data
                 this.person = {
                     id: personData.id,
                     title: personData.title,
@@ -37,7 +36,7 @@ export class PersonService {
                     nationality: personData.citizenship != null ? personData.citizenship.country_name : 'No data available',
                     gender: personData.sex,
                     addresses: personData.addresses,
-                    meters: personData.meters
+                    devices: personData.devices
                 }
                 return this.person
             } else {

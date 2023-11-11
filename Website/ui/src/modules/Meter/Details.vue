@@ -26,17 +26,15 @@
                             <div class="md-layout-item">
                                 <md-field>
                                     <label for="tariff">{{ $tc('words.tariff') }}</label>
-                                    <md-select name="tariff" v-model="newTariff">
+                                    <md-select name="tariff" v-model="newTariffId">
                                         <md-option v-for="tariff in tariffService.list"
                                                    :key="tariff.id" :value="tariff.id">
-                                            {{ tariff.name }} {{
-                                                tariff.price / 100
-                                            }}
+                                            {{ tariff.name }} <small> ({{ moneyFormat(tariff.price) }}) </small>
                                         </md-option>
                                     </md-select>
                                 </md-field>
                             </div>
-                            <md-button class="md-icon-button" @click="updateTariff(newTariff)">
+                            <md-button class="md-icon-button" @click="updateTariff()">
                                 <md-icon class="md-primary">save</md-icon>
                             </md-button>
                             <md-button class="md-icon-button" @click="editTariff=false">
@@ -46,21 +44,51 @@
                     </div>
                 </div>
                 <div class="md-layout">
+                    <div class="md-layout-item">{{ $tc('phrases.connectionGroup') }}</div>
+                    <div class="md-layout-item">
+                        <div v-if="!editConnectionGroup">
+                            {{ meter.connectionGroup.name }}
+                            <span style="cursor: pointer" @click="editConnectionGroup = true"><md-icon>edit</md-icon></span>
+                        </div>
+                        <div class="md-layout" v-else>
+                            <div class="md-layout-item">
+                                <md-field>
+                                    <label for="connectionGroup">{{ $tc('phrases.connectionGroup') }}</label>
+                                    <md-select name="connectionGroup"
+                                               v-model="newConnectionGroupId">
+                                        <md-option v-for="connectionGroup in connectionGroupService.list"
+                                                   :key="connectionGroup.id" :value="connectionGroup.id">
+                                            {{ connectionGroup.name }}
+                                        </md-option>
+                                    </md-select>
+                                </md-field>
+                            </div>
+                            <md-button class="md-icon-button"
+                                       @click="updateConnectionGroup()">
+                                <md-icon class="md-primary">save</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" @click="editConnectionGroup=false">
+                                <md-icon class="md-accent">cancel</md-icon>
+                            </md-button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-layout">
                     <div class="md-layout-item">{{ $tc('phrases.connectionType') }}</div>
                     <div class="md-layout-item">
-                        <div v-if="editConnection===false">
-                            {{ meter.connection.name }}
-                            <span style="cursor: pointer" @click="editConnection = true"><md-icon>edit</md-icon></span>
+                        <div v-if="editConnectionType===false">
+                            {{ meter.connectionType.name }}
+                            <span style="cursor: pointer" @click="editConnectionType = true"><md-icon>edit</md-icon></span>
                         </div>
                         <div class="md-layout" v-else>
                             <div class="md-layout-item">
 
                                 <md-field>
                                     <label
-                                        for="connectiontype">{{ $tc('phrases.connectionType') }}</label>
-                                    <md-select name="connectiontype"
-                                               v-model="newConnectionType">
-                                        <md-option v-for="connectionType in connectionTypes.list"
+                                        for="connectionType">{{ $tc('phrases.connectionType') }}</label>
+                                    <md-select name="connectionType"
+                                               v-model="newConnectionTypeId">
+                                        <md-option v-for="connectionType in connectionTypeService.list"
                                                    :key="connectionType.id" :value="connectionType.id">
                                             {{ connectionType.name }}
                                         </md-option>
@@ -68,10 +96,10 @@
                                 </md-field>
                             </div>
                             <md-button class="md-icon-button"
-                                       @click="updateConnection(newConnectionType)">
+                                       @click="updateConnectionType()">
                                 <md-icon class="md-primary">save</md-icon>
                             </md-button>
-                            <md-button class="md-icon-button" @click="editConnection=false">
+                            <md-button class="md-icon-button" @click="editConnectionType=false">
                                 <md-icon class="md-accent">cancel</md-icon>
                             </md-button>
                         </div>
@@ -83,13 +111,17 @@
 </template>
 
 <script>
-import Widget from '../../shared/widget'
+import Widget from '@/shared/widget'
 import { TariffService } from '@/services/TariffService'
-import { ConnectionTypes } from '@/classes/connection/ConnectionTypes'
-import { MeterParameterService } from '@/services/MeterParameterService'
+import { ConnectionTypeService } from '@/services/ConnectionTypeService'
+import { ConnectionGroupService } from '@/services/ConnectionGroupService'
+import { SubConnectionTypeService } from '@/services/SubConnectionTypeService'
+import { MeterService } from '@/services/MeterService'
+import { currency } from '@/mixins/currency'
 
 export default {
     name: 'Details.vue',
+    mixins: [currency],
     components: { Widget },
     props: {
         meter: {
@@ -98,43 +130,25 @@ export default {
     },
     mounted () {
         this.getTariffs()
-        this.connectionTypes.getSubConnectionTypes()
+        this.getConnectionGroups()
+        this.getConnectionTypes()
     },
     data () {
         return {
-            meterParameterService: new MeterParameterService(),
-            tariffService: new TariffService(),
-            connectionTypes: new ConnectionTypes(),
             editTariff: false,
-            newTariff: null,
-            newConnectionType: null,
-            editConnection: false,
+            newTariffId: null,
+            meterService: new MeterService(),
+            tariffService: new TariffService(),
+            connectionTypeService: new ConnectionTypeService(),
+            connectionGroupService: new ConnectionGroupService(),
+            newConnectionGroupId: null,
+            newConnectionTypeId: null,
+            editConnectionGroup: false,
+            editConnectionType: false,
+            editSubConnectionType: false,
         }
     },
     methods: {
-        updateTariff (tariffId) {
-            this.updateParameter(this.meter.id, { tariffId: tariffId })
-        },
-        updateParameter (meterId, params) {
-            this.meterParameterService.update(meterId, params)
-                .then(response => {
-                    if (response.status === 200) {
-                        if ('tariff' in response.data.data) {
-                            this.meter.tariff = response.data.data.tariff
-                        } else if ('connection_type' in response.data.data) {
-                            this.meter.connection = response.data.data.connection_type
-                        }
-                    } else {
-                        this.$swal({
-                            type: 'error',
-                            title: this.$tc('phrases.meterDetailNotify', 0),
-                            text: this.$tc('phrases.meterDetailNotify', 2)
-                        })
-                    }
-                    this.editTariff = false
-                    this.editConnection = false
-                })
-        },
         async getTariffs () {
             try {
                 await this.tariffService.getTariffs()
@@ -142,13 +156,33 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        updateConnection (connectionId) {
-            let data = { connectionId: connectionId }
-            this.updateParameter(this.meter.id, data)
+        async getConnectionGroups () {
+            try {
+                await this.connectionGroupService.getConnectionGroups()
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        async getConnectionTypes () {
+            try {
+                await this.connectionTypeService.getConnectionTypes()
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        async updateTariff () {
+            this.$emit('updated', { id: this.meter.id, tariffId: this.newTariffId })
+            this.editTariff = false
+        },
+        async updateConnectionGroup () {
+            this.$emit('updated', {id: this.meter.id, connectionGroupId: this.newConnectionGroupId })
+            this.editConnectionGroup = false
+        },
+        async updateConnectionType () {
+            this.$emit('updated', {id: this.meter.id, connectionTypeId: this.newConnectionTypeId })
+            this.editConnectionType = false
         },
     }
 }
 </script>
 
-<style scoped>
-</style>

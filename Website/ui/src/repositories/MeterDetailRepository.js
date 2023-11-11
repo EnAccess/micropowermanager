@@ -9,5 +9,8 @@ export default {
     },
     revenue(meterSerial){
         return Client.get(`${resource}/${meterSerial}/revenue`)
+    },
+    update(meterId, data){
+        return Client.put(`${resource}/${meterId}`, data)
     }
 }

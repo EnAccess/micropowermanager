@@ -24,8 +24,6 @@ export class People {
 
         for (let m in data) {
             let person = new Person().fromJson(data[m])
-            person.meters = data[m].meters
-            //person.fromJson(data[m])
             this.list.push(person)
         }
     }

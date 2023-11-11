@@ -13,32 +13,30 @@
 
             <md-table md-card style="margin-left: 0">
                 <md-table-row>
-                    <md-table-head>{{ $tc('words.id') }}</md-table-head>
                     <md-table-head>{{ $tc('words.name') }}</md-table-head>
                     <md-table-head>{{ $tc('words.phone') }}</md-table-head>
                     <md-table-head>{{ $tc('words.city') }}</md-table-head>
-                    <md-table-head>{{ $tc('words.meter') }}</md-table-head>
+                    <md-table-head>{{ $tc('words.device') }}</md-table-head>
                     <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
                 </md-table-row>
-
-
                 <md-table-row v-for="client in people.list" :key="client.id" @click="detail(client.id)"
                               style="cursor:pointer;">
-                    <md-table-cell> {{ client.id}}</md-table-cell>
-                    <md-table-cell> {{ client.name}} {{client.surname}}</md-table-cell>
-                    <md-table-cell v-if="client.addresses.length>0"> {{ client.addresses[0].phone}}
+                    <md-table-cell> {{ client.name }} {{ client.surname }}</md-table-cell>
+                    <md-table-cell v-if="client.addresses.length>0"> {{ client.addresses[0].phone }}
                     </md-table-cell>
                     <md-table-cell class="hidden-xs" v-if="client.addresses.length>0"> {{
                             client.addresses[0].city ?
-                                client.addresses[0].city.name: '-'}}
+                                client.addresses[0].city.name : '-'
+                        }}
                     </md-table-cell>
-                    <md-table-cell v-if="client.meters.length>0">
-                        {{meterList(client.meters)}}
+                    <md-table-cell v-if="client.devices.length>0">
+                        {{ deviceList(client.devices) }}
+
                     </md-table-cell>
-                    <md-table-cell v-if="client.meters.length==0">
+                    <md-table-cell v-if="client.devices.length === 0">
                         -
                     </md-table-cell>
-                    <md-table-cell class="hidden-xs"> {{ dateForHumans( client.lastUpdate) }}</md-table-cell>
+                    <md-table-cell class="hidden-xs"> {{ timeForTimeZone(client.lastUpdate) }}</md-table-cell>
                 </md-table-row>
 
             </md-table>
@@ -55,10 +53,14 @@ import { Paginator } from '@/classes/paginator'
 import { EventBus } from '@/shared/eventbus'
 import Widget from '@/shared/widget'
 import { People } from '@/classes/people'
-import moment from 'moment'
+import { timing } from '@/mixins/timing'
+import i18n from '../../i18n'
+
 const debounce = require('debounce')
+
 export default {
     name: 'Clients',
+    mixins: [timing],
     components: { Widget },
     data () {
         return {
@@ -81,7 +83,6 @@ export default {
                 this.doSearch(this.searchTerm)
             } else {
                 this.showAllEntries()
-
             }
 
         }, 1000),
@@ -104,11 +105,11 @@ export default {
 
     methods: {
         reloadList (subscriber, data) {
-            if (subscriber !== this.subscriber){
+            if (subscriber !== this.subscriber) {
                 return
             }
             this.people.updateList(data)
-            EventBus.$emit('widgetContentLoaded',this.subscriber, this.people.list.length)
+            EventBus.$emit('widgetContentLoaded', this.subscriber, this.people.list.length)
         },
         searching (searchTerm) {
             this.people.search(searchTerm)
@@ -116,33 +117,23 @@ export default {
         endSearching () {
             this.people.showAll()
         },
-
         detail (id) {
             this.$router.push({ path: '/people/' + id })
         },
-        dateForHumans (date) {
-            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
-        },
-
         getClientList (pageNumber = 1) {
-
             this.paginator.loadPage(pageNumber, this.searching ? { 'term': this.searchTerm } : {}).then(response => {
                 this.tmpClientList = this.clientList = response.data
             })
         },
-
-        meterList (meters) {
-            let stringified = ''
-            for (let i = 0; i < meters.length; i++) {
-                if (meters[i].meter === null || meters[i].meter === 'null') {
-                    continue
+        deviceList (devices) {
+            return devices.reduce((acc, curr, index, arr) => {
+                if (index !== arr.length - 1) {
+                    acc += curr.device_serial + ` (${i18n.tc(`words.${curr.device_type}`)}),`
+                } else {
+                    acc += curr.device_serial + ` (${i18n.tc(`words.${curr.device_type}`)})`
                 }
-                stringified += meters[i].meter.serial_number
-                if (i !== meters.length - 1) {
-                    stringified += ', '
-                }
-            }
-            return stringified
+                return acc
+            }, '')
         },
 
         doSearch (searchTerm) {

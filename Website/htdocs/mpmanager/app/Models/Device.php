@@ -28,4 +28,9 @@ class Device extends BaseModel
     {
         return $this->morphOne(Address::class, 'owner');
     }
+
+    public function geo(): MorphOne
+    {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
 }

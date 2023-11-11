@@ -4,81 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDeviceRequest;
 use App\Http\Requests\UpdateDeviceRequest;
+use App\Http\Resources\ApiResource;
 use App\Models\Device;
+use App\Services\PersonService;
+use MPM\Device\DeviceService;
 
 class DeviceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct(private DeviceService $deviceService)
+    {
+    }
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreDeviceRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreDeviceRequest $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
     public function show(Device $device)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Device $device)
+    public function update(Device $device, UpdateDeviceRequest $request)
     {
-        //
+        $creatorId = auth('api')->user()->id;
+        $previousOwner = $device->person_id;
+        $newOwner = $request->input('person_id');
+        $deviceData = $request->validated();
+        $updatedDevice = $this->deviceService->update($device, $deviceData);
+        event('new.log', [
+                'logData' => [
+                    'user_id' => $creatorId,
+                    'affected' => $device,
+                    'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner"
+                ]
+            ]
+        );
+        return ApiResource::make($updatedDevice);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateDeviceRequest  $request
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateDeviceRequest $request, Device $device)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Device $device)
     {
         //

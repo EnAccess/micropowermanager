@@ -1,10 +1,10 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
-import {ErrorHandler} from '@/Helpers/ErrorHander'
-import {Paginator} from '@/classes/paginator'
-import {resources} from '@/resources'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
+import { Paginator } from '@/classes/paginator'
+import { resources } from '@/resources'
 
 export class ConnectionGroupService {
-    constructor() {
+    constructor () {
         this.repository = RepositoryFactory.get('connectionGroups')
         this.connectionGroups = []
         this.target = {
@@ -20,71 +20,58 @@ export class ConnectionGroupService {
             target: this.target
         }
         this.paginator = new Paginator(resources.connections.list)
+        this.list = []
     }
-
-    updateList(data) {
+    updateList (data) {
         this.connectionGroups = data.map(connection => {
-            let connectionGroup = {
+            return {
                 id: connection.id,
                 name: connection.name,
                 updated_at: connection.updated_at,
                 edit: false,
             }
-            return connectionGroup
         })
         return this.connectionGroups
 
     }
-
-    async updateConnectionGroup(connectionGroup){
+    async updateConnectionGroup (connectionGroup) {
         try {
-            let response = await this.repository.update(connectionGroup)
-            if(response.status === 200 || response.status === 201){
-                return connectionGroup
-            }else{
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
-        }catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
-        }
-    }
-
-    async getConnectionGroups() {
-        try {
-            let response = await this.repository.list()
-
-            if (response.status === 200) {
-                this.connectionGroups = response.data.data
-                return this.connectionGroups
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.update(connectionGroup)
+            if (!status === 200 && !status === 201) return new ErrorHandler(error, 'http', status)
+            return data.data
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
-
-    async createConnectionGroup() {
+    async getConnectionGroups () {
         try {
-            let connectionGroup_PM = {
+            const { data, status, error } = await this.repository.list()
+            if (!status === 200 && !status === 201) return new ErrorHandler(error, 'http', status)
+            this.connectionGroups = data.data
+            this.list = data.data
+            return this.connectionGroups
+        } catch (e) {
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
+        }
+    }
+    async createConnectionGroup () {
+        try {
+            const params = {
                 name: this.connectionGroup.name
             }
-            let response = await this.repository.create(connectionGroup_PM)
-            if (response.status === 200 || response.status === 201) {
-                this.resetConnectionGroup()
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.create(params)
+            if (!status === 200 && !status === 201) return new ErrorHandler(error, 'http', status)
+            this.resetConnectionGroup()
+            return data.data
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
-    resetConnectionGroup(){
-        this.connectionGroup ={
+    resetConnectionGroup () {
+        this.connectionGroup = {
             id: null,
             name: null,
             target: this.target

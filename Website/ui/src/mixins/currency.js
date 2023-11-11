@@ -2,7 +2,7 @@ import store from '../store/store'
 
 export const currency = {
     methods: {
-        readable (amount, separator = '.') {
+        readable (amount, separator = ',') {
             // Check for undefined or null amount and return 0
             if (amount === undefined || amount === null) return '0'
             // Convert the amount to a string

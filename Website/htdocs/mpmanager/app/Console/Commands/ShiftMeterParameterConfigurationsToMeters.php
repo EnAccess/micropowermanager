@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\GeographicalInformationService;
 use App\Services\MeterParameterService;
 use App\Services\MeterService;
 use Illuminate\Console\Command;
@@ -38,7 +39,7 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         private MeterDeviceService $meterDeviceService,
         private DeviceService $deviceService,
         private DeviceAddressService $deviceAddressService,
-        private AddressService $addressService
+        private GeographicalInformationService $geographicalInformationService,
 
     ) {
         parent::__construct();
@@ -84,8 +85,9 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             $this->deviceAddressService->setAssignee($device);
             $this->deviceAddressService->assign();
             $this->deviceService->save($address);
-
+            $this->geographicalInformationService->changeOwnerWithDevice($meterParameter->id);
             $this->meterParameterService->delete($meterParameter);
+
             $this->info('Meter parameter values are shifted to meters, devices and addresses.');
             DB::connection('shard')->commit();
         } catch (\Exception $e) {

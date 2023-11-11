@@ -36,14 +36,20 @@ class DeviceService implements IBaseService, IAssociative
     {
         // TODO: Implement getById() method.
     }
-    public function update($model, $data)
+
+    public function update($device, $deviceData)
     {
-        // TODO: Implement update() method.
+        $device->update($deviceData);
+        $device->fresh();
+
+        return $device->with(['person', 'device'])->first();
     }
+
     public function delete($model)
     {
         // TODO: Implement delete() method.
     }
+
     public function getAll($limit = null)
     {
         // TODO: Implement getAll() method.

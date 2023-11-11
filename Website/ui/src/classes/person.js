@@ -12,6 +12,7 @@ export class Person {
         this.gender = null
         this.nationality = null
         this.city = null
+        this.devices = []
     }
 
     initialize (personData) {
@@ -24,6 +25,7 @@ export class Person {
         this.nationality = personData.citizenship != null ? personData.citizenship.country_name : 'No data available'
         this.gender = personData.sex
         this.addresses = personData.addresses
+        this.devices = personData.devices
 
         return this
     }
@@ -33,7 +35,6 @@ export class Person {
         if (x.length < 2) {
             return {
                 'success': false,
-
             }
         }
         this.surname = x.splice(-1)
@@ -51,6 +52,7 @@ export class Person {
         this.gender = data.sex
         this.addresses = data.addresses
         this.lastUpdate = data.updated_at
+        this.devices = data.devices
 
         return this
     }

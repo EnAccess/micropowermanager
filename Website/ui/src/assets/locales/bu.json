@@ -338,7 +338,8 @@
     "outgoingSms": "Outgoing sms",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "swiftaTransaction": "SwiftaTransaction",
-    "transactionReference": "Transaction Reference"
+    "transactionReference": "Transaction Reference",
+    "successfullyUpdated": "Successfully Updated"
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",
@@ -518,6 +519,7 @@
     "rateCost": "Installment Cost for Monthly access to the system",
     "device": "device",
     "solar_home_system": "Solar Home System",
-    "deviceType": "Device Type"
+    "deviceType": "Device Type",
+    "devices": "Devices"
   }
 }

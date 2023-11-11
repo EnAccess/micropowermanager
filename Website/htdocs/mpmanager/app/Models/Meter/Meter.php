@@ -4,23 +4,18 @@ namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\BaseModel;
+use App\Models\ConnectionGroup;
+use App\Models\ConnectionType;
+use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\DB;
 use PDO;
 
-/**
- * Class Meter
- *
- * @package  App
- * @property string serial_number
- * @property int id;
- * @property int in_use;
- * @property MeterParameter $MeterParameter
- */
 class Meter extends BaseModel
 {
     protected $guarded = [];
@@ -30,15 +25,14 @@ class Meter extends BaseModel
         'manufacturer_id' => 'exists:manufacturers,id',
     ];
 
-
     public function meterType(): BelongsTo
     {
         return $this->belongsTo(MeterType::class);
     }
 
-    public function meterParameter(): HasOne
+    public function device(): MorphOne
     {
-        return $this->hasOne(MeterParameter::class);
+        return $this->morphOne(Device::class, 'device');
     }
 
     public function manufacturer(): BelongsTo
@@ -46,11 +40,18 @@ class Meter extends BaseModel
         return $this->belongsTo(Manufacturer::class);
     }
 
-    public function meterTariff(): BelongsTo
+    public function tariff(): BelongsTo
     {
         return $this->belongsTo(MeterTariff::class);
     }
-
+    public function connectionType(): BelongsTo
+    {
+        return $this->belongsTo(ConnectionType::class, 'connection_type_id', 'id');
+    }
+    public function connectionGroup(): BelongsTo
+    {
+        return $this->belongsTo(ConnectionGroup::class);
+    }
     public function accessRatePayment(): HasOne
     {
         return $this->hasOne(AccessRatePayment::class);
@@ -58,7 +59,7 @@ class Meter extends BaseModel
 
     public function accessRate()
     {
-        return $this->meterParameter->tariff->accessRate;
+        return $this->tariff->accessRate;
     }
 
     public function tokens(): HasMany
@@ -74,35 +75,6 @@ class Meter extends BaseModel
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'message', 'serial_number');
-    }
-
-    public function sumOfTransactions(array $meters, $dateRange = [])
-    {
-        if (count($meters) === 0) {
-            return [['total' => 0]];
-        }
-
-        $m = implode(',', $meters);
-
-        $sql = 'select  sum(transactions.amount) as total from transactions
-        left join airtel_transactions on transactions.original_transaction_id = airtel_transactions.id
-         and transactions.original_transaction_type= \'airtel_transaction\'
-        left join vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id
-        and transactions.original_transaction_type= \'vodacom_transaction\'
-        where  transactions.message in (' . $m . ')
-        and transactions.created_at between  \'' . $dateRange[0] . '\' and \'' . $dateRange[1] . '\'
-        and (vodacom_transactions.status = 1 or airtel_transactions.status=1)';
-
-
-        $sth = DB::connection()->getPdo()->prepare($sql);
-
-
-        $sth->execute();
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function averageTransactionPeriod($limit = 50): void
-    {
     }
 
     public function findBySerialNumber(string $meterSerialNumber): ?self

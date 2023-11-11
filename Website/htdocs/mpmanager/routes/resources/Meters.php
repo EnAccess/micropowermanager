@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'meters',], function () {
     Route::get('/', 'MeterController@index');
     Route::post('/', 'MeterController@store');
+    Route::put('/{meter}', 'MeterController@update');
     Route::get('/search', 'MeterController@search');
     Route::get('/{serialNumber}', 'MeterController@show');
     Route::delete('/{meterId}', 'MeterController@destroy');
@@ -15,12 +16,6 @@ Route::group(['prefix' => 'meters',], function () {
     Route::get('{serialNumber}/revenue', 'MeterRevenueController@show');
     Route::get('{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
     Route::get('/{miniGrid}/geoList', 'MeterGeographicalInformationController@index');
-    Route::group(['prefix' => 'parameters'], function () {
-        Route::get('/', 'MeterParameterController@index'); // list of all meters which are related to a customer
-        Route::post('/', 'MeterParameterController@store');
-        Route::get('/connection-types', 'MeterParameterController@connectionTypes');
-        Route::get('/{meterParameter}', 'MeterParameterController@show');
-    });
 });
 
 /* Meter types */

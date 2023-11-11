@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDeviceRequest extends FormRequest
+class UpdateMeterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,13 @@ class UpdateDeviceRequest extends FormRequest
     {
         return [
             'id' => 'required|numeric',
-            'person_id' => 'required|numeric',
-            'device_type' => 'required',
-            'device_serial' => 'required',
-            'device_id' => 'required|numeric'
+            'serial_number' => 'sometimes|string',
+            'meter_type_id' => 'sometimes|numeric',
+            'in_use' => 'sometimes|numeric',
+            'manufacturer_id' => 'sometimes|numeric',
+            'connection_type_id' => 'sometimes|numeric',
+            'connection_group_id' => 'sometimes|numeric',
+            'tariff_id' => 'sometimes|numeric',
         ];
     }
 }

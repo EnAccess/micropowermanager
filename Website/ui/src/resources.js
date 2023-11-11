@@ -111,9 +111,6 @@ export let resources = {
         'consumptions': '/api/meters/',
         'geo': '/api/meters/geoList'
     },
-    meterparameters: {
-        'update': '/api/meters/',
-    },
     manufacturer: {
         'detail':
             '/api/manufacturers/',

@@ -68,12 +68,12 @@ export default new Vuex.Store({
     plugins: [vuexLocalStorage.plugin],
     state: {
         person: new Person(),
-        meters: new Meters(),
+        devices: [],
         search: {},
     },
     getters: {
         person: state => state.person,
-        meters: state => state.meters,
+        devices: state => state.devices,
         search: state => state.search,
         resolution: state => state.resolution,
         breadcrumb: state => state.breadcrumb

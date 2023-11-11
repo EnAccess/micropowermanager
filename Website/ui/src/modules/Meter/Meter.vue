@@ -5,12 +5,15 @@
                 <div class="md-layout md-gutter md-size-100">
                     <div class="md-layout-item md-layout-size-50 md-small-size-100">
                         <meter-basic
-                            :meter="meter"
+                            v-if="showDetails"
+                            :meter="meterDetailService.meter"
                         />
                     </div>
                     <div class="md-layout-item md-layout-size-50 md-small-size-100">
                         <meter-details
-                            :meter="meter"
+                            v-if="showDetails"
+                            :meter="meterDetailService.meter"
+                            @updated="updateMeterDetails"
                         />
                     </div>
                 </div>
@@ -25,7 +28,7 @@
         <div style="margin-top: 1rem;"></div>
 
         <meter-readings v-if="showMeterReadings"
-                        :meter="meter"
+                        :meter="meterDetailService.meter"
         />
 
 
@@ -43,50 +46,47 @@ import { notify } from '@/mixins/notify'
 
 export default {
     name: 'Meter',
-    mixins:[notify],
+    mixins: [notify],
     components: { MeterBasic, MeterDetails, MeterTransactions, MeterReadings },
-    created () {
-        this.getMeterDetails()
-        this.getMeterRevenue()
-    },
-    mounted () {
-        this.transactions = new Transactions(this.$route.params.id)
-        console.log('tr', this.transactions)
-    },
-    computed: {
-        showMeterReadings () {
-            if (this.meter === null) {
-                return false
-            } else if (this.meter.meterType.online === 1) {
-                return true
-            } else {
-                return false
-            }
-        }
-    },
     data () {
         return {
-            meterDetailService: new MeterDetailService(this.$route.params.id),
+            serialNumber: this.$route.params.id,
+            meterDetailService: new MeterDetailService(),
             transactions: null,
-            meter: null,
         }
+    },
+    created () {
+        this.getMeterDetails()
+        this.transactions = new Transactions(this.$route.params.id)
     },
     methods: {
         async getMeterDetails () {
             try {
-                this.meter = await this.meterDetailService.detail()
+                await this.meterDetailService.getDetail(this.serialNumber)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async getMeterRevenue () {
+        async updateMeterDetails (meterDetail) {
             try {
-                this.meter.totalRevenue = await this.meterDetailService.revenue()
+                await this.meterDetailService.updateMeterDetails(meterDetail)
+                this.alertNotify('success', this.$t('phrases.successfullyUpdated'))
+                await this.getMeterDetails()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
-        }
-    }
+        },
+    },
+    computed: {
+        showMeterReadings () {
+            if (!this.meterDetailService.meter.meterType) {
+                return false
+            } else return this.meterDetailService.meter.meterType.online === 1
+        },
+        showDetails () {
+            return this.meterDetailService.meter.loaded === true
+        },
+    },
 }
 </script>
 

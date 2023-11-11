@@ -23,31 +23,46 @@
             </div>
             <div class="md-layout-item md-size-50 md-small-size-100">
                 <div class="client-detail-card">
-                    <client-meter-list :meterList="meters"/>
+                    <devices :devices="devices"/>
                 </div>
                 <div class="client-detail-card">
-                    <client-map :meterIds="meters"/>
+                    <!--                    <client-map :meterIds="meters"/>-->
                 </div>
             </div>
         </div>
     </section>
 </template>
 <script>
+
 import PaymentFlow from '@/modules/Client/PaymentFlow'
 import Transactions from '@/modules/Client/Transactions'
 import PaymentDetail from '@/modules/Client/PaymentDetail'
 import Ticket from '@/modules/Client/Ticket'
 import Addresses from '@/modules/Client/Addresses'
-import ClientMeterList from '@/modules/Client/ClientMeterList'
 import SmsHistory from '@/modules/Client/SmsHistory'
 import ClientPersonalData from '@/modules/Client/ClientPersonalData'
 import DeferredPayments from '@/modules/Client/DeferredPayments'
-import { PersonService } from '@/services/PersonService'
 import ClientMap from '@/modules/Client/ClientMap'
-import moment from 'moment'
+import { notify } from '@/mixins/notify'
+import Devices from '@/modules/Client/Devices'
+import { timing } from '@/mixins/timing'
+import { PersonService } from '@/services/PersonService'
 
 export default {
     name: 'Client',
+    mixins: [notify, timing],
+    components: {
+        DeferredPayments,
+        ClientPersonalData,
+        SmsHistory,
+        PaymentFlow,
+        Transactions,
+        PaymentDetail,
+        Ticket,
+        Addresses,
+        ClientMap,
+        Devices
+    },
     data () {
         return {
             personService: new PersonService(),
@@ -55,21 +70,8 @@ export default {
             isLoaded: false,
             editPerson: false,
             person: null,
-            meters: [],
-
+            devices: [],
         }
-    },
-    components: {
-        DeferredPayments,
-        ClientPersonalData,
-        SmsHistory,
-        ClientMeterList,
-        PaymentFlow,
-        Transactions,
-        PaymentDetail,
-        Ticket,
-        Addresses,
-        ClientMap
     },
     created () {
         this.personId = this.$route.params.id
@@ -80,35 +82,23 @@ export default {
     },
     destroyed () {
         this.$store.state.person = null
-        this.$store.state.meters = null
+        this.$store.state.devices = null
     },
 
     methods: {
         async getDetails (id) {
             try {
-
                 this.person = await this.personService.getPerson(id)
                 this.isLoaded = true
                 this.$store.state.person = this.person
-                this.meters = []
-
-                for (let i in this.person.meters) {
-                    this.meters.push(this.person.meters[i].meter.id)
-                }
+                this.$store.state.devices = this.person.devices
+                this.devices = this.person.devices
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
         dateForHumans (date) {
             return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
-        },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
         }
     }
 }
