@@ -14,6 +14,7 @@ use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
 use App\Models\Asset;
 use App\Models\AssetRate;
+use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\MaintenanceUsers;
@@ -80,7 +81,9 @@ class AppServiceProvider extends ServiceProvider
                 'cash_transaction' => CashTransaction::class,
                 'maintenance_user' => MaintenanceUsers::class,
                 'meter' => Meter::class,
-                'device' => Device::class
+                'device' => Device::class,
+                'city' => City::class,
+                'address' => \App\Models\Address\Address::class,
             ]
         );
     }

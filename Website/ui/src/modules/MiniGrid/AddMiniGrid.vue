@@ -26,9 +26,8 @@
                                     v-model="selectedClusterId"
                                     :name="$tc('words.cluster')"
                                     id="clusterName"
-                                    v-validate="'required'"
-                                    @md-selected="selectCluster">
-                                    <md-option v-for="(cluster) in clusters" :value="cluster.id"
+                                    v-validate="'required'">
+                                    <md-option v-for="(cluster) in clusterService.list" :value="cluster.id"
                                                :key="cluster.id">
                                         {{ cluster.name }}
                                     </md-option>
@@ -40,7 +39,7 @@
                     <div class="md-layout md-gutter md-size-100">
                         <div class="md-layout md-gutter md-size-60 md-small-size-100"
                              style="padding-left: 1.5rem !important;">
-                            <form class="md-layout md-gutter" @submit.prevent="validatePoints"
+                            <form class="md-layout md-gutter" @submit.prevent="setPoints"
                                   style="padding-left: 1.5rem !important;"
                             >
 
@@ -63,7 +62,6 @@
                                         <md-input
                                             id="longitude"
                                             :name="$tc('words.longitude')"
-
                                             step="any"
                                             maxlength="8"
                                             v-model="miniGridLatLng.lon"
@@ -88,15 +86,11 @@
                         </div>
                     </div>
                     <div class="md-layout-item md-size-100 map-area">
-                        <Map
-                            :geoData="geoData"
-                            :clusterName="clusterName"
+                        <MgMap
+                            ref="miniGridMapRef"
+                            :mapping-service="mappingService"
                             :marker="true"
-                            :markerCount="1"
-                            :markerLocations="markerLocations"
-                            :remove="true"
-                            :center="center"
-                            :markerUrl="markerUrl"
+                            @locationSet="miniGridLocationSet"
                         />
                     </div>
                 </md-card-content>
@@ -110,18 +104,19 @@
 </template>
 
 <script>
-import marker from 'leaflet/dist/images/marker-icon.png'
-import Widget from '../../shared/widget'
 import { ClusterService } from '@/services/ClusterService'
-import Map from '../../shared/Map'
-import { MappingService } from '@/services/MappingService'
-import { EventBus } from '@/shared/eventbus'
+import { ICONS, MappingService } from '@/services/MappingService'
 import { MiniGridService } from '@/services/MiniGridService'
-import RedirectionModal from '../../shared/RedirectionModal'
+import Widget from '@/shared/widget'
+import RedirectionModal from '@/shared/RedirectionModal'
+import MgMap from '@/modules/Map/MiniGridMap.vue'
+import { notify } from '@/mixins'
 
 export default {
     name: 'AddMiniGrid',
+    mixins: [notify],
     components: {
+        MgMap,
         Widget,
         Map,
         RedirectionModal
@@ -131,47 +126,30 @@ export default {
             clusterService: new ClusterService(),
             mappingService: new MappingService(),
             miniGridService: new MiniGridService(),
-            clusterId: null,
-            geoData: null,
-            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
-            marker: true,
-            markerUrl: marker,
-            miniGridName: '',
+            miniGridName:null,
             miniGridLatLng: {
                 lat: null,
                 lon: null
             },
             loading: false,
-            clusterName: '',
-            clusters: [],
-            selectedClusterId: '',
-            miniGridId: null,
-            markerLocations: [],
+            selectedClusterId: null,
             redirectionUrl: '/locations/add-cluster',
             imperativeItem: 'Cluster',
             redirectDialogActive: false
         }
     },
+    created(){
+        this.mappingService.setMarkerUrl(ICONS.MINI_GRID)
+    },
     mounted () {
         this.getClusters()
-        EventBus.$on('getDrawedMarker', (geoDataItem) => {
-            this.miniGridLatLng.lat = Number(geoDataItem.geojson.coordinates.lat.toFixed(5))
-            this.miniGridLatLng.lon = Number(geoDataItem.geojson.coordinates.lng.toFixed(5))
-        })
-        EventBus.$on('markerError', (message) => {
-            this.$swal({
-                type: 'warn',
-                text: message,
-            })
-
-        })
     },
     methods: {
         async getClusters () {
             try {
-                this.clusters = await this.clusterService.getClusters()
-                if (this.clusters.length > 0) {
-                    this.selectedClusterId = this.clusters[this.clusters.length - 1].id
+                 await this.clusterService.getClusters()
+                if (this.clusterService.list.length) {
+                    this.selectedClusterId = this.clusterService.list[this.clusterService.list.length - 1].id
                 } else {
                     this.redirectDialogActive = true
                 }
@@ -179,32 +157,24 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async getGeoData (clusterId) {
+        async getClusterGeoData (clusterId) {
             try {
-                this.clusterId = clusterId
-                let clusterGeoData = await this.clusterService.getClusterGeoLocation(clusterId)
-
-                this.center = [clusterGeoData.lat, clusterGeoData.lon]
-                this.geoData = this.mappingService.focusLocation(clusterGeoData)
+                return await this.clusterService.getClusterGeoLocation(clusterId)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async validatePoints () {
-            let validator = await this.$validator.validateAll('Points-Form')
-            if (validator) {
-                this.setMarker()
-            }
-
-        },
         async saveMiniGrid () {
-
-            let validator = await this.$validator.validateAll()
-            let validatorPoints = await this.$validator.validateAll('Points-Form')
-            if (validator && validatorPoints) {
+            const validator = await this.$validator.validateAll()
+            if (validator && validator) {
                 try {
                     this.loading = true
-                    const miniGrid = await this.miniGridService.createMiniGrid(this.miniGridName, this.clusterId, this.miniGridLatLng)
+                    const miniGrid = {
+                        clusterId: this.selectedClusterId,
+                        geoData: `${this.miniGridLatLng.lat},${this.miniGridLatLng.lon}`,
+                        name: this.miniGridName,
+                    }
+                    await this.miniGridService.createMiniGrid(miniGrid)
                     this.alertNotify('success', this.$tc('phrases.newMiniGrid', 2))
                     this.loading = false
                     await this.$router.replace('/locations/add-village?id=' + miniGrid.id)
@@ -214,25 +184,30 @@ export default {
                 }
             }
         },
-        selectCluster (cluster) {
-            this.miniGridLatLng = {
-                lat: null,
-                lon: null
+        miniGridLocationSet(data){
+            if(!data.error){
+                this.miniGridLatLng.lat = Number(data.geoDataItem.coordinates.lat.toFixed(5))
+                this.miniGridLatLng.lon = Number(data.geoDataItem.coordinates.lng.toFixed(5))
+            }else{
+                this.miniGridLatLng.lat = null
+                this.miniGridLatLng.lon = null
+                this.$swal({
+                    type: 'warning',
+                    text: data.error,
+                })
             }
-            this.miniGridName = ''
-            this.getGeoData(cluster)
         },
-        setMarker () {
-            this.markerLocations = []
-            this.markerLocations.push([this.miniGridLatLng.lat, this.miniGridLatLng.lon])
+        setPoints () {
+            const location = [this.miniGridLatLng.lat, this.miniGridLatLng.lon]
+            this.$refs.miniGridMapRef.setMiniGridMarkerManually(location)
         },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
+    },
+    watch: {
+        async selectedClusterId () {
+            const clusterGeoData = await this.getClusterGeoData(this.selectedClusterId)
+            this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
+            this.mappingService.setGeoData(clusterGeoData)
+            this.$refs.miniGridMapRef.drawCluster()
         },
     }
 }

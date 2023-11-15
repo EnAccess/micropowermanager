@@ -1,14 +1,14 @@
 <template>
-    <section id="widget-grid" v-if="isLoaded">
+    <section id="widget-grid">
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-55 md-small-size-100">
-                <client-personal-data :person="person"/>
+                <client-personal-data :person="person" v-if="isLoaded"/>
                 <addresses :person-id="person.id" v-if="person!==null"/>
                 <sms-history :person-id="personId" person-name="System"/>
             </div>
             <div class="md-layout-item md-size-45 md-small-size-100">
-                <payment-flow/>
-                <payment-detail/>
+                <payment-flow v-if="isLoaded"/>
+                <payment-detail v-if="isLoaded"/>
             </div>
             <div class="md-layout-item md-size-100">
                 <transactions :personId="personId"/>
@@ -23,10 +23,18 @@
             </div>
             <div class="md-layout-item md-size-50 md-small-size-100">
                 <div class="client-detail-card">
-                    <devices :devices="devices"/>
+                    <devices :devices="devices" v-if="isLoaded"/>
                 </div>
                 <div class="client-detail-card">
-                    <!--                    <client-map :meterIds="meters"/>-->
+                    <widget
+                        :title="$tc('words.devices')"
+                        id="client-map"
+                    >
+                        <client-map :mappingService="mappingService" ref="clientMapRef" :edit="true"
+                                    @locationEdited="deviceLocationsEditedSet"
+                                    :zoom="5"/>
+
+                    </widget>
                 </div>
             </div>
         </div>
@@ -42,11 +50,14 @@ import Addresses from '@/modules/Client/Addresses'
 import SmsHistory from '@/modules/Client/SmsHistory'
 import ClientPersonalData from '@/modules/Client/ClientPersonalData'
 import DeferredPayments from '@/modules/Client/DeferredPayments'
-import ClientMap from '@/modules/Client/ClientMap'
-import { notify } from '@/mixins/notify'
+import ClientMap from '@/modules/Map/ClientMap.vue'
+import { notify, timing } from '@/mixins'
 import Devices from '@/modules/Client/Devices'
-import { timing } from '@/mixins/timing'
+import Widget from '@/shared/widget'
 import { PersonService } from '@/services/PersonService'
+import { MappingService, MARKER_TYPE } from '@/services/MappingService'
+import { DeviceAddressService } from '@/services/DeviceAddressService'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Client',
@@ -61,11 +72,14 @@ export default {
         Ticket,
         Addresses,
         ClientMap,
-        Devices
+        Devices,
+        Widget
     },
     data () {
         return {
             personService: new PersonService(),
+            mappingService: new MappingService(),
+            deviceAddressService: new DeviceAddressService(),
             personId: null,
             isLoaded: false,
             editPerson: false,
@@ -77,14 +91,22 @@ export default {
         this.personId = this.$route.params.id
         this.getDetails(this.personId)
     },
-    mounted () {
-
-    },
     destroyed () {
         this.$store.state.person = null
         this.$store.state.devices = null
     },
-
+    mounted () {
+        EventBus.$on('setMapCenterForDevice', (device) => {
+            const points = device.address.geo.points.split(',')
+            if (points.length !== 2) {
+                this.alertNotify('error', 'Device has no location')
+                return
+            }
+            const lat = parseFloat(points[0])
+            const lon = parseFloat(points[1])
+            this.$refs.clientMapRef.focusOnItem([lat, lon])
+        })
+    },
     methods: {
         async getDetails (id) {
             try {
@@ -93,21 +115,48 @@ export default {
                 this.$store.state.person = this.person
                 this.$store.state.devices = this.person.devices
                 this.devices = this.person.devices
+                this.setClientMapData()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        dateForHumans (date) {
-            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
-        }
+        async deviceLocationsEditedSet (editedItems) {
+            try {
+                await this.deviceAddressService.updateDeviceAddresses(editedItems)
+                this.alertNotify('success', 'Device locations updated successfully!')
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        setClientMapData () {
+            const markingInfos = []
+            this.devices.map((device) => {
+                const points = device.address.geo.points.split(',')
+                if (points.length !== 2) {
+                    this.alertNotify('error', 'Device has no location')
+                    return
+                }
+                const lat = parseFloat(points[0])
+                const lon = parseFloat(points[1])
+                markingInfos.push({
+                    id: device.id,
+                    name: device.name,
+                    serialNumber: device.device_serial,
+                    lat: lat,
+                    lon: lon,
+                    dataStream: null,
+                    deviceType: device.device_type,
+                    markerType: device.device_type === 'meter' ? MARKER_TYPE.METER : MARKER_TYPE.SHS,
+                })
+                this.mappingService.setCenter([lat, lon])
+            })
+            this.mappingService.setMarkingInfos(markingInfos)
+            this.$refs.clientMapRef.setDeviceMarkers()
+        },
     }
 }
 </script>
 <style>
-.asd__inner-wrapper {
-    margin-left: 0 !important;
-}
-
 [data-letters]:before {
     content: attr(data-letters);
     display: inline-block;

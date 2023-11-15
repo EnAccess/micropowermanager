@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Services\AddressesService;
 use App\Services\GeographicalInformationService;
 use App\Services\MeterParameterService;
 use App\Services\MeterService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Inensus\BulkRegistration\Services\AddressService;
+
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
 use MPM\Device\MeterDeviceService;
@@ -40,6 +41,7 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         private DeviceService $deviceService,
         private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
+        private AddressesService $addressService
 
     ) {
         parent::__construct();
@@ -80,12 +82,11 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             $this->deviceService->save($device);
 
             $address = $meterParameter->address()->first();
-
             $this->deviceAddressService->setAssigned($address);
             $this->deviceAddressService->setAssignee($device);
             $this->deviceAddressService->assign();
-            $this->deviceService->save($address);
-            $this->geographicalInformationService->changeOwnerWithDevice($meterParameter->id);
+            $this->addressService->save($address);
+            $this->geographicalInformationService->changeOwnerWithAddress($meterParameter, $address->id);
             $this->meterParameterService->delete($meterParameter);
 
             $this->info('Meter parameter values are shifted to meters, devices and addresses.');

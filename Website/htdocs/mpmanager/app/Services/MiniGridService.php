@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 
-class MiniGridService
+class MiniGridService implements IBaseService
 {
     public function __construct(private MiniGrid $miniGrid, private Cluster $cluster)
     {
@@ -28,13 +28,10 @@ class MiniGridService
         return $model;
     }
 
-    public function create(MiniGrid $miniGrid): MiniGrid
+    public function create($miniGridData): MiniGrid
     {
-        // just for validation
-        $this->cluster->newQuery()->findOrFail($miniGrid->getClusterId());
-        $miniGrid->save();
+        return $this->miniGrid->newQuery()->create($miniGridData);
 
-        return $miniGrid;
     }
 
     public function update($miniGrid, $miniGridData)
@@ -60,5 +57,10 @@ class MiniGridService
         }
 
         return $miniGrids->newQuery()->get();
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
     }
 }

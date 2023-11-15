@@ -42,7 +42,7 @@ class PersonService implements IBaseService
                 'addresses' => fn ($q) => $q->orderBy('is_primary')->get(),
                 'citizenship',
                 'roleOwner.definitions',
-                'devices',
+                'devices.address.geo',
             ]
         )->find($personID);
     }

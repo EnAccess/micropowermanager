@@ -19,7 +19,11 @@
                     />
                 </div>
                 <div class="md-layout-item md-size-100">
-                    <dashboard-map :clustersData="clustersData"/>
+                    <widget
+                        :title="$tc('phrases.clusterMap')"
+                        id="cluster-map">
+                        <dashboard-map :mapping-service="mappingService" ref="dashboardMapRef"/>
+                    </widget>
                 </div>
             </div>
         </div>
@@ -31,18 +35,21 @@
 import '@/shared/TableList'
 import BoxGroup from '@/modules/Dashboard/BoxGroup'
 import FinancialOverview from '@/modules/Dashboard/FinancialOverview'
-import DashboardMap from '@/modules/Dashboard/DashboardMap.vue'
+import DashboardMap from '@/modules/Map/DashboardMap.vue'
 import Loader from '@/shared/Loader.vue'
 import { notify } from '@/mixins/notify'
-import { EventBus } from '@/shared/eventbus'
+import Widget from '@/shared/widget.vue'
+import { MappingService, MARKER_TYPE } from '@/services/MappingService'
+
 export default {
     name: 'Dashboard',
-    components: { DashboardMap, Loader, FinancialOverview, BoxGroup },
+    components: { DashboardMap, Loader, FinancialOverview, BoxGroup, Widget },
     mixins: [notify],
     data () {
         return {
             loading: false,
             clustersData: [],
+            mappingService: new MappingService()
         }
     },
     created () {
@@ -51,25 +58,57 @@ export default {
     methods: {
         async getClusterList () {
             this.loading = true
-            EventBus.$emit('clustersCachedDataLoading', this.loading)
             await this.$store.dispatch('clusterDashboard/list')
             this.clustersData = this.$store.getters['clusterDashboard/getClustersData']
             this.loading = false
-            EventBus.$emit('clustersCachedDataLoading', this.loading)
+            this.setClustersMapData()
         },
         async updateCacheData () {
             this.loading = true
             try {
-                EventBus.$emit('clustersCachedDataLoading', this.loading)
                 await this.$store.dispatch('clusterDashboard/update')
                 this.clustersData = this.$store.getters['clusterDashboard/getClustersData']
-
                 this.alertNotify('success', 'Dashboard data refreshed successfully.')
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
             this.loading = false
-            EventBus.$emit('clustersCachedDataLoading', this.loading)
+        },
+        setClustersMapData () {
+            const markingInfos = []
+            const clustersGeoData = []
+            this.clustersData.map((data) => {
+                if (data.geo_data !== null) {
+                    const clusterGeo = data.geo_data
+                    this.mappingService.setCenter([clusterGeo.lat, clusterGeo.lon])
+                    clusterGeo.clusterId = data.id
+                    clustersGeoData.push(clusterGeo)
+                    const miniGridsOfCluster = data.clusterData.mini_grids
+                    miniGridsOfCluster.map((miniGrid) => {
+                        const points = miniGrid.location.points.split(',')
+                        if (points.length !== 2) {
+                            this.alertNotify('error', 'Mini-Grid has no location')
+                            return
+                        }
+                        const lat = parseFloat(points[0])
+                        const lon = parseFloat(points[1])
+                        markingInfos.push({
+                            id: miniGrid.id,
+                            name: miniGrid.name,
+                            serialNumber: null,
+                            lat: lat,
+                            lon: lon,
+                            dataStream: miniGrid.data_stream,
+                            deviceType: null,
+                            markerType: MARKER_TYPE.MINI_GRID,
+                        })
+                    })
+                }
+            })
+            this.mappingService.setGeoData(clustersGeoData)
+            this.mappingService.setMarkingInfos(markingInfos)
+            this.$refs.dashboardMapRef.drawClusters()
+            this.$refs.dashboardMapRef.setMiniGridMarkers()
         },
         financialOverviewPeriodChanged (fromDate, toDate) {
             const cachedData = this.$store.getters['clusterDashboard/getClustersData']

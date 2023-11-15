@@ -8,8 +8,10 @@ use App\Models\City;
 use App\Models\Country;
 use App\Http\Requests\CityRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\CityGeographicalInformationService;
 use App\Services\CityService;
 use App\Services\ClusterService;
+use App\Services\GeographicalInformationService;
 use App\Services\MiniGridService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +19,9 @@ use Illuminate\Validation\ValidationException;
 class CityController extends Controller
 {
     public function __construct(
-        private CityService $cityService
+        private CityService $cityService,
+        private GeographicalInformationService $geographicalInformationService,
+        private CityGeoGraphicalInformationService $cityGeographicalInformationService,
     ) {
     }
 
@@ -50,7 +54,14 @@ class CityController extends Controller
 
     public function store(CityRequest $request): ApiResource
     {
-        $city = $this->cityService->create($request->getCity());
+        $data = $request->validationData();
+        $city = $this->cityService->create($data);
+        $geographicalInformation = $this->geographicalInformationService->make($data);
+        $this->cityGeographicalInformationService->setAssigned($geographicalInformation);
+        $this->cityGeographicalInformationService->setAssignee($city);
+        $this->cityGeographicalInformationService->assign();
+        $this->geographicalInformationService->save($geographicalInformation);
+
         return ApiResource::make($city);
     }
 }

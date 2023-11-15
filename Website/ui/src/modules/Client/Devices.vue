@@ -54,8 +54,8 @@ export default {
         EventBus.$emit('widgetContentLoaded',this.subscriber,this.devices.length)
     },
     methods: {
-        setMapCenter (meterId) {
-            EventBus.$emit('map', meterId)
+        setMapCenter (device) {
+            EventBus.$emit('setMapCenterForDevice', device)
         }
     },
 }

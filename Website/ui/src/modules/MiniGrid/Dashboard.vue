@@ -82,8 +82,18 @@
                         <revenue-target-per-customer-type :targetRevenueChartData="targetRevenueChartData"/>
                     </div>
                 </div>
-                <div class="md-layout-item md-size-100">
-                    <mini-grid-map :mini-grid-id="miniGridId"/>
+                <div class="md-layout-item md-size-100 map-area">
+                    <widget
+                        :title="$tc('phrases.miniGridMap')"
+                        id="miniGrid-map">
+                        <mini-grid-map
+                            ref="miniGridMapRef"
+                            :mapping-service="mappingService"
+                            :edit="true"
+                            :miniGridId="miniGridId"
+                            @locationEdited="deviceLocationsEditedSet"
+                        />
+                    </widget>
                 </div>
                 <!--
                 <div class="md-layout-item md-size-100">
@@ -162,7 +172,7 @@
 <script>
 import RevenueTargetPerCustomerType from '@/modules/MiniGrid/RevenueTargetPerCustomerType.vue'
 import EnergyChartBox from '@/modules/MiniGrid/EnergyChartBox.vue'
-import MiniGridMap from '@/modules/MiniGrid/MiniGridMap.vue'
+import MiniGridMap from '@/modules/Map/MiniGridMap.vue'
 import TargetList from '@/modules/MiniGrid/TargetList.vue'
 import RevenueTrends from '@/modules/MiniGrid/RevenueTrends.vue'
 import BoxGroup from '@/modules/MiniGrid/BoxGroup.vue'
@@ -175,6 +185,9 @@ import { BatchRevenueService } from '@/services/BatchRevenueService'
 import { EventBus } from '@/shared/eventbus'
 import i18n from '@/i18n'
 import Stepper from '@/shared/stepper.vue'
+import { ICONS, MappingService } from '@/services/MappingService'
+import Widget from '@/shared/widget'
+import { DeviceAddressService } from '@/services/DeviceAddressService'
 
 export default {
     name: 'Dashboard',
@@ -187,13 +200,16 @@ export default {
         Stepper,
         BoxGroup,
         TicketsOverview,
-        RevenuePerCustomerType
+        RevenuePerCustomerType,
+        Widget
     },
     mixins: [currency, notify],
     data () {
         return {
             miniGridService: new MiniGridService(),
+            mappingService: new MappingService(),
             batchRevenueService: new BatchRevenueService(),
+            deviceAddressService: new DeviceAddressService(),
             enableDataStream: false,
             isLoggerActive: false,
             ModalVisibility: false,
@@ -249,10 +265,38 @@ export default {
     created () {
         this.miniGridId = this.$route.params.id
         this.redirectionUrl += '/' + this.miniGridId
+        this.mappingService.setMarkerUrl(ICONS.MINI_GRID)
     },
     mounted () {
         this.getMiniGridData()
         EventBus.$on('closeModal', this.closeModal)
+        EventBus.$on('getEditedGeoDataItems', (editedItems) => {
+            this.$swal({
+                title: this.$tc('phrases.relocateMeter', 1),
+                text: this.$tc('phrases.relocateMeter', 2),
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: this.$tc('words.relocate'),
+                cancelButtonText: this.$tc('words.dismiss')
+            }).then((result) => {
+                if (result) {
+                    let meters = []
+                    editedItems.forEach((e) => {
+                        let meter = {
+                            id: e.id,
+                            lat: e.lat.toFixed(5),
+                            lng: e.lng.toFixed(5),
+                        }
+                        meters.push(meter)
+                    })
+                    this.updateEditedMeters(meters)
+                }
+
+            })
+
+        })
     },
     watch: {
         $route: function () {
@@ -313,6 +357,14 @@ export default {
                 } catch (e) {
                     this.alertNotify('error', e.message)
                 }
+            }
+        },
+        async deviceLocationsEditedSet (editedItems) {
+            try {
+                await this.deviceAddressService.updateDeviceAddresses(editedItems)
+                this.alertNotify('success', 'Device locations updated successfully!')
+            } catch (e) {
+                this.alertNotify('error', e.message)
             }
         },
         setDashboardData () {
@@ -440,7 +492,7 @@ export default {
                 tmpChartData.push(totalRev)
                 this.trendChartData.overview.push(tmpChartData)
             }
-            console.log(this.trendChartData)
+
             return this.trendChartData.overview
         },
         fillRevenueTrends (tab) {
@@ -483,7 +535,7 @@ export default {
         calculateRevenuePercent (current, compared) {
             if (current + compared === 0) return -1
             return Math.round(current * 100 / compared)
-        }
+        },
     },
     computed: {
         miniGridList () {
@@ -500,6 +552,10 @@ export default {
 </script>
 
 <style>
+.map-area {
+
+    z-index: 1 !important
+}
 
 .period-selector {
     position: absolute;

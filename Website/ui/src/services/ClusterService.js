@@ -1,6 +1,7 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
+import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class ClusterService {
     constructor () {
@@ -9,56 +10,69 @@ export class ClusterService {
         this.financialData = []
         this.clusterTrends = []
         this.trendChartData = { base: null, overview: null }
+        this.list = []
     }
 
-    async createCluster (geoType, location, name, managerId) {
-        const cluster_PM = {
-            geo_type: geoType,
-            geo_data: location,
-            name: name,
-            manager_id: managerId,
-        }
+    async createCluster (clusterData) {
+        const params =  convertObjectKeysToSnakeCase(clusterData)
         try {
-            const response = await this.repository.create(cluster_PM)
-            return this.responseValidator(response, [200, 201])
+            const { data, status, error } = await this.repository.create(params)
+            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+
+            return data.data
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getClusters () {
         try {
-            const response = await this.repository.list()
-            return this.responseValidator(response)
+            const { data, status, error } = await this.repository.list()
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+            this.clusters = data.data
+            this.list = data.data
+
+            return this.clusters
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getClusterGeoLocation (clusterId) {
         try {
-            const response = await this.repository.getGeoLocation(clusterId)
-            return this.responseValidator(response)
+            const { data, status, error } = await this.repository.getGeoLocation(clusterId)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+
+            return data.data
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getDetails (clusterId) {
         try {
-            const response = await this.repository.get(clusterId)
-            return this.responseValidator(response)
+            const { data, status, error } = await this.repository.get(clusterId)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+
+            return data.data
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getClusterRevenues (clusterId) {
         try {
-            const response = await this.repository.getClusterRevenues(clusterId)
-            return this.responseValidator(response)
+            const { data, status, error } = await this.repository.getClusterRevenues(clusterId)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+
+            return data.data
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
@@ -66,11 +80,14 @@ export class ClusterService {
         const queryString = `?period=${period}&startDate=${startDate ??
         ''}&endDate=${endDate ?? ''}`
         try {
-            const response = await this.repository.getAllRevenues(queryString)
-            this.financialData = this.responseValidator(response, [200, 201])
+            const { data, status, error } = await this.repository.getAllRevenues(queryString)
+            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+
+            this.financialData = data.data
             return this.financialData
         } catch (e) {
-            return new ErrorHandler(e.response.data.data.message, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
@@ -153,11 +170,5 @@ export class ClusterService {
             data.push(['Sum', summaryRevenue])
         }
         return data
-    }
-
-    responseValidator (response, expectedStatus = [200]) {
-        return expectedStatus.includes(response.status)
-            ? response.data.data :
-            new ErrorHandler(response.error, 'http', response.status)
     }
 }

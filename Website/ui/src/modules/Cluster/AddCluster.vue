@@ -4,17 +4,13 @@
             :title="$tc('phrases.newCluster',1)"
             color="green"
         >
-
             <md-card class="md-layout-item md-size-100">
-
                 <md-card-content>
                     <div class="md-layout md-gutter">
-                        <div
-                            class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100">
+                        <div class="md-layout-item  md-large-size-33 md-medium-size-33 md-small-size-100">
                             <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
                                 <label>{{ $tc('words.name') }}</label>
                                 <md-input
-
                                     v-model="clusterName"
                                     :name="$tc('words.name')"
                                     id="clusterName"
@@ -24,14 +20,10 @@
                                 <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
                             </md-field>
                         </div>
-                        <div
-                            class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100">
-
+                        <div class="md-layout-item  md-large-size-33 md-medium-size-33 md-small-size-100">
                             <user-list @userSelected="userSelected"></user-list>
                         </div>
-                        <div
-                            class="md-layout-item md-xlarge-size-33 md-large-size-33 md-medium-size-33 md-small-size-100">
-
+                        <div class="md-layout-item  md-large-size-33 md-medium-size-33 md-small-size-100">
                             <md-button class="md-primary save-button" @click="saveCluster()">{{
                                     $tc('words.save')
                                 }}
@@ -39,41 +31,41 @@
                         </div>
                         <div class="md-layout-item md-size-100">
                             <md-list>
-                                <div v-if="geoDataItems.length>0">
-                                    <md-subheader v-if="typed  && clusterName!==''">Search results for {{ clusterName }}
+                                <div v-if="mappingService.searchedOrDrawnItems.length > 0">
+                                    <md-subheader v-if="typed && clusterName!==''">Search results for {{
+                                            clusterName
+                                        }}
                                     </md-subheader>
                                     <md-list-item
-
                                         style="cursor: pointer"
-
                                         :key="index"
-                                        v-for="(geo,index) in geoDataItems"
+                                        v-for="(geo,index) in mappingService.searchedOrDrawnItems"
                                         @click="locationSelected(geo)">
-                                        <md-icon v-bind:class="{ 'selected-list-item': geo.selected }">location_on
+                                        <md-icon
+                                            :class="{ 'selected-list-item': geo.selected }">location_on
                                         </md-icon>
-                                        <md-icon v-if="geo.draw_type==='draw'"
-                                                 v-bind:class="{ 'selected-list-item': geo.selected }">edit
+                                        <md-icon v-if="geo.draw_type === 'draw'"
+                                                 :class="{ 'selected-list-item': geo.selected }">edit
                                         </md-icon>
-                                        <span class="md-list-item-text">{{ geo.display_name }} </span>
 
+                                        <span class="md-list-item-text">{{ geo.display_name }} </span>
                                     </md-list-item>
                                 </div>
-                                <div v-if="geoDataItems.length<1 && typed===true && clusterName!==''">
+                                <div v-if="mappingService.searchedOrDrawnItems.length < 1 && typed && clusterName!==''">
                                     <h4 style="color:#797979;margin-left: 1rem">
                                         {{ $tc('phrases.newCluster', 2, { clusterName: clusterName }) }}</h4>
                                 </div>
                             </md-list>
                         </div>
                         <div class="md-layout-item md-size-100 map-area">
-                            <Map
-                                :geoData="geoData"
-                                :clusterName="clusterName"
+                            <cluster-map
+                                ref="clusterMapRef"
+                                :mapping-service="mappingService"
                                 :polygon="true"
-                                :center="center"
-                                :filtered_types=filtered_types
                                 :edit="true"
                                 :remove="true"
-
+                                @customDrawnDeleted="customDrawnDeletedSet"
+                                @customDrawnEdited="customDrawnEditedSet"
                             />
                         </div>
                     </div>
@@ -125,19 +117,20 @@
 </template>
 
 <script>
-
-import UserList from '../Dashboard/UserList.vue'
-import Map from '../../shared/Map.vue'
-import Widget from '../../shared/widget.vue'
 import { EventBus } from '@/shared/eventbus'
 import { MappingService } from '@/services/MappingService'
 import { ClusterService } from '@/services/ClusterService'
-
-const debounce = require('debounce')
+import { notify } from '@/mixins/notify'
+import ClusterMap from '@/modules/Map/ClusterMap.vue'
+import UserList from '@/modules/Dashboard/UserList.vue'
+import Map from '@/shared/Map'
+import Widget from '@/shared/widget.vue'
 
 export default {
     name: 'AddCluster',
+    mixins: [notify],
     components: {
+        ClusterMap,
         Widget,
         UserList,
         Map,
@@ -146,97 +139,39 @@ export default {
         return {
             clusterService: new ClusterService(),
             mappingService: new MappingService(),
-            center: [this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude],
             geoData: null,
-            clusterName: '',
+            clusterName: null,
             user: null,
-            selectedLocation: null,
+            selectedCluster: null,
             geoDataItems: [],
             typed: false,
-            filtered_types: { 'polygon': true },
+            filteredTypes: { 'polygon': true },
             dialogActive: false
         }
     },
     mounted () {
-        EventBus.$on('getSearchedGeoDataItems', (geoDataItems) => {
-            this.typed = false
-            geoDataItems.forEach((e) => {
-                for (let i = this.geoDataItems.length; i--;) {
-                    let item = this.geoDataItems[i]
-
-                    if (item.lat === e.lat && item.lon === e.lon) {
-
-                        this.geoDataItems.splice(i, 1)
-                    } else if (
-                        item.draw_type === 'set' &&
-                        this.clusterName !== '' &&
-                        !item.display_name.toLowerCase().includes(this.clusterName.toLowerCase())) {
-                        this.geoDataItems.splice(i, 1)
-                    }
-                }
-                this.geoDataItems.push(e)
-            })
-            this.typed = true
-
+        this.mappingService.setCenter([this.$store.getters['settings/getMapSettings'].latitude, this.$store.getters['settings/getMapSettings'].longitude])
+        EventBus.$on('customDrawnSet', (geoDataItem) => {
+            this.customClusterDrawnSet(geoDataItem)
         })
-        EventBus.$on('getDrawedLocation', (geoDataItem) => {
-            geoDataItem.display_name = this.clusterName === '' ? 'Unnamed' : this.clusterName
-            this.typed = false
-            this.geoDataItems.forEach((e) => {
-                let item = e
-                if (item.selected) {
-                    item.selected = false
-                }
-            })
-            this.geoDataItems.push(geoDataItem)
-
-        })
-        EventBus.$on('getDeletedGeoDataItems', (deletedItemIds) => {
-            deletedItemIds.forEach((id) => {
-                for (let i = this.geoDataItems.length; i--;) {
-                    let deletedGeoDataItem = this.geoDataItems[i]
-                    if (deletedGeoDataItem.leaflet_id === id) this.geoDataItems.splice(i, 1)
-                }
-            })
-            if (this.geoDataItems.length === 0) {
-                this.clusterName = ''
-            }
-        })
-        EventBus.$on('getEditedGeoDataItems', (editedItems) => {
-            editedItems.forEach((e) => {
-                let editedGeoDataItem = this.geoDataItems.filter(x => x.leaflet_id === e.leaflet_id)[0]
-
-                if (editedGeoDataItem !== undefined) {
-
-                    editedGeoDataItem.geojson.coordinates = e.geojson.coordinates
-                    editedGeoDataItem.lat = e.lat
-                    editedGeoDataItem.lon = e.lon
-                }
-
-            })
-
-        })
-
     },
     methods: {
-        async getClusterGeoData () {
-            this.geoData = await this.mappingService.getSearchResult(this.clusterName, this.filtered_types)
+        async searchGeoDataByName () {
+            await this.mappingService.getSearchResult(this.clusterName, this.filteredTypes)
         },
-        async locationSelected (location) {
-            this.geoDataItems.forEach((e) => {
-                e.selected = false
-            })
-
-            location.selected = true
-            this.selectedLocation = location
-            this.geoData = this.mappingService.focusLocation(this.selectedLocation)
-
+        async locationSelected (geoDataItem) {
+            this.mappingService.searchedOrDrawnItems =
+                this.mappingService.searchedOrDrawnItems.map((item) => {
+                    item.selected = item.display_name === geoDataItem.display_name
+                    return item
+                })
+            this.selectedCluster = geoDataItem
+            this.mappingService.geoData = geoDataItem
+            this.$refs.clusterMapRef.drawCluster()
         },
         async saveCluster () {
             this.dialogActive = false
-            this.selectedLocation = this.geoDataItems.filter(x => x.selected === true)[0]
-
-            if (this.selectedLocation === null || this.selectedLocation === undefined) {
+            if (!this.selectedCluster) {
                 this.$swal({
                     type: 'error',
                     title: this.$tc('phrases.newClusterNotify', 1),
@@ -257,7 +192,13 @@ export default {
                 return
             }
             try {
-                await this.clusterService.createCluster(this.selectedLocation.type, this.selectedLocation, this.clusterName, this.user)
+                const cluster = {
+                    geoType: this.selectedCluster.type,
+                    geoData: this.selectedCluster,
+                    name: this.clusterName,
+                    managerId:  this.user,
+                }
+                await this.clusterService.createCluster(cluster)
                 this.alertNotify('success', this.$tc('phrases.newClusterNotify2', 2))
                 await this.$router.replace('/clusters')
             } catch (e) {
@@ -268,30 +209,54 @@ export default {
         userSelected (user) {
             this.user = user
         },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
+        customClusterDrawnSet (geoDataItem) {
+            geoDataItem.display_name = this.clusterName === '' ? 'Unnamed' : this.clusterName
+            this.typed = false
+            this.mappingService.searchedOrDrawnItems.push(geoDataItem)
+            this.mappingService.searchedOrDrawnItems =
+                this.mappingService.searchedOrDrawnItems.map((item) => {
+                    item.selected = false
+                    return item
+                })
+            this.mappingService.geoData = geoDataItem
+            this.$refs.clusterMapRef.drawCluster()
         },
+        customDrawnDeletedSet (deletedItems) {
+            this.mappingService.searchedOrDrawnItems =
+                this.mappingService.searchedOrDrawnItems.filter((item) => {
+                    const drawnItemCoordinates = item.geojson.coordinates[0].map((coord) => {
+                        return [coord[1], coord[0]]
+                    })
+                    return !deletedItems.some((deletedItem) => JSON.stringify(drawnItemCoordinates) === JSON.stringify(deletedItem.feature.geometry.coordinates[0]))
+                })
+            if (this.mappingService.searchedOrDrawnItems.length === 0) {
+                this.clusterName = null
+            }
+        },
+        customDrawnEditedSet (editedItems) {
+            editedItems.forEach((item) => {
+                const editedGeoDataItem = this.mappingService.searchedOrDrawnItems.find(x => x.type === item.type)
+                if (editedGeoDataItem) {
+                    debugger
+                    editedGeoDataItem.geojson.coordinates = item.geojson.coordinates
+                    editedGeoDataItem.lat = item.lat
+                    editedGeoDataItem.lon = item.lon
+                }
+            })
+        }
     },
-
     watch: {
-        clusterName: debounce(function () {
-            if (this.clusterName.length > 2) {
+        async clusterName () {
+            if (this.clusterName.length > 3) {
                 let selectedCluster = this.geoDataItems.filter(x => x.selected === true)[0]
                 if (selectedCluster !== undefined && selectedCluster.display_name === '') {
                     selectedCluster.display_name = this.clusterName
                 } else {
                     this.typed = true
-                    this.getClusterGeoData()
+                    await this.searchGeoDataByName()
                 }
-
             }
-
-        }, 1000)
+        },
     }
 }
 </script>
@@ -312,7 +277,7 @@ export default {
     color: red !important;
 }
 
-cluster-input {
+.cluster-input {
     color: #747474 !important
 }
 </style>

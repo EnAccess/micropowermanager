@@ -162,6 +162,12 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
     Route::get('/{miniGridId}/batteries', 'MiniGridBatteryController@show');
     Route::get('/{miniGridId}/solar', 'MiniGridSolarController@show');
 
+    Route::group(['prefix' => '{miniGridId}'], static function () {
+        Route::group(['prefix' => 'devices'], static function () {
+            Route::get('/', "MiniGridDeviceController@index");
+        });
+    });
+
 });
 // these routes are for the forecast-tool in jetson nano.
 Route::group(['prefix' => 'jetson'], static function () {
@@ -438,6 +444,9 @@ Route::group(['prefix' => 'companies'], static function () {
 });
 Route::group(['prefix' => 'devices'], static function () {
     Route::put('/{device}', 'DeviceController@update');
+});
+Route::group(['prefix' => 'device-addresses'], function () {
+    Route::post('/', "DeviceAddressController@update");
 });
 Route::group(['prefix' => 'airtel-volt-terra'], static function () {
     Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');

@@ -21,7 +21,13 @@ class DeviceService implements IBaseService, IAssociative
             'device_serial' => $deviceData['device_serial'],
         ]);
     }
-
+    public function getBySerialNumber($serialNumber)
+    {
+        return $this->device->newQuery()
+            ->with('address.geo')
+            ->where('device_serial', $serialNumber)
+            ->first();
+    }
     public function save($device)
     {
         return $device->save();
@@ -42,7 +48,7 @@ class DeviceService implements IBaseService, IAssociative
         $device->update($deviceData);
         $device->fresh();
 
-        return $device->with(['person', 'device'])->first();
+        return $device;
     }
 
     public function delete($model)

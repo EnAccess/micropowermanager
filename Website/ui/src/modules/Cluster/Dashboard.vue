@@ -20,30 +20,14 @@
                 <box-group
                     :cluster="clusterData"
                 />
-
             </div>
             <div class="md-layout-item md-size-100">
-                <financial-overview :revenue="revenue"
-                                    :periodChanged="financialOverviewPeriodChanged"
-                />
+                <financial-overview :revenue="revenue" :periodChanged="financialOverviewPeriodChanged"/>
             </div>
             <div class="md-layout-item md-size-100" style="margin-top: 2vh;">
                 <md-card>
                     <md-card-content>
-                        <div v-if="loading">
-                            <loader size="sm"/>
-                        </div>
-                        <div v-else>
-                            <Map
-                                :geoData="mappingService.focusLocation(mapData)"
-                                :markerLocations="constantLocations"
-                                :markerUrl="miniGridIcon"
-                                :center="center"
-                                :markingInfos="markingInfos"
-                                :parentName="'Top-MiniGrid'"
-                                :zoom="7"
-                            />
-                        </div>
+                        <cluster-map :mapping-service="mappingService" ref="clusterMapRef" />
                     </md-card-content>
 
                 </md-card>
@@ -58,15 +42,15 @@
 <script>
 
 import '@/shared/TableList'
-import Map from '@/shared/Map'
+
 import BoxGroup from './BoxGroup'
 import RevenueTrends from './RevenueTrends'
-import { MappingService } from '@/services/MappingService'
-import miniGridIcon from '@/assets/icons/miniGrid.png'
-import { notify } from '@/mixins/notify'
-import FinancialOverview from '@/modules/Dashboard/FinancialOverview.vue'
+import { MappingService, MARKER_TYPE } from '@/services/MappingService'
+import { notify } from '@/mixins'
+import FinancialOverview from '@/modules/Dashboard/FinancialOverview'
 import { EventBus } from '@/shared/eventbus'
-import Loader from '@/shared/Loader.vue'
+import Loader from '@/shared/Loader'
+import ClusterMap from '@/modules/Map/ClusterMap.vue'
 
 export default {
     name: 'Dashboard',
@@ -76,22 +60,14 @@ export default {
         RevenueTrends,
         FinancialOverview,
         BoxGroup,
-        Map
+        ClusterMap,
     },
     data () {
         return {
             clusterData: {},
             mappingService: new MappingService(),
-            miniGridIcon: miniGridIcon,
             clusterId: null,
-            geoData: null,
-            constantLocations: [],
-            markingInfos: [],
             loading: false,
-            center: [
-                this.$store.getters['settings/getMapSettings'].latitude,
-                this.$store.getters['settings/getMapSettings'].longitude
-            ],
             boxData: {
                 'revenue': {
                     'period': '-',
@@ -100,9 +76,7 @@ export default {
                 'people': '-',
                 'meters': '-',
             },
-            revenue: [],
-            mapData: [],
-
+            revenue: []
         }
     },
     created () {
@@ -111,24 +85,40 @@ export default {
     mounted () {
         this.$store.dispatch('clusterDashboard/get', this.$route.params.id)
         this.clusterData = this.$store.getters['clusterDashboard/getClusterData']
+        this.boxData['mini_grids'] = this.clusterData.clusterData.mini_grids.length
         this.revenue = this.clusterData.citiesRevenue
-        this.mapData = this.clusterData.geo_data
-        this.setMiniGridsOfClusterMapSettings()
+        this.setClusterMapData()
     },
     methods: {
-        async setMiniGridsOfClusterMapSettings () {
-            this.center = [this.clusterData.geo_data.lat, this.clusterData.geo_data.lon]
-            this.boxData['mini_grids'] = this.clusterData.clusterData.mini_grids.length
-            for (let i in this.clusterData.clusterData.mini_grids) {
-                let miniGrids = this.clusterData.clusterData.mini_grids
-                let points = miniGrids[i].location.points.split(',')
-                let lat = points[0]
-                let lon = points[1]
-                let markingInfo = this.mappingService.createMarkingInformation(miniGrids[i].id, miniGrids[i].name,
-                    null, lat, lon, miniGrids[i].data_stream)
-                this.markingInfos.push(markingInfo)
-                this.constantLocations.push([lat, lon])
-            }
+        setClusterMapData () {
+            const markingInfos = []
+            const clusterGeoData = this.clusterData.geo_data
+            this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
+            this.mappingService.setGeoData(clusterGeoData)
+            const miniGridsOfCluster = this.clusterData.clusterData.mini_grids
+            miniGridsOfCluster.map((miniGrid)=>{
+                const points = miniGrid.location.points.split(',')
+                if (points.length !== 2) {
+                    this.alertNotify('error', 'Mini-Grid has no location')
+                    return
+                }
+                const lat = parseFloat(points[0])
+                const lon = parseFloat(points[1])
+                markingInfos.push({
+                    id: miniGrid.id,
+                    name: miniGrid.name,
+                    serialNumber: null,
+                    lat: lat,
+                    lon: lon,
+                    dataStream: miniGrid.data_stream,
+                    deviceType: null,
+                    markerType: MARKER_TYPE.MINI_GRID,
+                })
+            })
+            this.mappingService.setMarkingInfos(markingInfos)
+            this.$refs.clusterMapRef.drawCluster()
+            this.$refs.clusterMapRef.setMiniGridMarkers()
+
         },
         async updateCacheData () {
             this.loading = true
@@ -144,10 +134,7 @@ export default {
             }
             this.loading = false
             EventBus.$emit('clustersCachedDataLoading', this.loading)
-            this.$nextTick(() => {
-                this.mapData = this.clusterData.geo_data
-                this.setMiniGridsOfClusterMapSettings()
-            })
+
         },
         financialOverviewPeriodChanged (fromDate, toDate) {
             const cachedData = this.$store.getters['clusterDashboard/getClusterData']

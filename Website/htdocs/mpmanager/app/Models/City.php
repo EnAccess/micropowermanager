@@ -73,4 +73,9 @@ class City extends BaseModel
     {
         return $this->mini_grid_id;
     }
+
+    public function geo(): MorphOne
+    {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
+    }
 }

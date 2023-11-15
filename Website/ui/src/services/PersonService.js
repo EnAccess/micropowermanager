@@ -23,10 +23,10 @@ export class PersonService {
     async getPerson (personId) {
         try {
 
-            const response = await this.repository.get(personId)
-            if (response.status === 200 || response.status === 201) {
-                const { data : personData} = response.data
-                this.person = {
+            const {data,status,error} = await this.repository.get(personId)
+            if(status!==200)return new ErrorHandler(error, 'http', status)
+            const personData = data.data
+            this.person = {
                     id: personData.id,
                     title: personData.title,
                     education: personData.education,
@@ -39,9 +39,7 @@ export class PersonService {
                     devices: personData.devices
                 }
                 return this.person
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')

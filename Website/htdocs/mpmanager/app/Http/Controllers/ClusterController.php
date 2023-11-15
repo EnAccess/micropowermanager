@@ -24,10 +24,7 @@ class ClusterController extends Controller
         private ClusterMeterService $clusterMetersService,
         private ClusterTransactionService $clusterTransactionsService,
         private ClusterPopulationService $clusterPopulationService,
-        private ClusterRevenueService $clusterRevenueService,
-        private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
-        private ClusterMiniGridService $clusterMiniGridService,
-        private ConnectionTypeService $connectionTypeService
+
     ) {
     }
 
@@ -36,32 +33,7 @@ class ClusterController extends Controller
      */
     public function index(Request $request): ApiResource
     {
-
-        $dateRange =
-            $this->clusterService->getDateRangeFromRequest($request->get('start_date'), $request->get('end_date'));
-        $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getAll();
-        foreach ($clusters as $index => $cluster) {
-            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
-            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
-            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
-            $clusters[$index]->citiesRevenue =
-                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
-            $clusters[$index]->revenueAnalysis =
-                $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
-                    $cluster->id,
-                    $connectionTypes
-                );
-            $clusters[$index]->clusterData =
-                $this->clusterService->getCluster(
-                    $this->clusterService->getById($cluster->id),
-                    $clusters[$index]->meterCount,
-                    $clusters[$index]->revenue,
-                    $clusters[$index]->population
-                );
-        }
-
-        return ApiResource::make($clusters);
+        return ApiResource::make($this->clusterService->getAll());
     }
 
     /**
@@ -88,35 +60,6 @@ class ClusterController extends Controller
     public function store(ClusterRequest $request): ApiResource
     {
         $clusterData = $request->only(['name', 'manager_id', 'geo_data']);
-        $cluster = $this->clusterService->create($clusterData);
-        $dateRange = [];
-        $dateRange[0] = date('Y-m-d', strtotime('today - 31 days'));
-        $dateRange[1] = date('Y-m-d', strtotime('today - 1 days'));
-        $clusters = $this->clusterService->getClusterList();
-        $connectionTypes = $this->connectionTypeService->getAll();
-
-        foreach ($clusters as $index => $cluster) {
-            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
-            $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
-            $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
-            $clusters[$index]->citiesRevenue =
-                $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);
-            $clusters[$index]->revenueAnalysis = $this->clusterRevenueService->getMonthlyRevenueAnalysisForConnectionTypesById(
-                $cluster->id,
-                $connectionTypes
-            );
-            $clusters[$index]->clusterData =
-                $this->clusterService->getCluster(
-                    $this->clusterService->getById($cluster->id),
-                    $clusters[$index]->meterCount,
-                    $clusters[$index]->revenue,
-                    $clusters[$index]->population
-                );
-        }
-
-        $clustersWithMeters = $this->clusterMiniGridService->getClustersWithMiniGrids();
-        $this->clustersDashboardCacheDataService->setClustersData($clusters, $clustersWithMeters, $this->clusterRevenueService);
-
-        return ApiResource::make($cluster);
+        return ApiResource::make($this->clusterService->create($clusterData));
     }
 }

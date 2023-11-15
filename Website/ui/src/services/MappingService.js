@@ -1,10 +1,39 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import store from '@/store/store'
+import meterIcon from '@/assets/icons/meter.png'
+import shsIcon from '@/assets/icons/shs.png'
+import miniGridIcon2 from '@/assets/icons/miniGrid2.png'
+import miniGridIcon from '@/assets/icons/miniGrid.png'
+import villageMarkerIcon from '@/assets/icons/village.png'
+
+export const MARKER_TYPE = {
+    'METER': 'METER',
+    'SHS': 'SHS',
+    'MINI_GRID': 'MINI_GRID',
+    'MINI_GRID_2': 'MINI_GRID_2',
+    'VILLAGE': 'VILLAGE'
+}
+export const ICONS = {
+    'METER': meterIcon,
+    'SHS': shsIcon,
+    'MINI_GRID': miniGridIcon,
+    'MINI_GRID_2': miniGridIcon2,
+    'VILLAGE': villageMarkerIcon
+}
+export const ICON_OPTIONS = {
+    iconSize: [40.4, 44],
+    iconAnchor: [20, 43],
+    popupAnchor: [0, -51]
+}
 
 export class MappingService {
-
     constructor () {
         this.repository = RepositoryFactory.get('map')
+        this.center = [store.getters['settings/getMapSettings'].latitude, store.getters['settings/getMapSettings'].longitude]
+        this.constantMarkerUrl = null
+        this.markerUrl = null
+        this.markingInfos = []
         this.locations = []
         this.geoDataItems = []
         this.editableLayers = null
@@ -12,42 +41,40 @@ export class MappingService {
             id: 0,
             name: '',
             lat: 0,
-            lon: 0
+            lon: 0,
+            markerType: null,
+            dataStream: null,
+            deviceType: null,
+            iconUrl: null
         }
+        this.geoData = []
+        this.searchedOrDrawnItems = []
     }
 
-    async getSearchResult (name, filtered_types) {
+    async getSearchResult (name, filteredTypes) {
         try {
-            let response = await this.repository.get(name)
-            if (response.status === 200) {
-                let { data } = response
-                this.geoData = this.filterResultsOut(data, filtered_types)
-
-                return this.geoData
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, error, status } = await this.repository.get(name)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+            this.searchedOrDrawnItems = this.filterResultsOut(data, filteredTypes)
+            return this.searchedOrDrawnItems
         } catch (e) {
-
-            return new ErrorHandler(e, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
 
     }
 
-    filterResultsOut (geoData, filtered_types) {
-        let result = []
-        this.geoDataItems = []
-        for (let i in geoData) {
+    filterResultsOut (geoData, filteredTypes) {
+        this.searchedOrDrawnItems = []
+        return geoData.filter(data => {
+                const geoType = data.geojson.type.toLowerCase()
 
-            let geoType = geoData[i].geojson.type
-            if (Object.keys(filtered_types).length > 0 && !(geoType.toLowerCase() in filtered_types)) {
-                continue
-            }
-            geoData[i].searched = true
-            result.push(geoData[i])
-        }
-
-        return result
+                if (Object.keys(filteredTypes).length > 0 && !(geoType in filteredTypes)) {
+                    return false
+                }
+                data.searched = true
+                return true
+            })
     }
 
     strToHex (str) {
@@ -71,41 +98,63 @@ export class MappingService {
 
     }
 
-    manualDrawingLocationConvert (geoDataItem) {
-        let locations = []
-        for (let i = 0; i < geoDataItem.geojson.coordinates.length; i++) {
-            let coordinates = geoDataItem.geojson.coordinates[i]
-            for (let j = 0; j < coordinates.length; j++) {
-                let coordinate = coordinates[j]
-                if (coordinate.lat === undefined && coordinate.lng === undefined) {
-                    locations.push(coordinate)
+    manualDrawingLocationConvert(geoDataItem) {
+        const locations = [];
+        for (const coordinates of geoDataItem.geojson.coordinates) {
+            for (const coordinate of coordinates) {
+                const { lat, lng } = coordinate;
+                if (lat === undefined && lng === undefined) {
+                    locations.push(coordinate);
                 } else {
-
-                    locations.push([coordinate.lat, coordinate.lng])
+                    locations.push([lat, lng]);
                 }
             }
         }
-        geoDataItem.geojson.coordinates[0] = []
-        locations.forEach((e) => {
-            geoDataItem.geojson.coordinates[0].push(e)
-        })
+        geoDataItem.geojson.coordinates[0] = [...locations];
 
-        return geoDataItem
-
+        return geoDataItem;
     }
 
-    createMarkingInformation (id, name,serialNumber, lat, lon,data_stream) {
-        this.markingInfo = {
 
+    createMarkingInformation (id, name, serialNumber, lat, lon, dataStream, deviceType = null, iconUrl = null) {
+        this.markingInfo = {
             id: id,
-            serialNumber:serialNumber,
+            serialNumber: serialNumber,
             name: name,
             lat: lat,
             lon: lon,
-            dataStream:data_stream
+            dataStream: dataStream,
+            deviceType: deviceType,
+            iconUrl: iconUrl
         }
-
         return this.markingInfo
+    }
 
+    setMarkingInfos (markingInfos) {
+        this.markingInfos = markingInfos
+    }
+
+    setCenter (center) {
+        this.center = center
+    }
+
+    setGeoData (geoData) {
+        this.geoData = geoData
+    }
+
+    setConstantMarkerUrl (constantMarkerUrl) {
+        this.constantMarkerUrl = constantMarkerUrl
+    }
+
+    setMarkerUrl (markerUrl) {
+        this.markerUrl = markerUrl
+    }
+
+    getGeoData () {
+        return this.geoData
+    }
+
+    getCenter () {
+        return this.center
     }
 }

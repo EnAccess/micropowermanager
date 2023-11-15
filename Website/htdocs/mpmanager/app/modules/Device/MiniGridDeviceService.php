@@ -25,4 +25,16 @@ class MiniGridDeviceService
             ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId)))
             ->get()->pluck('device');
     }
+
+    public function getDevicesByMiniGridId($miniGridId)
+    {
+        return $this->device->newQuery()
+            ->with(['device','address.geo'])
+            ->whereHasMorph(
+                'device',
+                '*'
+            )
+            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId)))
+            ->get();
+    }
 }

@@ -5,7 +5,6 @@ const resource = `${baseUrl}/api/cities`
 
 export default {
 
-
     list() {
         return Client.get(`${resource}`)
     },

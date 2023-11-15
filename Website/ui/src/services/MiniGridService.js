@@ -1,53 +1,40 @@
 import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class MiniGridService {
     constructor () {
-        this.repository = Repository.get('minigrid')
+        this.repository = Repository.get('miniGrid')
         this.miniGrids = []
         this.miniGrid={}
-        this.currentTransaction= null
+        this.currentTransaction = null
         this.soldEnergy=0
-
+        this.list =[]
     }
 
     async getMiniGrids () {
         try {
-
-            let response = await this.repository.list()
-            if (response.status === 200 || response.status === 201) {
-                this.miniGrids = response.data.data
-
-                return this.miniGrids
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const {data, status, error} = await this.repository.list()
+            if(status !== 200) return new ErrorHandler(error, 'http', status)
+            this.miniGrids = data.data
+            this.list = data.data
+            return this.miniGrids
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
 
         }
     }
 
-    async createMiniGrid (name, clusterId, geodata) {
+    async createMiniGrid (miniGridData) {
         try {
-            let miniGridPM = {
-                cluster_id: clusterId,
-                geo_data: geodata,
-                name: name,
+            const params = convertObjectKeysToSnakeCase(miniGridData)
+            const { data, status, error } = await this.repository.create(params)
+            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
 
-            }
-
-            let response = await this.repository.create(miniGridPM)
-
-            if (response.status === 201 || response.status === 200) {
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            return data.data
         } catch (e) {
-
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
@@ -71,18 +58,12 @@ export class MiniGridService {
     }
     async getMiniGridGeoData (miniGridId) {
         try {
-
-            let response = await this.repository.geoData(miniGridId)
-
-            if (response.status === 200 || response.status === 201) {
-                this.miniGrid = response.data.data
-
-                return this.miniGrid
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const {data, status, error} = await this.repository.geoData(miniGridId)
+            if(status !== 200) return new ErrorHandler(error, 'http', status)
+            this.miniGrid = data.data
+            return this.miniGrid
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }

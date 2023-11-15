@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
+import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class CityService {
     constructor () {
         this.repository = Repository.get('city')
-        this.cities = []
         this.cities = []
         this.city = {
             id: 0,
@@ -16,38 +16,27 @@ export class CityService {
 
     async getCities () {
         try {
-            let response = await this.repository.list()
-            if (response.status === 200 || response.status === 201) {
-                this.cities = response.data.data
-                return this.cities
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.list()
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+            this.cities = data.data
+            return this.cities
         } catch (e) {
-            return new ErrorHandler(e, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    async createCity (name, cluster_id, minigrid_id, geo_data) {
+    async createCity (cityData) {
         try {
-            let city_PM = {
-                'name': name,
-                'cluster_id': cluster_id,
-                'mini_grid_id': minigrid_id,
-                'geo_data': geo_data
-            }
-
-            let response = await this.repository.create(city_PM)
-            if (response.status === 200 || response.status === 201) {
-                this.city = response.data.data
-                return this.city
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const params = convertObjectKeysToSnakeCase(cityData)
+            const { data, status, error } = await this.repository.create(params)
+            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            this.city = data.data
+            return this.city
 
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
 
     }

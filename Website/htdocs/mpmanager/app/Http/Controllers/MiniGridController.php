@@ -6,14 +6,18 @@ use App\Http\Requests\StoreMiniGridRequest;
 use App\Http\Requests\UpdateMiniGridRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\MiniGrid;
+use App\Services\GeographicalInformationService;
+use App\Services\MiniGridGeographicalInformationService;
 use App\Services\MiniGridService;
-use Facade\FlareClient\Api;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 
 class MiniGridController extends Controller
 {
-    public function __construct(private MiniGridService $miniGridService)
+    public function __construct(
+        private MiniGridService $miniGridService,
+        private GeographicalInformationService $geographicalInformationService,
+        private MiniGridGeographicalInformationService $miniGridGeographicalInformationService,
+     )
     {
     }
 
@@ -57,7 +61,15 @@ class MiniGridController extends Controller
 
     public function store(StoreMiniGridRequest $request): ApiResource
     {
-        return ApiResource::make($this->miniGridService->create($request->getMiniGrid()));
+        $data = $request->validationData();
+        $miniGrid = $this->miniGridService->create($request->only(['name', 'cluster_id']));
+        $geographicalInformation = $this->geographicalInformationService->make(['points' => $data['geo_data']]);
+        $this->miniGridGeographicalInformationService->setAssigned($geographicalInformation);
+        $this->miniGridGeographicalInformationService->setAssignee($miniGrid);
+        $this->miniGridGeographicalInformationService->assign();
+        $this->geographicalInformationService->save($geographicalInformation);
+
+        return ApiResource::make($miniGrid);
     }
 
     /**

@@ -27,4 +27,26 @@ class DeviceAddressService implements IAssignationService
         $this->address->owner()->associate($this->device);
         return $this->address;
     }
+
+    public function getAddressByDevice(Device $device)
+    {
+        return Address::query()->with('geo')
+            ->where('owner_id', $device->id)
+            ->where('owner_type','device')
+            ->first();
+    }
+
+    /**
+     * @return Address
+     */
+    public function updateDeviceAddress($deviceAddress, $addressData)
+    {
+        $points = $addressData['lat'] . ',' . $addressData['lon'];
+        $deviceAddress->geo()->update([
+                'points' => $points,
+            ]);
+        $deviceAddress->save();
+        return $deviceAddress->fresh();
+    }
+
 }
