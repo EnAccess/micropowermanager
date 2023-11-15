@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Cluster;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
+use MPM\Device\ClusterDeviceService;
 use Nette\Utils\DateTime;
 
 class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService
@@ -17,9 +16,9 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         private ClusterRevenueService $clusterRevenueService,
         private ClusterMiniGridService $clusterMiniGridService,
         private ConnectionTypeService $connectionTypeService,
-        private ClusterMeterService $clusterMetersService,
         private ClusterTransactionService $clusterTransactionsService,
         private ClusterPopulationService $clusterPopulationService,
+        private ClusterDeviceService $clusterDeviceService,
     ) {
         parent::__construct(self::CACHE_KEY_CLUSTERS_DATA);
     }
@@ -27,7 +26,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
     public function setData($dateRange = [])
     {
         if (empty($dateRange)) {
-            $startDate = date('Y-m-d H:i:s', strtotime('today - 2 year'));
+            $startDate = date('Y-01-01');//first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
@@ -48,8 +47,12 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         $connectionTypes = $this->connectionTypeService->getAll();
 
         foreach ($clusters as $index => $cluster) {
-            $clusters[$index]->meterCount = $this->clusterMetersService->getCountById($cluster->id);
+            $devicesInCluster = $this->clusterDeviceService->getByClusterId($cluster->id);
+            $clusters[$index]->deviceCount = $devicesInCluster->count();
+            $meters = $this->clusterDeviceService->getMetersByClusterId($cluster->id);
+            $clusters[$index]->meterCount = $meters->count();
             $clusters[$index]->revenue = $this->clusterTransactionsService->getById($cluster->id, $dateRange);
+
             $clusters[$index]->population = $this->clusterPopulationService->getById($cluster->id);
             $clusters[$index]->citiesRevenue =
                 $this->clusterRevenueService->getMonthlyMiniGridBasedRevenueById($cluster->id);

@@ -342,7 +342,8 @@
     "transactionReference": "Transaction Reference",
     "selectDevice": "Select a Device to bind with this SHS",
     "deleteAppliance": "Delete Appliance",
-    "downPayment": "Down Payment"
+    "downPayment": "Down Payment",
+    "successfullyUpdated": "Successfully Updated"
   },
   "words": {
     "access": "Access",
@@ -519,6 +520,10 @@
     "authorized": "Authorized",
     "unauthorized": "Unauthorized",
     "minimumPayableAmount": "Minimum Payable Amount (access to the system for 7 days)",
-    "rateCost": "Installment Cost for Monthly access to the system"
+    "rateCost": "Installment Cost for Monthly access to the system",
+    "device": "Device",
+    "solar_home_system": "Solar Home System",
+    "deviceType": "Device Type",
+    "devices": "Devices"
   }
 }

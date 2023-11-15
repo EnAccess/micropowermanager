@@ -24,24 +24,4 @@ class GeographicalInformation extends BaseModel
         return $this->morphTo();
     }
 
-    public function addresses(): HasMany
-    {
-        return $this->hasMany(Address::class);
-    }
-
-
-    public function meters(): HasMany
-    {
-        return $this->hasMany(MeterParameter::class);
-    }
-
-    public function people(): HasMany
-    {
-        return $this->hasMany(Person::class);
-    }
-
-    public function cities(): HasMany
-    {
-        return $this->hasMany(City::class);
-    }
 }

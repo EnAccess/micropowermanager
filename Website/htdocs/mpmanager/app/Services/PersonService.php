@@ -39,13 +39,10 @@ class PersonService implements IBaseService
         }
         return $this->person->newQuery()->with(
             [
-                'addresses' =>
-                    function ($q) {
-                        return $q->orderBy('is_primary')->get();
-                    },
+                'addresses' => fn ($q) => $q->orderBy('is_primary')->get(),
                 'citizenship',
                 'roleOwner.definitions',
-                'meters.meter.manufacturer',
+                'devices.address.geo',
             ]
         )->find($personID);
     }
@@ -60,33 +57,19 @@ class PersonService implements IBaseService
      */
     public function searchPerson($searchTerm, $paginate)
     {
+        $query =  $this->person->newQuery()->with(['addresses.city','devices'])->whereHas(
+            'addresses', fn ($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+        )->orWhereHas(
+            'devices',
+            fn ($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
+        )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
+            ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%');
+
         if ($paginate === 1) {
-            return $this->person->newQuery()->with('addresses.city', 'meters.meter')->whereHas(
-                'addresses',
-                function ($q) use ($searchTerm) {
-                    $q->where('phone', 'LIKE', '%' . $searchTerm . '%');
-                }
-            )->orWhereHas(
-                'meters.meter',
-                function ($q) use ($searchTerm) {
-                    $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
-                }
-            )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')->paginate(15);
+            return $query->paginate(15);
         }
 
-        return $this->person->newQuery()->with('addresses.city', 'meters.meter')->whereHas(
-            'addresses',
-            function ($q) use ($searchTerm) {
-                $q->where('phone', 'LIKE', '%' . $searchTerm . '%');
-            }
-        )->orWhereHas(
-            'meters.meter',
-            function ($q) use ($searchTerm) {
-                $q->where('serial_number', 'LIKE', '%' . $searchTerm . '%');
-            }
-        )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-            ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')->get();
+        return $query->get();
     }
 
     public function getPersonTransactions($person)
@@ -182,7 +165,7 @@ class PersonService implements IBaseService
                 return $q->where('is_primary', 1);
             },
             'addresses.city',
-            'meters.meter',
+            'devices',
         ])->where('is_customer', $customerType)->paginate($limit);
     }
 

@@ -15,7 +15,7 @@ class ApplianceRatePaymentHistoryService implements IAssignationService
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssigner($assetRate)
+    public function setAssignee($assetRate)
     {
         $this->assetRate = $assetRate;
     }

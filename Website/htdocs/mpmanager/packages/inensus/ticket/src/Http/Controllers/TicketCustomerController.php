@@ -40,18 +40,18 @@ class TicketCustomerController extends Controller
         $user = auth('api')->user();
         $ticket = $this->ticketService->make($ticketData);
         $this->userTicketService->setAssigned($ticket);
-        $this->userTicketService->setAssigner($user);
+        $this->userTicketService->setAssignee($user);
         $this->userTicketService->assign();
 
         if($request->input('owner_type') ==='maintenance_user') {
             $owner = $this->maintenanceUserService->getById($request->getOwnerId());
             $this->maintenanceUserTicketService->setAssigned($ticket);
-            $this->maintenanceUserTicketService->setAssigner($owner);
+            $this->maintenanceUserTicketService->setAssignee($owner);
             $this->maintenanceUserTicketService->assign();
         }else{
             $owner = $this->personService->getById($request->getOwnerId());
             $this->personTicketService->setAssigned($ticket);
-            $this->personTicketService->setAssigner($owner);
+            $this->personTicketService->setAssignee($owner);
             $this->personTicketService->assign();
         }
         $this->ticketService->save($ticket);

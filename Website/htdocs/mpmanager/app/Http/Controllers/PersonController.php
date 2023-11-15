@@ -114,7 +114,7 @@ class PersonController extends Controller
         }
 
         $address = $this->addressService->make($addressData);
-        $this->personAddressService->setAssigner($person);
+        $this->personAddressService->setAssignee($person);
         $this->personAddressService->setAssigned($address);
         $this->personAddressService->assign();
         $this->addressService->save($address);

@@ -4,8 +4,6 @@
 namespace Inensus\MesombPaymentProvider\Providers;
 
 
-use App\Jobs\SmsProcessor;
-use App\Lib\ITransactionProvider;
 use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
@@ -19,6 +17,7 @@ use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundExc
 use Inensus\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class MesombTransactionProvider implements ITransactionProvider
 {

@@ -15,7 +15,7 @@ class AccessRatePaymentHistoryService implements IAssignationService
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssigner($accessRate)
+    public function setAssignee($accessRate)
     {
         $this->accessRate = $accessRate;
     }

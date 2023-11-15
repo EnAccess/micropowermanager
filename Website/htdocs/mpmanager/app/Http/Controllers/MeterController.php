@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MeterRequest;
+use App\Http\Requests\UpdateMeterRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\MeterGeographicalInformationService;
 use App\Services\MeterService;
@@ -105,21 +106,6 @@ class MeterController extends Controller
     }
 
     /**
-     * List with all relation
-     * The output is neither sorted nor paginated
-     * The list contains following relations
-     *
-     * @urlParam     id The ID of the meter
-     * @responseFile responses/meters/meter.with.all.relations.json
-     * @param        $id
-     * @return       ApiResource
-     */
-    public function allRelations($meterId): ApiResource
-    {
-        return ApiResource::make($this->meterService->getMeterWithAllRelations($meterId));
-    }
-
-    /**
      * Delete
      * Deletes the meter with its all releations
      *
@@ -131,5 +117,22 @@ class MeterController extends Controller
     {
         $meter = $this->meterService->getById($meterId);
         return response()->json(null, 204);
+    }
+
+    public function update(UpdateMeterRequest $request, Meter $meter)
+    {
+        $creatorId = auth('api')->user()->id;
+        $previousDataOfMeter = json_encode($meter->toArray());
+        $updatedMeter = $this->meterService->update($meter, $request->validated());
+        $updatedDataOfMeter = json_encode($updatedMeter->toArray());
+        event('new.log', [
+                'logData' => [
+                    'user_id' => $creatorId,
+                    'affected' => $meter,
+                    'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter"
+                ]
+            ]
+        );
+        return ApiResource::make($updatedMeter);
     }
 }

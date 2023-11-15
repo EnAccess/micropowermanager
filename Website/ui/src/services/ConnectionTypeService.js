@@ -20,17 +20,17 @@ export class ConnectionTypeService {
             target: this.target
         }
         this.paginator = new Paginator(resources.connections.store)
+        this.list = []
     }
 
     updateList (data) {
         this.connectionTypes = data.map(connection => {
-            let connectionType = {
+            return {
                 id: connection.id,
                 name: connection.name,
                 updated_at: connection.updated_at,
                 edit: false,
             }
-            return connectionType
         })
         return this.connectionTypes
 
@@ -38,65 +38,52 @@ export class ConnectionTypeService {
 
     async updateConnectionType (connectionType) {
         try {
-            let response = await this.repository.update(connectionType)
-            if (response.status === 200 || response.status === 201) {
-                return connectionType
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.update(connectionType)
+            if (!status === 200 && !status === 201) return new ErrorHandler(error, 'http', status)
+            return data.data
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getConnectionTypes () {
         try {
-            let response = await this.repository.list()
-
-            if (response.status === 200) {
-                this.connectionTypes = response.data.data
-                return this.connectionTypes
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.list()
+            if (!status === 200) return new ErrorHandler(error, 'http', status)
+            this.connectionTypes = data.data
+            this.list = data.data
+            return this.connectionTypes
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async getConnectionTypeDetail (connectionTypeId) {
         try {
-            let response = await this.repository.show(connectionTypeId)
-
-            if (response.status === 200) {
-                this.connectionType = response.data.data
-                return this.connectionType
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.show(connectionTypeId)
+            if (!status === 200) return new ErrorHandler(error, 'http', status)
+            this.connectionType = data.data
+            return this.connectionType
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async createConnectionType () {
         try {
-            let connectionType_PM = {
+            const params = {
                 name: this.connectionType.name
             }
-            let response = await this.repository.create(connectionType_PM)
-            if (response.status === 200 || response.status === 201) {
-                this.resetConnectionType()
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.create(params)
+            if (!status === 200 && status === 201) return new ErrorHandler(error, 'http', status)
+            this.resetConnectionType()
+            return data.data
         } catch (e) {
-            let erorMessage = e.response.data.data.message
-            return new ErrorHandler(erorMessage, 'http')
+            const errorMessage = e.response.data.data.message
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\City;
 use App\Models\ConnectionGroup;
-use App\Models\Revenue;
 use App\Models\Target;
 use DateInterval;
 use DatePeriod;
@@ -12,26 +11,27 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
+
+use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
-use function PHPUnit\Framework\isEmpty;
 
 class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataService
 {
     private const CACHE_KEY_MINI_GRIDS_DATA = 'MiniGridsData';
 
     public function __construct(
-        private MeterService $meterService,
         private MiniGridRevenueService $miniGridRevenueService,
         private MiniGridService $miniGridService,
         private Target $target,
         private ConnectionGroup $connectionGroup,
         private ConnectionGroupService $connectionGroupService,
-        private Revenue $revenue,
         private City $city,
         private ConnectionTypeService $connectionTypeService,
         private PeriodService $periodService,
         private Ticket $ticket,
         private TicketCategory $label,
+        private MiniGridDeviceService $miniGridDeviceService,
+        private MeterRevenueService $meterRevenueService
     ) {
         parent::__construct(self::CACHE_KEY_MINI_GRIDS_DATA);
     }
@@ -39,7 +39,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
     public function setData($dateRange = [])
     {
         if (empty($dateRange)) {
-            $startDate = date('Y-m-d H:i:s', strtotime('today - 2 year'));
+            $startDate = date('Y-01-01');//first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
@@ -59,14 +59,15 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $miniGridId,
                 $startDate,
                 $endDate,
-                $this->meterService
+                $this->miniGridDeviceService
             );
             $miniGrids[$index]->transactions = $this->miniGridRevenueService->getById(
                 $miniGridId,
                 $startDate,
                 $endDate,
-                $this->meterService
+                $this->miniGridDeviceService
             );
+
             $targets = $this->target->targetForMiniGrid($miniGridId, $endDate)->first();
             $formattedTarget = [];
             foreach ($connections as $connection) {
@@ -97,20 +98,21 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $totalConnections = [];
             foreach ($connectionGroups as $connectionGroup) {
 
-                $revenue = $this->revenue->connectionGroupForMiniGridBasedPeriod(
+                $revenue = $this->meterRevenueService->getConnectionGroupBasedRevenueForMiniGrid(
                     $miniGridId,
                     $connectionGroup->id,
                     $startDate,
                     $endDate
                 );
-                $totalConnectionsData = $this->revenue->registeredMetersForMiniGridByConnectionGroupTill(
+                $totalConnectionsData = $this->meterRevenueService->getMetersByConnectionGroupForMiniGrid(
                     $miniGridId,
                     $connectionGroup->id,
                     $endDate
                 );
                 $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]["registered_connections"];
                 $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
-                $connectionsData = $this->revenue->miniGridMetersByConnectionGroup(
+
+                $connectionsData = $this->meterRevenueService->getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
                     $miniGridId,
                     $connectionGroup->id,
                     $startDate,
@@ -130,13 +132,12 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $initialData
             );
             foreach ($connectionsTypes as $connectionType) {
-                $tariffRevenue = $this->revenue->weeklyConnectionBalances(
+                $tariffRevenue = $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
                     $cityIds,
                     $connectionType->id,
                     $startDate,
                     $endDate
                 );
-
                 foreach ($tariffRevenue as $revenue) {
                     $totalRevenue = (int)$revenue['total'];
                     $date = $this->reformatPeriod($revenue['result_date']);

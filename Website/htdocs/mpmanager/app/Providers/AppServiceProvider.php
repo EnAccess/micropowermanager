@@ -5,16 +5,6 @@ namespace App\Providers;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
-use App\Models\Asset;
-use App\Models\MaintenanceUsers;
-use App\Models\Transaction\AirtelTransaction;
-use App\Transaction\AirtelVoltTerra;
-use App\Transaction\VodacomTransaction;
-use App\Utils\AccessRatePayer;
-use App\Utils\ApplianceInstallmentPayer;
-use App\Utils\MinimumPurchaseAmountValidator;
-use App\ManufacturerApi\CalinApi;
-use App\ManufacturerApi\CalinSmartApi;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Agent;
@@ -22,28 +12,35 @@ use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
+use App\Models\Asset;
 use App\Models\AssetRate;
-use App\Models\AssetType;
+use App\Models\City;
 use App\Models\Cluster;
+use App\Models\Device;
+use App\Models\MaintenanceUsers;
 use App\Models\Manufacturer;
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
-use App\Models\SmsAndroidSetting;
+use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-
 use App\Models\User;
+use MPM\Transaction\Provider\AgentTransaction;
+use MPM\Transaction\Provider\AirtelVoltTerra;
+use MPM\Transaction\Provider\VodacomTransaction;
 use App\Sms\AndroidGateway;
-use App\Transaction\AgentTransaction;
+use App\Utils\AccessRatePayer;
+use App\Utils\ApplianceInstallmentPayer;
+use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -83,6 +80,10 @@ class AppServiceProvider extends ServiceProvider
                 'third_party_transaction' => ThirdPartyTransaction::class,
                 'cash_transaction' => CashTransaction::class,
                 'maintenance_user' => MaintenanceUsers::class,
+                'meter' => Meter::class,
+                'device' => Device::class,
+                'city' => City::class,
+                'address' => \App\Models\Address\Address::class,
             ]
         );
     }

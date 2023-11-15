@@ -17,19 +17,26 @@ import i18n from './i18n'
 import { MapSettingsService } from './services/MapSettingsService'
 import { TicketSettingsService } from './services/TicketSettingsService'
 import { MainSettingsService } from './services/MainSettingsService'
-import Steamaco from '@/plugins/steama-meter/js/components/Overview/Credential'
-import Spark from '@/plugins/spark-meter/js/components/Overview/Credential'
-import Calin from '@/plugins/calin-meter/js/components/Overview/Credential'
-import CalinSmart from '@/plugins/calin-smart-meter/js/components/Overview/Credential'
-import Kelin from '@/plugins/kelin-meter/js/components/Overview/Credential'
-import Stron from '@/plugins/stron-meter/js/components/Overview/Credential'
-import Settings from '@/components/Settings/MainSettings'
-import Viber from '@/plugins/viber-messaging/js/components/Overview/Credential'
-import MicroStar from '@/plugins/micro-star-meter/js/components/Overview/Credential'
-import SunKing from '@/plugins/sun-king-shs/js/components/Overview/Credential'
-import WaveMoney from '@/plugins/wave-money-payment-provider/js/components/Overview/Credential'
-import GomeLong from '@/plugins/gome-long-meter/js/components/Overview/Credential'
-import WaveComTransaction from "@/plugins/wavecom-payment-provider/js/components/Component.vue";
+import Steamaco from '@/plugins/steama-meter/js/modules/Overview/Credential'
+import Spark from '@/plugins/spark-meter/js/modules/Overview/Credential'
+import Calin from '@/plugins/calin-meter/js/modules/Overview/Credential'
+import CalinSmart from '@/plugins/calin-smart-meter/js/modules/Overview/Credential'
+import Kelin from '@/plugins/kelin-meter/js/modules/Overview/Credential'
+import Stron from '@/plugins/stron-meter/js/modules/Overview/Credential'
+import Settings from '@/modules/Settings/MainSettings'
+import Viber from '@/plugins/viber-messaging/js/modules/Overview/Credential'
+import MicroStar from '@/plugins/micro-star-meter/js/modules/Overview/Credential'
+import SunKing from '@/plugins/sun-king-shs/js/modules/Overview/Credential'
+import WaveMoney from '@/plugins/wave-money-payment-provider/js/modules/Overview/Credential'
+import GomeLong from '@/plugins/gome-long-meter/js/modules/Overview/Credential'
+import WaveComTransaction from '@/plugins/wavecom-payment-provider/js/modules/Component'
+import WaveComTransactionDetail from '@/modules/Transactions/WaveComTransactionDetail'
+import AirtelTransactionDetail from '@/modules/Transactions/AirtelTransactionDetail'
+import SwiftaTransactionDetail from '@/modules/Transactions/SwiftaTransactionDetail'
+import ThirdPartyTransactionDetail from '@/modules/Transactions/ThirdPartyTransactionDetail'
+import VodacomTransactionDetail from '@/modules/Transactions/VodacomTransactionDetail'
+import WaveMoneyTransactionDetail from '@/modules/Transactions/WaveMoneyTransactionDetail'
+import AgentTransactionDetail from '@/modules/Agent/AgentTransactionDetail'
 
 Vue.component('default', Default)
 Vue.component('Spark-Meter', Spark)
@@ -45,6 +52,14 @@ Vue.component('MicroStar-Meter', MicroStar)
 Vue.component('SunKing-SHS', SunKing)
 Vue.component('GomeLong-Meter', GomeLong)
 Vue.component('WaveComTransaction', WaveComTransaction)
+Vue.component('WaveComTransactionDetail', WaveComTransactionDetail)
+Vue.component('AirtelTransactionDetail', AirtelTransactionDetail)
+Vue.component('SwiftaTransactionDetail', SwiftaTransactionDetail)
+Vue.component('ThirdPartyTransactionDetail', ThirdPartyTransactionDetail)
+Vue.component('VodacomTransactionDetail', VodacomTransactionDetail)
+Vue.component('WaveMoneyTransactionDetail', WaveMoneyTransactionDetail)
+Vue.component('AgentTransactionDetail', AgentTransactionDetail)
+
 
 const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
 

@@ -16,7 +16,7 @@ class AgentCommissionHistoryBalanceService implements IAssignationService
         $this->agentBalanceHistory = $agentBalanceHistory;
     }
 
-    public function setAssigner($agentCommission)
+    public function setAssignee($agentCommission)
     {
         $this->agentCommission = $agentCommission;
     }

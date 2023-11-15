@@ -3,12 +3,11 @@
 namespace Inensus\KelinMeter\Models;
 
 use App\Models\BaseModel;
-use App\Models\Transaction\ISubTransaction;
-use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
-use App\Transaction\VodacomTransaction;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Transaction\ISubTransaction;
+use App\Models\Transaction\ThirdPartyTransaction;
+use MPM\Transaction\Provider\VodacomTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;

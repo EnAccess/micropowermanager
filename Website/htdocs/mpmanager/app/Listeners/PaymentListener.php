@@ -2,11 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Lib\ITransactionProvider;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Asset;
 use App\Models\AssetRate;
-use App\Models\AssetType;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterToken;
 use App\Services\AccessRatePaymentHistoryService;
@@ -18,6 +16,7 @@ use App\Services\TransactionPaymentHistoryService;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class PaymentListener
 {
@@ -81,18 +80,18 @@ class PaymentListener
         $paymentHistory = $this->paymentHistoryService->make($paymentHistoryData);
         $paymentHistory->created_at = $transaction->created_at;
         $paymentHistory->updated_at = $transaction->updated_at;
-        $this->personPaymentHistoryService->setAssigner($payer);
+        $this->personPaymentHistoryService->setAssignee($payer);
         $this->personPaymentHistoryService->setAssigned($paymentHistory);
         $this->personPaymentHistoryService->assign();
 
         switch (true) {
             case $paidFor instanceof AccessRate:
-                $this->accessRatePaymentHistoryService->setAssigner($paidFor);
+                $this->accessRatePaymentHistoryService->setAssignee($paidFor);
                 $this->accessRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->accessRatePaymentHistoryService->assign();
                 break;
             case $paidFor instanceof AssetRate:
-                $this->applianceRatePaymentHistoryService->setAssigner($paidFor);
+                $this->applianceRatePaymentHistoryService->setAssignee($paidFor);
                 $this->applianceRatePaymentHistoryService->setAssigned($paymentHistory);
                 $this->applianceRatePaymentHistoryService->assign();
                 break;
@@ -101,13 +100,13 @@ class PaymentListener
                 $paymentHistory->paid_for_id = $paidFor->id;
                 break;
             case $paidFor instanceof MeterToken:
-                $this->meterTokenPaymentHistoryService->setAssigner($paidFor);
+                $this->meterTokenPaymentHistoryService->setAssignee($paidFor);
                 $this->meterTokenPaymentHistoryService->setAssigned($paymentHistory);
                 $this->meterTokenPaymentHistoryService->assign();
                 break;
         }
 
-        $this->transactionPaymentHistoryService->setAssigner($transaction);
+        $this->transactionPaymentHistoryService->setAssignee($transaction);
         $this->transactionPaymentHistoryService->setAssigned($paymentHistory);
         $this->transactionPaymentHistoryService->assign();
         $this->paymentHistoryService->save($paymentHistory);

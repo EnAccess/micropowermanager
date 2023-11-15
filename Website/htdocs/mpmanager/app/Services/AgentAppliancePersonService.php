@@ -16,7 +16,7 @@ class AgentAppliancePersonService implements IAssignationService
         $this->appliancePerson = $appliancePerson;
     }
 
-    public function setAssigner($agent)
+    public function setAssignee($agent)
     {
         $this->agent = $agent;
     }

@@ -49,6 +49,7 @@
     "leaflet.featuregroup.subgroup": "^1.0.2",
     "leaflet.icon.glyph": "^0.2.0",
     "leaflet.markercluster": "^1.4.1",
+    "moment-timezone": "^0.5.43",
     "mpm": "0.0.1",
     "node-gyp": "^6.1.0",
     "popper.js": "^1.16.1",

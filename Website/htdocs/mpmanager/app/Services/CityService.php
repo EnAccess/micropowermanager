@@ -18,35 +18,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CityService
+class CityService implements IBaseService
 {
-    public function __construct(private City $city, private Person $person, private MiniGrid $miniGrid)
+    public function __construct(private City $city)
     {
     }
-
-    public function getCityPopulation($cityId, $onlyCustomers = true)
-    {
-        if ($onlyCustomers) {
-            $population = $this->person
-                ->where('is_customer', 1)
-                ->whereHas(
-                    'addresses',
-                    function ($q) use ($cityId) {
-                        $q->where('city_id', $cityId)->where('is_primary', 1);
-                    }
-                )->count();
-        } else {
-            $population = $this->person->whereHas(
-                'addresses',
-                function ($q) use ($cityId) {
-                    $q->where('city_id', $cityId)->where('is_primary', 1);
-                }
-            )->count();
-        }
-
-        return $population;
-    }
-
     public function getCityIdsByMiniGridId($miniGridId): array
     {
         return
@@ -76,20 +52,10 @@ class CityService
         return $city;
     }
 
-    public function create(City $city): City
+    public function create($data)
     {
-        // validation
-        $this->miniGrid->newQuery()->findOrFail($city->getMiniGridId());
-        $city->save();
-
-        return $city;
+        return $this->city->newQuery()->create($data);
     }
-
-    public function delete($model)
-    {
-        // TODO: Implement delete() method.
-    }
-
     public function getAll($limit = null)
     {
         if ($limit) {
@@ -97,4 +63,12 @@ class CityService
         }
         return $this->city->newQuery()->get();
     }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+
+
 }

@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\BaseModel;
 use App\Models\GeographicalInformation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -38,9 +39,9 @@ class Address extends BaseModel
         return $this->morphTo();
     }
 
-    public function geo(): BelongsTo
+    public function geo(): MorphOne
     {
-        return $this->belongsTo(GeographicalInformation::class);
+        return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 
     public function setOwner(int $ownerId, string $ownerType)

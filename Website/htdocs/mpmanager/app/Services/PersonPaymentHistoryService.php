@@ -16,7 +16,7 @@ class PersonPaymentHistoryService implements IAssignationService
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssigner($person)
+    public function setAssignee($person)
     {
         $this->person = $person;
     }

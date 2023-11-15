@@ -2,20 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\City;
-use App\Models\ConnectionGroup;
 use App\Models\DatabaseProxy;
-use App\Models\Revenue;
-use App\Models\Target;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Inensus\Ticket\Models\Ticket;
-use Inensus\Ticket\Models\TicketCategory;
 
 abstract class AbstractDashboardCacheDataService
 {
-    protected $cacheDataKey;
+    protected string $cacheDataKey;
 
     public function __construct(
         string $cacheDataKey
@@ -38,7 +31,7 @@ abstract class AbstractDashboardCacheDataService
         })->first() : [];
     }
 
-    protected function cacheKeyGenerator()
+    protected function cacheKeyGenerator(): string
     {
         $user = User::query()->first();
         $databaseProxy = app()->make(DatabaseProxy::class);
@@ -50,6 +43,5 @@ abstract class AbstractDashboardCacheDataService
     {
         return substr_replace($period, '-', 4, 0);
     }
-
 
 }

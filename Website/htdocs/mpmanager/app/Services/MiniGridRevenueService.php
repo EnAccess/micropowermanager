@@ -7,23 +7,21 @@ use App\Models\MiniGrid;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MiniGridRevenueService
 {
     public function __construct(
-        private PeriodService $periodService,
-        private MiniGrid $miniGrid,
         private Transaction $transaction,
         private MeterToken $meterToken
     ) {
     }
 
-    public function getById($miniGridId, $startDate, $endDate, $meterService)
+    public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService)
     {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
-        $miniGridMeters = $meterService->getMetersInMiniGrid($miniGridId);
-
+        $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
         return $this->transaction->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(amount) as revenue')
             ->whereHasMorph(
@@ -37,16 +35,15 @@ class MiniGridRevenueService
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
     }
 
-    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $meterService)
+    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $miniGridDeviceService)
     {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
-        $miniGridMeters = $meterService->getMetersInMiniGrid($miniGridId);
+        $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
         $soldEnergy = $this->meterToken->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(energy) as energy')
             ->whereIn('meter_id', $miniGridMeters->pluck('id'))
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
+            ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
         $energy = 0;
 
         if ($soldEnergy) {

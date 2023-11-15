@@ -4,6 +4,7 @@ namespace App\Models\Transaction;
 
 use App\Helpers\RelationsManager;
 use App\Models\BaseModel;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\PaymentHistory;
@@ -28,7 +29,6 @@ use PDO;
  * @property string $message
  * @property string $original_transaction_type
  */
-
 class Transaction extends BaseModel
 {
     use RelationsManager;
@@ -97,9 +97,9 @@ class Transaction extends BaseModel
         return $this->hasMany(PaymentHistory::class);
     }
 
-    public function meter(): HasOne
+    public function device(): HasOne
     {
-        return $this->hasOne(Meter::class, 'serial_number', 'message');
+        return $this->hasOne(Device::class, 'device_serial', 'message');
     }
 
 

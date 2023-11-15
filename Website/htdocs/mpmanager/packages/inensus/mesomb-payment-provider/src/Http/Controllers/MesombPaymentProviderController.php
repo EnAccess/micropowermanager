@@ -21,7 +21,7 @@ class MesombPaymentProviderController extends Controller
 
         if (config('app.env') === 'production') {//production queue
             $queue = 'payment';
-        } elseif (config('app.env') === 'staging') {
+        } elseif (config('app.env') === 'demo') {
             $queue = 'staging_payment';
         } else { // local queue‚
             $queue = 'local_payment';

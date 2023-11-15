@@ -6,7 +6,7 @@ use App\Models\City;
 use App\Models\Cluster;
 use Illuminate\Database\Eloquent\Collection;
 
-class ClusterService
+class ClusterService implements IBaseService
 {
     public function __construct(
         private Cluster $cluster
@@ -51,40 +51,9 @@ class ClusterService
         return Cluster::query()->with('miniGrids')->find($clusterId);
     }
 
-    public function getClusterList(bool $withCities = false)
-    {
-        if (!$withCities) {
-            return Cluster::query()->get();
-        }
-        return Cluster::query()->with('miniGrids')->get();
-    }
-
-    public function getClustersCities($clusters, $callback): void
-    {
-        foreach ($clusters as $cluster) {
-            $callback($cluster->cities()->get());
-        }
-    }
-
-    public function attachCities(Cluster $cluster, $cities): void
-    {
-        foreach ($cities as $cityId) {
-            $city = City::query()->find($cityId);
-            $cluster->cities()->save($city);
-        }
-    }
-
     public function getGeoLocationById($clusterId)
     {
-        $cluster = $this->cluster->newQuery()->select('geo_data')->find($clusterId);
-        return $cluster->geo_data;
-    }
-
-    public function findManagerId(int $clusterId): ?int
-    {
-        return $this->cluster->where('id', $clusterId)
-            ->select('managerId')
-            ->first();
+        return $this->cluster->newQuery()->select('geo_data')->find($clusterId)->geo_data;
     }
 
     public function getDateRangeFromRequest($startDate, $endDate): array
@@ -102,12 +71,9 @@ class ClusterService
         return $dateRange;
     }
 
-    public function getById(int $clusterId): Cluster
+    public function getById($clusterId): Cluster
     {
-        /** @var Cluster $model */
-        $model = $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
-
-        return $model;
+        return $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
     }
 
     public function create($clusterData)
@@ -117,6 +83,19 @@ class ClusterService
 
     public function getAll($limit = null): Collection
     {
-        return $this->cluster->get();
+        if ($limit !== null) {
+            return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();
+        }
+        return $this->cluster->newQuery()->with('miniGrids')->get();
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
     }
 }

@@ -17,6 +17,7 @@ export class Meter {
         this.manufacturer = null
         this.type = jsonData.meter_type.max_current + ' A ' + jsonData.meter_type.phase + ' P '
         this.online = jsonData.meter_type.online
+        this.tariff = jsonData.tariff.name
         return this
     }
 
@@ -55,11 +56,6 @@ export class Meters {
             meter.manufacturer = this.manufacturerList.find(function (_meter) {
                 return _meter.id === meter.manufacturerId
             })
-            if ('meter_parameter' in data[m]) {
-                if (data[m].meter_parameter != null && 'tariff' in data[m].meter_parameter) {
-                    meter.tariff = data[m].meter_parameter.tariff.name + ' ' + (data[m].meter_parameter.tariff.price / 100)
-                }
-            }
             this.list.push(meter)
         }
     }

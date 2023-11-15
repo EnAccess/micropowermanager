@@ -16,7 +16,7 @@ class AgentTransactionTransactionService implements IAssignationService
         $this->transaction = $transaction;
     }
 
-    public function setAssigner($agentTransaction)
+    public function setAssignee($agentTransaction)
     {
         $this->agentTransaction = $agentTransaction;
     }

@@ -27,8 +27,7 @@ use App\Observers\AgentReceiptObserver;
 use App\Observers\AgentSoldApplianceObserver;
 use App\Observers\BatteryObserver;
 use App\Observers\MeterParameterObserver;
-use App\Observers\MeterTariffObserver;
-use App\Observers\MiniGridObserver;
+
 use App\Observers\PersonObserver;
 use App\Observers\PVObserver;
 use App\Observers\SolarObserver;
@@ -55,7 +54,6 @@ class ServicesProvider extends ServiceProvider
             }
         );
         Solar::observe(SolarObserver::class);
-        MiniGrid::observe(MiniGridObserver::class);
         AgentBalanceHistory::observe(AgentBalanceHistoryObserver::class);
         AgentSoldAppliance::observe(AgentSoldApplianceObserver::class);
         AgentReceipt::observe(AgentReceiptObserver::class);

@@ -162,6 +162,12 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
     Route::get('/{miniGridId}/batteries', 'MiniGridBatteryController@show');
     Route::get('/{miniGridId}/solar', 'MiniGridSolarController@show');
 
+    Route::group(['prefix' => '{miniGridId}'], static function () {
+        Route::group(['prefix' => 'devices'], static function () {
+            Route::get('/', "MiniGridDeviceController@index");
+        });
+    });
+
 });
 // these routes are for the forecast-tool in jetson nano.
 Route::group(['prefix' => 'jetson'], static function () {
@@ -271,9 +277,8 @@ Route::group(['prefix' => 'report-downloading'], function () {
 });
 // Revenue
 Route::group(['prefix' => 'revenue', 'middleware' => 'jwt.verify'], static function () {
-    Route::post('/analysis/', 'RevenueController@analysis');
-    Route::post('/trends/{id}', 'RevenueController@trending');
     Route::post('/', 'RevenueController@revenueData');
+    Route::post('/trends/{id}', 'RevenueController@trending');
     Route::get('/tickets/{id}', 'RevenueController@ticketData');
 });
 // Sms
@@ -324,11 +329,9 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
 Route::group(['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
     static function () {
         Route::post('/airtel', 'TransactionController@store');
-
         Route::post('/vodacom', ['as' => 'vodacomTransaction', 'uses' => 'TransactionController@store']);
         Route::post('/agent',
             ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']);
-
     });
 
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {
@@ -438,6 +441,12 @@ Route::get('/protected-pages', 'ProtectedPageController@index');
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', 'CompanyController@store');
     Route::get('/{email}', 'CompanyController@get');
+});
+Route::group(['prefix' => 'devices'], static function () {
+    Route::put('/{device}', 'DeviceController@update');
+});
+Route::group(['prefix' => 'device-addresses'], function () {
+    Route::post('/', "DeviceAddressController@update");
 });
 Route::group(['prefix' => 'airtel-volt-terra'], static function () {
     Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');

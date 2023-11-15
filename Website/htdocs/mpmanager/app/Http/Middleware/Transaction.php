@@ -3,12 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\PaymentProviderNotIdentified;
-use App\Lib\ITransactionProvider;
 use Closure;
-use Config;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
+use MPM\Transaction\Provider\ITransactionProvider;
 use function in_array;
 
 class Transaction
@@ -41,7 +40,7 @@ class Transaction
         if (
             preg_match('/\/vodacom/', $request->url()) && in_array(
                 $request->ip(),
-                Config::get('services.vodacom.ips'),
+                config('services.vodacom.ips'),
                 false
             )
         ) {
@@ -49,7 +48,7 @@ class Transaction
         } elseif (
             preg_match('/\/airtel/', $request->url()) && in_array(
                 $request->ip(),
-                Config::get('services.airtel.ips'),
+                config::get('services.airtel.ips'),
                 false
             )
         ) {

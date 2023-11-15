@@ -68,6 +68,9 @@ import PluginRepository from '@/repositories/PluginRepository'
 import ProtectedPageRepository from '@/repositories/ProtectedPageRepository'
 import ApplianceRepository from '@/repositories/ApplianceRepository'
 import MiniGridDashboardCacheDataRepository from '@/repositories/MiniGridDashboardCacheDataRepository'
+import DeviceRepository from '@/repositories/DeviceRepository'
+import MiniGridDeviceRepository from '@/repositories/MiniGridDeviceRepository'
+import DeviceAddressRepository from '@/repositories/DeviceAddressRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -88,7 +91,7 @@ const repositories = {
     'country': CountryRespository,
     'commission': AgentCommissionRepository,
     'maintenance': MaintenanceRepository,
-    'minigrid': MiniGridRepository,
+    'miniGrid': MiniGridRepository,
     'map': MappingRepository,
     'meter': MeterRepository,
     'meterType': MeterTypeRepository,
@@ -140,6 +143,9 @@ const repositories = {
     'protectedPage': ProtectedPageRepository,
     'appliance': ApplianceRepository,
     'miniGridDashboardCacheData': MiniGridDashboardCacheDataRepository,
+    'device': DeviceRepository,
+    'miniGridDevice': MiniGridDeviceRepository,
+    'deviceAddress': DeviceAddressRepository
 }
 
 export default {

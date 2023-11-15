@@ -43,7 +43,7 @@ class PersonAddressesController extends Controller
         $person = $this->personService->getById($personId);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $address = $this->addressService->make($addressData);
-        $this->personAddressService->setAssigner($person);
+        $this->personAddressService->setAssignee($person);
         $this->personAddressService->setAssigned($address);
 
         if ($addressData['is_primary']) {
@@ -61,7 +61,7 @@ class PersonAddressesController extends Controller
         $person = $this->personService->getById($personId);
         $address = $this->addressService->getById($request->input('id') ?? -1);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
-        $this->personAddressService->setAssigner($person);
+        $this->personAddressService->setAssignee($person);
         $this->personAddressService->setAssigned($address);
 
         if ($addressData['is_primary']) {

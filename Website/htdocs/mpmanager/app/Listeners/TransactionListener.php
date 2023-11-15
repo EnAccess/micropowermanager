@@ -2,13 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
-use App\Transaction\TransactionAdapter;
+use MPM\Transaction\Provider\TransactionAdapter;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\Log;
-
-use function config;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class TransactionListener
 {

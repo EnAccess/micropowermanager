@@ -32,46 +32,46 @@ services:
       - frontend_node_modules:/usr/app/node_modules/
 
 
-  'cron':
-    container_name: cron_job
-    build:
-      context: Docker/
-      dockerfile: DockerfileCron
-    image: laravel/cron
-    depends_on:
-      - maria
-    links:
-      - maria:db
-      - redis:redis
-    volumes:
-      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
-      - ./Website/htdocs:/var/www/html
+  #  'cron':
+  #    container_name: cron_job
+  #    build:
+  #      context: Docker/
+  #      dockerfile: DockerfileCron
+  #    image: laravel/cron
+  #    depends_on:
+  #      - maria
+  #    links:
+  #      - maria:db
+  #      - redis:redis
+  #    volumes:
+  #      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+  #      - ./Website/htdocs:/var/www/html
 
-  'worker':
-    container_name: worker
-    restart: unless-stopped
-    build:
-      context: Docker/
-      dockerfile: DockerfileQueueWorker
-    volumes:
-      - ./Website/htdocs/mpmanager:/var/www/laravel
-      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - maria
-    links:
-      - maria:db
-      - redis:redis
+  #  'worker':
+  #    container_name: worker
+  #    restart: unless-stopped
+  #    build:
+  #      context: Docker/
+  #      dockerfile: DockerfileQueueWorker
+  #    volumes:
+  #      - ./Website/htdocs/mpmanager:/var/www/laravel
+  #      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+  #    depends_on:
+  #      - maria
+  #    links:
+  #      - maria:db
+  #      - redis:redis
 
 
-  'composer':
-    container_name: mpmanager_composer
-    build:
-      context: Docker/
-      dockerfile: DockerfileComposer
-    restart: 'no'
-    command: install
-    volumes:
-      - ./Website/htdocs/mpmanager:/app
+  #  'composer':
+  #    container_name: mpmanager_composer
+  #    build:
+  #      context: Docker/
+  #      dockerfile: DockerfileComposer
+  #    restart: 'no'
+  #    command: install
+  #    volumes:
+  #      - ./Website/htdocs/mpmanager:/app
 
 
   'redis':

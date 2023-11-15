@@ -15,7 +15,7 @@ class MeterTokenPaymentHistoryService implements IAssignationService
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssigner($meterToken)
+    public function setAssignee($meterToken)
     {
         $this->meterToken = $meterToken;
     }

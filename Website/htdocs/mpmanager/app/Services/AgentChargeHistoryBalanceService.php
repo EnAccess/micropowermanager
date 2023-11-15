@@ -15,7 +15,7 @@ class AgentChargeHistoryBalanceService implements IAssignationService
         $this->agentBalanceHistory = $agentBalanceHistory;
     }
 
-    public function setAssigner($agentCharge)
+    public function setAssignee($agentCharge)
     {
         $this->agentCharge = $agentCharge;
     }

@@ -20,11 +20,12 @@
         >
             <md-dialog-title>{{ $tc('phrases.expireSession') }}</md-dialog-title>
             <md-dialog-content>
-                {{$tc('phrases.expireSessionLabel',2,{expires_in: expires_in})}}<br>{{$tc('phrases.expireSessionLabel',1)}}
+                {{ $tc('phrases.expireSessionLabel', 2, { expires_in: expires_in }) }}<br>{{ $tc('phrases.expireSessionLabel', 1) }}
             </md-dialog-content>
 
             <md-dialog-actions>
-                <md-button class="md-primary md-raised" @click="extendToken" :disabled="confirmed">{{$tc('words.confirm')}}
+                <md-button class="md-primary md-raised" @click="extendToken" :disabled="confirmed">
+                    {{ $tc('words.confirm') }}
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
@@ -36,11 +37,12 @@
 import FooterBar from '../layouts/FooterBar.vue'
 import { EventBus } from '@/shared/eventbus'
 import TopNavbar from './TopNavbar.vue'
-import SideBar from '../components/Sidebar/SideBar'
+import SideBar from '@/modules/Sidebar/SideBar'
 import MobileTopNavbar from './MobileTopNavbar'
 import TailWizard from '@/shared/TailWizard'
 import { mapGetters } from 'vuex'
 import PasswordProtection from '@/shared/PasswordProtection'
+
 export default {
     name: 'default',
     components: {
@@ -52,8 +54,7 @@ export default {
         TailWizard
     },
     created () {
-        if (this.status !=='') {
-
+        if (this.status !== '') {
 
             const tail = JSON.parse(this.registrationTail.tail)
             for (const tailElement of tail) {
@@ -61,7 +62,7 @@ export default {
                     this.showWizard = true
                 }
             }
-            this.tail = tail.filter(x => x.adjusted === false && x.tag!==null)
+            this.tail = tail.filter(x => x.adjusted === false && x.tag !== null)
         }
     },
     mounted () {
@@ -78,7 +79,7 @@ export default {
         sidebarBackground: 'green',
         sidebarBackgroundImage: null,
         showWizard: false,
-        tail:[]
+        tail: []
     }),
     methods: {
         showExtender (val) {
@@ -113,59 +114,62 @@ export default {
 
 
 <style lang="css" scoped>
-    .container {
-        padding: 1rem;
-    }
+.container {
+    padding: 1rem;
+}
 
-    @media screen and (min-width: 992px) {
-        .sidebar {
-            width: 8%;
-            min-width: 200px;
-
-        }
-
-        .main-panel {
-            width: 92%;
-            max-width: calc(100% - 200px);
-        }
-    }
-    @media screen and (min-width: 1370px) {
-        .sidebar {
-            width: 10%;
-            min-width: 230px;
-
-        }
-
-        .main-panel {
-            width: 90%;
-            max-width: calc(100% - 230px);
-        }
-    }
-    @media screen and (min-width: 1800px) {
-        .sidebar {
-            width: 15%;
-            min-width: 260px;
-
-        }
-
-        .main-panel {
-            width: 85%;
-            max-width: calc(100% - 260px);
-        }
-    }
-
-    @media screen and (max-width: 991px){
-        .top-nav-bar{
-            display: none;
-        }
+@media screen and (min-width: 992px) {
+    .sidebar {
+        width: 8%;
+        min-width: 200px;
 
     }
-    @media screen and (min-width: 992px){
-        .mobile-top-nav-bar{
-            display: none;
-        }
+
+    .main-panel {
+        width: 92%;
+        max-width: calc(100% - 200px);
+    }
+}
+
+@media screen and (min-width: 1370px) {
+    .sidebar {
+        width: 10%;
+        min-width: 230px;
 
     }
+
+    .main-panel {
+        width: 90%;
+        max-width: calc(100% - 230px);
+    }
+}
+
+@media screen and (min-width: 1800px) {
+    .sidebar {
+        width: 15%;
+        min-width: 260px;
+
+    }
+
+    .main-panel {
+        width: 85%;
+        max-width: calc(100% - 260px);
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .top-nav-bar {
+        display: none;
+    }
+
+}
+
+@media screen and (min-width: 992px) {
+    .mobile-top-nav-bar {
+        display: none;
+    }
+
+}
 
 
 </style>

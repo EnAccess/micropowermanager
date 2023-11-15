@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Inensus\WavecomPaymentProvider\Providers;
 
-use App\Lib\ITransactionProvider;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -14,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WavecomPaymentProvider\Services\TransactionService;
+use MPM\Transaction\Provider\ITransactionProvider;
 
 class WaveComTransactionProvider implements ITransactionProvider
 {

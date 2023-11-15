@@ -6,7 +6,6 @@ const resource = `${baseUrl}/api/people`
 export default {
     get (page = 1) {
         return Client.get(`${resource}/${page}`)
-
     },
     update(person){
         return Client.put(`${resource}/${person.id}`,person)

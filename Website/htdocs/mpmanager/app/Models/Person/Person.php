@@ -10,6 +10,7 @@ use App\Models\AgentSoldAppliance;
 use App\Models\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
+use App\Models\Device;
 use App\Models\Meter\MeterParameter;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
@@ -17,6 +18,7 @@ use App\Models\Role\Roles;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -79,9 +81,9 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
     }
 
 
-    public function meters(): MorphMany
+    public function devices(): HasMany
     {
-        return $this->morphMany(MeterParameter::class, 'owner');
+        return $this->hasMany(Device::class);
     }
 
     /**

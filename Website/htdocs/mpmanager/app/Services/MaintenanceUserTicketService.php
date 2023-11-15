@@ -15,7 +15,7 @@ class MaintenanceUserTicketService implements IAssignationService
         $this->ticket = $ticket;
     }
 
-    public function setAssigner($maintenanceUser)
+    public function setAssignee($maintenanceUser)
     {
         $this->maintenanceUser = $maintenanceUser;
     }
