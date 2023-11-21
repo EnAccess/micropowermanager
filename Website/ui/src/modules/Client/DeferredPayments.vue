@@ -87,10 +87,6 @@ export default {
             this.selectedAsset = this.assetPersonService.list[index]
             this.$router.push('/sold-appliance-detail/' + this.selectedAsset.id)
         },
-        showSellApplianceModalHandler () {
-            debugger
-            this.showSellApplianceModal = true
-        },
         async getAssetList () {
             try {
                 await this.assetPersonService.getPersonAssets(this.personId)

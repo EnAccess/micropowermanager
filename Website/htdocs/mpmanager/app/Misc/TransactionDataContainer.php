@@ -17,7 +17,7 @@ class TransactionDataContainer
     public int $accessRateDebt;
     public Transaction $transaction;
     public Device $device;
-    public MeterTariff $tariff;
+    public MeterTariff|null $tariff;
     public Manufacturer $manufacturer;
     public Token $token;
     public array $paidRates;

@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Models\AssetPerson;
 use App\Models\ConnectionGroup;
 use App\Models\Device;
+use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
@@ -38,15 +39,16 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
     {
         $this->info('Command started');
         $this->info('command running w ' . $this->option('company-id'));
+        $manufacturer = Manufacturer::query()->where('name', 'SunKing SHS')->first();
         try {
             $devices = Device::query()->with('device')->get();
-            $devices->map(function ($q) {
+            $devices->map(function ($q) use ($manufacturer) {
                 $meter = $q->device;
                 if ($meter->connection_group_id === 2 || $meter->connection_group_id === 3) {
                     $shsData = [
                         'asset_id' => $this->connectionAssetPeer[$meter->connection_group_id],
                         'serial_number' => $q->device_serial,
-                        'manufacturer_id' => 8,
+                        'manufacturer_id' => $manufacturer->id,
                         'created_at' => $q->device->created_at,
                         'updated_at' => $q->device->updated_at,
                     ];

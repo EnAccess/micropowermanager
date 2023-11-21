@@ -2,7 +2,7 @@
     <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-40">
             <client-detail-card :person-id="personId" :show-customer-information="false" v-if="personId"/>
-            <sold-appliances-list :sold-appliances-list="soldAppliancesList" :person-id="personId" :key="updateList"/>
+            <sold-appliances-list :sold-appliances-list="soldAppliancesList" :personId="personId" :key="updateList"  v-if="personId"/>
         </div>
         <div class="md-layout-item md-size-60">
             <widget
@@ -173,7 +173,6 @@
 
 
                 </div>
-
             </widget>
         </div>
 
@@ -181,22 +180,23 @@
 </template>
 
 <script>
-import ConfirmationBox from '../../../shared/ConfirmationBox'
-import ClientDetailCard from '../../../shared/ClientDetailCard'
+import ConfirmationBox from '@/shared/ConfirmationBox'
+import ClientDetailCard from '@/shared/ClientDetailCard'
 import SoldAppliancesList from './SoldAppliancesList'
 import { AssetPersonService } from '@/services/AssetPersonService'
 import { PersonService } from '@/services/PersonService'
-import Widget from '../../../shared/widget'
-import { currency } from '@/mixins/currency'
+import Widget from '@/shared/widget'
+import { currency, notify } from '@/mixins'
 import { AssetRateService } from '@/services/AssetRateService'
 import moment from 'moment'
 import { EventBus } from '@/shared/eventbus'
 import { AppliancePaymentService } from '@/services/AppliancePaymentService'
+import SellApplianceModal from '@/modules/Client/Appliances/SellApplianceModal.vue'
 
 export default {
     name: 'SoldApplianceDetail',
     components: { Widget, SoldAppliancesList, ClientDetailCard, ConfirmationBox },
-    mixins: [currency],
+    mixins: [currency, notify],
     data () {
         return {
             appliancePayment: new AppliancePaymentService(),
@@ -222,7 +222,7 @@ export default {
             paymentProgress: false,
             updateDetail: 0,
             subscriber: 'sold-appliance-detail',
-            currency: this.$store.getters['settings/getMainSettings'].currency
+            currency: this.$store.getters['settings/getMainSettings'].currency,
         }
     },
     watch: {
@@ -236,7 +236,6 @@ export default {
         this.getSoldApplianceDetail().then(personId => {
             this.getPersonSoldAppliances(personId)
         })
-
     },
     methods: {
         getApplianceRates () {
@@ -349,16 +348,7 @@ export default {
                 this.errorLabel = false
                 return false
             }
-        },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
-        },
-
+        }
     }
 }
 </script>

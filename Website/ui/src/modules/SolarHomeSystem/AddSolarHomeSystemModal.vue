@@ -17,7 +17,7 @@
                                     <label for="serial_number">{{ $tc('phrases.serialNumber') }}</label>
                                     <md-input id="serial_number" name="serial_number"
                                               v-model="solarHomeSystemService.shs.serialNumber"
-                                              v-validate="'required|min:9|max:11'"/>
+                                              v-validate="'required|min:8|max:11'"/>
                                     <span class="md-error">{{ errors.first('shs-add-form.serial_number') }}</span>
                                 </md-field>
                             </div>

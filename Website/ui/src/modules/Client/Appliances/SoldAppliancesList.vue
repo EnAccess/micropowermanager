@@ -2,7 +2,7 @@
     <div>
         <widget
             color="green"
-            @widgetAction="soldNewAsset"
+            @widgetAction="() => {showSellApplianceModal = true; key++}"
             :button-text="$tc('phrases.assignAppliance',0)"
             :button="true"
             :title="$tc('phrases.soldAppliances')"
@@ -28,7 +28,6 @@
                         <div
                             :class="index=== -999?'text-danger':'text-success'"
                             style="cursor: pointer; display:inline-block"
-
                             @click="showDetails(soldAppliancesList[index].id)"
                         >
                             <md-icon>remove_red_eye</md-icon>
@@ -38,23 +37,21 @@
                 </md-table-row>
             </md-table>
         </widget>
+        <sell-appliance-modal v-if="person" :person="person" :showSellApplianceModal="showSellApplianceModal"
+                              @hideModal="() => showSellApplianceModal = false" :key="key"/>
     </div>
 </template>
 
 <script>
-import widget from '../../../shared/widget'
-import { currency } from '@/mixins/currency'
+import widget from '@/shared/widget'
+import { currency, notify } from '@/mixins'
+import SellApplianceModal from '@/modules/Client/Appliances/SellApplianceModal.vue'
+import { PersonService } from '@/services/PersonService'
 
 export default {
     name: 'SoldAppliancesList',
-    components: { widget },
-    mixins: [currency],
-    data () {
-        return {
-            currency: this.$store.getters['settings/getMainSettings'].currency,
-            selectedApplianceId: null,
-        }
-    },
+    components: { widget, SellApplianceModal },
+    mixins: [currency, notify],
     props: {
         soldAppliancesList: {
             required: true,
@@ -63,26 +60,40 @@ export default {
             required: true
         }
     },
+    data () {
+        return {
+            personService: new PersonService(),
+            currency: this.$store.getters['settings/getMainSettings'].currency,
+            selectedApplianceId: null,
+            person: null,
+            showSellApplianceModal: false,
+            key: 0
+        }
+    },
     created () {
         this.selectedApplianceId = parseInt(this.$route.params.id)
     },
+    mounted () {
+        this.getPersonDetails()
+    },
     methods: {
-        soldNewAsset () {
-            this.$router.push('/sell-appliance/' + this.personId)
+        async getPersonDetails () {
+            try {
+                this.person = await this.personService.getPerson(this.personId)
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
         },
         showDetails (id) {
             this.selectedRow(id)
             this.$router.push({ path: '/sold-appliance-detail/' + id }).catch(err => err)
-
         },
         selectedRow (id) {
             if (this.selectedApplianceId !== id) {
                 this.selectedApplianceId = id
             }
-
-        },
+        }
     }
-
 }
 </script>
 

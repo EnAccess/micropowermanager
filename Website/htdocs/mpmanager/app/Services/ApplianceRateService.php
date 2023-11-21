@@ -106,9 +106,9 @@ class ApplianceRateService implements IBaseService
             } elseif ((int)$rate === (int)$assetPerson->rate_count) {
                 //last rate
                 $rateCost = $assetPerson->total_cost
-                    - (($rate - 1) * ceil($assetPerson->total_cost / $assetPerson->rate_count));
+                    - (($rate - 1) * floor($assetPerson->total_cost / $assetPerson->rate_count));
             } else {
-                $rateCost = ceil($assetPerson->total_cost / $assetPerson->rate_count);
+                $rateCost = floor($assetPerson->total_cost / $assetPerson->rate_count);
             }
             $rateDate = date('Y-m-d', strtotime('+' . $rate . " $installment", strtotime($baseTime)));
 
