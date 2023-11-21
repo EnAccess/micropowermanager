@@ -86,8 +86,12 @@ class MenuItemsSeeder extends Seeder
                     'md_icon' => 'home_repair_service',
                     'menu_order' => '12',
                 ],
-
-
+                [
+                    'name' => 'Solar Home Systems',
+                    'url_slug' => '/solar-home-systems/page/1',
+                    'md_icon' => 'solar_power',
+                    'menu_order' => '13',
+                ],
             )
         );
     }

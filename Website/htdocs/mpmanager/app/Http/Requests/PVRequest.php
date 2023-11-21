@@ -25,7 +25,7 @@ class PVRequest extends FormRequest
     public function rules()
     {
         return [
-            'mini_grid_id' => 'required|exists:mini_grids,id',
+            'mini_grid_id' => 'required|exists:shard.mini_grids,id',
             'node_id' => 'required',
             'device_id' => 'required',
 

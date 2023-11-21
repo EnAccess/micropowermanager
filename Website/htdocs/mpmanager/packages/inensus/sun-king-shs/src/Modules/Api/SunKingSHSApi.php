@@ -11,7 +11,6 @@ use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingTransaction;
 use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
-
 class SunKingSHSApi implements IManufacturerAPI
 {
     const API_CALL_TOKEN_GENERATION = '/token';
@@ -22,39 +21,33 @@ class SunKingSHSApi implements IManufacturerAPI
         private SunKingTransaction $sunKingTransaction,
         private ApiRequests $apiRequests
     ) {
-
     }
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $minimumPurchaseAmount = $transactionContainer->tariff->minimum_purchase_amount; //This is for 7 days of energy
-        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / 7); //This is for 1 day of energy
+        $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
+        $minimumPurchaseAmount = $transactionContainer->installmentCost;
+        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); //This is for 1 day of energy
         $transactionContainer->chargedEnergy = 0; // will represent the day count
         $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / ($minimumPurchaseAmountPerDay));
 
         Log::debug('ENERGY TO BE CHARGED as Day ' . $transactionContainer->chargedEnergy .
             ' Manufacturer => SunKingSHSApi');
 
-        $meter = $transactionContainer->meter;
+        $device = $transactionContainer->device;
         $energy = $transactionContainer->chargedEnergy;
 
         $params = [
-            "device" => $meter->serial_number,
+            "device" => $device->device_serial,
             "command" => self::COMMAND_ADD_CREDIT,
             "payload" => $energy,
             "time_unit" => "day"
         ];
-
         $credentials = $this->credentialService->getCredentials();
 
-        if (!$this->credentialService->isAccessTokenValid($credentials)) {
-            $authResponse = $this->apiRequests->authentication($credentials);
-
-            $this->credentialService->updateCredentials($credentials, $authResponse);
-        }
-
         try {
+            $authResponse = $this->apiRequests->authentication($credentials);
+            $this->credentialService->updateCredentials($credentials, $authResponse);
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
         } catch (SunKingApiResponseException $e) {
             $this->credentialService->updateCredentials($credentials,
@@ -62,31 +55,25 @@ class SunKingSHSApi implements IManufacturerAPI
             throw new SunKingApiResponseException($e->getMessage());
         }
 
-
         $manufacturerTransaction = $this->sunKingTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
-
-        if ($transactionContainer->shsLoan) {
             event(
                 'new.log',
                 [
                     'logData' => [
                         'user_id' => -1,
-                        'affected' => $transactionContainer->shsLoan,
+                        'affected' => $transactionContainer->appliancePerson,
                         'action' => 'Token: ' . $response['token'] . ' created for ' . $energy .
                             ' days usage.'
                     ]
                 ]
             );
-        }
-
-
         return [
             'token' => $response['token'],
-            'energy' => $energy
+            'load' => $energy
         ];
     }
 
@@ -99,6 +86,5 @@ class SunKingSHSApi implements IManufacturerAPI
     {
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }
-
 
 }

@@ -124,7 +124,7 @@
                                             <div class="md-layout-item md-size-55" style="margin: auto;">
                                                 <payment-history-chart :paymentdata="transaction.payment_histories"/>
                                             </div>
-                                            <div class="md-layout-item md-size-45">
+                                            <div class="md-layout-item md-size-45" style="max-height: 320px; overflow-y:scroll">
                                                 <md-table v-if="transaction.payment_histories[0].paymentHistory">
                                                     <md-table-row>
                                                         <md-table-head>{{ $tc('phrases.paidFor') }}</md-table-head>
@@ -134,7 +134,7 @@
                                                                   :key="i">
                                                         <md-table-cell><p> {{ p.payment_type }}</p>
                                                         </md-table-cell>
-                                                        <md-table-cell> {{ readable(p.amount) }}
+                                                        <md-table-cell> {{ moneyFormat(p.amount) }}
                                                         </md-table-cell>
                                                     </md-table-row>
                                                 </md-table>

@@ -678,7 +678,7 @@ trait CreateEnvironments
                     'agent_transaction'
                 ]),
                 'sender' => $this->faker->phoneNumber,
-                'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'loan rate', 'access rate']),
+                'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
 
             ]);
 

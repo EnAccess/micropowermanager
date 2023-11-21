@@ -48,11 +48,11 @@
                         <div class="md-layout-item md-size-50">
                             <h2><b>{{ $tc('phrases.totalCost') }}: </b>
                                 {{ moneyFormat(soldAppliance.totalCost) }} </h2>
-                            <h4><b>Down Payment:</b> {{ moneyFormat(soldAppliance.downPayment)}}</h4>
-                            <h4><b>Total Payments :</b> {{ moneyFormat(soldAppliance.totalPayments)}}
+                            <h4><b>Down Payment:</b> {{ moneyFormat(soldAppliance.downPayment) }}</h4>
+                            <h4><b>Total Payments :</b> {{ moneyFormat(soldAppliance.totalPayments) }}
                             </h4>
                             <h4><b>Total Remaining Amount:</b>
-                                {{ moneyFormat(soldAppliance.totalRemainingAmount)}}</h4>
+                                {{ moneyFormat(soldAppliance.totalRemainingAmount) }}</h4>
                         </div>
                         <div class="md-layout-item md-size-50">
                             <h3><b>{{ $tc('phrases.soldDate') }}: </b> {{ formatReadableDate(soldAppliance.createdAt) }}
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="md-toolbar-section-end">
                                     <md-button class="md-primary md-raised md-dense" @click="getPayment = true"
-                                               :disabled="soldAppliance.totalRemainingAmount == 0">
+                                               :disabled="!soldAppliance.totalRemainingAmount">
                                         <md-icon style="color: white">payments</md-icon>
                                         Get Payment
                                     </md-button>
@@ -89,7 +89,7 @@
                                     <strong>Edit Rate</strong>
                                 </md-table-head>
                             </md-table-row>
-                            <md-table-row v-for="(rate,index) in getAppliance()" :key="rate.id">
+                            <md-table-row v-for="(rate,index) in getApplianceRates()" :key="rate.id">
                                 <md-table-cell>
                                     {{ index + 1 }}
                                     <md-icon v-if="rate.remaining === 0">
@@ -160,13 +160,13 @@
                                 <md-table-cell>#</md-table-cell>
                                 <md-table-cell>Log</md-table-cell>
                                 <md-table-cell>Date</md-table-cell>
-<!--                                <md-table-cell>Initiator</md-table-cell>-->
+                                <!--                                <md-table-cell>Initiator</md-table-cell>-->
                             </md-table-row>
                             <md-table-row v-for="(log, index) in soldAppliance.logs" :key="log.id">
                                 <md-table-cell>{{ index + 1 }}</md-table-cell>
                                 <md-table-cell>{{ log.action }}</md-table-cell>
                                 <md-table-cell>{{ formatReadableDate(log.created_at) }}</md-table-cell>
-<!--                                <md-table-cell>{{ log.owner.name }}</md-table-cell>-->
+                                <!--                                <md-table-cell>{{ log.owner.name }}</md-table-cell>-->
                             </md-table-row>
                         </md-table>
                     </div>
@@ -239,7 +239,7 @@ export default {
 
     },
     methods: {
-        getAppliance () {
+        getApplianceRates () {
             if (this.soldAppliance.downPayment > 0) {
                 return this.soldAppliance.rates.slice(1)
             } else {
@@ -303,14 +303,32 @@ export default {
             }
         },
         async getAppliancePayment () {
-            let validator = await this.$validator.validateAll()
+            const validator = await this.$validator.validateAll()
             if (validator) {
                 if (this.checkPaymentForTotalRemaining()) {
                     return
                 }
                 this.paymentProgress = true
                 try {
-                    await this.appliancePayment.getPaymentForAppliance(this.selectedApplianceId, this.personId, this.adminId, this.soldAppliance.rates, this.payment)
+                    const rates = this.getApplianceRates()
+
+                    if (rates.length) {
+                        const installmentCost = rates[1].rate_cost
+                        if (this.payment < installmentCost) {
+                            this.alertNotify('info', this.$tc('messages.paymentAmountCannotBeLess', { amount: installmentCost }))
+                            this.paymentProgress = false
+                            return
+                        }
+                    }
+
+                    const payment = {
+                        'personId': this.personId,
+                        'adminId': this.adminId,
+                        'rates': this.soldAppliance.rates,
+                        'amount': this.payment
+                    }
+
+                    await this.appliancePayment.getPaymentForAppliance(this.selectedApplianceId, payment)
                     this.alertNotify('success',
                         this.payment + ' ' + this.currency + ' of payment is made.')
                     this.payment = null

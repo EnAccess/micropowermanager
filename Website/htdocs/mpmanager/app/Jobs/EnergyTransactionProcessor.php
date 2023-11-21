@@ -15,13 +15,9 @@ use Illuminate\Support\Facades\Log;
 
 class EnergyTransactionProcessor extends AbstractJob
 {
-    private $transaction;
+    private Transaction $transaction;
+    protected const TYPE = 'energy';
 
-    /**
-     * Create a new job instance.
-     *
-     * @param $transaction
-     */
     public function __construct(private $transactionId)
     {
         $this->afterCommit = true;
@@ -36,21 +32,16 @@ class EnergyTransactionProcessor extends AbstractJob
      */
     public function executeJob()
     {
-        $this->transaction = Transaction::query()->find($this->transactionId);
-        //set transaction type to energy
-        $this->transaction->type = 'energy';
-        $this->transaction->save();
-        $transactionData = $this->initializeTransactionDataContainer();
+        $this->initializeTransaction();
+        $container = $this->initializeTransactionDataContainer();
 
         try {
-
-            $this->checkForMinimumPurchaseAmount($transactionData);
-            $transactionData = $this->payApplianceInstallments($transactionData);
+            $this->checkForMinimumPurchaseAmount($container);
+            $transactionData = $this->payApplianceInstallments($container);
             $transactionData = $this->payAccessRateIfExists($transactionData);
 
-            if ($transactionData->transaction->amount >= 0) {
-                //TODO: find a solution for this >= 0 condition
-                $this->callTokenProcessor($transactionData);
+            if ($transactionData->transaction->amount > 0) {
+                $this->processToken($transactionData);
             } else {
                 $this->completeTransactionWithNotification($transactionData);
             }
@@ -60,26 +51,25 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-    /**
-     * @return array
-     */
-    private function initializeTransactionDataContainer(): TransactionDataContainer|array
+    private function initializeTransaction()
+    {
+        $this->transaction = Transaction::query()->find($this->transactionId);
+        $this->transaction->type = 'energy';
+        $this->transaction->save();
+    }
+
+    private function initializeTransactionDataContainer(): TransactionDataContainer
     {
         try {
-            //create an object for the token job
-            $transactionData = TransactionDataContainer::initialize($this->transaction);
+            return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
             event('transaction.failed', [$this->transaction, $e->getMessage()]);
             throw new TransactionNotInitializedException($e->getMessage());
         }
-        return $transactionData;
     }
 
-    /**
-     * @param array|TransactionDataContainer $transactionData
-     * @return void
-     */
-    private function checkForMinimumPurchaseAmount(array|TransactionDataContainer $transactionData): void
+
+    private function checkForMinimumPurchaseAmount(TransactionDataContainer $transactionData): void
     {
         $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
 
@@ -87,7 +77,7 @@ class EnergyTransactionProcessor extends AbstractJob
             $validator = resolve('MinimumPurchaseAmountValidator');
             try {
                 if (!$validator->validate($transactionData, $minimumPurchaseAmount)) {
-                    throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->meter->serial_number}");
+                    throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}");
                 }
             } catch (\Exception $e) {
                    throw new TransactionAmountNotEnoughException($e->getMessage());
@@ -95,27 +85,19 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-    /**
-     * @param array|TransactionDataContainer $transactionData
-     * @return void
-     */
-    private function payApplianceInstallments(array|TransactionDataContainer $transactionData): TransactionDataContainer
+
+    private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer
     {
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
-        $applianceInstallmentPayer->initialize($transactionData);
-        $transactionData->transaction->amount = $applianceInstallmentPayer->pay();
-        $transactionData->totalAmount = $transactionData->transaction->amount;
-        $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
-        $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
+        $applianceInstallmentPayer->initialize($container);
+        $container->transaction->amount = $applianceInstallmentPayer->payInstallments();
+        $container->totalAmount = $container->transaction->amount;
+        $container->paidRates = $applianceInstallmentPayer->paidRates;
 
-        return $transactionData;
+        return $container;
     }
 
-    /**
-     * @param array|TransactionDataContainer $transactionData
-     * @return TransactionDataContainer|array
-     */
-    private function payAccessRateIfExists(array|TransactionDataContainer $transactionData): TransactionDataContainer|array
+    private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer
     {
         if ($transactionData->transaction->amount > 0) {
             // pay if necessary access rate
@@ -126,27 +108,20 @@ class EnergyTransactionProcessor extends AbstractJob
         return $transactionData;
     }
 
-    /**
-     * @param array|TransactionDataContainer $transactionData
-     * @return void
-     */
-    private function completeTransactionWithNotification(array|TransactionDataContainer $transactionData): void
+
+    private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void
     {
         event('transaction.successful', [$transactionData->transaction]);
     }
 
-    /**
-     * @param array|TransactionDataContainer $transactionData
-     * @return void
-     */
-    private function callTokenProcessor(array|TransactionDataContainer $transactionData): void
+    private function processToken(TransactionDataContainer $transactionData): void
     {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
         TokenProcessor::dispatch($transactionData)
             ->allOnConnection('redis')
-            ->onQueue(\config('services.queues.token'));
+            ->onQueue(config('services.queues.token'));
     }
 
     private function getTariffMinimumPurchaseAmount($transactionData)
@@ -154,35 +129,4 @@ class EnergyTransactionProcessor extends AbstractJob
         return $transactionData->tariff->minimum_purchase_amount;
     }
 
-    /**
-     * @param int|TransactionDataContainer $transactionData
-     * @return float|int
-     * @deprecated  unused method. To be removed in the future
-     */
-    private function getChargedEnergyForSocialTariffPiggyBanks(int|TransactionDataContainer $transactionData): int|float
-    {
-        $meterParameter = $transactionData->meterParameter;
-        $transactionData->amount = $transactionData->transaction->amount;
-        $kWhToBeCharged = 0.0;
-        // get piggy-bank energy
-        try {
-            $bankAccount = $meterParameter->socialTariffPiggyBank()->firstOrFail();
-            // calculate the cost of savings. To achive that, the price (for kWh.) should converted to Wh. (/1000)
-
-            $savingsCost = $bankAccount->savings * (($bankAccount->socialTariff->price / 1000));
-            if ($transactionData->amount >= $savingsCost) {
-                $kWhToBeCharged += $bankAccount->savings / 1000;
-                $transactionData->amount -= $savingsCost;
-            } else {
-                $transactionData->amount = 0;
-                $kWhToBeCharged += $bankAccount->savings / 1000;
-                $bankAccount->savings -= $transactionData->amount
-                    / (($bankAccount->socialTariff->price / 1000));
-            }
-            $bankAccount->update();
-        } catch (ModelNotFoundException $exception) {
-            // meter has no piggy bank account
-        }
-        return $kWhToBeCharged;
-    }
 }

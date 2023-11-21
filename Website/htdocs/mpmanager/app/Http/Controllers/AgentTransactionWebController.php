@@ -15,7 +15,7 @@ class AgentTransactionWebController extends Controller
 
     public function index($agentId, Request $request): ApiResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return  ApiResource::make($this->agentTransactionService->getAll($limit, $agentId));
     }

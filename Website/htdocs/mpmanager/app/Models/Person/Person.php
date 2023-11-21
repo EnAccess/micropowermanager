@@ -44,7 +44,7 @@ use Inensus\Ticket\Models\Ticket;
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
     use SoftDeletes;
-
+    public const RELATION_NAME = 'person';
 
     protected $guarded = [];
 

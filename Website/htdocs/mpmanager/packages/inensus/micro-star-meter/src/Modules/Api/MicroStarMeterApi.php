@@ -5,11 +5,7 @@ namespace Inensus\MicroStarMeter\Modules\Api;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
-use App\Models\MainSettings;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Transaction\Transaction;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Inensus\MicroStarMeter\Models\MicroStarTransaction;
 use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
@@ -29,14 +25,13 @@ class MicroStarMeterApi implements IManufacturerAPI
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($meterParameter->tariff->total_price);
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
 
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => MicroStarMeterApi');
 
-
-        $meter = $transactionContainer->meter;
         $energy = (float)$transactionContainer->chargedEnergy;
         $params = ['deviceNo' => $meter->serial_number, 'rechargeAmount' => $energy]; // if they accepts
         // rechargeAmount as money, then we have to convert it to money
@@ -56,7 +51,7 @@ class MicroStarMeterApi implements IManufacturerAPI
 
         return [
             'token' => $response['token'],
-            'energy' => $energy
+            'load' => $energy
         ];
 
     }

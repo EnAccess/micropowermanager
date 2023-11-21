@@ -343,7 +343,12 @@
     "selectDevice": "Select a Device to bind with this SHS",
     "deleteAppliance": "Delete Appliance",
     "downPayment": "Down Payment",
-    "successfullyUpdated": "Successfully Updated"
+    "successfullyUpdated": "Successfully Updated",
+    "newShs": "New Solar Home System | New Solar Home created successfully",
+    "rateType": "Rate Type",
+    "minimumPayableAmount": "Minimum Payable Amount (access to the system for 7 days) | Minimum Payable Amount (access to the system for 30 days)",
+    "addCustomer": "Add Customer",
+    "personalInformation": "Personal Information"
   },
   "words": {
     "access": "Access",
@@ -519,11 +524,16 @@
     "encryption": "Encryption",
     "authorized": "Authorized",
     "unauthorized": "Unauthorized",
-    "minimumPayableAmount": "Minimum Payable Amount (access to the system for 7 days)",
-    "rateCost": "Installment Cost for Monthly access to the system",
+    "rateCost": "Installment Cost for {rateType} access to the system",
     "device": "Device",
     "solar_home_system": "Solar Home System",
     "deviceType": "Device Type",
-    "devices": "Devices"
+    "devices": "Devices",
+    "shs": "Solar Home System | Solar Home Systems"
+  },
+  "messages": {
+    "successfullyCreated": "{item} Successfully Created",
+    "paymentAmountCannotBeLess": "Payment amount cannot be less than {amount}"
   }
+
 }

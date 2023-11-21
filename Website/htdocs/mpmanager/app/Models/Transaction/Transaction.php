@@ -3,19 +3,17 @@
 namespace App\Models\Transaction;
 
 use App\Helpers\RelationsManager;
+use App\Models\AssetPerson;
 use App\Models\BaseModel;
 use App\Models\Device;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
-use App\Relations\BelongsToMorph;
+use App\Models\Token;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use PDO;
 
 /**
@@ -31,6 +29,8 @@ use PDO;
  */
 class Transaction extends BaseModel
 {
+    public const RELATION_NAME = 'transaction';
+
     use RelationsManager;
 
     public const TYPE_IMPORTED = 'imported';
@@ -40,51 +40,9 @@ class Transaction extends BaseModel
         return $this->morphTo();
     }
 
-    /**
-     * A work-around for querying the polymorphic relation with whereHas
-     *
-     * @return BelongsToMorph
-     */
-    /*    public function originalVodacom(): BelongsToMorph
-        {
-            return BelongsToMorph::build($this, VodacomTransaction::class, 'originalTransaction');
-        }*/
-
-
-    /**
-     * A work-around for querying the polymorphic relation with whereHas
-     *
-     * @return BelongsToMorph
-     */
-    /*    public function originalAirtel(): BelongsToMorph
-        {
-
-            return BelongsToMorph::build($this, AirtelTransaction::class, 'originalTransaction');
-        }*/
-
-    public function originalAgent(): BelongsToMorph
-    {
-        return BelongsToMorph::build($this, AgentTransaction::class, 'originalTransaction');
-    }
-
-    /* public function originalThirdParty(): BelongsToMorph
-        {
-            return BelongsToMorph::build($this, ThirdPartyTransaction::class, 'originalTransaction');
-        }*/
-
-    public function originalCash(): BelongsToMorph
-    {
-        return BelongsToMorph::build($this, CashTransaction::class, 'originalTransaction');
-    }
-
-    public function originalWaveMoney(): BelongsToMorph
-    {
-        return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
-    }
-
     public function token(): HasOne
     {
-        return $this->hasOne(MeterToken::class);
+        return $this->hasOne(Token::class);
     }
 
     public function sms(): MorphOne
@@ -102,6 +60,10 @@ class Transaction extends BaseModel
         return $this->hasOne(Device::class, 'device_serial', 'message');
     }
 
+    public function appliance(): HasOne
+    {
+        return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
+    }
 
     public function periodTargetAlternative($cityId, $startDate, $endDate)
     {

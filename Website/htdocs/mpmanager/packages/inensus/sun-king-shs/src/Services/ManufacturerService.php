@@ -18,6 +18,7 @@ class ManufacturerService
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'SunKing SHS',
+                'type'=>'shs',
                 'website' => 'https://sunking.com/',
                 'api_name' => 'SunKingSHSApi'
             ]);

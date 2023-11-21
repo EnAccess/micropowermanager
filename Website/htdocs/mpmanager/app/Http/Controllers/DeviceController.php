@@ -6,19 +6,17 @@ use App\Http\Requests\StoreDeviceRequest;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Device;
-use App\Services\PersonService;
 use MPM\Device\DeviceService;
 
 class DeviceController extends Controller
 {
-
     public function __construct(private DeviceService $deviceService)
     {
     }
 
     public function index()
     {
-        //
+        return ApiResource::make($this->deviceService->getAll());
     }
 
     public function store(StoreDeviceRequest $request)

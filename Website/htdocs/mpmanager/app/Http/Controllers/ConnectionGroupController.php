@@ -17,7 +17,7 @@ class ConnectionGroupController
 
     public function index(Request $request): ApiResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return  ApiResource::make($this->connectionGroupService->getAll($limit));
     }

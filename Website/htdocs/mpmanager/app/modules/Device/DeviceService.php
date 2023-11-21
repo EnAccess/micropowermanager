@@ -24,7 +24,7 @@ class DeviceService implements IBaseService, IAssociative
     public function getBySerialNumber($serialNumber)
     {
         return $this->device->newQuery()
-            ->with('address.geo')
+            ->with(['address.geo','device.manufacturer','person'])
             ->where('device_serial', $serialNumber)
             ->first();
     }
@@ -58,7 +58,10 @@ class DeviceService implements IBaseService, IAssociative
 
     public function getAll($limit = null)
     {
-        // TODO: Implement getAll() method.
+        if($limit){
+            return $this->device->newQuery()->with(['person','device'])->paginate($limit);
+        }
+        return $this->device->newQuery()->with(['person','device'])->get();
     }
 
 }

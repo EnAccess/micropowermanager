@@ -59,9 +59,9 @@ class CityService implements IBaseService
     public function getAll($limit = null)
     {
         if ($limit) {
-            return $this->city->newQuery()->paginate($limit);
+            return $this->city->newQuery()->with('location')->paginate($limit);
         }
-        return $this->city->newQuery()->get();
+        return $this->city->newQuery()->with('location')->get();
     }
 
     public function delete($model)

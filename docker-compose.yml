@@ -63,15 +63,15 @@ services:
   #      - redis:redis
 
 
-  #  'composer':
-  #    container_name: mpmanager_composer
-  #    build:
-  #      context: Docker/
-  #      dockerfile: DockerfileComposer
-  #    restart: 'no'
-  #    command: install
-  #    volumes:
-  #      - ./Website/htdocs/mpmanager:/app
+  'composer':
+    container_name: mpmanager_composer
+    build:
+      context: Docker/
+      dockerfile: DockerfileComposer
+    restart: 'no'
+    command: install
+    volumes:
+      - ./Website/htdocs/mpmanager:/app
 
 
   'redis':

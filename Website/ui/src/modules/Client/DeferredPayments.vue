@@ -9,9 +9,8 @@
             :button-color="'red'"
             color="green"
             :subscriber="subscriber"
-            @widgetAction="soldNewAsset"
+            @widgetAction="() => {showSellApplianceModal = true; key++}"
         >
-
             <div>
                 <md-table>
                     <md-table-row>
@@ -43,22 +42,29 @@
             </div>
 
         </widget>
+        <sell-appliance-modal :person="person" :showSellApplianceModal="showSellApplianceModal"
+                              @hideModal="() => showSellApplianceModal = false" :key="key"/>
     </div>
 </template>
 
 <script>
 import { AssetRateService } from '@/services/AssetRateService'
 import { AssetPersonService } from '@/services/AssetPersonService'
-import { currency } from '@/mixins/currency'
+import { currency, notify } from '@/mixins'
 import { EventBus } from '@/shared/eventbus'
 import Widget from '../../shared/widget'
+import SellApplianceModal from '@/modules/Client/Appliances/SellApplianceModal.vue'
 
 export default {
     name: 'DeferredPayments',
-    mixins: [currency],
-    components: { Widget },
+    mixins: [currency, notify],
+    components: { SellApplianceModal, Widget },
     props: {
-        personId: Number
+        personId: Number,
+        person: {
+            type: Object,
+            required: true
+        }
     },
     mounted () {
         this.getAssetList()
@@ -71,18 +77,19 @@ export default {
             adminId: this.$store.getters['auth/authenticationService'].authenticateUser.id,
             selectedAsset: null,
             headers: [this.$tc('words.name'), this.$tc('words.cost'), this.$tc('words.rate', 1)],
-
+            showSellApplianceModal: false,
+            key:0
         }
     },
 
     methods: {
-        soldNewAsset () {
-            this.$router.push('/sell-appliance/' + this.personId)
-        },
-
         showDetails (index) {
             this.selectedAsset = this.assetPersonService.list[index]
             this.$router.push('/sold-appliance-detail/' + this.selectedAsset.id)
+        },
+        showSellApplianceModalHandler () {
+            debugger
+            this.showSellApplianceModal = true
         },
         async getAssetList () {
             try {
@@ -92,81 +99,8 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
-        },
-
     },
 
 }
 </script>
 
-<style scoped>
-.dialog-place {
-    max-width: 100%;
-    margin: auto !important;
-    overflow-y: scroll;
-}
-
-.mb {
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eceaea;
-}
-
-.edit {
-    color: #2c4074;
-    /*position: absolute;*/
-    left: 88%;
-    cursor: pointer;
-}
-
-.edit:hover {
-    color: #5562c5;
-    transform: scale(1.5);
-}
-
-.detail {
-    color: #0d746c;
-    /*position: absolute;*/
-    left: 92%;
-    cursor: pointer;
-}
-
-.detail:hover {
-    color: #1e7f99;
-    transform: scale(1.5);
-}
-
-.save {
-    color: #1d8922;
-    /*position: absolute;*/
-    left: 92%;
-    cursor: pointer;
-}
-
-.save:hover {
-    color: #8fac25;
-    transform: scale(1.5);
-}
-
-.cancel {
-    color: #74150b;
-    /*position: absolute;*/
-    left: 92%;
-    cursor: pointer;
-}
-
-.cancel:hover {
-    color: #a81e10;
-    transform: scale(1.5);
-}
-
-.details-modal-grid {
-    padding: 1rem;
-}
-</style>

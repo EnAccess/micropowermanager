@@ -4,45 +4,45 @@
             color="red"
             title="Sell Appliance "
         >
-            <form novalidate class="md-layout" @submit.prevent="saveAppliance">
-                <md-card class="md-layout-item md-size-100">
-                    <md-card-content>
-                        <md-field :class="{'md-invalid': errors.has($tc('words.appliance'))}">
-                            <label for="appliance">{{ $tc('words.appliance') }}</label>
-                            <md-select :name="$tc('words.appliance')" id="appliance" v-model="applianceTypeIndex"
-                            >
-                                <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
-                                <md-option
-                                    :value="appliance.id"
-                                    v-for="(appliance, index) in appliances"
-                                    :key="appliance.id"
-                                >{{ appliance.name }}
-                                </md-option>
-                            </md-select>
-                            <span class="md-error">{{ errors.first($tc($tc('words.appliance'))) }}</span>
-                        </md-field>
-                        <md-field :class="{'md-invalid': errors.has($tc('words.cost'))}">
-                            <label for="Cost">{{ $tc('words.cost') }}</label>
-                            <md-input type="number"
-                                      :name="$tc('words.cost')"
-                                      id="Cost"
-                                      v-model="newAppliance.cost"
-                                      @keyup="checkDownPayment"
-                                      v-validate="'required|decimal'"/>
-                            <span class="md-error">{{ errors.first($tc('phrases.ratesCount')) }}</span>
-                        </md-field>
-
-                        <md-field :class="{'md-invalid': errors.has('Down Payment')}">
-                            <label for="Down Payment">Down Payment</label>
-                            <md-input type="number"
-                                      name="Down Payment"
-                                      id="Down Payment"
-                                      v-model="newAppliance.downPayment"
-                                      v-validate="'required|decimal'"
-                                      @keyup="checkDownPayment"/>
-                            <span class="md-error">{{ errors.first('Down Payment') }}</span>
-                        </md-field>
-                        <div v-if="!showSelectDevice">
+            <md-card class="md-layout-item md-size-100">
+                <md-card-content>
+                    <form novalidate class="md-layout" @submit.prevent="saveAppliance">
+                    <md-tabs>
+                        <md-tab id="tab-rate-based"  md-label="Main">
+                            <md-field :class="{'md-invalid': errors.has($tc('words.appliance'))}">
+                                <label for="appliance">{{ $tc('words.appliance') }}</label>
+                                <md-select :name="$tc('words.appliance')" id="appliance" v-model="applianceTypeIndex"
+                                >
+                                    <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
+                                    <md-option
+                                        :value="appliance.id"
+                                        v-for="(appliance, index) in appliances"
+                                        :key="appliance.id"
+                                    >{{ appliance.name }}
+                                    </md-option>
+                                </md-select>
+                                <span class="md-error">{{ errors.first($tc($tc('words.appliance'))) }}</span>
+                            </md-field>
+                            <md-field :class="{'md-invalid': errors.has($tc('words.cost'))}">
+                                <label for="Cost">{{ $tc('words.cost') }}</label>
+                                <md-input type="number"
+                                          :name="$tc('words.cost')"
+                                          id="Cost"
+                                          v-model="newAppliance.cost"
+                                          @keyup="checkDownPayment"
+                                          v-validate="'required|decimal'"/>
+                                <span class="md-error">{{ errors.first($tc('phrases.ratesCount')) }}</span>
+                            </md-field>
+                            <md-field :class="{'md-invalid': errors.has('Down Payment')}">
+                                <label for="Down Payment">Down Payment</label>
+                                <md-input type="number"
+                                          name="Down Payment"
+                                          id="Down Payment"
+                                          v-model="newAppliance.downPayment"
+                                          v-validate="'required|decimal'"
+                                          @keyup="checkDownPayment"/>
+                                <span class="md-error">{{ errors.first('Down Payment') }}</span>
+                            </md-field>
                             <md-field :class="{'md-invalid': errors.has($tc('words.rate'))}"
                                       v-if="applianceRate">
                                 <label for="rate">{{ $tc('phrases.ratesCount') }}</label>
@@ -54,11 +54,42 @@
                                 />
                                 <span class="md-error">{{ errors.first($tc('words.rate')) }}</span>
                             </md-field>
-                        </div>
-
-
-                        <div v-if="showSelectDevice">
-
+                        </md-tab>
+                        <md-tab id="tab-cost-based"  md-label="Plugins">
+                            <md-field :class="{'md-invalid': errors.has($tc('words.appliance'))}">
+                                <label for="appliance">{{ $tc('words.appliance') }}</label>
+                                <md-select :name="$tc('words.appliance')" id="appliance" v-model="applianceTypeIndex"
+                                >
+                                    <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
+                                    <md-option
+                                        :value="appliance.id"
+                                        v-for="(appliance, index) in appliances"
+                                        :key="appliance.id"
+                                    >{{ appliance.name }}
+                                    </md-option>
+                                </md-select>
+                                <span class="md-error">{{ errors.first($tc($tc('words.appliance'))) }}</span>
+                            </md-field>
+                            <md-field :class="{'md-invalid': errors.has($tc('words.cost'))}">
+                                <label for="Cost">{{ $tc('words.cost') }}</label>
+                                <md-input type="number"
+                                          :name="$tc('words.cost')"
+                                          id="Cost"
+                                          v-model="newAppliance.cost"
+                                          @keyup="checkDownPayment"
+                                          v-validate="'required|decimal'"/>
+                                <span class="md-error">{{ errors.first($tc('phrases.ratesCount')) }}</span>
+                            </md-field>
+                            <md-field :class="{'md-invalid': errors.has('Down Payment')}">
+                                <label for="Down Payment">Down Payment</label>
+                                <md-input type="number"
+                                          name="Down Payment"
+                                          id="Down Payment"
+                                          v-model="newAppliance.downPayment"
+                                          v-validate="'required|decimal'"
+                                          @keyup="checkDownPayment"/>
+                                <span class="md-error">{{ errors.first('Down Payment') }}</span>
+                            </md-field>
                             <md-field :class="{'md-invalid': errors.has($tc('words.rateCost'))}">
                                 <label for="rateCost">{{ $tc('words.rateCost') }}</label>
                                 <md-input type="number"
@@ -70,7 +101,6 @@
                                 />
                                 <span class="md-error">{{ errors.first($tc('words.rateCost')) }}</span>
                             </md-field>
-
                             <md-field :class="{'md-invalid': errors.has($tc('words.minimumPayableAmount'))}">
                                 <label for="minimumPayableAmount">{{ $tc('words.minimumPayableAmount') }}</label>
                                 <md-input type="number"
@@ -84,7 +114,6 @@
                             </md-field>
                             <md-field :class="{'md-invalid': errors.has($tc('phrases.selectDevice'))}"
                             >
-
                                 <label for="device"> {{ $tc('phrases.selectDevice') }}:</label>
                                 <md-select :name="$tc('phrases.selectDevice')" id="device" v-validate="'required'"
                                            v-model="selectedDeviceSerialNumber">
@@ -95,21 +124,20 @@
 
                                 </md-select>
                                 <span class="md-error">{{ errors.first($tc('phrases.selectDevice')) }}</span>
-
                             </md-field>
-                        </div>
-                    </md-card-content>
+                        </md-tab>
 
+                    </md-tabs>
 
-                    <md-card-actions>
-                        <md-button v-if="showRatesButton" class="md-accent md-raised" @click="showRates = true"> Show
-                            Rates Detail
-                        </md-button>
-                        <md-button type="submit" class="md-primary md-raised ">{{ $tc('words.sell') }}</md-button>
-                    </md-card-actions>
-                </md-card>
-
-            </form>
+                    </form>
+                </md-card-content>
+                <md-card-actions>
+                    <md-button v-if="showRatesButton" class="md-accent md-raised" @click="showRates = true"> Show
+                        Rates Detail
+                    </md-button>
+                    <md-button type="submit" class="md-primary md-raised ">{{ $tc('words.sell') }}</md-button>
+                </md-card-actions>
+            </md-card>
         </widget>
         <md-dialog :md-active.sync="showRates">
             <md-dialog-title>
@@ -140,17 +168,21 @@
 </template>
 
 <script>
-import widget from '../../../shared/widget'
+import widget from '@/shared/widget'
 import { ApplianceService } from '@/services/ApplianceService'
 import { AssetPersonService } from '@/services/AssetPersonService'
-import { currency } from '@/mixins/currency'
+import { currency, notify } from '@/mixins'
 import { PersonService } from '@/services/PersonService'
 import { TariffService } from '@/services/TariffService'
+
+// These are fixed values in the database
+const APPLIANCE_TYPE_SHS_ID = 1
+const APPLIANCE_TYPE_SHS_NAME = 'Solar Home System'
 
 export default {
     name: 'SellApplianceCard',
     components: { widget },
-    mixins: [currency],
+    mixins: [currency, notify],
     props: {
         personId: {
             required: true,
@@ -259,14 +291,6 @@ export default {
                 return Math.floor(cost / rateCount)
             }
         },
-        alertNotify (type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message
-            })
-        },
         checkDownPayment () {
             if (parseFloat(this.newAppliance.downPayment) > parseFloat(this.newAppliance.cost)) {
                 this.newAppliance.downPayment = 0
@@ -281,7 +305,7 @@ export default {
             this.rateCost = 0
         },
         checkIsForSHS (appliance) {
-            if (appliance.applianceType === 1 || appliance.assetTypeName === 'Solar Home System') {
+            if (appliance.applianceType === APPLIANCE_TYPE_SHS_ID || appliance.assetTypeName === APPLIANCE_TYPE_SHS_NAME) {
                 this.showSelectDevice = true
                 this.newAppliance.isShs = true
                 return true

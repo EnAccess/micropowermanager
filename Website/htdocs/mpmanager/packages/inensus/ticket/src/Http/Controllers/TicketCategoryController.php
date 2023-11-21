@@ -27,7 +27,7 @@ class TicketCategoryController extends Controller
      */
     public function index(Request $request): TicketResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
         $outsource = $request->get('outsource');
         return  TicketResource::make($this->ticketCategoryService->getAll($limit, $outsource));
     }

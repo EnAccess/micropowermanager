@@ -16,7 +16,7 @@ class AgentCustomerTicketController extends Controller
     public function show($customerId, Request $request): ApiResource
     {
         $agent = $this->agentService->getByAuthenticatedUser();
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
         $status = null;
 
         return ApiResource::make($this->ticketService->getForAgent($agent->id, $customerId));

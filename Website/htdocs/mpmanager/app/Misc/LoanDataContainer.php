@@ -42,7 +42,7 @@ class LoanDataContainer
                     [
                     'amount' => $this->transaction->amount,
                     'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'loan rate',
+                    'paymentType' => 'installment',
                     'sender' => $this->transaction->sender,
                     'paidFor' => $loan,
                     'payer' => $this->meterOwner,
@@ -66,7 +66,7 @@ class LoanDataContainer
                     [
                     'amount' => $loan->remaining,
                     'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'loan rate',
+                    'paymentType' => 'installment',
                     'sender' => $this->transaction->sender,
                     'paidFor' => $loan,
                     'payer' => $this->meterOwner,

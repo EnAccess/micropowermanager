@@ -260,9 +260,6 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction',
             'originalTransaction.conflicts',
             'sms',
-            'token.meter',
-            'token.meter.meterParameter',
-            'token.meter.meterType',
             'paymentHistories',
             'device.device'
         )->find($id);

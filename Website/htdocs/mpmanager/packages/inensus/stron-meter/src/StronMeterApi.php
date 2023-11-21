@@ -18,46 +18,35 @@ use Inensus\StronMeter\Models\StronTransaction;
 class StronMeterApi implements IManufacturerAPI
 {
     protected $api;
-    private $meterParameter;
-    private $transaction;
     private $rootUrl = '/vending/';
-    private $stronTransaction;
-    private $mainSettings;
-    private $credentials;
+
 
     public function __construct(
         Client $httpClient,
-        MeterParameter $meterParameter,
-        StronTransaction $stronTransaction,
-        Transaction $transaction,
-        MainSettings $mainSettings,
-        StronCredential $credentials
+        private StronTransaction $stronTransaction,
+        private MainSettings $mainSettings,
+        private StronCredential $credentials
     ) {
         $this->api = $httpClient;
-        $this->meterParameter = $meterParameter;
-        $this->stronTransaction = $stronTransaction;
-        $this->transaction = $transaction;
-        $this->mainSettings = $mainSettings;
-        $this->credentials = $credentials;
     }
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount /
-            ($meterParameter->tariff()->first()->total_price);
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
+        $owner = $transactionContainer->device->person;
+
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
 
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => StronMeterApi');
 
-
-        $meter = $transactionContainer->meter;
         $credentials = $this->credentials->newQuery()->firstOrFail();
         $mainSettings = $this->mainSettings->newQuery()->first();
         $postParams = [
-            "CustomerId" => strval($meterParameter->owner->id),
+            "CustomerId" => strval($owner->id),
             "MeterId" => $meter->serial_number,
-            "Price" => strval($meterParameter->tariff->total_price),
+            "Price" => strval($tariff->total_price),
             "Rate" => "1",
             "Amount" => $transactionContainer->amount,
             "AmountTmp" => $mainSettings ? $mainSettings->currency : 'USD',
@@ -104,7 +93,7 @@ class StronMeterApi implements IManufacturerAPI
 
         return [
             'token' => $token,
-            'energy' => $transactionContainer->chargedEnergy
+            'load' => $transactionContainer->chargedEnergy
         ];
 
     }

@@ -3,67 +3,37 @@
 namespace Inensus\KelinMeter;
 
 use App\Lib\IManufacturerAPI;
-use App\Misc\TransactionDataContainer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
-use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinTransaction;
-use Inensus\KelinMeter\Services\KelinCredentialService;
-use Inensus\KelinMeter\Services\KelinCustomerService;
-use Inensus\KelinMeter\Services\KelinMeterService;
-
 
 class KelinMeterApi implements IManufacturerAPI
 {
     private $rootUrl = '/recharge';
-    private $meterParameter;
-    private $kelinCustomer;
-    private $kelinMeter;
-    private $kelinMeterService;
-    private $credentialService;
-    private $customerService;
-    private $kelinTransaction;
-    private $transaction;
-    private $kelinApi;
 
     public function __construct(
-        MeterParameter $meterParameter,
-        KelinCustomer $kelinCustomer,
-        KelinMeter $kelinMeter,
-        KelinMeterService $kelinMeterService,
-        KelinCredentialService $credentialService,
-        KelinCustomerService $customerService,
-        KelinTransaction $kelinTransaction,
-        Transaction $transaction,
-        KelinMeterApiClient $kelinApi
+        private KelinMeter $kelinMeter,
+        private KelinTransaction $kelinTransaction,
+        private KelinMeterApiClient $kelinApi
     ) {
-        $this->meterParameter = $meterParameter;
-        $this->kelinCustomer = $kelinCustomer;
-        $this->credentialService = $credentialService;
-        $this->customerService = $customerService;
-        $this->kelinTransaction = $kelinTransaction;
-        $this->kelinMeter = $kelinMeter;
-        $this->kelinMeterService = $kelinMeterService;
-        $this->transaction = $transaction;
-        $this->kelinApi = $kelinApi;
+
     }
 
     public function chargeMeter($transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $tariff = $meterParameter->tariff()->first();
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
         Log::critical('ENERGY TO BE CHARGED float ' .
             (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Kelin');
+
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
@@ -74,7 +44,7 @@ class KelinMeterApi implements IManufacturerAPI
             try {
                 $kelinMeter = $this->kelinMeter->newQuery()->where(
                     'mpm_meter_id',
-                    $meterParameter->meter->id
+                    $meter->id
                 )->firstOrFail();
             } catch (ModelNotFoundException $e) {
                 Log::critical('No Meter found for transaction data.', ['message' => $e->getMessage()]);
@@ -109,7 +79,7 @@ class KelinMeterApi implements IManufacturerAPI
                 'openToken1' => $result['data']['openToken1'],
                 'openToken2' => $result['data']['openToken2'],
                 'payToken' => $result['data']['payToken'],
-                'meterSerial' => $meterParameter->meter->serial_number,
+                'meterSerial' => $meter->serial_number,
                 'amount' => $amount,
             ];
 
@@ -134,7 +104,7 @@ class KelinMeterApi implements IManufacturerAPI
                     $transactionResult['openToken2']);
             return [
                 'token' => $token,
-                'energy' => $transactionContainer->chargedEnergy
+                'loan' => $transactionContainer->chargedEnergy
             ];
         }
     }

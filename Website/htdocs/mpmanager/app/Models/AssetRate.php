@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class AssetRate extends BaseModel
 {
+    public const RELATION_NAME = 'asset_rate';
+
     protected $fillable = [
         'asset_person_id',
         'rate_cost',

@@ -71,6 +71,8 @@ import MiniGridDashboardCacheDataRepository from '@/repositories/MiniGridDashboa
 import DeviceRepository from '@/repositories/DeviceRepository'
 import MiniGridDeviceRepository from '@/repositories/MiniGridDeviceRepository'
 import DeviceAddressRepository from '@/repositories/DeviceAddressRepository'
+import SolarHomeSystemRepository from '@/repositories/SolarHomeSystemRepository'
+import ManufacturerRepository from '@/repositories/ManufacturerRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -145,7 +147,9 @@ const repositories = {
     'miniGridDashboardCacheData': MiniGridDashboardCacheDataRepository,
     'device': DeviceRepository,
     'miniGridDevice': MiniGridDeviceRepository,
-    'deviceAddress': DeviceAddressRepository
+    'deviceAddress': DeviceAddressRepository,
+    'solarHomeSystem': SolarHomeSystemRepository,
+    'manufacturer': ManufacturerRepository,
 }
 
 export default {

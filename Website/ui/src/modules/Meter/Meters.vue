@@ -1,7 +1,7 @@
 <template>
     <div class="page-container">
         <widget
-            :id="'meter-list'"
+            :id="'shs-list'"
             :title="$tc('words.meter',2)"
             :paginator="meters.paginator"
             :search="true"

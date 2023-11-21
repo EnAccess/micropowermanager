@@ -4,91 +4,48 @@ namespace App\Services;
 
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
-use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
-use App\Models\AssetType;
 use App\Models\MainSettings;
-use App\Models\Meter\MeterToken;
-use App\Models\Person\Person;
-use App\Models\Transaction\CashTransaction;
-use App\Models\Transaction\Transaction;
-use App\Traits\ScheduledPluginCommand;
+use App\Models\Token;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
+use MPM\Device\DeviceService;
 
 class AppliancePaymentService
 {
-    use ScheduledPluginCommand;
-
-    const SUN_KING_PLUGIN_ID = 13;
-    private $cashTransactionService;
-    private $applianceType;
-    private $person;
-    private $payment;
-    private $mainSettings;
-    private $appliancePersonService;
+    private float $paymentAmount;
 
     public function __construct(
-        CashTransactionService $cashTransactionService,
-        AssetType $applianceType,
-        Person $person,
-        MainSettings $mainSettings,
-        AppliancePersonService $appliancePersonService
+        private CashTransactionService $cashTransactionService,
+        private MainSettings $mainSettings,
+        private AppliancePersonService $appliancePersonService,
+        private DeviceService $deviceService
     ) {
-        $this->cashTransactionService = $cashTransactionService;
-        $this->applianceType = $applianceType;
-        $this->person = $person;
-        $this->mainSettings = $mainSettings;
-        $this->appliancePersonService = $appliancePersonService;
+
     }
 
     public function getPaymentForAppliance($request, $appliancePerson)
     {
         $creatorId = auth('api')->user()->id;
-        $this->payment = (int)$request->input('amount');
-        $soldApplianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
-        if ($this->payment > $soldApplianceDetail->totalRemainingAmount) {
-            throw new PaymentAmountBiggerThanTotalRemainingAmount(
-                'Payment Amount can not bigger than Total Remaining Amount'
-            );
+        $this->paymentAmount = $amount = (double)$request->input('amount');
+        $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
+        $this->validateAmount($applianceDetail, $amount);
+        $deviceSerial = $applianceDetail->device_serial;
+        $applianceOwner = $appliancePerson->person;
+        $ownerAddress = $applianceOwner->addresses()->where('is_primary', 1)->first();
+        $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
+        $transaction =
+            $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial);
+        if ($applianceDetail->device_serial) {
+            $this->processPaymentForDevice($deviceSerial, $transaction, $applianceDetail);
+        } else {
+            $this->createPaymentLog($appliancePerson, $amount, $creatorId);
         }
-        if ($this->payment <= 0) {
-            throw new PaymentAmountSmallerThanZero(
-                'Payment amount can not smaller than zero'
-            );
-        }
-        $rates = Collect($soldApplianceDetail->rates);
-        $buyer = $appliancePerson->person;
-        $appliance = $appliancePerson->asset;
-        $buyerAddress = $buyer->addresses()->where('is_primary', 1)->first();
-        $sender = $buyerAddress == null ? '-' : $buyerAddress->phone;
-        $transaction = $this->cashTransactionService->createCashTransaction($creatorId, $this->payment, $sender);
+        $applianceDetail->rates->map(fn($installment) => $this->payInstallment($installment, $applianceOwner,
+            $transaction));
 
-        try {
-            if ($this->isApplianceSHS($appliance) && $this->isSunKingPluginActive()) {
-                $this->processSunKingToken($buyer, $transaction, $appliancePerson);
-            } else {
-                $this->createPaymentLog($appliancePerson, (int)$request->input('amount'), $creatorId);
-            }
-        } catch (\Exception $e) {
-            $cashTransaction = CashTransaction::latest()->first();
-            $cashTransaction->transaction()->delete();
-            $cashTransaction->delete();
-            throw new \Exception($e->getMessage());
-        }
-
-        $rates->map(function ($rate) use ($buyer, $appliance, $transaction) {
-            if ($rate['remaining'] > 0 && $this->payment > 0) {
-                if ($rate['remaining'] <= $this->payment) {
-                    $this->payment -= $rate['remaining'];
-                    $applianceRate = $this->updateRateRemaining($rate['id'], $rate['remaining']);
-                    $this->createPaymentHistory($rate['remaining'], $buyer, $applianceRate, $transaction);
-                } else {
-                    $applianceRate = $this->updateRateRemaining($rate['id'], $this->payment);
-                    $this->createPaymentHistory($this->payment, $buyer, $applianceRate, $transaction);
-                    $this->payment = 0;
-                }
-            }
-        });
+        return $appliancePerson;
     }
 
     public function updateRateRemaining($id, $amount)
@@ -123,7 +80,7 @@ class AppliancePaymentService
             [
                 'amount' => $amount,
                 'paymentService' => 'web',
-                'paymentType' => 'loan rate',
+                'paymentType' => 'installment',
                 'sender' => $transaction->sender,
                 'paidFor' => $applianceRate,
                 'payer' => $buyer,
@@ -132,55 +89,90 @@ class AppliancePaymentService
         );
     }
 
-    public function isApplianceSHS($appliance)
+    private function validateAmount($applianceDetail, $amount)
     {
-        return $appliance->assetType()->first()->id === AssetType::APPLIANCE_TYPE_SHS;
-    }
+        $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
+        $installmentCost = $applianceDetail->rates[1]['rate_cost'];
 
-    public function isSunKingPluginActive()
-    {
-        return $this->checkForPluginStatusIsActive(self::SUN_KING_PLUGIN_ID);
-    }
-
-    private function processSunKingToken($buyer, $transaction, $appliancePerson)
-    {
-
-        $meter = $buyer->meters()->whereHas(
-            'meter',
-            static function ($q) {
-                $q->whereHas(
-                    'manufacturer',
-                    static function ($q) {
-                        $q->where('name', 'SunKing SHS');
-                    }
-                );
-            }
-        )->firstOrFail();
-
-        $transaction->message = $meter->meter->serial_number;
-        $transaction->save();
-
-        $transactionData = TransactionDataContainer::initialize($transaction);
-        $transactionData->shsLoan = $appliancePerson;
-        $tariff = $transactionData->tariff;
-        $minimumPurchaseAmount = $tariff->minimum_purchase_amount;
-
-        if ($minimumPurchaseAmount > 0 && $transactionData->transaction->amount < $minimumPurchaseAmount) {
-            throw new TransactionAmountNotEnoughException("Minimum purchase amount is {$minimumPurchaseAmount}");
+        if ($amount > $totalRemainingAmount) {
+            throw new PaymentAmountBiggerThanTotalRemainingAmount(
+                'Payment Amount can not bigger than Total Remaining Amount'
+            );
         }
 
-        $api = resolve($transactionData->manufacturer->api_name);
-        $tokenData = $api->chargeMeter($transactionData);
-        $token = MeterToken::query()->make(
-            [
-                'token' => $tokenData['token'],
-                'energy' => $tokenData['energy'],
-            ]
-        );
-        $token->transaction()->associate($transactionData->transaction);
-        $token->meter()->associate($transactionData->meter);
-        //save token
-        $token->save();
+        if ($amount < $installmentCost) {
+            throw new PaymentAmountSmallerThanZero(
+                'Payment amount can not smaller than installment cost'
+            );
+        }
 
+        if ($amount <= 0) {
+            throw new PaymentAmountSmallerThanZero(
+                'Payment amount can not smaller than zero'
+            );
+        }
+    }
+
+    public function payInstallment($installment, $applianceOwner, $transaction)
+    {
+        if ($installment['remaining'] > 0 && $this->paymentAmount > 0) {
+            if ($installment['remaining'] <= $this->paymentAmount) {
+                $this->paymentAmount -= $installment['remaining'];
+                $applianceRate = $this->updateRateRemaining($installment['id'], $installment['remaining']);
+                $this->createPaymentHistory($installment['remaining'], $applianceOwner, $applianceRate, $transaction);
+            } else {
+                $applianceRate = $this->updateRateRemaining($installment['id'], $this->paymentAmount);
+                $this->createPaymentHistory($this->paymentAmount, $applianceOwner, $applianceRate, $transaction);
+                $this->paymentAmount = 0;
+            }
+        }
+    }
+
+    private function processPaymentForDevice($deviceSerial, $transaction, $applianceDetail)
+    {
+        $device = $this->deviceService->getBySerialNumber($deviceSerial);
+
+        if (!$device) {
+            throw new ModelNotFoundException("No device found with $deviceSerial");
+        }
+
+        $manufacturer = $device->device->manufacturer;
+        $installments = $applianceDetail->rates;
+        // Use this because we do not want to get down payment as installment
+        $secondInstallment = $applianceDetail->rates[1];
+        $installmentCost = $secondInstallment ? $secondInstallment['rate_cost']
+            : 0;
+        $dayDiff = $this->getDayDifferenceBetweenTwoInstallments($installments);
+        $transactionData = TransactionDataContainer::initialize($transaction);
+        $transactionData->installmentCost = $installmentCost;
+        $transactionData->dayDifferenceBetweenTwoInstallments = $dayDiff;
+        $transactionData->appliancePerson = $applianceDetail;
+        $manufacturerApi = resolve($manufacturer->api_name);
+        $tokenData = $manufacturerApi->chargeMeter($transactionData);
+        $token = Token::query()->make([
+            'token' => $tokenData['token'],
+            'load' => $tokenData['load']
+        ]);
+        $token->transaction()->associate($transactionData->transaction);
+        $token->save();
+    }
+
+    public function getDayDifferenceBetweenTwoInstallments($installments)
+    {
+        try {
+            $secondInstallment = $installments[1];
+            $thirdInstallment = $installments[2];
+            $dueDateSecondRow = Carbon::parse($secondInstallment->due_date);
+            $dueDateThirdRow = Carbon::parse($thirdInstallment->due_date);
+
+            return $dueDateSecondRow->diffInDays($dueDateThirdRow);
+        } catch (\Exception $e) {
+            return 30;
+        }
+    }
+
+    public function setPaymentAmount($amount): void
+    {
+        $this->paymentAmount = $amount;
     }
 }

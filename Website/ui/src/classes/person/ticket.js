@@ -77,10 +77,7 @@ export class UserTickets {
     }
 
     updateList (data) {
-
         this.list = []
-        console.log('update list with ', data)
-
         if (('data' in data)) {
             this.list = data.data.map(function (ticket) {
                 return (new Ticket()).fromJson(ticket)

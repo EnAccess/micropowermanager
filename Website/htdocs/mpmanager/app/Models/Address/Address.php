@@ -23,9 +23,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Address extends BaseModel
 {
+    public const RELATION_NAME = 'address';
     protected $hidden = ['owner_id', 'owner_type'];
     public static $rules = [
-    'city_id' => 'required|exists:cities,id',
+        'city_id' => 'required|exists:cities,id',
     ];
 
     public function city(): BelongsTo

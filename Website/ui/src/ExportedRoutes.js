@@ -169,6 +169,11 @@ export const exportedRoutes = [
         meta: { layout: 'default' },
     },
     {
+        path: '/solar-home-systems',
+        component: require('./pages/SolarHomeSystem/index.vue').default,
+        meta: { layout: 'default' },
+    },
+    {
         path: '/clusters',
         component: require('./pages/Dashboard/index.vue').default,
         name: 'cluster-list',
@@ -302,15 +307,6 @@ export const exportedRoutes = [
         path: '/commissions',
         component: require('./pages/Agent/Commission/index.vue').default,
         meta: { layout: 'default' },
-    },
-    {
-        path: '/sell-appliance/:id',
-        component: require('./pages/Client/Appliance/New/index.vue').default,
-        meta: {
-            layout: 'default', breadcrumb: {
-                level: 'detail', name: 'Sell Appliance', link: '/sell-appliance/', target: 'id'
-            }
-        }
     },
     {
         path: '/sold-appliance-detail/:id',

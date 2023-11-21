@@ -20,6 +20,8 @@ use MPM\Target\TargetAssignable;
  */
 class Cluster extends BaseModel implements TargetAssignable
 {
+    public const RELATION_NAME = 'cluster';
+
     protected $casts = [
         'geo_data' => 'array'
     ];

@@ -63,9 +63,9 @@
                                             type="text"
                                             id="phone"
                                             :name="$tc('words.phone')"
-                                            v-validate="'required'"
+                                            v-validate="'required|min:9'"
                                             v-model="maintenanceService.personData.phone"
-                                            placeholder="(+___ _+9___ ____)"
+                                            placeholder="Phone (+___ ____ ____)"
                                         />
                                         <span class="md-error">{{ errors.first($tc('words.phone')) }}</span>
                                     </md-field>
@@ -94,11 +94,11 @@
                             <md-progress-bar md-mode="indeterminate" v-if="loading"/>
                         </md-card-content>
                         <md-card-actions>
-                            <md-button class="md-primary btn-lg" :disabled="loading" type="submit">{{
+                            <md-button class="md-raised" @click="onClose()">{{ $tc('words.close') }}</md-button>
+                            <md-button class="md-raised md-primary" :disabled="loading" type="submit">{{
                                     $tc('words.save')
                                 }}
                             </md-button>
-                            <md-button class="md-accent" @click="onClose()">{{ $tc('words.close') }}</md-button>
                         </md-card-actions>
                     </md-card>
 

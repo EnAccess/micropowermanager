@@ -10,45 +10,26 @@ use App\Models\Transaction\TransactionConflicts;
 use App\Services\FirebaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 
 class AgentTransaction implements ITransactionProvider
 {
-    private $fireBaseService;
-    /**
-     * @var \App\Models\Transaction\AgentTransaction
-     */
-    private $agentTransaction;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * contains validated data
-     *
-     * @var array
-     */
     private $validData;
 
     public function __construct(
-        \App\Models\Transaction\AgentTransaction $agentTransaction,
-        Transaction $transaction,
-        FirebaseService $firebaseService
+        private AgentTransactionModel $agentTransaction,
+        private Transaction $transaction,
+        private FirebaseService $fireBaseService
     ) {
-        $this->agentTransaction = $agentTransaction;
-        $this->transaction = $transaction;
-        $this->fireBaseService = $firebaseService;
+
     }
 
     public function saveTransaction(): void
     {
-
-        $this->agentTransaction = new \App\Models\Transaction\AgentTransaction();
+        $this->agentTransaction = new AgentTransactionModel();
         $this->transaction = new Transaction();
         //assign data
         $this->assignData($this->validData);
-
         //save transaction
         $this->saveData($this->agentTransaction);
     }
@@ -60,14 +41,14 @@ class AgentTransaction implements ITransactionProvider
         $this->agentTransaction->device_id = (int)$data['device_id'];
 
         // common transaction data
-        $this->transaction->amount = (int)$data['amount'];
+        $this->transaction->amount = (float)$data['amount'];
         $this->transaction->sender = 'Agent-' . $data['agent_id'];
         $this->transaction->message = $data['meter_serial_number'];
         $this->transaction->type = 'energy';
         $this->transaction->original_transaction_type = 'agent_transaction';
     }
 
-    public function saveData(\App\Models\Transaction\AgentTransaction $agentTransaction): void
+    public function saveData(AgentTransactionModel $agentTransaction): void
     {
         $agentTransaction->save();
     }
@@ -76,6 +57,7 @@ class AgentTransaction implements ITransactionProvider
     {
         $this->agentTransaction->update(['status' => $requestType === true ? 1 : -1]);
         $agent = $this->agentTransaction->agent;
+
         if (!$requestType) {
             $body = $this->prepareBodyFail($transaction);
             $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
@@ -83,23 +65,19 @@ class AgentTransaction implements ITransactionProvider
         }
 
         $body = $this->prepareBodySuccess($transaction);
-        $history = AgentBalanceHistory::query()->make(
-            [
-                'agent_id' => $agent->id,
-                'amount' => ($transaction->amount) > 0 ? (-1 * ($transaction->amount)) : ($transaction->amount),
-                'transaction_id' => $transaction->id,
-                'available_balance' => $agent->balance,
-                'due_to_supplier' => $agent->due_to_energy_supplier
-            ]
-        );
+        $history = AgentBalanceHistory::query()->make([
+            'agent_id' => $agent->id,
+            'amount' => ($transaction->amount) > 0 ? (-1 * ($transaction->amount)) : ($transaction->amount),
+            'transaction_id' => $transaction->id,
+            'available_balance' => $agent->balance,
+            'due_to_supplier' => $agent->due_to_energy_supplier
+        ]);
 
         $history->trigger()->associate($this->agentTransaction);
         $history->save();
 
-
         //create agent commission
         $commission = AgentCommission::query()->find($agent->agent_commission_id);
-
         $history = AgentBalanceHistory::query()->make(
             [
                 'agent_id' => $agent->id,
@@ -117,10 +95,6 @@ class AgentTransaction implements ITransactionProvider
         $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
     }
 
-    /**
-     * @param Transaction $transaction
-     * @return array
-     */
     private function prepareBodySuccess(Transaction $transaction): array
     {
         $transaction = Transaction::with(
@@ -128,15 +102,15 @@ class AgentTransaction implements ITransactionProvider
             'originalTransaction',
             'originalTransaction.conflicts',
             'sms',
-            'token.meter',
-            'meter.meterParameter.owner',
-            'token.meter.meterParameter',
-            'token.meter.meterType',
+            'device.person',
+            'device.device',
             'paymentHistories'
         )->where('id', $transaction->id)->first();
+
         $transaction['firebase_notify_status'] = 1;
         $transaction['title'] = "Successful Payment!";
         $transaction['content'] = 1;
+
         return [
             'id' => $transaction->id,
             'firebase_notification_status' => 1,
@@ -144,10 +118,6 @@ class AgentTransaction implements ITransactionProvider
         ];
     }
 
-    /**
-     * @param Transaction $transaction
-     * @return array
-     */
     private function prepareBodyFail(Transaction $transaction): array
     {
         return [
@@ -159,16 +129,11 @@ class AgentTransaction implements ITransactionProvider
         ];
     }
 
-    /**
-     * @param  $request
-     * @throws \Exception
-     */
     public function validateRequest($request): void
     {
         $deviceId = request()->header('device-id');
         $agent = Agent::query()->find(auth('agent_api')->user()->id);
         $agentId = $agent->id;
-
         $agent = auth('agent_api')->user();
         try {
             Agent::query()
@@ -206,9 +171,6 @@ class AgentTransaction implements ITransactionProvider
         return $this->transaction->sender;
     }
 
-    /**
-     * @return Model|false
-     */
     public function saveCommonData(): Model
     {
         return $this->agentTransaction->transaction()->save($this->transaction);

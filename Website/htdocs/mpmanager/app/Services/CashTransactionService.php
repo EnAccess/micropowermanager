@@ -17,7 +17,7 @@ class CashTransactionService
         $this->cashTransaction = $cashTransaction;
     }
 
-    public function createCashTransaction($creatorId, $amount, $sender, $meter = null)
+    public function createCashTransaction($creatorId, $amount, $sender, $deviceSerial = null)
     {
         $cashTransaction = $this->cashTransaction->newQuery()->create(
             [
@@ -30,7 +30,7 @@ class CashTransactionService
             [
                 'amount' => $amount,
                 'sender' => $sender,
-                'message' => $meter === null ? '-' : $meter->serial_number,
+                'message' => $deviceSerial ??  '-',
                 'type' => 'deferred_payment',
             ]
         );

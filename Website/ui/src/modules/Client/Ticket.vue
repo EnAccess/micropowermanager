@@ -104,12 +104,17 @@ import { baseUrl } from '@/repositories/Client/AxiosClient'
 export default {
     name: 'Ticket',
     components: { TicketItem, Widget },
+    props: {
+        personId: {
+            required: true
+        }
+    },
     data () {
         return {
             ticketLabelService: new TicketLabelService(),
             ticketUserService: new TicketUserService(),
             subscriber: 'userTickets',
-            tickets: new UserTickets(this.$store.getters.person.id),
+            tickets: new UserTickets(this.personId),
             showPriceInput: false,
             paginator: null,
             tableHeads: [this.$tc('words.subject'), this.$tc('words.category'),

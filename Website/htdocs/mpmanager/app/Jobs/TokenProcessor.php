@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Misc\TransactionDataContainer;
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,40 +12,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-use function config;
-
 class TokenProcessor extends AbstractJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var TransactionDataContainer
-     */
-    private $transactionContainer;
-
-    /**
-     * @var bool
-     */
-
-    private $reCreate;
-    /**
-     * @var int
-     */
-    private $counter;
-
+    private TransactionDataContainer $transactionContainer;
+    private bool $reCreate;
+    private int $counter;
     private const MAX_TRIES = 3;
 
-
-    /**
-     * Create a new job instance.
-     *
-     * @param TransactionDataContainer $container
-     * @param bool $reCreate is a flag which determines to create a new token or not
-     * @param int $counter
-     */
     public function __construct(
         TransactionDataContainer $container,
         bool $reCreate = false,
@@ -54,88 +29,112 @@ class TokenProcessor extends AbstractJob
         $this->transactionContainer = $container;
         $this->reCreate = $reCreate;
         $this->counter = $counter;
-        parent::__construct(get_class($this));
+        parent::__construct(static::class);
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     * @throws Exception
-     */
     public function executeJob(): void
     {
         try {
             $api = resolve($this->transactionContainer->manufacturer->api_name);
-        } catch (\Exception $e) {
-            //no api found
-            Log::critical(
-                'No Api is registered for ' . $this->transactionContainer->manufacturer->name,
-                ['message' => $e->getMessage()]
-            );
-            event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
+        } catch (Exception $e) {
+            $this->handleApiException($e);
             return;
         }
+
+        $token = $this->handleExistingToken();
+
+        if ($token === null) {
+            $this->generateToken($api);
+        }
+        if ($token !== null){
+            $this->handlePaymentEvents($token);
+        }
+
+    }
+
+    private function handleApiException(Exception $e): void
+    {
+        Log::critical(
+            'No Api is registered for ' . $this->transactionContainer->manufacturer->name,
+            ['message' => $e->getMessage()]
+        );
+        event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
+    }
+
+    private function handleExistingToken()
+    {
         $token = $this->transactionContainer->transaction->token()->first();
-        if ($token !== null & $this->reCreate === true) {
+
+        if ($token !== null && $this->reCreate === true) {
             $token->delete();
             $token = null;
         }
-        //no token generated before
-        if ($token === null) {
-            try {
-                $tokenData = $api->chargeMeter($this->transactionContainer);
-            } catch (Exception $e) {
-                if (self::MAX_TRIES > $this->counter) {
-                    $this->counter++;
-                    //re-queue the job in five seconds
-                    self::dispatch(
-                        $this->transactionContainer,
-                        false,
-                        $this->counter
-                    )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
-                    return;
-                }
-                Log::critical(
-                    $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
-                    $this->counter . ' times ',
-                    ['message' => $e->getMessage()]
-                );
-                event('transaction.failed', [
-                        $this->transactionContainer->transaction,
-                        'Manufacturer Api did not succeeded after 3 times with following error : ' . $e->getMessage()
-                    ]);
-                return;
-            }
 
-            $token = MeterToken::query()->make(
-                [
-                    'token' => $tokenData['token'],
-                    'energy' => $tokenData['energy'],
-                ]
-            );
+        return $token;
+    }
 
-            $token->transaction()->associate($this->transactionContainer->transaction);
-            $token->meter()->associate($this->transactionContainer->meter);
-            //save token
-            $token->save();
+    private function generateToken($api): void
+    {
+        try {
+            $tokenData = $api->chargeMeter($this->transactionContainer);
+        } catch (Exception $e) {
+            $this->handleTokenGenerationFailure($e);
+            return;
         }
-        //add token to tokenData
-        $this->transactionContainer->token = $token;
 
-        // payment event
-        event(
-            'payment.successful',
-            [
-                'amount' => $this->transactionContainer->transaction->amount,
-                'paymentService' => $this->transactionContainer->transaction->original_transaction_type,
-                'paymentType' => 'energy',
-                'sender' => $this->transactionContainer->transaction->sender,
-                'paidFor' => $token,
-                'payer' => $this->transactionContainer->meterParameter->owner,
-                'transaction' => $this->transactionContainer->transaction,
-            ]
+        $this->saveToken($tokenData);
+    }
+
+    private function handleTokenGenerationFailure(Exception $e): void
+    {
+        if (self::MAX_TRIES > $this->counter) {
+            $this->retryTokenGeneration();
+            return;
+        }
+
+        Log::critical(
+            $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
+            $this->counter . ' times ',
+            ['message' => $e->getMessage()]
         );
+
+        event('transaction.failed', [
+            $this->transactionContainer->transaction,
+            'Manufacturer Api did not succeed after 3 times with the following error: ' . $e->getMessage()
+        ]);
+    }
+
+    private function retryTokenGeneration(): void
+    {
+        $this->counter++;
+        self::dispatch(
+            $this->transactionContainer,
+            false,
+            $this->counter
+        )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
+    }
+
+    private function saveToken(array $tokenData): void
+    {
+        $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
+        $token->transaction()->associate($this->transactionContainer->transaction);
+        $token->save();
+    }
+
+    private function handlePaymentEvents($token): void
+    {
+        $owner = $this->transactionContainer->device->person;
+
+        event('payment.successful', [
+            'amount' => $this->transactionContainer->transaction->amount,
+            'paymentService' => $this->transactionContainer->transaction->original_transaction_type,
+            'paymentType' => 'energy',
+            'sender' => $this->transactionContainer->transaction->sender,
+            'paidFor' => $token,
+            'payer' => $owner,
+            'transaction' => $this->transactionContainer->transaction,
+        ]);
+
         event('transaction.successful', [$this->transactionContainer->transaction]);
     }
 }

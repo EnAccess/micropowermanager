@@ -2,16 +2,21 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Meter\MeterToken;
+use App\Services\CityGeographicalInformationService;
+use App\Services\CityService;
+use App\Services\ManufacturerService;
+use App\Services\MenuItemsService;
+use App\Services\MiniGridService;
+use App\Services\TokenService;
+use MPM\Meter\MeterDeviceService;
 use App\Services\AddressesService;
 use App\Services\GeographicalInformationService;
 use App\Services\MeterParameterService;
 use App\Services\MeterService;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
-use MPM\Device\MeterDeviceService;
 
 class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
 {
@@ -41,7 +46,13 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         private DeviceService $deviceService,
         private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
-        private AddressesService $addressService
+        private AddressesService $addressService,
+        private CityService $cityService,
+        private MiniGridService $miniGridService,
+        private CityGeographicalInformationService $cityGeographicalInformationService,
+        private MenuItemsService $menuItemsService,
+        private ManufacturerService $manufacturerService,
+        private TokenService $tokenService,
 
     ) {
         parent::__construct();
@@ -54,6 +65,11 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
      */
     public function handle()
     {
+        $cities = $this->cityService->getAll();
+        $cities->each(fn($city) => $this->createGeoRecordForCity($city));
+        $this->addSolarHomeSystemsToNavBar();
+        $this->updateManufacturerTypeIfSunKingPluginIsInstalled();
+        $this->moveMeterTokensToTokens();
         $meterParameters = $this->meterParameterService->getAll();
         $meterParameters->each(fn($meterParameter) => $this->setMeterDevices($meterParameter));
         return 0;
@@ -93,10 +109,62 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             DB::connection('shard')->commit();
         } catch (\Exception $e) {
 
-            $message =  $e->getMessage();
+            $message = $e->getMessage();
             $this->info("Unexpected error occurred. Message: {$message}");
             DB::connection('shard')->rollBack();
         }
 
+    }
+
+    private function createGeoRecordForCity($city)
+    {
+        if ($city->location == null) {
+            $miniGridLocation = $this->miniGridService->getByIdWithLocation($city->mini_grid_id)->location;
+            $cityGeo = $this->geographicalInformationService->make([
+                'points' => $miniGridLocation->points
+            ]);
+            $this->cityGeographicalInformationService->setAssigned($cityGeo);
+            $this->cityGeographicalInformationService->setAssignee($city);
+            $this->cityGeographicalInformationService->assign();
+            $this->geographicalInformationService->save($cityGeo);
+        }
+        return $city;
+    }
+
+    private function addSolarHomeSystemsToNavBar()
+    {
+        $shsMenuItem = 'Solar Home Systems';
+        $menuItem = $this->menuItemsService->getByName($shsMenuItem);
+
+        if (!$menuItem) {
+            $this->menuItemsService->create([
+                'name' => 'Solar Home Systems',
+                'url_slug' => '/solar-home-systems/page/1',
+                'md_icon' => 'solar_power',
+                'menu_order' => 0,
+            ]);
+        }
+    }
+
+    private function updateManufacturerTypeIfSunKingPluginIsInstalled()
+    {
+        $manufacturer = $this->manufacturerService->getByName('SunKing SHS');
+        if ($manufacturer) {
+            $manufacturer->type = 'shs';
+            $manufacturer->save();
+        }
+    }
+
+    private function moveMeterTokensToTokens()
+    {
+        $meterTokens = MeterToken::query()->get();
+        $meterTokens->each(function ($meterToken) {
+            $this->tokenService->create([
+                'transaction_id' => $meterToken->transaction_id,
+                'token' => $meterToken->token,
+                'loan' => $meterToken->energy,
+            ]);
+            $meterToken->delete();
+        });
     }
 }

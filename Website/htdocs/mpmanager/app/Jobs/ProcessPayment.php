@@ -10,8 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
-use function config;
+use MPM\Transaction\TransactionPaymentProcessor;
 
 class ProcessPayment extends AbstractJob
 {
@@ -44,8 +43,6 @@ class ProcessPayment extends AbstractJob
      */
     public function executeJob(): void
     {
-        EnergyTransactionProcessor::dispatch($this->transactionId)
-            ->allOnConnection('redis')
-            ->onQueue(config('services.queues.energy'));
+        TransactionPaymentProcessor::process($this->transactionId);
     }
 }

@@ -43,6 +43,11 @@ class ManufacturerService implements IBaseService
         return $this->manufacturer->newQuery()->get();
     }
 
+    public function getByName($manufacturerName)
+    {
+        return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
+    }
+
     public function update($model, $data)
     {
         // TODO: Implement update() method.

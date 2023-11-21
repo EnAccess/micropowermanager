@@ -13,6 +13,7 @@ use App\Services\PersonService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class PersonController
@@ -50,18 +51,6 @@ class PersonController extends Controller
         return ApiResource::make($this->personService->getAll($limit, $customerType));
     }
 
-    /**
-     * Lists all people
-     * Lists all registered people without any filtering and pagination
-     * The list contains no relations
-     *
-     * @responseFile responses/people/people.list.all.json
-     * @return       ApiResource
-     */
-    public function list()
-    {
-        return ApiResource::make($this->personService->getAllRegisteredPeople());
-    }
 
     /**
      * Detail
@@ -92,34 +81,40 @@ class PersonController extends Controller
      */
     public function store(PersonRequest $request): JsonResponse
     {
-        $customerType = $request->input('customer_type');
-        $addressData = $this->addressService->createAddressDataFromRequest($request);
-        $personData = $this->personService->createPersonDataFromRequest($request);
-        $miniGridId = $request->input('mini_grid_id');
+        try {
+            $customerType = $request->input('customer_type');
+            $addressData = $this->addressService->createAddressDataFromRequest($request);
+            $personData = $this->personService->createPersonDataFromRequest($request);
+            $miniGridId = $request->input('mini_grid_id');
+            DB::connection('shard')->beginTransaction();
+            if ($this->personService->isMaintenancePerson($customerType)) {
+                $person = $this->personService->createMaintenancePerson($personData);
+                $maintenanceUserData = [
+                    'person_id' => $person->id,
+                    'mini_grid_id' => $miniGridId
+                ];
+                $this->maintenanceUserService->create($maintenanceUserData);
+            } else {
+                $country = $this->countryService->getByCode($request->get('country_code'));
+                $person = $this->personService->create($personData);
 
-        if ($this->personService->isMaintenancePerson($customerType)) {
-            $person = $this->personService->createMaintenancePerson($personData);
-            $maintenanceUserData = [
-                'person_id' => $person->id,
-                'mini_grid_id' => $miniGridId
-            ];
-            $this->maintenanceUserService->create($maintenanceUserData);
-        } else {
-            $country = $this->countryService->getByCode($request->get('country_code'));
-            $person = $this->personService->create($personData);
-
-            if ($country !== null) {
-                $person = $this->personService->addCitizenship($person, $country);
+                if ($country !== null) {
+                    $person = $this->personService->addCitizenship($person, $country);
+                }
             }
+
+            $address = $this->addressService->make($addressData);
+            $this->personAddressService->setAssignee($person);
+            $this->personAddressService->setAssigned($address);
+            $this->personAddressService->assign();
+            $this->addressService->save($address);
+            DB::connection('shard')->commit();
+            return ApiResource::make($person)->response()->setStatusCode(201);
+        } catch (\Exception $e) {
+            DB::connection('shard')->rollBack();
+            throw new \Exception($e->getMessage());
         }
 
-        $address = $this->addressService->make($addressData);
-        $this->personAddressService->setAssignee($person);
-        $this->personAddressService->setAssigned($address);
-        $this->personAddressService->assign();
-        $this->addressService->save($address);
-
-        return ApiResource::make($person)->response()->setStatusCode(201);
     }
 
     /**
@@ -139,12 +134,15 @@ class PersonController extends Controller
      * @apiResourceModel App\Models\Person\Person
      * @responseFile     responses/people/person.update.json
      */
-    public function update(int $personId, PersonRequest $request): ApiResource
-    {
+    public
+    function update(
+        int $personId,
+        PersonRequest $request
+    ): ApiResource {
         $person = $this->personService->getById($personId);
         $personData = $request->all();
 
-        return  ApiResource::make($this->personService->update($person, $personData));
+        return ApiResource::make($this->personService->update($person, $personData));
     }
 
     /**
@@ -159,11 +157,13 @@ class PersonController extends Controller
      * @bodyParam    person_id int required the ID of the person. Example: 2
      * @responseFile responses/people/person.transaction.list.json
      */
-    public function transactions(int $personId): ApiResource
-    {
+    public
+    function transactions(
+        int $personId
+    ): ApiResource {
         $person = $this->personService->getById($personId);
 
-        return  ApiResource::make($this->personService->getPersonTransactions($person));
+        return ApiResource::make($this->personService->getPersonTransactions($person));
     }
 
     /**
@@ -181,14 +181,15 @@ class PersonController extends Controller
      * @return       ApiResource
      * @responseFile responses/people/people.search.json
      */
-    public function search(Request $request): ApiResource
-    {
+    public
+    function search(
+        Request $request
+    ): ApiResource {
         $term = $request->input('term');
         $paginate = $request->input('paginate', 1);
 
-        return  ApiResource::make($this->personService->searchPerson($term, $paginate));
+        return ApiResource::make($this->personService->searchPerson($term, $paginate));
     }
-
 
 
     /**
@@ -203,8 +204,10 @@ class PersonController extends Controller
      *
      * @apiResourceModel App\Models\Person\Person
      */
-    public function destroy(int $personId): ApiResource
-    {
+    public
+    function destroy(
+        int $personId
+    ): ApiResource {
         $person = $this->personService->getById($personId);
 
         return ApiResource::make($this->personService->delete($person));

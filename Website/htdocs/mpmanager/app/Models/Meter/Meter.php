@@ -18,11 +18,12 @@ use PDO;
 
 class Meter extends BaseModel
 {
+    public const RELATION_NAME = 'meter';
     protected $guarded = [];
     public static $rules = [
         'serial_number' => 'required|min:1|unique:meters',
-        'meter_type_id' => 'exists:meter_types,id',
-        'manufacturer_id' => 'exists:manufacturers,id',
+        'meter_type_id' => 'exists:shard.meter_types,id',
+        'manufacturer_id' => 'exists:shard.manufacturers,id',
     ];
 
     public function meterType(): BelongsTo

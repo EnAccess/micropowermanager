@@ -1,185 +1,69 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 03.07.18
- * Time: 10:42
- */
-
 namespace App\Misc;
 
-use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
-use App\Exceptions\Meters\MeterIsNotInUse;
-use App\Exceptions\Tariffs\TariffNotFound;
 use App\Models\AssetPerson;
+use App\Models\Device;
 use App\Models\Manufacturer;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use App\Models\Transaction\Transaction;
-use Exception;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\AppliancePaymentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
-use RuntimeException;
+use MPM\Device\DeviceService;
 
 class TransactionDataContainer
 {
-    /**
-     * @var int
-     */
-    public $accessRateDebt;
-    /**
-     * @var Transaction
-     */
-    public $transaction;
+    public int $accessRateDebt;
+    public Transaction $transaction;
+    public Device $device;
+    public MeterTariff $tariff;
+    public Manufacturer $manufacturer;
+    public Token $token;
+    public array $paidRates;
+    public float $chargedEnergy;
+    public float $amount;
+    public float $totalAmount;
+    public float $rawAmount;
+    public AssetPerson $appliancePerson;
+    public float $installmentCost;
+    public string $dayDifferenceBetweenTwoInstallments;
 
-    /**
-     * @var Meter
-     */
-    public $meter;
-
-    /**
-     * @var MeterParameter
-     */
-    public $meterParameter;
-
-    /**
-     * @var MeterTariff
-     */
-    public $tariff;
-
-    /**
-     * @var Manufacturer
-     */
-    public $manufacturer;
-
-    /**
-     * @var MeterToken
-     */
-    public $token;
-
-    /**
-     * @var array
-     */
-    public $paidRates;
-
-    /**
-     * @var float
-     */
-    public $chargedEnergy;
-
-    public $amount;
-
-    public $totalAmount;
-
-    public $rawAmount;
-    public AssetPerson|null $shsLoan;
-    /**
-     * @param Transaction $transaction
-     *
-     * @param bool $withToken
-     *
-     * @return TransactionDataContainer
-     * @throws Exception
-     */
-    public static function initialize(Transaction $transaction, bool $withToken = false): TransactionDataContainer
+    public static function initialize(Transaction $transaction): TransactionDataContainer
     {
-        $container = new self();
+        $container = app()->make(TransactionDataContainer::class);
+        $deviceService = app()->make(DeviceService::class);
         $container->chargedEnergy = 0;
-
         $container->transaction = $transaction;
         $container->totalAmount = $transaction->amount;
         $container->amount = $transaction->amount;
         $container->rawAmount = $transaction->amount;
-        //get meter
+
         try {
-            $container->meter = $container->getMeter($transaction->message);
-            $container->meterParameter = $container->getMeterParameter($container->meter);
-            $container->tariff = $container->getTariff($container->meterParameter);
-            $container->manufacturer = $container->getManufacturer($container->meter);
-        } catch (ModelNotFoundException $e) {
-            throw new Exception('Meter Serial number ' . $transaction->message . 'not found in the database');
-        } catch (MeterIsNotInUse $e) {
-            throw new Exception($e->getMessage());
-        } catch (TariffNotFound $e) {
-            throw new Exception($e->getMessage() . 'Meter : ' . $transaction->message);
-        } catch (MeterIsNotAssignedToCustomer $e) {
-            throw new Exception($e->getMessage());
-        }
-        if ($withToken) {
-            try {
-                $container->token = $transaction->token()->firstOrFail();
-            } catch (ModelNotFoundException $exception) {
-                Log::critical(
-                    'The token for' . $transaction->message . ' not found',
-                    ['id' => 3424342376236]
-                );
-                throw new RuntimeException($exception->getMessage());
+            $container->device = $deviceService->getBySerialNumber($transaction->message);
+            $container->tariff = null;
+            $container->manufacturer = $container->device->device->manufacturer()->first();
+
+            if ($container->device->device_type === 'meter') {
+                $meter = $container->device->device;
+                $container->tariff = $meter->tariff()->first();
             }
+
+            $container->appliancePerson = $transaction->appliance()->first();
+
+            if ($container->appliancePerson) {
+                $installments = $container->appliancePerson->rates;
+                $appliancePaymentService = app()->make(AppliancePaymentService::class);
+                $secondInstallment = $installments[1];
+                $installmentCost = $secondInstallment ? $secondInstallment['rate_cost'] : 0;
+                $container->installmentCost = $installmentCost;
+                $container->dayDifferenceBetweenTwoInstallments =
+                    $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+            }
+
+        } catch (ModelNotFoundException $e) {
+            throw new \Exception("Unexpected error occurred while processing transaction. " . $e->getMessage());
         }
         return $container;
-    }
-
-
-    /**
-     * @param String $serialNumber
-     *
-     * @return mixed
-     * @throws MeterIsNotInUse
-     */
-    private function getMeter(string $serialNumber)
-    {
-        $meter = Meter::where('serial_number', $serialNumber)->firstOrFail();
-        //meter is not been used by anyone
-        if (!$meter->in_use) {
-            throw new MeterIsNotInUse($serialNumber . ' meter is not in use');
-        }
-        return $meter;
-    }
-
-    /**
-     * @param Meter $meter
-     *
-     * @return MeterParameter
-     * @throws MeterIsNotAssignedToCustomer
-     */
-    private function getMeterParameter(Meter $meter): MeterParameter
-    {
-        $meterParameter = $meter->meterParameter()->firstOrFail();
-        if ($meterParameter === null) {
-            throw new MeterIsNotAssignedToCustomer($meter->serial_number . 'is not assigned to any customer');
-        }
-        return $meterParameter;
-    }
-
-    /**
-     * @param MeterParameter $meterParameter
-     *
-     * @return MeterTariff|Model|BelongsTo|object
-     * @throws TariffNotFound
-     *
-     */
-    private function getTariff(MeterParameter $meterParameter)
-    {
-        $tariff = $meterParameter->tariff()->first();
-        if ($tariff === null) {
-            throw new TariffNotFound($meterParameter->tariff_id .
-                ' is assigned to the meter, but the tariff does not exit');
-        }
-        return $tariff;
-    }
-
-    /**
-     * @param Meter $meter
-     *
-     * @return Model|BelongsTo|null|object
-     */
-    private function getManufacturer(Meter $meter)
-    {
-        return $meter->manufacturer()->first();
     }
 }

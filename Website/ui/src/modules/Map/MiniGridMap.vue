@@ -259,7 +259,6 @@ export default {
             devicesInMiniGrid.map((device) => {
                 const points = device.address.geo.points.split(',')
                 if (points.length !== 2) {
-                    this.alertNotify('error', 'Device has no location')
                     return
                 }
                 const lat = parseFloat(points[0])

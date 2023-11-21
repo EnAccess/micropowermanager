@@ -395,7 +395,7 @@ class TransactionService
 
         $token = $this->meterToken->newQuery()->make([
             'token' => $token,
-            'energy' => $chargedEnergy,
+            'load' => $chargedEnergy,
 
         ]);
         $token->transaction()->associate($mainTransaction);
