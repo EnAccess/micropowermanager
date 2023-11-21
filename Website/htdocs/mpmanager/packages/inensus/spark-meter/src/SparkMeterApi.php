@@ -3,10 +3,7 @@
 namespace Inensus\SparkMeter;
 
 use App\Lib\IManufacturerAPI;
-use App\Misc\TransactionDataContainer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Transaction\Transaction;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -19,47 +16,31 @@ use Inensus\SparkMeter\Services\TariffService;
 
 class SparkMeterApi implements IManufacturerAPI
 {
-    /**
-     * @var Client
-     */
     protected $api;
-    private $sparkMeterApiRequests;
-    private $meterParameter;
-    private $smCustomer;
-    private $smTransaction;
-    private $smTariff;
-    private $tariffService;
-    private $transaction;
     private $rootUrl = '/transaction/';
 
     public function __construct(
-        SparkMeterApiRequests $sparkMeterApiRequests,
         Client $httpClient,
-        TariffService $tariffService,
-        MeterParameter $meterParameter,
-        SmCustomer $smCustomer,
-        SmTransaction $smTransaction,
-        SmTariff $smTariff,
-        Transaction $transaction
+        private  SparkMeterApiRequests $sparkMeterApiRequests,
+        private TariffService $tariffService,
+        private SmCustomer $smCustomer,
+        private SmTransaction $smTransaction,
+        private SmTariff $smTariff
     ) {
-        $this->sparkMeterApiRequests = $sparkMeterApiRequests;
+
         $this->api = $httpClient;
-        $this->smCustomer = $smCustomer;
-        $this->smTransaction = $smTransaction;
-        $this->meterParameter = $meterParameter;
-        $this->smTariff = $smTariff;
-        $this->tariffService = $tariffService;
-        $this->transaction = $transaction;
+
     }
 
     public function chargeMeter($transactionContainer): array
     {
-
-        $meterParameter = $transactionContainer->meterParameter;
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
+        $owner = $transactionContainer->device->person;
 
         $smTariff = $this->smTariff->newQuery()->where(
             'mpm_tariff_id',
-            $meterParameter->tariff()->first()->id
+            $tariff->id
         )->first();
         $tariff = $this->tariffService->singleSync($smTariff);
         $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
@@ -79,7 +60,7 @@ class SparkMeterApi implements IManufacturerAPI
             try {
                 $smCustomer = $this->smCustomer->newQuery()->with('site')->where(
                     'mpm_customer_id',
-                    $meterParameter->owner->id
+                     $owner->id
                 )->firstOrFail();
             } catch (ModelNotFoundException $e) {
                 Log::critical('No Customer found for transaction data.', ['message' => $e->getMessage()]);
@@ -148,7 +129,7 @@ class SparkMeterApi implements IManufacturerAPI
                 $smCustomer->customer_id;
             return [
                 'token' => $token,
-                'energy' => $transactionContainer->chargedEnergy
+                'load' => $transactionContainer->chargedEnergy
             ];
         }
     }

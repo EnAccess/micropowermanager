@@ -231,7 +231,7 @@ class AppliancePersonService extends CreatorService
             [
                 'amount' => $amount,
                 'paymentService' => 'web',
-                'paymentType' => 'loan rate',
+                'paymentType' => 'installment',
                 'sender' => $transaction->sender,
                 'paidFor' => $applianceRate,
                 'payer' => $buyer,

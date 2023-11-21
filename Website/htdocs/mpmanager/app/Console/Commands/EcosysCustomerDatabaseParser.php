@@ -7,6 +7,7 @@ use MPM\CustomBulkRegistration\Ecosys\CustomerDatabaseParser;
 
 class EcosysCustomerDatabaseParser extends AbstractSharedCommand
 {
+    //--company-id=36
     protected $signature = 'ecosys:db-file-parser {--company-id=}';
     protected $description = 'custom database file parser for ecosys';
 

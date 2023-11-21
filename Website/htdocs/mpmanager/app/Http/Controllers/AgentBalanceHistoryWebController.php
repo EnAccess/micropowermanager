@@ -16,7 +16,7 @@ class AgentBalanceHistoryWebController extends Controller
 
     public function index($agentId, Request $request)
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return  ApiResource::make($this->agentBalanceHistoryService->getAll($limit, $agentId));
     }

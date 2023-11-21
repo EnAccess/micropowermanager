@@ -1,28 +1,22 @@
 import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-
+import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 export class AppliancePaymentService {
 
     constructor () {
         this.repository = Repository.get('appliancePayment')
     }
 
-    async getPaymentForAppliance (selectedApplianceId, personId, adminId, rates, amount) {
-        let paymentPm = {
-            'personId': personId,
-            'adminId': adminId,
-            'rates': rates,
-            'amount': amount
-        }
+    async getPaymentForAppliance (applianceId, payment) {
+        const paymentParams = convertObjectKeysToSnakeCase(payment)
         try {
-            let response = await this.repository.update(selectedApplianceId, paymentPm)
-            if (response.status === 200 || response.status === 201) {
-                return response
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.update(applianceId, paymentParams)
+            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+
+            return data.data
         } catch (e) {
-            return new ErrorHandler(e.response.data.message, 'http')
+            const errorMessage = e.response.data.data.message[0]
+            return new ErrorHandler(errorMessage, 'http')
         }
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class AgentCharge extends BaseModel
 {
-    //
+    public const RELATION_NAME = 'agent_charge';
 
     public function agent(): void
     {

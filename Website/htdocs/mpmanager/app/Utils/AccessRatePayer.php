@@ -9,7 +9,7 @@ use App\Services\AccessRatePaymentService;
 use App\Services\AccessRateService;
 use Illuminate\Support\Facades\Log;
 
-class AccessRatePayer implements IPayer
+class AccessRatePayer
 {
     public const MINIMUM_AMOUNT = 0;
     private AccessRatePayment $accessRatePayment;
@@ -22,21 +22,24 @@ class AccessRatePayer implements IPayer
         $this->debtAmount = self::MINIMUM_AMOUNT;
     }
 
-    public function initialize(TransactionDataContainer $transactionData)
+    public function initialize(TransactionDataContainer $container)
     {
-        $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($transactionData->meter);
+        $meter = $container->device->device;
+        $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
         if ($accessRatePayment) {
             $this->debtAmount =  $accessRatePayment->debt;
             $this->accessRatePayment = $accessRatePayment;
         }
 
-        $this->transactionData = $transactionData;
-        $this->transaction = $transactionData->transaction;
+        $this->transactionData = $container;
+        $this->transaction = $container->transaction;
     }
 
     public function pay()
     {
+        $meter = $this->transactionData->device->device;
+        $owner = $this->transactionData->device->person;
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { //there is unpaid amount
             if ($this->debtAmount > $this->transactionData->transaction->amount) {
                 $this->debtAmount -= $this->transactionData->transaction->amount;
@@ -54,8 +57,8 @@ class AccessRatePayer implements IPayer
                 'paymentService' => $this->transactionData->transaction->original_transaction_type,
                 'paymentType' => 'access rate',
                 'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => $this->transactionData->meter->accessRate(),
-                'payer' => $this->transactionData->meterParameter->owner,
+                'paidFor' => $meter->accessRate(),
+                'payer' => $owner,
                 'transaction' => $this->transactionData->transaction,
             ]);
         }

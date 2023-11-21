@@ -1,16 +1,15 @@
 <?php
 
-namespace MPM\Device;
+namespace MPM\SolarHomeSystem;
 
 use App\Models\Device;
-use App\Models\Meter\Meter;
+use App\Models\SolarHomeSystem;
 use App\Services\IAssignationService;
 
-class MeterDeviceService implements IAssignationService
+class SolarHomeSystemDeviceService implements IAssignationService
 {
     private Device $device;
-    private Meter $meter;
-
+    protected SolarHomeSystem $shs;
     public function setAssigned($assigned)
     {
         $this->device = $assigned;
@@ -18,14 +17,13 @@ class MeterDeviceService implements IAssignationService
 
     public function setAssignee($assignee)
     {
-        $this->meter = $assignee;
+        $this->shs = $assignee;
     }
 
     public function assign()
     {
-        $this->device->device()->associate($this->meter);
+        $this->device->device()->associate($this->shs);
 
         return $this->device;
     }
-
 }

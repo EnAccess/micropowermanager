@@ -7,10 +7,9 @@ use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Facades\Log;
-use Inensus\GomeLongMeter\Models\GomeLongTariff;
 use Inensus\GomeLongMeter\Models\GomeLongTransaction;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
-use Inensus\GomeLongMeter\Services\GomeLongTariffService;
+
 class GomeLongMeterApi implements IManufacturerAPI
 {
     const API_CALL_TOKEN_GENERATION = '/EKPower';
@@ -24,8 +23,8 @@ class GomeLongMeterApi implements IManufacturerAPI
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $tariff = $meterParameter->tariff()->first();
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
 
         Log::debug('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
@@ -38,7 +37,6 @@ class GomeLongMeterApi implements IManufacturerAPI
             ];
         } else {
 
-            $meter = $transactionContainer->meter;
             $energy = (float)$transactionContainer->chargedEnergy;
             $credentials = $this->credentialService->getCredentials();
             $params = [
@@ -58,7 +56,7 @@ class GomeLongMeterApi implements IManufacturerAPI
 
             return [
                 'token' => $response['Token'],
-                'energy' => $energy
+                'load' => $energy
             ];
         }
     }

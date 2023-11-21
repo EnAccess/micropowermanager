@@ -84,10 +84,10 @@ class ApplianceRateService implements IBaseService
         // TODO: Implement getById() method.
     }
 
-    public function create($assetPerson)
+    public function create($assetPerson, $installmentType = 'monthly')
     {
         $baseTime = $assetPerson->first_payment_date ?? date('Y-m-d');
-
+        $installment = $installmentType === 'monthly' ? 'month' : 'week';
         if ($assetPerson->down_payment > 0) {
             $this->applianceRate->newQuery()->create(
                 [
@@ -100,7 +100,6 @@ class ApplianceRateService implements IBaseService
             );
             $assetPerson->total_cost -= $assetPerson->down_payment;
         }
-
         foreach (range(1, $assetPerson->rate_count) as $rate) {
             if ($assetPerson->rate_count === 0) {
                 $rateCost = 0;
@@ -111,11 +110,7 @@ class ApplianceRateService implements IBaseService
             } else {
                 $rateCost = ceil($assetPerson->total_cost / $assetPerson->rate_count);
             }
-            if ($assetPerson->asset()->first()->assetType->id === 1) {
-                $rateDate = date('Y-m-d', strtotime('+' . $rate . ' week', strtotime($baseTime)));
-            } else {
-                $rateDate = date('Y-m-d', strtotime('+' . $rate . ' month', strtotime($baseTime)));
-            }
+            $rateDate = date('Y-m-d', strtotime('+' . $rate . " $installment", strtotime($baseTime)));
 
             $this->applianceRate->newQuery()->create(
                 [
@@ -148,6 +143,6 @@ class ApplianceRateService implements IBaseService
     public function getDownPaymentAsAssetRate($assetPerson): AssetRate
     {
         return $this->applianceRate->newQuery()->where('asset_person_id', $assetPerson->id)
-            ->where('rate_cost', $assetPerson->down_payment)->where('remaining',0)->first();
+            ->where('rate_cost', $assetPerson->down_payment)->where('remaining', 0)->first();
     }
 }

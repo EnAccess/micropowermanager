@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class MeterParameter extends BaseModel
 {
+    public const RELATION_NAME = 'meter_parameter';
     protected $hidden = ['owner_id', 'owner_type', 'meter_id', 'tariff_id'];
     protected $guarded = [];
 

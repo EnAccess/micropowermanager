@@ -62,7 +62,7 @@ class BatteryController extends Controller
      */
     public function showByMiniGrid(Request $request, $miniGridId): ApiResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         $batteryReadings = $this->battery->newQuery()
             ->where('mini_grid_id', $miniGridId);

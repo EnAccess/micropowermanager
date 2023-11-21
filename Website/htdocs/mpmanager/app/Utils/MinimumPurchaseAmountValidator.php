@@ -18,11 +18,6 @@ class MinimumPurchaseAmountValidator
         $applianceInstallmentPayer->initialize($transactionData);
         $this->restAmount = $applianceInstallmentPayer->consumeAmount();
 
-        if($applianceInstallmentPayer->shsLoan){
-
-            return $this->transactionData->transaction->amount >= $minimumPurchaseAmount;
-        }
-
         $accessRatePayer = resolve('AccessRatePayer');
         $accessRatePayer->initialize($transactionData);
         $this->restAmount = $accessRatePayer->consumeAmount();

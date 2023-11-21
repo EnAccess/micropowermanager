@@ -7,12 +7,13 @@ use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Device extends BaseModel
 {
-
+    public const RELATION_NAME = 'device';
     public function device(): MorphTo
     {
         return $this->morphTo();
@@ -29,4 +30,8 @@ class Device extends BaseModel
         return $this->morphOne(Address::class, 'owner');
     }
 
+    public function appliance(): HasOne
+    {
+        return $this->hasOne(Asset::class,'device_serial','device_serial');
+    }
 }

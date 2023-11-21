@@ -32,7 +32,7 @@ class TicketExportController
      */
     public function index(Request $request): TicketResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return  TicketResource::make($this->ticketOutsourceReportService->getAll($limit));
     }

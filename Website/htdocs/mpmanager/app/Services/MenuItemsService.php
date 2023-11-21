@@ -9,23 +9,19 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Boolean;
 
-class MenuItemsService
+class MenuItemsService implements IBaseService
 {
-    private $menuItems;
-    private $subMenuItems;
-    public function __construct(MenuItems $menuItems, SubMenuItems $subMenuItems)
+    public function __construct(private MenuItems $menuItems, private SubMenuItems $subMenuItems)
     {
-        $this->menuItems = $menuItems;
-        $this->subMenuItems = $subMenuItems;
+
     }
 
-    /**
-     * @return Builder[]|Collection
-     *
-     * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
-     */
-    public function getMenuItems()
+
+    public function getAll($limit = null)
     {
+        if($limit){
+            return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->paginate($limit);
+        }
         return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->get();
     }
 
@@ -84,4 +80,33 @@ class MenuItemsService
             $menuItem->delete();
         }
     }
+
+    public function getByName($name)
+    {
+        return $this->menuItems->newQuery()->where('name', $name)->first();
+    }
+
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    public function create($data)
+    {
+        $lastOrder = $this->menuItems->newQuery()->latest()->first();
+        $data['menu_order'] = $lastOrder ? $lastOrder->menu_order + 1 : 1;
+
+        return $this->menuItems->newQuery()->create($data);
+    }
+
+    public function update($model, $data)
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
 }

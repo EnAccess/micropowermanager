@@ -5,8 +5,6 @@ namespace Inensus\SteamaMeter;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Transaction\Transaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
@@ -19,51 +17,35 @@ use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 class SteamaMeterApi implements IManufacturerAPI
 {
     protected $api;
-    private $meterParameter;
-    private $steamaCustomer;
-    private $credentialService;
-    private $customerService;
-    private $steamaTransaction;
-    private $transaction;
+
     public function __construct(
         Client $httpClient,
-        MeterParameter $meterParameter,
-        SteamaCustomer $steamaCustomer,
-        SteamaCredentialService $credentialService,
-        SteamaCustomerService $customerService,
-        SteamaTransaction $steamaTransaction,
-        Transaction $transaction
+        private SteamaCustomer $steamaCustomer,
+        private SteamaCredentialService $credentialService,
+        private SteamaCustomerService $customerService,
+        private SteamaTransaction $steamaTransaction,
     ) {
         $this->api = $httpClient;
-        $this->meterParameter = $meterParameter;
-        $this->steamaCustomer = $steamaCustomer;
-        $this->credentialService = $credentialService;
-        $this->customerService = $customerService;
-        $this->steamaTransaction = $steamaTransaction;
-
-        $this->transaction = $transaction;
     }
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
-        $meterParameter = $this->meterParameter->newQuery()->with('owner')->where(
-            'id',
-            $transactionContainer->meterParameter->id
-        )->firstOrFail();
+        $owner = $transactionContainer->device->person;
 
         $stmCustomer = $this->steamaCustomer->newQuery()->with('paymentPlans')->where(
             'mpm_customer_id',
-            $meterParameter->owner->id
+            $owner->id
         )->first();
 
         $customerId = $stmCustomer->customer_id;
         $stmCustomer = $this->customerService->syncTransactionCustomer($stmCustomer->id);
         $customerEnergyPrice = $stmCustomer->energy_price;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / ($customerEnergyPrice);
+
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
+                'load' => (float)$transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -120,7 +102,7 @@ class SteamaMeterApi implements IManufacturerAPI
                 $transactionResult['customer_id'];
             return [
                 'token' => $token,
-                'energy' => $transactionContainer->chargedEnergy
+                'load' => $transactionContainer->chargedEnergy
             ];
         }
     }

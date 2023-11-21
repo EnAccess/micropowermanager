@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Asset extends BaseModel
 {
+    public const RELATION_NAME = 'appliance';
     protected $table = 'assets';
 
     public function assetType(): HasOne

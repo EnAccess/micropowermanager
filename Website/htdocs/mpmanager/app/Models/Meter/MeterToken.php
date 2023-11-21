@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
  */
 class MeterToken extends BaseModel
 {
+    public const RELATION_NAME = 'meter_token';
+
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);

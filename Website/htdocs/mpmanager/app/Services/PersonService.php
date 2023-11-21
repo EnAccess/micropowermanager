@@ -37,12 +37,13 @@ class PersonService implements IBaseService
         if (!$allRelations) {
             return $this->getById($personID);
         }
+
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn ($q) => $q->orderBy('is_primary')->get(),
+                'addresses' => fn($q) => $q->orderBy('is_primary')->with('city',fn($q) => $q->whereHas('location'))->get(),
                 'citizenship',
                 'roleOwner.definitions',
-                'devices.address.geo',
+                'devices' => fn($q) => $q->whereHas('address')->with('address.geo'),
             ]
         )->find($personID);
     }
@@ -57,11 +58,11 @@ class PersonService implements IBaseService
      */
     public function searchPerson($searchTerm, $paginate)
     {
-        $query =  $this->person->newQuery()->with(['addresses.city','devices'])->whereHas(
-            'addresses', fn ($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+        $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
+            'addresses', fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
         )->orWhereHas(
             'devices',
-            fn ($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
+            fn($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
         )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%');
 

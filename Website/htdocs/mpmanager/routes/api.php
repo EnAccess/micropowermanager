@@ -444,10 +444,16 @@ Route::group(['prefix' => 'companies'], static function () {
 });
 Route::group(['prefix' => 'devices'], static function () {
     Route::put('/{device}', 'DeviceController@update');
+    Route::get('/', 'DeviceController@index');
 });
 Route::group(['prefix' => 'device-addresses'], function () {
     Route::post('/', "DeviceAddressController@update");
 });
 Route::group(['prefix' => 'airtel-volt-terra'], static function () {
     Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');
+});
+Route::group(['prefix' => 'solar-home-systems'], static function () {
+    Route::get('/', 'SolarHomeSystemController@index');
+    Route::post('/', 'SolarHomeSystemController@store');
+    Route::get('/search', 'SolarHomeSystemController@search');
 });

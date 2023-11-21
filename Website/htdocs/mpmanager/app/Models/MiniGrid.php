@@ -22,6 +22,7 @@ use MPM\Target\TargetAssignable;
  */
 class MiniGrid extends BaseModel implements TargetAssignable
 {
+    public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];
 
 

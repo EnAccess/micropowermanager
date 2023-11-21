@@ -121,4 +121,19 @@ class UserService
 
         return $user->getCompanyId();
     }
+
+    public function getById($id)
+    {
+         return  $this->user->newQuery()->find($id);
+    }
+
+    public function delete($model)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function getAll($limit = null)
+    {
+        // TODO: Implement getAll() method.
+    }
 }

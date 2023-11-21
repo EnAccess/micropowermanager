@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\DownPaymentBiggerThanAppliancePriceException;
+use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\MainSettings;
@@ -17,6 +18,16 @@ class AppliancePersonService implements IBaseService, IAssociative
     ) {
     }
 
+    public function make($data)
+    {
+        return $this->assetPerson->newQuery()->make($data);
+    }
+
+    public function save($appliancePerson)
+    {
+        $appliancePerson->save();
+    }
+
     private function checkDownPaymentIsBigger($downPayment, $cost)
     {
         if ($downPayment > $cost) {
@@ -28,7 +39,7 @@ class AppliancePersonService implements IBaseService, IAssociative
 
     public function createFromRequest($request, $person, $asset)
     {
-        $this->checkDownPaymentIsBigger($request->input('downPayment'), $request->input('cost'));
+        $this->checkDownPaymentIsBigger($request->input('down_payment'), $request->input('cost'));
         $assetPerson = $this->assetPerson::query()->make(
             [
                 'person_id' => $person->id,
@@ -89,7 +100,7 @@ class AppliancePersonService implements IBaseService, IAssociative
     public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction)
     {
         $soldApplianceDataContainer = app()->makeWith(
-            'App\Misc\SoldApplianceDataContainer',
+            SoldApplianceDataContainer::class,
             [
                 'asset' => $asset,
                 'assetType' => $asset->assetType,
@@ -153,16 +164,6 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $this->assetPerson->newQuery()->where('person_id', $customerId);
     }
 
-    public function make($data)
-    {
-        return $this->assetPerson->newQuery()->make($data);
-    }
-
-    public function save($appliancePerson)
-    {
-        $appliancePerson->save();
-    }
-
     public function getById($id)
     {
         // TODO: Implement getById() method.
@@ -185,6 +186,17 @@ class AppliancePersonService implements IBaseService, IAssociative
 
     public function getAll($limit = null)
     {
-        // TODO: Implement getAll() method.
+        if ($limit) {
+            return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);
+        }
+        return $this->assetPerson->newQuery()->with(['person.devices'])->get();
+    }
+
+    public function getLoanIdsForCustomerId($customerId)
+    {
+        return $this->assetPerson->newQuery()
+            ->where('person_id', $customerId)
+            ->where('device_serial', null)
+            ->orWhere('device_serial', '')->pluck('id');
     }
 }

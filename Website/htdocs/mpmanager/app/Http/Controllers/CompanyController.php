@@ -94,7 +94,7 @@ class CompanyController extends Controller
                 return response()->json([
                     'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',
                     'company' => $company,
-                    'sidebarData' => $this->menuItemsService->getMenuItems()
+                    'sidebarData' => $this->menuItemsService->getAll()
                 ], 201);
             }
         );

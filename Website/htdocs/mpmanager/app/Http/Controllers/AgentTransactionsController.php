@@ -22,7 +22,7 @@ class AgentTransactionsController extends Controller
     public function index(Request $request): ApiResource
     {
         $agent = $this->agentService->getByAuthenticatedUser();
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentTransactionService->getAll($limit, $agent->id, self::FOR_APP));
     }

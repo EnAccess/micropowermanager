@@ -28,7 +28,7 @@ class AgentReceiptWebController extends Controller
      */
     public function show($agentId, Request $request)
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentReceiptService->getAll($limit, $agentId));
     }
@@ -41,7 +41,7 @@ class AgentReceiptWebController extends Controller
      */
     public function index(Request $request)
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentReceiptService->getAll($limit));
     }

@@ -4,7 +4,6 @@ import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class CityService {
     constructor () {
-        this.repository = Repository.get('city')
         this.cities = []
         this.city = {
             id: 0,
@@ -12,6 +11,8 @@ export class CityService {
             cluster_id: 0,
             mini_grid_id: 0,
         }
+        this.list = []
+        this.repository = Repository.get('city')
     }
 
     async getCities () {
@@ -19,6 +20,8 @@ export class CityService {
             const { data, status, error } = await this.repository.list()
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             this.cities = data.data
+            this.list = data.data
+
             return this.cities
         } catch (e) {
             const errorMessage = e.response.data.data.message

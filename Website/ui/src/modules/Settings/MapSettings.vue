@@ -13,14 +13,15 @@
                         v-validate="'integer|between:0,9'"
                     >
                     </md-input>
-                    <span class="md-error">{{ errors.first('Zoom')}}</span>
+                    <span class="md-error">{{ errors.first('Zoom') }}</span>
                 </md-field>
             </div>
             <div class="md-layout-item md-size-33 md-small-size-50">
                 <md-field>
                     <label for="provider">Default Provider</label>
-                    <md-select v-model="mapSettingsService.mapSettings.provider" name="provider" id="provider" >
-                        <md-option v-for="provider in mapProvider" :key="provider" :value="provider">{{provider}}</md-option>
+                    <md-select v-model="mapSettingsService.mapSettings.provider" name="provider" id="provider">
+                        <md-option v-for="provider in mapProvider" :key="provider" :value="provider">{{ provider }}
+                        </md-option>
                     </md-select>
 
                 </md-field>
@@ -77,7 +78,8 @@
 
         </div>
         <div class="map-area md-layout md-size-50" @click="getLatLon">
-            <settings-map :mapping-service="mappingService" ref="settingsMap" :mutating-center="mutatingCenter" :key="mapKey"/>
+            <settings-map :mapping-service="mappingService" ref="settingsMap" :mutating-center="mutatingCenter"
+                          :key="mapKey"/>
         </div>
         <md-progress-bar v-if="progress" md-mode="indeterminate"></md-progress-bar>
     </div>
@@ -85,7 +87,6 @@
 </template>
 
 <script>
-import Map from '../../shared/Map'
 import { MapSettingsService } from '@/services/MapSettingsService'
 import { EventBus } from '@/shared/eventbus'
 import SettingsMap from '@/modules/Map/SettingsMap.vue'
@@ -93,7 +94,7 @@ import { MappingService } from '@/services/MappingService'
 
 export default {
     name: 'MapSettings',
-    components: { SettingsMap, Map },
+    components: { SettingsMap },
     props: {
         mapSettings: {
             type: Object,
@@ -106,7 +107,7 @@ export default {
             mutatingCenter: [],
             progress: false,
             mapKey: 1,
-            mapProvider:[
+            mapProvider: [
                 'Bing Maps',
                 'Open Street Map']
         }
@@ -151,7 +152,7 @@ export default {
             ]
         },
         getLatLon () {
-            const {lat ,lng, zoom} =  this.$refs.settingsMap.getLatLng()
+            const { lat, lng, zoom } = this.$refs.settingsMap.getLatLng()
             this.mapSettingsService.mapSettings.latitude = lat
             this.mapSettingsService.mapSettings.longitude = lng
             this.mapSettingsService.mapSettings.zoom = zoom
@@ -183,14 +184,7 @@ export default {
 }
 </script>
 
-<style lang="css" >
-.bing-api-key.a{
-    color: black;
-    font-weight: bolder;
-}
-.md-content.md-tabs-content.md-theme-default{
-    height: 30rem!important;
-}
+<style lang="css">
 
 .map-area {
     display: block; /* or any other display property you want initially */
@@ -202,3 +196,4 @@ export default {
     }
 }
 </style>
+

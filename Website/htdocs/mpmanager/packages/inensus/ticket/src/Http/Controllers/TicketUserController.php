@@ -29,7 +29,7 @@ class TicketUserController extends Controller
 
     public function index(Request $request): TicketResource
     {
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
         $outSource = $request->input('outsource');
 
         return TicketResource::make($this->ticketUserService->getAll($limit, $outSource));

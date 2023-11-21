@@ -3,17 +3,12 @@
 namespace Inensus\CalinSmartMeter;
 
 use App\Lib\IManufacturerAPI;
-use App\Misc\TransactionDataContainer;
-use App\Models\MainSettings;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Transaction\Transaction;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\CalinSmartMeter\Exceptions\CalinSmartCreadentialsNotFoundException;
-use Inensus\CalinSmartMeter\Helpers\ApiHelpers;
 use Inensus\CalinSmartMeter\Http\Requests\CalinSmartMeterApiRequests;
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
@@ -21,45 +16,27 @@ use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 class CalinSmartMeterApi implements IManufacturerAPI
 {
     protected $api;
-    private $meterParameter;
-    private $transaction;
     private $rootUrl = '/POS_Purchase/';
-    private $calinSmartTransaction;
-    private $mainSettings;
-    private $credentials;
-    private $calinSmartMeterApiRequests;
-    private $apiHelpers;
 
     public function __construct(
         Client $httpClient,
-        MeterParameter $meterParameter,
-        CalinSmartTransaction $calinSmartTransaction,
-        Transaction $transaction,
-        MainSettings $mainSettings,
-        CalinSmartCredential $credentials,
-        CalinSmartMeterApiRequests $calinSmartMeterApiRequests,
-        ApiHelpers $apiHelpers
+        private CalinSmartTransaction $calinSmartTransaction,
+        private CalinSmartCredential $credentials,
+        private CalinSmartMeterApiRequests $calinSmartMeterApiRequests,
+
     ) {
         $this->api = $httpClient;
-        $this->meterParameter = $meterParameter;
-        $this->calinSmartTransaction = $calinSmartTransaction;
-        $this->transaction = $transaction;
-        $this->mainSettings = $mainSettings;
-        $this->credentials = $credentials;
-        $this->calinSmartMeterApiRequests = $calinSmartMeterApiRequests;
-        $this->apiHelpers = $apiHelpers;
     }
 
     public function chargeMeter($transactionContainer): array
     {
-        $meterParameter = $transactionContainer->meterParameter;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount /
-            ($meterParameter->tariff()->first()->total_price);
+        $meter = $transactionContainer->device->device;
+        $tariff = $transactionContainer->tariff;
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
+
         Log::critical('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
             ' Manufacturer => Calin Smart');
 
-
-        $meter = $transactionContainer->meter;
         $energy = (float)$transactionContainer->chargedEnergy;
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();
@@ -82,19 +59,15 @@ class CalinSmartMeterApi implements IManufacturerAPI
         } else {
             $token = $this->calinSmartMeterApiRequests->post($url, $tokenParams);
         }
-
-
         $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'calin_smart_transaction'
         ]);
-
         return [
             'token' => $token,
-            'energy' => $energy
+            'load' => $energy
         ];
-
     }
 
     /**

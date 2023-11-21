@@ -52,4 +52,8 @@ class AssetPerson extends BaseModel
     {
         return $this->morphTo();
     }
+    public function device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class);
+    }
 }

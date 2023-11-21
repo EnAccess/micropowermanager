@@ -1,6 +1,7 @@
 import Repository from '@/repositories/RepositoryFactory'
 import { Paginator } from '@/classes/paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class ApplianceService {
     constructor () {
@@ -8,11 +9,15 @@ export class ApplianceService {
         this.list = []
         this.appliance = {
             id: null,
-            name: '',
+            name: null,
             edit: false,
             assetTypeId: null,
-            assetTypeName: '',
-            price: null
+            assetTypeName: null,
+            price: null,
+            downPayment: null,
+            rate:null,
+            rateType:'monthly',
+            rateCost:null,
         }
         this.paginator = new Paginator(resources.assets.list)
     }
@@ -30,30 +35,24 @@ export class ApplianceService {
 
     async updateAppliance (appliance) {
         try {
-            const response = await this.repository.update(appliance)
-            if (response.status === 200 || response.status === 201) {
-                return response
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const {data, status, error} = await this.repository.update(appliance)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
 
+            return data.data
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
     async deleteAppliance (appliance) {
         try {
-            let response = await this.repository.delete(appliance.id)
-            if (response.status === 200 || response.status === 201) {
-                return response
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            const {data, status, error} = await this.repository.delete(appliance.id)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
 
+            return data.data
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
 
@@ -79,48 +78,27 @@ export class ApplianceService {
 
     async createAppliance () {
         try {
-            const appliancePM = {
-                name: this.appliance.name,
-                asset_type_id: this.appliance.assetTypeId,
-                price: this.appliance.price
-            }
-            let response = await this.repository.create(appliancePM)
-            if (response.status === 200 || response.status === 201) {
+            const appliance = convertObjectKeysToSnakeCase(this.appliance)
+            const {data, status, error} = await this.repository.create(appliance)
+            if (status !== 200 && status !==201) return new ErrorHandler(error, 'http', status)
 
-                this.resetAppliance()
-
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
+            return data.data
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
-        }
-    }
-
-    resetAppliance () {
-        this.appliance = {
-            id: null,
-            name: '',
-            edit: false,
-            assetTypeId: null,
-            assetTypeName: '',
-            price: null
         }
     }
 
     async getAppliances () {
         try {
             this.list = []
-            let response = await this.repository.list()
-            if (response.status === 200) {
-                this.updateList(response.data.data)
-            } else {
-                new ErrorHandler(response.error, 'http', response.status)
-            }
+            const {data, status, error} = await this.repository.list()
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+            this.list = this.updateList(data.data)
+
+            return data.data
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }

@@ -15,10 +15,10 @@
             </div>
             <div class="md-layout-item md-size-50 md-small-size-100">
                 <div class="client-detail-card">
-                    <deferred-payments :person-id="person.id" v-if="person!==null"/>
+                    <deferred-payments :person-id="person.id" v-if="person!==null" :person="person"/>
                 </div>
                 <div class="client-detail-card">
-                    <ticket/>
+                    <ticket :personId="personId"/>
                 </div>
             </div>
             <div class="md-layout-item md-size-50 md-small-size-100">
@@ -99,7 +99,7 @@ export default {
         EventBus.$on('setMapCenterForDevice', (device) => {
             const points = device.address.geo.points.split(',')
             if (points.length !== 2) {
-                this.alertNotify('error', 'Device has no location')
+                this.alertNotify('warn', 'Device has no location')
                 return
             }
             const lat = parseFloat(points[0])
@@ -133,7 +133,7 @@ export default {
             this.devices.map((device) => {
                 const points = device.address.geo.points.split(',')
                 if (points.length !== 2) {
-                    this.alertNotify('error', 'Device has no location')
+                    this.alertNotify('warn', 'Device has no location')
                     return
                 }
                 const lat = parseFloat(points[0])

@@ -123,7 +123,6 @@ import { ClusterService } from '@/services/ClusterService'
 import { notify } from '@/mixins/notify'
 import ClusterMap from '@/modules/Map/ClusterMap.vue'
 import UserList from '@/modules/Dashboard/UserList.vue'
-import Map from '@/shared/Map'
 import Widget from '@/shared/widget.vue'
 
 export default {
@@ -132,8 +131,7 @@ export default {
     components: {
         ClusterMap,
         Widget,
-        UserList,
-        Map,
+        UserList
     },
     data () {
         return {

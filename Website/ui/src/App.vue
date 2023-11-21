@@ -23,3 +23,13 @@ export default {
     },
 }
 </script>
+<style lang="css">
+.md-dialog {
+    z-index: 10 !important;
+}
+
+.md-content.md-tabs-content.md-theme-default {
+    height: 100% !important;
+}
+
+</style>

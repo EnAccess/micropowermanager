@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ApiResource;
 use App\Models\AssetPerson;
 use App\Services\AppliancePaymentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppliancePaymentController extends Controller
 {
-    private $appliancePaymentService;
-
-    public function __construct(AppliancePaymentService $appliancePaymentService)
+    public function __construct(private AppliancePaymentService $appliancePaymentService)
     {
-        $this->appliancePaymentService = $appliancePaymentService;
     }
 
-    public function store(AssetPerson $appliancePerson, Request $request)
+    public function store(AssetPerson $appliancePerson, Request $request):ApiResource
     {
         try {
+            DB::connection('shard')->beginTransaction();
             $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);
+            DB::connection('shard')->commit();
+            return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            DB::connection('shard')->rollBack();
+            throw new \Exception($e->getMessage());
         }
     }
 }

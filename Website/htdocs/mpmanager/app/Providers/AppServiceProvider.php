@@ -7,6 +7,7 @@ use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
+use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCharge;
@@ -25,14 +26,17 @@ use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
+use App\Models\SolarHomeSystem;
+use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
+use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
-use MPM\Transaction\Provider\AgentTransaction;
+use MPM\Transaction\Provider\AgentTransaction as AgentTransactionProvider;
 use MPM\Transaction\Provider\AirtelVoltTerra;
-use MPM\Transaction\Provider\VodacomTransaction;
+use MPM\Transaction\Provider\VodacomTransaction as VodacomTransactionProvider;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -57,33 +61,34 @@ class AppServiceProvider extends ServiceProvider
         //Rename polymorphic relations
         Relation::morphMap(
             [
-                'person' => Person::class,
-                'manufacturer' => Manufacturer::class,
-                'meter_parameter' => MeterParameter::class,
-                'token' => MeterToken::class,
-                'transaction' => Transaction::class,
-                \App\Models\Transaction\AgentTransaction::RELATION_NAME => \App\Models\Transaction\AgentTransaction::class,
+                Person::RELATION_NAME => Person::class,
+                Manufacturer::RELATION_NAME => Manufacturer::class,
+                MeterToken::RELATION_NAME => MeterToken::class,
+                MeterParameter::RELATION_NAME => MeterParameter::class,
+                Transaction::RELATION_NAME => Transaction::class,
+                AgentTransaction::RELATION_NAME => AgentTransaction::class,
                 AirtelTransaction::RELATION_NAME => AirtelTransaction::class,
-                \App\Models\Transaction\VodacomTransaction::RELATION_NAME => \App\Models\Transaction\VodacomTransaction::class,
-                'access_rate' => AccessRate::class,
-                'asset_loan' => AssetRate::class,
-                'cluster' => Cluster::class,
-                'mini-grid' => MiniGrid::class,
-                'agent_commission' => AgentCommission::class,
-                'agent_appliance' => AgentAssignedAppliances::class,
-                'agent' => Agent::class,
-                'admin' => User::class,
-                'appliance' => Asset::class,
-                'agent_receipt' => AgentReceipt::class,
-                'agent_charge' => AgentCharge::class,
-                'meter_tariff' => MeterTariff::class,
-                'third_party_transaction' => ThirdPartyTransaction::class,
-                'cash_transaction' => CashTransaction::class,
-                'maintenance_user' => MaintenanceUsers::class,
-                'meter' => Meter::class,
-                'device' => Device::class,
-                'city' => City::class,
-                'address' => \App\Models\Address\Address::class,
+                VodacomTransaction::RELATION_NAME => VodacomTransaction::class,
+                AccessRate::RELATION_NAME => AccessRate::class,
+                AssetRate::RELATION_NAME => AssetRate::class,
+                Cluster::RELATION_NAME => Cluster::class,
+                MiniGrid::RELATION_NAME => MiniGrid::class,
+                AgentCommission::RELATION_NAME => AgentCommission::class,
+                AgentAssignedAppliances::RELATION_NAME => AgentAssignedAppliances::class,
+                Agent::RELATION_NAME => Agent::class,
+                User::RELATION_NAME => User::class,
+                Asset::RELATION_NAME => Asset::class,
+                AgentReceipt::RELATION_NAME => AgentReceipt::class,
+                AgentCharge::RELATION_NAME => AgentCharge::class,
+                MeterTariff::RELATION_NAME => MeterTariff::class,
+                ThirdPartyTransaction::RELATION_NAME => ThirdPartyTransaction::class,
+                CashTransaction::RELATION_NAME => CashTransaction::class,
+                MaintenanceUsers::RELATION_NAME => MaintenanceUsers::class,
+                Meter::RELATION_NAME => Meter::class,
+                Device::RELATION_NAME => Device::class,
+                City::RELATION_NAME => City::class,
+                Address::RELATION_NAME => Address::class,
+                SolarHomeSystem::RELATION_NAME => SolarHomeSystem::class,
             ]
         );
     }
@@ -103,9 +108,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('AndroidGateway', AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
-        $this->app->singleton('AgentPaymentProvider', AgentTransaction::class);
+        $this->app->singleton('AgentPaymentProvider', AgentTransactionProvider::class);
         $this->app->singleton('AirtelVoltTerra', AirtelVoltTerra::class); // workaround until airtel problem
-        $this->app->singleton('VodacomPaymentProvider', VodacomTransaction::class);
+        $this->app->singleton('VodacomPaymentProvider', VodacomTransactionProvider::class);
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);

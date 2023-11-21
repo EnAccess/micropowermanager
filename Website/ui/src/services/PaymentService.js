@@ -98,7 +98,7 @@ export class PaymentService {
                 i,
                 'energy' in paymentDetail[i] ? parseInt(paymentDetail[i]['energy']) : 0,
                 'access rate' in paymentDetail[i] ? parseInt(paymentDetail[i]['access rate']) : 0,
-                'loan rate' in paymentDetail[i] ? parseInt(paymentDetail[i]['loan rate']) : 0,
+                'installment' in paymentDetail[i] ? parseInt(paymentDetail[i]['installment']) : 0,
                 'down payment' in paymentDetail[i] ? parseInt(paymentDetail[i]['down payment']) : 0,
             ]
             this.paymentDetailData.push(chartDataItem)

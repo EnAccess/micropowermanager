@@ -1,16 +1,17 @@
 <template>
-    <div class="page-container">
+    <div>
         <widget
             :id="'client-list-widget'"
             :title="$tc('phrases.customerList')"
             :search="true"
             :subscriber="subscriber"
-            :button="false"
+            :button="true"
             :paginator="people.paginator"
             :route_name="'/people'"
             color="green"
+            :button-text="$tc('phrases.addCustomer')"
+            @widgetAction="() => { showAddClient = true; key++ }"
         >
-
             <md-table md-card style="margin-left: 0">
                 <md-table-row>
                     <md-table-head>{{ $tc('words.name') }}</md-table-head>
@@ -40,9 +41,8 @@
                 </md-table-row>
 
             </md-table>
-
         </widget>
-
+        <add-client-modal :showAddClient="showAddClient" @hideAddCustomer="() => showAddClient = false" :key="key"/>
 
     </div>
 </template>
@@ -55,13 +55,14 @@ import Widget from '@/shared/widget'
 import { People } from '@/classes/people'
 import { timing } from '@/mixins/timing'
 import i18n from '../../i18n'
+import AddClientModal from '@/modules/Client/AddClientModal.vue'
 
 const debounce = require('debounce')
 
 export default {
     name: 'Clients',
     mixins: [timing],
-    components: { Widget },
+    components: { AddClientModal, Widget },
     data () {
         return {
             subscriber: 'client.list',
@@ -75,6 +76,8 @@ export default {
             total: 0,
             currentPage: 0,
             totalPages: 0,
+            showAddClient: false,
+            key:0
         }
     },
     watch: {

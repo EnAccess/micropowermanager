@@ -16,10 +16,13 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class AgentCommission extends BaseModel
 {
+    public const RELATION_NAME = 'agent_commission';
+
     public function agent(): HasMany
     {
         return $this->hasMany(Agent::Class);
     }
+
     public function history(): MorphOne
     {
         return $this->morphOne(AgentBalanceHistory::class, 'trigger');

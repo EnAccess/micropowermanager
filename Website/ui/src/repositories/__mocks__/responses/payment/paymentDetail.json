@@ -24,7 +24,7 @@
             "access rate": "30000"
         },
         "2/2020": {
-            "loan rate": "25000"
+            "installment": "25000"
         },
         "3/2020": {
             "energy": "-13030"
@@ -33,7 +33,7 @@
             "energy": "-5770"
         },
         "6/2020": {
-            "loan rate": "14138",
+            "installment": "14138",
             "energy": "7150"
         },
         "8/2020": {
@@ -51,7 +51,7 @@
             "energy": "-4378"
         },
         "2/2021": {
-            "loan rate": "980",
+            "installment": "980",
             "access rate": "143803"
         }
     },

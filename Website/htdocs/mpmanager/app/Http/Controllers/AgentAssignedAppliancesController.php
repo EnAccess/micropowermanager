@@ -31,7 +31,7 @@ class AgentAssignedAppliancesController extends Controller
     public function index(Request $request)
     {
         $agent = $this->agentService->getByAuthenticatedUser();
-        $limit = $request->input('limit');
+        $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agent->id));
     }

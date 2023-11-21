@@ -1,10 +1,9 @@
 <template>
-    <div>
+    <div class="settings-area">
         <widget
             color="green"
             title="Settings"
         >
-
             <md-tabs>
                 <md-tab id="tab-home" md-icon="home" md-label="Main">
                     <main-settings :mainSettings="mainSettings"/>
@@ -16,14 +15,11 @@
                     <sms-settings/>
                 </md-tab>
 
-                <md-tab id="tab-map" md-icon="map" md-label="Map">
+                <md-tab id="tab-map" md-icon="map" md-label="Map" >
                     <map-settings :mapSettings="mapSettings"/>
                 </md-tab>
             </md-tabs>
-
-
         </widget>
-
     </div>
 </template>
 
@@ -88,5 +84,14 @@ export default {
     },
 }
 </script>
-
-
+<style scoped>
+.settings-area {
+    height: 100%;
+    overflow: auto;
+}
+@media only screen and (max-width: 767px) {
+    .settings-area {
+        height: 200px;
+    }
+}
+</style>

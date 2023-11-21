@@ -1,12 +1,12 @@
 import Repository from '../repositories/RepositoryFactory'
 import {ErrorHandler} from '@/Helpers/ErrorHander'
+import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class AssetPersonService {
     constructor() {
-        this.repository = Repository.get('assetPerson')
         this.list = []
-
-
+        this.assetPerson = {}
+        this.repository = Repository.get('assetPerson')
     }
     fromJson(data){
         return {
@@ -28,44 +28,37 @@ export class AssetPersonService {
     }
     async getPersonAssets(id){
         try {
-            let response = await this.repository.list(id)
-            if (response.status === 200 || response.status === 201) {
-                this.list = response.data.data
-                return this.list
-            } else {
-                new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } =  await this.repository.list(id)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+            this.list = data.data
 
+            return this.list
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
     async show(applianceId){
         try {
-            let response = await this.repository.show(applianceId)
-            if (response.status === 200) {
-                return this.fromJson(response.data.data)
-            }else{
-                new ErrorHandler(response.error, 'http', response.status)
-            }
+            const { data, status, error } = await this.repository.show(applianceId)
+            if (status !== 200) return new ErrorHandler(error, 'http', status)
+
+            return this.fromJson(data.data)
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async saveAsset(id,personId,assetPM,creatorId){
+    async sellAppliance(params){
         try {
-            assetPM.creatorId = creatorId
-            let response = await this.repository.create(id,personId,assetPM)
-            if (response.status === 200 || response.status === 201) {
-                return response.data.data
-            } else {
-                new ErrorHandler(response.error, 'http', response.status)
-            }
+            const appliance =  convertObjectKeysToSnakeCase(params)
+            const { data, status, error } = await this.repository.create(appliance)
+            if (status !== 200 && status !==201) return new ErrorHandler(error, 'http', status)
+            this.assetPerson = convertObjectKeysToCamelCase(data.data)
 
+            return this.assetPerson
         } catch (e) {
-            let errorMessage = e.response.data.data.message
+            const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
