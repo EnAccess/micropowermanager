@@ -6,7 +6,6 @@ use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-
 class MeterTransactionService
 {
     public function __construct(private Transaction $transaction)
@@ -23,10 +22,12 @@ class MeterTransactionService
         bool $whereApplied = false
     ): LengthAwarePaginator {
 
-        $query = $this->transaction->newQuery()->with('originalTransaction');
+        $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
+            'device',
+            fn($q) => $q->whereHasMorph('device', Meter::class));
 
         if ($serialNumber) {
-            $query->where('message', 'LIKE', '%' . request('serial_number') . '%');
+            $query->where('message', 'LIKE', '%' . $serialNumber . '%');
             $whereApplied = true;
         }
 

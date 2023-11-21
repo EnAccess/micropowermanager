@@ -10,7 +10,7 @@
                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
                             <label for="device">Device Type</label>
-                            <md-select v-model="selectedDevice" name="device" id="device" @md-selected="setDeviceType">
+                            <md-select v-model="selectedDevice" name="device" id="device">
 
                                 <md-option v-for="device in deviceTypes" :value="device.type" :key="device.type">
                                     {{ device.display }}
@@ -31,7 +31,7 @@
                         </md-field>
                     </div>
                     <div v-if="selectedDevice === 'meter'"
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
                         <md-field>
                             <label for="tariff">Tariff Name</label>
                             <md-select v-model="selectedTariff" name="tariff" id="tariff" @md-selected="setTariff">
@@ -115,12 +115,6 @@ import { mapGetters } from 'vuex'
 
 export default {
     name: 'FilterTransaction',
-    mounted () {
-        this.getTariffs()
-        this.getSearch()
-        this.getTransactionProviders()
-        EventBus.$on('dataLoaded', this.dataLoaded)
-    },
     data () {
         return {
             transactionService: new TransactionService(),
@@ -147,11 +141,18 @@ export default {
             transactionProviders: [],
         }
     },
+    created () {
+        if (this.$route.query.deviceType) {
+            this.selectedDevice = this.$route.query.deviceType
+        }
+    },
+    mounted () {
+        this.getTariffs()
+        this.getSearch()
+        this.getTransactionProviders()
+        EventBus.$on('dataLoaded', this.dataLoaded)
+    },
     methods: {
-        dataLoaded () {
-            this.loading = false
-            this.closeFilter()
-        },
         async getTariffs () {
             let tariffs = await this.tariffService.getTariffs()
             tariffs.forEach((e) => {
@@ -171,8 +172,9 @@ export default {
                 value: '-1'
             }, ...await this.transactionProviderService.getTransactionProviders(),]
         },
-        setDeviceType (type) {
-            this.filter.deviceType = type
+        dataLoaded () {
+            this.loading = false
+            this.closeFilter()
         },
         setTariff (tariff) {
             this.filter.tariff = tariff
@@ -243,6 +245,11 @@ export default {
             deviceTypes: 'device/getDeviceTypes'
         })
     },
+    watch: {
+        selectedDevice (val) {
+            this.filter.deviceType = val
+        }
+    }
 }
 </script>
 

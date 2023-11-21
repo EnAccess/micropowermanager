@@ -69,12 +69,11 @@ class TransactionService implements IAssociative, IBaseService
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type
-    ): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService {
+    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService {
         switch ($type) {
-            case SolarHomeSystem::class :
+            case SolarHomeSystem::RELATION_NAME :
                 return $this->solarHomeSystemTransactionService;
-            case Asset::class :
+            case Asset::RELATION_NAME :
                 return $this->applianceTransactionService;
             default:
                 return $this->meterTransactionService;

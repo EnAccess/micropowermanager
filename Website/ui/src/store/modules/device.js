@@ -9,11 +9,12 @@ export const state = {
         {
             type: 'solar_home_system',
             display: 'Solar Home System'
-        },
-        {
+        }
+        /*  Will be enabled in future
+    {
             type: 'appliance',
             display: 'Appliance'
-        }
+        }*/
     ],
 }
 export const getters = {

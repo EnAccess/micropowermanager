@@ -42,8 +42,11 @@
                                         <div class="md-layout-item md-subheader n-font">
                                             <span
                                                 v-text="transaction.type === 'energy' ? $tc('words.energy') : $tc('phrases.deferredPayment')"></span>
-                                            <small style="margin-left: 0.2em"
-                                                   v-if="transaction.type === 'energy' && transaction.token">({{ readable(transaction.token.energy) }}kWh)</small>
+                                            <div style="margin-left: 0.2em">
+                                                <small v-if="transaction.type === 'energy' && transaction.token">({{ readable(transaction.token.load) }}kWh)</small>
+                                                <small v-else-if="transaction.type === 'deferred_payment' && transaction.token">({{ readable(transaction.token.load) }}day's)</small>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <hr class="hr-d">
