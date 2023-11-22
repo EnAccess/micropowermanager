@@ -50,5 +50,6 @@ redis/dump.rdb
 
 
 /Website/htdocs/mpmanager/public/vendor/
+InternalApi
 
 *.xlsx

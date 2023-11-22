@@ -1,7 +1,0 @@
-pyomo
-xlrd
-glpk
-numpy
-scipy
-openpyxl
-pandas
