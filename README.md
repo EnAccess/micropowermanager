@@ -1,3 +1,34 @@
+<p align="center">
+  <a href="https://github.com/EnAccess/micropowermanager-cloud">
+    <img
+      src="https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png"
+      alt="OpenSmartMeter"
+      width="320"
+    >
+  </a>
+</p>
+<p align="center">
+    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>
+</p>
+<p align="center">
+  <img
+    alt="Project Status"
+    src="https://img.shields.io/badge/Project%20Status-stable-green"
+  >
+  <img
+    alt="GitHub Workflow Status"
+    src="https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager-cloud/check.yaml"
+  >
+  <a href="https://github.com/EnAccess/micropowermanager-cloud/blob/main/LICENSE" target="_blank">
+    <img
+      alt="License"
+      src="https://img.shields.io/github/license/EnAccess/micropowermanager-cloud"
+    >
+  </a>
+</p>
+
+---
+
 ## System Requirements
 
 PHP ^8.0
@@ -9,21 +40,21 @@ Node ^v14.3
 2. Build the docker containers with `docker-compose up`
 
 
-## Installing Dependencies 
+## Installing Dependencies
 All  dependencies will be automatically installed on the installation step. However, if you need additional dependencies, install them in the `laravel` container.
 To Install additional php dependencies enter the Docker-Container named `laravel`  navigate to `mpmanager`  & run `php ../composer.phar install XXX`
 
-## Migrate the database 
+## Migrate the database
   - Run `docker exec -it laravel /bin/bash` to jump into the laravel container
   - navigate to `mpmanager` directory with `cd mpmanager`
   - Run `php artisan migrate --seed` to initialize the Database. The `--seed`  option will create the default user to login.
   - The default user to login is `admin@admin.com` and `basic-password`.
 
 
-## phpMyAdmin 
+## phpMyAdmin
 To project also includes phpMyAdmin which enables quick database operations without installing  third-party software or writing any single line into the terminal.
 
-The default credentials for the database are; 
+The default credentials for the database are;
 ```
 username : laravel
 password: laravel
@@ -50,9 +81,9 @@ VODACOM_SSL_CERT="LOCATION-OF-.PEM-FILE"
 ```
 
 ### Mobile Payment Configurations - Airtel
-When we set up the second payment provider in our live system, we were not that experienced by setting up **VPN Tunnels** that's why we go with the idea 'one tunnel per host`. Thatswhy the airtel payment integration is on a separate project for now. We're planning to migrate it into this project soon. 
+When we set up the second payment provider in our live system, we were not that experienced by setting up **VPN Tunnels** that's why we go with the idea 'one tunnel per host`. Thatswhy the airtel payment integration is on a separate project for now. We're planning to migrate it into this project soon.
 
- --> **The project link comes as soon as we uploaded the project to GitHub** <-- 
+ --> **The project link comes as soon as we uploaded the project to GitHub** <--
 
 Change the `api_user`, `api_password`, and `ips` in `services.php`
 ```php
@@ -72,12 +103,12 @@ AIRTEL_REQUEST_URL="AIRTEL SERVICE URL"
 
 ### STS Meter Configuration
 Currently, the system supports only CALIN-STS meters. To be able to communicate with Calin and generate STS-Tokens, the following changes should be done;
-1. Your key and the endpoint where you create those tokens. 
+1. Your key and the endpoint where you create those tokens.
 ``` bash
 CALIN_KEY="CALIN-KEY"
 CALIN_CLIENT_URL="CALIN-CLIENT-URL"
 ```
-2. If you have meters which can send their consumption data to CALIN's server please fill the below-listed variables too 
+2. If you have meters which can send their consumption data to CALIN's server please fill the below-listed variables too
 ```bash
 METER_DATA_URL="REMOTE-METER-READING-URL"
 METER_DATA_KEY="METER-READING-KEY"
@@ -189,7 +220,7 @@ return [
 
 # Deploy for Production
 
-The production mode will automatically install **Let's Encrypt SSL certificates**. Therefore you need firstly register a domain. 
+The production mode will automatically install **Let's Encrypt SSL certificates**. Therefore you need firstly register a domain.
 
 
 When you have your domain, the first thing to do is editing `app.conf` and `db.conf`(if you planning to use phpMyAdmin as well) files under `NginxProxy/conf.p`.
@@ -206,7 +237,7 @@ enter the following lines to your hosts file.
 /etc/hosts
 127.0.0.1       mpmanager.local
 127.0.0.1       db.mpmanager.local
-``` 
+```
 #### For Windows
 ```
 c:\windows\system32\drivers\etc\hosts
