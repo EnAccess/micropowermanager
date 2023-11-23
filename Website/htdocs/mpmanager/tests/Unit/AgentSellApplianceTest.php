@@ -49,8 +49,8 @@ class AgentSellApplianceTest extends TestCase
         $this->actingAs($agent)->post('/api/app/agents/appliances', $data);
 
         AgentSoldAppliance::query()->create([
-           'person_id' => 1,
-           'agent_assigned_appliance_id' => 1
+            'person_id' => 1,
+            'agent_assigned_appliance_id' => 1
         ]);
 
         $paymentHistory = PaymentHistory::query()->latest()->first();

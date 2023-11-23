@@ -3,10 +3,10 @@
 @if (isset($widgetColor))
 {!! html_entity_decode($widgetColor) !!}
 @endif " id="{{$widgetID}}"
-     @if(isset($widgetOptions))
-     {!!html_entity_decode($widgetOptions)!!}
-     @else
-     data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false"
+    @if(isset($widgetOptions))
+    {!!html_entity_decode($widgetOptions)!!}
+    @else
+    data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false"
     @endif
 >
     <header>

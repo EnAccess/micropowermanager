@@ -41,7 +41,7 @@ function _success()
 }
 
 function _error()
- {
+{
     printf "${_red}✖ %s${_reset}\n" "$@"
 }
 
@@ -81,9 +81,9 @@ function _safeExit()
 #
 function _seekConfirmation()
 {
-  printf "\n${_bold}$@${_reset}"
-  read -p " (y) " -n 1
-  printf "\n"
+    printf "\n${_bold}$@${_reset}"
+    read -p " (y) " -n 1
+    printf "\n"
 }
 
 # Test whether the result of an 'ask' is a confirmation
@@ -107,7 +107,7 @@ function _typeExists()
 function _isOs()
 {
     if [[ "${OSTYPE}" == $1* ]]; then
-      return 0
+        return 0
     fi
     return 1
 }
@@ -173,12 +173,12 @@ function processArgs()
             -u=*|--user=*)
                 DB_USER="${arg#*=}"
             ;;
-             -p=*|--pass=*)
+            -p=*|--pass=*)
                 DB_PASS="${arg#*=}"
             ;;
             --path=*)
-              SOURCE_PATH="${arg#*=}"
-              ;;
+                SOURCE_PATH="${arg#*=}"
+            ;;
             --debug)
                 DEBUG=1
             ;;
@@ -290,26 +290,26 @@ function main()
     createMysqlDbUser
     echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-     echo "Creating migration folder.. " >> ${SOURCE_PATH}/creator.log
-     createNewMigrationFolder
-     echo "Done! " >> ${SOURCE_PATH}/creator.log
+    echo "Creating migration folder.. " >> ${SOURCE_PATH}/creator.log
+    createNewMigrationFolder
+    echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-     echo "Copying migration files.. " >> ${SOURCE_PATH}/creator.log
-     copyMigrationFiles
-     echo "Done! " >> ${SOURCE_PATH}/creator.log
+    echo "Copying migration files.. " >> ${SOURCE_PATH}/creator.log
+    copyMigrationFiles
+    echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-     echo "Modifying migration files.. " >> ${SOURCE_PATH}/creator.log
-     sedMigrationFiles
-     echo "Done! " >> ${SOURCE_PATH}/creator.log
+    echo "Modifying migration files.. " >> ${SOURCE_PATH}/creator.log
+    sedMigrationFiles
+    echo "Done! " >> ${SOURCE_PATH}/creator.log
 
-      echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
-      runMigrator
-      echo "Done! " >> ${SOURCE_PATH}/creator.log
+    echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
+    runMigrator
+    echo "Done! " >> ${SOURCE_PATH}/creator.log
 
 
-     echo "################################ " >> ${SOURCE_PATH}/creator.log
-     echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
-     echo "****************************************************************" >> ${SOURCE_PATH}/creator.log
+    echo "################################ " >> ${SOURCE_PATH}/creator.log
+    echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
+    echo "****************************************************************" >> ${SOURCE_PATH}/creator.log
     exit 0
 }
 

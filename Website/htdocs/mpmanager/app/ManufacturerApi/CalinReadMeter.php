@@ -154,7 +154,7 @@ class CalinReadMeter implements IMeterReader
     {
         $out = [];
         /*fetch information out of the response.
-         successful response : 00^total_power,rest_energy
+        successful response : 00^total_power,rest_energy
         failed response : 05 */
         $regex = '/([0-9]{2})\^(.*)/';
         if (preg_match($regex, $data, $out) === 0) { // no match => failed response

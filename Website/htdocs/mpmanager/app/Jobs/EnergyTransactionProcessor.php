@@ -80,7 +80,7 @@ class EnergyTransactionProcessor extends AbstractJob
                     throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$transactionData->device->device_serial}");
                 }
             } catch (\Exception $e) {
-                   throw new TransactionAmountNotEnoughException($e->getMessage());
+                    throw new TransactionAmountNotEnoughException($e->getMessage());
             }
         }
     }

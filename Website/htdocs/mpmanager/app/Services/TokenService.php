@@ -6,18 +6,18 @@ use App\Models\Token;
 
 class TokenService implements IBaseService
 {
- public function __construct(private Token $token)
- {
- }
+    public function __construct(private Token $token)
+    {
+    }
 
     public function getById($id)
     {
-      return $this->token->newQuery()->find($id);
+        return $this->token->newQuery()->find($id);
     }
 
     public function create($data)
     {
-       return $this->token->newQuery()->create($data);
+        return $this->token->newQuery()->create($data);
     }
 
     public function update($model, $data)

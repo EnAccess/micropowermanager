@@ -36,7 +36,7 @@ class MeterGeographicalInformationController extends Controller
         $cityIds = $this->cityService->getCityIdsByMiniGridId($miniGridId);
         // we can get city id only by address
         if ($miniGridId === null) {
-             $meters = $this->meterService->getUsedMetersGeoWithAccessRatePayments();
+            $meters = $this->meterService->getUsedMetersGeoWithAccessRatePayments();
         } else {
             $meters = $this->meterService->getUsedMetersGeoWithAccessRatePaymentsInCities($cityIds);
         }

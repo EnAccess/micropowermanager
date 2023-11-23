@@ -20,7 +20,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
 
     protected $signature = 'reports:send-non-paying-customer-mail {--start-date=} {--end-date=}';
     protected $description = 'Creates a report that includes a list of customers
-     that didnt buy anything in the given period';
+        that didnt buy anything in the given period';
 
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,

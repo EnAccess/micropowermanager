@@ -25,7 +25,7 @@
                                     <i class="glyphicon glyphicon-search"></i>
                                 </span>
                                         <input type="search" class="form-control" placeholder=""
-                                               aria-controls="dt_basic">
+                                                aria-controls="dt_basic">
                                     </label>
                                 </div>
                             </div>
@@ -44,8 +44,8 @@
                         </div>
 
                         <table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer"
-                               width="100%"
-                               role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+                                width="100%"
+                                role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
                             <thead>
                             <tr role="row">
                                 <th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic"
@@ -97,12 +97,12 @@
                                     <td>
                                         @can('edit-client')
                                             <a href="{{ route('person-edit', ['id' =>  $person->id]) }}"
-                                               class="btn btn-xs btn-default"><i class="fa fa-pencil"></i>
+                                                class="btn btn-xs btn-default"><i class="fa fa-pencil"></i>
                                             </a>
                                         @endcan
                                         @can('view-client')
                                             <a href="{{ url('/people', [$person->id]) }}"
-                                               class="btn btn-xs btn-default"><i class="fa fa-eye"></i>
+                                                class="btn btn-xs btn-default"><i class="fa fa-eye"></i>
                                             </a>
                                         @endcan
                                         @can('delete-client')

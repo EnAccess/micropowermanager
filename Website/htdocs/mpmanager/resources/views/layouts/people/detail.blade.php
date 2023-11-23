@@ -83,8 +83,8 @@
             <article class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
                 @component('skeletons.widget', ['widgetID' => 'lastTransactions', 'widgetIcon' => 'fa-list', 'widgetTitle' => 'Last Transactions'])
                     <table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer"
-                           width="100%"
-                           role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+                            width="100%"
+                            role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
                         <thead>
                         <tr role="row">
                             <th>Payment Type</th>
@@ -113,7 +113,7 @@
             <article class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
                 @component('skeletons.widget', ['widgetID' => 'paymentProfile', 'widgetIcon' => 'fa-list', 'widgetTitle' => 'Payment Profile',
                 'headerOptions' => '
-              <div class="widget-toolbar" role="menu">
+                <div class="widget-toolbar" role="menu">
                 <div class="btn-group">
                     <button class="btn dropdown-toggle btn-xs btn-primary" data-toggle="dropdown" aria-expanded="false">
                         Period <i class="fa fa-caret-down"></i>
@@ -123,7 +123,7 @@
                             <a href="#/" onclick="getPaymentHistory(\'D\')">Daily</a>
                         </li>
                         <li>
-                           <a href="#/" onclick="getPaymentHistory(\'W\')">Weekly</a>
+                            <a href="#/" onclick="getPaymentHistory(\'W\')">Weekly</a>
                         </li>
                         <li>
                             <a href="#/" onclick="getPaymentHistory(\'M\')">Monthly</a>
@@ -154,8 +154,8 @@
                     <a href="#/" class="btn btn-success">Assign</a>
                 </div>'])
                     <table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer"
-                           width="100%"
-                           role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+                            width="100%"
+                            role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
                         <thead>
                         <tr role="row">
                             <th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic"

@@ -36,13 +36,13 @@ class MiniGridService implements IBaseService
 
     public function update($miniGrid, $miniGridData)
     {
-         $miniGrid->update([
+        $miniGrid->update([
             'name' => $miniGridData['name'] ?? $miniGrid->name,
             'data_stream' => $miniGridData['data_stream'] ?? $miniGrid->data_stream,
-         ]);
-         $miniGrid->fresh();
+        ]);
+        $miniGrid->fresh();
 
-         return $miniGrid;
+        return $miniGrid;
     }
 
     public function getAll($limit = null, $dataStream = null)

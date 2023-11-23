@@ -21,7 +21,7 @@ class TransactionService implements IAssociative, IBaseService
     public const LAST_THIRTY_DAYS = 3;
 
     public const PERCENTAGE_DIVIDER = 100;
- 
+
     public function __construct(
         private Transaction $transaction,
         private MeterTransactionService $meterTransactionService,
@@ -35,7 +35,7 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
             '*',
-             static fn ($q) => $q->where('status', 1))
+            static fn ($q) => $q->where('status', 1))
             ->whereIn('id', $transactionIds)
             ->sum('amount');
     }

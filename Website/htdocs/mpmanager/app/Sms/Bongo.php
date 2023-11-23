@@ -111,8 +111,8 @@ class Bongo implements ISmsProvider
                     <Content>" . $body . " </Content>
                     <Receivers>
                         <Receiver>" . $number . "</Receiver>
-                   </Receivers>
-                   <Callbackurl>'.$callback.'</Callbackurl>
+                    </Receivers>
+                    <Callbackurl>'.$callback.'</Callbackurl>
                 </Message>
             </Broadcast>";
 

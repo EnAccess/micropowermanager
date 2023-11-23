@@ -147,7 +147,7 @@ class TicketTest extends TestCase
         $this->createTicketCategory($ticketCategoryCount);
         $response = $this->actingAs($this->user)->get('/tickets/api/labels');
         $response->assertStatus(200);
-       ;
+        ;
         $this->assertEquals($ticketCategoryCount, TicketCategory::query()->count());
     }
 

@@ -40,7 +40,7 @@ class SmsListener
         try {
             $transaction = $this->transaction->newQuery()->with('paymentHistories')
                 ->where('message', $meterSerial)->latest()->firstOrFail();
-               $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
+                $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
         } catch (ModelNotFoundException $ex) {
             $data = [
                 'phone' => $sender,

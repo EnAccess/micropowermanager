@@ -26,7 +26,7 @@
                                     <i class="glyphicon glyphicon-search"></i>
                                 </span>
                                         <input type="search" class="form-control" placeholder=""
-                                               aria-controls="dt_basic">
+                                                aria-controls="dt_basic">
                                     </label>
                                 </div>
                             </div>
@@ -45,8 +45,8 @@
                         </div>
 
                         <table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer"
-                               width="100%"
-                               role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+                                width="100%"
+                                role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
                             <thead>
                             <tr role="row">
                                 <th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic"

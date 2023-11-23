@@ -24,7 +24,7 @@ class ResendInformationNotification extends SmsSender
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('ResendInformation');
             } catch (ModelNotFoundException $exception) {
-                $exception = new MissingSmsReferencesException('ResendInformation SMS body 
+                $exception = new MissingSmsReferencesException('ResendInformation SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
                 return;
@@ -43,7 +43,7 @@ class ResendInformationNotification extends SmsSender
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('ResendInformationLastTransactionNotFound');
             } catch (ModelNotFoundException $exception) {
-                $exception = new MissingSmsReferencesException('ResendInformation SMS body 
+                $exception = new MissingSmsReferencesException('ResendInformation SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
                 return;

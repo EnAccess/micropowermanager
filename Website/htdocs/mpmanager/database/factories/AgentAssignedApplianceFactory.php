@@ -16,10 +16,10 @@ class AgentAssignedApplianceFactory extends Factory
     public function definition()
     {
         return [
-             'agent_id' => $this->faker->numberBetween(1,10),
-             'appliance_type_id' => $this->faker->numberBetween(1,10),
-             'user_id' => $this->faker->numberBetween(1,10),
-             'cost' => $this->faker->randomFloat(2,1,100),
+            'agent_id' => $this->faker->numberBetween(1,10),
+            'appliance_type_id' => $this->faker->numberBetween(1,10),
+            'user_id' => $this->faker->numberBetween(1,10),
+            'cost' => $this->faker->randomFloat(2,1,100),
         ];
     }
 }

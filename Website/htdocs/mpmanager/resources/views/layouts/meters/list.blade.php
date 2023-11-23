@@ -30,8 +30,8 @@
                         </div>
 
                         <table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer"
-                               width="100%"
-                               role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+                                width="100%"
+                                role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
                             <thead>
                             <tr role="row">
                                 <th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic"

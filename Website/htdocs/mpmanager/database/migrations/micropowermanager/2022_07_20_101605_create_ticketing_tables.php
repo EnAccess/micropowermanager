@@ -61,13 +61,13 @@ class CreateTicketingTables extends Migration
             $table->timestamps();
         });
 
-         Schema::connection('shard')->create($tableNames['ticket_outsource'], static function (Blueprint $table) {
+        Schema::connection('shard')->create($tableNames['ticket_outsource'], static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('amount');
             $table->timestamps();
         });
-         Schema::connection('shard')->create($tableNames['ticket_comments'], static function (Blueprint $table) {
+        Schema::connection('shard')->create($tableNames['ticket_comments'], static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('ticket_user_id');

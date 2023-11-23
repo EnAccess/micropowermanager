@@ -13,7 +13,7 @@ class MenuItemsGenerator extends Command
 
     public function __construct(private MenuItemsService $menuItemService)
     {
-         parent::__construct();
+        parent::__construct();
     }
 
     public function handle(): void

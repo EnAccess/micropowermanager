@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('limit');
             $table->timestamps();
         });
-     //   $this->addDefault();
+    //   $this->addDefault();
     }
 
     /**

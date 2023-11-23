@@ -27,7 +27,7 @@ class TicketSettingsController extends Controller
     {
         $ticketSettings = TicketSettings::updateOrCreate(
             [
-              'id' => request('id')
+                'id' => request('id')
             ],
             [
                 'name' => request('name'),

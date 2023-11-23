@@ -18,7 +18,7 @@
             <article class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
                 @component('skeletons.widget', ['widgetID' => 'new-meter', 'widgetIcon'=>'fa-plus', 'widgetTitle' => 'New Meter'])
                     <form id="order-form" class="smart-form" novalidate="novalidate" method="POST"
-                          action={{route('meters.new')}}>
+                            action={{route('meters.new')}}>
                         @csrf
                         <header>
                             Meter
@@ -29,7 +29,7 @@
                                 <section class="col col-sm-12">
                                     <label class="input"> <i class="icon-append fa fa-user"></i>
                                         <input type="text" name="serial_number" placeholder="Serial Number"
-                                               value="{{ old('serial_number') }}">
+                                                value="{{ old('serial_number') }}">
                                     </label>
                                     @if($errors->has('serial_number'))
                                         <span class="invalid-feedback">

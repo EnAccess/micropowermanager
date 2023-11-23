@@ -22,10 +22,10 @@ class TimeOfUsageService implements IBaseService
 
     public function update($timeOfUsage, $timeOfUsageData)
     {
-         $timeOfUsage->update($timeOfUsageData);
-         $timeOfUsage->fresh();
+        $timeOfUsage->update($timeOfUsageData);
+        $timeOfUsage->fresh();
 
-         return $timeOfUsage;
+        return $timeOfUsage;
     }
 
     public function delete($timeOfUsage)

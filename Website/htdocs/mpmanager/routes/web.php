@@ -65,5 +65,5 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-   // Route::get('/user-data', 'AdminController@auth');
+    // Route::get('/user-data', 'AdminController@auth');
 });

@@ -25,8 +25,8 @@ trait RefreshMultipleDatabases
     {
         if (!RefreshDatabaseState::$migrated) {
 
-           Artisan::call('migrate:fresh',
-               ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']);
+            Artisan::call('migrate:fresh',
+                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']);
 
             Artisan::call('migrate:fresh',
                 ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']);

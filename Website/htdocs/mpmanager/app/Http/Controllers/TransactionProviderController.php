@@ -7,7 +7,7 @@ use App\Services\TransactionProviderService;
 
 class TransactionProviderController extends Controller
 {
-     private $transactionProviderService;
+    private $transactionProviderService;
 
     public function __construct(TransactionProviderService $transactionProviderService)
     {

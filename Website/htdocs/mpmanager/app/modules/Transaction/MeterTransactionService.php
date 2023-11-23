@@ -63,6 +63,6 @@ class MeterTransactionService
             $query->where('created_at', '<=', $toDate);
         }
 
-       return $query->latest()->paginate($limit);
+        return $query->latest()->paginate($limit);
     }
 }

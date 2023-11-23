@@ -17,7 +17,7 @@ return new class  extends Migration
                 $table->timestamps();
             });
         }
- }
+    }
     public function down()
     {
         Schema::connection('micropowermanager')->dropIfExists('bulk_registration_csv_datas');

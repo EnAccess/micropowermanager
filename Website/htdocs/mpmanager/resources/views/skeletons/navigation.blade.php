@@ -114,7 +114,7 @@
 
 
     <span class="minifyme" data-action="minifyMenu">
-				<i class="fa fa-arrow-circle-left hit"></i>
-			</span>
+                <i class="fa fa-arrow-circle-left hit"></i>
+            </span>
 
 </aside>

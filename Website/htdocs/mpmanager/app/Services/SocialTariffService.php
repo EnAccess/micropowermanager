@@ -22,10 +22,10 @@ class SocialTariffService implements IBaseService
 
     public function update($socialTariff, $socialTariffData)
     {
-         $socialTariff->update($socialTariffData);
-         $socialTariff->fresh();
+        $socialTariff->update($socialTariffData);
+        $socialTariff->fresh();
 
-         return $socialTariff;
+        return $socialTariff;
     }
 
     public function deleteByTariffId($meterTariffId)

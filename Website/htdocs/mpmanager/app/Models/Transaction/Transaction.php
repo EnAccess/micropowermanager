@@ -153,7 +153,7 @@ class Transaction extends BaseModel
         return $this->message;
     }
 
-     // TODO: Fix that according to enabled transaction provider plugins of company
+    // TODO: Fix that according to enabled transaction provider plugins of company
     /**
      * A work-around for querying the polymorphic relation with whereHas
      *

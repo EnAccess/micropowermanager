@@ -802,9 +802,9 @@ class Reports
     {
         return Transaction::query()
             ->selectRaw('
-        meter_parameters.connection_group_id, 
+        meter_parameters.connection_group_id,
         meters.serial_number as meter,
-        SUM(transactions.amount) as revenue, 
+        SUM(transactions.amount) as revenue,
         meter_tariffs.price as tariff_price,
         IFNULL(SUM(payment_histories.amount), 0) as total
     ')

@@ -313,29 +313,29 @@ class VodacomTransaction implements ITransactionProvider
     ): string {
         return
             '<?xml version="1.0" encoding="UTF-8"?>
-      <mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">
+        <mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">
         <result>
-          <serviceProvider>
-            <spId>' . \config()->get('services.vodacom.sp_id') . '</spId>
-            <spPassword>' . $serviceProviderPassword . '</spPassword>
-            <timestamp>' . $time . '</timestamp>
-          </serviceProvider>
-          <transaction>
-            <resultType>Completed</resultType>
-            <resultCode>' . $resultCode . '</resultCode>
-            <resultDesc>' . $result . ' </resultDesc>
-            <serviceReceipt>' . $this->transaction->id . '</serviceReceipt>
-            <serviceDate>' . date('Y-m-d H:i:s') . '</serviceDate>
-            <serviceID>' . $this->transaction->id . '</serviceID>
-            <originatorConversationID>' . $this->vodacomTransaction->originator_conversation_id .
-            '</originatorConversationID>
-            <conversationID>' . $this->vodacomTransaction->conversation_id . '</conversationID>
-            <transactionID>' . $this->vodacomTransaction->transaction_id . '</transactionID>
-            <initiator>' . $this->transaction->sender . '</initiator>
-            <initiatorPassword>' . $phonePassword . '</initiatorPassword>
-          </transaction >
+            <serviceProvider>
+                <spId>' . \config()->get('services.vodacom.sp_id') . '</spId>
+                <spPassword>' . $serviceProviderPassword . '</spPassword>
+                <timestamp>' . $time . '</timestamp>
+            </serviceProvider>
+            <transaction>
+                <resultType>Completed</resultType>
+                <resultCode>' . $resultCode . '</resultCode>
+                <resultDesc>' . $result . ' </resultDesc>
+                <serviceReceipt>' . $this->transaction->id . '</serviceReceipt>
+                <serviceDate>' . date('Y-m-d H:i:s') . '</serviceDate>
+                <serviceID>' . $this->transaction->id . '</serviceID>
+                <originatorConversationID>' . $this->vodacomTransaction->originator_conversation_id .
+                '</originatorConversationID>
+                <conversationID>' . $this->vodacomTransaction->conversation_id . '</conversationID>
+                <transactionID>' . $this->vodacomTransaction->transaction_id . '</transactionID>
+                <initiator>' . $this->transaction->sender . '</initiator>
+                <initiatorPassword>' . $phonePassword . '</initiatorPassword>
+            </transaction >
         </result >
-      </mpesaBroker >';
+        </mpesaBroker >';
     }
 
 

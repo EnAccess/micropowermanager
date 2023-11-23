@@ -124,7 +124,7 @@ class UserService
 
     public function getById($id)
     {
-         return  $this->user->newQuery()->find($id);
+        return  $this->user->newQuery()->find($id);
     }
 
     public function delete($model)

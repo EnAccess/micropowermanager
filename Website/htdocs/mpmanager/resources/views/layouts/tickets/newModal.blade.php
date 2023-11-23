@@ -15,11 +15,11 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <input type="text" id="ticketTitle" name="ticketTitle" class="form-control"
-                                       placeholder="Title" required/>
+                                        placeholder="Title" required/>
                             </div>
                             <div class="form-group">
                             <textarea class="form-control" placeholder="Description" rows="5" required
-                                      id="ticketDescription" name="ticketDescription"></textarea>
+                                        id="ticketDescription" name="ticketDescription"></textarea>
                             </div>
                         </div>
                     </div>
@@ -54,13 +54,13 @@
 
                                 <div class="input-group">
                                     <input type="text" name="ticketDueDate" id="ticketDueDate"
-                                           placeholder="Due date DD.MM.YYYY"
-                                           class="form-control hasDatepicker">
+                                            placeholder="Due date DD.MM.YYYY"
+                                            class="form-control hasDatepicker">
                                     <span class="input-group-btn">
                                 <button class="btn btn-default" onclick="setToday()">
                                     <i class="fa fa-calendar"></i> Today
                                 </button>
-                              </span>
+                                </span>
                                 </div>
                             </div>
 

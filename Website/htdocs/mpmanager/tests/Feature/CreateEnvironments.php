@@ -736,7 +736,7 @@ trait CreateEnvironments
             $trelloTicket = $ticketService->create($trelloParams);
             $ticketId = $trelloTicket->id;
 
-          $ticket = TicketFactory::new()->create([
+            $ticket = TicketFactory::new()->create([
                 'ticket_id' => $ticketId,
                 'category_id' => $this->ticketCategory->id,
                 'assigned_id' => $this->ticketUser->id,
@@ -746,9 +746,9 @@ trait CreateEnvironments
                 'creator_type' => $agentId ?'agent':'user',
                 'creator_id' => $agentId ?: $this->user->id,
             ]);
-          $this->tickets[] = $ticket;
+            $this->tickets[] = $ticket;
 
-          $ticketCount--;
+            $ticketCount--;
         }
         if (count($this->tickets) > 0) {
             $this->ticket = $this->tickets[0];

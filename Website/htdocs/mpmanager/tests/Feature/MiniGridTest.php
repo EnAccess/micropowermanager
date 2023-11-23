@@ -126,7 +126,7 @@ class MiniGridTest extends TestCase
         $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s/batteries', $this->miniGridIds[0]));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']),10);
-   }
+    }
 
     public function test_user_gets_solar_readings_for_mini_grid()
     {

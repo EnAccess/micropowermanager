@@ -12,5 +12,5 @@ use PDO;
 
 class Revenue extends BaseModel
 {
-   protected $table = 'revenues';
+    protected $table = 'revenues';
 }
