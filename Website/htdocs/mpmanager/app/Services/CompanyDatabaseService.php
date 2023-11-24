@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
+use Database\Seeders\DatabaseSeeder;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -62,7 +63,10 @@ class CompanyDatabaseService implements IBaseService
 
     public function runSeeders(): void
     {
-        Artisan::call('db:seed', ['--force' => true]);
+        Artisan::call('db:seed', [
+            '--force' => true,
+            '--class' => DatabaseSeeder::class,
+        ]);
     }
 
     public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null): void

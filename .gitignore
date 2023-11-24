@@ -53,3 +53,10 @@ redis/dump.rdb
 InternalApi
 
 *.xlsx
+
+Website/htdocs/mpmanager/.env_production
+Website/htdocs/mpmanager/.env_staging
+docker-compose-prod-non-domain.yml
+docker-compose-prod.yml
+install-production.sh
+.gitlab-ci.yml

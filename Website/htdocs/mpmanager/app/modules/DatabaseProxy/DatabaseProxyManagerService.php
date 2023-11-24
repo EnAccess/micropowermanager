@@ -45,7 +45,7 @@ class DatabaseProxyManagerService
             'port' => '3306',
             'database' => $databaseName,
             'username' => 'root',
-            'password' => 'inensus2022.',
+            'password' => env('DB_PASSWORD'),
             'unix_socket' => '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Database\Seeders\ShardingDatabaseSeeder;
 use Illuminate\Console\Command;
 use PDO;
 
@@ -13,13 +14,14 @@ class InitializeShardingCommand extends Command
 
     public function handle()
     {
-        $pdo = new PDO('mysql:host=' . env('DB_HOST'), env('DB_USERNAME'), env('DB_PASSWORD'));
-        $pdo->exec('CREATE DATABASE IF NOT EXISTS micro_power_manager');
-
         $this->call('optimize:clear');
         $this->call('migrate', [
             '--database' => 'micro_power_manager',
             '--path' => '/database/migrations/base',
+        ]);
+
+        $this->call('db:seed', [
+            '--class' => ShardingDatabaseSeeder::class,
         ]);
     }
 }
