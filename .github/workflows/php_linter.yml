@@ -1,0 +1,42 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  laravel-lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [8.2]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, zip
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+        working-directory: ./Website/htdocs/mpmanager
+
+      - name: Run Code sniffer
+        run: ./vendor/bin/phpcbf --standard=PSR12 --tab-width=4 app/
+        working-directory: ./Website/htdocs/mpmanager
+        continue-on-error: true
+      
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyze app/Http app/Services --memory-limit=4G  --level=1
+        working-directory: ./Website/htdocs/mpmanager
+        continue-on-error: true
