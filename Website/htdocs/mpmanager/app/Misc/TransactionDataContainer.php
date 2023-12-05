@@ -25,7 +25,7 @@ class TransactionDataContainer
     public float $amount;
     public float $totalAmount;
     public float $rawAmount;
-    public AssetPerson $appliancePerson;
+    public ?AssetPerson $appliancePerson;
     public float $installmentCost;
     public string $dayDifferenceBetweenTwoInstallments;
 

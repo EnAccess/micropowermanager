@@ -40,7 +40,8 @@ class PersonService implements IBaseService
 
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn($q) => $q->orderBy('is_primary')->with('city',fn($q) => $q->whereHas('location'))->get(),
+                'addresses' => fn($q) => $q->orderBy('is_primary')->with('city', fn($q) => $q->whereHas('location'))
+                    ->get(),
                 'citizenship',
                 'roleOwner.definitions',
                 'devices' => fn($q) => $q->whereHas('address')->with('address.geo'),
@@ -195,5 +196,11 @@ class PersonService implements IBaseService
         $addressService->assignAddressToOwner($person, $address);
 
         return $person;
+    }
+
+    public function getByPhoneNumber($phoneNumber):?Person
+    {
+        return $this->person->newQuery()->whereHas('addresses', fn($q) => $q->where('phone', $phoneNumber))
+            ->first();
     }
 }

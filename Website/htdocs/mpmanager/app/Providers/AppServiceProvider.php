@@ -27,6 +27,7 @@ use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
+use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\CashTransaction;
@@ -89,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
                 City::RELATION_NAME => City::class,
                 Address::RELATION_NAME => Address::class,
                 SolarHomeSystem::RELATION_NAME => SolarHomeSystem::class,
+                Token::RELATION_NAME => Token::class,
             ]
         );
     }

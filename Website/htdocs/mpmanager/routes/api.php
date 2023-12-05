@@ -1,25 +1,8 @@
 <?php
 
-use App\Http\Controllers\CompanyController;
-use App\Http\Requests\AndroidAppRequest;
-use App\Http\Resources\ApiResource;
-use App\Jobs\TestJob;
-use App\Models\Address\Address;
-use App\Models\GeographicalInformation;
-use App\Models\Manufacturer;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Meter\MeterTariff;
-use App\Models\Meter\MeterType;
-use App\Models\Person\Person;
-use App\Services\PersonService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
+
 
 //Routes for City resource
 require 'resources/Cities.php';
@@ -35,6 +18,8 @@ require 'api_paths/transactions.php';
 require 'resources/AgentApp.php';
 // Agent Web panel routes
 require 'resources/AgentWeb.php';
+// Routes for CustomerRegistrationApp resource
+require 'resources/CustomerRegistrationApp.php';
 
 //JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
@@ -199,13 +184,11 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
 });
 // People
 Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
-
     Route::get('/{personId}/meters', 'PersonMeterController@show');
     Route::get('/{personId}/meters/geo', 'MeterGeographicalInformationController@show');
 
     Route::get('/', 'PersonController@index');
     Route::post('/', 'PersonController@store');
-    Route::get('/all', 'PersonController@list');
     Route::get('/search', 'PersonController@search');
     Route::get('/{personId}', 'PersonController@show');
     Route::get('/{personId}/transactions', 'PersonController@transactions');
@@ -215,9 +198,9 @@ Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static functi
     Route::get('/{personId}/addresses', 'PersonAddressesController@show');
     Route::post('/{personId}/addresses', 'PersonAddressesController@store');
     Route::put('/{personId}/addresses', 'PersonAddressesController@update');
-
-
 });
+
+
 // PV
 Route::group(['prefix' => 'pv'], static function () {
     Route::get('/{miniGridId}', ['middleware' => 'jwt.verify', 'uses' => 'PVController@show']);
@@ -358,79 +341,6 @@ Route::group(['prefix' => 'registration-tails'], static function () {
 Route::group(['prefix' => 'plugins'], static function () {
     Route::get('/', 'PluginController@index');
     Route::put('/{mpmPluginId}', 'PluginController@update');
-});
-
-Route::post('androidApp', static function (AndroidAppRequest $r) {
-    try {
-
-        DB::connection('shard')->beginTransaction();
-        //check if the meter id or the phone already exists
-        $meter = Meter::query()->where('serial_number', $r->get('serial_number'))->first();
-        $person = null;
-
-        if ($meter === null) {
-            $meter = new Meter();
-            $meterParameter = new MeterParameter();
-            $geoLocation = new GeographicalInformation();
-        } else {
-
-            $meterParameter = MeterParameter::query()->where('meter_id', $meter->id)->first();
-            $geoLocation = $meterParameter->geo()->first();
-            if ($geoLocation === null) {
-                $geoLocation = new GeographicalInformation();
-            }
-
-            $person = Person::query()->whereHas('meters', static function ($q) use ($meterParameter) {
-                return $q->where('id', $meterParameter->id);
-            })->first();
-        }
-
-        if ($person === null) {
-            $r->attributes->add(['is_customer' => 1]);
-            $personService = App::make(PersonService::class);
-            $person = $personService->createFromRequest($r);
-        }
-
-        $meter->serial_number = $r->get('serial_number');
-        $meter->manufacturer()->associate(Manufacturer::query()->findOrFail($r->get('manufacturer')));
-        $meter->meterType()->associate(MeterType::query()->findOrFail($r->get('meter_type')));
-        $meter->updated_at = date('Y-m-d h:i:s');
-        $meter->save();
-
-        $geoLocation->points = $r->get('geo_points');
-
-        $meterParameter->meter()->associate($meter);
-        $meterParameter->connection_type_id = $r->get('connection_type_id');
-        $meterParameter->connection_group_id = $r->get('connection_group_id');
-        $meterParameter->owner()->associate($person);
-        $meterParameter->tariff()->associate(MeterTariff::query()->findOrFail($r->get('tariff_id')));
-        $meterParameter->save();
-        $meterParameter->geo()->save($geoLocation);
-
-
-        $address = new Address();
-        $address = $address->newQuery()->create([
-            'city_id' => request()->input('city_id') ?? 1,
-        ]);
-        $address->owner()->associate($meterParameter);
-
-        $address->geo()->associate($meterParameter->geo);
-        $address->save();
-
-        //initializes a new Access Rate Payment for the next Period
-        event('accessRatePayment.initialize', $meterParameter);
-        // changes in_use parameter of the meter
-        event('meterparameter.saved', $meterParameter->meter_id);
-        DB::connection('shard')->commit();
-
-        return ApiResource::make($person)->response()->setStatusCode(201);
-
-    } catch (\Exception $e) {
-        DB::connection('shard')->rollBack();
-        Log::critical('Error while adding new Customer', ['message' => $e->getMessage()]);
-
-        return Response::make($e->getMessage())->setStatusCode(409);
-    }
 });
 
 Route::get('/clusterlist', 'ClusterController@index');

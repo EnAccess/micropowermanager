@@ -29,7 +29,7 @@ class ApplianceTransactionProcessor extends AbstractJob
 
         try {
             $this->checkForMinimumPurchaseAmount($container);
-            $this->payApplianceInstallments($container);
+            $container = $this->payApplianceInstallments($container);
             $this->processToken($container);
         } catch (\Exception $e) {
             Log::info('Transaction failed.: ' . $e->getMessage());
@@ -68,6 +68,7 @@ class ApplianceTransactionProcessor extends AbstractJob
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
+        $container->paidRates = $applianceInstallmentPayer->paidRates;
 
         return $container;
     }

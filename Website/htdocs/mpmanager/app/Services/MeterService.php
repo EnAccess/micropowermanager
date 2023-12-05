@@ -79,6 +79,9 @@ class MeterService implements IBaseService
             'meter_type_id' => $meterData['meter_type_id'],
             'in_use' => $meterData['in_use'],
             'manufacturer_id' => $meterData['manufacturer_id'],
+            'connection_group_id' => $meterData['connection_group_id'],
+            'connection_type_id' => $meterData['connection_type_id'],
+            'tariff_id' => $meterData['tariff_id'],
         ]);
     }
 

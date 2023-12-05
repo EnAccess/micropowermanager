@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Throwable;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 trait RestExceptionHandler
 {
@@ -27,9 +30,13 @@ trait RestExceptionHandler
      */
     protected function getJsonResponseForException(Request $request, Exception|Throwable $e)
     {
-
-        $response = null;
         switch (true) {
+            case $e instanceof TokenExpiredException:
+                return response()->json(['error' => 'Token is expired'], 401);
+            case $e instanceof TokenInvalidException:
+                return response()->json(['error' => 'Token is invalid'], 401);
+            case $e instanceof JWTException:
+                return response()->json(['error' => 'There was an issue with the token'], 401);
             case $this->isModelNotFoundException($e):
                 $response = $this->modelNotFound(['model not found ' .  implode(' ', $e->getIds()) , $e->getMessage(), $e->getTrace()]);
                 break;

@@ -43,7 +43,7 @@ class AgentTransaction implements ITransactionProvider
         // common transaction data
         $this->transaction->amount = (float)$data['amount'];
         $this->transaction->sender = 'Agent-' . $data['agent_id'];
-        $this->transaction->message = $data['meter_serial_number'];
+        $this->transaction->message = $data['device_serial'];
         $this->transaction->type = 'energy';
         $this->transaction->original_transaction_type = 'agent_transaction';
     }
@@ -146,7 +146,7 @@ class AgentTransaction implements ITransactionProvider
         if ($agentId !== $agent->id) {
             throw new \Exception('Agent authorization failed.');
         }
-        $this->validData = request()->only(['meter_serial_number', 'amount']);
+        $this->validData = request()->only(['device_serial', 'amount']);
         $this->validData['device_id'] = $deviceId;
         $this->validData['agent_id'] = $agentId;
     }

@@ -254,13 +254,13 @@ class TransactionService implements IAssociative, IBaseService
 
     public function getById($id)
     {
-        return $this->transaction->newQuery()->with(
+        return $this->transaction->newQuery()->with([
             'token',
             'originalTransaction',
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device.device'
+            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])]
         )->find($id);
     }
 

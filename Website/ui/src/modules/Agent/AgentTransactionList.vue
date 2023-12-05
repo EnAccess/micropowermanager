@@ -13,7 +13,7 @@
                     <md-table-row v-for="(item, index) in agentTransactionService.list" :key="index">
                         <md-table-cell md-sort-by="id" md-label="ID">{{item.id}}</md-table-cell>
                         <md-table-cell md-label="Amount">{{item.amount}}</md-table-cell>
-                        <md-table-cell md-label="Meter">{{item.meter}}</md-table-cell>
+                        <md-table-cell md-label="Device">{{item.meter}}</md-table-cell>
                         <md-table-cell md-label="Customer">{{item.customer}}</md-table-cell>
                         <md-table-cell md-label="Date">{{item.createdAt}}</md-table-cell>
                     </md-table-row>
@@ -30,7 +30,7 @@ export default {
         return {
             subscriber: 'agent-transactions',
             agentTransactionService: new AgentTransactionService(this.agentId),
-            headers: [this.$tc('words.id'), this.$tc('words.amount'), this.$tc('words.meter'), this.$tc('words.meter'), this.$tc('words.date')],
+            headers: [this.$tc('words.id'), this.$tc('words.amount'), this.$tc('words.device'), this.$tc('words.person'), this.$tc('words.date')],
         }
     },
     mounted () {

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Misc\TransactionDataContainer;
+use App\Models\AssetRate;
 use App\Models\Token;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -24,7 +25,7 @@ class TokenProcessor extends AbstractJob
     public function __construct(
         TransactionDataContainer $container,
         bool $reCreate = false,
-        int $counter = self::MAX_TRIES
+        int $counter = self::MAX_TRIES,
     ) {
         $this->transactionContainer = $container;
         $this->reCreate = $reCreate;
@@ -46,7 +47,7 @@ class TokenProcessor extends AbstractJob
         if ($token === null) {
             $this->generateToken($api);
         }
-        if ($token !== null){
+        if ($token !== null) {
             $this->handlePaymentEvents($token);
         }
 
@@ -91,12 +92,13 @@ class TokenProcessor extends AbstractJob
             $this->retryTokenGeneration();
             return;
         }
-
         Log::critical(
             $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
             $this->counter . ' times ',
             ['message' => $e->getMessage()]
         );
+
+        $this->handleRollbackInFailure();
 
         event('transaction.failed', [
             $this->transactionContainer->transaction,
@@ -119,6 +121,8 @@ class TokenProcessor extends AbstractJob
         $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
         $token->transaction()->associate($this->transactionContainer->transaction);
         $token->save();
+
+        $this->handlePaymentEvents($token);
     }
 
     private function handlePaymentEvents($token): void
@@ -136,5 +140,20 @@ class TokenProcessor extends AbstractJob
         ]);
 
         event('transaction.successful', [$this->transactionContainer->transaction]);
+    }
+
+    private function handleRollbackInFailure()
+    {
+        $paidRates = $this->transactionContainer->paidRates;
+        collect($paidRates)->map(function ($paidRate) {
+            $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
+            $assetRate->remaining += $paidRate['paid'];
+            $assetRate->update();
+            $assetRate->save();
+        });
+        $paymentHistories = $this->transactionContainer->transaction->paymentHistories()->get();
+        $paymentHistories->map(function ($paymentHistory) {
+            $paymentHistory->delete();
+        });
     }
 }

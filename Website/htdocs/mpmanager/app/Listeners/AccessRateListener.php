@@ -3,20 +3,28 @@
 namespace App\Listeners;
 
 use App\Exceptions\AccessRates\NoAccessRateFound;
-use App\Models\Meter\MeterParameter;
-use App\PaymentHandler\AccessRate;
+use App\Models\AccessRate\AccessRate;
+use App\Models\AccessRate\AccessRatePayment;
+use App\Models\Meter\Meter;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class AccessRateListener
 {
-    public function initializeAccessRatePayment(MeterParameter $meterParameter): void
+    public function initializeAccessRatePayment(Meter $meter): void
     {
         try {
-            $accessRatePayment = AccessRate::withMeterParameters($meterParameter);
-            $accessRatePayment->initializeAccessRatePayment()->save();
+            $accessRate = $meter->tariff()->first()->accessRate;
+            if (!$accessRate) {
+                throw new NoAccessRateFound('Access Rate is not set');
+            }
+            $nextPaymentDate = Carbon::now()->addDays($accessRate->period)->toDateString();
+            $accessRatePayment = new AccessRatePayment();
+            $accessRatePayment->accessRate()->associate($accessRate);
+            $accessRatePayment->meter()->associate($meter);
+            $accessRatePayment->due_date = $nextPaymentDate;
+            $accessRatePayment->debt = 0;
         } catch (NoAccessRateFound $exception) {
             Log::error($exception->getMessage(), ['id' => 'fj3g98suiq3z89fdhfjlsa']);
         }

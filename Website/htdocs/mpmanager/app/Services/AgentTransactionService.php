@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\AgentTransaction;
@@ -15,8 +16,7 @@ class AgentTransactionService implements IBaseService
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
-        private Meter $meter,
-        private MeterParameter $meterParameter
+        private Device $device
     ) {
     }
 
@@ -27,9 +27,9 @@ class AgentTransactionService implements IBaseService
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
-            $query->with(['originalAgent', 'meter.meterParameter.owner']);
+            $query->with(['originalAgent', 'device' => fn($q) => $q->whereHas('person')->with(['device','person'])]);
         } else {
-            $query->with(['meter.meterParameter.owner']);
+            $query->with(['device' => fn($q) => $q->whereHas('person')->with(['device','person'])]);
         }
 
         $query->whereHasMorph(
@@ -48,37 +48,18 @@ class AgentTransactionService implements IBaseService
 
     public function getById($agentId, $customerId = null)
     {
-        $customerMeters = $this->meterParameter->newQuery()->select('meter_id')->where('owner_id', $customerId)->get();
-        if ($customerMeters->count() === 0) {
+        $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
+            ->get()->pluck('device_serial');
+
+        if (!$customerDeviceSerials->count()) {
             return null;
         }
-        $meterIds = array();
-        foreach ($customerMeters as $key => $item) {
-            $meterIds[] = $item->meter_id;
-        }
-
-        $customerMeterSerialNumbers = $this->meter->newQuery()->has('meterParameter')
-            ->whereHas(
-                'meterParameter',
-                static function ($q) use ($meterIds) {
-                    $q->whereIn('meter_id', $meterIds);
-                }
-            )->get('serial_number');
-
-        return $this->transaction->newQuery()->with(['originalAgent', 'meter.meterParameter.owner'])
+        return $this->transaction->newQuery()
+            ->with(['originalAgent', 'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])
             ->whereHasMorph(
                 'originalTransaction',
-                [AgentTransaction::class],
-                static function ($q) use ($agentId) {
-                    $q->where('agent_id', $agentId);
-                }
-            )
-            ->whereHas(
-                'meter',
-                static function ($q) use ($customerMeterSerialNumbers) {
-                    $q->whereIn('serial_number', $customerMeterSerialNumbers);
-                }
-            )
+                [AgentTransaction::class], fn  ($q) => $q->where('agent_id', $agentId))
+            ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()->paginate();
     }
 

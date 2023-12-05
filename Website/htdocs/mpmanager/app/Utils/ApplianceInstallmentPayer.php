@@ -10,6 +10,7 @@ use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\AppliancePersonService;
 use App\Services\ApplianceRateService;
+use Illuminate\Support\Collection;
 use MPM\Device\DeviceService;
 
 class ApplianceInstallmentPayer
@@ -38,66 +39,21 @@ class ApplianceInstallmentPayer
     //This function pays the installments for the device number that provided in transaction
     public function payInstallmentsForDevice(TransactionDataContainer $container)
     {
-        $applianceOwner = $container->appliancePerson->person;
+        $customer = $container->appliancePerson->person;
         $this->appliancePaymentService->setPaymentAmount($container->transaction->amount);
-        $container->appliancePerson->rates->map(fn($installment
-        ) => $this->appliancePaymentService->payInstallment($installment, $applianceOwner, $this->transaction));
+        $installments = $container->appliancePerson->rates;
+        $this->pay($installments, $customer);
     }
 
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
-    public function payInstallments(TransactionDataContainer $container)
+    public function payInstallments()
     {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
-        $installmentsAreDue = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds);
-        $installmentsAreDue->each(function ($installment) use ($customer) {
-            if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                //add payment history for the installment
-                event('payment.successful', [
-                    'amount' => $this->transaction->amount,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $installment,
-                    'payer' => $customer,
-                    'transaction' => $this->transaction,
-                ]);
-                $installment->remaining -= $this->transaction->amount;
-                $installment->update();
-                $installment->save();
-
-                $this->paidRates[] = [
-                    'asset_type_name' => $installment->assetPerson->asset->name,
-                    'paid' => $this->transaction->amount,
-                ];
-                $this->transaction->amount = 0;
-
-                return false;
-            } else {
-                //add payment history for the loan
-                event('payment.successful', [
-                    'amount' => $installment->remaining,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $installment,
-                    'payer' => $customer,
-                    'transaction' => $this->transaction,
-                ]);
-                $this->paidRates[] = [
-                    'asset_type_name' => $installment->assetPerson->asset->name,
-                    'paid' => $installment->remaining,
-                ];
-                $this->transaction->amount -= $installment->remaining;
-                $installment->remaining = 0;
-                $installment->update();
-                $installment->save();
-
-                return true;
-            }
-        });
+        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds);
+        $this->pay($installments, $customer);
 
         return $this->transaction->amount;
     }
@@ -139,5 +95,57 @@ class ApplianceInstallmentPayer
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans);
     }
+
+    private function pay(Collection $installments, mixed $customer): void
+    {
+        $installments->map(function ($installment) use ($customer) {
+            if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
+                //add payment history for the installment
+                event('payment.successful', [
+                    'amount' => $this->transaction->amount,
+                    'paymentService' => $this->transaction->original_transaction_type,
+                    'paymentType' => 'installment',
+                    'sender' => $this->transaction->sender,
+                    'paidFor' => $installment,
+                    'payer' => $customer,
+                    'transaction' => $this->transaction,
+                ]);
+                $installment->remaining -= $this->transaction->amount;
+                $installment->update();
+                $installment->save();
+
+                $this->paidRates[] = [
+                    'asset_rate_id' => $installment->id,
+                    'paid' => $this->transaction->amount,
+                ];
+                $this->transaction->amount = 0;
+
+                return false;
+            } else {
+                //add payment history for the loan
+                event('payment.successful', [
+                    'amount' => $installment->remaining,
+                    'paymentService' => $this->transaction->original_transaction_type,
+                    'paymentType' => 'installment',
+                    'sender' => $this->transaction->sender,
+                    'paidFor' => $installment,
+                    'payer' => $customer,
+                    'transaction' => $this->transaction,
+                ]);
+                $this->paidRates[] = [
+                    'asset_rate_id' => $installment->id,
+                    'paid' => $installment->remaining,
+                ];
+                $this->transaction->amount -= $installment->remaining;
+                $installment->remaining = 0;
+                $installment->update();
+                $installment->save();
+
+                return true;
+            }
+        }
+        );
+    }
+
 
 }

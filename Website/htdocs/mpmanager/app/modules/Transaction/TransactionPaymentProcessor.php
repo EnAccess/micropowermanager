@@ -30,7 +30,7 @@ class TransactionPaymentProcessor
         $processorClass = self::PROCESSORS_BY_DEVICE_TYPE[$deviceType];
 
         // Instantiate the processor class
-        $processor = new $processorClass;
+        $processor = new $processorClass($transactionId);
 
         $queue = self::QUEUE_BY_DEVICE_TYPE[$deviceType];
         // Dispatch the job
