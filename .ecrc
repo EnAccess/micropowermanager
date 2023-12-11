@@ -1,0 +1,7 @@
+{
+    "Exclude": [
+        "Website/htdocs/mpmanager/packages/inensus/",
+        "Website/htdocs/mpmanager/database/dummyData/dummy_data.sql",
+        "composer.phar"
+    ]
+}

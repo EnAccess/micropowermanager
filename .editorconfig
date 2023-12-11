@@ -1,0 +1,6 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+[*]
+# Ensure consistent file encoding in UNIX style
+charset = utf-8
+end_of_line = lf

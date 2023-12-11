@@ -1,4 +1,4 @@
-version: '3.1'
+version: "3.1"
 
 services:
   'laravel':
@@ -64,7 +64,7 @@ services:
     build:
       context: Docker/
       dockerfile: DockerfileComposer
-    restart: 'no'
+    restart: "no"
     command: install
     volumes:
       - ./Website/htdocs/mpmanager:/app
@@ -82,7 +82,7 @@ services:
     volumes:
       - ./DB/mysql:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - 3307:3306
 
   'phpmyadmin':
     image: phpmyadmin/phpmyadmin:latest
@@ -97,9 +97,9 @@ services:
     container_name: nginx-proxy
     image: jwilder/nginx-proxy:latest
     ports:
-      - "80:80"
-      - "443:443"
-      - "6379:6379"
+      - 80:80
+      - 443:443
+      - 6379:6379
     environment:
       VIRTUAL_PROTO: https
     volumes:

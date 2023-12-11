@@ -1,0 +1,13 @@
+extends: default
+
+rules:
+  document-start: disable
+  indentation:
+    spaces: 2
+  line-length: disable
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+    allow-quoted-quotes: true
+  truthy:
+    check-keys: false

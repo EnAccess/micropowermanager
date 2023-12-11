@@ -17,7 +17,7 @@
   >
   <img
     alt="GitHub Workflow Status"
-    src="https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager-cloud/check.yaml"
+    src="https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager-cloud/check-generic.yaml"
   >
   <a href="https://github.com/EnAccess/micropowermanager-cloud/blob/main/LICENSE" target="_blank">
     <img
@@ -47,11 +47,11 @@
 
 ### Docker installation
 
-1. Windows & Mac
+**Windows and Mac:**
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
-2. Linux
+**Linux:**
 
 - Docker provides installation instructions for various Linux distributions. You can find them on
   the [Docker installation page for Linux.](https://docs.docker.com/engine/install/).
@@ -61,13 +61,13 @@
 Docker Compose is often included with the Docker Desktop installations for Windows and Mac. For Linux, you might need to
 install it separately.
 
-1. Windows and Mac:
+**Windows and Mac:**
 
 - Included with Docker Desktop.
 
-2. Linux:
+**Linux:**
 
-- Docker Compose on GitHub https://github.com/docker/compose/releases
+- Docker Compose on GitHub <https://github.com/docker/compose/releases>
 - On the GitHub page, you can find instructions for downloading and installing Docker Compose on Linux. Be sure to check
   for the latest release.
 
@@ -80,20 +80,20 @@ install it separately.
 
 ---
 
-The development environment is served under http://mpmanager.local To reach the site over the given url; enter the
+The development environment is served under <http://mpmanager.local> To reach the site over the given url; enter the
 following lines to your hosts file.
 
-#### For Linux/Mac Users
+### For Linux/Mac Users
 
-```
+```sh
 /etc/hosts
 127.0.0.1       mpmanager.local
 127.0.0.1       db.mpmanager.local
 ```
 
-#### For Windows Users
+### For Windows Users
 
-```
+```sh
 c:\windows\system32\drivers\etc\hosts
 127.0.0.1       mpmanager.local
 127.0.0.1       db.mpmanager.local
@@ -101,12 +101,12 @@ c:\windows\system32\drivers\etc\hosts
 
 ## Frontend
 
-The frontend is served under http://mpmanager.local. You can find frontend files under `Website/ui`.
+The frontend is served under <http://mpmanager.local>. You can find frontend files under `Website/ui`.
 The frontend is built with Vue.js. After first run with `docker-compose up` dependencies will be installed
 automatically.
 If you want to install dependencies manually, you can run `npm install` under `Website/ui` folder.
 
-#### Folder Structure
+### Folder Structure
 
 When adding new files to the project, please adhere to the following folder structure:
 
@@ -114,7 +114,7 @@ When adding new files to the project, please adhere to the following folder stru
   Modules are the components used in pages. For example, the Client module holds components related to clients. Every
   component associated with clients should be placed under the Client module.
 
-```
+```sh
 Website/ui
 ├── src
 │   ├── modules
@@ -127,7 +127,7 @@ Website/ui
   are not using nuxt.js, routes need to be defined manually. You can find the routes in
   the `Website/ui/src/ExportedRoutes.js` file.
 
-```
+```sh
 Website/ui
 ├── src
 │   ├── pages
@@ -142,7 +142,7 @@ Plugins are additional components developed as separate packages to enhance our 
 main codebase clean. Each plugin should reside in its own folder under the `Website/ui/src/plugins` directory.
 Additionally, each plugin should have its own backend code, which will be explained in the backend section.
 
-```
+```sh
 Website/ui
 ├── src
 │   ├── plugins
@@ -153,7 +153,7 @@ In the backend section, you'll find instructions on how to create a plugin.
 
 ## Backend
 
-The backend is built with Laravel. The backend is served under http://api.mpmanager.local/api. You can find backend
+The backend is built with Laravel. The backend is served under <http://api.mpmanager.local/api>. You can find backend
 files under `Website/htdocs/mpmanager`. After the first run with `docker-compose up`, dependencies will be installed
 automatically. If you prefer to install dependencies manually or need to add additional packages, follow these steps:
 
@@ -163,6 +163,7 @@ automatically. If you prefer to install dependencies manually or need to add add
    docker exec -it laravel bash
    cd mpmanager
      ```
+
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:
 
    ```bash
@@ -218,7 +219,7 @@ These commands will create the central database and the first company database. 
 dummy data.
 You can use the following credentials to login to the application:
 
-```
+```sh
 username: dummy@user.com
 password: 123123
 ```
@@ -235,7 +236,8 @@ docker exec -it laravel bash
 cd mpmanager
 php artisan migrator:create {migration-name}
 ```
-This command creates a migration file in Micropower Manager's core migration files location: `Website/htdocs/mpmanager/database/migrations/micropowermanager
+
+This command creates a migration file in Micropower Manager's core migration files location: `Website/htdocs/mpmanager/database/migrations/micropowermanager`
 
 After creating the migration file, you can shift it to other company databases using the following command:
 
@@ -244,6 +246,7 @@ docker exec -it laravel bash
 cd mpmanager
 php artisan migrator:copy
 ```
+
 This command syncs the migration files in the core migration folder for other company migrations.
 
 To migrate the database, use the following command:
@@ -262,26 +265,26 @@ cd mpmanager
 php shard:migrate {company_id} {--force}
 ```
 
-#### Plugins
+### Install Plugins
+
 We have a custom plugin creator command that generates a template. Use the following command to create a new plugin:
 
 ```bash
 docker exec -it laravel bash
 cd mpmanager
 php artisan micropowermanager:new-package {package-name}
-``` 
+```
 
 This command creates a plugin template in the Website/htdocs/mpmanager/packages/inensus folder. Upon creation, you can proceed with plugin development. You can check other plugins for reference.
 Additionally, this command will create UI folders for the newly created plugin. Move the created UI folder to the Website/ui/src/plugins folder.
-
 
 ### phpMyAdmin
 
 To project also includes phpMyAdmin which enables quick database operations without installing third-party software or writing any single line into the terminal.
 
-The default credentials for the database are;
-    
-```
+The default credentials for the database are:
+
+```sh
 username: root
 password: wF9zLp2qRxaS2e
 ```

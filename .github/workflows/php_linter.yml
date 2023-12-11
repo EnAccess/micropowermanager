@@ -35,7 +35,7 @@ jobs:
         run: ./vendor/bin/phpcbf --standard=PSR12 --tab-width=4 app/
         working-directory: ./Website/htdocs/mpmanager
         continue-on-error: true
-      
+
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze app/Http app/Services --memory-limit=4G  --level=1
         working-directory: ./Website/htdocs/mpmanager

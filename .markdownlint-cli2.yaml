@@ -1,0 +1,17 @@
+# Disable some built-in rules
+config:
+  line-length: false
+  no-inline-html: false
+  first-line-h1: false
+  code-block-style: false  # conflicts with MkDocs Admontions: https://squidfunk.github.io/mkdocs-material/reference/admonitions/
+  code-fence-style:
+    style: backtick
+
+# Define glob expressions to use (only valid at root)
+globs:
+  - "**/*.md"
+
+ignores:
+  - Website/ui/src/docs/source/index.md
+  - Website/ui/src/docs/source/.compare.md
+  - Website/htdocs/mpmanager/packages/
