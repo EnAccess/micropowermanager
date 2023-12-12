@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Asset;
-use App\Models\AssetType;
 use App\Models\SmsApplianceRemindRate;
+use Illuminate\Support\Collection;
 
 class SmsApplianceRemindRateService
 {
@@ -12,20 +12,19 @@ class SmsApplianceRemindRateService
         private SmsApplianceRemindRate $smsApplianceRemindRate,
         private Asset $appliance
     ) {
-
     }
 
-    public function getApplianceRemindRatesWithAppliances()
+    public function getApplianceRemindRatesWithAppliances(): Collection
     {
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
     }
 
-    public function getApplianceRemindRates()
+    public function getApplianceRemindRates(): Collection
     {
         return $this->smsApplianceRemindRate->newQuery()->get();
     }
 
-    public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, $data)
+    public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, $data): Asset
     {
         $smsApplianceRemindRate->update([
             'appliance_id' => $data['appliance_id'],
@@ -33,10 +32,14 @@ class SmsApplianceRemindRateService
             'remind_rate' => $data['remind_rate']
 
         ]);
-        return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
+
+        /** @var Asset $result */
+        $result = $this->appliance->newQuery()->with(['smsReminderRate'])->get();
+
+        return $result;
     }
 
-    public function createApplianceRemindRate($data)
+    public function createApplianceRemindRate($data): Collection
     {
         $this->smsApplianceRemindRate->newQuery()->create([
             'appliance_id' => $data['appliance_id'],

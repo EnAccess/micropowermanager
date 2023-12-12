@@ -8,6 +8,7 @@ use App\Exceptions\Meters\MeterIsNotInUse;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Meter\Meter;
+use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,15 +16,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoanDataContainer
 {
-    private $meterOwner;
-    private $transaction;
+    private ?Person $meterOwner;
+    private Transaction $transaction;
 
-
-    public $paid_rates = array();
+    public array $paid_rates = array();
 
     public function initialize(Transaction $transaction): void
     {
-        $this->transaction = $transaction;
         $this->meterOwner = $this->getMeterOwner($transaction->message);
     }
 
@@ -49,8 +48,9 @@ class LoanDataContainer
                     'transaction' => $this->transaction,
                     ]
                 );
-                $loan->remaining -= $this->transaction->amount;
-                $loan->update();
+                $loan->update(
+                    ['remaining' => $this->transaction->amount]
+                );
 
                 $this->paid_rates[] = [
                     'asset_type_name' => $loan->assetPerson->assetType->name,
@@ -92,9 +92,9 @@ class LoanDataContainer
      *
      * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
      */
-    private function getCustomerDueRates($owner)
+    private function getCustomerDueRates($owner): Collection
     {
-        $loans = AssetPerson::where('person_id', $owner->id)->pluck('id');
+        $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
         return AssetRate::with('assetPerson.assetType')
             ->whereIn('asset_person_id', $loans)
             ->where('remaining', '>', 0)
@@ -109,9 +109,10 @@ class LoanDataContainer
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
-    private function getMeterOwner(string $serialNumber)
+    private function getMeterOwner(string $serialNumber): ?Person
     {
         try {
+            /** @var Meter $meter */
             $meter = Meter::with('meterParameter.owner')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();

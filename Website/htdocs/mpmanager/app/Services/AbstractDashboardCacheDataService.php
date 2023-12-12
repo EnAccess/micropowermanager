@@ -16,7 +16,7 @@ abstract class AbstractDashboardCacheDataService
         $this->cacheDataKey = $cacheDataKey;
     }
 
-    public abstract function setData($dateRange = []);
+    abstract public function setData($dateRange = []);
 
     public function getData()
     {
@@ -43,5 +43,4 @@ abstract class AbstractDashboardCacheDataService
     {
         return substr_replace($period, '-', 4, 0);
     }
-
 }

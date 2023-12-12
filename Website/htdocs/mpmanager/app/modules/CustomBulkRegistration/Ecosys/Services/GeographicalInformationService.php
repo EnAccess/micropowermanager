@@ -7,7 +7,6 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
 class GeographicalInformationService extends CreatorService
 {
-
     public function __construct(GeographicalInformation $geo)
     {
         parent::__construct($geo);

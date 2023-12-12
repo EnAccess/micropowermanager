@@ -13,7 +13,6 @@ class TransactionController extends Controller
     public function __construct(
         private TransactionService $transactionService,
     ) {
-
     }
     public function index(): ApiResource
     {
@@ -30,19 +29,15 @@ class TransactionController extends Controller
     public function store(Request $request): void
     {
         /**
-         * @var ITransactionProvider
+         * @var ITransactionProvider $transactionProvider
          */
         $transactionProvider = $request->attributes->get('transactionProcessor');
-        // save main transaction
         $transactionProvider->saveTransaction();
-        // store common data
         $transaction = $transactionProvider->saveCommonData();
-        //fire transaction.saved -> confirms the transaction
         event('transaction.saved', $transactionProvider);
 
         ProcessPayment::dispatch($transaction->id)
             ->allOnConnection('redis')
             ->onQueue(config('services.queues.payment'));
     }
-
 }

@@ -27,7 +27,6 @@ use App\Observers\AgentReceiptObserver;
 use App\Observers\AgentSoldApplianceObserver;
 use App\Observers\BatteryObserver;
 use App\Observers\MeterParameterObserver;
-
 use App\Observers\PersonObserver;
 use App\Observers\PVObserver;
 use App\Observers\SolarObserver;

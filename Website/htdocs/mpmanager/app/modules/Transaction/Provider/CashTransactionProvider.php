@@ -2,40 +2,24 @@
 
 namespace MPM\Transaction\Provider;
 
+use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
 
-class CashTransaction implements ITransactionProvider
+class CashTransactionProvider implements ITransactionProvider
 {
-    /**
-     * @var \App\Models\Transaction\CashTransaction
-     */
-    private $cashTransaction;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * contains validated data
-     *
-     * @var array
-     */
-    private $validData;
+    private array $validData;
 
     public function __construct(
-        \App\Models\Transaction\CashTransaction $cashTransaction,
-        Transaction $transaction
+        private CashTransaction $cashTransaction,
+        private Transaction $transaction
     ) {
-        $this->transaction = $transaction;
-        $this->cashTransaction = $cashTransaction;
     }
 
     public function saveTransaction(): void
     {
-        $this->cashTransaction = new \App\Models\Transaction\CashTransaction();
+        $this->cashTransaction = new CashTransaction();
         $this->transaction = new Transaction();
 
         //assign data
@@ -57,7 +41,7 @@ class CashTransaction implements ITransactionProvider
         $this->transaction->original_transaction_type = 'cash_transaction';
     }
 
-    public function saveData(\App\Models\Transaction\CashTransaction $cashTransaction): void
+    public function saveData(CashTransaction $cashTransaction): void
     {
         $cashTransaction->save();
     }
@@ -79,7 +63,7 @@ class CashTransaction implements ITransactionProvider
 
     public function getMessage(): string
     {
-        // TODO: Implement getMessage() method.
+        return '';
     }
 
     public function getAmount(): int

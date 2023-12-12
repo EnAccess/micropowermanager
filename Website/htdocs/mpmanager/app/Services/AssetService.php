@@ -6,11 +6,8 @@ use App\Models\Asset;
 
 class AssetService
 {
-
-
     public function __construct(private Asset $asset)
     {
-
     }
 
     public function getAssets($request)
@@ -28,7 +25,6 @@ class AssetService
             ->create(
                 $request->only(['asset_type_id', 'name', 'price'])
             );
-
     }
 
     public function updateAsset($request, $asset)

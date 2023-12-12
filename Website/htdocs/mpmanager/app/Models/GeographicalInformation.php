@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Address\Address;
-use App\Models\Meter\MeterParameter;
-use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -23,5 +19,4 @@ class GeographicalInformation extends BaseModel
     {
         return $this->morphTo();
     }
-
 }

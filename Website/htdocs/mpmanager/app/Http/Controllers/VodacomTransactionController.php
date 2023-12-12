@@ -17,24 +17,22 @@ class VodacomTransactionController extends Controller
      */
     public function store(Request $request): void
     {
-
         //get Transaction object
         $transactionData = request('transaction')->transaction;
 
-        VodacomTransaction::create(
-            [
+        /** @var VodacomTransaction $vodacomTransaction */
+        $vodacomTransaction = VodacomTransaction::query()->create([
             'conversation_id' => $transactionData->conversationID,
             'originator_conversation_id' => $transactionData->originatorConversationID,
             'mpesa_receipt' => $transactionData->mpesaReceipt,
             'transaction_date' => $transactionData->transactionDate,
             'transaction_id' => $transactionData->transactionID,
-            ]
-        )->transaction()->create(
-            [
-                'amount' => $transactionData->amount,
-                'sender' => $transactionData->initiator,
-                'message' => $transactionData->accountReference,
-                ]
-        );
+        ]);
+
+        $vodacomTransaction->transaction()->create([
+            'amount' => $transactionData->amount,
+            'sender' => $transactionData->initiator,
+            'message' => $transactionData->accountReference,
+        ]);
     }
 }

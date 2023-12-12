@@ -26,7 +26,7 @@ class ReportController
         }
         $report = $this->report->find($id);
 
-        return response()->download(explode('*',$report->path)[0]);
+        return response()->download(explode('*', $report->path)[0]);
     }
 
     public function index(Request $request): ApiResource
@@ -35,18 +35,11 @@ class ReportController
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
 
-        $reports = null;
-        switch ($type) {
-            case 'weekly':
-                $reports = $this->getWeeklyReports($startDate, $endDate);
-                break;
-            case 'monthly':
-                $reports = $this->getMonthlyReports($startDate, $endDate);
-                break;
-            default:
-                $reports = $this->getAllReports($startDate, $endDate);
-                break;
-        }
+        $reports = match ($type) {
+            'weekly' => $this->getWeeklyReports($startDate, $endDate),
+            'monthly' => $this->getMonthlyReports($startDate, $endDate),
+            default => $this->getAllReports($startDate, $endDate),
+        };
         return new ApiResource($reports);
     }
 

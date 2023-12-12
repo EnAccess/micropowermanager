@@ -60,7 +60,6 @@ class TransactionDataContainer
                 $container->dayDifferenceBetweenTwoInstallments =
                     $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
             }
-
         } catch (ModelNotFoundException $e) {
             throw new \Exception("Unexpected error occurred while processing transaction. " . $e->getMessage());
         }

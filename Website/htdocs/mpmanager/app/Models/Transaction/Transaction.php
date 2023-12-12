@@ -31,10 +31,9 @@ use PDO;
  */
 class Transaction extends BaseModel
 {
-    public const RELATION_NAME = 'transaction';
-
     use RelationsManager;
 
+    public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
     public function originalTransaction(): morphTo
@@ -153,38 +152,10 @@ class Transaction extends BaseModel
         return $this->message;
     }
 
-    // TODO: Fix that according to enabled transaction provider plugins of company
-    /**
-     * A work-around for querying the polymorphic relation with whereHas
-     *
-     * @return BelongsToMorph
-     */
-    /*    public function originalVodacom(): BelongsToMorph
-        {
-            return BelongsToMorph::build($this, VodacomTransaction::class, 'originalTransaction');
-        }*/
-
-
-    /**
-     * A work-around for querying the polymorphic relation with whereHas
-     *
-     * @return BelongsToMorph
-     */
-    /*    public function originalAirtel(): BelongsToMorph
-        {
-
-            return BelongsToMorph::build($this, AirtelTransaction::class, 'originalTransaction');
-        }*/
-
     public function originalAgent(): BelongsToMorph
     {
         return BelongsToMorph::build($this, AgentTransaction::class, 'originalTransaction');
     }
-
-    /* public function originalThirdParty(): BelongsToMorph
-        {
-            return BelongsToMorph::build($this, ThirdPartyTransaction::class, 'originalTransaction');
-        }*/
 
     public function originalCash(): BelongsToMorph
     {
@@ -195,5 +166,4 @@ class Transaction extends BaseModel
     {
         return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
     }
-
 }

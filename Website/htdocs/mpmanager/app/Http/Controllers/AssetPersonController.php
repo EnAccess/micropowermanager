@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\DB;
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
 
-
 class AssetPersonController extends Controller
 {
     public function __construct(
@@ -38,7 +37,6 @@ class AssetPersonController extends Controller
         private AssetService $applianceService,
         private ApplianceRateService $applianceRateService
     ) {
-
     }
 
     /**

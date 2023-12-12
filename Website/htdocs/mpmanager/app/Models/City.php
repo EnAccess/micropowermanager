@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * Class City
  *
  * @package  App
- * @property integer id
- * @property string name
- * @property int country_id
- * @property int cluster_id
- * @property int mini_grid_id
+ * @property integer $id
+ * @property string $name
+ * @property int $country_id
+ * @property int $cluster_id
+ * @property int $mini_grid_id
  */
 class City extends BaseModel
 {
@@ -65,7 +65,7 @@ class City extends BaseModel
         $this->cluster_id = $clusterId;
     }
 
-    public function setMiniGridId(int $miniGridId)
+    public function setMiniGridId(int $miniGridId): void
     {
         $this->mini_grid_id = $miniGridId;
     }

@@ -51,7 +51,8 @@ class PersonService extends CreatorService
                     'addresses',
                     function ($q) use ($phone) {
                         $q->where('phone', $phone);
-                    })->first();
+                    }
+                )->first();
 
         if ($existingPerson) {
             return ['existing' => true, 'person' => $existingPerson];
@@ -60,5 +61,4 @@ class PersonService extends CreatorService
 
         return ['existing' => false, 'person' => $person];
     }
-
 }

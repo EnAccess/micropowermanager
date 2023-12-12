@@ -99,7 +99,8 @@
       "@php artisan key:generate --ansi"
     ],
     "lint": "find . -name \\*.php -not -path './lib/composer/*' -not -path './vendor/*' -not -path './build/.phan/*' -exec php -l \"{}\" \\;",
-    "phpcs": "phpcs --colors  -p --no-cache --standard=PSR12 --tab-width=4 ./app/",
-    "phpcbf": "phpcbf --standard=PSR12 --tab-width=4 app/"
+    "phpcs": "phpcs --colors  -p --no-cache --standard=PSR12   --exclude=Generic.Files.LineLength --tab-width=4 ./app/",
+    "phpcbf": "phpcbf --standard=PSR12 --tab-width=4 app/",
+    "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/"
   }
 }

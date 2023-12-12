@@ -7,6 +7,7 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Revenue;
 use App\Models\Transaction\Transaction;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MeterRevenueService
@@ -74,7 +75,7 @@ class MeterRevenueService
         int $connectionId,
         string $startDate,
         string $endDate
-    ): array {
+    ): Collection {
         return Transaction::query()
             ->selectRaw('SUM(transactions.amount) as total, YEARWEEK(transactions.created_at, 3) as result_date')
             ->whereIn('transactions.message', function ($query) use ($connectionId, $cityIds) {
@@ -85,8 +86,10 @@ class MeterRevenueService
                     ->where('addresses.owner_type', 'device')
                     ->where('devices.device_type', 'meter')
                     ->where('meters.connection_type_id', $connectionId)
-                    ->whereIn('addresses.city_id',
-                        explode(',', $cityIds));  // assuming $miniGridId is a comma-separated string
+                    ->whereIn(
+                        'addresses.city_id',
+                        explode(',', $cityIds)
+                    );  // assuming $miniGridId is a comma-separated string
             })
             ->whereHasMorph(
                 'originalTransaction',
@@ -97,7 +100,7 @@ class MeterRevenueService
             )
             ->whereBetween(DB::raw('DATE(transactions.created_at)'), [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(transactions.created_at, 3)'))
-            ->get()->toArray();
+            ->get();
     }
 
     public function getConnectionGroupBasedRevenueForMiniGrid(
@@ -165,8 +168,8 @@ class MeterRevenueService
         int $miniGridId,
         int $connectionGroupId,
         string $startDate,
-        string $endDate): array
-    {
+        string $endDate
+    ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.id) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
             ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
@@ -188,8 +191,8 @@ class MeterRevenueService
         int $clusterId,
         int $connectionGroupId,
         string $startDate,
-        string $endDate): array
-    {
+        string $endDate
+    ): array {
         return Meter::query()
             ->selectRaw('COUNT(meters.serial_number) as registered_connections, connection_groups.name, YEARWEEK(meter_parameters.created_at, 3) as period')
             ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')

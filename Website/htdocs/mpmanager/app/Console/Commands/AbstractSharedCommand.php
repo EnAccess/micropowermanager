@@ -46,8 +46,12 @@ abstract class AbstractSharedCommand extends Command
                     $input,
                     $output
                 ) {
-                    $this->runForCompany($databaseProxyManagerService, $companyDatabase->getCompanyId(), $input,
-                        $output);
+                    $this->runForCompany(
+                        $databaseProxyManagerService,
+                        $companyDatabase->getCompanyId(),
+                        $input,
+                        $output
+                    );
                 });
             });
     }

@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\SubTarget;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -49,9 +47,10 @@ class Target extends BaseModel
             ->limit(1);
     }
 
-    public function targetForCluster($miniGridIds, string $endDate)
+    public function targetForCluster($miniGridIds, string $endDate): Builder
     {
-        return $this::select(DB::raw("*, YEARWEEK(target_date,3) as period"))
+        return $this::query()
+            ->select(DB::raw("*, YEARWEEK(target_date,3) as period"))
             ->with('subTargets.connectionType', 'city')
             ->whereIn('owner_id', $miniGridIds)
             ->where('owner_type', 'mini-grid')
@@ -64,12 +63,13 @@ class Target extends BaseModel
         return $this->morphTo();
     }
 
-    public function periodTargetAlternative($cityId, $startDate)
+    public function periodTargetAlternative($cityId, $startDate): Builder
     {
-        return $this::select(DB::raw("*, YEARWEEK(target_date,3) as period"))->with(
-            'subTargets.connectionType',
-            'city'
-        )
+        return $this::query()
+            ->select(DB::raw("*, YEARWEEK(target_date,3) as period"))->with(
+                'subTargets.connectionType',
+                'city'
+            )
             ->where('owner_id', $cityId)
             ->where('owner_type', 'mini-grid')
             ->where('target_date', '<', $startDate)

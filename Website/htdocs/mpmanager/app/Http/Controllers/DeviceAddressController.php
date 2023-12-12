@@ -22,7 +22,6 @@ class DeviceAddressController extends Controller
         $creatorId = auth('api')->user()->id;
         $devices = $request->all();
         foreach ($devices as $deviceData) {
-
             $serialNumber = $deviceData['serial_number'];
             $device = $this->deviceService->getBySerialNumber($serialNumber);
             $previousDataOfDevice = json_encode($device->toArray());
@@ -36,8 +35,7 @@ class DeviceAddressController extends Controller
                         'affected' => $device,
                         'action' => "Device infos updated from: $previousDataOfDevice to $updatedDataOfDevice"
                     ]
-                ]
-            );
+                ]);
         }
         return ApiResource::make($devices);
     }

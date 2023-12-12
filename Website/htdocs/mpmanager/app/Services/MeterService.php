@@ -67,7 +67,6 @@ class MeterService implements IBaseService
                         $q->whereIn('city_id', $cities);
                     }
                 )
-
             )
             ->where('in_use', 1)->get();
     }

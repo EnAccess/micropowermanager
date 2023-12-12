@@ -81,5 +81,4 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         }
         Cache::put(self::cacheKeyGenerator(), $clusters, DateTime::from('+ 1 day'));
     }
-
 }

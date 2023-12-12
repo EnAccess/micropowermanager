@@ -12,7 +12,6 @@ use DateTime;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-
 class TransactionService implements IAssociative, IBaseService
 {
     public const YESTERDAY = 0;
@@ -35,7 +34,8 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
             '*',
-            static fn ($q) => $q->where('status', 1))
+            static fn ($q) => $q->where('status', 1)
+        )
             ->whereIn('id', $transactionIds)
             ->sum('amount');
     }
@@ -48,7 +48,8 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction',
             '*',
             static fn ($q) =>
-                $q->where('status', $status))
+            $q->where('status', $status)
+        )
             ->whereIn('id', $transactionIds)
             ->count();
     }
@@ -69,15 +70,13 @@ class TransactionService implements IAssociative, IBaseService
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService {
-        switch ($type) {
-            case SolarHomeSystem::RELATION_NAME :
-                return $this->solarHomeSystemTransactionService;
-            case Asset::RELATION_NAME :
-                return $this->applianceTransactionService;
-            default:
-                return $this->meterTransactionService;
-        }
+    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService
+    {
+        return match ($type) {
+            SolarHomeSystem::RELATION_NAME => $this->solarHomeSystemTransactionService,
+            Asset::RELATION_NAME => $this->applianceTransactionService,
+            default => $this->meterTransactionService,
+        };
     }
 
     public function determinePeriod($period): ?array
@@ -182,7 +181,7 @@ class TransactionService implements IAssociative, IBaseService
         // the number of confirmed transactions
         $confirmation = $this->getTransactionCountByStatus($transactionIds, true);
         // The number of cancelled transactions
-        $cancellation = $this->getTransactionCountByStatus($transactionIds,false);
+        $cancellation = $this->getTransactionCountByStatus($transactionIds, false);
 
 
         $cancellationPercentage = $cancellation * self::PERCENTAGE_DIVIDER / $total;
@@ -260,8 +259,7 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])]
-        )->find($id);
+            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])->find($id);
     }
 
     public function getAll($limit = null): Collection|LengthAwarePaginator
@@ -274,18 +272,16 @@ class TransactionService implements IAssociative, IBaseService
 
     public function create($data)
     {
-        // TODO: Implement create() method.
+        throw new \Exception("not implemented");
     }
 
     public function update($model, $data)
     {
-        // TODO: Implement update() method.
+        throw new \Exception("not implemented");
     }
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
+        throw new \Exception("not implemented");
     }
-
-
 }

@@ -143,9 +143,6 @@ class ApplianceInstallmentPayer
 
                 return true;
             }
-        }
-        );
+        });
     }
-
-
 }

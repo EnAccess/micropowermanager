@@ -9,7 +9,6 @@ use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
 use App\Models\SocialTariffPiggyBank;
-use App\Models\SubConnectionType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -24,6 +23,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int meter_id
  * @property int tariff_id
  * @property int connection_type_id
+ * @property int sub_connection_type_id
+ * @property int connection_group_id
+ * @property int tariff_access_rate_id
+ * @property MeterTariff $tariff
  */
 class MeterParameter extends BaseModel
 {
@@ -72,7 +75,7 @@ class MeterParameter extends BaseModel
         return explode(',', $this->geo()->first()->points ?? '0.0,0.0');
     }
 
-    //the address where the meter is been placed
+    //the address where the meter is placed
     public function address(): MorphOne
     {
         return $this->morphOne(Address::class, 'owner');

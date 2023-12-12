@@ -4,22 +4,19 @@ namespace App\Services;
 
 use App\Models\MenuItems;
 use App\Models\SubMenuItems;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\Boolean;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class MenuItemsService implements IBaseService
 {
     public function __construct(private MenuItems $menuItems, private SubMenuItems $subMenuItems)
     {
-
     }
 
 
-    public function getAll($limit = null)
+    public function getAll($limit = null): LengthAwarePaginator|Collection
     {
-        if($limit){
+        if ($limit) {
             return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->paginate($limit);
         }
         return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->get();
@@ -101,12 +98,11 @@ class MenuItemsService implements IBaseService
 
     public function update($model, $data)
     {
-        // TODO: Implement update() method.
+        throw new \Exception("not implemented");
     }
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
+        throw new \Exception("not implemented");
     }
-
 }

@@ -57,10 +57,9 @@ class ApplianceTransactionProcessor extends AbstractJob
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void
     {
         $minimumPurchaseAmount = $container->installmentCost;
-        if($container->amount < $minimumPurchaseAmount){
+        if ($container->amount < $minimumPurchaseAmount) {
             throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}");
         }
-
     }
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer
@@ -81,5 +80,4 @@ class ApplianceTransactionProcessor extends AbstractJob
             ->allOnConnection('redis')
             ->onQueue(config('services.queues.token'));
     }
-
 }

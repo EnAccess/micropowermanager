@@ -12,16 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 
-class AgentTransaction implements ITransactionProvider
+class AgentTransactionProvider implements ITransactionProvider
 {
-    private $validData;
+    private array $validData;
 
     public function __construct(
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
         private FirebaseService $fireBaseService
     ) {
-
     }
 
     public function saveTransaction(): void

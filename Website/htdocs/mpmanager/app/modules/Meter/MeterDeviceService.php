@@ -11,21 +11,20 @@ class MeterDeviceService implements IAssignationService
     private Device $device;
     private Meter $meter;
 
-    public function setAssigned($assigned)
+    public function setAssigned($assigned): void
     {
         $this->device = $assigned;
     }
 
-    public function setAssignee($assignee)
+    public function setAssignee($assignee): void
     {
         $this->meter = $assignee;
     }
 
-    public function assign()
+    public function assign(): Device
     {
         $this->device->device()->associate($this->meter);
 
         return $this->device;
     }
-
 }

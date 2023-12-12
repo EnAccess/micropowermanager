@@ -10,7 +10,6 @@ use MPM\Apps\CustomerRegistration\CustomerRegistrationAppService;
 
 class CustomerRegistrationAppController extends Controller
 {
-
     public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService)
     {
     }
@@ -23,7 +22,7 @@ class CustomerRegistrationAppController extends Controller
             DB::connection('shard')->commit();
 
             return ApiResource::make($person)->response()->setStatusCode(201);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::connection('shard')->rollBack();
             Log::critical('Error while adding new Customer', ['message' => $e->getMessage()]);
             throw new \Exception($e->getMessage());

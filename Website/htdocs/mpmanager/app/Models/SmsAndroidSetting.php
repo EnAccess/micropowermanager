@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Exceptions\SmsAndroidSettingNotExistingException;
-use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @property int $id
+ */
 class SmsAndroidSetting extends BaseModel
 {
     protected $table = 'sms_android_settings';
@@ -26,7 +28,7 @@ class SmsAndroidSetting extends BaseModel
         }
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

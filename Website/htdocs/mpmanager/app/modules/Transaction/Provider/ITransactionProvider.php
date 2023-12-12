@@ -1,4 +1,5 @@
 <?php
+
 namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\Transaction;

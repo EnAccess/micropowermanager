@@ -15,7 +15,7 @@ class JetsonMiniGridPVController extends Controller
     {
     }
 
-    public function show($miniGridId, Request $request)
+    public function show($miniGridId, Request $request): ApiResource
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -68,5 +68,12 @@ class JetsonMiniGridPVController extends Controller
         ];
 
         return ApiResource::make($this->miniGridPVService->create($pvData));
+    }
+
+    private function formatEnergyData($val): float
+    {
+        $val = (double)(str_replace('.', '', $val));
+        $val = (double)(str_replace(',', '.', $val));
+        return $val;
     }
 }

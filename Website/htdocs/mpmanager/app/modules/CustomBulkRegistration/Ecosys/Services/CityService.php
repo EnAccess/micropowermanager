@@ -19,9 +19,9 @@ class CityService extends CreatorService
             'name' => 'city'
         ];
         $cityData = [
-            'cluster_id'=> $csvData[$cityConfig['cluster_id']],
+            'cluster_id' => $csvData[$cityConfig['cluster_id']],
             'country_id' => 0,
-            'mini_grid_id'=>$csvData[$cityConfig['mini_grid_id']],
+            'mini_grid_id' => $csvData[$cityConfig['mini_grid_id']],
             'name' => $csvData[$cityConfig['name']]
         ];
         return $this->createRelatedDataIfDoesNotExists($cityData);

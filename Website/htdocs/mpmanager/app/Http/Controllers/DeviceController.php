@@ -19,17 +19,7 @@ class DeviceController extends Controller
         return ApiResource::make($this->deviceService->getAll());
     }
 
-    public function store(StoreDeviceRequest $request)
-    {
-        //
-    }
-
-    public function show(Device $device)
-    {
-        //
-    }
-
-    public function update(Device $device, UpdateDeviceRequest $request)
+    public function update(Device $device, UpdateDeviceRequest $request): ApiResource
     {
         $creatorId = auth('api')->user()->id;
         $previousOwner = $device->person_id;
@@ -42,13 +32,7 @@ class DeviceController extends Controller
                     'affected' => $device,
                     'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner"
                 ]
-            ]
-        );
+            ]);
         return ApiResource::make($updatedDevice);
-    }
-
-    public function destroy(Device $device)
-    {
-        //
     }
 }

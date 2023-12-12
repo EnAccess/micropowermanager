@@ -18,18 +18,12 @@ class NewTicket implements ShouldBroadcast
     use SerializesModels;
 
     /**
-     * @var Ticket
-     */
-    public $ticket;
-
-    /**
      * Create a new event instance.
      *
      * @param Ticket $ticket
      */
-    public function __construct(Ticket $ticket)
+    public function __construct(private Ticket $ticket)
     {
-        //
         $this->ticket = $ticket;
     }
 

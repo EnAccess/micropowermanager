@@ -32,11 +32,9 @@ jobs:
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run Code sniffer
-        run: ./vendor/bin/phpcbf --standard=PSR12 --tab-width=4 app/
+        run: ./vendor/bin/phpcs --standard=PSR12 --tab-width=4 --exclude=Generic.Files.LineLength app/
         working-directory: ./Website/htdocs/mpmanager
-        continue-on-error: true
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze app/Http app/Services --memory-limit=4G  --level=1
+        run: ./vendor/bin/phpstan analyze --error-format=table  app/Http app/Services app/Models/ app/Events app/Listeners app/Misc app/modules --memory-limit=2G  --level=1
         working-directory: ./Website/htdocs/mpmanager
-        continue-on-error: true

@@ -34,8 +34,10 @@ class AndroidGateway implements ISmsProvider
         try {
             $callbackWithoutProtocolRoot = explode("micropowermanager.com/api/", $callback)[1];
         } catch (\Exception $e) {
-            Log::error('Error while sending sms',
-                ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]);
+            Log::error(
+                'Error while sending sms',
+                ['number' => $number, 'message' => $body, 'error' => $e->getMessage()]
+            );
 
             throw new \Exception('Error while sending sms');
         }

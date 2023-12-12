@@ -1,6 +1,8 @@
 <?php
+
 namespace MPM\Transaction\Provider;
 
+use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -12,41 +14,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use SimpleXMLElement;
 
-class AirtelTransaction implements ITransactionProvider
+class AirtelTransactionProvider implements ITransactionProvider
 {
-    /**
-     * @var \App\Models\Transaction\AirtelTransaction
-     */
-    private $airtelTransaction;
+    private SimpleXMLElement $validData;
 
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * contains validated data
-     *
-     * @var SimpleXMLElement
-     */
-    private $validData;
-
-    /**
-     * DI will initialize the needed models
-     *
-     * @param \App\Models\Transaction\AirtelTransaction $airtelTransaction
-     * @param Transaction                               $transaction
-     */
-    public function __construct(\App\Models\Transaction\AirtelTransaction $airtelTransaction, Transaction $transaction)
+    public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction)
     {
-        $this->airtelTransaction = $airtelTransaction;
-        $this->transaction = $transaction;
     }
-
 
     public function saveTransaction(): void
     {
-        $this->airtelTransaction = new \App\Models\Transaction\AirtelTransaction();
+        $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
         //assign data
         $this->assignData($this->validData);
@@ -181,9 +159,9 @@ class AirtelTransaction implements ITransactionProvider
     /**
      * Saves the airtel transaction
      *
-     * @param \App\Models\Transaction\AirtelTransaction $airtelTransaction
+     * @param AirtelTransaction $airtelTransaction
      */
-    public function saveData(\App\Models\Transaction\AirtelTransaction $airtelTransaction): void
+    public function saveData(AirtelTransaction $airtelTransaction): void
     {
         $airtelTransaction->save();
         event('transaction.confirm');
@@ -202,16 +180,9 @@ class AirtelTransaction implements ITransactionProvider
         return $this->transaction;
     }
 
-    /**
-     * Prepares the data for either a confirmation- or a cancellation-request
-     *
-     * @param  $transaction
-     * @param \App\Models\Transaction\AirtelTransaction $airtelTransaction
-     * @return string
-     */
     private function prepareRequest(
         Transaction $transaction,
-        \App\Models\Transaction\AirtelTransaction $airtelTransaction
+        AirtelTransaction $airtelTransaction
     ): string {
         return '<COMMAND>' .
             '<TYPE>ROLLBACK</TYPE>' .

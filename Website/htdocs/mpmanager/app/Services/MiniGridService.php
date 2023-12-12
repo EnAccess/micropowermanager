@@ -30,11 +30,13 @@ class MiniGridService implements IBaseService
 
     public function create($miniGridData): MiniGrid
     {
-        return $this->miniGrid->newQuery()->create($miniGridData);
+        /** @var MiniGrid $result */
+        $result = $this->miniGrid->newQuery()->create($miniGridData);
 
+        return $result;
     }
 
-    public function update($miniGrid, $miniGridData)
+    public function update($miniGrid, $miniGridData): MiniGrid
     {
         $miniGrid->update([
             'name' => $miniGridData['name'] ?? $miniGrid->name,

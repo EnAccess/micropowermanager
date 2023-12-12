@@ -53,7 +53,6 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         private MenuItemsService $menuItemsService,
         private ManufacturerService $manufacturerService,
         private TokenService $tokenService,
-
     ) {
         parent::__construct();
     }
@@ -80,7 +79,6 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             $this->info('Meter parameter values are being shifted to meters, devices and addresses.');
             $meterParameters->each(fn($meterParameter) => $this->setMeterDevices($meterParameter));
             DB::connection('shard')->commit();
-
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $this->info("Unexpected error occurred. Message: {$message}");

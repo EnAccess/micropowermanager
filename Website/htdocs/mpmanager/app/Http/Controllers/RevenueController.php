@@ -6,6 +6,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\Cluster;
 use App\Models\ConnectionGroup;
 use App\Models\Target;
+use App\Models\Transaction\Transaction;
 use App\Services\MeterRevenueService;
 use App\Services\PeriodService;
 use App\Models\City;
@@ -27,9 +28,9 @@ class RevenueController extends Controller
         private PeriodService $periodService,
         private City $city,
         private RevenueService $revenueService,
-        private MeterRevenueService $meterRevenueService
+        private MeterRevenueService $meterRevenueService,
+        private Target $target,
     ) {
-
     }
 
     public function ticketData($id): ApiResource
@@ -77,21 +78,19 @@ class RevenueController extends Controller
         $end = $request->input('endDate') ?? date('Y-m-d');
         $endDate = Carbon::parse($end)->endOfDay();
 
-        $cities = $this->city::where('mini_grid_id', $id)->get();
+        $cities = $this->city::query()->where('mini_grid_id', $id)->get();
         $cityIds = implode(',', $cities->pluck('id')->toArray());
 
         if (!count($cities)) {
             $response = ['data' => null, 'message' => 'There is no city for this MiniGrid'];
-            return new ApiResource($response);
+            return ApiResource::make($response);
         }
 
         //get list of tariffs
-        $connections = ConnectionType::get();
+        $connections = ConnectionType::query()->get();
         $connectionNames = $connections->pluck('name')->toArray();
         $initialData = array_fill_keys($connectionNames, ['revenue' => 0]);
 
-
-        $tmpDate = null;
         $response = $this->periodService->generatePeriodicList(
             $startDate,
             $endDate,
@@ -100,23 +99,20 @@ class RevenueController extends Controller
         );
 
 
-        //return $response;
-        foreach ($connections as $connection) {
-            $tariffRevenue = $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
+        $connections->each(function (ConnectionType $connection) use ($endDate, $startDate, $cityIds, &$response) {
+            $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
                 $cityIds,
                 $connection->id,
                 $startDate,
                 $endDate
-            );
-
-            foreach ($tariffRevenue as $revenue) {
-                $totalRevenue = (int)$revenue['total'];
-                $date = $this->reformatPeriod($revenue['result_date']);
+            )->each(function (Transaction $transaction) use ($connection, &$response) {
+                $totalRevenue = (int)$transaction['total'];
+                $date = $this->reformatPeriod($transaction['result_date']);
                 $response[$date][$connection->name] = [
                     'revenue' => $totalRevenue,
                 ];
-            }
-        }
+            });
+        });
 
 
         return ApiResource::make($response);
@@ -139,13 +135,14 @@ class RevenueController extends Controller
             throw  new \Exception('target type must either mini-grid or cluster');
         }
 
+
         //get target
         if ($targetType === 'mini-grid') {
-            $targets = Target::query()->targetForMiniGrid($targetTypeId, $endDate)->first();
+            $targets = $this->target->targetForMiniGrid($targetTypeId, $endDate)->first();
         } else {
             $cluster = Cluster::query()->find($targetTypeId);
             $miniGridIds = $cluster->miniGrids()->get()->pluck('id');
-            $targets = Target::query()->targetForCluster($miniGridIds, $endDate)->get();
+            $targets = $this->target->targetForCluster($miniGridIds, $endDate)->get();
             $target_data = $this->revenueService->fetchTargets($targets);
             $targets = $targets[0];
             $targets->targets = $target_data;

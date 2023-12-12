@@ -115,11 +115,11 @@ class MeterController extends Controller
      */
     public function destroy($meterId): JsonResponse
     {
-        $meter = $this->meterService->getById($meterId);
+        $this->meterService->getById($meterId);
         return response()->json(null, 204);
     }
 
-    public function update(UpdateMeterRequest $request, Meter $meter)
+    public function update(UpdateMeterRequest $request, Meter $meter): ApiResource
     {
         $creatorId = auth('api')->user()->id;
         $previousDataOfMeter = json_encode($meter->toArray());
@@ -131,8 +131,7 @@ class MeterController extends Controller
                     'affected' => $meter,
                     'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter"
                 ]
-            ]
-        );
+            ]);
         return ApiResource::make($updatedMeter);
     }
 }

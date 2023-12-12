@@ -26,9 +26,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    public const RELATION_NAME = 'admin';
     use Notifiable;
 
+    public const RELATION_NAME = 'admin';
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
 

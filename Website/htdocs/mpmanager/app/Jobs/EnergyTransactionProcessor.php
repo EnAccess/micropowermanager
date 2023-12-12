@@ -128,5 +128,4 @@ class EnergyTransactionProcessor extends AbstractJob
     {
         return $transactionData->tariff->minimum_purchase_amount;
     }
-
 }

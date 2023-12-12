@@ -2,6 +2,7 @@
 
 namespace App\Models\Meter;
 
+use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\BaseModel;
 use App\Models\ConnectionGroup;
@@ -13,9 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\DB;
-use PDO;
 
+/**
+ * @property int $id
+ * @property MeterTariff $tariff
+ * @property bool $in_use
+ */
 class Meter extends BaseModel
 {
     public const RELATION_NAME = 'meter';
@@ -58,7 +62,7 @@ class Meter extends BaseModel
         return $this->hasOne(AccessRatePayment::class);
     }
 
-    public function accessRate()
+    public function accessRate(): AccessRate
     {
         return $this->tariff->accessRate;
     }
@@ -81,8 +85,7 @@ class Meter extends BaseModel
     public function findBySerialNumber(string $meterSerialNumber): ?self
     {
         /** @var null|Meter $result */
-        $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)
-            ->first();
+        $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
 
         return $result;
     }

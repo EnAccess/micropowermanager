@@ -40,7 +40,6 @@ class AssetController extends Controller
 
     public function destroy(Asset $asset): ApiResource
     {
-        return ApiResource::make($this->assetService->deleteAsset($asset)
-        );
+        return ApiResource::make($this->assetService->deleteAsset($asset));
     }
 }

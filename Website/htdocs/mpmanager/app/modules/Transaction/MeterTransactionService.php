@@ -24,7 +24,8 @@ class MeterTransactionService
 
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
-            fn($q) => $q->whereHasMorph('device', Meter::class));
+            fn($q) => $q->whereHasMorph('device', Meter::class)
+        );
 
         if ($serialNumber) {
             $query->where('message', 'LIKE', '%' . $serialNumber . '%');
@@ -35,12 +36,14 @@ class MeterTransactionService
             if ($whereApplied) {
                 $query->orWhereHas(
                     'device',
-                    fn($q) => $q->whereHasMorph('device', Meter::class, fn($q) => $q->where('tariff_id', $tariffId)));
+                    fn($q) => $q->whereHasMorph('device', Meter::class, fn($q) => $q->where('tariff_id', $tariffId))
+                );
             } else {
                 $whereApplied = true;
                 $query->whereHas(
                     'device',
-                    fn($q) => $q->whereHasMorph('device', Meter::class, fn($q) => $q->where('tariff_id', $tariffId)));
+                    fn($q) => $q->whereHasMorph('device', Meter::class, fn($q) => $q->where('tariff_id', $tariffId))
+                );
             }
         }
         if ($transactionProvider) {

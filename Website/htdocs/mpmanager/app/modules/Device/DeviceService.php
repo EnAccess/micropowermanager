@@ -5,28 +5,35 @@ namespace MPM\Device;
 use App\Models\Device;
 use App\Services\IAssociative;
 use App\Services\IBaseService;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class DeviceService implements IBaseService, IAssociative
 {
-
     public function __construct(
         private Device $device
     ) {
     }
 
-    public function make($deviceData)
+    public function make($deviceData): Device
     {
-        return $this->device->newQuery()->create([
+        /** @var Device $result */
+        $result = $this->device->newQuery()->create([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
         ]);
+
+        return $result;
     }
-    public function getBySerialNumber($serialNumber)
+    public function getBySerialNumber($serialNumber): ?Device
     {
-        return $this->device->newQuery()
+        /** @var Device|null $result */
+        $result =  $this->device->newQuery()
             ->with(['address.geo','device.manufacturer','person'])
             ->where('device_serial', $serialNumber)
             ->first();
+
+        return $result;
     }
     public function save($device)
     {
@@ -35,12 +42,12 @@ class DeviceService implements IBaseService, IAssociative
 
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Not implemented');
     }
 
     public function create($data)
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Not implemented');
     }
 
     public function update($device, $deviceData)
@@ -53,15 +60,14 @@ class DeviceService implements IBaseService, IAssociative
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Not implemented');
     }
 
-    public function getAll($limit = null)
+    public function getAll($limit = null): Collection|LengthAwarePaginator
     {
-        if($limit){
+        if ($limit) {
             return $this->device->newQuery()->with(['person','device'])->paginate($limit);
         }
         return $this->device->newQuery()->with(['person','device'])->get();
     }
-
 }

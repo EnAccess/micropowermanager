@@ -14,7 +14,7 @@ class AppliancePaymentController extends Controller
     {
     }
 
-    public function store(AssetPerson $appliancePerson, Request $request):ApiResource
+    public function store(AssetPerson $appliancePerson, Request $request): ApiResource
     {
         try {
             DB::connection('shard')->beginTransaction();

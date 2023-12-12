@@ -114,7 +114,6 @@ class PersonController extends Controller
             DB::connection('shard')->rollBack();
             throw new \Exception($e->getMessage());
         }
-
     }
 
     /**
@@ -134,8 +133,7 @@ class PersonController extends Controller
      * @apiResourceModel App\Models\Person\Person
      * @responseFile     responses/people/person.update.json
      */
-    public
-    function update(
+    public function update(
         int $personId,
         PersonRequest $request
     ): ApiResource {
@@ -157,8 +155,7 @@ class PersonController extends Controller
      * @bodyParam    person_id int required the ID of the person. Example: 2
      * @responseFile responses/people/person.transaction.list.json
      */
-    public
-    function transactions(
+    public function transactions(
         int $personId
     ): ApiResource {
         $person = $this->personService->getById($personId);
@@ -181,8 +178,7 @@ class PersonController extends Controller
      * @return       ApiResource
      * @responseFile responses/people/people.search.json
      */
-    public
-    function search(
+    public function search(
         Request $request
     ): ApiResource {
         $term = $request->input('term');
@@ -204,8 +200,7 @@ class PersonController extends Controller
      *
      * @apiResourceModel App\Models\Person\Person
      */
-    public
-    function destroy(
+    public function destroy(
         int $personId
     ): ApiResource {
         $person = $this->personService->getById($personId);

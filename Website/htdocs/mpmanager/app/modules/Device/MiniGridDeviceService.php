@@ -5,10 +5,10 @@ namespace MPM\Device;
 use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\MiniGrid;
+use Illuminate\Support\Collection;
 
 class MiniGridDeviceService
 {
-
     public function __construct(private Device $device, private MiniGrid $miniGrid)
     {
     }
@@ -26,7 +26,7 @@ class MiniGridDeviceService
             ->get()->pluck('device');
     }
 
-    public function getDevicesByMiniGridId($miniGridId)
+    public function getDevicesByMiniGridId($miniGridId): Collection
     {
         return $this->device->newQuery()
             ->with(['device','address.geo'])

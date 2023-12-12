@@ -22,6 +22,6 @@ class SolarHomeSystem extends BaseModel
 
     public function appliance(): BelongsTo
     {
-        return $this->belongsTo(Asset::class,'asset_id','id');
+        return $this->belongsTo(Asset::class, 'asset_id', 'id');
     }
 }

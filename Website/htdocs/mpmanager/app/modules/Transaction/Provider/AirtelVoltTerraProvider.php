@@ -6,6 +6,7 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
+use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\SmsService;
@@ -15,27 +16,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
-class AirtelVoltTerra implements ITransactionProvider
+class AirtelVoltTerraProvider implements ITransactionProvider
 {
-
     private $validData;
 
     /**
      * DI will initialize the needed models
      *
-     * @param \App\Models\Transaction\AirtelTransaction $airtelTransaction
+     * @param AirtelTransaction $airtelTransaction
      * @param Transaction $transaction
      */
     public function __construct(
-        private \App\Models\Transaction\AirtelTransaction $airtelTransaction,
+        private AirtelTransaction $airtelTransaction,
         private Transaction $transaction
     ) {
-
     }
 
     public function saveTransaction(): void
     {
-        $this->airtelTransaction = new \App\Models\Transaction\AirtelTransaction();
+        $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
         //assign data
         $this->assignData();
@@ -160,7 +159,7 @@ class AirtelVoltTerra implements ITransactionProvider
         $this->transaction->message = $this->validData['meterSerial'];
     }
 
-    public function saveData(\App\Models\Transaction\AirtelTransaction $airtelTransaction): void
+    public function saveData(AirtelTransaction $airtelTransaction): void
     {
         $airtelTransaction->save();
         event('transaction.confirm');
@@ -181,26 +180,26 @@ class AirtelVoltTerra implements ITransactionProvider
 
     public function confirm(): void
     {
-        // TODO: Implement confirm() method.
+        throw new \Exception("not implemented");
     }
 
     public function getMessage(): string
     {
-        // TODO: Implement getMessage() method.
+        throw new \Exception("not implemented");
     }
 
     public function getAmount(): int
     {
-        // TODO: Implement getAmount() method.
+        throw new \Exception("not implemented");
     }
 
     public function getSender(): string
     {
-        // TODO: Implement getSender() method.
+        throw new \Exception("not implemented");
     }
 
     public function getTransaction(): Transaction
     {
-        // TODO: Implement getTransaction() method.
+        throw new \Exception("not implemented");
     }
 }

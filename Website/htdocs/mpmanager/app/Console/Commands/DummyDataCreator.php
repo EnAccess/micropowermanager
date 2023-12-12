@@ -24,10 +24,9 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\VodacomTransaction;
 
-
 class DummyDataCreator extends AbstractSharedCommand
 {
-    const DEMO_COMPANY_ID = 11;
+    public const DEMO_COMPANY_ID = 11;
 
     protected $signature = 'dummy:create-data {amount} {--company-id=} {--type=}';
     protected $description = 'creates dummy data for demo company';
@@ -60,7 +59,6 @@ class DummyDataCreator extends AbstractSharedCommand
         private Ticket $ticket,
         private MaintenanceUsers $maintenanceUsers,
         private TicketOutsource $ticketOutsource
-
     ) {
         parent::__construct();
     }
@@ -92,7 +90,6 @@ class DummyDataCreator extends AbstractSharedCommand
                 }
                 DB::connection('shard')->commit();
             } catch (\Exception $e) {
-
                 DB::connection('shard')->rollBack();
                 echo $e->getMessage();
             }
@@ -270,9 +267,11 @@ class DummyDataCreator extends AbstractSharedCommand
         if ($transactionData->transaction->amount > 0) {
             $token = $this->token->newQuery()->create([
                 'token' => Str::random(30),
-                'energy' => round($transactionData->transaction->amount /
+                'energy' => round(
+                    $transactionData->transaction->amount /
                     ($randomMeter['meterParameter']['tariff']['price']),
-                    2),
+                    2
+                ),
                 'created_at' => $dummyDate,
                 'updated_at' => $dummyDate,
             ]);

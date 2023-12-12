@@ -16,5 +16,5 @@ abstract class CreatorService
         return $this->model->newQuery()->firstOrCreate($resolvedCsvData, $resolvedCsvData);
     }
 
-    public abstract function resolveCsvDataFromComingRow($csvData);
+    abstract public function resolveCsvDataFromComingRow($csvData);
 }

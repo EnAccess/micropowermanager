@@ -60,7 +60,8 @@ class PersonService implements IBaseService
     public function searchPerson($searchTerm, $paginate)
     {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
-            'addresses', fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+            'addresses',
+            fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
         )->orWhereHas(
             'devices',
             fn($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
@@ -198,7 +199,7 @@ class PersonService implements IBaseService
         return $person;
     }
 
-    public function getByPhoneNumber($phoneNumber):?Person
+    public function getByPhoneNumber($phoneNumber): ?Person
     {
         return $this->person->newQuery()->whereHas('addresses', fn($q) => $q->where('phone', $phoneNumber))
             ->first();

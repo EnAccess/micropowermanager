@@ -18,7 +18,6 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DatePeriod;
 
-use Illuminate\Support\Facades\Log;
 use function count;
 
 /**
@@ -73,8 +72,13 @@ class PaymentHistoryController
                 $period = 'Year(created_at)';
                 break;
         }
-        $payments = app()->make(PaymentHistory::class)->getFlow('person', $payerId, $period,
-            $limit, $order);
+        $payments = app()->make(PaymentHistory::class)->getFlow(
+            'person',
+            $payerId,
+            $period,
+            $limit,
+            $order
+        );
         return $this->preparePaymentFlow($payments);
     }
 

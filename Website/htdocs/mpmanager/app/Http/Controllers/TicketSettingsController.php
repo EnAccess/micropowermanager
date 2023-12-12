@@ -4,18 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Models\TicketSettings;
+use Illuminate\Http\Request;
 
 class TicketSettingsController extends Controller
 {
-    /**
-     * @TicketSettings
-     */
-
-    private $ticketSettings;
-
-    public function __construct(TicketSettings $ticketSettings)
+    public function __construct(private TicketSettings $ticketSettings)
     {
-        $this->ticketSettings = $ticketSettings;
     }
 
     public function index(): ApiResource
@@ -23,20 +17,20 @@ class TicketSettingsController extends Controller
         return new ApiResource(TicketSettings::all());
     }
 
-    public function update(TicketSettings $ticketSettings): ApiResource
+    public function update(Request $request): ApiResource
     {
-        $ticketSettings = TicketSettings::updateOrCreate(
+        $ticketSettings = $this->ticketSettings::query()->updateOrCreate(
             [
-                'id' => request('id')
+                'id' => $request->input('id')
             ],
             [
-                'name' => request('name'),
-                'api_token' => request('api_token'),
-                'api_url' => request('api_url'),
-                'api_key' => request('api_key')
+                'name' => $request->input('name'),
+                'api_token' => $request->input('api_token'),
+                'api_url' => $request->input('api_url'),
+                'api_key' => $request->input('api_key')
             ]
         );
 
-        return new ApiResource($ticketSettings->fresh());
+        return ApiResource::make($ticketSettings->fresh());
     }
 }

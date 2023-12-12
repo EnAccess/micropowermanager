@@ -26,7 +26,8 @@ class AgentCustomerService
             ->where('is_customer', 1)
             ->whereHas(
                 'addresses',
-                fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId)))
+                fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId))
+            )
             ->paginate(config('settings.paginate'));
     }
 
@@ -34,7 +35,8 @@ class AgentCustomerService
     public function search($searchTerm, $limit, $agent)
     {
         return $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
-            'addresses', fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+            'addresses',
+            fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
         )->orWhereHas(
             'devices',
             fn($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')

@@ -55,8 +55,8 @@ class CustomerDatabaseParser
         $connectionType = ConnectionType::query()->where('name', 'Residential')->first();
         $manufacturer = Manufacturer::query()->where('name', 'SunKing SHS')->first();
         $tariff = MeterTariff::query()->firstOrCreate([
-            'name'=>'SunKing SHS Initial Tariff',
-        ],[
+            'name' => 'SunKing SHS Initial Tariff',
+        ], [
             'name' => 'SunKing SHS Initial Tariff',
             'price' => 0,
             'total_price' => 0,
@@ -72,7 +72,7 @@ class CustomerDatabaseParser
             $tariff
         ) {
 
-            try{
+            try {
                 DB::connection('shard')->beginTransaction();
                 $row['cluster_id'] = $cluster->id;
                 $row['mini_grid_id'] = $miniGrid->id;
@@ -88,7 +88,7 @@ class CustomerDatabaseParser
                 $row['city_id'] = $city->id;
 
 
-                if(!$isExistingPerson){
+                if (!$isExistingPerson) {
                     $this->createRecordFromCsv($row, AddressService::class);
                 }
 
@@ -118,13 +118,13 @@ class CustomerDatabaseParser
 
                 $appliance = $this->createRecordFromCsv($row, ApplianceService::class);
                 $row['asset_id'] = $appliance->id;
-                $row['appliance_name']=$appliance->name;
+                $row['appliance_name'] = $appliance->name;
                 $this->checkRecordWasRecentlyCreated($appliance, 'asset');
 
                 $appliancePerson = $this->createRecordFromCsv($row, AppliancePersonService::class);
                 $this->checkRecordWasRecentlyCreated($appliancePerson, 'appliance_person');
                 DB::connection('shard')->commit();
-            }catch (\Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
                 DB::connection('shard')->rollBack();
                 throw $exception;

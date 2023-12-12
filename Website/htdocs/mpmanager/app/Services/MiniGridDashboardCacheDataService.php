@@ -8,10 +8,8 @@ use App\Models\Target;
 use DateInterval;
 use DatePeriod;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
-
 use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
 
@@ -97,7 +95,6 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             $revenues = [];
             $totalConnections = [];
             foreach ($connectionGroups as $connectionGroup) {
-
                 $revenue = $this->meterRevenueService->getConnectionGroupBasedRevenueForMiniGrid(
                     $miniGridId,
                     $connectionGroup->id,
@@ -137,7 +134,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $connectionType->id,
                     $startDate,
                     $endDate
-                );
+                )->toArray();
                 foreach ($tariffRevenue as $revenue) {
                     $totalRevenue = (int)$revenue['total'];
                     $date = $this->reformatPeriod($revenue['result_date']);
@@ -185,5 +182,4 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         }
         Cache::put(self::cacheKeyGenerator(), $miniGrids, DateTime::from('+ 1 day'));
     }
-
 }

@@ -26,5 +26,4 @@ class ConnectionGroupService extends CreatorService
         ];
         return $this->createRelatedDataIfDoesNotExists($connectionGroupData);
     }
-
 }

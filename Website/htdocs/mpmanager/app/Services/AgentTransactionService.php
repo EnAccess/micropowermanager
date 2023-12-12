@@ -58,7 +58,9 @@ class AgentTransactionService implements IBaseService
             ->with(['originalAgent', 'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])
             ->whereHasMorph(
                 'originalTransaction',
-                [AgentTransaction::class], fn  ($q) => $q->where('agent_id', $agentId))
+                [AgentTransaction::class],
+                fn  ($q) => $q->where('agent_id', $agentId)
+            )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()->paginate();
     }

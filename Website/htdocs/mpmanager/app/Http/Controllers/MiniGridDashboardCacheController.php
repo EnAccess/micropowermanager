@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\MiniGridDashboardCacheDataService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class MiniGridDashboardCacheController extends Controller
 {
@@ -13,17 +12,17 @@ class MiniGridDashboardCacheController extends Controller
     {
     }
 
-    public function index()
+    public function index(): ApiResource
     {
         return ApiResource::make($this->miniGridDashboardCacheDataService->getData());
     }
 
-    public function show($miniGridId)
+    public function show($miniGridId): ApiResource
     {
         return ApiResource::make($this->miniGridDashboardCacheDataService->getDataById($miniGridId));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): array
     {
         $fromDate = $request->query('from');
         $toDate = $request->query('to');
@@ -31,7 +30,6 @@ class MiniGridDashboardCacheController extends Controller
         if ($toDate && $fromDate) {
             $this->miniGridDashboardCacheDataService->setData([$fromDate, $toDate]);
         } else {
-
             $this->miniGridDashboardCacheDataService->setData();
         }
         return ['data' => $this->miniGridDashboardCacheDataService->getData()];

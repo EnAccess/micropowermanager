@@ -23,14 +23,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $total_price (100 times the price. Allows to play with .00 decimals)
  * @property string $currency
  * @property int|null $factor
+ * @property AccessRate $accessRate
  */
 class MeterTariff extends BaseModel
 {
-    public const RELATION_NAME = 'meter_tariff';
-
-    const DEFAULT_FACTOR = 1; //for energy usage
-    const SHS_FACTOR = 2; //for shs usage
     use SoftDeletes;
+
+    public const RELATION_NAME = 'meter_tariff';
+    public const DEFAULT_FACTOR = 1; //for energy usage
+    public const SHS_FACTOR = 2; //for shs usage
 
     protected $table = 'meter_tariffs';
     protected $guarded = [];

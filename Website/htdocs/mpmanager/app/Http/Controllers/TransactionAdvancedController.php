@@ -11,9 +11,8 @@ class TransactionAdvancedController extends Controller
     public function __construct(
         private TransactionService $transactionService,
     ) {
-
     }
-    public function searchAdvanced(Request $request)
+    public function searchAdvanced(Request $request): ApiResource
     {
         $type = $request->input('deviceType') ?: 'meter';
         $serialNumber = $request->input('serial_number');
@@ -25,8 +24,15 @@ class TransactionAdvancedController extends Controller
         $limit = (int)$request->input('per_page') ?? '15';
         $transactionService = $this->transactionService->getRelatedService($type);
 
-        return ApiResource::make($transactionService->search($serialNumber, $tariffId, $transactionProvider, $status,
-            $fromDate, $toDate, $limit));
+        return ApiResource::make($transactionService->search(
+            $serialNumber,
+            $tariffId,
+            $transactionProvider,
+            $status,
+            $fromDate,
+            $toDate,
+            $limit
+        ));
     }
 
     public function compare($period): array

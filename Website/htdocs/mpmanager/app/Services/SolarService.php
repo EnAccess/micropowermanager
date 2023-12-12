@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SolarService implements ISolarService
 {
-    public function create()
+    public function create(): Solar
     {
         $solarData = request()->input('solar_reading');
 
@@ -29,7 +29,10 @@ class SolarService implements ISolarService
             'time_stamp' => request()->input('time_stamp'),
         ];
 
-        return Solar::create($solarRecord);
+        /** @var Solar $solar */
+        $solar =  Solar::query()->create($solarRecord);
+
+        return $solar;
     }
 
     /**
@@ -37,7 +40,7 @@ class SolarService implements ISolarService
      *
      * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, Builder>
      */
-    public function list()
+    public function list(): Collection
     {
         $solarReadings = $this->filter(Solar::query());
 
@@ -49,7 +52,7 @@ class SolarService implements ISolarService
      *
      * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, Builder>
      */
-    public function lisByMiniGrid(int $miniGridId)
+    public function lisByMiniGrid(int $miniGridId): Collection
     {
         $solarReadings = $this->filter(Solar::query());
         $solarReadings->where('mini_grid_id', $miniGridId);
@@ -59,7 +62,7 @@ class SolarService implements ISolarService
     /**
      * @return Builder|Model|null
      */
-    public function showByMiniGrid(int $miniGridId)
+    public function showByMiniGrid(int $miniGridId): ?Solar
     {
         return Solar::query()->where('mini_grid_id', $miniGridId)->first();
     }

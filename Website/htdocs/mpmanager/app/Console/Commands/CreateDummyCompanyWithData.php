@@ -12,8 +12,8 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CreateDummyCompanyWithData extends Command
 {
-    const SQL_DUMMY_DATA_FILE_NAME = 'dummy_data.sql';
-    const DUMMY_COMPANY_DATA = [
+    public const SQL_DUMMY_DATA_FILE_NAME = 'dummy_data.sql';
+    public const DUMMY_COMPANY_DATA = [
         'name' => 'Dummy Company',
         'address' => 'Dummy Address',
         'phone' => '+255123456789',
@@ -21,12 +21,12 @@ class CreateDummyCompanyWithData extends Command
         'email' => 'dummy@company.com',
         'protected_page_password' => '123123'
     ];
-    const DUMMY_COMPANY_USER = [
+    public const DUMMY_COMPANY_USER = [
         'password' => '123123',
         'email' => 'dummy@user.com',
         'name' => 'Dummy User',
     ];
-    const DUMMY_DATABASE_NAME = 'DummyCompany_1';
+    public const DUMMY_DATABASE_NAME = 'DummyCompany_1';
 
     protected $signature = 'dummy:create-company-with-dummy-data';
     protected $description = 'Create a dummy company with dummy data for development environment';
@@ -68,8 +68,10 @@ class CreateDummyCompanyWithData extends Command
             ];
 
             DatabaseProxy::query()->firstOrCreate($databaseProxyData, $databaseProxyData);
-            $this->databaseProxyManagerService->runForCompany($company->getId(),
-                fn() => $this->importSqlDump($path, $databaseName));
+            $this->databaseProxyManagerService->runForCompany(
+                $company->getId(),
+                fn() => $this->importSqlDump($path, $databaseName)
+            );
 
             return 0;
         } catch (\Exception $e) {

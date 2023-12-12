@@ -32,6 +32,6 @@ class Device extends BaseModel
 
     public function appliance(): HasOne
     {
-        return $this->hasOne(Asset::class,'device_serial','device_serial');
+        return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
     }
 }

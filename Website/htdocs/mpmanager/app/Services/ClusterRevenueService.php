@@ -31,23 +31,29 @@ class ClusterRevenueService
                 'device',
                 function ($q) use ($clusterId, $connectionType, $miniGridId) {
                     $query = $miniGridId ?
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id',
-                            $miniGridId)))
+                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                            'mini_grid_id',
+                            $miniGridId
+                        )))
                         :
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id',
-                            $clusterId)));
+                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                            'cluster_id',
+                            $clusterId
+                        )));
 
 
                     if ($connectionType) {
                         $query->whereHasMorph(
                             'device',
-                            Meter::class, function ($q) use ($connectionType) {
-                            $q->where('connection_type_id', $connectionType);
-                        }
+                            Meter::class,
+                            function ($q) use ($connectionType) {
+                                $q->where('connection_type_id', $connectionType);
+                            }
                         );
                     }
                     return $query;
-                })
+                }
+            )
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
@@ -66,18 +72,22 @@ class ClusterRevenueService
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
-                    $query = $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id',
-                        $clusterId)));
+                    $query = $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                        'cluster_id',
+                        $clusterId
+                    )));
                     if ($connectionType) {
                         $query->whereHasMorph(
                             'device',
-                            Meter::class, function ($q) use ($connectionType) {
-                            $q->where('connection_type_id', $connectionType);
-                        }
+                            Meter::class,
+                            function ($q) use ($connectionType) {
+                                $q->where('connection_type_id', $connectionType);
+                            }
                         );
                     }
                     return $query;
-                })
+                }
+            )
             ->whereHasMorph(
                 'originalTransaction',
                 '*',
@@ -125,7 +135,6 @@ class ClusterRevenueService
         $endDate,
         $periodsMonthly,
         $periodsWeekly,
-
     ) {
         $totalRevenue = 0;
         $pM = $periodsMonthly;
@@ -170,8 +179,11 @@ class ClusterRevenueService
             if ($period === 'weekly' || $period === 'weekMonth') {
                 $revenues = $this->getTransactionsForWeeklyPeriod($cluster->id, [$startDate, $endDate]);
             } else {
-                $revenues = $this->getTransactionsForMonthlyPeriodById($cluster->id, [$startDate, $endDate],
-                    $connectionType->id);
+                $revenues = $this->getTransactionsForMonthlyPeriodById(
+                    $cluster->id,
+                    [$startDate, $endDate],
+                    $connectionType->id
+                );
             }
 
             foreach ($revenues as $revenue) {
@@ -238,8 +250,12 @@ class ClusterRevenueService
         foreach ($miniGrids as $miniGridIndex => $miniGrid) {
             $totalRevenue = 0;
             $p = $periods;
-            $revenues = $this->getTransactionsForMonthlyPeriodById($clusterId, [$startDate, $endDate], null,
-                $miniGrid->id);
+            $revenues = $this->getTransactionsForMonthlyPeriodById(
+                $clusterId,
+                [$startDate, $endDate],
+                null,
+                $miniGrid->id
+            );
 
             foreach ($revenues as $rIndex => $revenue) {
                 $p[$revenue->period]['revenue'] += $revenue->revenue;

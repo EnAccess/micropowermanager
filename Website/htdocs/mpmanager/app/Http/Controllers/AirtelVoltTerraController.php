@@ -24,7 +24,6 @@ class AirtelVoltTerraController extends Controller
                 'message' => 'transaction process started',
                 'transactionId' => $transaction->id,
             ];
-
         } catch (\Exception $exception) {
             $jsonData = [
                 'message' => 'transaction process can not be started',

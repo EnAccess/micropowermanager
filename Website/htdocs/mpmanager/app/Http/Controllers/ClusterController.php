@@ -24,7 +24,6 @@ class ClusterController extends Controller
         private ClusterMeterService $clusterMetersService,
         private ClusterTransactionService $clusterTransactionsService,
         private ClusterPopulationService $clusterPopulationService,
-
     ) {
     }
 

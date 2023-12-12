@@ -43,91 +43,21 @@ use function count;
  */
 class Reports
 {
-    /**
-     * @var array holds the summary of sold energy and amount
-     */
-    private $totalSold = [];
-
-    /**
-     * holds the customer group column relation
-     *
-     * @var array
-     */
-    private $connectionTypeCells = [];
-
-    /**
-     * @var Spreadsheet
-     */
-    private $spreadsheet;
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * @var SubConnectionType
-     */
-    private $subConnectionType;
-    /**
-     * @var int|string
-     */
-    private $lastIndex;
-    /**
-     * @var ConnectionGroup
-     */
-    private $connectionGroup;
-    /**
-     * @var PaymentHistory
-     */
-    private $paymentHistory;
-    /**
-     * @var City
-     */
-    private $city;
-    /**
-     * @var ConnectionType
-     */
-    private $connectionType;
-    /**
-     * @var MeterParameter
-     */
-    private $meterParameter;
-    /**
-     * @var array
-     */
-    private $subConnectionRows;
-    /**
-     * @var Target
-     */
-    private $target;
-    /**
-     * @var Report
-     */
-    private $report;
+    private array $totalSold = [];
+    private array $connectionTypeCells = [];
+    private string|int $lastIndex;
+    private array $subConnectionRows;
 
     public function __construct(
-        Spreadsheet $spreadsheet,
-        Transaction $transaction,
-        SubConnectionType $subConnectionType,
-        ConnectionType $connectionType,
-        ConnectionGroup $connectionGroup,
-        PaymentHistory $paymentHistory,
-        MeterParameter $meterParameter,
-        City $city,
-        Target $target,
-        Report $report
+        private Spreadsheet $spreadsheet,
+        private Transaction $transaction,
+        private ConnectionType $connectionType,
+        private ConnectionGroup $connectionGroup,
+        private PaymentHistory $paymentHistory,
+        private City $city,
+        private Target $target,
+        private Report $report
     ) {
-        $this->subConnectionRows = [];
-        $this->spreadsheet = $spreadsheet;
-        $this->transaction = $transaction;
-        $this->subConnectionType = $subConnectionType;
-        $this->connectionGroup = $connectionGroup;
-        $this->paymentHistory = $paymentHistory;
-        $this->city = $city;
-        $this->connectionType = $connectionType;
-        $this->meterParameter = $meterParameter;
-        $this->target = $target;
-        $this->report = $report;
     }
 
     private function monthlyTargetRibbon(Worksheet $sheet): void
@@ -226,33 +156,11 @@ class Reports
     }
 
 
-    public function generate(Request $request): ApiResource
-    {
-        $startDate = $request->get('start_date');
-        $endDate = $request->get('end_date');
-        $reportType = $request->get('report_type');
-        $city_id = $request->get('city');
-
-        $city = $this->city->find($city_id);
-
-        $this->getCustomerGroupCountPerMonth($endDate);
-        $this->getCustomerGroupEnergyUsagePerMonth([$startDate, $endDate]);
-
-        return new ApiResource(
-            $this->generateReportForCity(
-                $city->id,
-                $city->name,
-                $startDate,
-                $endDate,
-                $reportType
-            )
-        );
-    }
 
     public function generateWithJob($startDate, $endDate, $reportType): void
     {
         try {
-            $cities = $this->city->get();
+            $cities = $this->city->newQuery()->get();
             foreach ($cities as $city) {
                 $this->getCustomerGroupCountPerMonth($endDate);
                 $this->getCustomerGroupEnergyUsagePerMonth([$startDate, $endDate]);
@@ -732,7 +640,7 @@ class Reports
             $writer->save(storage_path('./' . $reportType . '/' . $fileName));
             $this->report->create(
                 [
-                    'path' => storage_path($reportType . '/' . $fileName.'*'.$companyId),
+                    'path' => storage_path($reportType . '/' . $fileName . '*' . $companyId),
                     'type' => $reportType,
                     'date' => $startDate . '---' . $endDate,
                     'name' => $cityName,
@@ -752,7 +660,8 @@ class Reports
      */
     private function getCustomerGroupCountPerMonth(string $date): void
     {
-        $connectionGroupsCount = MeterParameter::selectRaw('Count(id) as total, connection_group_id')
+        $connectionGroupsCount = MeterParameter::query()
+            ->selectRaw('Count(id) as total, connection_group_id')
             ->with('connectionGroup')
             ->where('created_at', '<', $date)
             ->groupBy('connection_group_id')->get();
@@ -823,7 +732,6 @@ class Reports
             )
             ->groupBy('meter_parameters.meter_id')
             ->get()->toArray();
-
     }
 
     private function addTargetsToXls(Worksheet $sheet): void

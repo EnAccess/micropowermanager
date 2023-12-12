@@ -24,7 +24,7 @@ class CreateAssetRequest extends FormRequest
     public function rules()
     {
         return [
-            'asset_type_id'=> 'required',
+            'asset_type_id' => 'required',
             'name' => 'required|min:3',
             'price' => 'required|numeric|min:1',
         ];

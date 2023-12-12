@@ -13,7 +13,6 @@ use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use Illuminate\Support\Facades\DB;
 
-
 class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
 {
     //--company-id=36
@@ -30,8 +29,8 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
         3 => 2
     ];
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -69,15 +68,12 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
             DB::connection('shard')->table('meters')->truncate();
             DB::connection('shard')->table('meter_tariffs')->truncate();
 
-            $connectionGroups = ConnectionGroup::query()->whereIn('id',[2,3])->get()->map(function($q){
+            ConnectionGroup::query()->whereIn('id', [2,3])->get()->map(function ($q) {
                 $q->delete();
-                $q->save();
             });
-
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $this->info("Unexpected error occurred. Message: {$message}");
-
         }
     }
 }

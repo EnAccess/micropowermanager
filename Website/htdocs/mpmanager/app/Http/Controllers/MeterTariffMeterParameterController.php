@@ -42,5 +42,4 @@ class MeterTariffMeterParameterController extends Controller
 
         return ApiResource::make($result);
     }
-
 }

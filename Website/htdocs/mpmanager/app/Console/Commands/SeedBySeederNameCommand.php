@@ -41,7 +41,6 @@ class SeedBySeederNameCommand extends AbstractSharedCommand
         try {
             $seederName = $this->argument('seederName');
             Artisan::call('db:seed', ['--force' => true, '--class' => $seederName]);
-
         } catch (\Throwable $t) {
             $this->info("failed seeding " . $t->getMessage());
         }

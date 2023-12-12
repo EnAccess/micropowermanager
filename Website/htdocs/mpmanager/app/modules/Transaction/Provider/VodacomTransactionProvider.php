@@ -1,9 +1,11 @@
 <?php
+
 namespace MPM\Transaction\Provider;
 
 use App\Exceptions\VodacomHeartBeatException;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Models\Transaction\VodacomTransaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -15,26 +17,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use SimpleXMLElement;
 
-
-class VodacomTransaction implements ITransactionProvider
+class VodacomTransactionProvider implements ITransactionProvider
 {
-    /**
-     * @var \App\Models\Transaction\VodacomTransaction
-     */
-    private $vodacomTransaction;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-
-    /**
-     * validate() stores the valid request array into this array
-     *
-     * @var SimpleXMLElement
-     */
-    private $valid_data;
+    private VodacomTransaction $vodacomTransaction;
+    private Transaction $transaction;
+    private SimpleXMLElement $valid_data;
 
 
     /**
@@ -43,7 +30,7 @@ class VodacomTransaction implements ITransactionProvider
     public function saveTransaction(): void
     {
         //initializes needed model
-        $this->vodacomTransaction = new \App\Models\Transaction\VodacomTransaction();
+        $this->vodacomTransaction = new VodacomTransaction();
 
         $this->transaction = new Transaction();
 

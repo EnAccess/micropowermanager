@@ -5,37 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Http\Requests\CountryRequest;
 use App\Http\Resources\ApiResource;
+use Illuminate\Support\Facades\Config;
 
 class CountryController extends Controller
 {
     public function index(): ApiResource
     {
         return new ApiResource(
-            Country::paginate(
-                config()->get('services.pagination')
+            Country::query()->paginate(
+                Config::get('services.pagination')
             )
         );
     }
 
     public function show(Country $country): ApiResource
     {
-        return new ApiResource(
-            $country
-        );
+        return ApiResource::make($country);
     }
 
     public function store(CountryRequest $request): ApiResource
     {
-        return
-            new ApiResource(
-                Country::create(
-                    request()->only(
-                        [
-                        'country_name',
-                        'country_code',
-                        ]
-                    )
-                )
-            );
+        return ApiResource::make(Country::query()->create(request()->only(['country_name', 'country_code',])));
     }
 }

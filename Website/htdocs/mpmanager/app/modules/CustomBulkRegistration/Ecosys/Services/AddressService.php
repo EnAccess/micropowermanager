@@ -7,13 +7,12 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
 class AddressService extends CreatorService
 {
-
     public function __construct(Address $address)
     {
         parent::__construct($address);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
+    public function resolveCsvDataFromComingRow($csvData): void
     {
         $addressConfig = [
             'person_id' => 'person_id',
@@ -29,7 +28,7 @@ class AddressService extends CreatorService
             'phone' => $csvData[$addressConfig['phone']],
             'is_primary' => 1
         ];
-        array_push($returnAddresses,$firstAddressData);
+        $returnAddresses[] = $firstAddressData;
 
         if (array_key_exists($csvData[$addressConfig['alternative_phone']], $csvData)) {
                 $alternativeAddress = [
@@ -39,13 +38,13 @@ class AddressService extends CreatorService
                     'phone' => $csvData[$addressConfig['alternative_phone']],
                     'is_primary' => 0
                 ];
-                array_push($returnAddresses,$alternativeAddress);
-            }
+                $returnAddresses[] = $alternativeAddress;
+        }
 
         $this->createRelatedDataIfDoesNotExists($returnAddresses);
     }
 
-    public function createRelatedDataIfDoesNotExists($addresses)
+    public function createRelatedDataIfDoesNotExists($addresses): void
     {
         foreach ($addresses as $address) {
             Address::query()->firstOrCreate($address, $address);

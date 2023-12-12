@@ -4,22 +4,16 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\PaymentProviderNotIdentified;
 use Closure;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
+
 use function in_array;
 
 class Transaction
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Request $request
-     * @param  Closure $next
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         try {
             $request->attributes->add(['transactionProcessor' => $this->determineSender($request)]);
@@ -29,34 +23,22 @@ class Transaction
         return $next($request);
     }
 
-    /**
-     * @param  Request $request
-     * @return ITransactionProvider
-     * @throws PaymentProviderNotIdentified
-     */
     private function determineSender(Request $request): ITransactionProvider
     {
-
         if (
-            preg_match('/\/vodacom/', $request->url()) && in_array(
-                $request->ip(),
-                config('services.vodacom.ips'),
-                false
-            )
+            preg_match('/\/vodacom/', $request->url())
+            && in_array($request->ip(), Config::get('services.vodacom.ips'))
         ) {
             return resolve('VodacomPaymentProvider');
         } elseif (
-            preg_match('/\/airtel/', $request->url()) && in_array(
-                $request->ip(),
-                config::get('services.airtel.ips'),
-                false
-            )
+            preg_match('/\/airtel/', $request->url())
+            && in_array($request->ip(), Config::get('services.airtel.ips'))
         ) {
             return resolve('AirtelPaymentProvider');
         } elseif (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
             return resolve('AgentPaymentProvider');
         } else {
-            Log::critical(
+            Log::warning(
                 'Unknown IP Sent Transaction',
                 [
                 'id' => 43326782767462641456,

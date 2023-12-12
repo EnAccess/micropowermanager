@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\UserNotDefinedException;
@@ -25,10 +26,11 @@ class JwtMiddleware extends BaseMiddleware
      * @param  string  $type
      * @return mixed
      */
-    public function handle($request, Closure $next, $type = 'user')
+    public function handle(Request $request, Closure $next, string $type = 'user'): mixed
     {
 
         try {
+            // @phpstan-ignore-next-line as no methods are defined on the facade its failing to resolve the function
             $id = JWTAuth::parseToken()->getPayload()->get('sub');
             if ($type === 'agent') {
                 $user = Agent::query()->findOrFail($id);

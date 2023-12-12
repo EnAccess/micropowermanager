@@ -18,21 +18,12 @@ class HistoryEvent implements ShouldBroadcast
     use SerializesModels;
 
     /**
-     * @var History
-     */
-    public $historyModel;
-
-    /**
      * Create a new event instance.
      *
      * @param History $historyModel
      */
-    public function __construct(History $historyModel)
+    public function __construct(private readonly History $historyModel)
     {
-        $this->broadcastQueue = config('services.queues.energy');
-
-        //initialize the history model
-        $this->historyModel = $historyModel;
     }
 
     /**
@@ -40,7 +31,7 @@ class HistoryEvent implements ShouldBroadcast
      *
      * @return PrivateChannel
      */
-    public function broadcastOn()
+    public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel('histories');
     }

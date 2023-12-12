@@ -28,9 +28,9 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $applianceRate->assetPerson,
                     'action' => 'Appliance rate ' . date(
-                            'd-m-Y',
-                            strtotime($applianceRate->due_date)
-                        ) . ' cost updated. From '
+                        'd-m-Y',
+                        strtotime($applianceRate->due_date)
+                    ) . ' cost updated. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]
@@ -54,9 +54,9 @@ class ApplianceRateService implements IBaseService
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
                     'action' => 'Appliance rate ' . date(
-                            'd-m-Y',
-                            strtotime($applianceRate->due_date)
-                        ) . ' deleted. From '
+                        'd-m-Y',
+                        strtotime($applianceRate->due_date)
+                    ) . ' deleted. From '
                         . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
                 ]
             ]

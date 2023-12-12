@@ -26,6 +26,5 @@ class MeterService extends CreatorService
             'meter_type_id' => 1,
         ];
         return $this->createRelatedDataIfDoesNotExists($meterData);
-
     }
 }

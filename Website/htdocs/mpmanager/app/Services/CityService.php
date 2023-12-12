@@ -66,9 +66,6 @@ class CityService implements IBaseService
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
+        throw new \Exception("not implemented");
     }
-
-
-
 }

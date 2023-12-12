@@ -4,6 +4,7 @@ namespace MPM\Sharding\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
+
 class DownloadingReportsResolver implements ApiResolverInterface
 {
     public function resolveCompanyId(Request $request): int

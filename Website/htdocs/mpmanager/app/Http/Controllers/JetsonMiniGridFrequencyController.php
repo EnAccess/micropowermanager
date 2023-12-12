@@ -19,8 +19,7 @@ class JetsonMiniGridFrequencyController extends Controller
     {
         $gridData = $request->input('grid');
 
-        $frequency = MiniGridFrequency::make(
-            [
+        $frequency = MiniGridFrequency::query()->make([
             'mini_grid_id' => $request->input('mini_grid_id'),
             'node_id' => $request->input('node_id'),
             'device_id' => $request->input('device_id'),
@@ -28,9 +27,8 @@ class JetsonMiniGridFrequencyController extends Controller
             'frequency_unit' => $gridData['unit'],
             'time_stamp' => date('Y-m-d H:i:s', strtotime($gridData['time_stamp'])),
 
-            ]
-        );
+            ]);
         $frequency->save();
-        return new ApiResource($frequency);
+        return ApiResource::make($frequency);
     }
 }

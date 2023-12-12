@@ -5,41 +5,52 @@ namespace MPM\SolarHomeSystem;
 use App\Models\SolarHomeSystem;
 use App\Services\IBaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class SolarHomeSystemService implements IBaseService
 {
-
     public function __construct(private SolarHomeSystem $solarHomeSystem)
     {
     }
 
-    public function getAll($limit = null)
+    public function getAll($limit = null): LengthAwarePaginator|Collection
     {
         if ($limit) {
-            return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate
-            ($limit);
+            return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
         }
         return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
-    public function getById($id)
+    public function getById($id): SolarHomeSystem
     {
-        return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->find($id);
+        /** @var SolarHomeSystem|null $result */
+        $result = $this->solarHomeSystem->newQuery()
+            ->with(['manufacturer', 'appliance', 'device.person'])
+            ->find($id);
+
+        return $result;
     }
 
-    public function create($data)
+    public function create($data): SolarHomeSystem
     {
-        return $this->solarHomeSystem->newQuery()->create($data);
+        /** @var SolarHomeSystem $result */
+        $result = $this->solarHomeSystem->newQuery()->create($data);
+
+        return $result;
     }
 
     public function search($term, $paginate): LengthAwarePaginator
     {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
-            ->whereHas('device',
-                fn($q) => $q->whereHas('person',
+            ->whereHas(
+                'device',
+                fn($q) => $q->whereHas(
+                    'person',
                     fn($q) => $q->where('name', 'LIKE', '%' . $term . '%')
-                        ->orWhere('surname', 'LIKE', '%' . $term . '%')))
+                        ->orWhere('surname', 'LIKE', '%' . $term . '%')
+                )
+            )
             ->orWhere(
                 'serial_number',
                 'LIKE',
@@ -49,12 +60,11 @@ class SolarHomeSystemService implements IBaseService
 
     public function update($model, $data)
     {
-        // TODO: Implement update() method.
+        throw new \Exception("not implemented");
     }
 
     public function delete($model)
     {
-        // TODO: Implement delete() method.
+        throw new \Exception("not implemented");
     }
-
 }

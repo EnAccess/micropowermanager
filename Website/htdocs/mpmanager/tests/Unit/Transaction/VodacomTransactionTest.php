@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\URL;
-use MPM\Transaction\Provider\VodacomTransaction;
+use MPM\Transaction\Provider\VodacomTransactionProvider;
 use Tests\TestCase;
 
 
@@ -39,7 +39,7 @@ class VodacomTransactionTest extends TestCase
         $middleWare = new Transaction();
 
         $middleWare->handle($request, function ($x) {
-            $this->assertInstanceOf(VodacomTransaction::class ,$x->attributes->get('transactionProcessor'));
+            $this->assertInstanceOf(VodacomTransactionProvider::class ,$x->attributes->get('transactionProcessor'));
         });
 
     }
