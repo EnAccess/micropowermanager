@@ -78,7 +78,7 @@ class TokenProcessor extends AbstractJob
     private function generateToken($api): void
     {
         try {
-            $tokenData = $api->chargeMeter($this->transactionContainer);
+            $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (Exception $e) {
             $this->handleTokenGenerationFailure($e);
             return;

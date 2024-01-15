@@ -42,7 +42,7 @@ class SmsApplianceRemindRateService
     public function createApplianceRemindRate($data): Collection
     {
         $this->smsApplianceRemindRate->newQuery()->create([
-            'appliance_id' => $data['appliance_id'],
+            'appliance_id' => $data['appliance_type_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
             'remind_rate' => $data['remind_rate']
         ]);

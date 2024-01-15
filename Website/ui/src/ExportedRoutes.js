@@ -501,4 +501,14 @@ export const exportedRoutes = [
         component: require('@/plugins/wavecom-payment-provider/js/modules/Component.vue').default,
         meta: { layout: 'default' },
     },
+    {
+        path: '/e-bikes',
+        component: require('./pages/EBikes/index.vue').default,
+        meta: { layout: 'default' },
+    },
+    {
+        path: '/daly-bms/daly-bms-overview',
+        component: require('./plugins/daly-bms/js/modules/Overview/Overview').default,
+        meta: { layout: 'default' },
+    },
 ]

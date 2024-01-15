@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\GeographicalInformation;
-use Illuminate\Support\Collection;
+use App\Models\Meter\MeterParameter;
 
 class GeographicalInformationService implements IBaseService, IAssociative
 {
@@ -13,7 +13,7 @@ class GeographicalInformationService implements IBaseService, IAssociative
     }
 
     // This function will be removed until devices feature migration is done
-    public function changeOwnerWithAddress($meterParameter, $addressId): void
+    public function changeOwnerWithAddress($meterParameter, $addressId)
     {
         $geoInfo = $this->geographicalInformation->newQuery()->where('owner_type', 'meter_parameter')->where('owner_id', $meterParameter->id)->first();
         if ($geoInfo) {
@@ -23,46 +23,39 @@ class GeographicalInformationService implements IBaseService, IAssociative
         }
     }
 
-    public function getById($id): ?GeographicalInformation
+    public function getById($id)
     {
-        /** @var GeographicalInformation $result */
-        $result = $this->geographicalInformation->newQuery()->find($id);
-
-        return $result;
+        return $this->geographicalInformation->newQuery()->find($id);
     }
 
 
-    public function delete($model): void
+    public function delete($model)
     {
         $model->delete();
     }
 
-    public function getAll($limit = null): Collection
+    public function getAll($limit = null)
     {
         return $this->geographicalInformation->newQuery()->get();
     }
 
     public function create($data)
     {
-        throw new \Exception("not implemented");
+        // TODO: Implement create() method.
     }
 
     public function update($model, $data)
     {
-        throw new \Exception("not implemented");
+        return $model->newQuery()->update($data);
     }
 
-    public function make($geographicalInformationData): GeographicalInformation
+    public function make($geographicalInformationData)
     {
-        /** @var GeographicalInformation $result */
-        $result = $this->geographicalInformation->newQuery()->make([
+        return $this->geographicalInformation->newQuery()->make([
             'points' => $geographicalInformationData['points']
         ]);
-
-        return $result;
     }
-
-    public function save($geographicalInformation): GeographicalInformation
+    public function save($geographicalInformation)
     {
         return $geographicalInformation->save();
     }

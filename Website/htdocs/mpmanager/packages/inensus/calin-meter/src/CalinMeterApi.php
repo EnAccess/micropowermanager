@@ -5,6 +5,7 @@ namespace Inensus\CalinMeter;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +29,7 @@ class CalinMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -67,7 +68,7 @@ class CalinMeterApi implements IManufacturerAPI
         ];
     }
 
-    public function clearMeter(Meter $meters)
+    public function clearDevice(Device $device)
     {
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }

@@ -3,6 +3,7 @@
 namespace Inensus\KelinMeter;
 
 use App\Lib\IManufacturerAPI;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
@@ -25,7 +26,7 @@ class KelinMeterApi implements IManufacturerAPI
 
     }
 
-    public function chargeMeter($transactionContainer): array
+    public function chargeDevice($transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -109,7 +110,7 @@ class KelinMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearMeter(Meter $meter)
+    public function clearDevice(Device $device)
     {
     }
 

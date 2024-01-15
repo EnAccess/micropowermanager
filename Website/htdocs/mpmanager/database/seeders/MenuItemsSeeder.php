@@ -94,7 +94,12 @@ class MenuItemsSeeder extends Seeder
                     'md_icon' => 'solar_power',
                     'menu_order' => '13',
                 ],
-
+                [
+                    'name' => 'E-Bikes',
+                    'url_slug' => '/e-bikes/page/1',
+                    'md_icon' => 'electric_bike',
+                    'menu_order' => '14',
+                ]
             )
         );
     }

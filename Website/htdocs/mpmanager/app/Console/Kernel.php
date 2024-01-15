@@ -19,6 +19,7 @@ use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMe
 use Inensus\SunKingSHS\Console\Commands\InstallPackage as InstallSunKingSHSPackage;
 use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
+use Inensus\DalyBms\Console\Commands\InstallPackage as InstallDalyBmsPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -45,6 +46,7 @@ class Kernel extends ConsoleKernel
         InstallSunKingSHSPackage::class,
         InstallGomeLongMeterPackage::class,
         InstallWaveComPackage::class,
+        InstallDalyBmsPackage::class,
     ];
 
     /**
@@ -56,12 +58,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-/*       $schedule->command('accessrate:check')->daily();
-        $schedule->command('asset-rate:check')->daily();
-        $schedule->command('calinMeters:readOnline')->dailyAt('04:00');
-        $schedule->job(new SocialTariffPiggyBankManager())->daily();*/
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
         $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
@@ -69,6 +65,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
         $schedule->command('dummy:create-data 25 --company-id=11 --type=transaction')->dailyAt('00:00');
         $schedule->command('dummy:create-data 2 --company-id=11 --type=ticket')->dailyAt('00:00');
+        $schedule->command('asset-rate:check')->dailyAt('00:00');
     }
 
     /**

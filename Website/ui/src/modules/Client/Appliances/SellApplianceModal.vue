@@ -169,7 +169,7 @@
                                     <md-field :class="{'md-invalid': errors.has('cost-based-form.installment_cost')}">
                                         <label for="installment_cost">
                                             {{
-                                                $tc('words.rateCost', 1, { rateType: applianceService.appliance.rateType })
+                                                $tc('words.rateCost', 1, {rateType: applianceService.appliance.rateType})
                                             }}</label>
                                         <md-input type="number"
                                                   name="installment_cost"
@@ -273,16 +273,17 @@
 </template>
 
 <script>
-import { currency, notify } from '@/mixins'
-import { ApplianceService } from '@/services/ApplianceService'
-import { AssetPersonService } from '@/services/AssetPersonService'
-import { DeviceService } from '@/services/DeviceService'
+import {currency, notify} from '@/mixins'
+import {ApplianceService} from '@/services/ApplianceService'
+import {AssetPersonService} from '@/services/AssetPersonService'
+import {DeviceService} from '@/services/DeviceService'
 import Multiselect from 'vue-multiselect'
-import { getGeoDataFromAddress } from '@/repositories/Client/OpenCageData'
-import { mapGetters } from 'vuex'
+import {getGeoDataFromAddress} from '@/repositories/Client/OpenCageData'
+import {mapGetters} from 'vuex'
 import Loader from '@/shared/Loader.vue'
 
 const APPLIANCE_TYPE_SHS_ID = 1
+const APPLIANCE_TYPE_E_BIKE_ID = 2
 export default {
     name: 'SellApplianceModal',
     mixins: [currency, notify],
@@ -332,15 +333,15 @@ export default {
             const validator = await this.$validator.validateAll(formName)
             if (!validator) return
             const appliance = this.applianceService.list.find((x) => x.id === this.applianceService.appliance.id)
-            const isSolarHomeSystem = this.isSolarHomeSystem(appliance)
-            if (isSolarHomeSystem && !this.selectedDevice) {
+            const isDeviceBindingRequired = this.isDeviceBindingRequired(appliance)
+            if (isDeviceBindingRequired && !this.selectedDevice) {
                 this.alertNotify('error', 'Please select a device')
                 return
             }
             this.$swal({
                 type: 'question',
                 title: this.$tc('phrases.sellAsset', 0),
-                text: this.$tc('phrases.sellAsset', 2, { cost: this.moneyFormat(this.applianceService.appliance.cost) }),
+                text: this.$tc('phrases.sellAsset', 2, {cost: this.moneyFormat(this.applianceService.appliance.cost)}),
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.cancel'),
                 confirmButtonText: this.$tc('words.sell')
@@ -348,7 +349,7 @@ export default {
                 if (result.value) {
                     try {
                         this.loading = true
-                        const points = isSolarHomeSystem ? await this.getGeoPointsForAppliance() : null
+                        const points = isDeviceBindingRequired ? await this.getGeoPointsForAppliance() : null
                         const soldApplianceParams = {
                             id: this.applianceService.appliance.id,
                             personId: this.person.id,
@@ -422,8 +423,8 @@ export default {
             this.minimumPayableAmount = Math.floor(installmentCost)
             this.applianceService.appliance.rate = Math.floor(remainingCost / this.minimumPayableAmount)
         },
-        isSolarHomeSystem (appliance) {
-            return appliance.assetTypeId === APPLIANCE_TYPE_SHS_ID
+        isDeviceBindingRequired (appliance) {
+            return appliance.assetTypeId === APPLIANCE_TYPE_SHS_ID || appliance.assetTypeId === APPLIANCE_TYPE_E_BIKE_ID
         },
     },
     computed: {
@@ -440,10 +441,18 @@ export default {
             this.applianceService.appliance.id = this.selectedApplianceId
             const availableDevices = this.deviceService.list.filter(device => !device.person)
             const appliance = this.applianceService.list.find((x) => x.id === this.applianceService.appliance.id)
-            if (this.isSolarHomeSystem(appliance)) {
+            if (this.isDeviceBindingRequired(appliance)) {
                 this.isDeviceSelectionRequired = true
                 this.deviceSelectionList = availableDevices.filter((device) => {
-                   return  (device.deviceType === 'solar_home_system' && device.device.assetId === this.selectedApplianceId)
+                    debugger
+                    switch (appliance.assetTypeId) {
+                        case APPLIANCE_TYPE_SHS_ID:
+                            return (device.deviceType === 'solar_home_system' && device.device.assetId === this.selectedApplianceId)
+                        case APPLIANCE_TYPE_E_BIKE_ID:
+                            return (device.deviceType === 'e_bike' && device.device.assetId === this.selectedApplianceId)
+                        default:
+                            return false
+                    }
                 }).map(device => {
                     return {
                         id: device.id,

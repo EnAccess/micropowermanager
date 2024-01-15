@@ -339,7 +339,8 @@
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "swiftaTransaction": "SwiftaTransaction",
     "transactionReference": "Transaction Reference",
-    "successfullyUpdated": "Successfully Updated"
+    "successfullyUpdated": "Successfully Updated",
+    "newEBike": "New E-Bike | New E-Bike created successfully"
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",
@@ -520,6 +521,11 @@
     "device": "device",
     "solar_home_system": "Solar Home System",
     "deviceType": "Device Type",
-    "devices": "Devices"
+    "devices": "Devices",
+    "eBike": "E-Bike | E-Bikes"
+  },
+  "messages": {
+    "successfullyCreated": "{item} Successfully Created",
+    "paymentAmountCannotBeLess": "Payment amount cannot be less than {amount}"
   }
 }

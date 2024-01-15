@@ -18,6 +18,7 @@ use App\Models\AssetRate;
 use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
+use App\Models\EBike;
 use App\Models\MaintenanceUsers;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
@@ -91,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
                 Address::RELATION_NAME => Address::class,
                 SolarHomeSystem::RELATION_NAME => SolarHomeSystem::class,
                 Token::RELATION_NAME => Token::class,
+                EBike::RELATION_NAME => EBike::class,
             ]
         );
     }

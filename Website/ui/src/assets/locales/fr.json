@@ -338,7 +338,14 @@
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "swiftaTransaction": "SwiftaTransaction",
     "transactionReference": "Transaction Reference",
-    "successfullyUpdated": "Successfully Updated"
+    "successfullyUpdated": "Successfully Updated",
+    "selectDevice": "Select a Device to bind with this appliance",
+    "newEBike": "New E-Bike | New E-Bike created successfully",
+    "manufacturerName": "Manufacturer Name",
+    "modelName": "Model Name",
+    "batteryLevel": "Battery Level",
+    "batteryVoltage": "Battery Voltage",
+    "lastDataReceived": "Last Data Received"
   },
   "words": {
     "access": "Accès",
@@ -518,6 +525,17 @@
     "device": "device",
     "solar_home_system": "Solar Home System",
     "deviceType": "Device Type",
-    "devices": "Devices"
+    "devices": "Devices",
+    "shs": "Solar Home System | Solar Home Systems",
+    "e_bike": "E-Bike | E-Bikes",
+    "mileage": "Mileage",
+    "speed": "Speed",
+    "lock": "Lock",
+    "unlock": "Unlock"
+  },
+  "messages": {
+    "successfullyCreated": "{item} Successfully Created",
+    "paymentAmountCannotBeLess": "Payment amount cannot be less than {amount}",
+    "successfullyUpdated": "{item} Successfully Updated"
   }
 }

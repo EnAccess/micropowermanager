@@ -3,6 +3,7 @@
 namespace MPM\Transaction;
 
 use App\Models\Asset;
+use App\Models\EBike;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Services\IAssociative;
@@ -25,7 +26,8 @@ class TransactionService implements IAssociative, IBaseService
         private Transaction $transaction,
         private MeterTransactionService $meterTransactionService,
         private SolarHomeSystemTransactionService $solarHomeSystemTransactionService,
-        private ApplianceTransactionService $applianceTransactionService
+        private ApplianceTransactionService $applianceTransactionService,
+        private EBikeTransactionService $eBikeTransactionService,
     ) {
     }
 
@@ -70,13 +72,18 @@ class TransactionService implements IAssociative, IBaseService
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService
+    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService
     {
-        return match ($type) {
-            SolarHomeSystem::RELATION_NAME => $this->solarHomeSystemTransactionService,
-            Asset::RELATION_NAME => $this->applianceTransactionService,
-            default => $this->meterTransactionService,
-        };
+        switch ($type) {
+            case SolarHomeSystem::RELATION_NAME:
+                return $this->solarHomeSystemTransactionService;
+            case Asset::RELATION_NAME:
+                return $this->applianceTransactionService;
+            case EBike::RELATION_NAME:
+                return $this->eBikeTransactionService;
+            default:
+                return $this->meterTransactionService;
+        }
     }
 
     public function determinePeriod($period): ?array
@@ -272,16 +279,16 @@ class TransactionService implements IAssociative, IBaseService
 
     public function create($data)
     {
-        throw new \Exception("not implemented");
+        // TODO: Implement create() method.
     }
 
     public function update($model, $data)
     {
-        throw new \Exception("not implemented");
+        // TODO: Implement update() method.
     }
 
     public function delete($model)
     {
-        throw new \Exception("not implemented");
+        // TODO: Implement delete() method.
     }
 }

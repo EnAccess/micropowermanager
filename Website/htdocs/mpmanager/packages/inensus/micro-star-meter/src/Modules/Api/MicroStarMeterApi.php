@@ -5,6 +5,7 @@ namespace Inensus\MicroStarMeter\Modules\Api;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Facades\Log;
 use Inensus\MicroStarMeter\Models\MicroStarTransaction;
@@ -23,7 +24,7 @@ class MicroStarMeterApi implements IManufacturerAPI
 
     }
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -56,12 +57,8 @@ class MicroStarMeterApi implements IManufacturerAPI
 
     }
 
-    /**
-     * @param Meter $meters
-     * @return void
-     * @throws ApiCallDoesNotSupportedException
-     */
-    public function clearMeter(Meter $meters)
+
+    public function clearDevice(Device $device)
     {
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }

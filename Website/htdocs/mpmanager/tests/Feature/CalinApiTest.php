@@ -59,7 +59,7 @@ class CalinApiTest extends TestCase
         ]);
 
         $api = app()->make(Manufacturer::query()->first()->api_name);
-        $token = $api->chargeMeter(TransactionDataContainer::initialize($transaction));
+        $token = $api->chargeDevice(TransactionDataContainer::initialize($transaction));
         $this->assertArrayHasKey('token', $token);
         $this->assertArrayHasKey('energy', $token);
 

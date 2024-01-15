@@ -3,6 +3,7 @@
 namespace Inensus\CalinSmartMeter;
 
 use App\Lib\IManufacturerAPI;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -28,7 +29,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeMeter($transactionContainer): array
+    public function chargeDevice($transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -76,8 +77,9 @@ class CalinSmartMeterApi implements IManufacturerAPI
      * @throws GuzzleException
      * @psalm-return array{result_code: mixed}
      */
-    public function clearMeter(Meter $meter)
+    public function clearDevice(Device $device)
     {
+        $meter = $device->device;
         $root = '/Maintenance_ClearCredit/';
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();

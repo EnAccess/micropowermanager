@@ -32,7 +32,7 @@
                     <md-select name="currency" id="currency" v-model="mainSettingsService.mainSettings.currency">
                         <md-option disabled>Select Currency</md-option>
                         <md-option v-for="(cur,index) in currencyListService.currencyList" :key="index"
-                                   :value="cur.symbol">
+                                   :value="cur.name">
                             {{
                                 cur.name
                             }} - {{ cur.symbol }}

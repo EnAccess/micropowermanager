@@ -4,6 +4,7 @@ namespace Inensus\StronMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
@@ -30,7 +31,7 @@ class StronMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -98,9 +99,9 @@ class StronMeterApi implements IManufacturerAPI
 
     }
 
-    public function clearMeter(Meter $meter)
+    public function clearDevice(Device $device)
     {
-        // TODO: Implement clearMeter() method.
+        // TODO: Implement clearDevice() method.
     }
 
 }

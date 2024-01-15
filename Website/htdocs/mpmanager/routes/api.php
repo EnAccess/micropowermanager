@@ -367,3 +367,10 @@ Route::group(['prefix' => 'solar-home-systems'], static function () {
     Route::post('/', 'SolarHomeSystemController@store');
     Route::get('/search', 'SolarHomeSystemController@search');
 });
+Route::group(['prefix' => 'e-bikes'], static function () {
+    Route::get('/', 'EBikeController@index');
+    Route::post('/', 'EBikeController@store');
+    Route::get('/search', 'EBikeController@search');
+    Route::get('/{serialNumber}', 'EBikeController@show');
+    Route::post('/switch', 'EBikeController@switch');
+});

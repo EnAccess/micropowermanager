@@ -120,6 +120,13 @@ class MpmPluginsSeeder extends Seeder
                     'installation_command' => 'wavecom-payment-provider:install',
                     'root_class' => 'WavecomPaymentProvider'
                 ],
+                [
+                    'name' => 'DalyBms',
+                    'description' => 'This plugin developed for managing e-bikes with daly bms.',
+                    'tail_tag' => "Daly Bms",
+                    'installation_command' => 'daly-bms:install',
+                    'root_class' => 'DalyBms'
+                ],
             )
         );
     }

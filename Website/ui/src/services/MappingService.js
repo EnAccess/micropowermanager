@@ -6,20 +6,23 @@ import shsIcon from '@/assets/icons/shs.png'
 import miniGridIcon2 from '@/assets/icons/miniGrid2.png'
 import miniGridIcon from '@/assets/icons/miniGrid.png'
 import villageMarkerIcon from '@/assets/icons/village.png'
+import eBikeIcon from '@/assets/icons/ebike.png'
 
 export const MARKER_TYPE = {
     'METER': 'METER',
     'SHS': 'SHS',
     'MINI_GRID': 'MINI_GRID',
     'MINI_GRID_2': 'MINI_GRID_2',
-    'VILLAGE': 'VILLAGE'
+    'VILLAGE': 'VILLAGE',
+    'E_BIKE': 'E_BIKE',
 }
 export const ICONS = {
     'METER': meterIcon,
     'SHS': shsIcon,
     'MINI_GRID': miniGridIcon,
     'MINI_GRID_2': miniGridIcon2,
-    'VILLAGE': villageMarkerIcon
+    'VILLAGE': villageMarkerIcon,
+    'E_BIKE': eBikeIcon,
 }
 export const ICON_OPTIONS = {
     iconSize: [40.4, 44],

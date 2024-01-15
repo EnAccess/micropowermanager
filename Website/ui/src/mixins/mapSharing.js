@@ -145,6 +145,9 @@ export const sharedMap = {
         routeToDetail (path, id) {
             this.$router.push(`${path}/${id}`)
         },
+        routeToDetailWithQueryParam (path, key, value) {
+            this.$router.push(`${path}?${key}=${value}`)
+        },
         focusOnItem (newLat, newLng) {
             this.map.setView([newLat, newLng], this.zoom)
         },

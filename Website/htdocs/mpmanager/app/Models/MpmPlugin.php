@@ -27,7 +27,7 @@ class MpmPlugin extends MasterModel
     public const SUN_KING_SHS = 13;
     public const GOME_LONG_METERS = 14;
     public const WAVECOM_PAYMENT_PROVIDER = 15;
-
+    public const DALY_BMS = 16;
 
     protected $table = 'mpm_plugins';
 

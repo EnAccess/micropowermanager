@@ -9,6 +9,10 @@ export const state = {
         {
             type: 'solar_home_system',
             display: 'Solar Home System'
+        },
+        {
+            type: 'e_bike',
+            display: 'E-Bike'
         }
         /*  Will be enabled in future
     {

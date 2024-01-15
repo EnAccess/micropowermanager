@@ -1,0 +1,28 @@
+<?php
+
+namespace Inensus\DalyBms\Services;
+
+
+class MenuItemService
+{
+    const MENU_ITEM = 'DalyBms';
+
+    public function createMenuItems()
+    {
+        $menuItem = [
+            'name' => 'Daly Bms',
+            'url_slug' => '',
+            'md_icon' => 'charging_station'
+        ];
+        $subMenuItems = array();
+
+        $subMenuItem1 = [
+            'name' => 'Overview',
+            'url_slug' => '/daly-bms/daly-bms-overview',
+        ];
+        array_push($subMenuItems, $subMenuItem1);
+
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
+
+    }
+}

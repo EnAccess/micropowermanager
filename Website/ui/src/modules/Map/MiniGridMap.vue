@@ -185,8 +185,8 @@ export default {
             })
         },
         setDeviceMarkers () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.METER || markingInfo.markerType === MARKER_TYPE.SHS).map((markingInfo) => {
-                const deviceMarkerIcon = L.icon({
+            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.METER || markingInfo.markerType === MARKER_TYPE.SHS || markingInfo.markerType === MARKER_TYPE.E_BIKE).map((markingInfo) => {
+               const deviceMarkerIcon = L.icon({
                     ...ICON_OPTIONS,
                     iconUrl: ICONS[markingInfo.markerType]
                 })
@@ -197,6 +197,12 @@ export default {
                     const parent = this
                     deviceMarker.on('click', () => {
                         parent.routeToDetail('/meters', markingInfo.serialNumber)
+                    })
+                }
+                if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
+                    const parent = this
+                    deviceMarker.on('click', () => {
+                        parent.routeToDetailWithQueryParam('/e-bikes','serialNumber', markingInfo.serialNumber)
                     })
                 }
                 deviceMarker.addTo(this.markersLayer) //this layer is used to show markers as marker cluster
@@ -263,6 +269,17 @@ export default {
                 }
                 const lat = parseFloat(points[0])
                 const lon = parseFloat(points[1])
+                let markerType = ''
+                switch (device.device_type) {
+                    case 'e_bike':
+                        markerType = MARKER_TYPE.E_BIKE
+                        break
+                    case 'shs':
+                        markerType = MARKER_TYPE.SHS
+                        break
+                    default:
+                        markerType = MARKER_TYPE.METER
+                }
                 markingInfos.push({
                     id: miniGridWithGeoData.id,
                     name: miniGridWithGeoData.name,
@@ -272,7 +289,7 @@ export default {
                     lon: lon,
                     dataStream: -1,
                     deviceType: device.device_type,
-                    markerType: device.device_type === 'meter' ? MARKER_TYPE.METER : MARKER_TYPE.SHS,
+                    markerType: markerType,
                 })
             })
             this.mappingService.setMarkingInfos(markingInfos)

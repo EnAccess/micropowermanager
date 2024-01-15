@@ -199,4 +199,9 @@ class AppliancePersonService implements IBaseService, IAssociative
             ->where('device_serial', null)
             ->orWhere('device_serial', '')->pluck('id');
     }
+
+    public function getBySerialNumber($serialNumber)
+    {
+        return $this->assetPerson->newQuery()->where('device_serial', $serialNumber)->first();
+    }
 }

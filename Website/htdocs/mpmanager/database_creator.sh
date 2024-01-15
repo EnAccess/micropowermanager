@@ -201,30 +201,8 @@ function createMysqlDbUser()
     #SQL2="CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';"
     #SQL3="GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';"
     #SQL4="FLUSH PRIVILEGES;"
-    mysql -h db -P 3306 -uroot -pinensus2022. -e  "${SQL1}"
+    mysql -h db -P 3306 -uroot -pwF9zLp2qRxaS2e -e  "${SQL1}"
 
-}
-
-#todo remove after database connection is working in the middleware
-function addConnectionToDatabase()
-{
-        sed -i '
-        /'\'connections\''/a\
-        '\'$DB_NAME\'' => [ \
-            '\'driver\'' => '\'mysql\'', \
-            '\'host\'' => '\'db\'', \
-            '\'port\'' => '\'3306\'', \
-            '\'database\'' => '\'$DB_NAME\'', \
-            '\'username\'' => '\'root\'', \
-            '\'password\'' => '\'inensus2022.\'', \
-            '\'unix_socket\'' => '\'\'', \
-            '\'charset\'' => '\'utf8mb4\'', \
-            '\'collation\'' => '\'utf8mb4_unicode_ci\'', \
-            '\'prefix\'' => '\'\'', \
-            '\'strict\'' => 'false', \
-            '\'engine\'' => 'null', \
-        ],
-        ' ${SOURCE_PATH}/config/database.php
 }
 
 # create new folder in migrations folder

@@ -16,7 +16,6 @@ class InstallPackage extends Command
         private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
         private SunKingCredentialService $credentialService,
-        private MeterTariff $meterTariff,
     ) {
         parent::__construct();
     }
@@ -27,17 +26,6 @@ class InstallPackage extends Command
 
         $this->manufacturerService->register();
         $this->credentialService->createCredentials();
-
-        $meterTariff = $this->meterTariff->newQuery()->where('name', 'SunKing SHS Initial Tariff')->first();
-        if (!$meterTariff) {
-            $meterTariff = $this->meterTariff->newQuery()->create([
-                'name' => 'SunKing SHS Initial Tariff',
-                'price' => 0,
-                'total_price' => 0,
-                'currency' => 'MZN',
-                'factor' => MeterTariff::SHS_FACTOR,
-            ]);
-        }
         $this->info('Package installed successfully..');
     }
 

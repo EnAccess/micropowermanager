@@ -51,13 +51,13 @@ import SmsHistory from '@/modules/Client/SmsHistory'
 import ClientPersonalData from '@/modules/Client/ClientPersonalData'
 import DeferredPayments from '@/modules/Client/DeferredPayments'
 import ClientMap from '@/modules/Map/ClientMap.vue'
-import { notify, timing } from '@/mixins'
+import {notify, timing} from '@/mixins'
 import Devices from '@/modules/Client/Devices'
 import Widget from '@/shared/widget'
-import { PersonService } from '@/services/PersonService'
-import { MappingService, MARKER_TYPE } from '@/services/MappingService'
-import { DeviceAddressService } from '@/services/DeviceAddressService'
-import { EventBus } from '@/shared/eventbus'
+import {PersonService} from '@/services/PersonService'
+import {MappingService, MARKER_TYPE} from '@/services/MappingService'
+import {DeviceAddressService} from '@/services/DeviceAddressService'
+import {EventBus} from '@/shared/eventbus'
 
 export default {
     name: 'Client',
@@ -138,6 +138,17 @@ export default {
                 }
                 const lat = parseFloat(points[0])
                 const lon = parseFloat(points[1])
+                let markerType = ''
+                switch (device.device_type) {
+                    case 'e_bike':
+                        markerType = MARKER_TYPE.E_BIKE
+                        break
+                    case 'shs':
+                        markerType = MARKER_TYPE.SHS
+                        break
+                    default:
+                        markerType = MARKER_TYPE.METER
+                }
                 markingInfos.push({
                     id: device.id,
                     name: device.name,
@@ -146,7 +157,7 @@ export default {
                     lon: lon,
                     dataStream: null,
                     deviceType: device.device_type,
-                    markerType: device.device_type === 'meter' ? MARKER_TYPE.METER : MARKER_TYPE.SHS,
+                    markerType: markerType,
                 })
                 this.mappingService.setCenter([lat, lon])
             })

@@ -3,6 +3,7 @@
 namespace Inensus\SparkMeter;
 
 use App\Lib\IManufacturerAPI;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -32,7 +33,7 @@ class SparkMeterApi implements IManufacturerAPI
 
     }
 
-    public function chargeMeter($transactionContainer): array
+    public function chargeDevice($transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
@@ -134,9 +135,9 @@ class SparkMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearMeter(Meter $meter)
+    public function clearDevice(Device $device)
     {
-        // TODO: Implement clearMeter() method.
+        // TODO: Implement clearDevice() method.
     }
 
 }

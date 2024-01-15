@@ -4,6 +4,7 @@ namespace Inensus\SteamaMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +29,7 @@ class SteamaMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {
         $owner = $transactionContainer->device->person;
 
@@ -107,7 +108,7 @@ class SteamaMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearMeter(Meter $meter)
+    public function clearDevice(Device $device)
     {
     }
 

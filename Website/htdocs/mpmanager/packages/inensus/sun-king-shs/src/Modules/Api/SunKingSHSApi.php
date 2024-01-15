@@ -5,6 +5,7 @@ namespace Inensus\SunKingSHS\Modules\Api;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
@@ -23,7 +24,7 @@ class SunKingSHSApi implements IManufacturerAPI
     ) {
     }
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
@@ -77,12 +78,8 @@ class SunKingSHSApi implements IManufacturerAPI
         ];
     }
 
-    /**
-     * @param Meter $meters
-     * @return void
-     * @throws ApiCallDoesNotSupportedException
-     */
-    public function clearMeter(Meter $meters)
+
+    public function clearDevice(Device $device)
     {
         throw  new ApiCallDoesNotSupportedException('This api call does not supported');
     }

@@ -4,6 +4,7 @@ namespace MPM\Transaction;
 
 use App\Jobs\ApplianceTransactionProcessor;
 use App\Jobs\EnergyTransactionProcessor;
+use App\Models\EBike;
 use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use MPM\Device\DeviceService;
@@ -13,10 +14,12 @@ class TransactionPaymentProcessor
     protected const PROCESSORS_BY_DEVICE_TYPE = [
         Meter::RELATION_NAME => EnergyTransactionProcessor::class,
         SolarHomeSystem::RELATION_NAME => ApplianceTransactionProcessor::class,
+        EBike::RELATION_NAME => ApplianceTransactionProcessor::class,
     ];
     protected const QUEUE_BY_DEVICE_TYPE = [
         Meter::RELATION_NAME => 'energy',
         SolarHomeSystem::RELATION_NAME => 'payment',
+        EBike::RELATION_NAME => 'payment',
     ];
 
     public static function process(int $transactionId): void

@@ -1,0 +1,27 @@
+{
+  "name": "inensus/daly-bms",
+  "description": "Daly BMS integration for Micropowermanager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\DalyBms\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\DalyBms\\Providers\\DalyBmsServiceProvider"
+      ]
+    }
+  }
+}

@@ -5,9 +5,6 @@
             :title="$tc('phrases.applianceType',1)"
             :subscriber="subscriber"
             :route_name="'/assets'"
-            :button="true"
-            :button-text="$tc('phrases.newAppliance')"
-            @widgetAction="showAddAssetType"
             color="green"
             :reset-key="resetKey">
             <md-table>
@@ -48,12 +45,12 @@
 <script>
 import Widget from '../../shared/widget'
 import AddAssetType from './AddAssetType'
-import { EventBus } from '@/shared/eventbus'
-import { AssetTypeService } from '@/services/AssetTypeService'
+import {EventBus} from '@/shared/eventbus'
+import {AssetTypeService} from '@/services/AssetTypeService'
 
 export default {
     name: 'AssetTypeList',
-    components: { Widget, AddAssetType },
+    components: {Widget, AddAssetType},
 
     data () {
         return {

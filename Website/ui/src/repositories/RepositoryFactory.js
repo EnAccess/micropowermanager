@@ -73,6 +73,7 @@ import MiniGridDeviceRepository from '@/repositories/MiniGridDeviceRepository'
 import DeviceAddressRepository from '@/repositories/DeviceAddressRepository'
 import SolarHomeSystemRepository from '@/repositories/SolarHomeSystemRepository'
 import ManufacturerRepository from '@/repositories/ManufacturerRepository'
+import EBikeRepository from '@/repositories/EBikeRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -150,6 +151,7 @@ const repositories = {
     'deviceAddress': DeviceAddressRepository,
     'solarHomeSystem': SolarHomeSystemRepository,
     'manufacturer': ManufacturerRepository,
+    'eBike': EBikeRepository,
 }
 
 export default {

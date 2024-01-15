@@ -182,7 +182,8 @@ return [
         \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
         \Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider::class,
         \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
-        \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class
+        \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
+        \Inensus\DalyBms\Providers\DalyBmsServiceProvider::class
 
     ],
 

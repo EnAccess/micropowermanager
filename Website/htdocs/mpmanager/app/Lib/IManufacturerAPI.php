@@ -10,8 +10,7 @@
 namespace App\Lib;
 
 use App\Misc\TransactionDataContainer;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
+use App\Models\Device;
 
 interface IManufacturerAPI
 {
@@ -19,7 +18,7 @@ interface IManufacturerAPI
      * @param  TransactionDataContainer $transactionContainer
      * @return array
      */
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array;
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array;
 
-    public function clearMeter(Meter $meter);
+    public function clearDevice(Device $device);
 }
