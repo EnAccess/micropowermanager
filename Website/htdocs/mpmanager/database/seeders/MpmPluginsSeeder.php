@@ -127,6 +127,13 @@ class MpmPluginsSeeder extends Seeder
                     'installation_command' => 'daly-bms:install',
                     'root_class' => 'DalyBms'
                 ],
+                [
+                    'name' => 'AngazaSHS',
+                    'description' => 'This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.',
+                    'tail_tag' => 'Angaza SHS',
+                    'installation_command' => 'angaza-shs:install',
+                    'root_class' => 'AngazaSHS'
+                ]
             )
         );
     }

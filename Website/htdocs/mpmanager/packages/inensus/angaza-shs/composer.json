@@ -1,0 +1,27 @@
+{
+  "name": "inensus/angaza-shs",
+  "description": "Angaza SHS integration for Micropowermanager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kamuran engin",
+      "email": "developer@inensus.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\AngazaSHS\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AngazaSHSServiceProvider"
+      ]
+    }
+  }
+}

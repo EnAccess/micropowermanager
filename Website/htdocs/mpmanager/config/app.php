@@ -183,6 +183,7 @@ return [
         \Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider::class,
         \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
         \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
+        \Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider::class,
         \Inensus\DalyBms\Providers\DalyBmsServiceProvider::class
 
     ],

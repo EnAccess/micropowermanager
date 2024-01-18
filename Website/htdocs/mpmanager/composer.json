@@ -83,7 +83,8 @@
       "Inensus\\SunKingSHS\\": "packages/inensus/sun-king-shs/src",
       "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src",
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
-      "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src"
+      "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
+      "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src"
     }
   },
   "minimum-stability": "dev",

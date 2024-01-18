@@ -511,4 +511,9 @@ export const exportedRoutes = [
         component: require('./plugins/daly-bms/js/modules/Overview/Overview').default,
         meta: { layout: 'default' },
     },
+    {
+        path: '/angaza-shs/angaza-overview',
+        component: require('./plugins/angaza-shs/js/modules/Overview/Overview').default,
+        meta: { layout: 'default' },
+    },
 ]
