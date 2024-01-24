@@ -1,7 +1,7 @@
-version: "3.1"
+version: "3"
 
 services:
-  'laravel':
+  laravel:
     container_name: laravel
     build:
       context: Docker/
@@ -18,7 +18,7 @@ services:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
 
-  'ui':
+  ui:
     container_name: ui
     build:
       context: ./Website/ui/
@@ -29,7 +29,7 @@ services:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
 
-  'cron':
+  cron:
     container_name: cron_job
     build:
       context: Docker/
@@ -44,7 +44,7 @@ services:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
 
-  'worker':
+  worker:
     container_name: worker
     restart: unless-stopped
     build:
@@ -69,18 +69,19 @@ services:
     volumes:
       - ./Website/htdocs/mpmanager:/app
 
-  'redis':
+  redis:
+    container_name: redis
     image: redis:5
     volumes:
-      - ./redis/:/data
+      - redis_data:/data
 
-  'maria':
+  maria:
     container_name: maria
     image: mariadb:10.3
     env_file:
       - ./Docker/.env
     volumes:
-      - ./DB/mysql:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     ports:
       - 3307:3306
 
@@ -112,3 +113,5 @@ services:
 
 volumes:
   frontend_node_modules:
+  mariadb_data:
+  redis_data:
