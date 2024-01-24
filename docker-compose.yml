@@ -84,8 +84,9 @@ services:
     ports:
       - 3307:3306
 
-  'phpmyadmin':
-    image: phpmyadmin/phpmyadmin:latest
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin:latest
     environment:
       VIRTUAL_HOST: db.mpmanager.local
     depends_on:
