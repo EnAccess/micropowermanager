@@ -59,13 +59,11 @@ services:
       - maria:db
       - redis:redis
 
-  'composer':
+  composer:
     container_name: mpmanager_composer
-    build:
-      context: Docker/
-      dockerfile: DockerfileComposer
+    image: composer:2.6.5
     restart: "no"
-    command: install
+    command: install --ignore-platform-reqs
     volumes:
       - ./Website/htdocs/mpmanager:/app
 
