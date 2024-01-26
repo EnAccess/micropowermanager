@@ -59,14 +59,6 @@ services:
       - maria:db
       - redis:redis
 
-  composer:
-    container_name: mpmanager_composer
-    image: composer:2.6.5
-    restart: "no"
-    command: install --ignore-platform-reqs
-    volumes:
-      - ./Website/htdocs/mpmanager:/app
-
   redis:
     image: redis:5
     volumes:
