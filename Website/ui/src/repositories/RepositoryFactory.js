@@ -74,6 +74,8 @@ import DeviceAddressRepository from '@/repositories/DeviceAddressRepository'
 import SolarHomeSystemRepository from '@/repositories/SolarHomeSystemRepository'
 import ManufacturerRepository from '@/repositories/ManufacturerRepository'
 import EBikeRepository from '@/repositories/EBikeRepository'
+import TransactionExportRepository from '@/repositories/TransactionExportRepository'
+import OutstandingDebtsExportRepository from '@/repositories/OutstandingDebtsExportRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -152,6 +154,8 @@ const repositories = {
     'solarHomeSystem': SolarHomeSystemRepository,
     'manufacturer': ManufacturerRepository,
     'eBike': EBikeRepository,
+    'transactionExport': TransactionExportRepository,
+    'outstandingDebtsExportRepository': OutstandingDebtsExportRepository,
 }
 
 export default {

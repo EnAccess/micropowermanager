@@ -11,6 +11,7 @@ class SolarHomeSystemTransactionService
     public function __construct(private Transaction $transaction)
     {
     }
+
     public function search(
         string $serialNumber = null,
         int $tariffId = null,
@@ -20,7 +21,7 @@ class SolarHomeSystemTransactionService
         string $toDate = null,
         int $limit = null,
         bool $whereApplied = false
-    ): LengthAwarePaginator {
+    ) {
 
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
@@ -32,14 +33,17 @@ class SolarHomeSystemTransactionService
         }
 
         if ($transactionProvider) {
-            $query->with($transactionProvider)->where(fn($q) => $q->whereHas($transactionProvider, fn($q) => $q->whereNotNull('id')));
+            $query->with($transactionProvider)->where(fn($q) => $q->whereHas(
+                $transactionProvider,
+                fn($q) => $q->whereNotNull('id')
+            ));
         }
 
         if ($status) {
             if ($transactionProvider && $transactionProvider !== '-1') {
-                $query->where(fn ($q) => $q->whereHas($transactionProvider, fn ($q) => $q->where('status', $status)));
+                $query->where(fn($q) => $q->whereHas($transactionProvider, fn($q) => $q->where('status', $status)));
             } else {
-                $query->whereHasMorph('originalTransaction', '*', fn ($q) => $q->where('status', $status))->get();
+                $query->whereHasMorph('originalTransaction', '*', fn($q) => $q->where('status', $status))->get();
             }
         }
 
@@ -51,6 +55,10 @@ class SolarHomeSystemTransactionService
             $query->where('created_at', '<=', $toDate);
         }
 
-        return $query->latest()->paginate($limit);
+        if ($limit) {
+            return $query->latest()->paginate($limit);
+        }
+
+        return $query->get();
     }
 }

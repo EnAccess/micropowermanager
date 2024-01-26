@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AssetRate;
 use App\Models\MainSettings;
+use App\Models\PaymentHistory;
 use Carbon\Carbon;
 
 class ApplianceRateService implements IBaseService
@@ -144,5 +145,16 @@ class ApplianceRateService implements IBaseService
     {
         return $this->applianceRate->newQuery()->where('asset_person_id', $assetPerson->id)
             ->where('rate_cost', $assetPerson->down_payment)->where('remaining', 0)->first();
+    }
+
+    public function getOutstandingDebtsByApplianceRates()
+    {
+        return $this->applianceRate->newQuery()
+            ->with(['assetPerson.asset', 'assetPerson.person'])
+            ->where('due_date', '<', now()->toDateString())
+            ->where('remaining', '>', 0)
+            ->groupBy('asset_person_id')
+            ->orderBy('id')
+            ->get();
     }
 }

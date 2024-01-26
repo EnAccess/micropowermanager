@@ -374,3 +374,7 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/{serialNumber}', 'EBikeController@show');
     Route::post('/switch', 'EBikeController@switch');
 });
+Route::group(['prefix' => 'export'], static function () {
+    Route::get('/transactions/{slug}', 'TransactionExportController@download');
+    Route::get('/debts/{slug}', 'OutstandingDebtsExportController@download');
+});

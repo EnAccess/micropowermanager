@@ -97,7 +97,10 @@
                 </div>
             </md-card-content>
             <md-card-actions>
-                <md-button class="md-raised md-primary " v-if="!loading" @click="submitFilter">{{ $tc('words.search') }}
+                <md-button class="md-raised md-secondary" v-if="!loading" @click="exportTransactions">
+                    <md-icon>download</md-icon>
+                </md-button>
+                <md-button class="md-raised md-primary" v-if="!loading" @click="submitFilter">{{ $tc('words.search') }}
                 </md-button>
                 <md-button class="md-raised md-accent" @click="closeFilter">{{ $tc('words.close') }}</md-button>
             </md-card-actions>
@@ -107,11 +110,14 @@
 </template>
 
 <script>
-import { TransactionService } from '@/services/TransactionService'
-import { TariffService } from '@/services/TariffService'
-import { EventBus } from '@/shared/eventbus'
-import { TransactionProviderService } from '@/services/TransactionProviderService'
-import { mapGetters } from 'vuex'
+import {TransactionService} from '@/services/TransactionService'
+import {TariffService} from '@/services/TariffService'
+import {EventBus} from '@/shared/eventbus'
+import {TransactionProviderService} from '@/services/TransactionProviderService'
+import {mapGetters} from 'vuex'
+import moment from 'moment-timezone'
+import store from "@/store/store";
+import {TransactionExportService} from "@/services/TransactionExportService";
 
 export default {
     name: 'FilterTransaction',
@@ -120,6 +126,7 @@ export default {
             transactionService: new TransactionService(),
             transactionProviderService: new TransactionProviderService(),
             tariffService: new TariffService(),
+            transactionExportService: new TransactionExportService(),
             selectedProvider: '-1',
             selectedDevice: 'meter',
             tariffs: [],
@@ -162,7 +169,7 @@ export default {
                 }
                 this.tariffs.push(tariff)
             })
-            this.tariffs.unshift({ id: 'all', name: 'All' })
+            this.tariffs.unshift({id: 'all', name: 'All'})
             this.selectedTariff = this.tariffs[0].id
 
         },
@@ -199,9 +206,38 @@ export default {
             }
         },
         submitFilter () {
-            this.filter.provider = this.selectedProvider
             this.loading = true
+            this.adjustFilter()
+            this.$emit('searchSubmit', this.filter)
 
+        },
+        async exportTransactions () {
+            this.adjustFilter()
+            const data = {
+                ...this.filter,
+                timeZone: moment.tz.guess(),
+                currency: store.getters['settings/getMainSettings'].currency
+            }
+            const email = this.$store.getters['auth/getAuthenticateUser'].email;
+            window.open(this.transactionExportService.exportTransactions(email, data))
+        },
+        getSearch () {
+            let search = this.$store.getters.search
+
+            if (Object.keys(search).length) {
+                if ('serial_number' in search) {
+                    this.filter['serial_number'] = search['serial_number']
+                }
+                if ('from' in search) {
+                    this.filter['from'] = search['from']
+                }
+                if ('to' in search) {
+                    this.filter['to'] = search['to']
+                }
+            }
+        },
+        adjustFilter () {
+            this.filter.provider = this.selectedProvider
             if (this.filter.serial_number === '') {
                 this.filter.serial_number = null
             }
@@ -221,23 +257,7 @@ export default {
                 this.filter.to = this.filterTo.toString() + ' 23:59:59'
 
             }
-            this.$emit('searchSubmit', this.filter)
-
-        },
-        getSearch () {
-            let search = this.$store.getters.search
-
-            if (Object.keys(search).length) {
-                if ('serial_number' in search) {
-                    this.filter['serial_number'] = search['serial_number']
-                }
-                if ('from' in search) {
-                    this.filter['from'] = search['from']
-                }
-                if ('to' in search) {
-                    this.filter['to'] = search['to']
-                }
-            }
+            console.log(this.filter)
         }
     },
     computed: {

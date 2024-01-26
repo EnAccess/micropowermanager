@@ -20,7 +20,7 @@ class MeterTransactionService
         string $toDate = null,
         int $limit = null,
         bool $whereApplied = false
-    ): LengthAwarePaginator {
+    ) {
 
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
@@ -66,6 +66,10 @@ class MeterTransactionService
             $query->where('created_at', '<=', $toDate);
         }
 
-        return $query->latest()->paginate($limit);
+        if ($limit) {
+            return $query->latest()->paginate($limit);
+        }
+
+        return $query->get();
     }
 }

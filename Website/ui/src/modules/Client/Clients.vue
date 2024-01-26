@@ -12,57 +12,70 @@
             :button-text="$tc('phrases.addCustomer')"
             @widgetAction="() => { showAddClient = true; key++ }"
         >
-            <md-table md-card style="margin-left: 0">
-                <md-table-row>
-                    <md-table-head>{{ $tc('words.name') }}</md-table-head>
-                    <md-table-head>{{ $tc('words.phone') }}</md-table-head>
-                    <md-table-head>{{ $tc('words.city') }}</md-table-head>
-                    <md-table-head>{{ $tc('words.device') }}</md-table-head>
-                    <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
-                </md-table-row>
-                <md-table-row v-for="client in people.list" :key="client.id" @click="detail(client.id)"
-                              style="cursor:pointer;">
-                    <md-table-cell> {{ client.name }} {{ client.surname }}</md-table-cell>
-                    <md-table-cell v-if="client.addresses.length>0"> {{ client.addresses[0].phone }}
-                    </md-table-cell>
-                    <md-table-cell class="hidden-xs" v-if="client.addresses.length>0"> {{
-                            client.addresses[0].city ?
-                                client.addresses[0].city.name : '-'
-                        }}
-                    </md-table-cell>
-                    <md-table-cell v-if="client.devices.length>0">
-                        {{ deviceList(client.devices) }}
+            <div class="md-layout md-gutter">
+                <div class="md-layout-item md-size-100">
+                    <span class="download-debts-span">You can download customers' outstanding debts from
+                        <a style="cursor: pointer"
+                           @click="exportDebts">here</a></span>
+                </div>
+                <div class="md-layout-item md-size-100">
+                    <md-table md-card style="margin-left: 0">
+                        <md-table-row>
+                            <md-table-head>{{ $tc('words.name') }}</md-table-head>
+                            <md-table-head>{{ $tc('words.phone') }}</md-table-head>
+                            <md-table-head>{{ $tc('words.city') }}</md-table-head>
+                            <md-table-head>{{ $tc('words.device') }}</md-table-head>
+                            <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
+                        </md-table-row>
+                        <md-table-row v-for="client in people.list" :key="client.id" @click="detail(client.id)"
+                                      style="cursor:pointer;">
+                            <md-table-cell> {{ client.name }} {{ client.surname }}</md-table-cell>
+                            <md-table-cell v-if="client.addresses.length>0"> {{ client.addresses[0].phone }}
+                            </md-table-cell>
+                            <md-table-cell class="hidden-xs" v-if="client.addresses.length>0"> {{
+                                    client.addresses[0].city ?
+                                        client.addresses[0].city.name : '-'
+                                }}
+                            </md-table-cell>
+                            <md-table-cell v-if="client.devices.length>0">
+                                {{ deviceList(client.devices) }}
 
-                    </md-table-cell>
-                    <md-table-cell v-if="client.devices.length === 0">
-                        -
-                    </md-table-cell>
-                    <md-table-cell class="hidden-xs"> {{ timeForTimeZone(client.lastUpdate) }}</md-table-cell>
-                </md-table-row>
+                            </md-table-cell>
+                            <md-table-cell v-if="client.devices.length === 0">
+                                -
+                            </md-table-cell>
+                            <md-table-cell class="hidden-xs"> {{ timeForTimeZone(client.lastUpdate) }}</md-table-cell>
+                        </md-table-row>
 
-            </md-table>
+                    </md-table>
+                </div>
+            </div>
+
+
         </widget>
+
         <add-client-modal :showAddClient="showAddClient" @hideAddCustomer="() => showAddClient = false" :key="key"/>
 
     </div>
 </template>
 
 <script>
-import { resources } from '@/resources'
-import { Paginator } from '@/classes/paginator'
-import { EventBus } from '@/shared/eventbus'
+import {resources} from '@/resources'
+import {Paginator} from '@/classes/paginator'
+import {EventBus} from '@/shared/eventbus'
 import Widget from '@/shared/widget'
-import { People } from '@/classes/people'
-import { timing } from '@/mixins/timing'
+import {People} from '@/classes/people'
+import {timing} from '@/mixins/timing'
 import i18n from '../../i18n'
 import AddClientModal from '@/modules/Client/AddClientModal.vue'
+import {OutstandingDebtsExportService} from "@/services/OutstandingDebtsExportService";
 
 const debounce = require('debounce')
 
 export default {
     name: 'Clients',
     mixins: [timing],
-    components: { AddClientModal, Widget },
+    components: {AddClientModal, Widget},
     data () {
         return {
             subscriber: 'client.list',
@@ -77,7 +90,8 @@ export default {
             currentPage: 0,
             totalPages: 0,
             showAddClient: false,
-            key:0
+            key: 0,
+            outstandingDebtsExportService: new OutstandingDebtsExportService()
         }
     },
     watch: {
@@ -121,10 +135,10 @@ export default {
             this.people.showAll()
         },
         detail (id) {
-            this.$router.push({ path: '/people/' + id })
+            this.$router.push({path: '/people/' + id})
         },
         getClientList (pageNumber = 1) {
-            this.paginator.loadPage(pageNumber, this.searching ? { 'term': this.searchTerm } : {}).then(response => {
+            this.paginator.loadPage(pageNumber, this.searching ? {'term': this.searchTerm} : {}).then(response => {
                 this.tmpClientList = this.clientList = response.data
             })
         },
@@ -144,7 +158,7 @@ export default {
 
             this.paginator = new Paginator(resources.person.search)
 
-            this.paginator.loadPage(1, { 'term': searchTerm })
+            this.paginator.loadPage(1, {'term': searchTerm})
                 .then(response => {
                     this.clientList = response.data
                 })
@@ -161,7 +175,10 @@ export default {
         clearSearch () {
             this.searchTerm = ''
         },
-
+        exportDebts () {
+            const email = this.$store.getters['auth/getAuthenticateUser'].email;
+            window.open(this.outstandingDebtsExportService.exportOutstandingDebts(email))
+        }
     }
 
 }
@@ -180,4 +197,11 @@ export default {
     max-width: calc(100vw - 125px);
 }
 
+.download-debts-span {
+    float: right;
+    margin-right: 1rem;
+    min-height: 2rem;
+    font-size: medium;
+    font-weight: 500;
+}
 </style>
