@@ -60,3 +60,7 @@ docker-compose-prod-non-domain.yml
 docker-compose-prod.yml
 install-production.sh
 .gitlab-ci.yml
+
+# Sphinx documentation
+docs/_build/
+docs/build/
