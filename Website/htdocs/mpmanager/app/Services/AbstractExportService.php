@@ -5,27 +5,31 @@ namespace App\Services;
 use App\Exceptions\ActiveSheetNotCreatedException;
 use App\Exceptions\SpreadSheetNotCreatedException;
 use App\Exceptions\SpreadSheetNotSavedException;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Webpatser\Uuid\Uuid;
-use DateTime;
 use DateTimeZone;
 
 abstract class AbstractExportService
 {
     protected IReader $reader;
-    protected $worksheet;
-    protected $spreadsheet;
-    protected $exportingData;
-    protected $currency;
-    protected $timeZone;
-    protected $recentlyCreatedSpreadSheetId;
+    protected Worksheet $worksheet;
+    protected Spreadsheet $spreadsheet;
+    protected Collection $exportingData;
+    protected string $currency;
+    protected string $timeZone;
+    protected string $recentlyCreatedSpreadSheetId;
 
     abstract public function setExportingData();
 
     abstract public function getTemplatePath();
+
+    abstract public function getPrefix();
 
     public function createSpreadSheetFromTemplate(string $path): Spreadsheet
     {
@@ -79,26 +83,24 @@ abstract class AbstractExportService
         return $decimal ? "$whole.$decimal" : $whole;
     }
 
-    public function convertUtcDateToTimezone($utcDate)
+    public function convertUtcDateToTimezone($utcDate): string
     {
         // Create a DateTime object with the UTC-based date
-        $dateTimeUtc = new DateTime($utcDate, new DateTimeZone('UTC'));
+        $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
         // Set the desired timezone
         $dateTimeUtc->setTimezone(new DateTimeZone($this->timeZone));
 
         // Format the date and time as a string
-        $formattedDateTime = $dateTimeUtc->format('Y-m-d H:i:s');
-
-        return $formattedDateTime;
+        return $dateTimeUtc->format('Y-m-d H:i:s');
     }
 
-    public function setRecentlyCreatedSpreadSheetId($id)
+    public function setRecentlyCreatedSpreadSheetId(string $id): void
     {
         $this->recentlyCreatedSpreadSheetId = $id;
     }
 
-    public function setActivatedSheet($sheetName)
+    public function setActivatedSheet($sheetName): void
     {
         try {
             $this->worksheet = $this->spreadsheet->setActiveSheetIndexByName($sheetName);
@@ -110,20 +112,18 @@ abstract class AbstractExportService
         }
     }
 
-    public function saveSpreadSheet($path)
+    public function saveSpreadSheet(): string
     {
+
         try {
             $uuid = (string)Uuid::generate(4);
+            $fileName = storage_path('appliance') . "/" . $this->getPrefix() . '-' . $uuid . ".xlsx";
             $this->setRecentlyCreatedSpreadSheetId($uuid);
             $writer = IOFactory::createWriter($this->spreadsheet, "Xlsx");
-            $writer->save($path . "/" . $uuid . ".xlsx");
+            $writer->save($fileName);
+            return $fileName;
         } catch (\Exception $e) {
             throw new SpreadSheetNotSavedException($e->getMessage());
         }
-    }
-
-    public function getRecentlyCreatedSpreadSheetId()
-    {
-        return $this->recentlyCreatedSpreadSheetId;
     }
 }

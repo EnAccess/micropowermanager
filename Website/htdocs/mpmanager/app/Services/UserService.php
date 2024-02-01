@@ -9,6 +9,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserService
@@ -124,7 +125,7 @@ class UserService
 
     public function getById($id)
     {
-        return  $this->user->newQuery()->find($id);
+        return $this->user->newQuery()->find($id);
     }
 
     public function delete($model)
@@ -135,5 +136,10 @@ class UserService
     public function getAll($limit = null)
     {
         // TODO: Implement getAll() method.
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->user->newQuery()->get();
     }
 }

@@ -1,34 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Services\ApplianceRateService;
-use Illuminate\Http\Request;
-use MPM\OutstandingDebts\Export\OutstandingDebtsExportService;
+use Carbon\CarbonImmutable;
+use MPM\OutstandingDebts\OutstandingDebtsExportService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OutstandingDebtsExportController
 {
-    private string $path = __DIR__ . '/../../modules/OutstandingDebts/Export';
-
     public function __construct(
         private OutstandingDebtsExportService $outstandingDebtsExportService,
-        private ApplianceRateService $applianceRateService
     ) {
     }
 
-    public function download(
-        Request $request,
-    ) {
-        $data = $this->applianceRateService->getOutstandingDebtsByApplianceRates();
-        $this->outstandingDebtsExportService->createSpreadSheetFromTemplate($this->outstandingDebtsExportService->getTemplatePath());
-        $currency = $this->applianceRateService->getCurrencyFromMainSettings();
-        $this->outstandingDebtsExportService->setCurrency($currency);
-        $this->outstandingDebtsExportService->setOutstandingDebtsData($data);
-        $this->outstandingDebtsExportService->setExportingData();
-        $this->outstandingDebtsExportService->writeOutstandingDebtsData();
-        $this->outstandingDebtsExportService->saveSpreadSheet($this->path);
+    public function download(): BinaryFileResponse
+    {
+        $path  = $this->outstandingDebtsExportService->createReport(CarbonImmutable::now());
 
-        return response()->download($this->path . '/' .
-            $this->outstandingDebtsExportService->getRecentlyCreatedSpreadSheetId() . '.xlsx');
+        return response()->download($path);
     }
 }

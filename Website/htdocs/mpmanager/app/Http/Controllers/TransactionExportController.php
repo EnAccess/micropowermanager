@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use MPM\Transaction\Export\TransactionExportService;
 use MPM\Transaction\TransactionService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TransactionExportController
 {
-    private string $path = __DIR__ . '/../../modules/Transaction/Export';
     public function __construct(
         private TransactionService $transactionService,
         private TransactionExportService $transactionExportService
@@ -17,7 +17,7 @@ class TransactionExportController
 
     public function download(
         Request $request,
-    ) {
+    ): BinaryFileResponse {
         $type = $request->get('deviceType') ?: 'meter';
         $serialNumber = $request->get('serial_number');
         $tariffId = $request->get('tariff');
@@ -40,7 +40,6 @@ class TransactionExportController
             $status,
             $fromDate,
             $toDate,
-            null
         );
         $this->transactionExportService->createSpreadSheetFromTemplate($this->transactionExportService->getTemplatePath());
         $this->transactionExportService->setCurrency($currency);
@@ -48,9 +47,8 @@ class TransactionExportController
         $this->transactionExportService->setTransactionData($data);
         $this->transactionExportService->setExportingData();
         $this->transactionExportService->writeTransactionData();
-        $this->transactionExportService->saveSpreadSheet($this->path);
+        $path = $this->transactionExportService->saveSpreadSheet();
 
-        return response()->download($this->path . '/' .
-            $this->transactionExportService->getRecentlyCreatedSpreadSheetId() . '.xlsx');
+        return response()->download($path, 'transactions' . $fromDate . '-' . $toDate . '.xlsx');
     }
 }

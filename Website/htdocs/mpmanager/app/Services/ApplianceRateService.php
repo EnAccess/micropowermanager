@@ -4,22 +4,27 @@ namespace App\Services;
 
 use App\Models\AssetRate;
 use App\Models\MainSettings;
-use App\Models\PaymentHistory;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class ApplianceRateService implements IBaseService
 {
-    public function __construct(private AssetRate $applianceRate, private MainSettings $mainSettings)
-    {
+    public function __construct(
+        private AssetRate $applianceRate,
+        private MainSettings $mainSettings
+    ) {
     }
 
-    public function getCurrencyFromMainSettings()
+    public function getCurrencyFromMainSettings(): string
     {
+        /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function updateApplianceRateCost($applianceRate, $creatorId, $cost, $newCost)
+    public function updateApplianceRateCost(AssetRate $applianceRate, $creatorId, $cost, $newCost): AssetRate
     {
         $currency = $this->getCurrencyFromMainSettings();
         event(
@@ -40,10 +45,10 @@ class ApplianceRateService implements IBaseService
         $applianceRate->remaining = $newCost;
         $applianceRate->update();
         $applianceRate->save();
-        return $applianceRate->fresh();
+        return $applianceRate->refresh();
     }
 
-    public function deleteUpdatedApplianceRateIfCostZero($applianceRate, $creatorId, $cost, $newCost)
+    public function deleteUpdatedApplianceRateIfCostZero(AssetRate $applianceRate, $creatorId, $cost, $newCost): void
     {
         $currency = $this->getCurrencyFromMainSettings();
         $appliancePerson = $applianceRate->assetPerson;
@@ -64,7 +69,7 @@ class ApplianceRateService implements IBaseService
         );
     }
 
-    public function getByLoanIdsForDueDate($loanIds)
+    public function getByLoanIdsForDueDate($loanIds): Collection
     {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->whereIn('asset_person_id', $loanIds)
@@ -73,7 +78,7 @@ class ApplianceRateService implements IBaseService
             ->get();
     }
 
-    public function getAllByLoanId($loanId)
+    public function getAllByLoanId($loanId): Collection
     {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->where('asset_person_id', $loanId)
@@ -85,7 +90,7 @@ class ApplianceRateService implements IBaseService
         // TODO: Implement getById() method.
     }
 
-    public function create($assetPerson, $installmentType = 'monthly')
+    public function create($assetPerson, $installmentType = 'monthly'): void
     {
         $baseTime = $assetPerson->first_payment_date ?? date('Y-m-d');
         $installment = $installmentType === 'monthly' ? 'month' : 'week';
@@ -141,20 +146,25 @@ class ApplianceRateService implements IBaseService
     }
 
 
-    public function getDownPaymentAsAssetRate($assetPerson): AssetRate
+    public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate
     {
-        return $this->applianceRate->newQuery()->where('asset_person_id', $assetPerson->id)
-            ->where('rate_cost', $assetPerson->down_payment)->where('remaining', 0)->first();
+        /** @var ?AssetRate $result */
+        $result = $this->applianceRate->newQuery()
+            ->where('asset_person_id', $assetPerson->id)
+            ->where('rate_cost', $assetPerson->down_payment)
+            ->where('remaining', 0)
+            ->first();
+
+        return $result;
     }
 
-    public function getOutstandingDebtsByApplianceRates()
+    public function queryOutstandingDebtsByApplianceRates(CarbonImmutable $toDate): Builder
     {
         return $this->applianceRate->newQuery()
             ->with(['assetPerson.asset', 'assetPerson.person'])
-            ->where('due_date', '<', now()->toDateString())
+            ->where('due_date', '<', $toDate->format('Y-m-d'))
             ->where('remaining', '>', 0)
             ->groupBy('asset_person_id')
-            ->orderBy('id')
-            ->get();
+            ->orderBy('id');
     }
 }

@@ -8,7 +8,7 @@ class TransactionExportService extends AbstractExportService
 {
     private $path = __DIR__ . "/export_transactions_template.xlsx";
     private $transactionData;
-    public function writeTransactionData()
+    public function writeTransactionData(): void
     {
         $this->setActivatedSheet('Sheet1');
 
@@ -27,7 +27,7 @@ class TransactionExportService extends AbstractExportService
         }
     }
 
-    public function setExportingData()
+    public function setExportingData(): void
     {
         $this->exportingData = $this->transactionData->map(function ($transaction) {
             $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->status == 0 ? 'Pending' : 'Failed');
@@ -44,13 +44,18 @@ class TransactionExportService extends AbstractExportService
         });
     }
 
-    public function setTransactionData($transactionData)
+    public function setTransactionData($transactionData): void
     {
         $this->transactionData = $transactionData;
     }
 
-    public function getTemplatePath()
+    public function getTemplatePath(): string
     {
-        return $this->path;
+        return storage_path('transaction/export_transactions_template.xlsx');
+    }
+
+    public function getPrefix(): string
+    {
+        return 'TransactionExport';
     }
 }

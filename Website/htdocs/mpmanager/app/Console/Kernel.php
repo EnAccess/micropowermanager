@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use app\Console\Commands\MailApplianceDebtsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
@@ -68,6 +69,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('dummy:create-data 25 --company-id=11 --type=transaction')->dailyAt('00:00');
         $schedule->command('dummy:create-data 2 --company-id=11 --type=ticket')->dailyAt('00:00');
         $schedule->command('asset-rate:check')->dailyAt('00:00');
+        // will run on the last day of the month
+        $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
     }
 
     /**
