@@ -162,7 +162,7 @@ automatically. If you prefer to install dependencies manually or need to add add
    ```bash
    docker exec -it laravel bash
    cd mpmanager
-     ```
+   ```
 
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:
 
