@@ -16,4 +16,4 @@ Then run
 make html
 ```
 
-the rendered output will appear in `build`.
+the rendered output will appear in `build/html`.
