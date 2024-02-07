@@ -10,5 +10,6 @@ class ShardingDatabaseSeeder extends Seeder
     {
         $this->call(MpmPluginsSeeder::class);
         $this->call(ProtectedPagesSeeder::class);
+        $this->call(UsageTypeSeeder::class);
     }
 }
