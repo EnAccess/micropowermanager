@@ -235,7 +235,7 @@ function runMigrator()
 {
     cd ${SOURCE_PATH}
     php artisan optimize:clear
-    php artisan migrator:migrate $DB_NAME $C_ID
+    php artisan migrator:migrate
 }
 
 ################################################################################
@@ -279,11 +279,6 @@ function main()
     echo "Modifying migration files.. " >> ${SOURCE_PATH}/creator.log
     sedMigrationFiles
     echo "Done! " >> ${SOURCE_PATH}/creator.log
-
-    echo "Running migrations for new database.. " >> ${SOURCE_PATH}/creator.log
-    runMigrator
-    echo "Done! " >> ${SOURCE_PATH}/creator.log
-
 
     echo "################################ " >> ${SOURCE_PATH}/creator.log
     echo "##### Creator Script Ends ###### " >> ${SOURCE_PATH}/creator.log
