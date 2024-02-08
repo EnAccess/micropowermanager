@@ -12,7 +12,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'WaveMoney',
             'url_slug' => '',
-            'md_icon' => 'money'
+            'md_icon' => 'money',
+            'usage_type' => 'general',
         ];
         $subMenuItems= array();
 

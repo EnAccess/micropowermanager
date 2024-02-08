@@ -12,7 +12,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'Daly Bms',
             'url_slug' => '',
-            'md_icon' => 'charging_station'
+            'md_icon' => 'charging_station',
+            'usage_type' => 'e-bike',
         ];
         $subMenuItems = array();
 

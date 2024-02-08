@@ -12,7 +12,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'Viber Messaging',
             'url_slug' => '',
-            'md_icon' => 'message'
+            'md_icon' => 'message',
+            'usage_type' => 'general',
         ];
         $subMenuItems= array();
 

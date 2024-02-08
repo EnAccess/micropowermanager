@@ -14,7 +14,8 @@ class MenuItemService
         $menuItem = [
             'name' =>'Calin Meter',
             'url_slug' =>'',
-            'md_icon' =>'bolt'
+            'md_icon' =>'bolt',
+            'usage_type' =>'mini-grid',
         ];
         $subMenuItems= array();
 

@@ -11,7 +11,8 @@ class MenuItemService
         $menuItem = [
             'name' =>'Wavecom Payment Provider',
             'url_slug' =>'/wavecom/transactions',
-            'md_icon' =>'upload_file'
+            'md_icon' =>'upload_file',
+            'usage_type' =>'general',
         ];
         return ['menuItem'=>$menuItem,'subMenuItems'=>[]];
     }

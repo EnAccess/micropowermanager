@@ -12,7 +12,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'Spark Meter',
             'url_slug' => '',
-            'md_icon' => 'bolt'
+            'md_icon' => 'bolt',
+            'usage_type' => 'mini-grid',
         ];
         $subMenuItems = array();
 

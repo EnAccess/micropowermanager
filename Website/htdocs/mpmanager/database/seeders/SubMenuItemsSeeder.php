@@ -11,16 +11,6 @@ class SubMenuItemsSeeder extends Seeder
     {
         DB::connection('shard')->table('sub_menu_items')->insert(array(
                 [
-                    'name' => 'Clusters',
-                    'url_slug' => '/',
-                    'parent_id' => '1',
-                ],
-                [
-                    'name' => 'Mini-Grid',
-                    'url_slug' => '/dashboards/mini-grid',
-                    'parent_id' => '1',
-                ],
-                [
                     'name' => 'List',
                     'url_slug' => '/agents/page/1',
                     'parent_id' => '3',

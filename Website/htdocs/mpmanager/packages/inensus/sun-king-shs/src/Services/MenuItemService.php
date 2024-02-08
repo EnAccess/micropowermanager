@@ -12,7 +12,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'SunKing SHS',
             'url_slug' => '',
-            'md_icon' => 'bolt'
+            'md_icon' => 'bolt',
+            'usage_type' => 'shs',
         ];
         $subMenuItems = array();
 

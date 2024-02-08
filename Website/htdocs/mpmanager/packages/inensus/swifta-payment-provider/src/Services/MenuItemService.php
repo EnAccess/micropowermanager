@@ -10,7 +10,8 @@ class MenuItemService
         $menuItem = [
             'name' => 'Swifta',
             'url_slug' => '',
-            'md_icon' => 'money'
+            'md_icon' => 'money',
+            'usage_type' => 'general',
         ];
         $subMenuItems= array();
 
