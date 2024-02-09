@@ -58,6 +58,11 @@ class UserDefaultDatabaseConnectionMiddleware
             return $next($request);
         }
 
+        //getting usage types  should not be proxied. It should use the base database to create the record
+        if ($request->path() === 'api/usage-types' && $request->isMethod('get')) {
+            return $next($request);
+        }
+
         //webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));

@@ -39,6 +39,7 @@ class CompanyController extends Controller
 
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
+        $usageType = $request->input('usage_type');
 
         $companyDatabaseData = [
             'company_id' => $company->getId(),
@@ -51,7 +52,7 @@ class CompanyController extends Controller
 
         return $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            function () use ($adminData, $company, $plugins) {
+            function () use ($adminData, $company, $plugins, $usageType) {
                 $this->companyDatabaseService->doMigrations();
                 $this->companyDatabaseService->runSeeders();
                 $this->userService->create([
@@ -89,7 +90,7 @@ class CompanyController extends Controller
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
                 $mainSettings = $this->mainSettingsService->getAll()->first();
-                $this->mainSettingsService->update($mainSettings, ['company_name' => $company->name]);
+                $this->mainSettingsService->update($mainSettings, ['company_name' => $company->name, 'usage_type' => $usageType]);
 
                 return response()->json([
                     'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',

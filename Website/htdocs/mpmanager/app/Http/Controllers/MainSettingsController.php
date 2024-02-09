@@ -27,7 +27,8 @@ class MainSettingsController extends Controller
             'country',
             'language',
             'vat_energy',
-            'vat_appliance'
+            'vat_appliance',
+            'usage_type'
         ]);
 
         return ApiResource::make($this->mainSettingsService->update($mainSettings, $mainSettingsData));
