@@ -6,7 +6,6 @@ services:
     build:
       context: Docker/
       dockerfile: DockerfileLaravelDev
-    image: laravel/php:8
     depends_on:
       - maria
     links:
@@ -34,7 +33,6 @@ services:
     build:
       context: Docker/
       dockerfile: DockerfileCron
-    image: laravel/cron
     depends_on:
       - maria
     links:
