@@ -116,8 +116,8 @@ import {EventBus} from '@/shared/eventbus'
 import {TransactionProviderService} from '@/services/TransactionProviderService'
 import {mapGetters} from 'vuex'
 import moment from 'moment-timezone'
-import store from "@/store/store";
-import {TransactionExportService} from "@/services/TransactionExportService";
+import store from '@/store/store'
+import {TransactionExportService} from '@/services/TransactionExportService'
 
 export default {
     name: 'FilterTransaction',
@@ -191,18 +191,18 @@ export default {
         },
         seTransaction (transaction) {
             switch (transaction) {
-                case 'All':
-                    this.filter.status = 'all'
-                    break
-                case 'Only Approved':
-                    this.filter.status = '1'
-                    break
-                case 'Only Rejected':
-                    this.filter.status = '-1'
-                    break
+            case 'All':
+                this.filter.status = 'all'
+                break
+            case 'Only Approved':
+                this.filter.status = '1'
+                break
+            case 'Only Rejected':
+                this.filter.status = '-1'
+                break
 
-                default:
-                    break
+            default:
+                break
             }
         },
         submitFilter () {
@@ -218,7 +218,7 @@ export default {
                 timeZone: moment.tz.guess(),
                 currency: store.getters['settings/getMainSettings'].currency
             }
-            const email = this.$store.getters['auth/getAuthenticateUser'].email;
+            const email = this.$store.getters['auth/getAuthenticateUser'].email
             window.open(this.transactionExportService.exportTransactions(email, data))
         },
         getSearch () {

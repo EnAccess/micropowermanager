@@ -70,14 +70,14 @@ export class MappingService {
     filterResultsOut (geoData, filteredTypes) {
         this.searchedOrDrawnItems = []
         return geoData.filter(data => {
-                const geoType = data.geojson.type.toLowerCase()
+            const geoType = data.geojson.type.toLowerCase()
 
-                if (Object.keys(filteredTypes).length > 0 && !(geoType in filteredTypes)) {
-                    return false
-                }
-                data.searched = true
-                return true
-            })
+            if (Object.keys(filteredTypes).length > 0 && !(geoType in filteredTypes)) {
+                return false
+            }
+            data.searched = true
+            return true
+        })
     }
 
     strToHex (str) {
@@ -102,20 +102,20 @@ export class MappingService {
     }
 
     manualDrawingLocationConvert(geoDataItem) {
-        const locations = [];
+        const locations = []
         for (const coordinates of geoDataItem.geojson.coordinates) {
             for (const coordinate of coordinates) {
-                const { lat, lng } = coordinate;
+                const { lat, lng } = coordinate
                 if (lat === undefined && lng === undefined) {
-                    locations.push(coordinate);
+                    locations.push(coordinate)
                 } else {
-                    locations.push([lat, lng]);
+                    locations.push([lat, lng])
                 }
             }
         }
-        geoDataItem.geojson.coordinates[0] = [...locations];
+        geoDataItem.geojson.coordinates[0] = [...locations]
 
-        return geoDataItem;
+        return geoDataItem
     }
 
 

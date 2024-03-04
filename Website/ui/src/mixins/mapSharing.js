@@ -170,7 +170,7 @@ export const sharedMap = {
                 if (layer._icon) {
                     layer.remove()
                 }
-            });
+            })
         },
     },
     computed: {

@@ -106,7 +106,7 @@ export default {
 
                         return
                     }
-                     this.batteryService.prepareChartData()
+                    this.batteryService.prepareChartData()
                 })
         },
         initPVChart () {

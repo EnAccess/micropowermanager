@@ -105,7 +105,7 @@ export default {
             }
             try {
                 this.loading = true
-               const appliances =  await this.applianceService.createAppliance()
+                const appliances =  await this.applianceService.createAppliance()
 
                 this.loading = false
                 this.alertNotify('success', this.$tc('phrases.newAppliance', 1))

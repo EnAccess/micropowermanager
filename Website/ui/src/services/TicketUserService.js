@@ -29,14 +29,14 @@ export class TicketUserService {
 
     async getAvailableUsers() {
         try {
-            const response = await this.repository.getAvailableUsers();
+            const response = await this.repository.getAvailableUsers()
             if(response.status === 200) {
-                this.availableUserList = response.data.data;
+                this.availableUserList = response.data.data
             } else {
                 new ErrorHandler(response.error, 'http', response.status)
             }
         } catch (e) {
-            new ErrorHandler(e.response.data.data.message);
+            new ErrorHandler(e.response.data.data.message)
         }
     }
 

@@ -178,12 +178,11 @@ export class TariffService {
             }
         }
         try {
-            let response
             if (method === 'create') {
-                response = await this.repository.create(tariffPM)
+                await this.repository.create(tariffPM)
             } else {
                 tariffPM.id = this.tariff.id
-                response = await this.repository.update(tariffPM)
+                await this.repository.update(tariffPM)
             }
 
         } catch (e) {

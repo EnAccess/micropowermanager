@@ -46,9 +46,9 @@ export let resources = {
         person: '/api/maintenance/user'
     },
     person: {
-        'create': `/api/people`,
-        'update': `/api/people/`,
-        'detail': `/api/people/`,
+        'create': '/api/people',
+        'update': '/api/people/',
+        'detail': '/api/people/',
         'delete': '/api/people/',
         'search': '/api/people/search',
         'list': '/api/people',

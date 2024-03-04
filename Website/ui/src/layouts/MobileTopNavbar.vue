@@ -104,44 +104,44 @@
 import Breadcrumb from '../shared/Breadcrumb'
 
 export default {
-  name: 'MobileTopNavBar',
-  components: {Breadcrumb},
-  data() {
-    return {
-      open: false,
-      mobileSidebarVisible: false
-    }
-  },
-  watch: {
-    $route() {
-      this.hideSidebar()
-    }
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch('auth/logOut').then(() => {
-        this.$router.replace('/login')
-      })
+    name: 'MobileTopNavBar',
+    components: {Breadcrumb},
+    data() {
+        return {
+            open: false,
+            mobileSidebarVisible: false
+        }
+    },
+    watch: {
+        $route() {
+            this.hideSidebar()
+        }
+    },
+    methods: {
+        logout() {
+            this.$store.dispatch('auth/logOut').then(() => {
+                this.$router.replace('/login')
+            })
+
+        },
+        showSidebar() {
+            this.mobileSidebarVisible = true
+            this.$sidebar.displaySidebar(true)
+        },
+        hideSidebar() {
+            this.mobileSidebarVisible = false
+            this.$sidebar.displaySidebar(false)
+        },
+        replaceRoute(route) {
+            this.$router.replace(route)
+        }
 
     },
-    showSidebar() {
-      this.mobileSidebarVisible = true
-      this.$sidebar.displaySidebar(true)
-    },
-    hideSidebar() {
-      this.mobileSidebarVisible = false
-      this.$sidebar.displaySidebar(false)
-    },
-    replaceRoute(route) {
-      this.$router.replace(route)
+    computed: {
+        adminName() {
+            return this.$store.getters['auth/getAuthenticateUser'].name
+        },
     }
-
-  },
-  computed: {
-    adminName() {
-      return this.$store.getters['auth/getAuthenticateUser'].name
-    },
-  }
 }
 </script>
 

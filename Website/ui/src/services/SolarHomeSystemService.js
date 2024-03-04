@@ -2,7 +2,6 @@ import RepositoryFactory from '@/repositories/RepositoryFactory'
 import { Paginator } from '@/classes/paginator'
 import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 
 export class SolarHomeSystemService {

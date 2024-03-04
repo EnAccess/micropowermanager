@@ -12,7 +12,7 @@ export const getGeoDataFromAddress = async (address) => {
         const { data } = await axios.get(OPEN_CAGE_DATA_URI, { params: { q: address, key: API_KEY } })
         return data.results
     } catch (error) {
-       throw error
+        throw error
     }
 
 }

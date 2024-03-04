@@ -29,7 +29,7 @@ export class DeviceService {
 
             const { data, status, error } = await this.repository.list()
             if (status !== 200) return new ErrorHandler(error, 'http', status)
-            this.list =  data.data.map(device => convertObjectKeysToCamelCase(device));
+            this.list =  data.data.map(device => convertObjectKeysToCamelCase(device))
 
             return this.list
         } catch (e) {

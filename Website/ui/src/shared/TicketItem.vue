@@ -108,87 +108,87 @@ import {TicketService} from '@/services/TicketService'
 import moment from 'moment'
 
 export default {
-  name: 'TicketItem',
-  props: {
+    name: 'TicketItem',
+    props: {
 
-    ticket: String,
-    allowComment: Boolean,
-    ticketList: Array,
-    tableHeads: Array,
-    allowLock: {
-      type: Boolean,
-      default: true
-    }
-  },
-  data() {
-    return {
-      ticketCommentService: new TicketCommentService(),
-      ticketService: new TicketService(),
-      smsService: new SmsService(),
-      showComments: false,
-      newComment: '',
-      showTicket: null,
-      senderId: this.$store.getters['auth/authenticationService'].authenticateUser.id,
-    }
-  },
-  mounted() {
-    console.log("mounted", this.ticketList)
-  },
-  methods: {
-    getTimeAgo(date) {
-      return moment(date).fromNow()
-    },
-    formatDate(date) {
-      let d = new Date(date)
-      return d.toLocaleDateString()
-    },
-    openTicket(index) {
-      if (this.showTicket === index) {
-        this.showTicket = null
-      } else {
-        this.showTicket = index
-      }
-    },
-    navigateToOwner(id) {
-      this.$router.push({path: '/people/' + id})
-    },
-    async lockTicket(ticket) {
-      try {
-        await this.ticketService.closeTicket(ticket.id)
-        EventBus.$emit('listChanged')
-        this.alertNotify('success', this.$tc('phrases.ticketNotify', 1))
-      } catch (e) {
-        this.alertNotify('error', e.message)
-      }
-    },
-
-    async sendComment(ticket) {
-      try {
-        let name = this.$store.getters['auth/authenticationService'].authenticateUser.name
-        let username = this.$store.getters['auth/authenticationService'].authenticateUser.email
-        let newComment = await this.ticketCommentService.createComment(this.newComment, ticket.id, name, username)
-        if (ticket.category !== null && ticket.category.out_source) {
-          await this.smsService.sendToPerson(this.newComment, ticket.owner.id, this.senderId)
+        ticket: String,
+        allowComment: Boolean,
+        ticketList: Array,
+        tableHeads: Array,
+        allowLock: {
+            type: Boolean,
+            default: true
         }
-        this.showComments = false
-        EventBus.$emit('listChanged')
-        this.alertNotify('success', this.$tc('phrases.ticketNotify', 2))
-        ticket.comments.push(newComment)
-        this.showComments = false
-        this.newComment = null
-      } catch (e) {
-        this.alertNotify('error', e.message)
-      }
     },
-    alertNotify(type, message) {
-      this.$notify({
-        group: 'notify',
-        type: type,
-        title: type + ' !',
-        text: message
-      })
+    data() {
+        return {
+            ticketCommentService: new TicketCommentService(),
+            ticketService: new TicketService(),
+            smsService: new SmsService(),
+            showComments: false,
+            newComment: '',
+            showTicket: null,
+            senderId: this.$store.getters['auth/authenticationService'].authenticateUser.id,
+        }
     },
-  },
+    mounted() {
+        console.log('mounted', this.ticketList)
+    },
+    methods: {
+        getTimeAgo(date) {
+            return moment(date).fromNow()
+        },
+        formatDate(date) {
+            let d = new Date(date)
+            return d.toLocaleDateString()
+        },
+        openTicket(index) {
+            if (this.showTicket === index) {
+                this.showTicket = null
+            } else {
+                this.showTicket = index
+            }
+        },
+        navigateToOwner(id) {
+            this.$router.push({path: '/people/' + id})
+        },
+        async lockTicket(ticket) {
+            try {
+                await this.ticketService.closeTicket(ticket.id)
+                EventBus.$emit('listChanged')
+                this.alertNotify('success', this.$tc('phrases.ticketNotify', 1))
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+
+        async sendComment(ticket) {
+            try {
+                let name = this.$store.getters['auth/authenticationService'].authenticateUser.name
+                let username = this.$store.getters['auth/authenticationService'].authenticateUser.email
+                let newComment = await this.ticketCommentService.createComment(this.newComment, ticket.id, name, username)
+                if (ticket.category !== null && ticket.category.out_source) {
+                    await this.smsService.sendToPerson(this.newComment, ticket.owner.id, this.senderId)
+                }
+                this.showComments = false
+                EventBus.$emit('listChanged')
+                this.alertNotify('success', this.$tc('phrases.ticketNotify', 2))
+                ticket.comments.push(newComment)
+                this.showComments = false
+                this.newComment = null
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        alertNotify(type, message) {
+            this.$notify({
+                group: 'notify',
+                type: type,
+                title: type + ' !',
+                text: message
+            })
+        },
+    },
 }
 </script>
 

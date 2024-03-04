@@ -260,7 +260,6 @@ export default {
             })
         },
         searchSms (text) {
-            debugger
             this.numberList = this.smsService.searchSms(text)
         }
     }

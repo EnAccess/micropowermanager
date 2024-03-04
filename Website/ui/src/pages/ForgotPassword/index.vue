@@ -5,9 +5,9 @@
 import ForgotPassword from '@/modules/ForgotPassword/ForgotPassword.vue'
 export default {
     name: 'ForgotPasswordPage',
-   components:{
+    components:{
         ForgotPassword
-   }
+    }
 
 }
 </script>

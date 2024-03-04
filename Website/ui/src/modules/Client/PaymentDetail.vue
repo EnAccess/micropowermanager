@@ -71,18 +71,18 @@ export default {
 
         async getFlow (period = 'M') {
             switch (period) {
-                case 'Y':
-                    this.periodName = this.$tc('words.annually')
-                    break
-                case 'M':
-                    this.periodName = this.$tc('words.month', 2)
-                    break
-                case 'W':
-                    this.periodName = this.$tc('words.week', 2)
-                    break
-                case 'D':
-                    this.periodName = this.$tc('words.day', 2)
-                    break
+            case 'Y':
+                this.periodName = this.$tc('words.annually')
+                break
+            case 'M':
+                this.periodName = this.$tc('words.month', 2)
+                break
+            case 'W':
+                this.periodName = this.$tc('words.week', 2)
+                break
+            case 'D':
+                this.periodName = this.$tc('words.day', 2)
+                break
             }
             try {
                 await this.paymentService.getPaymentDetail(this.personId, period)

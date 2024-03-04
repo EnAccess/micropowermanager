@@ -210,118 +210,118 @@ import {ConnectionTypes} from '@/classes/connection/ConnectionTypes'
 import {NumberOfCustomers} from '@/classes/connection/NumberOfCustomers'
 import {currency} from '@/mixins/currency'
 import {Targets} from '@/classes/target/Targets'
-import {baseUrl} from "@/repositories/Client/AxiosClient";
+import {baseUrl} from '@/repositories/Client/AxiosClient'
 
 export default {
-  name: 'NewTarget',
-  components: {Widget},
-  mixins: [currency],
-  computed: {
-    isMobile() {
-      return this.$store.getters['resolution/getDevice']
+    name: 'NewTarget',
+    components: {Widget},
+    mixins: [currency],
+    computed: {
+        isMobile() {
+            return this.$store.getters['resolution/getDevice']
+        },
+        total: {
+            cache: false,
+            deep: true,
+            get: function () {
+                let total = {
+                    averageRevenuePerMonth: 0,
+                    connectedPower: 0,
+                    energyPerMonth: 0,
+                    newConnection: 0,
+                    totalRevenue: 0,
+                    totalCustomers: this.numberOfCustomers.total,
+                }
+
+                if (this.connectionTypes.list.length === 0) {
+                    return total
+                }
+
+                this.connectionTypes.list.reduce(
+                    function (prev, next) {
+                        prev['averageRevenuePerMonth'] += parseInt(next['target']['averageRevenuePerMonth'])
+                        prev['connectedPower'] += parseInt(next['target']['connectedPower'])
+                        prev['energyPerMonth'] += parseInt(next['target']['energyPerMonth'])
+                        prev['newConnection'] += parseInt(next['target']['newConnection'])
+                        prev['totalRevenue'] += parseInt(next['target']['totalRevenue'])
+                        return prev
+                    }, total
+                )
+                return total
+
+            }
+        },
+
     },
-    total: {
-      cache: false,
-      deep: true,
-      get: function () {
-        let total = {
-          averageRevenuePerMonth: 0,
-          connectedPower: 0,
-          energyPerMonth: 0,
-          newConnection: 0,
-          totalRevenue: 0,
-          totalCustomers: this.numberOfCustomers.total,
-        }
-
-        if (this.connectionTypes.list.length === 0) {
-          return total
-        }
-
-        this.connectionTypes.list.reduce(
-            function (prev, next) {
-              prev['averageRevenuePerMonth'] += parseInt(next['target']['averageRevenuePerMonth'])
-              prev['connectedPower'] += parseInt(next['target']['connectedPower'])
-              prev['energyPerMonth'] += parseInt(next['target']['energyPerMonth'])
-              prev['newConnection'] += parseInt(next['target']['newConnection'])
-              prev['totalRevenue'] += parseInt(next['target']['totalRevenue'])
-              return prev
-            }, total
-        )
-        return total
-
-      }
+    mounted() {
+        this.connectionTypes.getConnectionTypes()
+        this.numberOfCustomers.getList()
     },
 
-  },
-  mounted() {
-    this.connectionTypes.getConnectionTypes()
-    this.numberOfCustomers.getList()
-  },
+    data() {
+        return {
+            dataIsLoading: false,
+            targetDestinations: [], // mini-grid or cluster list
+            targetAssignType: null, // determines if the target is whether for a mini-grip or for a cluster.
+            targetAssignId: null, //the id of the mini-grid or cluster
+            slotChecker: new AvailablityChecker(),
+            connectionTypes: new ConnectionTypes(),
+            numberOfCustomers: new NumberOfCustomers(),
+            targets: new Targets(),
+            targetValidUntil: new Date(),
+        }
+    },
+    methods: {
+        alertNotify(type, message, title = null) {
+            if (title == null) {
+                title = type.toString().charAt(0).toUpperCase() + type.toString().slice(1)
+            }
+            this.$notify({
+                group: 'notify',
+                type: type,
+                title: type + ' !',
+                text: message
+            })
+        },
+        async submitTarget() {
+            let validation = await this.$validator.validateAll()
+            if (!validation) {
+                this.alertNotify('warn', this.$tc('phrases.newTargetNotify', 1))
+                return
+            }
+            try {
+                await this.targets.store(this.targetValidUntil, this.targetAssignType, this.targetAssignId,
+                    this.connectionTypes.list)
+                this.$swal('Success', this.$tc('phrases.newTargetNotify', 2), 'success')
+                this.$router.push({path: '/targets'})
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
 
-  data() {
-    return {
-      dataIsLoading: false,
-      targetDestinations: [], // mini-grid or cluster list
-      targetAssignType: null, // determines if the target is whether for a mini-grip or for a cluster.
-      targetAssignId: null, //the id of the mini-grid or cluster
-      slotChecker: new AvailablityChecker(),
-      connectionTypes: new ConnectionTypes(),
-      numberOfCustomers: new NumberOfCustomers(),
-      targets: new Targets(),
-      targetValidUntil: new Date(),
+            //success message
+
+        },
+        addCustomers(newConnections, connections) {
+            return parseInt(newConnections) + parseInt(connections)
+        },
+
+        onTargetTypeChange(value) {
+            this.dataIsLoading = true
+            if (value === 'mini-grid') { //get list of mini-grids
+                this.updateTargetDestination(baseUrl + resources.miniGrids.list)
+            } else { //get list of clusters
+                this.updateTargetDestination(baseUrl + resources.clusters.list)
+            }
+        },
+
+        updateTargetDestination(url) {
+            axios.get(url).then((response) => {
+                this.targetDestinations = response.data.data
+                this.dataIsLoading = false // hide progress bar
+            })
+        },
+
     }
-  },
-  methods: {
-    alertNotify(type, message, title = null) {
-      if (title == null) {
-        title = type.toString().charAt(0).toUpperCase() + type.toString().slice(1)
-      }
-      this.$notify({
-        group: 'notify',
-        type: type,
-        title: type + ' !',
-        text: message
-      })
-    },
-    async submitTarget() {
-      let validation = await this.$validator.validateAll()
-      if (!validation) {
-        this.alertNotify('warn', this.$tc('phrases.newTargetNotify', 1))
-        return
-      }
-      try {
-        await this.targets.store(this.targetValidUntil, this.targetAssignType, this.targetAssignId,
-            this.connectionTypes.list)
-        this.$swal('Success', this.$tc('phrases.newTargetNotify', 2), 'success')
-        this.$router.push({path: '/targets'})
-      } catch (e) {
-        this.alertNotify('error', e.message)
-      }
-
-      //success message
-
-    },
-    addCustomers(newConnections, connections) {
-      return parseInt(newConnections) + parseInt(connections)
-    },
-
-    onTargetTypeChange(value) {
-      this.dataIsLoading = true
-      if (value === 'mini-grid') { //get list of mini-grids
-        this.updateTargetDestination(baseUrl + resources.miniGrids.list)
-      } else { //get list of clusters
-        this.updateTargetDestination(baseUrl + resources.clusters.list)
-      }
-    },
-
-    updateTargetDestination(url) {
-      axios.get(url).then((response) => {
-        this.targetDestinations = response.data.data
-        this.dataIsLoading = false // hide progress bar
-      })
-    },
-
-  }
 }
 </script>
 

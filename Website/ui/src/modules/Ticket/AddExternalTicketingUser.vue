@@ -39,47 +39,47 @@
 </template>
 
 <script>
-import {TicketUserService} from "@/services/TicketUserService";
+import {TicketUserService} from '@/services/TicketUserService'
 import { EventBus } from '@/shared/eventbus'
 
 export default {
-  name: "AddExternalTicketingUser",
-  data ()  {
-      return {
-        subscriber:'ticket-user-add-external',
-        ticketUserService: new TicketUserService(),
-        loading: false,
-      }
-  },
-  mounted(){
-    this.getUsers()
-  },
-
-  methods: {
-    async saveUser () {
-      let validator = await this.$validator.validateAll()
-      if (validator) {
-        this.loading = true
-        try {
-          const userData = await this.ticketUserService.createExternalUser(this.ticketUserService.newUser.name, this.ticketUserService.newUser.phone)
-
-          if (userData.error !== undefined) {
-            this.alertNotify('warn',  this.$tc('phrases.ticketUserNotify',2, {tag: this.ticketUserService.newUser.tag}))
-            this.loading = false
-            return
-          }
-          await this.getUsers()
-          this.alertNotify('success', this.$tc('phrases.ticketUserNotify',1))
-          this.loading = false
-        } catch (e) {
-          this.loading = false
-          this.alertNotify('error', e.message)
+    name: 'AddExternalTicketingUser',
+    data ()  {
+        return {
+            subscriber:'ticket-user-add-external',
+            ticketUserService: new TicketUserService(),
+            loading: false,
         }
-        this.ticketUserService.resetNewUser();
-        EventBus.$emit('ticket.add.user.show', false);
-      }
     },
-  }
+    mounted(){
+        this.getUsers()
+    },
+
+    methods: {
+        async saveUser () {
+            let validator = await this.$validator.validateAll()
+            if (validator) {
+                this.loading = true
+                try {
+                    const userData = await this.ticketUserService.createExternalUser(this.ticketUserService.newUser.name, this.ticketUserService.newUser.phone)
+
+                    if (userData.error !== undefined) {
+                        this.alertNotify('warn',  this.$tc('phrases.ticketUserNotify',2, {tag: this.ticketUserService.newUser.tag}))
+                        this.loading = false
+                        return
+                    }
+                    await this.getUsers()
+                    this.alertNotify('success', this.$tc('phrases.ticketUserNotify',1))
+                    this.loading = false
+                } catch (e) {
+                    this.loading = false
+                    this.alertNotify('error', e.message)
+                }
+                this.ticketUserService.resetNewUser()
+                EventBus.$emit('ticket.add.user.show', false)
+            }
+        },
+    }
 }
 </script>
 

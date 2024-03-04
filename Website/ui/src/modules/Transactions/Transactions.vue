@@ -404,24 +404,24 @@ export default {
         getPeriod (period = 'Yesterday') {
 
             switch (period) {
-                case 'Yesterday':
-                    this.analyticsPeriod = 0
-                    break
+            case 'Yesterday':
+                this.analyticsPeriod = 0
+                break
 
-                case 'Same day last week':
-                    this.analyticsPeriod = 1
-                    break
+            case 'Same day last week':
+                this.analyticsPeriod = 1
+                break
 
-                case 'Past 7 days':
-                    this.analyticsPeriod = 2
-                    break
+            case 'Past 7 days':
+                this.analyticsPeriod = 2
+                break
 
-                case 'Past 30 days':
-                    this.analyticsPeriod = 3
-                    break
+            case 'Past 30 days':
+                this.analyticsPeriod = 3
+                break
 
-                default:
-                    break
+            default:
+                break
             }
 
             this.loadAnalytics()

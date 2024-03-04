@@ -166,7 +166,7 @@ export default {
                 miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
                 const parent = this
                 miniGridMarker.on('click', function () {
-                    parent.routeToDetail(`/dashboards/mini-grid`,markingInfo.id)
+                    parent.routeToDetail('/dashboards/mini-grid',markingInfo.id)
                 })
                 if (markingInfo.dataStream > 0) {
                     miniGridMarker.addTo(dataLoggerActiveMiniGrids)

@@ -42,8 +42,8 @@ export class Paginator {
         param['page'] = page
         param['per_page'] = this.perPage
         return axios.get(this.url, {
-                params: param
-            }
+            params: param
+        }
         ).then(response => {
             let data = response.data
             this.from = data.from

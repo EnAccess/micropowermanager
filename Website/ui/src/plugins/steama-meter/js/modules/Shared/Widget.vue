@@ -185,7 +185,6 @@ export default {
         },
         checkDataLength (subscriber, dataLength) {
             console.log(subscriber, dataLength)
-            debugger
             if (!this.validateSubscriber(subscriber)) {
                 return
             }

@@ -235,7 +235,6 @@ export default {
             editedItems.forEach((item) => {
                 const editedGeoDataItem = this.mappingService.searchedOrDrawnItems.find(x => x.type === item.type)
                 if (editedGeoDataItem) {
-                    debugger
                     editedGeoDataItem.geojson.coordinates = item.geojson.coordinates
                     editedGeoDataItem.lat = item.lat
                     editedGeoDataItem.lon = item.lon

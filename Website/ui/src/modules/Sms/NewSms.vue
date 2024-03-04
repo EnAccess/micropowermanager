@@ -191,7 +191,6 @@ export default {
             this.smsService.resultList = []
         },
         addNumberToReceivers (phone) {
-            debugger
             this.smsService.receiverList.push({
                 id: -1,
                 display: phone,

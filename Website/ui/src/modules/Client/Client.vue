@@ -140,14 +140,14 @@ export default {
                 const lon = parseFloat(points[1])
                 let markerType = ''
                 switch (device.device_type) {
-                    case 'e_bike':
-                        markerType = MARKER_TYPE.E_BIKE
-                        break
-                    case 'shs':
-                        markerType = MARKER_TYPE.SHS
-                        break
-                    default:
-                        markerType = MARKER_TYPE.METER
+                case 'e_bike':
+                    markerType = MARKER_TYPE.E_BIKE
+                    break
+                case 'shs':
+                    markerType = MARKER_TYPE.SHS
+                    break
+                default:
+                    markerType = MARKER_TYPE.METER
                 }
                 markingInfos.push({
                     id: device.id,

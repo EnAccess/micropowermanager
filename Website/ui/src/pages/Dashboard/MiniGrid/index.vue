@@ -14,7 +14,7 @@ export default {
     created () {
         const miniGridId = this.$route.params.id
         if (miniGridId === undefined) {
-             this.redirectToFirstMiniGrid()
+            this.redirectToFirstMiniGrid()
         }
     },
     data () {

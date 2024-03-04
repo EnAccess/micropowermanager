@@ -147,7 +147,7 @@ export default {
     methods: {
         async getClusters () {
             try {
-                 await this.clusterService.getClusters()
+                await this.clusterService.getClusters()
                 if (this.clusterService.list.length) {
                     this.selectedClusterId = this.clusterService.list[this.clusterService.list.length - 1].id
                 } else {

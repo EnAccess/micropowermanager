@@ -18,7 +18,6 @@ export class UserService {
         }
     }
     fromJson (user) {
-        debugger
         this.user = {
             id: user.id,
             name: user.name,

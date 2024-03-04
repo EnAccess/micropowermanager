@@ -53,7 +53,7 @@ import {EventBus} from '@/shared/eventbus'
 import Filtering from '@/modules/Ticket/Filtering'
 import {resources} from '@/resources'
 import {TicketService} from '@/services/TicketService'
-import {baseUrl} from "@/repositories/Client/AxiosClient";
+import {baseUrl} from '@/repositories/Client/AxiosClient'
 export default {
     name: 'Tickets',
     components: {Filtering, Widget, TicketItem},

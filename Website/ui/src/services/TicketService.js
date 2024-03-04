@@ -38,12 +38,12 @@ export class TicketService {
                 owner: ticket.owner.name + ticket.owner.surname,
                 assigned: ticket.assigned_id &&  ticket.assigned_to? ticket.assigned_to.user_name : null,
                 title: ticket.title,
-            };
-        });
+            }
+        })
         if (type === 'ticketListOpened')
-            this.openedList = result;
+            this.openedList = result
         else
-            this.closedList = result;
+            this.closedList = result
 
     }
 

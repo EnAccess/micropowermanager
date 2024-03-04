@@ -22,7 +22,6 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { BatchRevenueService } from '@/services/BatchRevenueService'
 import Loader from '@/shared/Loader.vue'
 import { EventBus } from '@/shared/eventbus'
 

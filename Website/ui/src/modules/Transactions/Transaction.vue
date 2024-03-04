@@ -206,9 +206,7 @@
 <script>
 import { timing } from '@/mixins/timing'
 import { currency } from '@/mixins/currency'
-import VodacomTransactionDetail from '@/modules/Transactions/VodacomTransactionDetail'
 import PaymentHistoryChart from '@/modules/Transactions/PaymentHistoryChart'
-import AirtelTransactionDetail from '@/modules/Transactions/AirtelTransactionDetail'
 import AgentTransactionDetail from '@/modules/Agent/AgentTransactionDetail'
 import Widget from '@/shared/widget'
 import { TransactionService } from '@/services/TransactionService'
@@ -246,22 +244,22 @@ export default {
         providerDetail () {
             const transactionType = this.transaction.original_transaction_type
             switch (transactionType) {
-                case 'vodacom_transaction':
-                    return 'VodacomTransactionDetail'
-                case 'airtel_transaction':
-                    return 'AirtelTransactionDetail'
-                case 'agent_transaction':
-                    return 'AgentTransactionDetail'
-                case 'third_party_transaction':
-                    return 'ThirdPartyTransactionDetail'
-                case 'wave_money_transaction':
-                    return 'WaveMoneyTransactionDetail'
-                case 'swifta_transaction':
-                    return 'SwiftaTransactionDetail'
-                case 'wavecom_transaction':
-                    return 'WaveComTransactionDetail'
-                default:
-                    return null
+            case 'vodacom_transaction':
+                return 'VodacomTransactionDetail'
+            case 'airtel_transaction':
+                return 'AirtelTransactionDetail'
+            case 'agent_transaction':
+                return 'AgentTransactionDetail'
+            case 'third_party_transaction':
+                return 'ThirdPartyTransactionDetail'
+            case 'wave_money_transaction':
+                return 'WaveMoneyTransactionDetail'
+            case 'swifta_transaction':
+                return 'SwiftaTransactionDetail'
+            case 'wavecom_transaction':
+                return 'WaveComTransactionDetail'
+            default:
+                return null
             }
         },
     },

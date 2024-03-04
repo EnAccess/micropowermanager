@@ -68,7 +68,7 @@ import {People} from '@/classes/people'
 import {timing} from '@/mixins/timing'
 import i18n from '../../i18n'
 import AddClientModal from '@/modules/Client/AddClientModal.vue'
-import {OutstandingDebtsExportService} from "@/services/OutstandingDebtsExportService";
+import {OutstandingDebtsExportService} from '@/services/OutstandingDebtsExportService'
 
 const debounce = require('debounce')
 
@@ -176,7 +176,7 @@ export default {
             this.searchTerm = ''
         },
         exportDebts () {
-            const email = this.$store.getters['auth/getAuthenticateUser'].email;
+            const email = this.$store.getters['auth/getAuthenticateUser'].email
             window.open(this.outstandingDebtsExportService.exportOutstandingDebts(email))
         }
     }

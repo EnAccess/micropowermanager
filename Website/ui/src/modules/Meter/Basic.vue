@@ -132,7 +132,6 @@ export default {
                         })
                         this.meter.owner = device.person
                         console.log(this.meter.owner)
-                        debugger
                         this.alertNotify('success', 'Updated Successfully.')
                         this.resetOwnerEditing()
                     } catch (e) {

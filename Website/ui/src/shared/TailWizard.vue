@@ -30,74 +30,74 @@ import {EventBus} from '@/shared/eventbus'
 import {RegistrationTailService} from '@/services/RegistrationTailService'
 
 export default {
-  name: 'TailWizard',
-  props: {
-    showWizard: {
-      type: Boolean,
-      required: true
-    },
-    tail: {
-      type: Array,
-      required: true
-    }
-  },
-  mounted() {
-    this.wizardIsVisible = this.showWizard
-    if(this.tail && this.tail.length ) {
-      for (const tailObj of this.tail) {
-        if ('tag' in tailObj) {
-          EventBus.$on(tailObj.tag, () => {
-            this.updateRegistrationTail(tailObj.tag)
-          })
+    name: 'TailWizard',
+    props: {
+        showWizard: {
+            type: Boolean,
+            required: true
+        },
+        tail: {
+            type: Array,
+            required: true
         }
-      }
-
-      this.activeStep = this.tail[0].tag
-    }
-  },
-  data() {
-    return {
-      loadingNextStep: false,
-      activeStep: '',
-      wizardIsVisible: false,
-      registrationTailService: new RegistrationTailService()
-    }
-  },
-  methods: {
-    nextStep(step, nextStep) {
-      if (nextStep) {
-        this.activeStep = nextStep.tag
-      } else {
-        this.activeStep = null
-        this.wizardIsVisible = false
-        this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', true)
-      }
     },
-
-    async updateRegistrationTail(tag) {
-      this.loadingNextStep = true
-      try {
-        const tailId = this.$store.getters['registrationTail/getTail'].id
-        await this.registrationTailService.updateRegistrationTail(tailId, tag, this.tail)
-        const step = tag;
-        let stepIndex = 0;
-        for (let i = 0; i < this.tail.length; i++) {
-          for (let [k, v] of Object.entries(this.tail[i])) {
-            if (k === 'tag' && v === step) {
-              stepIndex = i
-              break
+    mounted() {
+        this.wizardIsVisible = this.showWizard
+        if(this.tail && this.tail.length ) {
+            for (const tailObj of this.tail) {
+                if ('tag' in tailObj) {
+                    EventBus.$on(tailObj.tag, () => {
+                        this.updateRegistrationTail(tailObj.tag)
+                    })
+                }
             }
-          }
-        }
-        const nextStep = this.tail[stepIndex + 1]
-        this.$store.commit('registrationTail/SET_REGISTRATION_TAIL', this.registrationTailService.registrationTail)
-        this.nextStep(step, nextStep)
-      } catch (e) {
-        this.alertNotify('error', e.message)
-      }
 
+            this.activeStep = this.tail[0].tag
+        }
+    },
+    data() {
+        return {
+            loadingNextStep: false,
+            activeStep: '',
+            wizardIsVisible: false,
+            registrationTailService: new RegistrationTailService()
+        }
+    },
+    methods: {
+        nextStep(step, nextStep) {
+            if (nextStep) {
+                this.activeStep = nextStep.tag
+            } else {
+                this.activeStep = null
+                this.wizardIsVisible = false
+                this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', true)
+            }
+        },
+
+        async updateRegistrationTail(tag) {
+            this.loadingNextStep = true
+            try {
+                const tailId = this.$store.getters['registrationTail/getTail'].id
+                await this.registrationTailService.updateRegistrationTail(tailId, tag, this.tail)
+                const step = tag
+                let stepIndex = 0
+                for (let i = 0; i < this.tail.length; i++) {
+                    for (let [k, v] of Object.entries(this.tail[i])) {
+                        if (k === 'tag' && v === step) {
+                            stepIndex = i
+                            break
+                        }
+                    }
+                }
+                const nextStep = this.tail[stepIndex + 1]
+                this.$store.commit('registrationTail/SET_REGISTRATION_TAIL', this.registrationTailService.registrationTail)
+                this.nextStep(step, nextStep)
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+
+        }
     }
-  }
 }
 </script>
 

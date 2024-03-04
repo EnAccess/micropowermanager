@@ -94,10 +94,10 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget.vue";
-import {notify, timing} from "@/mixins";
-import {EBikeService} from "@/services/EBikeService";
-import Box from "@/modules/Box.vue";
+import Widget from '@/shared/widget.vue'
+import {notify, timing} from '@/mixins'
+import {EBikeService} from '@/services/EBikeService'
+import Box from '@/modules/Box.vue'
 
 export default {
     name: 'EBikeDetailModal',

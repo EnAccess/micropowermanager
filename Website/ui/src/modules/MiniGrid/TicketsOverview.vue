@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { RevenueService } from '@/services/RevenueService'
 import Widget from '../../shared/widget'
 import Loader from '@/shared/Loader.vue'
 import { EventBus } from '@/shared/eventbus'

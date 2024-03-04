@@ -23,7 +23,7 @@ export default {
                 if (layer.getBounds) {
                     cluster = layer
                 }
-            });
+            })
             const bounds = cluster.getBounds()
             this.removeExistingMarkers()
 

@@ -36,4 +36,4 @@ let routes = [
         meta: { layout: 'default' },
     },
 
-    ]
+]

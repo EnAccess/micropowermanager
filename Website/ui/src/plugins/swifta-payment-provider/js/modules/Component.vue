@@ -2,10 +2,10 @@
 
 </template>
 <script>
-  export default {
+export default {
     name: 'Component',
     data () {
-      return {}
+        return {}
     },
     mounted () {
 
@@ -16,7 +16,7 @@
     methods: {
 
     }
-  }
+}
 </script>
 <style scoped>
 
