@@ -9,5 +9,6 @@ rules:
     quote-type: double
     required: only-when-needed
     allow-quoted-quotes: true
+    check-keys: true
   truthy:
     check-keys: false
