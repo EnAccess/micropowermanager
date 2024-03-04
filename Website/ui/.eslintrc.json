@@ -4,7 +4,8 @@
         "es2021": true,
         "amd": true,
         "jquery": true,
-        "jest": true
+        "jest": true,
+        "node": true
     },
     "globals": {
         "resources": false,
@@ -42,6 +43,7 @@
             "error",
             "never"
         ],
+        "no-unused-vars": ["error", { "varsIgnorePattern": "routes"}],
         "vue/multi-word-component-names": 0,
         "vue/no-mutating-props": 0,
         "vue/no-v-text-v-html-on-component": 0,
