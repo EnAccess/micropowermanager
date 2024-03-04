@@ -2,10 +2,16 @@ import axios from 'axios'
 import {config} from '@/config'
 
 function  getBaseUrl () {
-    if (config.env === 'development') {
-        return  `${window.location.protocol}//api.${window.location.hostname}`
+    const baseUrlFromEnv = process.env.VUE_APP_MPM_BACKEND_URL
+
+    if (baseUrlFromEnv) {
+        return baseUrlFromEnv
+    } else {
+        if (config.env === 'development') {
+            return  `${window.location.protocol}//api.${window.location.hostname}`
+        }
+        return window.location.protocol + '//' + window.location.hostname
     }
-    return window.location.protocol + '//' + window.location.hostname
 }
 
 export const baseUrl = getBaseUrl()
