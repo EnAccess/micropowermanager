@@ -9,20 +9,7 @@ on:
       - main
 
 jobs:
-  setup-node:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.10.0
-
-  eslint-js:
-    needs: setup-node
+  eslint:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,35 +25,11 @@ jobs:
         run: npm install
         working-directory: ./Website/ui
 
-      - name: Run ESLint for JavaScript files
-        run: npx eslint ./src/**/*.js
+      - name: Run ESLint
+        run: npm run lint
         working-directory: ./Website/ui
-        continue-on-error: true
-
-  eslint-vue:
-    needs: setup-node
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.10.0
-
-      - name: Install Node.js dependencies
-        run: npm install
-        working-directory: ./Website/ui
-
-      - name: Run ESLint for Vue files
-        run: npx eslint ./src/**/*.vue
-        working-directory: ./Website/ui
-        continue-on-error: true
 
   build-production:
-    needs: setup-node
     runs-on: ubuntu-latest
 
     steps:
