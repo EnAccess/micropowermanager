@@ -63,8 +63,8 @@ export class MeterDetailService {
                 return {
                     id: person.id,
                     name: person.name + ' ' + person.surname,
-                    toLowerCase: () => x.name.toLowerCase(),
-                    toString: () => x.name
+                    toLowerCase: () => person.name.toLowerCase(),
+                    toString: () => person.name
                 }
             })
         } catch (e) {

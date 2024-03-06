@@ -2,8 +2,9 @@ import WaveComRepository from '@/plugins/wavecom-payment-provider/js/repositorie
 import {ErrorHandler} from '@/plugins/bulk-registration/js/Helpers/ErrorHander'
 
 export class WaveComService {
-
-    reasons = [];
+    constructor () {
+        this.reasons = []
+    }
 
     async upload(filePath) {
         const formData = new FormData()
