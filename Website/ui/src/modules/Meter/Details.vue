@@ -115,7 +115,6 @@ import Widget from '@/shared/widget'
 import { TariffService } from '@/services/TariffService'
 import { ConnectionTypeService } from '@/services/ConnectionTypeService'
 import { ConnectionGroupService } from '@/services/ConnectionGroupService'
-import { SubConnectionTypeService } from '@/services/SubConnectionTypeService'
 import { MeterService } from '@/services/MeterService'
 import { currency } from '@/mixins/currency'
 

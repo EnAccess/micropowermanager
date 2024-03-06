@@ -91,6 +91,7 @@ export default {
         })
     },
     watch: {
+        // eslint-disable-next-line no-unused-vars
         clusterRevenueAnalysis (newVal, oldVal) {
             this.clusterService.clusterTrends = newVal
             this.clusterService.fillTrends()

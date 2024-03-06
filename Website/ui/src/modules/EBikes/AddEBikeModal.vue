@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import Widget from '@/shared/widget.vue'
 import {ManufacturerService} from '@/services/ManufacturerService'
 import {ApplianceService} from '@/services/ApplianceService'
 import {timing, notify} from '@/mixins'
@@ -85,7 +84,6 @@ const APPLIANCE_TYPE_ID = 2
 
 export default {
     name: 'AddEBikeModal',
-    components: {Widget},
     mixins: [notify, timing],
     props: {
         showAddEBike: {

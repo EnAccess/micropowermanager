@@ -16,7 +16,7 @@
                                     <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
                                     <md-option
                                         :value="appliance.id"
-                                        v-for="(appliance, index) in appliances"
+                                        v-for="appliance in appliances"
                                         :key="appliance.id"
                                     >{{ appliance.name }}
                                     </md-option>
@@ -63,7 +63,7 @@
                                     <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
                                     <md-option
                                         :value="appliance.id"
-                                        v-for="(appliance, index) in appliances"
+                                        v-for="appliance in appliances"
                                         :key="appliance.id"
                                     >{{ appliance.name }}
                                     </md-option>

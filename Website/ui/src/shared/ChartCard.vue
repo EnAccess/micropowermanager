@@ -50,6 +50,7 @@ export default {
             required: true
         },
         chartData: {
+            // eslint-disable-next-line vue/require-prop-type-constructor
             type: Array|undefined,
             required: true
         },

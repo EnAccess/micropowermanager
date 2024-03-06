@@ -173,7 +173,6 @@
 import RevenueTargetPerCustomerType from '@/modules/MiniGrid/RevenueTargetPerCustomerType.vue'
 import EnergyChartBox from '@/modules/MiniGrid/EnergyChartBox.vue'
 import MiniGridMap from '@/modules/Map/MiniGridMap.vue'
-import TargetList from '@/modules/MiniGrid/TargetList.vue'
 import RevenueTrends from '@/modules/MiniGrid/RevenueTrends.vue'
 import BoxGroup from '@/modules/MiniGrid/BoxGroup.vue'
 import TicketsOverview from '@/modules/MiniGrid/TicketsOverview.vue'
@@ -188,6 +187,7 @@ import Stepper from '@/shared/stepper.vue'
 import { ICONS, MappingService } from '@/services/MappingService'
 import Widget from '@/shared/widget'
 import { DeviceAddressService } from '@/services/DeviceAddressService'
+import moment from 'moment'
 
 export default {
     name: 'Dashboard',
@@ -195,7 +195,6 @@ export default {
         RevenueTargetPerCustomerType,
         EnergyChartBox,
         MiniGridMap,
-        TargetList,
         RevenueTrends,
         Stepper,
         BoxGroup,

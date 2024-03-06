@@ -27,9 +27,7 @@
 import Widget from '@/shared/widget'
 import MainSettings from './MainSettings'
 import MapSettings from './MapSettings'
-import TicketSettings from './TicketSettings'
 import SmsSettings from './SmsSettings'
-import MailSettings from './MailSettings'
 import { MainSettingsService } from '@/services/MainSettingsService'
 import { MapSettingsService } from '@/services/MapSettingsService'
 import { TicketSettingsService } from '@/services/TicketSettingsService'
@@ -42,7 +40,7 @@ import { notify } from '@/mixins'
 export default {
     name: 'Settings',
     mixins: [notify],
-    components: { PluginSettings, Widget, MainSettings, MapSettings, TicketSettings, SmsSettings, MailSettings },
+    components: { PluginSettings, Widget, MainSettings, MapSettings, SmsSettings },
     data () {
         return {
             mainSettingsService: new MainSettingsService(),

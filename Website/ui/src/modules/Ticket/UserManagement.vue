@@ -29,8 +29,6 @@
 
 <script>
 import { notify } from '@/mixins/notify'
-import Modal from '@/modal/modal.vue'
-import AddExternalTicketingUser from '@/modules/Ticket/AddExternalTicketingUser.vue'
 import Widget from '@/shared/widget.vue'
 import { TicketUserService } from '@/services/TicketUserService'
 import { EventBus } from '@/shared/eventbus'
@@ -38,7 +36,7 @@ import { EventBus } from '@/shared/eventbus'
 export default {
     name: 'UserManagement',
     mixing: [notify],
-    components: { Modal, AddExternalTicketingUser, Widget },
+    components: { Widget },
     data () {
         return {
             subscriber: 'ticket-user-list',

@@ -5,17 +5,12 @@
 </template>
 
 <script>
-import Widget from '@/shared/widget.vue'
 import {ICON_OPTIONS, ICONS, MARKER_TYPE} from '@/services/MappingService'
 import {notify, sharedMap} from '@/mixins'
 
 export default {
     name: 'ClientMap',
     mixins: [notify, sharedMap],
-    components: {
-        Widget,
-        Map,
-    },
     mounted () {
         this.map.on('draw:edited', (event) => {
             const editedItems = []

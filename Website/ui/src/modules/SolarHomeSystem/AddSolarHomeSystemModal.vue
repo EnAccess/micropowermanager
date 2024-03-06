@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import Widget from '@/shared/widget.vue'
 import { SolarHomeSystemService } from '@/services/SolarHomeSystemService'
 import { ManufacturerService } from '@/services/ManufacturerService'
 import { ApplianceService } from '@/services/ApplianceService'
@@ -85,7 +84,6 @@ const APPLIANCE_TYPE_ID = 1
 
 export default {
     name: 'AddSolarHomeSystemModal',
-    components: { Widget },
     mixins: [notify, timing],
     props: {
         showAddShs: {

@@ -1,6 +1,7 @@
+<!-- eslint-disable-next-line vue/valid-template-root -->
 <template>
-
 </template>
+
 <script>
 export default {
     name: 'Component',
@@ -18,6 +19,6 @@ export default {
     }
 }
 </script>
-<style scoped>
 
+<style scoped>
 </style>

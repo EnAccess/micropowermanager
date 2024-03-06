@@ -36,14 +36,14 @@ import '@/shared/TableList'
 import BoxGroup from '@/modules/Dashboard/BoxGroup'
 import FinancialOverview from '@/modules/Dashboard/FinancialOverview'
 import DashboardMap from '@/modules/Map/DashboardMap.vue'
-import Loader from '@/shared/Loader.vue'
 import { notify } from '@/mixins/notify'
 import Widget from '@/shared/widget.vue'
+import moment from 'moment'
 import { MappingService, MARKER_TYPE } from '@/services/MappingService'
 
 export default {
     name: 'Dashboard',
-    components: { DashboardMap, Loader, FinancialOverview, BoxGroup, Widget },
+    components: { DashboardMap, FinancialOverview, BoxGroup, Widget },
     mixins: [notify],
     data () {
         return {

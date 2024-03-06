@@ -49,14 +49,13 @@ import { MappingService, MARKER_TYPE } from '@/services/MappingService'
 import { notify } from '@/mixins'
 import FinancialOverview from '@/modules/Dashboard/FinancialOverview'
 import { EventBus } from '@/shared/eventbus'
-import Loader from '@/shared/Loader'
+import moment from 'moment'
 import ClusterMap from '@/modules/Map/ClusterMap.vue'
 
 export default {
     name: 'Dashboard',
     mixins: [notify],
     components: {
-        Loader,
         RevenueTrends,
         FinancialOverview,
         BoxGroup,

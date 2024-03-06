@@ -19,7 +19,7 @@
                                             <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
                                             <md-option
                                                 :value="applianceType.id"
-                                                v-for="(applianceType, index) in assetTypeService.list"
+                                                v-for="applianceType in assetTypeService.list"
                                                 :key="applianceType.id"
                                             >{{ applianceType.name }}
                                             </md-option>

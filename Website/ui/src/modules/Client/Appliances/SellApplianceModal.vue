@@ -25,7 +25,7 @@
                                             <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
                                             <md-option
                                                 :value="appliance.id"
-                                                v-for="(appliance, index) in applianceService.list"
+                                                v-for="appliance in applianceService.list"
                                                 :key="appliance.id"
                                             >{{ appliance.name }}
                                             </md-option>
@@ -119,7 +119,7 @@
                                             <md-option disabled value>--{{ $tc('words.select') }}--</md-option>
                                             <md-option
                                                 :value="appliance.id"
-                                                v-for="(appliance, index) in applianceService.list"
+                                                v-for="appliance in applianceService.list"
                                                 :key="appliance.id"
                                             >{{ appliance.name }}
                                             </md-option>
@@ -229,6 +229,7 @@
                                      :options="deviceSelectionList"
                                      :loading="loading"
                                      :show-no-results="true">
+                            <!-- eslint-disable-next-line vue/no-unused-vars -->
                             <template slot="clear" slot-scope="props">
                                 <div class="multiselect__clear" v-if="deviceSelectionList.length"></div>
                             </template>

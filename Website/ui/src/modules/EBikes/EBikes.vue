@@ -56,13 +56,12 @@ import {EventBus} from '@/shared/eventbus'
 import Widget from '@/shared/widget'
 import AddEBikeModal from '@/modules/EBikes/AddEBikeModal.vue'
 import {EBikeService} from '@/services/EBikeService'
-import AddSolarHomeSystemModal from '@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue'
 import EBikeDetailModal from '@/modules/EBikes/EBikeDetailModal.vue'
 
 export default {
     name: 'EBikes',
     mixins: [notify, timing],
-    components: {EBikeDetailModal, AddSolarHomeSystemModal, AddEBikeModal, Widget},
+    components: {EBikeDetailModal, AddEBikeModal, Widget},
     data () {
         return {
             eBikeService: new EBikeService(),

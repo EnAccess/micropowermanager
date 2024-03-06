@@ -122,7 +122,6 @@ export default {
     components: {
         VillageMap,
         Widget,
-        Map,
         RedirectionModal
     },
     data () {

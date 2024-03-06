@@ -125,12 +125,11 @@
                                     MicroPowerManager</h2>
                             </div>
                             <div class="md-layout md-gutter">
-                                <div v-for="plugin in mpmPluginsService.list"
-                                     class="box md-layout-item  md-size-25 md-small-size-50">
+                                <div v-for="plugin in mpmPluginsService.list" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
                                     <div class="header-text">{{ plugin.name }}
                                         <input type="checkbox" v-model="plugin.checked"/>
                                     </div>
-                                    <small class="sub-text" v-html="plugin.description">{{ plugin.description }}</small>
+                                    <small class="sub-text">{{ plugin.description }}</small>
 
                                 </div>
                             </div>

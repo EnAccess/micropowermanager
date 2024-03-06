@@ -76,12 +76,11 @@
                 <md-card-actions>
                     <md-button role="button" class="md-raised" style="float: right" @click="clear">clear
                     </md-button>
-                    <md-button role="button" class="md-raised md-primary" v-text="fileName ===''?'Upload':'Change'"
-                               style="float: right"
-                               :disabled="certLoading"
-                               @click="upload()">Upload File
+                    <md-button role="button" class="md-raised md-primary"
+                        style="float: right"
+                        :disabled="certLoading"
+                        @click="upload()">Upload File
                     </md-button>
-
                 </md-card-actions>
                 <md-progress-bar md-mode="indeterminate" v-if="certLoading"/>
             </md-card>

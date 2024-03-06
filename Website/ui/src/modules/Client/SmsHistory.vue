@@ -71,7 +71,6 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 import moment from 'moment'
 import { SmsService } from '@/services/SmsService'

@@ -191,7 +191,6 @@ import { AssetRateService } from '@/services/AssetRateService'
 import moment from 'moment'
 import { EventBus } from '@/shared/eventbus'
 import { AppliancePaymentService } from '@/services/AppliancePaymentService'
-import SellApplianceModal from '@/modules/Client/Appliances/SellApplianceModal.vue'
 
 export default {
     name: 'SoldApplianceDetail',

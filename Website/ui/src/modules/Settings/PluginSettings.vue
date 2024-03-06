@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="md-layout md-gutter">
-            <div v-for="plugin in plugins" class="box md-layout-item  md-size-25 md-small-size-50">
+            <div v-for="plugin in plugins" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
                 <div class="header-text">{{ plugin.name }}</div>
-                <small class="sub-text" v-html="plugin.description">{{ plugin.description }}</small>
+                <small class="sub-text">{{ plugin.description }}</small>
                 <md-switch v-model="plugin.checked" @change="onSwitchChange($event,plugin)" class="data-stream-switch"
                            :disabled="switching"/>
             </div>

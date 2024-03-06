@@ -118,7 +118,6 @@ export default {
     components: {
         MgMap,
         Widget,
-        Map,
         RedirectionModal
     },
     data () {

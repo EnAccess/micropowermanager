@@ -16,6 +16,7 @@ export default {
     mixins: [sharedMap, notify],
     props: {
         miniGridId: {
+            // eslint-disable-next-line vue/require-prop-type-constructor
             type: Number | String,
             required: false
         }
@@ -37,7 +38,7 @@ export default {
         this.map.on('draw:created', (event) => {
             const type = event.layerType
             const layer = event.layer
-            const drawnLayers = drawingLayer.getLayers()
+            // const drawnLayers = drawingLayer.getLayers()
             let cluster = null
             map.eachLayer(function (layer) {
                 if (layer.getBounds) {
@@ -139,7 +140,7 @@ export default {
             // "this"  cannot be used inside the L.geoJson function
 
             const nonEditableLayers = this.nonEditableLayer
-            const editableLayers = this.editableLayer
+            // const editableLayers = this.editableLayer
             const geoDataItems = this.geoDataItems
             const map = this.map
             const drawnCluster = L.geoJson(drawing, {

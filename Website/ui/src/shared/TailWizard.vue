@@ -4,9 +4,7 @@
     >
       <md-dialog-content>
         <md-steppers class="tail-stepper" md-linear :md-active-step.sync="activeStep">
-
-          <md-step class="stepper-step" v-for="(tailObj,index) in tail" :id="tailObj.tag"
-                   :md-label="tailObj.tag">
+          <md-step class="stepper-step" v-for="(tailObj, index) in tail" :key=index :id="tailObj.tag" :md-label="tailObj.tag">
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
                 <component :is="tailObj.component"/>
