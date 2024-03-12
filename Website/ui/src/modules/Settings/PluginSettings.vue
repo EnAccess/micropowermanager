@@ -1,9 +1,11 @@
 <template>
     <div>
         <div class="md-layout md-gutter">
-            <div v-for="plugin in plugins" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
+            <div v-for="plugin in enrichedPlugins.filter(p => p.plugin_for_usage_type || p.checked)" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
                 <div class="header-text">{{ plugin.name }}</div>
+                <div class="usage-type-warning" v-if="plugin.checked && !plugin.plugin_for_usage_type">⚠️ Plugin not supported for current usageType. It is recommended that you disable this plugin.</div>
                 <small class="sub-text">{{ plugin.description }}</small>
+                <div class="sub-text">Usage type: {{ plugin.usage_type }}</div>
                 <md-switch v-model="plugin.checked" @change="onSwitchChange($event,plugin)" class="data-stream-switch"
                            :disabled="switching"/>
             </div>
@@ -32,6 +34,21 @@ export default {
         plugins: {
             type: Array,
             required: true
+        },
+        mainSettings: {
+            type: Object,
+            required: true
+        }
+    },
+    computed: {
+        enrichedPlugins: function() {
+            return this.plugins.map(plugin => ({
+                ...plugin,
+                plugin_for_usage_type: this.validUsageType(
+                    plugin.usage_type,
+                    this.mainSettings.usageType
+                )
+            }))
         }
     },
     methods: {
@@ -57,6 +74,9 @@ export default {
                 title: type + ' !',
                 text: message
             })
+        },
+        validUsageType(plugin_usage_type, customer_usage_types) {
+            return plugin_usage_type === 'general' || customer_usage_types.includes(plugin_usage_type)
         }
     }
 }
@@ -81,6 +101,17 @@ export default {
 .sub-text {
     font-weight: 400;
     font-size: 0.7rem;
+}
+
+.usage-type-warning {
+    font-weight: 400;
+    font-size: 0.7rem;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-radius: 5px;
+    color: #333333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Optional: Add shadow for depth
+    max-width: 400px; // Optional: Set maximum width for responsiveness
 }
 
 .stepper-title {

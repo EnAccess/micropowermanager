@@ -9,7 +9,7 @@
                     <main-settings :mainSettings="mainSettings"/>
                 </md-tab>
                 <md-tab id="tab-plugin" md-icon="widgets" md-label="Plugins">
-                    <plugin-settings :plugins="plugins"/>
+                    <plugin-settings :plugins="plugins" :mainSettings="mainSettings"/>
                 </md-tab>
                 <md-tab id="tab-sms" name="sms" md-icon="sms" md-label="Sms">
                     <sms-settings/>
@@ -75,6 +75,7 @@ export default {
                     id: plugin.id,
                     name: plugin.name,
                     description: plugin.description,
+                    usage_type: plugin.usage_type,
                     checked: foundPlugin && foundPlugin.status === 1
                 }
             })

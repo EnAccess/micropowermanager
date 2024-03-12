@@ -76,6 +76,7 @@ import ManufacturerRepository from '@/repositories/ManufacturerRepository'
 import EBikeRepository from '@/repositories/EBikeRepository'
 import TransactionExportRepository from '@/repositories/TransactionExportRepository'
 import OutstandingDebtsExportRepository from '@/repositories/OutstandingDebtsExportRepository'
+import UsageTypeRepository from '@/repositories/UsageTypeRepository'
 
 const repositories = {
     'address': AddressRepository,
@@ -156,6 +157,7 @@ const repositories = {
     'eBike': EBikeRepository,
     'transactionExport': TransactionExportRepository,
     'outstandingDebtsExportRepository': OutstandingDebtsExportRepository,
+    'usageType': UsageTypeRepository,
 }
 
 export default {

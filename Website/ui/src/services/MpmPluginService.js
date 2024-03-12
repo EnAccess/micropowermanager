@@ -21,7 +21,7 @@ export class MpmPluginService {
                         description:plugin.description,
                         checked:false,
                         root_class:plugin.root_class,
-
+                        usage_type: plugin.usage_type
                     }
                 })
                 return this.list

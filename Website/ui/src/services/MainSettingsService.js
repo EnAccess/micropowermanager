@@ -13,6 +13,7 @@ export class MainSettingsService {
             language: null,
             vatEnergy: null,
             vatAppliance: null,
+            usageType: null,
         }
     }
 
@@ -26,6 +27,7 @@ export class MainSettingsService {
             language: mainSettings.language,
             vatEnergy: mainSettings.vat_energy,
             vatAppliance: mainSettings.vat_appliance,
+            usageType: mainSettings.usage_type,
         }
         return this.mainSettings
     }
@@ -55,6 +57,7 @@ export class MainSettingsService {
                 language: this.mainSettings.language,
                 vat_energy: this.mainSettings.vatEnergy,
                 vat_appliance: this.mainSettings.vatAppliance,
+                usage_type: this.mainSettings.usageType,
             }
             let response = await this.repository.update(mainSettingsPm.id,
                 mainSettingsPm)

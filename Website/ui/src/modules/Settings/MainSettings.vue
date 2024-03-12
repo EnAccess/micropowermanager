@@ -93,6 +93,18 @@
                 </md-field>
                 <span class="md-error">{{ errors.first('vat_appliance') }}</span>
             </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+                <md-field :class="{'md-invalid': errors.has('usage_type')}">
+                    <label for="usage_type">Usage Type</label>
+                    <md-select name="usage_type" id="usage_type" v-model="mainSettingsService.mainSettings.usageType">
+                        <md-option disabled>Select Usage Types</md-option>
+                        <md-option v-for="ut in usageTypeListService.usageTypeList" :key="ut.id"
+                                   :value="ut.value">{{ ut.name }}
+                        </md-option>
+                    </md-select>
+                </md-field>
+                <span class="md-error">{{ errors.first('usage_type') }}</span>
+            </div>
             <div class="md-layout md-alignment-bottom-right">
                 <md-button class="md-primary md-dense md-raised" @click="updateMainSettings">Save</md-button>
             </div>
@@ -107,6 +119,7 @@
 import { CurrencyListService } from '@/services/CurrencyListService'
 import { LanguagesService } from '@/services/LanguagesService'
 import { CountryListService } from '@/services/CountryListService'
+import { UsageTypeListService } from '@/services/UsageTypeListService'
 import { MainSettingsService } from '@/services/MainSettingsService'
 import { EventBus } from '@/shared/eventbus'
 
@@ -123,9 +136,11 @@ export default {
             currencyListService: new CurrencyListService(),
             languagesService: new LanguagesService(),
             countryListService: new CountryListService(),
+            usageTypeListService: new UsageTypeListService(),
             currencyList: [],
             languagesList: [],
             countryList: [],
+            usageTypeList: [],
             progress: false,
         }
 
@@ -140,6 +155,7 @@ export default {
         this.getCurrencyList()
         this.getLanguagesList()
         this.getCountryList()
+        this.getUsageTypeList()
     },
     methods: {
         fetchMainSettings () {
@@ -163,6 +179,13 @@ export default {
         async getLanguagesList () {
             try {
                 await this.languagesService.list()
+            } catch (e) {
+                this.alertNotify('error', e.message)
+            }
+        },
+        async getUsageTypeList () {
+            try {
+                await this.usageTypeListService.list()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
