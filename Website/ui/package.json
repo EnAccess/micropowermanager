@@ -5,7 +5,9 @@
     "test": "jest",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write ."
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -17,12 +19,14 @@
     "cross-env": "^5.2.1",
     "debounce": "^1.2.0",
     "eslint": "^7.10.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-loader": "^4.0.2",
     "jest": "^26.6.3",
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "mocha": "^8.3.2",
     "moment": "^2.29.0",
+    "prettier": "3.2.5",
     "regenerator-runtime": "^0.13.7",
     "resolve-url-loader": "^3.1.1",
     "sass": "^1.26.11",

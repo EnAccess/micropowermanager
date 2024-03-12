@@ -17,7 +17,8 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:vue/essential"
+        "plugin:vue/essential",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": 11,
@@ -47,6 +48,7 @@
         "vue/multi-word-component-names": 0,
         "vue/no-mutating-props": 0,
         "vue/no-v-text-v-html-on-component": 0,
-        "vue/no-reserved-component-names": 0
+        "vue/no-reserved-component-names": 0,
+        "vue/html-indent": ["error", 4]
     }
 }
