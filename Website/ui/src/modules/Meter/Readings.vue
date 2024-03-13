@@ -38,8 +38,8 @@
             :fullscreen-mobile="true"
             :months-to-show="2"
             :offset-y="500"
-            v-on:date-one-selected="function(val) { dates.dateOne = val }"
-            v-on:date-two-selected="function(val) { dates.dateTwo = val }"
+            v-on:date-one-selected="(val) => { dates.dateOne = val }"
+            v-on:date-two-selected="(val) => { dates.dateTwo = val }"
             @apply="getConsumptions"
         ></airbnb-style-datepicker>
     </div>
