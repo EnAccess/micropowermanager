@@ -28,27 +28,10 @@
         "vue"
     ],
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "never"
-        ],
         "no-unused-vars": ["error", { "varsIgnorePattern": "routes"}],
         "vue/multi-word-component-names": 0,
         "vue/no-mutating-props": 0,
         "vue/no-v-text-v-html-on-component": 0,
-        "vue/no-reserved-component-names": 0,
-        "vue/html-indent": ["error", 4]
+        "vue/no-reserved-component-names": 0
     }
 }
