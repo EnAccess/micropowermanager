@@ -5,14 +5,13 @@ const resource = `${baseUrl}/api/kelin-meters/kelin-meter`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    sync () {
+    sync() {
         return Client.get(`${resource}/sync`)
     },
-    syncCheck () {
+    syncCheck() {
         return Client.get(`${resource}/sync-check`)
     },
-
 }

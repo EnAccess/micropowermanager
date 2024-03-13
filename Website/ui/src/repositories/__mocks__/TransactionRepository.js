@@ -2,21 +2,14 @@ const transactionListResponse = require('./responses/transaction/transactionList
 const transactionDetailResponse = require('./responses/transaction/transactionDetail.json')
 
 export default {
-    list(){
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(transactionListResponse)
-            )
-
+            process.nextTick(() => resolve(transactionListResponse))
         })
     },
-    get(){
+    get() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(transactionDetailResponse)
-            )
-
+            process.nextTick(() => resolve(transactionDetailResponse))
         })
-    }
-
+    },
 }

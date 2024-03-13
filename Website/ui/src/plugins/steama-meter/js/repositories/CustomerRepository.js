@@ -5,22 +5,22 @@ const resource = `${baseUrl}/api/steama-meters/steama-customer`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    sync () {
+    sync() {
         return Client.get(`${resource}/sync`)
     },
-    get (customerId) {
+    get(customerId) {
         return Client.get(`${resource}/${customerId}`)
     },
-    syncCheck () {
+    syncCheck() {
         return Client.get(`${resource}/sync-check`)
     },
-    count () {
+    count() {
         return Client.get(`${resource}/count`)
     },
-    update(customer){
-        return Client.put(`${resource}/${customer.id}`,customer)
+    update(customer) {
+        return Client.put(`${resource}/${customer.id}`, customer)
     },
 }

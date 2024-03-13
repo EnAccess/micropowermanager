@@ -1,5 +1,5 @@
 <template>
-    <AddMiniGrid/>
+    <AddMiniGrid />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import AddMiniGrid from '@/modules/MiniGrid/AddMiniGrid.vue'
 
 export default {
     name: 'NewMiniGridPage',
-    components: { AddMiniGrid }
+    components: { AddMiniGrid },
 }
 </script>

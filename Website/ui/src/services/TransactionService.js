@@ -5,7 +5,7 @@ import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 
 export class TransactionService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('transaction')
         this.list = []
         this.transaction = {
@@ -24,7 +24,7 @@ export class TransactionService {
         this.transactionJson = null
     }
 
-    async getTransactions () {
+    async getTransactions() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -39,8 +39,7 @@ export class TransactionService {
         }
     }
 
-
-    async getAnalytics (period) {
+    async getAnalytics(period) {
         try {
             this.analyticsData = null
             let response = await this.repository.analytics(period)
@@ -56,11 +55,10 @@ export class TransactionService {
         }
     }
 
-    async getFilteredTransactions (term) {
+    async getFilteredTransactions(term) {
         try {
             let response = await this.repository.filteredList(term)
             if (response.status === 200) {
-
                 this.list = this.updateList(response.data.data)
                 return this.list
             } else {
@@ -72,20 +70,19 @@ export class TransactionService {
         }
     }
 
-    async getTransaction (id) {
+    async getTransaction(id) {
         try {
-
             let response = await this.repository.get(id)
 
             if (response.status === 200 || response.status === 201) {
                 this.transactionJson = response.data.data
-                if(this.transactionJson.payment_histories.length === 0){
+                if (this.transactionJson.payment_histories.length === 0) {
                     this.transactionJson.payment_histories.push({
                         personName: '---',
                         paymentHistory: false,
                     })
-                }else{
-                    this.transactionJson.payment_histories[0].paymentHistory =  true
+                } else {
+                    this.transactionJson.payment_histories[0].paymentHistory = true
                 }
                 return this.transactionJson
             } else {
@@ -97,17 +94,19 @@ export class TransactionService {
         }
     }
 
-    searchAdvanced (data) {
+    searchAdvanced(data) {
         this.paginator = new Paginator(resources.transactions.searchAdvanced)
         EventBus.$emit('loadPage', this.paginator, data)
     }
 
-    updateList (transactionList) {
-        this.list = transactionList.map(transaction => {return this.fromJson(transaction)})
+    updateList(transactionList) {
+        this.list = transactionList.map((transaction) => {
+            return this.fromJson(transaction)
+        })
         return this.list
     }
 
-    fromJson (transactionData) {
+    fromJson(transactionData) {
         return {
             id: transactionData.id,
             service: transactionData.original_transaction_type,
@@ -119,18 +118,23 @@ export class TransactionService {
             lastUpdate: transactionData.updated_at,
             status: this.getOriginalData(transactionData).status,
         }
-
     }
 
-    getOriginalData (transactionData) {
-
+    getOriginalData(transactionData) {
         if (transactionData.original_transaction !== undefined) {
             return transactionData.original_transaction
-        } else if (transactionData.original_transaction_type === 'airtel_transaction') {
+        } else if (
+            transactionData.original_transaction_type === 'airtel_transaction'
+        ) {
             return transactionData.original_airtel
-        } else if (transactionData.original_transaction_type === 'vodacom_transaction') {
+        } else if (
+            transactionData.original_transaction_type === 'vodacom_transaction'
+        ) {
             return transactionData.original_vodacom
-        } else if (transactionData.original_transaction_type === 'third_party_transaction') {
+        } else if (
+            transactionData.original_transaction_type ===
+            'third_party_transaction'
+        ) {
             return transactionData.original_third_party
         }
     }

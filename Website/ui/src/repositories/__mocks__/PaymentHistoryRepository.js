@@ -2,20 +2,14 @@ const paymentFlowResponse = require('./responses/payment/paymentFlow.json')
 const paymentDetailResponse = require('./responses/payment/paymentDetail.json')
 
 export default {
-    getFlow(){
+    getFlow() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(paymentFlowResponse)
-            )
-
+            process.nextTick(() => resolve(paymentFlowResponse))
         })
     },
-    getPaymentDetail(){
+    getPaymentDetail() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(paymentDetailResponse)
-            )
-
+            process.nextTick(() => resolve(paymentDetailResponse))
         })
-    }
+    },
 }

@@ -1,6 +1,9 @@
 import Repository from '../repositories/RepositoryFactory'
-import {ErrorHandler} from '@/Helpers/ErrorHander'
-import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
+import {
+    convertObjectKeysToCamelCase,
+    convertObjectKeysToSnakeCase,
+} from '@/Helpers/Utils'
 
 export class AssetPersonService {
     constructor() {
@@ -8,7 +11,7 @@ export class AssetPersonService {
         this.assetPerson = {}
         this.repository = Repository.get('assetPerson')
     }
-    fromJson(data){
+    fromJson(data) {
         return {
             applianceType: data.asset,
             applianceTypeId: data.asset.id,
@@ -26,9 +29,9 @@ export class AssetPersonService {
             logs: data.logs,
         }
     }
-    async getPersonAssets(id){
+    async getPersonAssets(id) {
         try {
-            const { data, status, error } =  await this.repository.list(id)
+            const { data, status, error } = await this.repository.list(id)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             this.list = data.data
 
@@ -38,9 +41,10 @@ export class AssetPersonService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async show(applianceId){
+    async show(applianceId) {
         try {
-            const { data, status, error } = await this.repository.show(applianceId)
+            const { data, status, error } =
+                await this.repository.show(applianceId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return this.fromJson(data.data)
@@ -49,11 +53,13 @@ export class AssetPersonService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async sellAppliance(params){
+    async sellAppliance(params) {
         try {
-            const appliance =  convertObjectKeysToSnakeCase(params)
-            const { data, status, error } = await this.repository.create(appliance)
-            if (status !== 200 && status !==201) return new ErrorHandler(error, 'http', status)
+            const appliance = convertObjectKeysToSnakeCase(params)
+            const { data, status, error } =
+                await this.repository.create(appliance)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
             this.assetPerson = convertObjectKeysToCamelCase(data.data)
 
             return this.assetPerson
@@ -62,5 +68,4 @@ export class AssetPersonService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

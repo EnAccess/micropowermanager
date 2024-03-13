@@ -1,18 +1,20 @@
 <template>
     <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-50 md-small-size-100">
-            <BookKeeping/>
-            <PeriodicReports :id="'weekly-report'"
-                             :title="$tc('phrases.weeklyReports')"
-                             :subscriber="'weeklyReport'"
-                             :paginator="reportService.paginatorWeekly"
+            <BookKeeping />
+            <PeriodicReports
+                :id="'weekly-report'"
+                :title="$tc('phrases.weeklyReports')"
+                :subscriber="'weeklyReport'"
+                :paginator="reportService.paginatorWeekly"
             />
         </div>
         <div class="md-layout-item md-size-50 md-small-size-100">
-            <PeriodicReports :id="'monthly-report'"
-                             :title="$tc('phrases.monthlyReports')"
-                             :subscriber="'monthlyReport'"
-                             :paginator="reportService.paginatorMonthly"
+            <PeriodicReports
+                :id="'monthly-report'"
+                :title="$tc('phrases.monthlyReports')"
+                :subscriber="'monthlyReport'"
+                :paginator="reportService.paginatorMonthly"
             />
         </div>
     </div>
@@ -26,14 +28,12 @@ import PeriodicReports from '@/modules/ExportedReports/PeriodicReports.vue'
 export default {
     name: 'Reports',
     components: { PeriodicReports, BookKeeping },
-    data () {
+    data() {
         return {
             reportService: new ReportsService(),
         }
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

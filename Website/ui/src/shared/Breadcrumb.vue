@@ -5,9 +5,14 @@
                 v-for="(breadcrumb, index) in breadcrumbList"
                 :key="index"
                 @click="routeTo(index)"
-                :class="{'linked': breadcrumbList.length !== index}">
+                :class="{ linked: breadcrumbList.length !== index }"
+            >
                 <div v-if="breadcrumb.level === 'detail'">
-                    <u> {{ translateItem(breadcrumb.name) }}/{{breadcrumb.targetParam}}</u>
+                    <u>
+                        {{ translateItem(breadcrumb.name) }}/{{
+                            breadcrumb.targetParam
+                        }}
+                    </u>
                 </div>
                 <div v-else>
                     <u>{{ translateItem(breadcrumb.name) }}</u>
@@ -22,73 +27,89 @@ import { translateItem } from '@/Helpers/TranslateItem'
 
 export default {
     name: 'Breadcrumb',
-    data () {
+    data() {
         return {
-            breadcrumbList:[],
-            breadcrumbListState:[],
-            prevRoute:[],
-            renderKey:0,
-            translateItem: translateItem
+            breadcrumbList: [],
+            breadcrumbListState: [],
+            prevRoute: [],
+            renderKey: 0,
+            translateItem: translateItem,
         }
     },
-    created () {
-        this.breadcrumbListState = this.$store.getters['breadcrumb/getBreadcrumb']
-        if(this.breadcrumbListState['breadcrumb'] && this.breadcrumbListState['breadcrumb'].length > 0){
+    created() {
+        this.breadcrumbListState =
+            this.$store.getters['breadcrumb/getBreadcrumb']
+        if (
+            this.breadcrumbListState['breadcrumb'] &&
+            this.breadcrumbListState['breadcrumb'].length > 0
+        ) {
             this.breadcrumbList = this.breadcrumbListState['breadcrumb']
-        }else{
+        } else {
             this.updateList()
         }
-
     },
     watch: {
-        '$route' () {
+        $route() {
             this.updateList()
-        }
+        },
     },
     methods: {
-        routeTo (index) {
+        routeTo(index) {
             if (this.breadcrumbList[index].link) {
-                if(this.breadcrumbList[index].level === 'detail'){
+                if (this.breadcrumbList[index].level === 'detail') {
                     this.$router.push(this.breadcrumbList[index].fullPath)
-                }else{
+                } else {
                     this.$router.push(this.breadcrumbList[index].link)
                 }
             }
         },
-        reRenderBreadcrumb(){
+        reRenderBreadcrumb() {
             this.renderKey += 1
         },
-        storeBreadcrumb(){
-            this.$store.dispatch('breadcrumb/setBreadcrumb', this.breadcrumbList).then(() => {
-            }).catch((err) => err)
+        storeBreadcrumb() {
+            this.$store
+                .dispatch('breadcrumb/setBreadcrumb', this.breadcrumbList)
+                .then(() => {})
+                .catch((err) => err)
         },
-        updateList () {
-            if(this.$route.meta.breadcrumb){
+        updateList() {
+            if (this.$route.meta.breadcrumb) {
                 let currentBreadcrumb = this.$route.meta.breadcrumb
-                if(this.$route.meta.breadcrumb.level === 'base'){
+                if (this.$route.meta.breadcrumb.level === 'base') {
                     this.breadcrumbList = []
-                }else{
-                    currentBreadcrumb.fullPath = currentBreadcrumb.link + '/' + this.$route.params[currentBreadcrumb.target]
-                    currentBreadcrumb.targetParam = this.$route.params[currentBreadcrumb.target]
+                } else {
+                    currentBreadcrumb.fullPath =
+                        currentBreadcrumb.link +
+                        '/' +
+                        this.$route.params[currentBreadcrumb.target]
+                    currentBreadcrumb.targetParam =
+                        this.$route.params[currentBreadcrumb.target]
                 }
-                const breadCrumbAlreadyVisited = this.breadcrumbList.findIndex(breadcrumbItem => breadcrumbItem.fullPath === currentBreadcrumb.fullPath )
-                if(breadCrumbAlreadyVisited !== -1) {
-                    this.breadcrumbList = this.breadcrumbList.slice(0,breadCrumbAlreadyVisited+1)
-                }else{
+                const breadCrumbAlreadyVisited = this.breadcrumbList.findIndex(
+                    (breadcrumbItem) =>
+                        breadcrumbItem.fullPath === currentBreadcrumb.fullPath,
+                )
+                if (breadCrumbAlreadyVisited !== -1) {
+                    this.breadcrumbList = this.breadcrumbList.slice(
+                        0,
+                        breadCrumbAlreadyVisited + 1,
+                    )
+                } else {
                     this.breadcrumbList.push(currentBreadcrumb)
                 }
-            }else{
+            } else {
                 this.breadcrumbList = []
             }
             this.reRenderBreadcrumb()
             this.storeBreadcrumb()
-        }
-    }
+        },
+    },
 }
 </script>
 
 <style scoped>
-.breadcrumb {}
+.breadcrumb {
+}
 ul {
     display: flex;
     justify-content: center;
@@ -111,8 +132,8 @@ ul > li {
 ul > li:not(:last-child)::after {
     content: '>';
     float: right;
-    font-size: .8em;
-    margin: 0 .5em;
+    font-size: 0.8em;
+    margin: 0 0.5em;
     color: whitesmoke;
     cursor: default;
 }

@@ -2,18 +2,22 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class UserPasswordService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('userPassword')
         this.user = {
             id: null,
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
         }
     }
 
-    async update (id) {
+    async update(id) {
         this.user.id = id
-        const userDataPm = { id: this.user.id, password: this.user.password, confirm_password: this.user.confirmPassword }
+        const userDataPm = {
+            id: this.user.id,
+            password: this.user.password,
+            confirm_password: this.user.confirmPassword,
+        }
         try {
             const { status, data } = await this.repository.put(userDataPm)
             if (!status === 200) {
@@ -26,10 +30,9 @@ export class UserPasswordService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async forgotPassword(email){
+    async forgotPassword(email) {
         try {
             const { status, data, error } = await this.repository.post(email)
             if (!status === 200) {
@@ -41,10 +44,10 @@ export class UserPasswordService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    resetUserPassword () {
+    resetUserPassword() {
         this.user = {
             password: null,
-            confirmPassword: null
+            confirmPassword: null,
         }
     }
 }

@@ -9,10 +9,11 @@ const API_KEY = 'd47b759329df4ae39dc26862c7e2dc7f'
 export const getGeoDataFromAddress = async (address) => {
     // eslint-disable-next-line no-useless-catch
     try {
-        const { data } = await axios.get(OPEN_CAGE_DATA_URI, { params: { q: address, key: API_KEY } })
+        const { data } = await axios.get(OPEN_CAGE_DATA_URI, {
+            params: { q: address, key: API_KEY },
+        })
         return data.results
     } catch (error) {
         throw error
     }
-
 }

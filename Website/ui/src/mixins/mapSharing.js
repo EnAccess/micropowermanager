@@ -16,64 +16,64 @@ export const sharedMap = {
     props: {
         mappingService: {
             type: MappingService,
-            required: true
+            required: true,
         },
         zoom: {
             type: Number,
-            default: store.getters['settings/getMapSettings'].zoom
+            default: store.getters['settings/getMapSettings'].zoom,
         },
         maxZoom: {
             type: Number,
-            default: 20
+            default: 20,
         },
 
         mutatingCenter: {
             type: Array,
-            required: false
+            required: false,
         },
         position: {
             type: String,
             default: 'topright',
-            required: false
+            required: false,
         },
         polygon: {
             type: Boolean,
-            default: false
+            default: false,
         },
         polyline: {
             type: Boolean,
-            default: false
+            default: false,
         },
         marker: {
             type: Boolean,
-            default: false
+            default: false,
         },
         markerCount: {
             type: Number,
-            default: 1
+            default: 1,
         },
         circlemarker: {
             type: Boolean,
-            default: false
+            default: false,
         },
         rectangle: {
             type: Boolean,
-            default: false
+            default: false,
         },
         circle: {
             type: Boolean,
-            default: false
+            default: false,
         },
         remove: {
             type: Boolean,
-            default: false
+            default: false,
         },
         edit: {
             type: Boolean,
-            default: false
+            default: false,
         },
     },
-    data () {
+    data() {
         return {
             markerUrl: this.mappingService.markerUrl,
             defaultMarkerIconUrl: marker,
@@ -88,14 +88,14 @@ export const sharedMap = {
             geoDataItems: [],
         }
     },
-    mounted () {
+    mounted() {
         this.initMap()
     },
-    destroyed () {
+    destroyed() {
         this.map = null
     },
     methods: {
-        initMap () {
+        initMap() {
             const drawingOptions = {
                 position: this.position,
                 draw: {
@@ -109,19 +109,24 @@ export const sharedMap = {
                 edit: {
                     featureGroup: new L.FeatureGroup(),
                     remove: this.remove,
-                    edit: this.edit
-                }
+                    edit: this.edit,
+                },
             }
-            this.map = L.map('map').setView(this.mappingService.center, this.zoom)
+            this.map = L.map('map').setView(
+                this.mappingService.center,
+                this.zoom,
+            )
             this.setTileLayer()
             if (drawingOptions.draw.marker) {
-                const marker = L.Icon.extend({ options: { ...ICON_OPTIONS, iconUrl: this.markerUrl } })
+                const marker = L.Icon.extend({
+                    options: { ...ICON_OPTIONS, iconUrl: this.markerUrl },
+                })
                 drawingOptions.draw.marker = {}
                 drawingOptions.draw.marker.icon = new marker()
             }
             this.markersLayer = new L.markerClusterGroup({
                 chunkedLoading: true,
-                spiderfyOnMaxZoom: false
+                spiderfyOnMaxZoom: false,
             })
             const drawControl = new L.Control.Draw(drawingOptions)
             this.map.addLayer(drawingOptions.edit.featureGroup)
@@ -129,43 +134,46 @@ export const sharedMap = {
             this.editableLayer = drawingOptions.edit.featureGroup
             this.nonEditableLayer = new L.FeatureGroup()
         },
-        setTileLayer () {
+        setTileLayer() {
             if (this.mapProvider) {
-                L.tileLayer.bing(this.bingMapApiKey, {
-                    maxZoom: this.maxZoom,
-                    attribution: this.osmAttrib
-                }).addTo(this.map)
+                L.tileLayer
+                    .bing(this.bingMapApiKey, {
+                        maxZoom: this.maxZoom,
+                        attribution: this.osmAttrib,
+                    })
+                    .addTo(this.map)
             } else {
-                L.tileLayer(this.osmUrl, { maxZoom: this.maxZoom, attribution: this.osmAttrib }).addTo(this.map)
+                L.tileLayer(this.osmUrl, {
+                    maxZoom: this.maxZoom,
+                    attribution: this.osmAttrib,
+                }).addTo(this.map)
             }
         },
-        reGenerateMap (mutatingCenter) {
+        reGenerateMap(mutatingCenter) {
             this.map.flyTo(mutatingCenter, this.zoom, this.drawingOptions)
         },
-        routeToDetail (path, id) {
+        routeToDetail(path, id) {
             this.$router.push(`${path}/${id}`)
         },
-        routeToDetailWithQueryParam (path, key, value) {
+        routeToDetailWithQueryParam(path, key, value) {
             this.$router.push(`${path}?${key}=${value}`)
         },
-        focusOnItem (newLat, newLng) {
+        focusOnItem(newLat, newLng) {
             this.map.setView([newLat, newLng], this.zoom)
         },
-        getLatLng () {
+        getLatLng() {
             let zoom
             this.map.on('move', function (e) {
                 zoom = Math.round(e.target._zoom)
                 EventBus.$emit('mapZoom', zoom)
-
             })
             return {
                 lat: this.map.getCenter().lat.toFixed(5),
                 lng: this.map.getCenter().lng.toFixed(5),
-                zoom: zoom
+                zoom: zoom,
             }
-
         },
-        removeExistingMarkers () {
+        removeExistingMarkers() {
             this.map.eachLayer(function (layer) {
                 if (layer._icon) {
                     layer.remove()
@@ -174,16 +182,19 @@ export const sharedMap = {
         },
     },
     computed: {
-        mapProvider () {
-            return store.getters['settings/getMapSettings'].provider === 'Bing Maps'
+        mapProvider() {
+            return (
+                store.getters['settings/getMapSettings'].provider ===
+                'Bing Maps'
+            )
         },
-        bingMapApiKey () {
+        bingMapApiKey() {
             return store.getters['settings/getMapSettings'].bingMapApiKey
-        }
+        },
     },
     watch: {
-        mutatingCenter () {
+        mutatingCenter() {
             this.reGenerateMap(this.mutatingCenter)
         },
-    }
+    },
 }

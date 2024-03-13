@@ -2,21 +2,14 @@ const cityListResponse = require('./responses/city/cityList.json')
 const cityCreateResponse = require('./responses/city/cityCreate.json')
 
 export default {
-    list(){
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(cityListResponse)
-            )
-
+            process.nextTick(() => resolve(cityListResponse))
         })
     },
-    create(){
+    create() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(cityCreateResponse)
-            )
-
+            process.nextTick(() => resolve(cityCreateResponse))
         })
-    }
-
+    },
 }

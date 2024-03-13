@@ -2,20 +2,14 @@ const ticketsDataResponse = require('./responses/revenue/ticketsData.json')
 const revenueTrendResponse = require('./responses/revenue/revenueTrends.json')
 
 export default {
-    tickets(){
+    tickets() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(ticketsDataResponse)
-            )
-
+            process.nextTick(() => resolve(ticketsDataResponse))
         })
     },
-    trends(){
+    trends() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(revenueTrendResponse)
-            )
-
+            process.nextTick(() => resolve(revenueTrendResponse))
         })
-    }
+    },
 }

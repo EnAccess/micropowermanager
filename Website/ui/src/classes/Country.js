@@ -1,7 +1,5 @@
 export class Country {
-    constructor() {
-    }
-
+    constructor() {}
 
     fromJson(jsonData) {
         this.id = jsonData.id

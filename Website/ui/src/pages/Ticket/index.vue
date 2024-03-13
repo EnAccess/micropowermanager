@@ -1,5 +1,5 @@
 <template>
-    <Tickets/>
+    <Tickets />
 </template>
 <script>
 import Tickets from '@/modules/Ticket/Tickets'
@@ -7,8 +7,5 @@ import Tickets from '@/modules/Ticket/Tickets'
 export default {
     name: 'TicketsPage',
     components: { Tickets },
-
 }
 </script>
-
-

@@ -1,26 +1,19 @@
 const mainSettingsListResponse = require('./responses/settings/mainSettingsList.json')
 
 export default {
-    list () {
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(mainSettingsListResponse)
-            )
-
+            process.nextTick(() => resolve(mainSettingsListResponse))
         })
     },
-    update(id, data){
+    update(id, data) {
         return new Promise((resolve) => {
-            process.nextTick(() =>{
-                if(mainSettingsListResponse.data.data[0].id === id){
+            process.nextTick(() => {
+                if (mainSettingsListResponse.data.data[0].id === id) {
                     mainSettingsListResponse.data.data[0] = data
                     resolve(mainSettingsListResponse)
                 }
-
             })
-
         })
-    }
+    },
 }
-
-

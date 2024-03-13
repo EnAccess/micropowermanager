@@ -3,11 +3,17 @@ export const convertObjectKeysToCamelCase = (obj) => {
     for (const [key, value] of Object.entries(obj)) {
         const camelKey = snakeToCamel(key)
 
-        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        if (
+            value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value)
+        ) {
             result[camelKey] = convertObjectKeysToCamelCase(value)
         } else if (Array.isArray(value)) {
             result[camelKey] = value?.map((item) =>
-                typeof item === 'object' && item !== null ? convertObjectKeysToCamelCase(item) : item
+                typeof item === 'object' && item !== null
+                    ? convertObjectKeysToCamelCase(item)
+                    : item,
             )
         } else {
             result[camelKey] = value
@@ -23,11 +29,17 @@ export const convertObjectKeysToSnakeCase = (obj) => {
     for (const [key, value] of Object.entries(obj)) {
         const snakeKey = camelToSnake(key)
 
-        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        if (
+            value !== null &&
+            typeof value === 'object' &&
+            !Array.isArray(value)
+        ) {
             result[snakeKey] = convertObjectKeysToSnakeCase(value)
         } else if (Array.isArray(value)) {
             result[snakeKey] = value?.map((item) =>
-                typeof item === 'object' && item !== null ? convertObjectKeysToSnakeCase(item) : item
+                typeof item === 'object' && item !== null
+                    ? convertObjectKeysToSnakeCase(item)
+                    : item,
             )
         } else {
             result[snakeKey] = value
@@ -37,5 +49,5 @@ export const convertObjectKeysToSnakeCase = (obj) => {
 }
 
 const camelToSnake = (str) => {
-    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
 }

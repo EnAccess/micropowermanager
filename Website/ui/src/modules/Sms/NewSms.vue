@@ -4,108 +4,160 @@
             <md-card class="md-size-80">
                 <md-card-header>
                     <md-list class="mobile-tabs">
-                        <md-list-item @click="tab='person'">{{ $tc('words.people') }}</md-list-item>
-                        <md-list-item @click="tab='group'">{{ $tc('phrases.connectionGroup') }}</md-list-item>
-                        <md-list-item @click="tab='type'">{{ $tc('phrases.connectionType') }}</md-list-item>
-                        <md-list-item @click="tab='all'">{{ $tc('phrases.wholeVillage') }}</md-list-item>
+                        <md-list-item @click="tab = 'person'">
+                            {{ $tc('words.people') }}
+                        </md-list-item>
+                        <md-list-item @click="tab = 'group'">
+                            {{ $tc('phrases.connectionGroup') }}
+                        </md-list-item>
+                        <md-list-item @click="tab = 'type'">
+                            {{ $tc('phrases.connectionType') }}
+                        </md-list-item>
+                        <md-list-item @click="tab = 'all'">
+                            {{ $tc('phrases.wholeVillage') }}
+                        </md-list-item>
                     </md-list>
                     <md-tabs class="tabs">
                         <md-tab
                             role="presentation"
-                            :class="tab==='person' ? 'active' :''"
+                            :class="tab === 'person' ? 'active' : ''"
                             :md-label="$tc('words.people')"
-                            @click="tab='person'"
+                            @click="tab = 'person'"
                             exact
                         ></md-tab>
                         <md-tab
                             role="presentation"
-                            :class="tab==='group' ? 'active' :''"
+                            :class="tab === 'group' ? 'active' : ''"
                             :md-label="$tc('phrases.connectionGroup')"
-                            @click="tab='group'"
+                            @click="tab = 'group'"
                         ></md-tab>
                         <md-tab
                             role="presentation"
-                            :class="tab==='type' ? 'active' :''"
+                            :class="tab === 'type' ? 'active' : ''"
                             :md-label="$tc('phrases.connectionType')"
-                            @click="tab='type'"
+                            @click="tab = 'type'"
                         ></md-tab>
                         <md-tab
                             role="presentation"
-                            :class="tab==='all' ? 'active' :''"
+                            :class="tab === 'all' ? 'active' : ''"
                             :md-label="$tc('phrases.wholeVillage')"
-                            @click="tab='all'"
+                            @click="tab = 'all'"
                         ></md-tab>
                     </md-tabs>
                 </md-card-header>
                 <md-card-content>
                     <div class="md-layout">
                         <!-- minigrid select should be displayed on connection groups and connection types too-->
-                        <div class="md-layout-item md-size-100" v-if="tab !=='person'">
+                        <div
+                            class="md-layout-item md-size-100"
+                            v-if="tab !== 'person'"
+                        >
                             <md-field>
                                 <label>{{ $tc('words.miniGrid') }}</label>
-                                <md-select id="miniGrid_select" v-model="miniGrid">
-                                    <md-option value="0">{{ $tc('words.all') }}</md-option>
-                                    <md-option v-for="miniGrid in miniGridService.miniGrids"
-                                               :value="miniGrid.id"
-                                               :key="miniGrid.id">
+                                <md-select
+                                    id="miniGrid_select"
+                                    v-model="miniGrid"
+                                >
+                                    <md-option value="0">
+                                        {{ $tc('words.all') }}
+                                    </md-option>
+                                    <md-option
+                                        v-for="miniGrid in miniGridService.miniGrids"
+                                        :value="miniGrid.id"
+                                        :key="miniGrid.id"
+                                    >
                                         {{ miniGrid.name }}
                                     </md-option>
                                 </md-select>
                             </md-field>
                         </div>
-                        <div class="md-layout-item md-size-100" v-if="tab ==='person'">
-                            <multiselect v-model="smsService.receiverList"
-                                         id="customer"
-                                         name="customer"
-                                         track-by="phone"
-                                         label="display"
-                                         placeholder="Type to search"
-                                         open-direction="bottom"
-                                         :options="smsService.resultList"
-                                         @tag="addNumberToReceivers"
-                                         :taggable="false"
-                                         :multiple="true"
-                                         :searchable="true"
-                                         :loading="isLoading"
-                                         :internal-search="false"
-                                         :clear-on-select="false"
-                                         :close-on-select="false"
-                                         :options-limit="300"
-                                         :limit="10"
-                                         :max-height="600"
-                                         :show-no-results="true"
-                                         :hide-selected="true"
-                                         @search-change="searchForPerson">
-                                <template slot="tag" slot-scope="{ option, remove }"><span
-                                    class="custom__tag"><span>{{ option.display }}</span>
-                                    <span class="custom__remove"
-                                          @click="remove(option)">❌</span></span>
+                        <div
+                            class="md-layout-item md-size-100"
+                            v-if="tab === 'person'"
+                        >
+                            <multiselect
+                                v-model="smsService.receiverList"
+                                id="customer"
+                                name="customer"
+                                track-by="phone"
+                                label="display"
+                                placeholder="Type to search"
+                                open-direction="bottom"
+                                :options="smsService.resultList"
+                                @tag="addNumberToReceivers"
+                                :taggable="false"
+                                :multiple="true"
+                                :searchable="true"
+                                :loading="isLoading"
+                                :internal-search="false"
+                                :clear-on-select="false"
+                                :close-on-select="false"
+                                :options-limit="300"
+                                :limit="10"
+                                :max-height="600"
+                                :show-no-results="true"
+                                :hide-selected="true"
+                                @search-change="searchForPerson"
+                            >
+                                <template
+                                    slot="tag"
+                                    slot-scope="{ option, remove }"
+                                >
+                                    <span class="custom__tag">
+                                        <span>{{ option.display }}</span>
+                                        <span
+                                            class="custom__remove"
+                                            @click="remove(option)"
+                                        >
+                                            ❌
+                                        </span>
+                                    </span>
                                 </template>
                                 <template slot="clear" slot-scope="props">
-                                    <div class="multiselect__clear" v-if="receivers.length"
-                                         @mousedown.prevent.stop="clearAll(props.search)"></div>
+                                    <div
+                                        class="multiselect__clear"
+                                        v-if="receivers.length"
+                                        @mousedown.prevent.stop="
+                                            clearAll(props.search)
+                                        "
+                                    ></div>
                                 </template>
-                                <span
-                                    slot="noResult">No contact found. Consider changing the search term.</span>
-
+                                <span slot="noResult">
+                                    No contact found. Consider changing the
+                                    search term.
+                                </span>
                             </multiselect>
                         </div>
-                        <div class="md-layout-item md-size-100" v-if="tab==='type' || tab ==='group'">
+                        <div
+                            class="md-layout-item md-size-100"
+                            v-if="tab === 'type' || tab === 'group'"
+                        >
                             <md-field>
                                 <label>{{ $tc('words.receiver') }}</label>
-                                <md-select id="receiver_select" v-model="smsService.receiverList">
-                                    <md-option value selected>-- {{ $tc('words.select') }} --</md-option>
-                                    <md-option v-for="connection_group in smsService.resultList"
-                                               :value="connection_group.id"
-                                               :key="connection_group.id">
+                                <md-select
+                                    id="receiver_select"
+                                    v-model="smsService.receiverList"
+                                >
+                                    <md-option value selected>
+                                        -- {{ $tc('words.select') }} --
+                                    </md-option>
+                                    <md-option
+                                        v-for="connection_group in smsService.resultList"
+                                        :value="connection_group.id"
+                                        :key="connection_group.id"
+                                    >
                                         {{ connection_group.display }}
                                     </md-option>
                                 </md-select>
                             </md-field>
                         </div>
                         <div class="md-layout-item md-size-100">
-                            <md-field :class="{'md-invalid': errors.has('message')}">
-                                <label for="message">{{ $tc('words.message') }}</label>
+                            <md-field
+                                :class="{ 'md-invalid': errors.has('message') }"
+                            >
+                                <label for="message">
+                                    {{ $tc('words.message') }}
+                                </label>
                                 <md-textarea
                                     name="message"
                                     rows="10"
@@ -115,14 +167,21 @@
                                     placeholder="Message"
                                     v-validate="'required|max:160|min:3'"
                                 ></md-textarea>
-                                <span class="md-error">{{ errors.first('message') }}</span>
+                                <span class="md-error">
+                                    {{ errors.first('message') }}
+                                </span>
                             </md-field>
                         </div>
                     </div>
                 </md-card-content>
                 <md-card-actions>
                     <div class="md-layout">
-                        <md-button class="md-raised md-primary" @click="sendConfirm">{{ $tc('words.send') }}</md-button>
+                        <md-button
+                            class="md-raised md-primary"
+                            @click="sendConfirm"
+                        >
+                            {{ $tc('words.send') }}
+                        </md-button>
                     </div>
                 </md-card-actions>
             </md-card>
@@ -146,12 +205,12 @@ export default {
         show: {
             type: Boolean,
             default: false,
-        }
+        },
     },
-    mounted () {
+    mounted() {
         this.getMiniGrids()
     },
-    data () {
+    data() {
         return {
             customerSearchTerm: null,
             customers: [],
@@ -162,18 +221,18 @@ export default {
             tab: 'person',
             miniGrid: 0,
             isLoading: false,
-            senderId: this.$store.getters['auth/getAuthenticateUser'].id
+            senderId: this.$store.getters['auth/getAuthenticateUser'].id,
         }
     },
     methods: {
-        async getMiniGrids () {
+        async getMiniGrids() {
             try {
                 await this.miniGridService.getMiniGrids()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async searchForConnectionType () {
+        async searchForConnectionType() {
             try {
                 await this.smsService.connectionTypeList()
             } catch (e) {
@@ -186,25 +245,25 @@ export default {
             }
             await this.smsService.searchPerson(input)
         }, 500),
-        clearAll () {
+        clearAll() {
             this.smsService.receiverList = []
             this.smsService.resultList = []
         },
-        addNumberToReceivers (phone) {
+        addNumberToReceivers(phone) {
             this.smsService.receiverList.push({
                 id: -1,
                 display: phone,
-                phone: phone
+                phone: phone,
             })
         },
-        searchForConnectionGroup () {
+        searchForConnectionGroup() {
             try {
                 this.smsService.connectionGroupList()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async sendConfirm () {
+        async sendConfirm() {
             const validator = await this.$validator.validateAll()
             if (!validator) {
                 return
@@ -219,23 +278,34 @@ export default {
             }).then((value) => {
                 if (value.value === true)
                     try {
-                        this.smsService.sendBulk(this.tab, this.message, this.senderId, this.miniGrid)
-                        this.alertNotify('success', this.$tc('phrases.bulksms', 2))
+                        this.smsService.sendBulk(
+                            this.tab,
+                            this.message,
+                            this.senderId,
+                            this.miniGrid,
+                        )
+                        this.alertNotify(
+                            'success',
+                            this.$tc('phrases.bulksms', 2),
+                        )
                     } catch (exception) {
-                        this.alertNotify('error', 'SMS service failed with following error' + exception.message)
+                        this.alertNotify(
+                            'error',
+                            'SMS service failed with following error' +
+                                exception.message,
+                        )
                     }
                 this.message = ''
                 this.$validator.reset()
             })
-
         },
 
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
     },
@@ -247,11 +317,8 @@ export default {
             } else if (this.tab === 'type') {
                 this.searchForConnectionType()
             }
-        }
-        ,
-    }
-    ,
-
+        },
+    },
 }
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

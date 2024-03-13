@@ -4,7 +4,7 @@ import moment from 'moment'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class PersonService {
-    constructor () {
+    constructor() {
         this.repository = new Repository.get('person')
         this.person = {
             id: null,
@@ -22,17 +22,18 @@ export class PersonService {
                 street: null,
                 cityId: null,
                 email: null,
-                phone: null
-            }
+                phone: null,
+            },
         }
         this.fullName = null
     }
 
-    async createPerson (personData) {
+    async createPerson(personData) {
         try {
-            const params  = convertObjectKeysToSnakeCase(personData)
+            const params = convertObjectKeysToSnakeCase(personData)
             const { data, status, error } = await this.repository.create(params)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -41,7 +42,7 @@ export class PersonService {
         }
     }
 
-    async getPerson (personId) {
+    async getPerson(personId) {
         try {
             const { data, status, error } = await this.repository.get(personId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
@@ -53,10 +54,13 @@ export class PersonService {
                 birthDate: personData.birth_date,
                 name: personData.name,
                 surname: personData.surname,
-                nationality: personData.citizenship != null ? personData.citizenship.country_name : 'No data available',
+                nationality:
+                    personData.citizenship != null
+                        ? personData.citizenship.country_name
+                        : 'No data available',
                 gender: personData.sex,
                 addresses: personData.addresses,
-                devices: personData.devices
+                devices: personData.devices,
             }
 
             return this.person
@@ -66,11 +70,12 @@ export class PersonService {
         }
     }
 
-    async updatePerson (personData) {
+    async updatePerson(personData) {
         try {
             const person = convertObjectKeysToSnakeCase(personData)
             const { data, status, error } = await this.repository.update(person)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -79,10 +84,12 @@ export class PersonService {
         }
     }
 
-    async deletePerson (personId) {
+    async deletePerson(personId) {
         try {
-            const { data, status, error } = await this.repository.delete(personId)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } =
+                await this.repository.delete(personId)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -91,8 +98,7 @@ export class PersonService {
         }
     }
 
-    async searchPerson (params) {
-
+    async searchPerson(params) {
         try {
             let response = await this.repository.search(params)
             if (response.status === 200) {
@@ -102,27 +108,26 @@ export class PersonService {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
-
     }
 
-    getFullName () {
+    getFullName() {
         this.fullName = this.person.name + ' ' + this.person.surname
         return this.fullName
     }
 
-    getId () {
+    getId() {
         return this.person.id
     }
 
-    isoYear (date) {
+    isoYear(date) {
         return moment(date).format('YYYY-MM-DD')
     }
 
-    updateName (fullName) {
+    updateName(fullName) {
         let x = fullName.split(' ')
         if (x.length < 2) {
             return {
-                'success': false,
+                success: false,
             }
         }
         this.person.surname = x.splice(-1)

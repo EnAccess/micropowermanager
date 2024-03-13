@@ -2,7 +2,7 @@ import { Paginator } from './paginator'
 import { resources } from '@/resources'
 
 export class Ticket {
-    constructor () {
+    constructor() {
         this.created = null
         this.id = null
         this.name = null
@@ -16,12 +16,11 @@ export class Ticket {
         this.assigned = null
     }
 
-    async getTicketDetail (ticketData) {
-        return await
-        this.getDetail(ticketData.ticket_id)
+    async getTicketDetail(ticketData) {
+        return await this.getDetail(ticketData.ticket_id)
     }
 
-    fromJson (ticketData) {
+    fromJson(ticketData) {
         ticketData = ticketData.data
         let ticket = ticketData.ticket
         let actions = ticketData.actions
@@ -47,69 +46,72 @@ export class Ticket {
             }
 
             this.comments.push({
-                'comment': action.data.text,
-                'date': action.date,
-                'fullName': action.memberCreator.fullName,
-                'username': action.memberCreator.username,
+                comment: action.data.text,
+                date: action.date,
+                fullName: action.memberCreator.fullName,
+                username: action.memberCreator.username,
             })
         }
         return this
     }
 
-    commentCount () {
+    commentCount() {
         return this.comments.length
     }
 
-    async getDetail (trelloId) {
-        return axios.get(resources.ticket.detail + trelloId).then(response => {
-            return this.fromJson(response.data)
-        })
-
+    async getDetail(trelloId) {
+        return axios
+            .get(resources.ticket.detail + trelloId)
+            .then((response) => {
+                return this.fromJson(response.data)
+            })
     }
 
-    close () {
-        axios.delete(resources.ticket.close, {data: {'ticketId': this.id}}).then(() => {
-            this.closed = true
-        })
+    close() {
+        axios
+            .delete(resources.ticket.close, { data: { ticketId: this.id } })
+            .then(() => {
+                this.closed = true
+            })
     }
 }
 
 export class Tickets {
-    constructor () {
+    constructor() {
         this.openedList = []
         this.closedList = []
-        this.openedPaginator = new Paginator(resources.ticket.list + '?status=0')
-        this.closedPaginator = new Paginator(resources.ticket.list + '?status=1')
+        this.openedPaginator = new Paginator(
+            resources.ticket.list + '?status=0',
+        )
+        this.closedPaginator = new Paginator(
+            resources.ticket.list + '?status=1',
+        )
     }
 
-    addTicket (ticket) {
+    addTicket(ticket) {
         this.openedList.push(ticket)
     }
 
-    search () {
-    // this.paginator = new Paginator(resources.meters.search);
-    // EventBus.$emit('loadPage', this.paginator, {'term': term});
+    search() {
+        // this.paginator = new Paginator(resources.meters.search);
+        // EventBus.$emit('loadPage', this.paginator, {'term': term});
     }
 
-    showAll () {
-    //this.paginator = new Paginator(resources.meters.list);
-    //EventBus.$emit('loadPage', this.paginator);
+    showAll() {
+        //this.paginator = new Paginator(resources.meters.list);
+        //EventBus.$emit('loadPage', this.paginator);
     }
 
-    async updateList (data, type) {
-
-        if (type === 'ticketListOpened')
-            this.openedList = []
-        else
-            this.closedList = []
+    async updateList(data, type) {
+        if (type === 'ticketListOpened') this.openedList = []
+        else this.closedList = []
 
         for (let m in data) {
             let ticket = new Ticket()
             let ticketData = await ticket.getTicketDetail(data[m])
             ticketData.assignedTo = data[m].assigned_to
             if (type === 'ticketListOpened')
-                if (ticketData !== null)
-                    this.openedList.push(ticketData)
+                if (ticketData !== null) this.openedList.push(ticketData)
                 else {
                     if (ticketData !== null) {
                         this.closedList.push(ticketData)

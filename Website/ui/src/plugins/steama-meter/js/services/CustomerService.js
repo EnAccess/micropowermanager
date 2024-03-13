@@ -3,8 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import { EventBus } from '../eventbus'
 
 export class CustomerService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('customer')
         this.list = []
         this.isSync = false
@@ -20,11 +19,11 @@ export class CustomerService {
             energyPrice: null,
             siteId: null,
             siteName: null,
-            lowBalanceWarning: null
+            lowBalanceWarning: null,
         }
     }
 
-    fromJson (customerData) {
+    fromJson(customerData) {
         this.customer = {
             id: customerData.id,
             steamaId: customerData.customer_id,
@@ -34,13 +33,12 @@ export class CustomerService {
             siteId: customerData.site.mpm_mini_grid.id,
             siteName: customerData.site.mpm_mini_grid.name,
             energyPrice: customerData.energy_price,
-            lowBalanceWarning: customerData.low_balance_warning
+            lowBalanceWarning: customerData.low_balance_warning,
         }
         return this.customer
-
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let c in data) {
             let customer = this.fromJson(data[c])
@@ -48,7 +46,7 @@ export class CustomerService {
         }
     }
 
-    async syncCustomers () {
+    async syncCustomers() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -62,12 +60,11 @@ export class CustomerService {
         }
     }
 
-    async checkCustomers () {
+    async checkCustomers() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -77,7 +74,7 @@ export class CustomerService {
         }
     }
 
-    async getCustomersCount () {
+    async getCustomersCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {
@@ -92,7 +89,7 @@ export class CustomerService {
         }
     }
 
-    async updateCustomer (customer) {
+    async updateCustomer(customer) {
         try {
             let customerPM = {
                 id: customer.id,
@@ -112,7 +109,7 @@ export class CustomerService {
         }
     }
 
-    async getCustomerName (customerId) {
+    async getCustomerName(customerId) {
         try {
             let response = await this.repository.get(customerId)
             if (response.status === 200) {
@@ -126,12 +123,12 @@ export class CustomerService {
         }
     }
 
-    search (term) {
+    search(term) {
         this.pagingUrl = '/api/steama-meters/steama-customer/advanced/search'
-        EventBus.$emit('loadPage', this.pagingUrl, { 'term': term })
+        EventBus.$emit('loadPage', this.pagingUrl, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.pagingUrl = '/api/steama-meters/steama-customer'
         EventBus.$emit('loadPage', this.pagingUrl, {})
     }

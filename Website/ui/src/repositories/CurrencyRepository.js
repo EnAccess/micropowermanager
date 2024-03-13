@@ -4,7 +4,7 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/settings/currency-list`
 
 export default {
-    list(){
+    list() {
         return Client.get(`${resource}`)
-    }
+    },
 }

@@ -4,22 +4,22 @@ import { EventBus } from '@/shared/eventbus'
 import { Person } from './person'
 
 export class People {
-    constructor () {
+    constructor() {
         this.list = []
         this.paginator = new Paginator(resources.person.list)
     }
 
-    search (term) {
+    search(term) {
         this.paginator = new Paginator(resources.person.search)
-        EventBus.$emit('loadPage', this.paginator, {'term': term})
+        EventBus.$emit('loadPage', this.paginator, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.paginator = new Paginator(resources.person.list)
         EventBus.$emit('loadPage', this.paginator)
     }
 
-    async updateList (data) {
+    async updateList(data) {
         this.list = []
 
         for (let m in data) {
@@ -27,5 +27,4 @@ export class People {
             this.list.push(person)
         }
     }
-
 }

@@ -2,7 +2,6 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SmsSettingService {
-
     constructor() {
         this.repository = Repository.get('smsSetting')
         this.list = []
@@ -10,7 +9,7 @@ export class SmsSettingService {
             id: null,
             enabled: null,
             state: null,
-            NotSendElderThanMins: null
+            NotSendElderThanMins: null,
         }
     }
 
@@ -22,7 +21,8 @@ export class SmsSettingService {
                     id: smsSettings[s].settingType.id,
                     enabled: smsSettings[s].settingType.enabled,
                     state: smsSettings[s].settingType.state,
-                    not_send_elder_than_mins: smsSettings[s].settingType.NotSendElderThanMins,
+                    not_send_elder_than_mins:
+                        smsSettings[s].settingType.NotSendElderThanMins,
                 }
                 smsListPM.push(settingPm)
             }

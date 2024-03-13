@@ -1,35 +1,49 @@
 <template>
     <div>
-
-        <widget id="meter-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="meterService.pagingUrl"
-                :route_name="meterService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncMeters()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="meter-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="meterService.pagingUrl"
+            :route_name="meterService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncMeters()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-
-            <md-table v-model="meterService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="meterService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Serial" md-sort-by="serial">{{ item.serial }}</md-table-cell>
-                    <md-table-cell md-label="Site" md-sort-by="site">{{ item.site }}</md-table-cell>
-                    <md-table-cell md-label="Customer" md-sort-by="owner">{{ item.owner}}</md-table-cell>
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Serial" md-sort-by="serial">
+                        {{ item.serial }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Site" md-sort-by="site">
+                        {{ item.site }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Customer" md-sort-by="owner">
+                        {{ item.owner }}
+                    </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+        />
     </div>
 </template>
 
@@ -45,7 +59,7 @@ import { MeterService } from '../../services/MeterService'
 export default {
     name: 'MeterList',
     components: { Redirection, Widget },
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             siteService: new SiteService(),
@@ -58,18 +72,18 @@ export default {
             redirectionUrl: '/steama-meters/steama-overview',
             redirectDialogActive: false,
             buttonText: 'Get Updates From Steama.co',
-            label: 'Meter Records Not Up to Date.'
+            label: 'Meter Records Not Up to Date.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkCredential()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -77,12 +91,11 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
-        async checkSync () {
+        async checkSync() {
             try {
                 this.loading = true
                 this.isSynced = await this.meterService.checkMeters()
@@ -96,9 +109,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncMeters()
                         }
@@ -109,19 +120,26 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async syncMeters () {
+        async syncMeters() {
             if (!this.loading) {
                 try {
                     this.loading = true
                     let sitesSynced = await this.siteService.checkSites()
                     if (!sitesSynced) {
-                        this.alertNotify('warn', 'Sites must be updated to update Meters.')
+                        this.alertNotify(
+                            'warn',
+                            'Sites must be updated to update Meters.',
+                        )
                         this.isSynced = false
                         return
                     }
-                    let customersSynced = await this.customerService.checkCustomers()
+                    let customersSynced =
+                        await this.customerService.checkCustomers()
                     if (!customersSynced) {
-                        this.alertNotify('warn', 'Customers must be updated to update Meters.')
+                        this.alertNotify(
+                            'warn',
+                            'Customers must be updated to update Meters.',
+                        )
                         this.isSynced = false
                         return
                     }
@@ -135,25 +153,26 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.meterService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.meterService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.meterService.list.length,
+            )
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

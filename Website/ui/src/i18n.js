@@ -15,8 +15,8 @@ export default new VueI18n({
     messages: {
         en: en,
         fr: fr,
-        bu: bu
-    }
+        bu: bu,
+    },
 })
 
 const i18n = new VueI18n()
@@ -28,6 +28,5 @@ Vue.use(VeeValidate, {
         en: { messages: enMessages.messages },
         fr: { messages: frMessages.messages },
         bu: { messages: enMessages.messages },
-
-    }
+    },
 })

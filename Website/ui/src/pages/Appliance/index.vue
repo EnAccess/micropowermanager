@@ -1,5 +1,5 @@
 <template>
-    <Assets/>
+    <Assets />
 </template>
 
 <script>

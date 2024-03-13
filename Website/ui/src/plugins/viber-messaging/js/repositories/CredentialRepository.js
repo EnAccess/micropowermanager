@@ -4,13 +4,13 @@ const resource = `${baseUrl}/api/viber-messaging/viber-credential`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    get () {
+    get() {
         return Client.get(`${resource}`)
     },
-    put (credentials) {
+    put(credentials) {
         return Client.put(`${resource}`, credentials)
     },
-    check () {
+    check() {
         return Client.get(`${resource}/check`)
-    }
+    },
 }

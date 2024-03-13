@@ -1,37 +1,45 @@
 <template>
     <div>
-        <widget :title="$tc('phrases.paymentOverview',0, {period: periodName}) "
-                :subscriber="subscriber"
+        <widget
+            :title="$tc('phrases.paymentOverview', 0, { period: periodName })"
+            :subscriber="subscriber"
         >
             <div slot="tabbar">
                 <md-field>
-                    <md-select class="period-style md-has-value" name="period" id="period" v-model="period"
-                               @md-selected="getFlow">
-                        <md-option value="D">{{ $tc('words.day', 2) }}</md-option>
-                        <md-option value="W">{{ $tc('words.week', 2) }}</md-option>
-                        <md-option value="M">{{ $tc('words.month', 2) }}</md-option>
-                        <md-option value="Y">{{ $tc('words.annually') }}</md-option>
-
+                    <md-select
+                        class="period-style md-has-value"
+                        name="period"
+                        id="period"
+                        v-model="period"
+                        @md-selected="getFlow"
+                    >
+                        <md-option value="D">
+                            {{ $tc('words.day', 2) }}
+                        </md-option>
+                        <md-option value="W">
+                            {{ $tc('words.week', 2) }}
+                        </md-option>
+                        <md-option value="M">
+                            {{ $tc('words.month', 2) }}
+                        </md-option>
+                        <md-option value="Y">
+                            {{ $tc('words.annually') }}
+                        </md-option>
                     </md-select>
                 </md-field>
             </div>
             <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-90">
-
                     <GChart
                         type="ColumnChart"
                         :data="paymentService.paymentDetailData"
                         :options="chartOptions"
                         :resizeDebounce="500"
                     />
-
-
                 </div>
             </div>
-
         </widget>
     </div>
-
 </template>
 
 <script>
@@ -41,7 +49,7 @@ import { PaymentService } from '@/services/PaymentService'
 
 export default {
     name: 'PaymentDetail',
-    data () {
+    data() {
         return {
             paymentService: new PaymentService(),
             subscriber: 'payment-overview',
@@ -53,54 +61,59 @@ export default {
                 chart: {
                     title: 'Customer Payment Flow',
                 },
-                colors: ['#0b920b', '#8b2621', '#0c7cd5', '#aad4df']
+                colors: ['#0b920b', '#8b2621', '#0c7cd5', '#aad4df'],
             },
             barData: [],
         }
     },
-    created () {
+    created() {
         this.personId = this.$store.getters.person.id
     },
-    mounted () {
+    mounted() {
         this.getFlow()
     },
     components: {
         Widget,
     },
     methods: {
-
-        async getFlow (period = 'M') {
+        async getFlow(period = 'M') {
             switch (period) {
-            case 'Y':
-                this.periodName = this.$tc('words.annually')
-                break
-            case 'M':
-                this.periodName = this.$tc('words.month', 2)
-                break
-            case 'W':
-                this.periodName = this.$tc('words.week', 2)
-                break
-            case 'D':
-                this.periodName = this.$tc('words.day', 2)
-                break
+                case 'Y':
+                    this.periodName = this.$tc('words.annually')
+                    break
+                case 'M':
+                    this.periodName = this.$tc('words.month', 2)
+                    break
+                case 'W':
+                    this.periodName = this.$tc('words.week', 2)
+                    break
+                case 'D':
+                    this.periodName = this.$tc('words.day', 2)
+                    break
             }
             try {
-                await this.paymentService.getPaymentDetail(this.personId, period)
-                EventBus.$emit('widgetContentLoaded', this.subscriber, this.paymentService.paymentDetailData.length)
+                await this.paymentService.getPaymentDetail(
+                    this.personId,
+                    period,
+                )
+                EventBus.$emit(
+                    'widgetContentLoaded',
+                    this.subscriber,
+                    this.paymentService.paymentDetailData.length,
+                )
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
-
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
-        }
-    }
+        },
+    },
 }
 </script>
 <style scoped>
@@ -113,10 +126,9 @@ export default {
 .period-style {
     color: white !important;
     -webkit-text-fill-color: white !important;
-
 }
 
-#period input[type="text"] {
+#period input[type='text'] {
     color: white !important;
     -webkit-text-fill-color: white !important;
 }

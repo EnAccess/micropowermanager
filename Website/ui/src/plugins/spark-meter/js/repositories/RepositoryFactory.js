@@ -12,20 +12,20 @@ import SmsVariableDefaultValueRepository from './SmsVariableDefaultValueReposito
 import SalesAccountRepository from './SalesAccountRepository'
 import SmFeedbackWordRepository from './SmFeedbackWordRepository'
 const repositories = {
-    'credential':CredentialRepository,
-    'customer':CustomerRepository,
-    'meterModel':MeterModelRepository,
-    'tariff':TariffRepository,
-    'paginate':PaginatorRepository,
-    'site':SiteRepository,
-    'setting': SettingRepository,
-    'smsSetting': SmsSettingRepository,
-    'syncSetting': SyncSettingRepository,
-    'smsBodies':SmsBodiesRepository,
-    'smsVariableDefaultValue':SmsVariableDefaultValueRepository,
-    'salesAccount':SalesAccountRepository,
-    'feedBackWord':SmFeedbackWordRepository
+    credential: CredentialRepository,
+    customer: CustomerRepository,
+    meterModel: MeterModelRepository,
+    tariff: TariffRepository,
+    paginate: PaginatorRepository,
+    site: SiteRepository,
+    setting: SettingRepository,
+    smsSetting: SmsSettingRepository,
+    syncSetting: SyncSettingRepository,
+    smsBodies: SmsBodiesRepository,
+    smsVariableDefaultValue: SmsVariableDefaultValueRepository,
+    salesAccount: SalesAccountRepository,
+    feedBackWord: SmFeedbackWordRepository,
 }
 export default {
-    get: name => repositories[name]
+    get: (name) => repositories[name],
 }

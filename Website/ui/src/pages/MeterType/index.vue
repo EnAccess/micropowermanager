@@ -1,5 +1,5 @@
 <template>
-    <MeterTypes/>
+    <MeterTypes />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import MeterTypes from '@/modules/MeterType/MeterTypes'
 
 export default {
     name: 'MeterTypesPage',
-    components: { MeterTypes }
+    components: { MeterTypes },
 }
 </script>

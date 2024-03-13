@@ -2,7 +2,6 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SyncSettingService {
-
     constructor() {
         this.repository = Repository.get('syncSetting')
         this.list = []
@@ -25,8 +24,7 @@ export class SyncSettingService {
                     action_name: syncSettings[s].actionName,
                     sync_in_value_str: syncSettings[s].syncInValueStr,
                     sync_in_value_num: syncSettings[s].syncInValueNum,
-                    max_attempts: syncSettings[s].maxAttempts
-
+                    max_attempts: syncSettings[s].maxAttempts,
                 }
                 syncListPM.push(settingPm)
             }

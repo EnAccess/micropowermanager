@@ -1,7 +1,7 @@
 <template>
     <widget
         :subscriber="subscriber"
-        :title="$tc('phrases.agentTicket',1)"
+        :title="$tc('phrases.agentTicket', 1)"
         :paginator="agentTicketService.paginator"
         color="green"
     >
@@ -10,12 +10,8 @@
             :allow-lock="false"
             :table-heads="tableHeads"
             :ticket-list="agentTicketService.list"
-
-        >
-        </ticket-item>
-
+        ></ticket-item>
     </widget>
-
 </template>
 <script>
 import Widget from '../../shared/widget'
@@ -26,46 +22,50 @@ import TicketItem from '../../shared/TicketItem'
 
 export default {
     name: 'AgentTicketList',
-    data () {
+    data() {
         return {
             loaded: false,
             agentTicketService: new AgentTicketService(this.agentId),
             subscriber: 'AgentTickets',
             showTicket: null,
-            tableHeads:[this.$tc('words.subject'), this.$tc('words.category'),
-                this.$tc('words.status'), this.$tc('words.date')],
+            tableHeads: [
+                this.$tc('words.subject'),
+                this.$tc('words.category'),
+                this.$tc('words.status'),
+                this.$tc('words.date'),
+            ],
             tickets: new UserTickets(this.$store.getters.person.id),
         }
     },
     components: {
         TicketItem,
-        Widget
+        Widget,
     },
     props: {
         agentId: {
-            default: null
-        }
+            default: null,
+        },
     },
-    mounted () {
+    mounted() {
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async reloadList (subscriber, data) {
-            if (subscriber !== this.subscriber){
+        async reloadList(subscriber, data) {
+            if (subscriber !== this.subscriber) {
                 return
             }
-            await  this.agentTicketService.updateList(data)
+            await this.agentTicketService.updateList(data)
             this.loaded = true
-            EventBus.$emit('widgetContentLoaded',this.subscriber,this.agentTicketService.list.length)
-
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.agentTicketService.list.length,
+            )
         },
-    }
+    },
 }
-
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

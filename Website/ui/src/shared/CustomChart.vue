@@ -2,11 +2,21 @@
     <div>
         <md-card>
             <md-card-content>
-                <div v-if="show > 0 " style="min-height: 300px">
-                    <div v-if="show === 1"
-                         style="position: absolute; width: 100%; min-height: 300px; background-color: white; color: #0a0a0c; top: 0; left: 0; z-index:999;">
+                <div v-if="show > 0" style="min-height: 300px">
+                    <div
+                        v-if="show === 1"
+                        style="
+                            position: absolute;
+                            width: 100%;
+                            min-height: 300px;
+                            background-color: white;
+                            color: #0a0a0c;
+                            top: 0;
+                            left: 0;
+                            z-index: 999;
+                        "
+                    >
                         <div class="prepare-data">
-
                             <h4>{{ $tc('phrases.preparingChartData') }}</h4>
                         </div>
                     </div>
@@ -18,19 +28,22 @@
                 <div v-else>
                     <div align="center">
                         <h3>{{ $tc('phrases.loadingChartData') }}</h3>
-                        <img width="200px" align="center" src="../assets/spinner/spinner.gif" alt="">
+                        <img
+                            width="200px"
+                            align="center"
+                            src="../assets/spinner/spinner.gif"
+                            alt=""
+                        />
                     </div>
                 </div>
             </md-card-content>
         </md-card>
-
     </div>
 </template>
 <script>
-
 import { EventBus } from './eventbus'
 
-google.charts.load('current', { 'packages': ['corechart', 'controls'] })
+google.charts.load('current', { packages: ['corechart', 'controls'] })
 export default {
     name: 'CustomChart',
     props: {
@@ -41,7 +54,7 @@ export default {
         chartType: {
             type: String,
             default: 'line',
-            required: true
+            required: true,
         },
         data: {
             type: [Array, Object],
@@ -56,9 +69,8 @@ export default {
             default: 'right',
             required: false,
         },
-
     },
-    data () {
+    data() {
         return {
             show: 0,
             options: {
@@ -75,14 +87,14 @@ export default {
                         units: {
                             days: { format: ['MMM dd'] },
                             hours: { format: ['HH:mm'] },
-                        }
+                        },
                     },
                     minorGridlines: {
                         units: {
                             hours: { format: ['hh:mm:ss a', 'ha'] },
-                            minutes: { format: ['HH:mm a Z',] }
-                        }
-                    }
+                            minutes: { format: ['HH:mm a Z'] },
+                        },
+                    },
                 },
                 ui: {
                     chartOptions: {
@@ -92,7 +104,6 @@ export default {
                         },
                     },
                 },
-
             },
             control: {
                 filterColumnLabel: this.$tc('words.date'),
@@ -100,7 +111,7 @@ export default {
                     chartOptions: {
                         height: 50,
                         width: '100%',
-                        fontSize: 10
+                        fontSize: 10,
                     },
                 },
                 hAxis: {
@@ -109,73 +120,75 @@ export default {
                         units: {
                             days: { format: ['MMM dd'] },
                             hours: { format: ['HH:mm', 'ha'] },
-                        }
+                        },
                     },
                     minorGridlines: {
                         units: {
                             hours: { format: ['hh:mm:ss a'] },
-                            minutes: { format: ['HH:mm a Z'] }
-                        }
-                    }
-                }
-            }
-
+                            minutes: { format: ['HH:mm a Z'] },
+                        },
+                    },
+                },
+            },
         }
     },
 
-    mounted () {
+    mounted() {
         EventBus.$on('chartLoaded', this.chartLoaded)
-
     },
     methods: {
-        chartDataReady () {
+        chartDataReady() {
             google.visualization.events.removeListener(this.chartEvent)
             this.show = 2
         },
-        drawChart (type) {
+        drawChart(type) {
             switch (type) {
-            case 'line':
-                this.drawLineChart()
-                break
-            case 'bar':
-                this.drawBarChart()
-                break
-            case 'pie':
-                this.drawPieChart()
-                break
+                case 'line':
+                    this.drawLineChart()
+                    break
+                case 'bar':
+                    this.drawBarChart()
+                    break
+                case 'pie':
+                    this.drawPieChart()
+                    break
             }
         },
-        chartLoaded (subscriber) {
+        chartLoaded(subscriber) {
             if (this.subscriber === subscriber) {
-                google.charts.setOnLoadCallback(() => this.drawChart(this.chartType))
+                google.charts.setOnLoadCallback(() =>
+                    this.drawChart(this.chartType),
+                )
                 this.show = 1
             }
         },
 
-        drawLineChart () {
+        drawLineChart() {
             if (this.data !== null || this.data !== undefined) {
                 let dash = new google.visualization.Dashboard(this.$refs.dash)
                 let data = google.visualization.arrayToDataTable(this.data)
-                this.chartEvent = google.visualization.events.addListener(dash, 'ready', this.chartDataReady)
+                this.chartEvent = google.visualization.events.addListener(
+                    dash,
+                    'ready',
+                    this.chartDataReady,
+                )
                 let wrapper = new google.visualization.ChartWrapper({
                     chartType: 'LineChart',
                     dataTable: data,
                     options: this.options,
-                    containerId: this.$refs.chart
+                    containerId: this.$refs.chart,
                 })
                 let control = new google.visualization.ControlWrapper({
                     controlType: 'ChartRangeFilter',
                     containerId: this.$refs.control,
-                    options: this.control
+                    options: this.control,
                 })
 
                 dash.bind([control], [wrapper])
                 dash.draw(data)
-
             }
-
         },
-        drawBarChart () {
+        drawBarChart() {
             let data = new google.visualization.DataTable()
             data.addColumn('date', this.$tc('words.date'))
             data.addColumn('number', this.$tc('words.generate', 2))
@@ -203,14 +216,11 @@ export default {
             var chart = new google.visualization.ColumnChart(this.$refs.chart)
             this.chartDataReady()
             chart.draw(data, options)
-
         },
-        drawPieChart () {
+        drawPieChart() {
             //TODO: add a new method to draw pie chart
         },
-
-    }
-
+    },
 }
 </script>
 
@@ -219,11 +229,9 @@ export default {
     position: relative;
     top: 100px;
     left: 45%;
-
 }
 
 .prepare-data > h4 {
     color: #0c5460;
 }
-
 </style>

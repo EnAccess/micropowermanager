@@ -4,12 +4,11 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/tickets/api/labels`
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
 
-    create (labelPM) {
+    create(labelPM) {
         return Client.post(`${resource}`, labelPM)
     },
-
 }

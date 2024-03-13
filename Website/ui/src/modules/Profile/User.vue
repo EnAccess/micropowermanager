@@ -1,15 +1,20 @@
 <template>
     <div class="row">
-        <widget
-            :title="$tc('words.profile')"
-        >
+        <widget :title="$tc('words.profile')">
             <form class="md-layout" data-vv-scope="address">
                 <md-card class="md-layout-item md-size-100">
                     <md-card-content>
                         <div class="md-layout md-gutter">
                             <div
-                                class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            $tc('words.name'),
+                                        ),
+                                    }"
+                                >
                                     <label>{{ $tc('words.name') }}</label>
                                     <md-input
                                         v-model="userService.user.name"
@@ -18,12 +23,15 @@
                                         id="name"
                                     />
                                     <md-icon>create</md-icon>
-                                    <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
+                                    <span class="md-error">
+                                        {{ errors.first($tc('words.name')) }}
+                                    </span>
                                 </md-field>
                             </div>
 
                             <div
-                                class="md-layout-item md-size-50 md-small-size-100">
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
                                     <label>{{ $tc('words.email') }}</label>
                                     <md-input
@@ -33,69 +41,111 @@
                                         id="email"
                                     />
                                     <md-icon>sms</md-icon>
-
                                 </md-field>
                             </div>
                             <div
-                                class="md-layout-item md-size-50 md-small-size-100">
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
                                     <label>{{ $tc('words.phone') }}</label>
-                                    <md-input type="number" v-model="userService.user.phone"/>
+                                    <md-input
+                                        type="number"
+                                        v-model="userService.user.phone"
+                                    />
                                     <md-icon>phone</md-icon>
                                 </md-field>
                             </div>
                             <div
-                                class="md-layout-item md-size-50 md-small-size-100">
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
                                     <label>{{ $tc('words.street') }}</label>
-                                    <md-input v-model="userService.user.street"/>
+                                    <md-input
+                                        v-model="userService.user.street"
+                                    />
                                     <md-icon>contacts</md-icon>
                                 </md-field>
                             </div>
 
-
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has($tc('words.city'))}">
-                                    <label for="city">{{ $tc('words.city') }}</label>
-                                    <md-select v-model="selectedCity"
-                                               required
-                                               :name="$tc('words.city')"
-                                               id="city"
-                                               v-validate.initial="'required'"
-                                               :class="{'md-invalid': errors.has($tc('words.city'))}">
-                                        <md-option v-for="c in cityService.cities" :key="c.id" :value="c.id">{{ c.name
-                                            }}
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            $tc('words.city'),
+                                        ),
+                                    }"
+                                >
+                                    <label for="city">
+                                        {{ $tc('words.city') }}
+                                    </label>
+                                    <md-select
+                                        v-model="selectedCity"
+                                        required
+                                        :name="$tc('words.city')"
+                                        id="city"
+                                        v-validate.initial="'required'"
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                $tc('words.city'),
+                                            ),
+                                        }"
+                                    >
+                                        <md-option
+                                            v-for="c in cityService.cities"
+                                            :key="c.id"
+                                            :value="c.id"
+                                        >
+                                            {{ c.name }}
                                         </md-option>
                                     </md-select>
-                                    <span class="md-error">{{ errors.first($tc('words.city')) }}</span>
+                                    <span class="md-error">
+                                        {{ errors.first($tc('words.city')) }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div
-                                class="md-layout-item md-size-100">
-                                <md-button class="md-primary save-button" @click="updateDetails()">{{ $tc('words.save')
-                                    }}
+                            <div class="md-layout-item md-size-100">
+                                <md-button
+                                    class="md-primary save-button"
+                                    @click="updateDetails()"
+                                >
+                                    {{ $tc('words.save') }}
                                 </md-button>
                                 <md-button
                                     class="md-primary change-button"
-                                    @click="modalVisibility=true"
-                                >{{ $tc('phrases.changePassword') }}
+                                    @click="modalVisibility = true"
+                                >
+                                    {{ $tc('phrases.changePassword') }}
                                 </md-button>
                             </div>
                         </div>
                     </md-card-content>
                 </md-card>
-                <md-progress-bar md-mode="indeterminate" v-if="sending"/>
+                <md-progress-bar md-mode="indeterminate" v-if="sending" />
             </form>
         </widget>
 
-
-        <md-dialog :md-active.sync=modalVisibility>
-            <md-dialog-title>{{ $tc('phrases.changePassword') }}</md-dialog-title>
+        <md-dialog :md-active.sync="modalVisibility">
+            <md-dialog-title>
+                {{ $tc('phrases.changePassword') }}
+            </md-dialog-title>
             <md-dialog-content>
                 <div class="password-edit-container">
-                    <form class="md-layout" data-vv-scope="Change-Password-Form">
-                        <md-field :class="{'md-invalid': errors.has('Change-Password-Form.password')}">
-                            <label for="password">{{ $tc('words.password') }}</label>
+                    <form
+                        class="md-layout"
+                        data-vv-scope="Change-Password-Form"
+                    >
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has(
+                                    'Change-Password-Form.password',
+                                ),
+                            }"
+                        >
+                            <label for="password">
+                                {{ $tc('words.password') }}
+                            </label>
                             <md-input
                                 type="password"
                                 name="password"
@@ -104,33 +154,60 @@
                                 v-model="passwordService.user.password"
                                 ref="passwordRef"
                             />
-                            <span class="md-error">{{ errors.first('Change-Password-Form.password') }}</span>
+                            <span class="md-error">
+                                {{
+                                    errors.first(
+                                        'Change-Password-Form.password',
+                                    )
+                                }}
+                            </span>
                         </md-field>
 
-                        <md-field :class="{'md-invalid': errors.has('Change-Password-Form.confirmPassword')}">
-                            <label for="confirmPassword">{{ $tc('phrases.confirmPassword') }}</label>
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has(
+                                    'Change-Password-Form.confirmPassword',
+                                ),
+                            }"
+                        >
+                            <label for="confirmPassword">
+                                {{ $tc('phrases.confirmPassword') }}
+                            </label>
                             <md-input
                                 type="password"
                                 name="confirmPassword"
                                 id="confirmPassword"
                                 v-model="passwordService.user.confirmPassword"
-                                v-validate="'required|confirmed:$passwordRef|min:3|max:15'"
+                                v-validate="
+                                    'required|confirmed:$passwordRef|min:3|max:15'
+                                "
                             />
-                            <span class="md-error">{{ errors.first('Change-Password-Form.confirmPassword')}}</span>
+                            <span class="md-error">
+                                {{
+                                    errors.first(
+                                        'Change-Password-Form.confirmPassword',
+                                    )
+                                }}
+                            </span>
                         </md-field>
 
-                        <md-progress-bar md-mode="indeterminate" v-if="sending"/>
+                        <md-progress-bar
+                            md-mode="indeterminate"
+                            v-if="sending"
+                        />
                     </form>
                 </div>
             </md-dialog-content>
 
             <md-dialog-actions>
-                <md-button class="md-raised md-primary" @click="changePassword">{{ $tc('words.save') }}</md-button>
-                <md-button @click="modalVisibility = false">{{ $tc('words.close') }}</md-button>
+                <md-button class="md-raised md-primary" @click="changePassword">
+                    {{ $tc('words.save') }}
+                </md-button>
+                <md-button @click="modalVisibility = false">
+                    {{ $tc('words.close') }}
+                </md-button>
             </md-dialog-actions>
-
         </md-dialog>
-
     </div>
 </template>
 
@@ -142,41 +219,44 @@ import { UserPasswordService } from '@/services/UserPasswordService'
 export default {
     name: 'Profile',
     components: { Widget },
-    data () {
+    data() {
         return {
             sending: false,
             modalVisibility: false,
             selectedCity: '',
             userService: new UserService(),
             cityService: new CityService(),
-            passwordService: new UserPasswordService()
+            passwordService: new UserPasswordService(),
         }
     },
-    mounted () {
+    mounted() {
         this.getCities()
         this.getUser()
     },
     methods: {
-        async getCities () {
+        async getCities() {
             try {
                 await this.cityService.getCities()
             } catch (error) {
                 this.alertNotify('error', error.message)
             }
         },
-        async getUser () {
+        async getUser() {
             try {
-                await this.userService.get(this.$store.getters['auth/authenticationService'].authenticateUser.id)
+                await this.userService.get(
+                    this.$store.getters['auth/authenticationService']
+                        .authenticateUser.id,
+                )
                 if (this.userService.user.cityId !== undefined) {
                     this.selectedCity = this.cityService.cities
-                        .filter(x => x.id === this.userService.user.cityId)
-                        .map(x => x.id)[0]
+                        .filter((x) => x.id === this.userService.user.cityId)
+                        .map((x) => x.id)[0]
                 }
             } catch (error) {
                 this.alertNotify('error', error.message)
             }
         },
-        async updateDetails () {
+        async updateDetails() {
             this.sending = true
             let validation = await this.$validator.validateAll('address')
             if (!validation) {
@@ -193,9 +273,11 @@ export default {
             }
             this.sending = false
         },
-        async changePassword () {
+        async changePassword() {
             this.sending = true
-            let validation = await this.$validator.validateAll('Change-Password-Form')
+            let validation = await this.$validator.validateAll(
+                'Change-Password-Form',
+            )
             if (!validation) {
                 return
             }
@@ -209,21 +291,23 @@ export default {
             }
             this.sending = false
         },
-        closeModal () {
+        closeModal() {
             this.modalVisibility = false
         },
-        alertNotify (type, message, title = null) {
+        alertNotify(type, message, title = null) {
             if (title == null) {
-                title = type.toString().charAt(0).toUpperCase() + type.toString().slice(1)
+                title =
+                    type.toString().charAt(0).toUpperCase() +
+                    type.toString().slice(1)
             }
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
-        }
-    }
+        },
+    },
 }
 </script>
 

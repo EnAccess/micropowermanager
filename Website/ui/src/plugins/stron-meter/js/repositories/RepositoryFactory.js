@@ -1,9 +1,8 @@
 import CredentialRepository from './CredentialRepository'
 
-
 const repositories = {
-    'credential': CredentialRepository,
+    credential: CredentialRepository,
 }
 export default {
-    get: name => repositories[name]
+    get: (name) => repositories[name],
 }

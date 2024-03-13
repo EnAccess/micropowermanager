@@ -4,11 +4,10 @@ import { baseUrl } from './Client/AxiosClient'
 export const resource = `${baseUrl}/api/plugins`
 
 export default {
-
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    update (mpmPluginId,plugin) {
+    update(mpmPluginId, plugin) {
         return Client.put(`${resource}/${mpmPluginId}`, plugin)
-    }
+    },
 }

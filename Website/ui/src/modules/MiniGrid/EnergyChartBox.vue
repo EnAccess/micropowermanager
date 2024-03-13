@@ -2,7 +2,7 @@
     <div class="md-layout">
         <md-toolbar class="md-dense">
             <div class="md-toolbar-section-start">
-                <h3 class="md-title" > {{$tc('phrases.batteryPvCharts')}} </h3>
+                <h3 class="md-title">{{ $tc('phrases.batteryPvCharts') }}</h3>
                 <!--<div class="md-subheader" ><span><b> Resolution:</b> 3 Days</span>&nbsp; | &nbsp;<span><b> Period:</b> {{  }} - {{ todayDate }}</span>  </div>-->
             </div>
             <!--<div class="md-toolbar-section-end">
@@ -40,7 +40,6 @@
                 :title="$tc('phrases.batteryChargeStatus')"
                 :subscriber="subscriber.battery"
             ></custom-chart>
-
         </div>
         <!-- <div class="md-layout-item md-size-100">
             <custom-chart
@@ -50,11 +49,7 @@
             ></custom-chart>
 
         </div>-->
-
-
     </div>
-
-
 </template>
 
 <script>
@@ -67,63 +62,53 @@ export default {
     components: { CustomChart },
     props: {
         miniGridId: {
-            required: true
-        }
+            required: true,
+        },
     },
-    created () {
+    created() {
         this.initBatteryChart()
         this.initPVChart()
-
     },
-    mounted () {
+    mounted() {
         //TODO: remove dummy data
         //EventBus.$emit('chartLoaded', this.subscriber.energyStatus)
         this.batteryService.subscriber = this.subscriber.battery
         this.generationAssetsService.setSubscriber(this.subscriber.energy)
     },
-    data: () => (
-        {
-            todayDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
-            batteryService: new BatteryService(),
-            generationAssetsService: new GenerationAssetsService(),
-            subscriber: {
-                energy: 'energy',
-                //energyStatus: 'energyStatus',
-                battery: 'batteryCharge',
-
-            },
-        }
-    ),
-    methods: {
-        initGenerationChart () {
-
+    data: () => ({
+        todayDate: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+        batteryService: new BatteryService(),
+        generationAssetsService: new GenerationAssetsService(),
+        subscriber: {
+            energy: 'energy',
+            //energyStatus: 'energyStatus',
+            battery: 'batteryCharge',
         },
-        initBatteryChart () {
+    }),
+    methods: {
+        initGenerationChart() {},
+        initBatteryChart() {
             const mgId = config.env === 'demo' ? 1 : this.miniGridId
-            this.batteryService.getBatteryUsageList(mgId, true).
-                then((result) => {
+            this.batteryService
+                .getBatteryUsageList(mgId, true)
+                .then((result) => {
                     if (!result) {
-
                         return
                     }
                     this.batteryService.prepareChartData()
                 })
         },
-        initPVChart () {
+        initPVChart() {
             const mgId = config.env === 'demo' ? 1 : this.miniGridId
             this.generationAssetsService.getList(mgId).then((result) => {
                 if (!result) {
-
                     return
                 }
                 this.generationAssetsService.prepareChartData()
             })
-
-        }
-    }
+        },
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

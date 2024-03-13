@@ -1,5 +1,5 @@
 <template>
-    <Transactions/>
+    <Transactions />
 </template>
 <script>
 import Transactions from '@/modules/Transactions/Transactions'
@@ -8,5 +8,3 @@ export default {
     components: { Transactions },
 }
 </script>
-
-

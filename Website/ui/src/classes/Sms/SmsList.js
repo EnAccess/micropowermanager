@@ -3,7 +3,7 @@ import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 
 export class Sms {
-    constructor () {
+    constructor() {
         this.id = null
         this.number = null
         this.date = null
@@ -12,7 +12,7 @@ export class Sms {
         this.owner = null
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.id = data.id
         this.number = data.receiver
         this.date = data.created_at
@@ -28,43 +28,39 @@ export class Sms {
 }
 
 export class Smses {
-    constructor () {
+    constructor() {
         this.numberList = []
         this.list = []
         this.paginator = new Paginator(resources.sms.list)
     }
 
-    getList () {
-        return axios.get(resources.sms.list)
-            .then((response) => {
-                this.updateList(response.data.data)
-            })
+    getList() {
+        return axios.get(resources.sms.list).then((response) => {
+            this.updateList(response.data.data)
+        })
     }
 
-    async updateList (data) {
+    async updateList(data) {
         this.numberList = []
         for (let s in data) {
             let sms = new Sms()
-            this.numberList.push(
-                sms.fromJson(data[s])
-            )
+            this.numberList.push(sms.fromJson(data[s]))
         }
     }
 
-    getDetail (phone) {
+    getDetail(phone) {
         axios.get(resources.sms.byPhone + '/' + phone).then((response) => {
             this.list = response.data.data
         })
     }
 
-    search (term) {
+    search(term) {
         this.paginator = new Paginator(resources.sms.search)
-        EventBus.$emit('loadPage', this.paginator, {'term': term})
+        EventBus.$emit('loadPage', this.paginator, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.paginator = new Paginator(resources.sms.list)
         EventBus.$emit('loadPage', this.paginator)
     }
-
 }

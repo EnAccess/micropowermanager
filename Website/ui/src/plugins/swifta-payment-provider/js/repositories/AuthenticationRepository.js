@@ -4,8 +4,7 @@ const resource = `${baseUrl}/api/swifta-payment/authentication`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-
-    get () {
+    get() {
         return Client.get(`${resource}`)
-    }
+    },
 }

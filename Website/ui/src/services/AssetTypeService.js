@@ -3,7 +3,7 @@ import { EventBus } from '@/shared/eventbus'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class AssetTypeService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('assetType')
         this.list = []
         this.assetType = {
@@ -14,27 +14,35 @@ export class AssetTypeService {
         }
     }
 
-    fromJson (data) {
+    fromJson(data) {
         return {
             id: data.id,
             name: data.name,
-            updatedAt: data.updated_at.toString().replace(/T/, ' ').replace(/\..+/, '')
+            updatedAt: data.updated_at
+                .toString()
+                .replace(/T/, ' ')
+                .replace(/\..+/, ''),
         }
     }
 
-    updateList (data) {
-        this.list = data.map(asset => {
+    updateList(data) {
+        this.list = data.map((asset) => {
             return {
                 id: asset.id,
                 name: asset.name,
-                updated_at: asset.updated_at ? asset.updated_at.toString().replace(/T/, ' ').replace(/\..+/, '') : '',
+                updated_at: asset.updated_at
+                    ? asset.updated_at
+                          .toString()
+                          .replace(/T/, ' ')
+                          .replace(/\..+/, '')
+                    : '',
                 edit: false,
             }
         })
         return this.list
     }
 
-    async createAssetType () {
+    async createAssetType() {
         try {
             let response = await this.repository.create(this.assetType)
             if (response.status === 200 || response.status === 201) {
@@ -43,7 +51,6 @@ export class AssetTypeService {
                 this.assetType.updated_at = response.data.data.updated_at
                 EventBus.$emit('assetTypeAdded', this.assetType)
                 this.resetAssetType()
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -51,10 +58,9 @@ export class AssetTypeService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async updateAssetType (assetType) {
+    async updateAssetType(assetType) {
         try {
             const response = await this.repository.update(assetType)
             if (response.status === 200 || response.status === 201) {
@@ -62,15 +68,13 @@ export class AssetTypeService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async deleteAssetType (assetType) {
+    async deleteAssetType(assetType) {
         try {
             let response = await this.repository.delete(assetType.id)
             if (response.status === 200 || response.status === 201) {
@@ -78,17 +82,15 @@ export class AssetTypeService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async getAssetsTypes () {
+    async getAssetsTypes() {
         try {
-            this.list= []
+            this.list = []
             let response = await this.repository.list()
             if (response.status === 200 || response.status === 201) {
                 for (const assetType of response.data.data) {
@@ -103,15 +105,14 @@ export class AssetTypeService {
         }
     }
 
-    resetAssetType () {
+    resetAssetType() {
         this.assetType = {
             id: null,
             name: null,
             updated_at: null,
             edit: false,
             asset_type_name: null,
-            price: null
+            price: null,
         }
     }
-
 }

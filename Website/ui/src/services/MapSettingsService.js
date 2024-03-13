@@ -2,7 +2,7 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MapSettingsService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('mapSettings')
         this.mapSettings = {
             zoom: null,
@@ -13,17 +13,18 @@ export class MapSettingsService {
         }
     }
 
-    async list () {
+    async list() {
         try {
             const { status, data, error } = await this.repository.list()
-            return status === 200 ? this.fromJson(data.data[0]) :
-                new ErrorHandler(error, 'http', status)
+            return status === 200
+                ? this.fromJson(data.data[0])
+                : new ErrorHandler(error, 'http', status)
         } catch (error) {
             return new ErrorHandler(error.response.data.message, 'http')
         }
     }
 
-    async update () {
+    async update() {
         try {
             const mapSettingsPm = {
                 id: this.mapSettings.id,
@@ -33,8 +34,10 @@ export class MapSettingsService {
                 provider: this.mapSettings.provider,
                 bingMapApiKey: this.mapSettings.bingMapApiKey,
             }
-            let response = await this.repository.update(mapSettingsPm.id,
-                mapSettingsPm)
+            let response = await this.repository.update(
+                mapSettingsPm.id,
+                mapSettingsPm,
+            )
             if (response.status === 200) {
                 this.fromJson(response.data.data[0])
                 return this.mapSettings
@@ -46,17 +49,18 @@ export class MapSettingsService {
         }
     }
 
-    async checkBingMapApiKey () {
+    async checkBingMapApiKey() {
         try {
             const { data } = await this.repository.checkBingApiKey(
-                this.mapSettings.bingMapApiKey)
+                this.mapSettings.bingMapApiKey,
+            )
             return data.data.authentication
         } catch (error) {
             return new ErrorHandler(error.response.data.message, 'http')
         }
     }
 
-    fromJson (mapSettings) {
+    fromJson(mapSettings) {
         this.mapSettings = {
             id: mapSettings.id,
             zoom: mapSettings.zoom,
@@ -67,5 +71,4 @@ export class MapSettingsService {
         }
         return this.mapSettings
     }
-
 }

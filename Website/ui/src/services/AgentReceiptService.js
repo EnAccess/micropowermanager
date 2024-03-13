@@ -2,44 +2,47 @@ import { Paginator } from '@/classes/paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import Repository from '../repositories/RepositoryFactory'
 export class AgentReceiptService {
-    constructor (agentId) {
-        this.repository= Repository.get('agentReceipt')
+    constructor(agentId) {
+        this.repository = Repository.get('agentReceipt')
         this.list = []
         this.receipt = {
             id: null,
             amount: null,
             receiver: null,
-            createdAt: null
+            createdAt: null,
         }
-        this.newReceipt={
-            agentId:null,
-            amount:null
+        this.newReceipt = {
+            agentId: null,
+            amount: null,
         }
-        this.paginator = new Paginator(resources.agents.receipts + '/' + agentId)
+        this.paginator = new Paginator(
+            resources.agents.receipts + '/' + agentId,
+        )
     }
 
-    fromJson (data) {
+    fromJson(data) {
         let receipt = {
             id: data.id,
             amount: data.amount,
             receiver: data.user.name,
-            createdAt: data.created_at.toString().replace(/T/, ' ').replace(/\..+/, '')
+            createdAt: data.created_at
+                .toString()
+                .replace(/T/, ' ')
+                .replace(/\..+/, ''),
         }
         return receipt
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = data.map(this.fromJson)
         return this.list
     }
 
-
-    async addNewReceipt () {
+    async addNewReceipt() {
         try {
-
             const receiptPM = {
                 agent_id: this.newReceipt.agentId,
-                amount: this.newReceipt.amount
+                amount: this.newReceipt.amount,
             }
             let response = await this.repository.create(receiptPM)
             if (response.status === 200 || response.status === 201) {
@@ -52,12 +55,11 @@ export class AgentReceiptService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
-    resetNewReceipt(){
-        this.newReceipt={
-            agentId:null,
-            amount:null
+    resetNewReceipt() {
+        this.newReceipt = {
+            agentId: null,
+            amount: null,
         }
     }
 }

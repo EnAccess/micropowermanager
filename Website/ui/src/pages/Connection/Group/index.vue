@@ -1,5 +1,5 @@
 <template>
-    <ConnectionGroupsList/>
+    <ConnectionGroupsList />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import ConnectionGroupsList from '@/modules/ConnectionGroups/ConnectionGroupsLis
 
 export default {
     name: 'ConnectionGroupsPage',
-    components: { ConnectionGroupsList }
+    components: { ConnectionGroupsList },
 }
 </script>

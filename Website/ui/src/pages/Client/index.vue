@@ -1,11 +1,11 @@
 <template>
-    <Clients/>
+    <Clients />
 </template>
 <script>
 import Clients from '@/modules/Client/Clients.vue'
 
 export default {
     name: 'ClientsPage',
-    components: { Clients }
+    components: { Clients },
 }
 </script>

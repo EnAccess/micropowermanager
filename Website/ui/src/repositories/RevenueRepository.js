@@ -4,11 +4,10 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/revenue`
 
 export default {
-    trends(miniGridId,period){
-        return  Client.post(`${resource}/trends/${miniGridId}`,period)
+    trends(miniGridId, period) {
+        return Client.post(`${resource}/trends/${miniGridId}`, period)
     },
-    tickets(miniGridId){
-        return  Client.get(`${resource}/tickets/${miniGridId}`)
-    }
-
+    tickets(miniGridId) {
+        return Client.get(`${resource}/tickets/${miniGridId}`)
+    },
 }

@@ -1,5 +1,5 @@
 {
-    "geoData":{
+    "geoData": {
         "display_name": "test",
         "draw_type": "draw",
         "geojson": {
@@ -18,7 +18,7 @@
         "selected": true,
         "type": "manual"
     },
-    "geo_type":"manuel",
-    "manager_id":25,
-    "name":"test"
+    "geo_type": "manuel",
+    "manager_id": 25,
+    "name": "test"
 }

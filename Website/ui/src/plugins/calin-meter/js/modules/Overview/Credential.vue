@@ -1,54 +1,91 @@
 <template>
     <div>
-        <form @submit.prevent="submitCredentialForm" data-vv-scope="Credential-Form" class="Credential-Form">
+        <form
+            @submit.prevent="submitCredentialForm"
+            data-vv-scope="Credential-Form"
+            class="Credential-Form"
+        >
             <md-card>
                 <md-card-content>
                     <div class="md-layout md-gutter">
                         <div
-                            class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-100">
+                            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
+                        >
                             <div class="md-layout md-gutter">
                                 <div
-                                    class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                    class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                                >
                                     <md-field
-                                        :class="{'md-invalid': errors.has('Credential-Form.userId')}">
-                                        <label for="username">{{ $tc('phrases.userId') }}</label>
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                'Credential-Form.userId',
+                                            ),
+                                        }"
+                                    >
+                                        <label for="username">
+                                            {{ $tc('phrases.userId') }}
+                                        </label>
                                         <md-input
                                             id="userId"
                                             name="userId"
-                                            v-model="credentialService.credential.userId"
+                                            v-model="
+                                                credentialService.credential
+                                                    .userId
+                                            "
                                             v-validate="'required|min:3'"
                                         />
-                                        <span
-                                            class="md-error">{{ errors.first('Credential-Form.userId') }}</span>
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    'Credential-Form.userId',
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
                                 <div
-                                    class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                    class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                                >
                                     <md-field
-                                        :class="{'md-invalid': errors.has('Credential-Form.apiKey')}">
-                                        <label for="apiKey">{{ $tc('phrases.apiKey') }}</label>
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                'Credential-Form.apiKey',
+                                            ),
+                                        }"
+                                    >
+                                        <label for="apiKey">
+                                            {{ $tc('phrases.apiKey') }}
+                                        </label>
                                         <md-input
                                             id="apiKey"
                                             type="password"
                                             name="apiKey"
-                                            v-model="credentialService.credential.apiKey"
+                                            v-model="
+                                                credentialService.credential
+                                                    .apiKey
+                                            "
                                             v-validate="'required|min:3'"
                                         />
-                                        <span class="md-error">{{ errors.first('Credential-Form.apiKey') }}</span>
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    'Credential-Form.apiKey',
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 </md-card-content>
-                <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
                 <md-card-actions>
-                    <md-button class="md-raised md-primary" type="submit">{{ $tc('words.save') }}</md-button>
+                    <md-button class="md-raised md-primary" type="submit">
+                        {{ $tc('words.save') }}
+                    </md-button>
                 </md-card-actions>
             </md-card>
-
         </form>
     </div>
 </template>
@@ -59,21 +96,20 @@ import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             loading: false,
         }
     },
-    mounted () {
+    mounted() {
         this.getCredential()
     },
     methods: {
-        async getCredential () {
+        async getCredential() {
             await this.credentialService.getCredential()
         },
-        async submitCredentialForm () {
-
+        async submitCredentialForm() {
             let validator = await this.$validator.validateAll('Credential-Form')
             if (!validator) {
                 return
@@ -88,15 +124,15 @@ export default {
             }
             this.loading = false
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 

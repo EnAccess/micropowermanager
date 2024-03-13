@@ -1,5 +1,5 @@
 <template>
-    <SolarHomeSystems/>
+    <SolarHomeSystems />
 </template>
 
 <script>
@@ -7,10 +7,8 @@ import SolarHomeSystems from '@/modules/SolarHomeSystem/SolarHomeSystems.vue'
 
 export default {
     name: 'SolarHomeSystemsPage',
-    components: { SolarHomeSystems }
+    components: { SolarHomeSystems },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

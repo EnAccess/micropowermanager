@@ -1,97 +1,132 @@
 <template>
     <div>
-        <widget
-                color="green"
-                :title="title"
-        >
+        <widget color="green" :title="title">
             <div class="md-layout md-gutter">
-                <div class="md-layout-item md-size-100"
-                     style="margin: auto; text-align: center;padding: 3rem;font-size: initial;font-weight: 500;display: grid;">
+                <div
+                    class="md-layout-item md-size-100"
+                    style="
+                        margin: auto;
+                        text-align: center;
+                        padding: 3rem;
+                        font-size: initial;
+                        font-weight: 500;
+                        display: grid;
+                    "
+                >
                     <span>
-                        Here you can import Wave(Senegal) Transactions. The import will ignore all duplicated records.
+                        Here you can import Wave(Senegal) Transactions. The
+                        import will ignore all duplicated records.
                     </span>
-                    <span style="margin-top: 16px">You can download sample csv file from <a
-                            href="/files/wavecomtransaction_template.csv">here</a></span>
+                    <span style="margin-top: 16px">
+                        You can download sample csv file from
+                        <a href="/files/wavecomtransaction_template.csv">
+                            here
+                        </a>
+                    </span>
                 </div>
                 <div class="md-layout-item md-size-100">
-
-                    <div :hidden="fileUploaded" style="width:50%; margin:auto;text-align: center;">
-
+                    <div
+                        :hidden="fileUploaded"
+                        style="width: 50%; margin: auto; text-align: center"
+                    >
                         <div v-if="!loading">
-                            <div class="upload-area" style="width: 100%; cursor: pointer">
-                                <input type="file" @change="uploadCsv" accept=".csv" ref="file-input">
-                                <p>Drag your files here or click in this area.</p>
-                                <p v-text="fileName"></p>
-                                <p class="csv-p">
-                                    Only .csv files.
+                            <div
+                                class="upload-area"
+                                style="width: 100%; cursor: pointer"
+                            >
+                                <input
+                                    type="file"
+                                    @change="uploadCsv"
+                                    accept=".csv"
+                                    ref="file-input"
+                                />
+                                <p>
+                                    Drag your files here or click in this area.
                                 </p>
-
+                                <p v-text="fileName"></p>
+                                <p class="csv-p">Only .csv files.</p>
                             </div>
-                            <div class="buttons-area" v-if="fileName!==''">
-                                <md-button role="button" class="md-raised" style="float: right" @click="clear">
+                            <div class="buttons-area" v-if="fileName !== ''">
+                                <md-button
+                                    role="button"
+                                    class="md-raised"
+                                    style="float: right"
+                                    @click="clear"
+                                >
                                     clear
                                 </md-button>
-                                <md-button role="button" class="md-raised md-primary" style="float: right"
-                                           :disabled="loading"
-                                           @click="upload">Upload File
+                                <md-button
+                                    role="button"
+                                    class="md-raised md-primary"
+                                    style="float: right"
+                                    :disabled="loading"
+                                    @click="upload"
+                                >
+                                    Upload File
                                 </md-button>
-
                             </div>
                         </div>
-                        <md-progress-bar md-mode="indeterminate" v-else/>
+                        <md-progress-bar md-mode="indeterminate" v-else />
                     </div>
                     <div :hidden="!fileUploaded">
                         <div>
-                            <div style="text-align: left; padding-left: 5rem"><p style="font-weight:bold"> Following
-                                records created.</p>
+                            <div style="text-align: left; padding-left: 5rem">
+                                <p style="font-weight: bold">
+                                    Following records created.
+                                </p>
 
-                                <div v-if="waveComService.reasons.length > 0 "
-                                     class="md-layout-item warning-message-area">
-                                    Although file updated successful, the file has some conflicting transactions
+                                <div
+                                    v-if="waveComService.reasons.length > 0"
+                                    class="md-layout-item warning-message-area"
+                                >
+                                    Although file updated successful, the file
+                                    has some conflicting transactions
                                 </div>
-                                <div v-for="(transaction,i) in waveComService.reasons" :key="'wave-'+i">
-                                     <span class="uploaded-wrap">
-                                    <label class="uploaded">
-                                        Transaction
-                                    </label>
-                                    <span>{{ transaction }}</span>
-                                   </span>
-
+                                <div
+                                    v-for="(
+                                        transaction, i
+                                    ) in waveComService.reasons"
+                                    :key="'wave-' + i"
+                                >
+                                    <span class="uploaded-wrap">
+                                        <label class="uploaded">
+                                            Transaction
+                                        </label>
+                                        <span>{{ transaction }}</span>
+                                    </span>
                                 </div>
-
                             </div>
                         </div>
                         <div class="buttons-area">
-                            <md-button role="button" class="md-raised"
-                                       @click="$router.push('/transactions')">
+                            <md-button
+                                role="button"
+                                class="md-raised"
+                                @click="$router.push('/transactions')"
+                            >
                                 Done
                             </md-button>
-                            <md-button role="button" class="md-raised md-primary"
-                                       @click="uploadNewFile">Upload New File
+                            <md-button
+                                role="button"
+                                class="md-raised md-primary"
+                                @click="uploadNewFile"
+                            >
+                                Upload New File
                             </md-button>
-
                         </div>
                     </div>
-
-
                 </div>
-
-
             </div>
-
         </widget>
-
-
     </div>
 </template>
 
 <script>
 import Widget from '@/plugins/bulk-registration/js/modules/Shared/Widget.vue'
-import {WaveComService} from '@/plugins/wavecom-payment-provider/js/services/WaveComService'
+import { WaveComService } from '@/plugins/wavecom-payment-provider/js/services/WaveComService'
 
 export default {
     name: 'WaveComTransaction',
-    components: {Widget},
+    components: { Widget },
 
     data() {
         return {
@@ -101,12 +136,14 @@ export default {
             title: 'WaveComTransaction Upload',
             fileName: '',
             fileUploaded: false,
-            createdRecordCount: 0
+            createdRecordCount: 0,
         }
-    }, methods: {
+    },
+    methods: {
         uploadCsv(event) {
             event.preventDefault()
-            const fileLocation = event.type === 'change' ? 'srcElement' : 'dataTransfer'
+            const fileLocation =
+                event.type === 'change' ? 'srcElement' : 'dataTransfer'
             if (event[fileLocation].files.length !== 1) {
                 let message = 'Only one file is supported'
                 this.alertNotify('warn', message)
@@ -126,9 +163,9 @@ export default {
                 title: this.title,
                 text: 'Are you sure to do this action?',
                 showCancelButton: true,
-                confirmButtonText: 'I\'m sure',
+                confirmButtonText: "I'm sure",
                 cancelButtonText: 'Cancel',
-            }).then(result => {
+            }).then((result) => {
                 if ('value' in result) {
                     this.save()
                 }
@@ -142,7 +179,6 @@ export default {
                 this.clear()
                 this.createdRecordCountCheck()
                 this.fileUploaded = true
-
             } catch (error) {
                 this.$swal.fire(error.message)
             }
@@ -156,7 +192,6 @@ export default {
         uploadNewFile() {
             this.$refs['file-input'].value = null
             this.fileUploaded = false
-
         },
         createdRecordCountCheck() {
             //     for (let value of Object.values(this.csvUploadService.recentlyCreatedRecords)) {
@@ -168,14 +203,12 @@ export default {
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
     },
-
 }
 </script>
-
 
 <style scoped>
 .csv-p {
@@ -191,7 +224,7 @@ export default {
     min-height: 4rem;
     border: 1px dashed;
     margin-bottom: 2rem;
-    margin-top: 2rem
+    margin-top: 2rem;
 }
 
 .upload-area p {
@@ -213,7 +246,7 @@ export default {
     margin: auto;
     width: 60%;
     margin-bottom: 2rem;
-    margin-top: 2rem
+    margin-top: 2rem;
 }
 
 .uploaded {

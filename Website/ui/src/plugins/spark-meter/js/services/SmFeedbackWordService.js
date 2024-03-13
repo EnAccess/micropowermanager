@@ -2,8 +2,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import Repository from '../repositories/RepositoryFactory'
 
 export class SmFeedbackWordService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('feedBackWord')
         this.feedbackWords = {
             id: null,
@@ -12,7 +11,7 @@ export class SmFeedbackWordService {
         }
     }
 
-    fromJson (feedbackWordsData) {
+    fromJson(feedbackWordsData) {
         this.feedbackWords = {
             id: feedbackWordsData.id,
             meterReset: feedbackWordsData.meter_reset,
@@ -21,34 +20,32 @@ export class SmFeedbackWordService {
         return this.feedbackWords
     }
 
-    async getFeedbackWords () {
+    async getFeedbackWords() {
         try {
             let response = await this.repository.list()
             if (response.status !== 200) {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
             return this.fromJson(response.data.data[0])
-
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    async updateFeedbackWords () {
+    async updateFeedbackWords() {
         try {
             let updateWordsPM = {
                 id: this.feedbackWords.id,
                 meter_reset: this.feedbackWords.meterReset,
-                meter_balance: this.feedbackWords.meterBalance
+                meter_balance: this.feedbackWords.meterBalance,
             }
 
-            let response  = await this.repository.put(updateWordsPM)
+            let response = await this.repository.put(updateWordsPM)
             if (response.status !== 200 && response.status !== 201) {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
             return this.fromJson(response.data.data)
-
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')

@@ -1,70 +1,134 @@
 <template>
     <div>
-        <form @submit.prevent="submitCredentialForm" data-vv-scope="Credential-Form" class="Credential-Form">
+        <form
+            @submit.prevent="submitCredentialForm"
+            data-vv-scope="Credential-Form"
+            class="Credential-Form"
+        >
             <md-card>
                 <md-card-content>
                     <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-50">
+                        <div
+                            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
+                        >
                             <div class="md-layout md-gutter">
-                                <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                <div
+                                    class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                                >
                                     <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.username')}">
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                'Credential-Form.username',
+                                            ),
+                                        }"
+                                    >
                                         <label for="username">Username</label>
                                         <md-input
-                                                id="username"
-                                                name="username"
-                                                v-model="credentialService.credential.username"
-                                                v-validate="'required|min:3'"
+                                            id="username"
+                                            name="username"
+                                            v-model="
+                                                credentialService.credential
+                                                    .username
+                                            "
+                                            v-validate="'required|min:3'"
                                         />
-                                        <span
-                                                class="md-error">{{ errors.first('Credential-Form.username') }}</span>
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    'Credential-Form.username',
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
-                                <div class="md-layout-item  md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100">
+                                <div
+                                    class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                                >
                                     <md-field
-                                            :class="{'md-invalid': errors.has('Credential-Form.password')}">
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                'Credential-Form.password',
+                                            ),
+                                        }"
+                                    >
                                         <label for="password">Password</label>
                                         <md-input
-                                                id="password"
-                                                name="password"
-                                                v-model="credentialService.credential.password"
-                                                v-validate="'required|min:3'"
+                                            id="password"
+                                            name="password"
+                                            v-model="
+                                                credentialService.credential
+                                                    .password
+                                            "
+                                            v-validate="'required|min:3'"
                                         />
-                                        <span class="md-error">{{ errors.first('Credential-Form.password') }}</span>
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    'Credential-Form.password',
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
-
                             </div>
                         </div>
-                        <div class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-50">
-                            <div class="md-layout md-gutter" style="display: grid">
-
-
-                                <div class="md-layout-item  md-size-100">
-                                    <div v-if="credentialService.credential.isAuthenticated" class="authorize-div">
-                                        <img src="../../../icons/authorized.png"/>
-                                        <label style="padding-left: 2rem !important;"> Authorized</label>
+                        <div
+                            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
+                        >
+                            <div
+                                class="md-layout md-gutter"
+                                style="display: grid"
+                            >
+                                <div class="md-layout-item md-size-100">
+                                    <div
+                                        v-if="
+                                            credentialService.credential
+                                                .isAuthenticated
+                                        "
+                                        class="authorize-div"
+                                    >
+                                        <img
+                                            src="../../../icons/authorized.png"
+                                        />
+                                        <label
+                                            style="
+                                                padding-left: 2rem !important;
+                                            "
+                                        >
+                                            Authorized
+                                        </label>
                                     </div>
 
-                                    <div v-if="!credentialService.credential.isAuthenticated" class="authorize-div">
-                                        <img src="../../../icons/unauthorized.png"/>
-                                        <label style="padding-left: 2rem !important;"> Unauthorized</label>
+                                    <div
+                                        v-if="
+                                            !credentialService.credential
+                                                .isAuthenticated
+                                        "
+                                        class="authorize-div"
+                                    >
+                                        <img
+                                            src="../../../icons/unauthorized.png"
+                                        />
+                                        <label
+                                            style="
+                                                padding-left: 2rem !important;
+                                            "
+                                        >
+                                            Unauthorized
+                                        </label>
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
-
                     </div>
                 </md-card-content>
-                <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
                 <md-card-actions>
-                    <md-button class="md-raised md-primary" type="submit">Save</md-button>
+                    <md-button class="md-raised md-primary" type="submit">
+                        Save
+                    </md-button>
                 </md-card-actions>
             </md-card>
-
         </form>
     </div>
 </template>
@@ -75,29 +139,32 @@ import { EventBus } from '../../eventbus'
 
 export default {
     name: 'Credential',
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             loading: false,
         }
     },
-    mounted () {
+    mounted() {
         this.getCredential()
     },
     methods: {
-        async getCredential () {
+        async getCredential() {
             await this.credentialService.getCredential()
         },
-        async submitCredentialForm () {
-            
+        async submitCredentialForm() {
             let validator = await this.$validator.validateAll('Credential-Form')
             if (!validator) {
                 return
             }
             try {
                 this.loading = true
-                const updatedData = await this.credentialService.updateCredential()
-                this.alertNotify(updatedData.alert.type, updatedData.alert.message)
+                const updatedData =
+                    await this.credentialService.updateCredential()
+                this.alertNotify(
+                    updatedData.alert.type,
+                    updatedData.alert.message,
+                )
                 EventBus.$emit('Steamaco Meter')
             } catch (e) {
                 this.alertNotify('error', 'MPM failed to verify your request')
@@ -105,24 +172,24 @@ export default {
             EventBus.$emit('credentialUpdated')
             this.loading = false
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
-    .md-card {
-        height: 100% !important;
-    }
+.md-card {
+    height: 100% !important;
+}
 
-    .Credential-Form {
-        height: 100% !important;
-    }
+.Credential-Form {
+    height: 100% !important;
+}
 </style>

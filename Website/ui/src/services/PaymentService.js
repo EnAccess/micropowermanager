@@ -3,7 +3,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
 
 export class PaymentService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('paymentHistory')
         this.paymentDetailData = []
         this.chartData = [[i18n.tc('words.month'), i18n.tc('words.sale')]]
@@ -20,13 +20,16 @@ export class PaymentService {
             'Sept',
             'Oct',
             'Nov',
-            'Dec'
+            'Dec',
         ]
     }
 
-    async getPaymentDetail (personId, period) {
+    async getPaymentDetail(personId, period) {
         try {
-            let response = await this.repository.getPaymentDetail(personId, period)
+            let response = await this.repository.getPaymentDetail(
+                personId,
+                period,
+            )
             if (response.status === 200) {
                 this.fillPaymentDetailChartData(response.data)
                 return response.data
@@ -36,10 +39,9 @@ export class PaymentService {
         } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
-
     }
 
-    async getPaymentFlow (personId) {
+    async getPaymentFlow(personId) {
         try {
             let response = await this.repository.getFlow(personId)
             if (response.status === 200) {
@@ -50,10 +52,9 @@ export class PaymentService {
         } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
-
     }
 
-    async getPeriod (personId) {
+    async getPeriod(personId) {
         try {
             let response = await this.repository.getPeriod(personId)
             if (response.status === 200) {
@@ -66,7 +67,7 @@ export class PaymentService {
         }
     }
 
-    async getDebt (personId) {
+    async getDebt(personId) {
         try {
             let response = await this.repository.getDebt(personId)
             if (response.status === 200) {
@@ -79,27 +80,43 @@ export class PaymentService {
         }
     }
 
-    fillPaymentFlowChartData (paymentFlowData) {
+    fillPaymentFlowChartData(paymentFlowData) {
         this.flow = []
         for (const paymentFlowDataKey in paymentFlowData) {
             this.flow.push(parseInt(paymentFlowData[paymentFlowDataKey]))
             this.chartData.push([
                 this.monthNames[paymentFlowDataKey],
-                parseInt(paymentFlowData[paymentFlowDataKey])
+                parseInt(paymentFlowData[paymentFlowDataKey]),
             ])
         }
         return this.chartData
     }
 
-    fillPaymentDetailChartData (paymentDetail) {
-        this.paymentDetailData = [[i18n.tc('words.period'), i18n.tc('words.energy'), i18n.tc('phrases.accessRate'), i18n.tc('phrases.loanRate'), i18n.tc('phrases.downPayment')]]
+    fillPaymentDetailChartData(paymentDetail) {
+        this.paymentDetailData = [
+            [
+                i18n.tc('words.period'),
+                i18n.tc('words.energy'),
+                i18n.tc('phrases.accessRate'),
+                i18n.tc('phrases.loanRate'),
+                i18n.tc('phrases.downPayment'),
+            ],
+        ]
         for (let i in paymentDetail) {
             let chartDataItem = [
                 i,
-                'energy' in paymentDetail[i] ? parseInt(paymentDetail[i]['energy']) : 0,
-                'access rate' in paymentDetail[i] ? parseInt(paymentDetail[i]['access rate']) : 0,
-                'installment' in paymentDetail[i] ? parseInt(paymentDetail[i]['installment']) : 0,
-                'down payment' in paymentDetail[i] ? parseInt(paymentDetail[i]['down payment']) : 0,
+                'energy' in paymentDetail[i]
+                    ? parseInt(paymentDetail[i]['energy'])
+                    : 0,
+                'access rate' in paymentDetail[i]
+                    ? parseInt(paymentDetail[i]['access rate'])
+                    : 0,
+                'installment' in paymentDetail[i]
+                    ? parseInt(paymentDetail[i]['installment'])
+                    : 0,
+                'down payment' in paymentDetail[i]
+                    ? parseInt(paymentDetail[i]['down payment'])
+                    : 0,
             ]
             this.paymentDetailData.push(chartDataItem)
         }

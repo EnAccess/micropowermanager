@@ -2,24 +2,25 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class AgentChargeService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('balanceCharge')
         this.newBalance = {
             userId: null,
             amount: null,
-            agentId: null
+            agentId: null,
         }
     }
 
-    async addNewBalance () {
+    async addNewBalance() {
         try {
-
             let newBalancePM = {
                 user_id: this.newBalance.userId,
                 amount: this.newBalance.amount,
-
             }
-            let response = await this.repository.create(newBalancePM,this.newBalance.agentId)
+            let response = await this.repository.create(
+                newBalancePM,
+                this.newBalance.agentId,
+            )
             if (response.status === 200 || response.status === 201) {
                 this.resetNewBalance()
                 return response
@@ -30,13 +31,12 @@ export class AgentChargeService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
-    resetNewBalance(){
+    resetNewBalance() {
         this.newBalance = {
             personId: null,
             amount: null,
-            agentId: null
+            agentId: null,
         }
     }
 }

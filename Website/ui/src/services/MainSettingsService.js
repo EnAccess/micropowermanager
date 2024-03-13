@@ -2,8 +2,7 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MainSettingsService {
-
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('mainSettings')
         this.mainSettings = {
             siteTitle: null,
@@ -17,7 +16,7 @@ export class MainSettingsService {
         }
     }
 
-    fromJson (mainSettings) {
+    fromJson(mainSettings) {
         this.mainSettings = {
             id: mainSettings.id,
             siteTitle: mainSettings.site_title,
@@ -32,7 +31,7 @@ export class MainSettingsService {
         return this.mainSettings
     }
 
-    async list () {
+    async list() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -46,7 +45,7 @@ export class MainSettingsService {
         }
     }
 
-    async update () {
+    async update() {
         try {
             let mainSettingsPm = {
                 id: this.mainSettings.id,
@@ -59,8 +58,10 @@ export class MainSettingsService {
                 vat_appliance: this.mainSettings.vatAppliance,
                 usage_type: this.mainSettings.usageType,
             }
-            let response = await this.repository.update(mainSettingsPm.id,
-                mainSettingsPm)
+            let response = await this.repository.update(
+                mainSettingsPm.id,
+                mainSettingsPm,
+            )
             if (response.status === 200) {
                 this.fromJson(response.data.data)
                 return this.mainSettings

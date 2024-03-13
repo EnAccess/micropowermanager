@@ -5,19 +5,19 @@ const resource = `${baseUrl}/api/steama-meters/steama-site`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    sync () {
+    sync() {
         return Client.get(`${resource}/sync`)
     },
-    syncCheck () {
+    syncCheck() {
         return Client.get(`${resource}/sync-check`)
     },
-    count () {
+    count() {
         return Client.get(`${resource}/count`)
     },
-    location(){
-        return  Client.get(`${resource}/location`)
+    location() {
+        return Client.get(`${resource}/location`)
     },
 }

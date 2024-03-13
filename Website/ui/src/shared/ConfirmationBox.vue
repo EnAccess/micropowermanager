@@ -1,5 +1,5 @@
 <template>
-<div></div>
+    <div></div>
 </template>
 
 <script>
@@ -11,35 +11,31 @@ export default {
         title: {
             required: true,
             type: String,
-        }
+        },
     },
-    data () {
+    data() {
         return {}
     },
-    created () {
+    created() {
         EventBus.$on('show.confirm', this.showConfirmation)
     },
     methods: {
-        showConfirmation (data = null) {
+        showConfirmation(data = null) {
             this.$swal({
                 type: 'question',
                 title: this.title,
                 text: 'Are you sure to do this action?',
                 showCancelButton: true,
-                confirmButtonText: 'I\'m sure',
+                confirmButtonText: "I'm sure",
                 cancelButtonText: 'Cancel',
             }).then((result) => {
-
                 if (result.value) {
                     this.$emit('confirmed', data)
                 }
-
             })
-        }
+        },
     },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

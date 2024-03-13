@@ -1,88 +1,135 @@
 <template>
     <div class="md-layout md-gutter">
-
-        <form @submit.prevent="submitCredentialForm" data-vv-scope="Credential-Form"
-              class="Credential-Form md-layout-item  md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100">
+        <form
+            @submit.prevent="submitCredentialForm"
+            data-vv-scope="Credential-Form"
+            class="Credential-Form md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+        >
             <md-card>
-                <md-card-content style="min-height: 80%;">
+                <md-card-content style="min-height: 80%">
                     <div class="md-layout-item md-size-100">
                         <div
-                            class="md-layout-item md-small-size-100  md-xsmall-size-100 md-medium-size-100  md-size-100">
+                            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
+                        >
                             <div
-                                class="md-layout-item  md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100">
+                                class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+                            >
                                 <md-field
-                                    :class="{'md-invalid': errors.has('Credential-Form.apiUrl')}">
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            'Credential-Form.apiUrl',
+                                        ),
+                                    }"
+                                >
                                     <label for="username">API URL</label>
                                     <md-input
                                         id="apiUrl"
                                         name="apiUrl"
-                                        v-model="credentialService.credential.apiUrl"
+                                        v-model="
+                                            credentialService.credential.apiUrl
+                                        "
                                         v-validate="'required|min:3'"
                                     />
-                                    <span
-                                        class="md-error">{{ errors.first('Credential-Form.apiUrl') }}</span>
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'Credential-Form.apiUrl',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
                             <div
-                                class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100">
+                                class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+                            >
                                 <md-field
-                                    :class="{'md-invalid': errors.has('Credential-Form.certificatePassword')}">
-                                    <label for="certificatePassword">Certificate Password</label>
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            'Credential-Form.certificatePassword',
+                                        ),
+                                    }"
+                                >
+                                    <label for="certificatePassword">
+                                        Certificate Password
+                                    </label>
                                     <md-input
                                         id="certificatePassword"
                                         name="certificatePassword"
-                                        v-model="credentialService.credential.certificatePassword"
+                                        v-model="
+                                            credentialService.credential
+                                                .certificatePassword
+                                        "
                                         v-validate="'min:3'"
                                         type="password"
                                     />
-                                    <span
-                                        class="md-error">{{
-                                            errors.first('Credential-Form.certificatePassword')
-                                        }}</span>
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'Credential-Form.certificatePassword',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
                         </div>
                     </div>
                 </md-card-content>
-                <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
                 <md-card-actions>
-                    <md-button class="md-raised md-primary" type="submit">Save</md-button>
+                    <md-button class="md-raised md-primary" type="submit">
+                        Save
+                    </md-button>
                 </md-card-actions>
             </md-card>
         </form>
 
-        <div class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100">
+        <div
+            class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-50 md-small-size-100"
+        >
             <md-card>
                 <md-card-content>
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item md-size-100">
-                            <span>  Please upload your certificate file.</span>
+                            <span>Please upload your certificate file.</span>
                             <div v-if="!loading">
                                 <div class="upload-area">
-                                    <input type="file" @change="uploadCert" accept=".p12"
-                                           ref="file-input">
-                                    <p>Drag your files here or click in this area.</p>
-                                    <p v-text="fileName"></p>
-                                    <p class="cert-p">
-                                        Only .p12 files.
+                                    <input
+                                        type="file"
+                                        @change="uploadCert"
+                                        accept=".p12"
+                                        ref="file-input"
+                                    />
+                                    <p>
+                                        Drag your files here or click in this
+                                        area.
                                     </p>
-
+                                    <p v-text="fileName"></p>
+                                    <p class="cert-p">Only .p12 files.</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </md-card-content>
                 <md-card-actions>
-                    <md-button role="button" class="md-raised" style="float: right" @click="clear">clear
+                    <md-button
+                        role="button"
+                        class="md-raised"
+                        style="float: right"
+                        @click="clear"
+                    >
+                        clear
                     </md-button>
-                    <md-button role="button" class="md-raised md-primary"
+                    <md-button
+                        role="button"
+                        class="md-raised md-primary"
                         style="float: right"
                         :disabled="certLoading"
-                        @click="upload()">Upload File
+                        @click="upload()"
+                    >
+                        Upload File
                     </md-button>
                 </md-card-actions>
-                <md-progress-bar md-mode="indeterminate" v-if="certLoading"/>
+                <md-progress-bar md-mode="indeterminate" v-if="certLoading" />
             </md-card>
         </div>
     </div>
@@ -95,7 +142,7 @@ import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             certService: new CertService(),
@@ -103,22 +150,21 @@ export default {
             fileName: '',
             fileUploaded: false,
             certFile: null,
-            certLoading: false
+            certLoading: false,
         }
     },
-    mounted () {
+    mounted() {
         this.getCredential()
         this.getUploadedCert()
-
     },
     methods: {
-        async getUploadedCert () {
+        async getUploadedCert() {
             this.fileName = await this.certService.getUploadedCertName()
         },
-        async getCredential () {
+        async getCredential() {
             await this.credentialService.getCredential()
         },
-        async submitCredentialForm () {
+        async submitCredentialForm() {
             let validator = await this.$validator.validateAll('Credential-Form')
             if (!validator) {
                 return
@@ -133,7 +179,7 @@ export default {
             }
             this.loading = false
         },
-        async upload () {
+        async upload() {
             if (!this.certFile) {
                 this.alertNotify('warn', 'No file selected.')
                 return
@@ -143,35 +189,35 @@ export default {
                 title: this.title,
                 text: 'Are you sure to do this action?',
                 showCancelButton: true,
-                confirmButtonText: 'I\'m sure',
+                confirmButtonText: "I'm sure",
                 cancelButtonText: 'Cancel',
-            }).then(result => {
+            }).then((result) => {
                 if ('value' in result) {
                     this.save()
                 }
             })
         },
-        async save () {
+        async save() {
             this.certLoading = true
             try {
                 await this.certService.upload(this.certFile)
                 this.alertNotify('success', 'Updated Successfully.')
                 this.clear()
                 this.fileUploaded = true
-
             } catch (error) {
                 this.$swal.fire(error.message)
             }
 
             this.certLoading = false
         },
-        clear () {
+        clear() {
             this.certFile = null
             this.fileName = ''
         },
-        uploadCert (event) {
+        uploadCert(event) {
             event.preventDefault()
-            const fileLocation = event.type === 'change' ? 'srcElement' : 'dataTransfer'
+            const fileLocation =
+                event.type === 'change' ? 'srcElement' : 'dataTransfer'
             if (event[fileLocation].files.length !== 1) {
                 let message = 'Only one file is supported'
                 this.alertNotify('warn', message)
@@ -187,15 +233,15 @@ export default {
             this.certFile = event[fileLocation].files[0]
             this.fileName = this.$refs['file-input'].value
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
@@ -207,7 +253,6 @@ export default {
 .Credential-Form {
     height: 100% !important;
 }
-
 
 .cert-p {
     font-size: x-small;
@@ -222,7 +267,7 @@ export default {
     min-height: 4rem;
     border: 1px dashed;
     margin-bottom: 2rem;
-    margin-top: 2rem
+    margin-top: 2rem;
 }
 
 .upload-area p {
@@ -244,7 +289,7 @@ export default {
     margin: auto;
     width: 60%;
     margin-bottom: 2rem;
-    margin-top: 2rem
+    margin-top: 2rem;
 }
 
 .uploaded {

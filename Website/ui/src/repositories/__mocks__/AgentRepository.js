@@ -3,28 +3,19 @@ const agentUpdateResponse = require('./responses/agent/agentUpdate.json')
 const agentDetailsResponse = require('./responses/agent/agentDetails.json')
 
 export default {
-    create(){
+    create() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(agentCreateResponse)
-            )
-
+            process.nextTick(() => resolve(agentCreateResponse))
         })
     },
-    update(){
+    update() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(agentUpdateResponse)
-            )
-
+            process.nextTick(() => resolve(agentUpdateResponse))
         })
     },
-    detail(){
+    detail() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(agentDetailsResponse)
-            )
-
+            process.nextTick(() => resolve(agentDetailsResponse))
         })
-    }
+    },
 }

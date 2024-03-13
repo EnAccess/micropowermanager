@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SiteService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('site')
         this.list = []
         this.isSync = false
@@ -16,25 +15,24 @@ export class SiteService {
             thundercloudUrl: null,
             thundercloudToken: null,
             isAuthenticated: null,
-            isOnline:null
+            isOnline: null,
         }
     }
 
-    fromJson (siteData) {
+    fromJson(siteData) {
         this.site = {
             id: siteData.id,
             name: siteData.mpm_mini_grid.name,
             thundercloudUrl: siteData.thundercloud_url,
             thundercloudToken: siteData.thundercloud_token,
-            isAuthenticated: siteData.is_authenticated>0,
-            isOnline: siteData.is_online>0
+            isAuthenticated: siteData.is_authenticated > 0,
+            isOnline: siteData.is_online > 0,
         }
 
         return this.site
     }
 
-    updateList (data) {
-
+    updateList(data) {
         this.list = []
         for (let s in data) {
             let site = this.fromJson(data[s])
@@ -42,7 +40,7 @@ export class SiteService {
         }
     }
 
-    async syncSites () {
+    async syncSites() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -56,12 +54,11 @@ export class SiteService {
         }
     }
 
-    async checkSites () {
+    async checkSites() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -71,14 +68,14 @@ export class SiteService {
         }
     }
 
-    async updateSite (site) {
+    async updateSite(site) {
         try {
             let sitePM = {
                 id: site.id,
                 name: site.name,
                 thundercloud_url: site.thundercloudUrl,
                 thundercloud_token: site.thundercloudToken,
-                is_authenticated: site.is_authenticated
+                is_authenticated: site.is_authenticated,
             }
             let response = await this.repository.update(sitePM)
             if (response.status === 200) {
@@ -92,7 +89,7 @@ export class SiteService {
         }
     }
 
-    async getSitesCount () {
+    async getSitesCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {
@@ -107,9 +104,8 @@ export class SiteService {
         }
     }
 
-    async checkLocation () {
+    async checkLocation() {
         try {
-
             let response = await this.repository.location()
             if (response.status === 200) {
                 return response.data.data

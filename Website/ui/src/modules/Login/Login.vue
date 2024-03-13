@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <login-card header-color="green">
-            <h4 slot="title" class="card-title">{{$tc('words.login')}}</h4>
+            <h4 slot="title" class="card-title">{{ $tc('words.login') }}</h4>
             <md-button
                 slot="buttons"
                 href="javascript:void(0)"
@@ -51,28 +51,28 @@ import LoginCard from '@/modules/Login/LoginCard'
 export default {
     name: 'Login',
     components: {
-        LoginCard
+        LoginCard,
     },
     bodyClass: 'login-page',
-    data () {
+    data() {
         return {
             firstname: null,
             email: null,
-            password: null
+            password: null,
         }
     },
     props: {
         header: {
             type: String,
-        }
+        },
     },
     computed: {
-        headerStyle () {
+        headerStyle() {
             return {
-                backgroundImage: `url(${this.header})`
+                backgroundImage: `url(${this.header})`,
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

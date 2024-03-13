@@ -1,9 +1,7 @@
-import {City} from '../Cities/city'
+import { City } from '../Cities/city'
 
 export class Cluster {
-    constructor() {
-    }
-
+    constructor() {}
 
     fromJson(jsonData) {
         this.id = jsonData.id

@@ -1,7 +1,6 @@
 <template>
     <div>
         <md-field>
-
             <md-select
                 @md-selected="selectUser"
                 v-model="selectedUser"
@@ -9,13 +8,16 @@
                 id="user"
                 :placeholder="$tc('phrases.assignClusterManager')"
             >
-
-                <md-option v-for="(user) in users" :value="user.id" :key="user.id">{{user.name}}</md-option>
+                <md-option
+                    v-for="user in users"
+                    :value="user.id"
+                    :key="user.id"
+                >
+                    {{ user.name }}
+                </md-option>
             </md-select>
-
         </md-field>
     </div>
-
 </template>
 
 <script>
@@ -23,10 +25,10 @@ import { UserService } from '@/services/UserService'
 
 export default {
     name: 'UserList',
-    mounted () {
+    mounted() {
         this.getUserList()
     },
-    data () {
+    data() {
         return {
             userService: new UserService(),
             users: null,
@@ -34,31 +36,28 @@ export default {
         }
     },
     methods: {
-        selectUser (user) {
+        selectUser(user) {
             this.selectedUser = user
             this.$emit('userSelected', user)
         },
 
-        async getUserList () {
+        async getUserList() {
             try {
                 this.users = await this.userService.list()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
-
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

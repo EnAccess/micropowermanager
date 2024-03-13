@@ -5,7 +5,7 @@ const resource = `${baseUrl}/api/wavecom/upload`
 import Client from '@/repositories/Client/AxiosClient'
 
 export default {
-    post (transactionFile) {
+    post(transactionFile) {
         return Client.post(`${resource}`, transactionFile)
-    }
+    },
 }

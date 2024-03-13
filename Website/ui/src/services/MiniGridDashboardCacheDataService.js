@@ -2,11 +2,11 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MiniGridDashboardCacheDataService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('miniGridDashboardCacheData')
     }
 
-    async list () {
+    async list() {
         try {
             const response = await this.repository.list()
             return this.responseValidator(response)
@@ -15,7 +15,7 @@ export class MiniGridDashboardCacheDataService {
         }
     }
 
-    async update (from = null, to = null) {
+    async update(from = null, to = null) {
         try {
             const response = await this.repository.update(from, to)
             return this.responseValidator(response)
@@ -24,7 +24,7 @@ export class MiniGridDashboardCacheDataService {
         }
     }
 
-    async detail (id) {
+    async detail(id) {
         try {
             const response = await this.repository.detail(id)
             return this.responseValidator(response)
@@ -33,9 +33,9 @@ export class MiniGridDashboardCacheDataService {
         }
     }
 
-    responseValidator (response, expectedStatus = [200]) {
+    responseValidator(response, expectedStatus = [200]) {
         return expectedStatus.includes(response.status)
-            ? response.data.data :
-            new ErrorHandler(response.error, 'http', response.status)
+            ? response.data.data
+            : new ErrorHandler(response.error, 'http', response.status)
     }
 }

@@ -4,9 +4,10 @@
             :id="'revenue-targets'"
             :headless="true"
             :title="$tc('phrases.revenueTargetsPerCustomerType')"
-            color="green">
+            color="green"
+        >
             <div v-if="loading">
-                <loader size="sm"/>
+                <loader size="sm" />
             </div>
             <div v-else>
                 <GChart
@@ -30,15 +31,15 @@ export default {
     components: { Loader, Widget },
     props: {
         targetRevenueChartData: {
-            required: true
-        }
+            required: true,
+        },
     },
-    mounted () {
+    mounted() {
         EventBus.$on('miniGridCachedDataLoading', (loading) => {
             this.loading = loading
         })
     },
-    data () {
+    data() {
         return {
             loading: false,
             tooltip: { isHtml: true },
@@ -48,27 +49,24 @@ export default {
                 hAxis: {
                     textPosition: 'out',
                     textStyle: {
-                        fontSize: 8
-                    }
+                        fontSize: 8,
+                    },
                 },
                 tooltip: { isHtml: true },
                 title: this.$tc('phrases.revenueTargetsPerCustomerType'),
                 vAxis: {
                     viewWindow: {
                         min: 0,
-                        max: 1
+                        max: 1,
                     },
                     format: '#,###%',
                     title: 'Percentage of Targeted Revenue %',
-
-                }
-            }
+                },
+            },
         }
     },
-    methods: {}
+    methods: {},
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

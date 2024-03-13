@@ -6,4 +6,3 @@ export default new VueRouter({
     linkActiveClass: 'active',
     linkExactActiveClass: 'exact-active',
 })
-

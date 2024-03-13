@@ -1,5 +1,5 @@
 <template>
-  <Transaction/>
+    <Transaction />
 </template>
 
 <script>
@@ -9,5 +9,3 @@ export default {
     components: { Transaction },
 }
 </script>
-
-

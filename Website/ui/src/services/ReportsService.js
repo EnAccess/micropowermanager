@@ -1,6 +1,6 @@
 import Repository from '../repositories/RepositoryFactory'
-import {Paginator} from '@/classes/paginator'
-import {resources} from '@/resources'
+import { Paginator } from '@/classes/paginator'
+import { resources } from '@/resources'
 export class ReportsService {
     constructor() {
         this.repository = Repository.get('reports')
@@ -16,9 +16,8 @@ export class ReportsService {
         this.paginatorMonthly = new Paginator(resources.reports.monthly.list)
     }
 
-
     updateList(reports) {
-        this.list = reports.map(report => {
+        this.list = reports.map((report) => {
             return {
                 id: report.id,
                 name: report.name,
@@ -33,5 +32,4 @@ export class ReportsService {
     exportReport(id, reference, companyId) {
         return this.repository.download(id, reference, companyId)
     }
-
 }

@@ -4,18 +4,27 @@
             <h1 class="title">MicroPowerManager</h1>
             <h5 class="subtitle">{{ $tc('phrases.forgotPassword') }}</h5>
             <div class="title-divider">&nbsp;</div>
-
         </div>
         <div class="content">
-            <form class="md-layout" @submit.prevent="sendForgotPassword" data-vv-scope="form-forgot">
+            <form
+                class="md-layout"
+                @submit.prevent="sendForgotPassword"
+                data-vv-scope="form-forgot"
+            >
                 <md-card class="md-layout-item">
                     <md-card-header>
                         <div class="">
-                            <div class="subtitle">{{ $tc('phrases.forgotPassword', 2) }}</div>
+                            <div class="subtitle">
+                                {{ $tc('phrases.forgotPassword', 2) }}
+                            </div>
                         </div>
                     </md-card-header>
                     <md-card-content>
-                        <md-field :class="{'md-invalid': errors.has('form-forgot.email')}">
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has('form-forgot.email'),
+                            }"
+                        >
                             <label>{{ $tc('words.email') }}</label>
                             <md-input
                                 type="email"
@@ -25,20 +34,25 @@
                                 v-model="email"
                                 :v-validate="'required|email'"
                             />
-                            <span class="md-error">{{ errors.first('form-forgot.email') }}</span>
+                            <span class="md-error">
+                                {{ errors.first('form-forgot.email') }}
+                            </span>
                         </md-field>
-
                     </md-card-content>
 
-                    <md-progress-bar md-mode="indeterminate" v-if="sending"/>
+                    <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
                     <md-card-actions>
-                        <md-button type="submit" class="md-primary btn-log" :disabled="sending">{{ $tc('words.send') }}
+                        <md-button
+                            type="submit"
+                            class="md-primary btn-log"
+                            :disabled="sending"
+                        >
+                            {{ $tc('words.send') }}
                         </md-button>
                     </md-card-actions>
                 </md-card>
             </form>
-
         </div>
     </div>
 </template>
@@ -53,18 +67,23 @@ export default {
     data: () => ({
         email: null,
         sending: false,
-        userPasswordService: new UserPasswordService()
+        userPasswordService: new UserPasswordService(),
     }),
     methods: {
-        async sendForgotPassword () {
+        async sendForgotPassword() {
             let validation = await this.$validator.validateAll('form-forgot')
             if (!validation) {
                 return
             }
             try {
-                let response = await this.userPasswordService.forgotPassword(this.email)
+                let response = await this.userPasswordService.forgotPassword(
+                    this.email,
+                )
                 if (response.status_code === 200) {
-                    this.alertNotify('success', 'New password has sended to your email.')
+                    this.alertNotify(
+                        'success',
+                        'New password has sended to your email.',
+                    )
                     setTimeout(() => {
                         this.$router.push('/')
                     }, 1500)
@@ -76,8 +95,8 @@ export default {
                 this.alertNotify('error', error)
                 this.sending = false
             }
-        }
-    }
+        },
+    },
 }
 </script>
 

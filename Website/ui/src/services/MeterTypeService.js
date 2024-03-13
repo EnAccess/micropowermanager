@@ -2,52 +2,55 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MeterTypeService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('meterType')
         this.meterTypesList = []
     }
 
-    prepareMeterType(meterType){
+    prepareMeterType(meterType) {
         let meterTypeOnline = meterType.online === 1 ? 'Online' : 'Offline'
         let meterTypes = {
             id: meterType.id,
-            name: meterType.max_current + 'A ' + meterType.phase + 'P ' + meterTypeOnline,
+            name:
+                meterType.max_current +
+                'A ' +
+                meterType.phase +
+                'P ' +
+                meterTypeOnline,
             max_current: meterType.max_current,
-            online: meterType.online
+            online: meterType.online,
         }
         return meterTypes
     }
 
-    async getMeterTypes (){
+    async getMeterTypes() {
         try {
             this.meterTypesList = []
             let response = await this.repository.index()
-            if( response.status === 200 ){
+            if (response.status === 200) {
                 let data = response.data.data
                 this.meterTypesList = data.map(this.prepareMeterType)
                 return this.meterTypesList
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    async createMeterType (meterType){
+    async createMeterType(meterType) {
         try {
             let response = await this.repository.store(meterType)
-            if(response.status === 201 ){
+            if (response.status === 201) {
                 return this.getMeterTypes()
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
-        }catch (e) {
+        } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

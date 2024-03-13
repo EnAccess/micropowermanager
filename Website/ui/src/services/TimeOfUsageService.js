@@ -1,18 +1,18 @@
 import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 export class TimeOfUsageService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('timeOfUsage')
         this.tou = {
             id: null,
             tariffId: null,
             start: null,
             end: null,
-            value: null
+            value: null,
         }
     }
 
-    async deleteTou (id) {
+    async deleteTou(id) {
         try {
             let response = await this.repository.delete(id)
             if (response.status === 200) {

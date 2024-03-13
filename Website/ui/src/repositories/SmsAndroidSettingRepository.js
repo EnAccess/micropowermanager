@@ -4,16 +4,19 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/sms-android-setting`
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    update (smsAndroidSetting) {
-        return Client.put(`${resource}/${smsAndroidSetting.id}`, smsAndroidSetting)
+    update(smsAndroidSetting) {
+        return Client.put(
+            `${resource}/${smsAndroidSetting.id}`,
+            smsAndroidSetting,
+        )
     },
-    create (smsAndroidSetting) {
+    create(smsAndroidSetting) {
         return Client.post(`${resource}`, smsAndroidSetting)
     },
-    delete (smsAndroidSettingId) {
+    delete(smsAndroidSettingId) {
         return Client.delete(`${resource}/${smsAndroidSettingId}`)
-    }
+    },
 }

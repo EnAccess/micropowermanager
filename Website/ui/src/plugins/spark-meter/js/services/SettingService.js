@@ -4,8 +4,7 @@ import { SyncSettingService } from './SyncSettingService'
 import { SmsSettingService } from './SmsSettingService'
 
 export class SettingService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('setting')
         this.syncSettingsService = new SyncSettingService()
         this.smsSettingsService = new SmsSettingService()
@@ -14,17 +13,16 @@ export class SettingService {
             id: null,
             settingTypeName: null,
             settingTypeId: null,
-            settingType: {}
+            settingType: {},
         }
     }
 
-    fromJson (settingData) {
-
+    fromJson(settingData) {
         let setting = {
             id: settingData.id,
             settingTypeName: settingData.setting_type,
             settingTypeId: settingData.setting_id,
-            settingType: {}
+            settingType: {},
         }
 
         if (settingData.setting_type === 'spark_sync_setting') {
@@ -33,29 +31,29 @@ export class SettingService {
                 actionName: settingData.setting_sync.action_name,
                 syncInValueStr: settingData.setting_sync.sync_in_value_str,
                 syncInValueNum: settingData.setting_sync.sync_in_value_num,
-                maxAttempts: settingData.setting_sync.max_attempts
+                maxAttempts: settingData.setting_sync.max_attempts,
             }
         } else {
             setting.settingType = {
                 id: settingData.setting_sms.id,
                 enabled: settingData.setting_sms.enabled > 0,
                 state: settingData.setting_sms.state,
-                NotSendElderThanMins: settingData.setting_sms.not_send_elder_than_mins
+                NotSendElderThanMins:
+                    settingData.setting_sms.not_send_elder_than_mins,
             }
         }
         return setting
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let s in data) {
             let setting = this.fromJson(data[s])
             this.list.push(setting)
         }
-
     }
 
-    async getSettings () {
+    async getSettings() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -69,18 +67,26 @@ export class SettingService {
         }
     }
 
-    async updateSyncSettings () {
+    async updateSyncSettings() {
         try {
-            await this.syncSettingsService.updateSyncSettings(this.list.filter(x => x.settingTypeName === 'spark_sync_setting'))
+            await this.syncSettingsService.updateSyncSettings(
+                this.list.filter(
+                    (x) => x.settingTypeName === 'spark_sync_setting',
+                ),
+            )
         } catch (e) {
             let errorMessage = e.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    async updateSmsSettings () {
+    async updateSmsSettings() {
         try {
-            await this.smsSettingsService.updateSmsSettings(this.list.filter(x => x.settingTypeName === 'spark_sms_setting'))
+            await this.smsSettingsService.updateSmsSettings(
+                this.list.filter(
+                    (x) => x.settingTypeName === 'spark_sms_setting',
+                ),
+            )
         } catch (e) {
             let errorMessage = e.message
             return new ErrorHandler(errorMessage, 'http')

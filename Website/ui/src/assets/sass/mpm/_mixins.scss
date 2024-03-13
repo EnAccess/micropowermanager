@@ -1,8 +1,8 @@
 //Utilities
 
-@import "mixins/transparency";
-@import "mixins/vendor-prefixes";
-@import "mixins/chartist";
+@import 'mixins/transparency';
+@import 'mixins/vendor-prefixes';
+@import 'mixins/chartist';
 
 // Placeholder text
 @mixin material-placeholder() {
@@ -34,7 +34,6 @@
     }
 }
 
-
 @mixin dropdown-colors($variation-color) {
     .dropdown-menu {
         border-radius: $border-radius-base !important;
@@ -65,7 +64,7 @@
     background-color: $color;
     color: $white-color;
     border-radius: $border-radius-base;
-    @include shadow-big-color($color)
+    @include shadow-big-color($color);
 }
 
 @mixin transition($time, $type) {
@@ -117,11 +116,11 @@
 }
 
 @mixin black-filter() {
-    background: rgba(0, 0, 0, .55);
+    background: rgba(0, 0, 0, 0.55);
     position: absolute;
     width: 100%;
     height: 100%;
-    content: "";
+    content: '';
     z-index: 0;
     left: 0;
     top: 0;
@@ -137,12 +136,44 @@
 
 @mixin radial-gradient($extern-color, $center-color) {
     background: $extern-color;
-    background: -moz-radial-gradient(center, ellipse cover, $center-color 0%, $extern-color 100%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, $center-color), color-stop(100%, $extern-color)); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover, $center-color 0%, $extern-color 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover, $center-color 0%, $extern-color 100%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover, $center-color 0%, $extern-color 100%); /* IE10+ */
-    background: radial-gradient(ellipse at center, $center-color 0%, $extern-color 100%); /* W3C */
+    background: -moz-radial-gradient(
+        center,
+        ellipse cover,
+        $center-color 0%,
+        $extern-color 100%
+    ); /* FF3.6+ */
+    background: -webkit-gradient(
+        radial,
+        center center,
+        0px,
+        center center,
+        100%,
+        color-stop(0%, $center-color),
+        color-stop(100%, $extern-color)
+    ); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(
+        center,
+        ellipse cover,
+        $center-color 0%,
+        $extern-color 100%
+    ); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(
+        center,
+        ellipse cover,
+        $center-color 0%,
+        $extern-color 100%
+    ); /* Opera 12+ */
+    background: -ms-radial-gradient(
+        center,
+        ellipse cover,
+        $center-color 0%,
+        $extern-color 100%
+    ); /* IE10+ */
+    background: radial-gradient(
+        ellipse at center,
+        $center-color 0%,
+        $extern-color 100%
+    ); /* W3C */
     background-size: 550% 450%;
 }
 
@@ -198,17 +229,27 @@
 
 @mixin linear-gradient($color1, $color2) {
     background: $color1; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(60deg, $color1, $color2); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(60deg, $color1, $color2); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(60deg, $color1, $color2); /* For Firefox 3.6 to 15 */
+    background: -webkit-linear-gradient(
+        60deg,
+        $color1,
+        $color2
+    ); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(
+        60deg,
+        $color1,
+        $color2
+    ); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(
+        60deg,
+        $color1,
+        $color2
+    ); /* For Firefox 3.6 to 15 */
     background: linear-gradient(60deg, $color1, $color2); /* Standard syntax */
 }
-
 
 // Mixins for buttons
 
 @mixin btn-styles($btn-color) {
-
     // remove this line if you want black shadows
     @include shadow-2dp-color($btn-color);
 
@@ -254,7 +295,7 @@
         &.focus,
         &:active,
         &.active {
-            opacity: .65;
+            opacity: 0.65;
             pointer-events: none;
         }
     }
@@ -278,7 +319,6 @@
             }
         }
     }
-
 }
 
 @mixin set-background-color-button($color) {

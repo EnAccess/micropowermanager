@@ -2,14 +2,15 @@ import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MiniGridDeviceService {
-    constructor () {
+    constructor() {
         this.repository = new Repository.get('miniGridDevice')
         this.list = []
     }
 
-    async getMiniGridDevices (miniGridId) {
+    async getMiniGridDevices(miniGridId) {
         try {
-            const { data, status, error} = await this.repository.list(miniGridId)
+            const { data, status, error } =
+                await this.repository.list(miniGridId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             this.list = data.data
 
@@ -19,5 +20,4 @@ export class MiniGridDeviceService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

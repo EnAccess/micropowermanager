@@ -1,41 +1,55 @@
 <template>
     <widget
-            :hidden="!showAdd"
-            :id="'new-connection-type'"
-            :title="$tc('phrases.newConnectionType')"
-            color="red"
+        :hidden="!showAdd"
+        :id="'new-connection-type'"
+        :title="$tc('phrases.newConnectionType')"
+        color="red"
     >
         <md-card>
             <md-card-content>
                 <form ref="connectionTypeForm">
                     <div class="md-layout md-gutter">
                         <div class="md-layout-item">
-                            <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
-                                <label for="name">{{ $tc('words.name') }}</label>
+                            <md-field
+                                :class="{
+                                    'md-invalid': errors.has($tc('words.name')),
+                                }"
+                            >
+                                <label for="name">
+                                    {{ $tc('words.name') }}
+                                </label>
                                 <md-input
-                                        id="name"
-                                        :name="$tc('words.name')"
-                                        v-model="connectionTypeService.connectionType.name"
-                                        v-validate="'required|min:3'"
+                                    id="name"
+                                    :name="$tc('words.name')"
+                                    v-model="
+                                        connectionTypeService.connectionType
+                                            .name
+                                    "
+                                    v-validate="'required|min:3'"
                                 />
-                                <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
+                                <span class="md-error">
+                                    {{ errors.first($tc('words.name')) }}
+                                </span>
                             </md-field>
-
                         </div>
                     </div>
                 </form>
-
             </md-card-content>
 
             <md-card-actions>
-                <md-button role="button" class="md-raised md-primary" @click="store">{{ $tc('words.save') }}
+                <md-button
+                    role="button"
+                    class="md-raised md-primary"
+                    @click="store"
+                >
+                    {{ $tc('words.save') }}
                 </md-button>
-                <md-button role="button" class="md-raised" @click="hide">{{ $tc('words.close') }}</md-button>
+                <md-button role="button" class="md-raised" @click="hide">
+                    {{ $tc('words.close') }}
+                </md-button>
             </md-card-actions>
         </md-card>
     </widget>
-
-
 </template>
 
 <script>
@@ -46,62 +60,62 @@ import { EventBus } from '@/shared/eventbus'
 export default {
     name: 'NewConnectionType',
     components: { Widget },
-    data () {
+    data() {
         return {
             connectionTypeService: new ConnectionTypeService(),
 
             showAdd: false,
         }
     },
-    mounted () {
+    mounted() {
         EventBus.$on('showNewConnectionType', this.show)
     },
     methods: {
-        async store () {
+        async store() {
             let validator = await this.$validator.validateAll()
             if (!validator) {
-
                 return
             }
             this.hide()
             try {
                 await this.connectionTypeService.createConnectionType()
-                this.alertNotify('success', this.$tc('phrases.newConnectionType', 2))
+                this.alertNotify(
+                    'success',
+                    this.$tc('phrases.newConnectionType', 2),
+                )
                 this.$refs['connectionTypeForm'].reset()
                 EventBus.$emit('connectionTypeAdded', this.connectionType)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
-
         },
-        hide () {
+        hide() {
             this.showAdd = false
         },
-        show () {
+        show() {
             this.showAdd = true
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
     },
     watch: {
-        showAdd (value) {
+        showAdd(value) {
             if (value) {
                 this.errors.clear()
             }
-
-        }
-    }
+        },
+    },
 }
 </script>
 
 <style scoped>
-    .full-width {
-        width: 100% !important;
-    }
+.full-width {
+    width: 100% !important;
+}
 </style>

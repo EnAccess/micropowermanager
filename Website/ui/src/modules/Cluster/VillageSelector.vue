@@ -1,13 +1,15 @@
 <template>
     <ul class="list-group">
-        <li class="list-group-item city-list"
-            v-for="city in cities" :key="city.id"
-            :class="isCitySelected(city)?'active' :''"
-            @click="selectCity(city)">
+        <li
+            class="list-group-item city-list"
+            v-for="city in cities"
+            :key="city.id"
+            :class="isCitySelected(city) ? 'active' : ''"
+            @click="selectCity(city)"
+        >
+            <input type="checkbox" :checked="isCitySelected(city)" />
 
-            <input type="checkbox" :checked="isCitySelected(city)">
-
-            {{city.name}}
+            {{ city.name }}
         </li>
     </ul>
 </template>
@@ -15,43 +17,44 @@
 <script>
 export default {
     name: 'VillageSelector',
-    mounted () {
+    mounted() {
         this.getCityList()
     },
 
-    data () {
+    data() {
         return {
             cities: null,
             selectedCitites: [],
         }
     },
     methods: {
-        getCityList () {
-            axios.get(resources.city.list)
-                .then((response) => {
-                    this.cities = response.data.data
-                })
+        getCityList() {
+            axios.get(resources.city.list).then((response) => {
+                this.cities = response.data.data
+            })
         },
-        selectCity (city) {
+        selectCity(city) {
             if (!this.isCitySelected(city)) {
                 this.selectedCitites.push(city)
             } else {
-                this.selectedCitites = this.selectedCitites.filter((c) => c.id !== city.id)
+                this.selectedCitites = this.selectedCitites.filter(
+                    (c) => c.id !== city.id,
+                )
             }
             this.$emit('citySelected', this.selectedCitites)
         },
-        isCitySelected (city) {
-            let citySearch = this.selectedCitites.filter((c) => c.id === city.id)
+        isCitySelected(city) {
+            let citySearch = this.selectedCitites.filter(
+                (c) => c.id === city.id,
+            )
             return citySearch.length === 1
-        }
-
-    }
-
+        },
+    },
 }
 </script>
 
 <style scoped>
-    .city-list {
-        cursor: pointer;
-    }
+.city-list {
+    cursor: pointer;
+}
 </style>

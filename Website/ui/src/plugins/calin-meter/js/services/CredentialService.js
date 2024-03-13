@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class CredentialService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('credential')
         this.credential = {
             id: null,
@@ -10,7 +10,7 @@ export class CredentialService {
             apiKey: null,
         }
     }
-    fromJson (credentialData) {
+    fromJson(credentialData) {
         this.credential = {
             id: credentialData.id,
             userId: credentialData.user_id,
@@ -18,7 +18,7 @@ export class CredentialService {
         }
         return this.credential
     }
-    async getCredential () {
+    async getCredential() {
         try {
             let response = await this.repository.get()
             if (response.status === 200) {
@@ -31,17 +31,15 @@ export class CredentialService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async updateCredential () {
+    async updateCredential() {
         try {
             let credentialPM = {
                 id: this.credential.id,
                 user_id: this.credential.userId,
                 api_key: this.credential.apiKey,
-
             }
             let response = await this.repository.put(credentialPM)
             if (response.status === 200 || response.status === 201) {
-
                 return this.fromJson(response.data.data)
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -51,5 +49,4 @@ export class CredentialService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

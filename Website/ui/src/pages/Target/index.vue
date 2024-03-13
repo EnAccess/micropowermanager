@@ -1,5 +1,5 @@
 <template>
-    <TargetList/>
+    <TargetList />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import TargetList from '@/modules/Target/TargetList'
 
 export default {
     name: 'TargetsPage',
-    components: { TargetList }
+    components: { TargetList },
 }
 </script>

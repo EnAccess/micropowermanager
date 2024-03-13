@@ -6,4 +6,4 @@ function translateItem(name) {
     }
 }
 
-export {translateItem}
+export { translateItem }

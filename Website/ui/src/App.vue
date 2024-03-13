@@ -1,17 +1,19 @@
 <template>
-  <div>
-      <component :is="layout">
-      <router-view/>
-      <notifications group="notify" position="bottom right" ></notifications>
-
-    </component>
-  </div>
+    <div>
+        <component :is="layout">
+            <router-view />
+            <notifications
+                group="notify"
+                position="bottom right"
+            ></notifications>
+        </component>
+    </div>
 </template>
 
 <script>
 const defaultLayout = 'default'
 export default {
-    name:'App.vue',
+    name: 'App.vue',
     computed: {
         layout() {
             if (this.$route.meta.layout === defaultLayout) {
@@ -19,7 +21,7 @@ export default {
             }
 
             return 'div'
-        }
+        },
     },
 }
 </script>
@@ -31,5 +33,4 @@ export default {
 .md-content.md-tabs-content.md-theme-default {
     height: 100% !important;
 }
-
 </style>

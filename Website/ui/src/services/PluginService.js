@@ -2,17 +2,17 @@ import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class PluginService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('plugin')
         this.list = []
     }
 
-    async getPlugins () {
+    async getPlugins() {
         try {
             this.list = []
             let response = await this.repository.list()
             if (response.status === 200 || response.status === 201) {
-                this.list  = response.data.data
+                this.list = response.data.data
 
                 return this.list
             } else {
@@ -22,9 +22,8 @@ export class PluginService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
-    async updatePlugin (plugin) {
+    async updatePlugin(plugin) {
         try {
             let mpmPluginId = plugin.id
             let response = await this.repository.update(mpmPluginId, plugin)

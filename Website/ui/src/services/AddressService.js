@@ -1,11 +1,9 @@
-import {Paginator} from '@/classes/paginator'
-import {resources} from '@/resources'
+import { Paginator } from '@/classes/paginator'
+import { resources } from '@/resources'
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class Address {
-
-
     fromJson(data) {
         let item = data
         this.id = item.id
@@ -25,7 +23,9 @@ export class Addresses {
         this.repository = RepositoryFactory.get('address')
         this.list = []
         this.personId = personId
-        this.paginator = new Paginator(resources.person.addresses + personId + '/addresses')
+        this.paginator = new Paginator(
+            resources.person.addresses + personId + '/addresses',
+        )
     }
 
     appendList(data) {
@@ -41,32 +41,37 @@ export class Addresses {
             let address = new Address()
             address.fromJson(data[t])
             this.list.push(address)
-
         }
     }
 
-    async updateAddress(newAddress){
+    async updateAddress(newAddress) {
         try {
-            let response = await this.repository.update(newAddress,this.personId)
-            if(response.status === 200 || response.status === 201){
+            let response = await this.repository.update(
+                newAddress,
+                this.personId,
+            )
+            if (response.status === 200 || response.status === 201) {
                 return response
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
-    async newAddress(newAddress){
+    async newAddress(newAddress) {
         try {
-            let response = await this.repository.create(newAddress,this.personId)
-            if(response.status === 200 || response.status === 201){
+            let response = await this.repository.create(
+                newAddress,
+                this.personId,
+            )
+            if (response.status === 200 || response.status === 201) {
                 return response
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             let erorMessage = e.response.data.data.message
             return new ErrorHandler(erorMessage, 'http')
         }

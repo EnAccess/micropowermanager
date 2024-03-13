@@ -1,22 +1,34 @@
 <template>
     <div>
-        <add-asset-type :addNewAssetType="addNewAssetType"/>
+        <add-asset-type :addNewAssetType="addNewAssetType" />
         <widget
-            :title="$tc('phrases.applianceType',1)"
+            :title="$tc('phrases.applianceType', 1)"
             :subscriber="subscriber"
             :route_name="'/assets'"
             color="green"
-            :reset-key="resetKey">
+            :reset-key="resetKey"
+        >
             <md-table>
                 <md-table-row>
-                    <md-table-head v-for="(item, index) in headers" :key="index">{{ item }}</md-table-head>
+                    <md-table-head
+                        v-for="(item, index) in headers"
+                        :key="index"
+                    >
+                        {{ item }}
+                    </md-table-head>
                 </md-table-row>
 
-                <md-table-row v-for="(assetType,index) in assetTypeService.list" :key="index">
-
+                <md-table-row
+                    v-for="(assetType, index) in assetTypeService.list"
+                    :key="index"
+                >
                     <md-table-cell>
                         <div class="md-layout" v-if="updateAppliance === index">
-                            <md-field :class="{'md-invalid': errors.has('Appliance Name')}">
+                            <md-field
+                                :class="{
+                                    'md-invalid': errors.has('Appliance Name'),
+                                }"
+                            >
                                 <label for="applianceName"></label>
                                 <md-input
                                     name="Appliance Name"
@@ -24,7 +36,9 @@
                                     v-model="assetType.name"
                                     v-validate="'required|min:5'"
                                 ></md-input>
-                                <span class="md-error">{{ errors.first('Appliance Name') }}</span>
+                                <span class="md-error">
+                                    {{ errors.first('Appliance Name') }}
+                                </span>
                             </md-field>
                         </div>
                         <div class="md-layout-item" v-else>
@@ -33,26 +47,23 @@
                     </md-table-cell>
 
                     <md-table-cell>{{ assetType.updatedAt }}</md-table-cell>
-
                 </md-table-row>
-
             </md-table>
         </widget>
     </div>
-
 </template>
 
 <script>
 import Widget from '../../shared/widget'
 import AddAssetType from './AddAssetType'
-import {EventBus} from '@/shared/eventbus'
-import {AssetTypeService} from '@/services/AssetTypeService'
+import { EventBus } from '@/shared/eventbus'
+import { AssetTypeService } from '@/services/AssetTypeService'
 
 export default {
     name: 'AssetTypeList',
-    components: {Widget, AddAssetType},
+    components: { Widget, AddAssetType },
 
-    data () {
+    data() {
         return {
             addNewAssetType: false,
             subscriber: 'assetTypeList',
@@ -64,7 +75,7 @@ export default {
             currency: this.$store.getters['settings/getMainSettings'].currency,
         }
     },
-    mounted () {
+    mounted() {
         this.getAssetTypes()
         EventBus.$on('AssetTypeAdded', () => {
             this.addNewAssetType = false
@@ -76,11 +87,11 @@ export default {
         })
     },
     methods: {
-        showAddAssetType () {
+        showAddAssetType() {
             this.addNewAssetType = true
         },
 
-        addToList (assetType) {
+        addToList(assetType) {
             let assetTypeItem = {
                 id: assetType.id,
                 name: assetType.name,
@@ -88,12 +99,16 @@ export default {
             }
             this.assetTypeService.list.push(assetTypeItem)
         },
-        async getAssetTypes () {
+        async getAssetTypes() {
             await this.assetTypeService.getAssetsTypes()
             this.loading = false
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.assetTypeService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.assetTypeService.list.length,
+            )
         },
-        async updateAssetType (assetType) {
+        async updateAssetType(assetType) {
             let validator = await this.$validator.validateAll()
             if (!validator) {
                 return
@@ -105,13 +120,16 @@ export default {
                 text: 'Are you sure to update the asset type ?',
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.cancel'),
-                confirmButtonText: this.$tc('words.update')
-            }).then(async response => {
+                confirmButtonText: this.$tc('words.update'),
+            }).then(async (response) => {
                 if (response.value) {
                     this.updateAppliance = false
                     try {
                         await this.assetTypeService.updateAssetType(assetType)
-                        this.alertNotify('success', 'Appliance Type Updated Successfully.')
+                        this.alertNotify(
+                            'success',
+                            'Appliance Type Updated Successfully.',
+                        )
                         this.resetKey++
                     } catch (e) {
                         this.alertNotify('error', e.message)
@@ -119,23 +137,25 @@ export default {
                 }
             })
             this.loading = false
-
         },
-        async deleteAssetType (assetType) {
+        async deleteAssetType(assetType) {
             this.$swal({
                 type: 'question',
                 title: this.$tc('phrases.deleteAssetType', 0),
                 text: this.$tc('phrases.deleteAssetType', 2),
                 showCancelButton: true,
                 cancelButtonText: this.$tc('words.cancel'),
-                confirmButtonText: this.$tc('words.delete')
-            }).then(async response => {
+                confirmButtonText: this.$tc('words.delete'),
+            }).then(async (response) => {
                 if (response.value) {
                     try {
                         this.loading = true
                         await this.assetTypeService.deleteAssetType(assetType)
                         this.loading = false
-                        this.alertNotify('success', this.$tc('phrases.deleteAssetType', 1))
+                        this.alertNotify(
+                            'success',
+                            this.$tc('phrases.deleteAssetType', 1),
+                        )
                         await this.getAssetTypes()
                         this.resetKey++
                     } catch (e) {
@@ -143,37 +163,31 @@ export default {
                         this.alertNotify('error', e.message)
                     }
                 }
-
             })
-
         },
-        openApplianceUpdate (index) {
-
+        openApplianceUpdate(index) {
             if (this.updateAppliance === index) {
                 this.updateAppliance = null
             } else {
                 this.updateAppliance = index
             }
         },
-        closeApplianceUpdate () {
+        closeApplianceUpdate() {
             this.updateAppliance = null
         },
-        closeAddComponent (data) {
+        closeAddComponent(data) {
             this.addNewAssetType = data
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

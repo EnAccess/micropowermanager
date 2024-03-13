@@ -13,53 +13,72 @@ export const exportedRoutes = [
     {
         path: '/welcome',
         name: 'welcome',
-        components: { default: Welcome, header: LoginHeader, footer: LoginFooter },
-        props: {
-            header: { colorOnScroll: 400 }
+        components: {
+            default: Welcome,
+            header: LoginHeader,
+            footer: LoginFooter,
         },
-        meta: { requireAuth: false }
+        props: {
+            header: { colorOnScroll: 400 },
+        },
+        meta: { requireAuth: false },
     },
     {
         path: '/login',
         name: 'login',
-        components: { default: Login, header: LoginHeader, footer: LoginFooter },
-        props: {
-            header: { colorOnScroll: 400 }
+        components: {
+            default: Login,
+            header: LoginHeader,
+            footer: LoginFooter,
         },
-        meta: { requireAuth: false }
+        props: {
+            header: { colorOnScroll: 400 },
+        },
+        meta: { requireAuth: false },
     },
     {
         path: '/register',
         name: 'register',
-        components: { default: Register, header: LoginHeader, footer: LoginFooter },
-        props: {
-            header: { colorOnScroll: 400 }
+        components: {
+            default: Register,
+            header: LoginHeader,
+            footer: LoginFooter,
         },
-        meta: { requireAuth: false }
+        props: {
+            header: { colorOnScroll: 400 },
+        },
+        meta: { requireAuth: false },
     },
     {
-
         path: '/forgot-password',
         name: 'forgot-password',
-        components: { default: ForgotPassword, header: LoginHeader, footer: LoginFooter },
+        components: {
+            default: ForgotPassword,
+            header: LoginHeader,
+            footer: LoginFooter,
+        },
 
-        meta: { requireAuth: false }
+        meta: { requireAuth: false },
     },
     {
         path: '/',
         component: require('./pages/Dashboard/index.vue').default,
         name: 'cluster-list-dashboard',
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Clusters', link: '/' },
+            layout: 'default',
+            breadcrumb: { level: 'base', name: 'Clusters', link: '/' },
         },
     },
     {
         path: '/dashboards/mini-grid/',
         component: require('./pages/Dashboard/MiniGrid/index.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Mini-Grids', link: '/dashboards/mini-grid' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'base',
+                name: 'Mini-Grids',
+                link: '/dashboards/mini-grid',
+            },
         },
     },
 
@@ -67,8 +86,13 @@ export const exportedRoutes = [
         path: '/dashboards/mini-grid/:id',
         component: require('./pages/Dashboard/MiniGrid/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Mini-Grid', link: '/dashboards/mini-grid', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Mini-Grid',
+                link: '/dashboards/mini-grid',
+                target: 'id',
+            },
         },
     },
     {
@@ -80,24 +104,33 @@ export const exportedRoutes = [
         path: '/people',
         component: require('./pages/Client/index.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Customers', link: '/people' },
+            layout: 'default',
+            breadcrumb: { level: 'base', name: 'Customers', link: '/people' },
         },
     },
     {
         path: '/people/:id',
         component: require('./pages/Client/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Customers', link: '/people', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Customers',
+                link: '/people',
+                target: 'id',
+            },
         },
     },
     {
         path: '/transactions',
         component: require('./pages/Transaction/index.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Transactions', link: '/transactions' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'base',
+                name: 'Transactions',
+                link: '/transactions',
+            },
         },
     },
     {
@@ -110,8 +143,13 @@ export const exportedRoutes = [
         path: '/transactions/:id',
         component: require('./pages/Transaction/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Transactions', link: '/transactions', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Transactions',
+                link: '/transactions',
+                target: 'id',
+            },
         },
     },
     {
@@ -133,35 +171,43 @@ export const exportedRoutes = [
         path: '/tariffs',
         component: require('./pages/Tariff/index.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Tariffs', link: '/tariffs' },
+            layout: 'default',
+            breadcrumb: { level: 'base', name: 'Tariffs', link: '/tariffs' },
         },
     },
     {
         path: '/tariffs/:id',
         component: require('./pages/Tariff/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Tariffs', link: '/tariffs', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Tariffs',
+                link: '/tariffs',
+                target: 'id',
+            },
         },
     },
     {
         path: '/meters',
         component: require('./pages/Meter/index.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Meters', link: '/meters' },
+            layout: 'default',
+            breadcrumb: { level: 'base', name: 'Meters', link: '/meters' },
         },
-
     },
     {
         path: '/meters/:id',
         component: require('./pages/Meter/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Meters', link: '/meters', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Meters',
+                link: '/meters',
+                target: 'id',
+            },
         },
-
     },
     {
         path: '/meters/types',
@@ -178,8 +224,8 @@ export const exportedRoutes = [
         component: require('./pages/Dashboard/index.vue').default,
         name: 'cluster-list',
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Clusters', link: '/clusters' }
+            layout: 'default',
+            breadcrumb: { level: 'base', name: 'Clusters', link: '/clusters' },
         },
     },
     {
@@ -193,8 +239,13 @@ export const exportedRoutes = [
         component: require('./pages/Dashboard/Cluster/_id.vue').default,
         name: 'cluster-detail',
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Clusters', link: '/clusters', target: 'id' }
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Clusters',
+                link: '/clusters',
+                target: 'id',
+            },
         },
     },
     {
@@ -214,8 +265,12 @@ export const exportedRoutes = [
         component: require('./pages/Connection/Type/index.vue').default,
         name: 'connection-types',
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Connection Types', link: '/connection-types' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'base',
+                name: 'Connection Types',
+                link: '/connection-types',
+            },
         },
     },
     {
@@ -223,9 +278,14 @@ export const exportedRoutes = [
         component: require('./pages/Connection/Type/_id.vue').default,
         name: 'connection-type-detail',
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'detail', name: 'Connection Types', link: '/connection-types', target: 'id' },
-        }
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Connection Types',
+                link: '/connection-types',
+                target: 'id',
+            },
+        },
     },
     {
         path: '/connection-types/new',
@@ -267,7 +327,7 @@ export const exportedRoutes = [
         path: '/locations/add-mini-grid',
         component: require('./pages/Location/MiniGrid/New/index.vue').default,
         name: 'add-mini-grid',
-        meta: { layout: 'default' }
+        meta: { layout: 'default' },
     },
     {
         path: '/assets',
@@ -299,8 +359,13 @@ export const exportedRoutes = [
         path: '/agents/:id',
         component: require('./pages/Agent/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb:
-                { level: 'base', name: 'Agents', link: '/agents', target: 'id' },
+            layout: 'default',
+            breadcrumb: {
+                level: 'base',
+                name: 'Agents',
+                link: '/agents',
+                target: 'id',
+            },
         },
     },
     {
@@ -312,150 +377,194 @@ export const exportedRoutes = [
         path: '/sold-appliance-detail/:id',
         component: require('./pages/Client/Appliance/_id.vue').default,
         meta: {
-            layout: 'default', breadcrumb: {
-                level: 'detail', name: 'Sold Appliance Detail', link: '/sold-appliance-detail', target: 'id'
-            }
-        }
+            layout: 'default',
+            breadcrumb: {
+                level: 'detail',
+                name: 'Sold Appliance Detail',
+                link: '/sold-appliance-detail',
+                target: 'id',
+            },
+        },
     },
     {
         path: '/calin-meters/calin-overview',
-        component: require('./plugins/calin-meter/js/modules/Overview/Overview').default,
+        component: require('./plugins/calin-meter/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/calin-smart-meters/calin-smart-overview',
-        component: require('./plugins/calin-smart-meter/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/calin-smart-meter/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-overview',
-        component: require('./plugins/kelin-meter/js/modules/Overview/Overview').default,
+        component: require('./plugins/kelin-meter/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-customer',
-        component: require('./plugins/kelin-meter/js/modules/Customer/List').default,
+        component: require('./plugins/kelin-meter/js/modules/Customer/List')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-meter',
-        component: require('./plugins/kelin-meter/js/modules/Meter/List').default,
+        component: require('./plugins/kelin-meter/js/modules/Meter/List')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-meter/status/:meter',
-        component: require('./plugins/kelin-meter/js/modules/Meter/Status').default,
+        component: require('./plugins/kelin-meter/js/modules/Meter/Status')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-meter/daily-consumptions/:meter',
-        component: require('./plugins/kelin-meter/js/modules/Meter/Consumption/Daily').default,
+        component:
+            require('./plugins/kelin-meter/js/modules/Meter/Consumption/Daily')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-meter/minutely-consumptions/:meter',
-        component: require('./plugins/kelin-meter/js/modules/Meter/Consumption/Minutely').default,
+        component:
+            require('./plugins/kelin-meter/js/modules/Meter/Consumption/Minutely')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/kelin-meters/kelin-setting',
-        component: require('./plugins/kelin-meter/js/modules/Setting/Setting').default,
+        component: require('./plugins/kelin-meter/js/modules/Setting/Setting')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-site',
-        component: require('./plugins/spark-meter/js/modules/Site/SiteList').default,
+        component: require('./plugins/spark-meter/js/modules/Site/SiteList')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-meter-model',
-        component: require('./plugins/spark-meter/js/modules/MeterModel/MeterModelList').default,
+        component:
+            require('./plugins/spark-meter/js/modules/MeterModel/MeterModelList')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-customer',
-        component: require('./plugins/spark-meter/js/modules/Customer/CustomerList').default,
+        component:
+            require('./plugins/spark-meter/js/modules/Customer/CustomerList')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-tariff',
-        component: require('./plugins/spark-meter/js/modules/Tariff/TariffList').default,
+        component: require('./plugins/spark-meter/js/modules/Tariff/TariffList')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-tariff/:id',
-        component: require('./plugins/spark-meter/js/modules/Tariff/TariffDetail').default,
+        component:
+            require('./plugins/spark-meter/js/modules/Tariff/TariffDetail')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-overview',
-        component: require('./plugins/spark-meter/js/modules/Overview/Overview').default,
+        component: require('./plugins/spark-meter/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-sales-account',
-        component: require('./plugins/spark-meter/js/modules/SalesAccount/SalesAccountList').default,
+        component:
+            require('./plugins/spark-meter/js/modules/SalesAccount/SalesAccountList')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/spark-meters/sm-setting',
-        component: require('./plugins/spark-meter/js/modules/Setting/Setting').default,
+        component: require('./plugins/spark-meter/js/modules/Setting/Setting')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-overview',
-        component: require('./plugins/steama-meter/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/steama-meter/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-site',
-        component: require('./plugins/steama-meter/js/modules/Site/SiteList').default,
+        component: require('./plugins/steama-meter/js/modules/Site/SiteList')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-customer',
-        component: require('./plugins/steama-meter/js/modules/Customer/CustomerList').default,
+        component:
+            require('./plugins/steama-meter/js/modules/Customer/CustomerList')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-transaction/:customer_id',
-        component: require('./plugins/steama-meter/js/modules/Customer/CustomerMovements').default,
+        component:
+            require('./plugins/steama-meter/js/modules/Customer/CustomerMovements')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-meter',
-        component: require('./plugins/steama-meter/js/modules/Meter/MeterList').default,
+        component: require('./plugins/steama-meter/js/modules/Meter/MeterList')
+            .default,
         meta: { layout: 'default' },
     },
 
     {
         path: '/steama-meters/steama-agent',
-        component: require('./plugins/steama-meter/js/modules/Agent/AgentList').default,
+        component: require('./plugins/steama-meter/js/modules/Agent/AgentList')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/steama-meters/steama-setting',
-        component: require('./plugins/steama-meter/js/modules/Setting/Setting').default,
+        component: require('./plugins/steama-meter/js/modules/Setting/Setting')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/stron-meters/stron-overview',
-        component: require('./plugins/stron-meter/js/modules/Overview/Overview').default,
+        component: require('./plugins/stron-meter/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/bulk-registration/bulk-registration',
-        component: require('./plugins/bulk-registration/js/modules/Csv').default,
+        component: require('./plugins/bulk-registration/js/modules/Csv')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/viber-messaging/viber-overview',
-        component: require('./plugins/viber-messaging/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/viber-messaging/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/wave-money/wave-money-overview',
-        component: require('./plugins/wave-money-payment-provider/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/wave-money-payment-provider/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
@@ -463,42 +572,52 @@ export const exportedRoutes = [
         modules: { default: Payment, header: LoginHeader, footer: LoginFooter },
         name: '/wave-money/payment',
         props: {
-            header: { colorOnScroll: 400 }
+            header: { colorOnScroll: 400 },
         },
-        meta: { requireAuth: false }
+        meta: { requireAuth: false },
     },
     {
         path: '/wave-money/result/:name/:id',
         name: '/wave-money/result',
         modules: { default: Result, header: LoginHeader, footer: LoginFooter },
         props: {
-            header: { colorOnScroll: 400 }
+            header: { colorOnScroll: 400 },
         },
-        meta: { requireAuth: false }
+        meta: { requireAuth: false },
     },
     {
         path: '/micro-star-meters/micro-star-overview',
-        component: require('./plugins/micro-star-meter/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/micro-star-meter/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/swifta-payment/swifta-payment-overview',
-        component: require('./plugins/swifta-payment-provider/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/swifta-payment-provider/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/sun-king-shs/sun-king-overview',
-        component: require('./plugins/sun-king-shs/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/sun-king-shs/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/gome-long-meters/gome-long-overview',
-        component: require('./plugins/gome-long-meter/js/modules/Overview/Overview').default,
+        component:
+            require('./plugins/gome-long-meter/js/modules/Overview/Overview')
+                .default,
         meta: { layout: 'default' },
     },
     {
         path: '/wavecom/transactions',
-        component: require('@/plugins/wavecom-payment-provider/js/modules/Component.vue').default,
+        component:
+            require('@/plugins/wavecom-payment-provider/js/modules/Component.vue')
+                .default,
         meta: { layout: 'default' },
     },
     {
@@ -508,12 +627,14 @@ export const exportedRoutes = [
     },
     {
         path: '/daly-bms/daly-bms-overview',
-        component: require('./plugins/daly-bms/js/modules/Overview/Overview').default,
+        component: require('./plugins/daly-bms/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
     {
         path: '/angaza-shs/angaza-overview',
-        component: require('./plugins/angaza-shs/js/modules/Overview/Overview').default,
+        component: require('./plugins/angaza-shs/js/modules/Overview/Overview')
+            .default,
         meta: { layout: 'default' },
     },
 ]

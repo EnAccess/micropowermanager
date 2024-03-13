@@ -4,7 +4,7 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/device-addresses`
 
 export default {
-    update (params) {
+    update(params) {
         return Client.post(`${resource}`, params)
-    }
+    },
 }

@@ -1,5 +1,5 @@
 <template>
-    <NewTarget/>
+    <NewTarget />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import NewTarget from '@/modules/Target/NewTarget.vue'
 
 export default {
     name: 'NewTargetPage',
-    components: { NewTarget }
+    components: { NewTarget },
 }
 </script>

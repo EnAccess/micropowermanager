@@ -4,7 +4,7 @@ import { Paginator } from '@/classes/paginator'
 import { resources } from '@/resources'
 
 export class ConnectionTypeService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('connectionTypes')
         this.connectionTypes = []
         this.target = {
@@ -12,19 +12,19 @@ export class ConnectionTypeService {
             totalRevenue: 0,
             connectedPower: 0,
             energyPerMonth: 0,
-            averageRevenuePerMonth: 0
+            averageRevenuePerMonth: 0,
         }
         this.connectionType = {
             id: null,
             name: null,
-            target: this.target
+            target: this.target,
         }
         this.paginator = new Paginator(resources.connections.store)
         this.list = []
     }
 
-    updateList (data) {
-        this.connectionTypes = data.map(connection => {
+    updateList(data) {
+        this.connectionTypes = data.map((connection) => {
             return {
                 id: connection.id,
                 name: connection.name,
@@ -33,13 +33,14 @@ export class ConnectionTypeService {
             }
         })
         return this.connectionTypes
-
     }
 
-    async updateConnectionType (connectionType) {
+    async updateConnectionType(connectionType) {
         try {
-            const { data, status, error } = await this.repository.update(connectionType)
-            if (!status === 200 && !status === 201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } =
+                await this.repository.update(connectionType)
+            if (!status === 200 && !status === 201)
+                return new ErrorHandler(error, 'http', status)
             return data.data
         } catch (e) {
             const errorMessage = e.response.data.data.message
@@ -47,7 +48,7 @@ export class ConnectionTypeService {
         }
     }
 
-    async getConnectionTypes () {
+    async getConnectionTypes() {
         try {
             const { data, status, error } = await this.repository.list()
             if (!status === 200) return new ErrorHandler(error, 'http', status)
@@ -60,9 +61,10 @@ export class ConnectionTypeService {
         }
     }
 
-    async getConnectionTypeDetail (connectionTypeId) {
+    async getConnectionTypeDetail(connectionTypeId) {
         try {
-            const { data, status, error } = await this.repository.show(connectionTypeId)
+            const { data, status, error } =
+                await this.repository.show(connectionTypeId)
             if (!status === 200) return new ErrorHandler(error, 'http', status)
             this.connectionType = data.data
             return this.connectionType
@@ -72,13 +74,14 @@ export class ConnectionTypeService {
         }
     }
 
-    async createConnectionType () {
+    async createConnectionType() {
         try {
             const params = {
-                name: this.connectionType.name
+                name: this.connectionType.name,
             }
             const { data, status, error } = await this.repository.create(params)
-            if (!status === 200 && status === 201) return new ErrorHandler(error, 'http', status)
+            if (!status === 200 && status === 201)
+                return new ErrorHandler(error, 'http', status)
             this.resetConnectionType()
             return data.data
         } catch (e) {
@@ -87,12 +90,11 @@ export class ConnectionTypeService {
         }
     }
 
-    resetConnectionType () {
+    resetConnectionType() {
         this.connectionType = {
             id: null,
             name: null,
-            target: this.target
+            target: this.target,
         }
     }
 }
-

@@ -1,7 +1,5 @@
 <template>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
 </template>
 
 <script>
@@ -12,23 +10,26 @@ import { ICON_OPTIONS, ICONS, MARKER_TYPE } from '@/services/MappingService'
 export default {
     name: 'ClusterMap',
     mixins: [sharedMap, notify],
-    mounted () {
+    mounted() {
         const drawingLayer = this.editableLayer
         const service = this.mappingService
         this.map.on('draw:created', (item) => {
             const layer = item.layer
-            const feature = layer.feature = layer.feature || {}
+            const feature = (layer.feature = layer.feature || {})
             feature.type = feature.type || 'Feature'
-            const props = feature.properties = feature.properties || {}
+            const props = (feature.properties = feature.properties || {})
             props.draw_type = 'draw'
             props.selected = false
             drawingLayer.addLayer(layer)
 
-            const { sumLat, sumLon } = layer._latlngs[0].reduce((acc, coordinates) => {
-                acc.sumLat += coordinates.lat
-                acc.sumLon += coordinates.lng
-                return acc
-            }, { sumLat: 0, sumLon: 0 })
+            const { sumLat, sumLon } = layer._latlngs[0].reduce(
+                (acc, coordinates) => {
+                    acc.sumLat += coordinates.lat
+                    acc.sumLon += coordinates.lng
+                    return acc
+                },
+                { sumLat: 0, sumLon: 0 },
+            )
 
             const avgLat = sumLat / layer._latlngs[0].length
             const avgLon = sumLon / layer._latlngs[0].length
@@ -60,11 +61,14 @@ export default {
             const editedItems = []
             const editedLayers = item.layers
             editedLayers.eachLayer((layer) => {
-                const { sumLat, sumLon } = layer._latlngs[0].reduce((acc, coordinates) => {
-                    acc.sumLat += coordinates.lat
-                    acc.sumLon += coordinates.lng
-                    return acc
-                }, { sumLat: 0, sumLon: 0 })
+                const { sumLat, sumLon } = layer._latlngs[0].reduce(
+                    (acc, coordinates) => {
+                        acc.sumLat += coordinates.lat
+                        acc.sumLon += coordinates.lng
+                        return acc
+                    },
+                    { sumLat: 0, sumLon: 0 },
+                )
 
                 const avgLat = sumLat / layer._latlngs[0].length
                 const avgLon = sumLon / layer._latlngs[0].length
@@ -81,43 +85,60 @@ export default {
                     lon: avgLon,
                 })
                 editedItems.push(geoDataItem)
-
             })
             this.$emit('customDrawnEdited', editedItems)
         })
     },
     methods: {
-        drawCluster () {
+        drawCluster() {
             this.editableLayer.clearLayers()
             const geoData = this.mappingService.geoData
             const geoType = geoData.geojson.type
-            const coordinatesClone = geoData.geojson.coordinates[0].reduce((acc, coord) => {
-                acc[0].push([coord[1], coord[0]])
-                return acc
-            }, [[]])
+            const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+                (acc, coord) => {
+                    acc[0].push([coord[1], coord[0]])
+                    return acc
+                },
+                [[]],
+            )
             const drawing = {
                 type: 'FeatureCollection',
                 crs: {
                     type: 'name',
                     properties: {
-                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84'
-                    }
-                },
-                features: [{
-                    type: 'Feature',
-                    properties: {
-                        popupContent: geoData.display_name,
-                        draw_type: geoData.draw_type === undefined ? 'set' : geoData.draw_type,
-                        selected: geoData.selected === undefined ? false : geoData.selected,
-                        clusterId: geoData.clusterId === undefined ? -1 : geoData.clusterId,
+                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84',
                     },
-                    geometry: {
-                        type: geoType,
-                        coordinates: geoData.searched ? geoData.geojson.coordinates : coordinatesClone
-                    }
-                }]
+                },
+                features: [
+                    {
+                        type: 'Feature',
+                        properties: {
+                            popupContent: geoData.display_name,
+                            draw_type:
+                                geoData.draw_type === undefined
+                                    ? 'set'
+                                    : geoData.draw_type,
+                            selected:
+                                geoData.selected === undefined
+                                    ? false
+                                    : geoData.selected,
+                            clusterId:
+                                geoData.clusterId === undefined
+                                    ? -1
+                                    : geoData.clusterId,
+                        },
+                        geometry: {
+                            type: geoType,
+                            coordinates: geoData.searched
+                                ? geoData.geojson.coordinates
+                                : coordinatesClone,
+                        },
+                    },
+                ],
             }
-            const polygonColor = this.mappingService.strToHex(geoData.display_name)
+            const polygonColor = this.mappingService.strToHex(
+                geoData.display_name,
+            )
             // "this"  cannot be used inside the L.geoJson function
             const editableLayer = this.editableLayer
             const geoDataItems = this.geoDataItems
@@ -127,7 +148,11 @@ export default {
                     const type = layer.feature.geometry.type
                     const clusterId = layer.feature.properties.clusterId
                     if (type === 'polygon' && clusterId !== -1) {
-                        layer.on('click', () => { this.$router.push({ path: '/clusters/' + clusterId })})
+                        layer.on('click', () => {
+                            this.$router.push({
+                                path: '/clusters/' + clusterId,
+                            })
+                        })
                     }
                     editableLayer.addLayer(layer)
                     const geoDataItem = {
@@ -135,7 +160,10 @@ export default {
                         type: 'manual',
                         geojson: {
                             type: geoData.geojson.type,
-                            coordinates: geoData.searched === true ? coordinatesClone : geoData.geojson.coordinates
+                            coordinates:
+                                geoData.searched === true
+                                    ? coordinatesClone
+                                    : geoData.geojson.coordinates,
                         },
                         searched: false,
                         display_name: geoData.display_name,
@@ -145,41 +173,59 @@ export default {
                         lon: geoData.lon,
                     }
                     geoDataItems.push(geoDataItem)
-                }
+                },
             })
             const bounds = drawnCluster.getBounds()
             this.map.fitBounds(bounds)
         },
-        setMiniGridMarkers () {
-            const dataLoggerActiveMiniGrids = L.featureGroup.subGroup(this.markersLayer)
-            const dataLoggerInactiveMiniGrids = L.featureGroup.subGroup(this.markersLayer)
+        setMiniGridMarkers() {
+            const dataLoggerActiveMiniGrids = L.featureGroup.subGroup(
+                this.markersLayer,
+            )
+            const dataLoggerInactiveMiniGrids = L.featureGroup.subGroup(
+                this.markersLayer,
+            )
             const control = L.control.layers(null, null, { collapsed: false })
             control.addOverlay(dataLoggerActiveMiniGrids, 'Data Stream Active')
-            control.addOverlay(dataLoggerInactiveMiniGrids, 'Data Stream Inactive')
+            control.addOverlay(
+                dataLoggerInactiveMiniGrids,
+                'Data Stream Inactive',
+            )
             control.addTo(this.map)
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID).map((markingInfo) => {
-                const miniGridMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.MINI_GRID,
+                )
+                .map((markingInfo) => {
+                    const miniGridMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const miniGridMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: miniGridMarkerIcon },
+                    )
+                    miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
+                    const parent = this
+                    miniGridMarker.on('click', function () {
+                        parent.routeToDetail(
+                            '/dashboards/mini-grid',
+                            markingInfo.id,
+                        )
+                    })
+                    if (markingInfo.dataStream > 0) {
+                        miniGridMarker.addTo(dataLoggerActiveMiniGrids)
+                    } else {
+                        miniGridMarker.addTo(dataLoggerInactiveMiniGrids)
+                    }
+                    miniGridMarker.addTo(this.markersLayer)
                 })
-                const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], { icon: miniGridMarkerIcon })
-                miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
-                const parent = this
-                miniGridMarker.on('click', function () {
-                    parent.routeToDetail('/dashboards/mini-grid',markingInfo.id)
-                })
-                if (markingInfo.dataStream > 0) {
-                    miniGridMarker.addTo(dataLoggerActiveMiniGrids)
-                } else {
-                    miniGridMarker.addTo(dataLoggerInactiveMiniGrids)
-                }
-                miniGridMarker.addTo(this.markersLayer)
-            })
             this.map.addLayer(this.markersLayer)
             this.map.addLayer(dataLoggerActiveMiniGrids)
             this.map.addLayer(dataLoggerInactiveMiniGrids)
         },
-    }
+    },
 }
 </script>
 

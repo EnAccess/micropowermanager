@@ -4,8 +4,7 @@ import { baseUrl } from './Client/AxiosClient'
 export const resource = `${baseUrl}/api/protected-pages`
 
 export default {
-
-    list(){
+    list() {
         return Client.get(`${resource}`)
-    }
+    },
 }

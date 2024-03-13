@@ -4,11 +4,10 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/tickets`
 
 export default {
-
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    detail (id) {
+    detail(id) {
         return Client.get(`${resource}/${id}`)
-    }
+    },
 }

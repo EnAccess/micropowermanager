@@ -23,12 +23,11 @@ export class MaintenanceService {
             phone: null,
             city_id: null,
             mini_grid_id: null,
-            sex: 'male'
+            sex: 'male',
         }
-
     }
 
-    async getEmployees () {
+    async getEmployees() {
         try {
             let response = await this.repository.list()
             if (response.status === 200 || response.status === 201) {
@@ -43,7 +42,7 @@ export class MaintenanceService {
         }
     }
 
-    async createMaintenance (personalData) {
+    async createMaintenance(personalData) {
         try {
             let response = await this.repository.create(personalData)
             if (response.status === 200 || response.status === 201) {
@@ -55,16 +54,14 @@ export class MaintenanceService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    setDueDate (date) {
+    setDueDate(date) {
         let formattedDate = moment(date)
         this.maintenanceData.dueDate = formattedDate.format('YYYY-MM-DD')
-
     }
 
-    resetMaintenance () {
+    resetMaintenance() {
         this.maintenanceData = {
             creator: null,
             maintenance: true,
@@ -76,7 +73,7 @@ export class MaintenanceService {
             dueDate: null,
         }
     }
-    resetPersonData(){
+    resetPersonData() {
         this.personData = {
             customer_type: 'maintenance',
             name: null,
@@ -84,7 +81,7 @@ export class MaintenanceService {
             phone: null,
             city_id: null,
             mini_grid_id: null,
-            sex: 'male'
+            sex: 'male',
         }
     }
 }

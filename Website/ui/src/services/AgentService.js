@@ -5,8 +5,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 
 export class AgentService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('agent')
         this.personRepository = Repository.get('person')
         this.list = []
@@ -21,39 +20,38 @@ export class AgentService {
             name: null,
             email: null,
             balance: null,
-            commissionRevenue:null,
-            dueToEnergySupplier:null,
+            commissionRevenue: null,
+            dueToEnergySupplier: null,
             phone: null,
             gender: null,
             birthday: null,
             commissionType: null,
             commissionTypeId: null,
-
         }
         this.paginator = new Paginator(resources.agents.list)
     }
 
-    fromJson (data) {
-        this.agent={
-            id : data.id,
+    fromJson(data) {
+        this.agent = {
+            id: data.id,
             personId: data.person_id,
-            miniGrid : data.mini_grid.name,
-            deviceId : data.device_id,
-            name : data.name,
-            surname : data.person.surname,
-            email : data.email,
-            balance : data.balance,
-            gender : data.person.sex,
-            phone : data.person.addresses[0].phone,
-            birthday : data.person.birth_date,
-            commissionType : data.commission.name,
-            commissionRevenue:data.commission_revenue,
-            commissionTypeId : data.commission.id,
-            dueToEnergySupplier:data.due_to_energy_supplier
+            miniGrid: data.mini_grid.name,
+            deviceId: data.device_id,
+            name: data.name,
+            surname: data.person.surname,
+            email: data.email,
+            balance: data.balance,
+            gender: data.person.sex,
+            phone: data.person.addresses[0].phone,
+            birthday: data.person.birth_date,
+            commissionType: data.commission.name,
+            commissionRevenue: data.commission_revenue,
+            commissionTypeId: data.commission.id,
+            dueToEnergySupplier: data.due_to_energy_supplier,
         }
         return this.agent
     }
-    agentFromJson(data){
+    agentFromJson(data) {
         return {
             id: data.id,
             personId: data.person_id,
@@ -64,36 +62,35 @@ export class AgentService {
             balance: data.balance,
         }
     }
-    updateList (data) {
+    updateList(data) {
         this.list = data.map(this.agentFromJson)
     }
 
-    search (term) {
+    search(term) {
         this.paginator = new Paginator(resources.agents.search)
-        EventBus.$emit('loadPage', this.paginator, { 'term': term })
+        EventBus.$emit('loadPage', this.paginator, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.paginator = new Paginator(resources.agents.list)
         EventBus.$emit('loadPage', this.paginator)
     }
 
-    async createAgent () {
-
+    async createAgent() {
         try {
             let agentPM = {
-                'name': this.agent.name,
-                'surname': this.agent.surname,
-                'is_customer': 0,
-                'nationality': this.agent.nationality,
-                'city_id': this.agent.miniGridId,
-                'email': this.agent.email,
-                'phone': this.agent.phone,
-                'is_primary': 1,
-                'agent_commission_id': this.agent.commissionTypeId,
-                'password': this.agent.password,
-                'birth_date': this.agent.birthday,
-                'sex': this.agent.gender
+                name: this.agent.name,
+                surname: this.agent.surname,
+                is_customer: 0,
+                nationality: this.agent.nationality,
+                city_id: this.agent.miniGridId,
+                email: this.agent.email,
+                phone: this.agent.phone,
+                is_primary: 1,
+                agent_commission_id: this.agent.commissionTypeId,
+                password: this.agent.password,
+                birth_date: this.agent.birthday,
+                sex: this.agent.gender,
             }
             let response = await this.repository.create(agentPM)
             if (response.status === 201) {
@@ -107,10 +104,9 @@ export class AgentService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async updateAgent (agent) {
+    async updateAgent(agent) {
         try {
             let response = await this.repository.update(agent)
             if (response.status === 200) {
@@ -119,15 +115,13 @@ export class AgentService {
             } else {
                 new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async getAgent (agentId) {
+    async getAgent(agentId) {
         try {
             let response = await this.repository.detail(agentId)
             if (response.status === 200 || response.status === 201) {
@@ -136,13 +130,12 @@ export class AgentService {
                 new ErrorHandler(response.error, 'http', response.status)
             }
         } catch (e) {
-
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    async deleteAgent (agent) {
+    async deleteAgent(agent) {
         try {
             let response = await this.repository.delete(agent.id)
             if (response.status === 200 || response.status === 201) {
@@ -154,10 +147,9 @@ export class AgentService {
         } catch (e) {
             return new ErrorHandler(e, 'http')
         }
-
     }
 
-    resetAgent () {
+    resetAgent() {
         this.agent = {
             id: null,
             personId: null,
@@ -169,7 +161,7 @@ export class AgentService {
             name: null,
             email: null,
             balance: null,
-            phone: null
+            phone: null,
         }
     }
 }

@@ -4,10 +4,8 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/manufacturers`
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    search(){
-
-    }
+    search() {},
 }

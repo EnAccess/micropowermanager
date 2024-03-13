@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SalesAccountService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('salesAccount')
         this.list = []
         this.isSync = false
@@ -17,11 +17,10 @@ export class SalesAccountService {
             active: null,
             credit: null,
             markup: null,
-
         }
     }
 
-    fromJson (salesAccountData) {
+    fromJson(salesAccountData) {
         this.salesAccount = {
             id: salesAccountData.id,
             name: salesAccountData.name,
@@ -30,12 +29,11 @@ export class SalesAccountService {
             active: salesAccountData.active,
             credit: salesAccountData.credit,
             markup: salesAccountData.markup,
-
         }
         return this.salesAccount
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let a in data) {
             let salesAccount = this.fromJson(data[a])
@@ -43,7 +41,7 @@ export class SalesAccountService {
         }
     }
 
-    async syncSalesAccount () {
+    async syncSalesAccount() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -57,13 +55,11 @@ export class SalesAccountService {
         }
     }
 
-    async checkSalesAccounts () {
-
+    async checkSalesAccounts() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -73,7 +69,7 @@ export class SalesAccountService {
         }
     }
 
-    async getSalesAccountCount () {
+    async getSalesAccountCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {

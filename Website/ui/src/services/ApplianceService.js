@@ -4,7 +4,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class ApplianceService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('appliance')
         this.list = []
         this.appliance = {
@@ -15,27 +15,28 @@ export class ApplianceService {
             assetTypeName: null,
             price: null,
             downPayment: null,
-            rate:null,
-            rateType:'monthly',
-            rateCost:null,
+            rate: null,
+            rateType: 'monthly',
+            rateCost: null,
         }
         this.paginator = new Paginator(resources.assets.list)
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.appliance = {
             id: data.id,
             name: data.name,
             edit: false,
             assetTypeId: data.asset_type_id,
             assetTypeName: data.asset_type.name,
-            price: data.price
+            price: data.price,
         }
     }
 
-    async updateAppliance (appliance) {
+    async updateAppliance(appliance) {
         try {
-            const {data, status, error} = await this.repository.update(appliance)
+            const { data, status, error } =
+                await this.repository.update(appliance)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return data.data
@@ -45,9 +46,11 @@ export class ApplianceService {
         }
     }
 
-    async deleteAppliance (appliance) {
+    async deleteAppliance(appliance) {
         try {
-            const {data, status, error} = await this.repository.delete(appliance.id)
+            const { data, status, error } = await this.repository.delete(
+                appliance.id,
+            )
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return data.data
@@ -55,32 +58,34 @@ export class ApplianceService {
             const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
-        this.list = data.map(asset => {
+        this.list = data.map((asset) => {
             return {
                 id: asset.id,
                 name: asset.name,
                 price: asset.price,
                 assetTypeId: asset.asset_type.id,
                 assetTypeName: asset.asset_type.name,
-                updatedAt: asset.updated_at.toString().replace(/T/, ' ').replace(/\..+/, ''),
+                updatedAt: asset.updated_at
+                    .toString()
+                    .replace(/T/, ' ')
+                    .replace(/\..+/, ''),
                 edit: false,
-
             }
-
         })
         return this.list
     }
 
-    async createAppliance () {
+    async createAppliance() {
         try {
             const appliance = convertObjectKeysToSnakeCase(this.appliance)
-            const {data, status, error} = await this.repository.create(appliance)
-            if (status !== 200 && status !==201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } =
+                await this.repository.create(appliance)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -89,10 +94,10 @@ export class ApplianceService {
         }
     }
 
-    async getAppliances () {
+    async getAppliances() {
         try {
             this.list = []
-            const {data, status, error} = await this.repository.list()
+            const { data, status, error } = await this.repository.list()
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             this.list = this.updateList(data.data)
 

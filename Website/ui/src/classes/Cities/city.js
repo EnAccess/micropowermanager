@@ -1,12 +1,10 @@
 import { Country } from '../Country'
 import { Cluster } from '../clusters/Cluster'
 
-
 export class City {
-    constructor () {
-    }
+    constructor() {}
 
-    fromJson (jsonData) {
+    fromJson(jsonData) {
         this.id = jsonData.id
         this.name = jsonData.name
         this.clusterId = jsonData.cluster_id
@@ -20,26 +18,26 @@ export class City {
         return this
     }
 
-    fetchCountry (data) {
+    fetchCountry(data) {
         let country = new Country()
         country.fromJson(data)
         return country
     }
 
-    fetchCluster (data) {
+    fetchCluster(data) {
         let cluster = new Cluster()
         cluster.fromJson(data)
         return cluster
     }
 
-    getCities () {
-        return axios.get(resources.city.list).then(response => {
-
-            return response.data.data
-
-        }).catch(err => {
-
-            return err
-        })
+    getCities() {
+        return axios
+            .get(resources.city.list)
+            .then((response) => {
+                return response.data.data
+            })
+            .catch((err) => {
+                return err
+            })
     }
 }

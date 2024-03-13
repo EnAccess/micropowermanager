@@ -1,7 +1,6 @@
 import Repository from '../repositories/RepositoryFactory'
-import {Paginator} from '@/classes/paginator'
-import {resources} from '@/resources'
-
+import { Paginator } from '@/classes/paginator'
+import { resources } from '@/resources'
 
 export class BookKeepingService {
     constructor() {
@@ -9,30 +8,27 @@ export class BookKeepingService {
         this.bookKeeping = {
             id: null,
             date: null,
-            path: null
+            path: null,
         }
         this.list = []
         this.paginator = new Paginator(resources.bookKeeping.list)
     }
 
     updateList(bookKeepings) {
-
         for (let index in bookKeepings) {
             let bookKeeping = {
                 id: bookKeepings[index].id,
                 date: bookKeepings[index].date,
-                path: bookKeepings[index].path
+                path: bookKeepings[index].path,
             }
             this.list.push(bookKeeping)
-
         }
         return this.list
     }
 
-    exportBookKeeping(id,reference) {
-        return this.repository.download(id,reference)
+    exportBookKeeping(id, reference) {
+        return this.repository.download(id, reference)
     }
 
-    showAll() {
-    }
+    showAll() {}
 }

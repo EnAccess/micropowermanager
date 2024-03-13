@@ -1,20 +1,20 @@
-footer{
+footer {
     padding: $padding-base 0;
 
     nav,
-    .copyright{
-      display: inline-block;
+    .copyright {
+        display: inline-block;
     }
 
-    ul{
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
 
-        li{
+        li {
             display: inline-block;
 
-            a{
+            a {
                 color: inherit !important;
                 padding: $padding-base;
                 font-weight: $font-weight-bold;
@@ -25,32 +25,32 @@ footer{
                 position: relative;
                 display: block;
 
-                &:hover{
+                &:hover {
                     text-decoration: none;
                 }
             }
         }
     }
 
-    .copyright{
+    .copyright {
         padding: 15px 0;
         margin: 0;
-        .material-icons{
+        .material-icons {
             font-size: 18px;
             position: relative;
             top: 3px;
         }
     }
 
-    .btn{
+    .btn {
         margin-top: 0;
         margin-bottom: 0;
     }
 }
 
-.container{
-  padding-right: 30px;
-  padding-left: 30px;
-  display: flex;
-  justify-content: space-between;
+.container {
+    padding-right: 30px;
+    padding-left: 30px;
+    display: flex;
+    justify-content: space-between;
 }

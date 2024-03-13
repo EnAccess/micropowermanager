@@ -1,5 +1,5 @@
 export class Battery {
-    constructor () {
+    constructor() {
         this.id = null
         this.mini_grid_id = null
         this.node_id = null
@@ -23,7 +23,7 @@ export class Battery {
         this.d_newly_energy_unit = null
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.id = data['id']
         this.mini_grid_id = data['mini_grid_id']
         this.node_id = data['node_id']
@@ -48,5 +48,4 @@ export class Battery {
 
         return this
     }
-
 }

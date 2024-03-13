@@ -4,17 +4,16 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/paymenthistories`
 
 export default {
-
-    getPaymentDetail (personId, period) {
+    getPaymentDetail(personId, period) {
         return Client.get(`${resource}/${personId}/payments/${period}`)
     },
-    getFlow(personId){
+    getFlow(personId) {
         return Client.get(`${resource}/${personId}/flow`)
     },
-    getPeriod(personId){
+    getPeriod(personId) {
         return Client.get(`${resource}/${personId}/period`)
     },
-    getDebt(personId){
+    getDebt(personId) {
         return Client.get(`${resource}/debt/${personId}`)
-    }
+    },
 }

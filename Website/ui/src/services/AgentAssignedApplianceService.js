@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class AgentAssignedApplianceService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('assignedAppliance')
         this.list = []
         this.assignedAppliance = {
@@ -11,31 +11,30 @@ export class AgentAssignedApplianceService {
             personId: null,
             applianceId: null,
             appliance: null,
-            cost: null
+            cost: null,
         }
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.assignedAppliance = {
             id: data.id,
             personId: data.person_id,
             applianceId: data.appliance_id,
             cost: data.cost,
-            appliance: data.appliance
+            appliance: data.appliance,
         }
 
         return this.assignedAppliance
-
     }
 
-    updateList (data) {
-        this.list = data.map(appliance => {
+    updateList(data) {
+        this.list = data.map((appliance) => {
             return this.fromJson(appliance)
         })
         return this.list
     }
 
-    async getAssignedAppliances (agentId) {
+    async getAssignedAppliances(agentId) {
         try {
             let response = await this.repository.list(agentId)
             if (response.status === 200) {
@@ -52,13 +51,13 @@ export class AgentAssignedApplianceService {
         }
     }
 
-    async assignAppliance (newAppliance, userId, AgentId) {
+    async assignAppliance(newAppliance, userId, AgentId) {
         try {
             let assignAppliancePM = {
                 agent_id: AgentId,
                 user_id: userId,
                 appliance_id: newAppliance.id,
-                cost: newAppliance.cost
+                cost: newAppliance.cost,
             }
             let response = await this.repository.create(assignAppliancePM)
             if (response.status === 200 || response.status === 201) {

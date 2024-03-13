@@ -4,7 +4,9 @@
             <h1 class="title">MicroPowerManager</h1>
             <h5 class="subtitle">{{ $tc('phrases.loginNotify', 1) }}</h5>
             <div class="title-divider">&nbsp;</div>
-            <div class="description" v-if="authError">{{ $tc('phrases.loginNotify', 2) }}</div>
+            <div class="description" v-if="authError">
+                {{ $tc('phrases.loginNotify', 2) }}
+            </div>
         </div>
         <div class="content">
             <form class="md-layout" @submit.prevent="validateUser">
@@ -14,7 +16,11 @@
                     </md-card-header>
 
                     <md-card-content>
-                        <md-field :class="{'md-invalid': errors.has($tc('words.email'))}">
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has($tc('words.email')),
+                            }"
+                        >
                             <label for="email">{{ $tc('words.email') }}</label>
                             <md-input
                                 type="email"
@@ -25,11 +31,19 @@
                                 :disabled="sending"
                                 v-validate="'required|email'"
                             />
-                            <span class="md-error">{{ errors.first($tc('words.email')) }}</span>
+                            <span class="md-error">
+                                {{ errors.first($tc('words.email')) }}
+                            </span>
                         </md-field>
 
-                        <md-field :class="{'md-invalid': errors.has($tc('words.password'))}">
-                            <label for="password">{{ $tc('words.password') }}</label>
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has($tc('words.password')),
+                            }"
+                        >
+                            <label for="password">
+                                {{ $tc('words.password') }}
+                            </label>
                             <md-input
                                 type="password"
                                 :name="$tc('words.password')"
@@ -38,27 +52,30 @@
                                 :disabled="sending"
                                 v-validate="'required|min:6|max:15'"
                             />
-                            <span class="md-error">{{ errors.first($tc('words.password')) }}</span>
+                            <span class="md-error">
+                                {{ errors.first($tc('words.password')) }}
+                            </span>
                         </md-field>
                     </md-card-content>
 
-                    <md-progress-bar md-mode="indeterminate" v-if="sending"/>
+                    <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
                     <md-card-actions>
-                        <md-button type="submit" class="md-primary btn-log" :disabled="sending">{{
-                                $tc('phrases.signIn')
-                            }}
+                        <md-button
+                            type="submit"
+                            class="md-primary btn-log"
+                            :disabled="sending"
+                        >
+                            {{ $tc('phrases.signIn') }}
                         </md-button>
                     </md-card-actions>
                 </md-card>
             </form>
             <div class="forgot-password">
-                <router-link :to="{path: '/forgot-password'}" class="link">
+                <router-link :to="{ path: '/forgot-password' }" class="link">
                     <md-icon>lock</md-icon>
                     {{ $tc('phrases.forgotPassword') }}
                 </router-link>
-
-
             </div>
         </div>
     </div>
@@ -77,31 +94,38 @@ export default {
         authError: false,
         form: {
             email: config.env === 'demo' ? 'demo@inensus.com' : null,
-            password: config.env === 'demo' ? '123123' : null
+            password: config.env === 'demo' ? '123123' : null,
         },
 
         userSaved: false,
         sending: false,
-        service: new AuthenticationService()
+        service: new AuthenticationService(),
     }),
-    mounted () {
+    mounted() {
         this.$store.dispatch('auth/logOut')
         this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
     },
     methods: {
-        clearForm () {
-            this.$v.$reset();
-            (this.form.password = null), (this.form.email = null)
+        clearForm() {
+            this.$v.$reset()
+            ;(this.form.password = null), (this.form.email = null)
         },
-        async authenticate () {
+        async authenticate() {
             this.sending = true
             try {
                 let email = this.form.email
                 let password = this.form.password
-                await this.$store.dispatch('auth/authenticate', { email, password })
-                await this.$store.dispatch('registrationTail/getRegistrationTail')
+                await this.$store.dispatch('auth/authenticate', {
+                    email,
+                    password,
+                })
+                await this.$store.dispatch(
+                    'registrationTail/getRegistrationTail',
+                )
                 await this.$store.dispatch('protection/getProtectedPages')
-                await this.$store.dispatch('protection/getProtectedPagePassword')
+                await this.$store.dispatch(
+                    'protection/getProtectedPagePassword',
+                )
 
                 this.sending = false
                 this.$router.push('/')
@@ -110,16 +134,14 @@ export default {
                 this.authError = true
             }
         },
-        async validateUser () {
-
+        async validateUser() {
             let validator = await this.$validator.validateAll()
 
             if (validator) {
                 await this.authenticate()
             }
-
-        }
-    }
+        },
+    },
 }
 </script>
 

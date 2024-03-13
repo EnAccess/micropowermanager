@@ -1,8 +1,8 @@
 import AuthenticationRepository from './AuthenticationRepository'
 
 const repositories = {
-    'authentication': AuthenticationRepository,
+    authentication: AuthenticationRepository,
 }
 export default {
-    get: name => repositories[name]
+    get: (name) => repositories[name],
 }

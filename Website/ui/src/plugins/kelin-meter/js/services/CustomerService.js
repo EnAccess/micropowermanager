@@ -3,8 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import { EventBus } from '../eventbus'
 
 export class CustomerService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('customer')
         this.list = []
         this.isSync = false
@@ -19,15 +18,14 @@ export class CustomerService {
         }
     }
 
-
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let c in data) {
             this.list.push(data[c].data.attributes)
         }
     }
 
-    async syncCustomers () {
+    async syncCustomers() {
         try {
             const response = await this.repository.sync()
             if (response.status === 200) {
@@ -41,12 +39,11 @@ export class CustomerService {
         }
     }
 
-    async checkCustomers () {
+    async checkCustomers() {
         try {
             const response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -56,9 +53,7 @@ export class CustomerService {
         }
     }
 
-
-
-    async getCustomerName (customerId) {
+    async getCustomerName(customerId) {
         try {
             let response = await this.repository.get(customerId)
             if (response.status === 200) {
@@ -72,12 +67,12 @@ export class CustomerService {
         }
     }
 
-    search (term) {
+    search(term) {
         this.pagingUrl = '/api/kelin-meters/kelin-customer/advanced/search'
-        EventBus.$emit('loadPage', this.pagingUrl, { 'term': term })
+        EventBus.$emit('loadPage', this.pagingUrl, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.pagingUrl = '/api/kelin-meters/kelin-customer'
         EventBus.$emit('loadPage', this.pagingUrl, {})
     }

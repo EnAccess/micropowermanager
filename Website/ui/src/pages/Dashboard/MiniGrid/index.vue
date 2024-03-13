@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Loader/>
+        <Loader />
     </div>
 </template>
 
@@ -11,29 +11,26 @@ import Loader from '@/shared/Loader.vue'
 export default {
     name: 'MiniGridsPage',
     components: { Loader },
-    created () {
+    created() {
         const miniGridId = this.$route.params.id
         if (miniGridId === undefined) {
             this.redirectToFirstMiniGrid()
         }
     },
-    data () {
+    data() {
         return {
-            miniGridService: new MiniGridService()
+            miniGridService: new MiniGridService(),
         }
     },
     methods: {
-        async redirectToFirstMiniGrid () {
+        async redirectToFirstMiniGrid() {
             const miniGrids = await this.miniGridService.getMiniGrids()
             if (miniGrids.length > 0) {
                 this.$router.replace('/dashboards/mini-grid/' + miniGrids[0].id)
             }
-
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

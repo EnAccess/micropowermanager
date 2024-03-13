@@ -2,22 +2,22 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class MeterModelService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('meterModel')
-        this.list=[]
-        this.isSync=false
-        this.count=0
-        this.pagingUrl='/api/spark-meters/sm-meter-model'
-        this.routeName='/spark-meters/sm-meter-model'
-        this.meterModel={
-            id :null,
-            modelName :null,
-            continuousLimit :null,
-            inrushLimit :null,
-            siteId:null
+        this.list = []
+        this.isSync = false
+        this.count = 0
+        this.pagingUrl = '/api/spark-meters/sm-meter-model'
+        this.routeName = '/spark-meters/sm-meter-model'
+        this.meterModel = {
+            id: null,
+            modelName: null,
+            continuousLimit: null,
+            inrushLimit: null,
+            siteId: null,
         }
     }
-    fromJson (meterModelData) {
+    fromJson(meterModelData) {
         this.meterModel = {
             id: meterModelData.id,
             modelName: meterModelData.model_name,
@@ -27,7 +27,7 @@ export class MeterModelService {
         }
         return this.meterModel
     }
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let m in data) {
             let meterModel = this.fromJson(data[m])
@@ -35,8 +35,7 @@ export class MeterModelService {
         }
     }
 
-
-    async getMeterModels () {
+    async getMeterModels() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -49,11 +48,10 @@ export class MeterModelService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async syncMeterModels () {
+    async syncMeterModels() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
-
                 return this.updateList(response.data.data)
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -63,12 +61,11 @@ export class MeterModelService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async checkMeterModels () {
+    async checkMeterModels() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -77,7 +74,7 @@ export class MeterModelService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async getMeterModelsCount () {
+    async getMeterModelsCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {

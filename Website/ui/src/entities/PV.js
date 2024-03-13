@@ -1,6 +1,5 @@
 export class PV {
-
-    constructor () {
+    constructor() {
         this.id = null
         this.mini_grid_id = null
         this.node_id = null
@@ -14,11 +13,9 @@ export class PV {
         this.created_at = null
         this.updated_at = null
         this.reading_date = null
-
     }
 
-    fromJson (data) {
-
+    fromJson(data) {
         this.id = data['id']
         this.mini_grid_id = data['mini_grid_id']
         this.node_id = data['node_id']

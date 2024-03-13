@@ -2,7 +2,7 @@
     <div class="page-container">
         <widget
             :id="'shs-list'"
-            :title="$tc('words.meter',2)"
+            :title="$tc('words.meter', 2)"
             :paginator="meters.paginator"
             :search="true"
             :subscriber="subscriber"
@@ -18,25 +18,32 @@
                     <md-table-head>
                         {{ $tc('words.tariff') }}
                     </md-table-head>
-                    <md-table-head>{{ $tc('words.manufacturer') }}</md-table-head>
+                    <md-table-head>
+                        {{ $tc('words.manufacturer') }}
+                    </md-table-head>
                     <md-table-head>{{ $tc('words.type') }}</md-table-head>
-                    <md-table-head>{{ $tc('phrases.lastUpdate') }}</md-table-head>
+                    <md-table-head>
+                        {{ $tc('phrases.lastUpdate') }}
+                    </md-table-head>
                 </md-table-row>
                 <md-table-row
                     v-for="meter in meters.list"
                     :key="meter.id"
-                    style="cursor:pointer;"
-                    @click="meterDetail( meter.serialNumber)"
+                    style="cursor: pointer"
+                    @click="meterDetail(meter.serialNumber)"
                 >
                     <md-table-cell>{{ meter.serialNumber }}</md-table-cell>
                     <md-table-cell>{{ meter.tariff }}</md-table-cell>
-                    <md-table-cell>{{ meter.manufacturer.manufacturerName }}</md-table-cell>
+                    <md-table-cell>
+                        {{ meter.manufacturer.manufacturerName }}
+                    </md-table-cell>
                     <md-table-cell>
                         {{ meter.type }}
                         <md-icon v-if="meter.online">wifi</md-icon>
-
                     </md-table-cell>
-                    <md-table-cell> {{ timeForTimeZone(meter.lastUpdate) }}</md-table-cell>
+                    <md-table-cell>
+                        {{ timeForTimeZone(meter.lastUpdate) }}
+                    </md-table-cell>
                 </md-table-row>
             </md-table>
         </widget>
@@ -54,7 +61,7 @@ export default {
     name: 'Meters',
     mixins: [timing],
     components: { Widget },
-    data () {
+    data() {
         return {
             meters: new Meters(),
             manufacturers: new Manufacturers(),
@@ -62,25 +69,29 @@ export default {
         }
     },
 
-    mounted () {
+    mounted() {
         EventBus.$on('pageLoaded', this.reloadList)
         EventBus.$on('searching', this.searching)
         EventBus.$on('end_searching', this.endSearching)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
         EventBus.$off('searching', this.searching)
         EventBus.$off('end_searching', this.endSearching)
     },
     methods: {
-        async reloadList (subscriber, data) {
+        async reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) {
                 return
             }
             await this.meters.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.meters.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.meters.list.length,
+            )
         },
-        confirmDelete (meter) {
+        confirmDelete(meter) {
             this.$swal({
                 type: 'question',
                 title: this.$tc('phrases.deleteMeter'),
@@ -93,10 +104,12 @@ export default {
                     '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
                     '  <label>' +
                     '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-                    this.$tc('phrases.deleteMeter', 2, { serialNumber: meter.serialNumber }) +
+                    this.$tc('phrases.deleteMeter', 2, {
+                        serialNumber: meter.serialNumber,
+                    }) +
                     '  </label>' +
-                    '</div>'
-            }).then(result => {
+                    '</div>',
+            }).then((result) => {
                 let answer = document.getElementById('confirmation').checked
                 if ('value' in result) {
                     //delete customer
@@ -109,21 +122,27 @@ export default {
                             showConfirmButton: false,
                             timer: 5000,
                             timerProgressBar: true,
-                            onOpen: toast => {
-                                toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                                toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                            }
+                            onOpen: (toast) => {
+                                toast.addEventListener(
+                                    'mouseenter',
+                                    this.$swal.stopTimer,
+                                )
+                                toast.addEventListener(
+                                    'mouseleave',
+                                    this.$swal.resumeTimer,
+                                )
+                            },
                         })
 
                         Toast.fire({
                             type: 'warning',
-                            title: this.$tc('phrases.deleteMeterNotify', 1)
+                            title: this.$tc('phrases.deleteMeterNotify', 1),
                         })
                     }
                 }
             })
         },
-        deleteMeter (meterId) {
+        deleteMeter(meterId) {
             axios.delete(resources.meters.delete + meterId).then(() => {
                 const Toast = this.$swal.mixin({
                     toast: true,
@@ -131,30 +150,27 @@ export default {
                     showConfirmButton: false,
                     timer: 2500,
                     timerProgressBar: true,
-
                 })
 
                 Toast.fire({
                     type: 'success',
-                    title: this.$tc('phrases.deleteMeterNotify', 2)
+                    title: this.$tc('phrases.deleteMeterNotify', 2),
                 }).then(() => {
                     location.reload()
                 })
             })
         },
-        searching (searchTerm) {
+        searching(searchTerm) {
             this.meters.search(searchTerm)
         },
-        endSearching () {
+        endSearching() {
             this.meters.showAll()
         },
-        meterDetail (serialNumber) {
+        meterDetail(serialNumber) {
             this.$router.push({ path: '/meters/' + serialNumber })
-        }
-    }
+        },
+    },
 }
 </script>
 
-<style scoped>
-</style>
-
+<style scoped></style>

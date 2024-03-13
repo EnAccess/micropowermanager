@@ -1,11 +1,11 @@
 <template>
-    <ConnectionTypesList/>
+    <ConnectionTypesList />
 </template>
 
 <script>
 import ConnectionTypesList from '@/modules/ConnectionTypes/ConnectionTypesList'
 export default {
     name: 'ConnectionTypesPage',
-    components: { ConnectionTypesList }
+    components: { ConnectionTypesList },
 }
 </script>

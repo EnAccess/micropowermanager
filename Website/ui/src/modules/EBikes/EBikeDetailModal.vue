@@ -4,129 +4,186 @@
             :md-active.sync="showEBikeDetail"
             style="max-width: 60rem; margin: auto; overflow: auto"
         >
-            <md-dialog-title><h4 style="font-size: 1.2rem; margin:0; border-bottom: solid 1px #dedede">
-                {{ $tc('words.e_bike', 1) }} - {{ eBike.serialNumber }}</h4></md-dialog-title>
+            <md-dialog-title>
+                <h4
+                    style="
+                        font-size: 1.2rem;
+                        margin: 0;
+                        border-bottom: solid 1px #dedede;
+                    "
+                >
+                    {{ $tc('words.e_bike', 1) }} - {{ eBike.serialNumber }}
+                </h4>
+            </md-dialog-title>
 
-            <md-dialog-content style="overflow-y: auto;" class="md-layout-item md-size-100">
-                <div v-if="eBike.serialNumber" class="md-layout md-gutter" style="margin-top:2rem">
+            <md-dialog-content
+                style="overflow-y: auto"
+                class="md-layout-item md-size-100"
+            >
+                <div
+                    v-if="eBike.serialNumber"
+                    class="md-layout md-gutter"
+                    style="margin-top: 2rem"
+                >
                     <div class="md-layout-item md-size-50">
                         <box
                             :centerText="true"
-                            :color="[ '#26c6da','#00acc1']"
+                            :color="['#26c6da', '#00acc1']"
                             :subText="eBike.mileage"
                             :headerTextColor="'#dddddd'"
                             :header-text="$tc('words.mileage')"
                             :subTextColor="'#e3e3e3'"
                             :boxIcon="'merge'"
                             :boxIconColor="'#578839'"
-
                         />
                     </div>
                     <div class="md-layout-item md-size-50">
                         <box
                             :centerText="true"
-                            :color="[ '#ffa726','#fb8c00']"
+                            :color="['#ffa726', '#fb8c00']"
                             :subText="eBike.speed"
                             :headerTextColor="'#dddddd'"
                             :header-text="$tc('words.speed')"
                             :subTextColor="'#e3e3e3'"
                             :boxIcon="'speed'"
                             :boxIconColor="'#578839'"
-
                         />
                     </div>
 
-                    <div class="md-layout-item md-size-100 md-layout md-gutter information-cell"
-                         style="margin-top:2rem">
+                    <div
+                        class="md-layout-item md-size-100 md-layout md-gutter information-cell"
+                        style="margin-top: 2rem"
+                    >
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big">{{ $tc('phrases.manufacturerName') }}: <span
-                                class="txt-color-yellow">{{ eBike.manufacturer.name }}</span>
+                            <div class="txt-bold-and-big">
+                                {{ $tc('phrases.manufacturerName') }}:
+                                <span class="txt-color-yellow">
+                                    {{ eBike.manufacturer.name }}
+                                </span>
                             </div>
-
                         </div>
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big"> {{ $tc('phrases.modelName') }}: <span
-                                :class="'txt-color-green txt-description'">{{ eBike.appliance.name }}</span>
+                            <div class="txt-bold-and-big">
+                                {{ $tc('phrases.modelName') }}:
+                                <span
+                                    :class="'txt-color-green txt-description'"
+                                >
+                                    {{ eBike.appliance.name }}
+                                </span>
                             </div>
-
                         </div>
                     </div>
-                    <div class="md-layout-item md-size-100 md-layout md-gutter information-cell">
+                    <div
+                        class="md-layout-item md-size-100 md-layout md-gutter information-cell"
+                    >
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big"> {{ $tc('phrases.batteryLevel') }}: <span
-                                :class="'txt-color-red txt-description'">{{ eBike.batteryLevel }}</span></div>
+                            <div class="txt-bold-and-big">
+                                {{ $tc('phrases.batteryLevel') }}:
+                                <span :class="'txt-color-red txt-description'">
+                                    {{ eBike.batteryLevel }}
+                                </span>
+                            </div>
                         </div>
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big"> {{ $tc('phrases.batteryVoltage') }}: <span
-                                :class="'txt-color-red txt-description'">{{ eBike.batteryVoltage }}</span></div>
+                            <div class="txt-bold-and-big">
+                                {{ $tc('phrases.batteryVoltage') }}:
+                                <span :class="'txt-color-red txt-description'">
+                                    {{ eBike.batteryVoltage }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="md-layout-item md-size-100 md-layout md-gutter information-cell">
+                    <div
+                        class="md-layout-item md-size-100 md-layout md-gutter information-cell"
+                    >
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big">{{ $tc('phrases.lastDataReceived') }}: <span
-                                :class="'txt-color-green txt-description'">{{
-                                    timeForTimeZone(eBike.receiveTime)
-                                }}</span></div>
+                            <div class="txt-bold-and-big">
+                                {{ $tc('phrases.lastDataReceived') }}:
+                                <span
+                                    :class="'txt-color-green txt-description'"
+                                >
+                                    {{ timeForTimeZone(eBike.receiveTime) }}
+                                </span>
+                            </div>
                         </div>
                         <div class="md-layout-item md-size-50">
-                            <div class="txt-bold-and-big" style="right: 0;position: absolute; margin-right: 16rem;">
-                                <md-switch v-model="statusOn" class="data-stream-switch" :disabled="loading">
-                                    <span v-if="eBike.statusOn"> {{ $tc('words.lock') }} </span>
-                                    <span v-else> {{ $tc('words.unlock') }} </span>
+                            <div
+                                class="txt-bold-and-big"
+                                style="
+                                    right: 0;
+                                    position: absolute;
+                                    margin-right: 16rem;
+                                "
+                            >
+                                <md-switch
+                                    v-model="statusOn"
+                                    class="data-stream-switch"
+                                    :disabled="loading"
+                                >
+                                    <span v-if="eBike.statusOn">
+                                        {{ $tc('words.lock') }}
+                                    </span>
+                                    <span v-else>
+                                        {{ $tc('words.unlock') }}
+                                    </span>
                                 </md-switch>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
             </md-dialog-content>
             <md-dialog-actions>
-                <md-button role="button" class="md-raised md-primary" :disabled="loading" @click="save">
+                <md-button
+                    role="button"
+                    class="md-raised md-primary"
+                    :disabled="loading"
+                    @click="save"
+                >
                     {{ $tc('words.save') }}
                 </md-button>
-                <md-button role="button" class="md-raised" @click="cancel">{{ $tc('words.close') }}</md-button>
+                <md-button role="button" class="md-raised" @click="cancel">
+                    {{ $tc('words.close') }}
+                </md-button>
             </md-dialog-actions>
-            <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+            <md-progress-bar md-mode="indeterminate" v-if="loading" />
         </md-dialog>
     </div>
 </template>
 
 <script>
-import {notify, timing} from '@/mixins'
-import {EBikeService} from '@/services/EBikeService'
+import { notify, timing } from '@/mixins'
+import { EBikeService } from '@/services/EBikeService'
 import Box from '@/modules/Box.vue'
 
 export default {
     name: 'EBikeDetailModal',
-    components: {Box},
+    components: { Box },
     mixins: [notify, timing],
     props: {
         showEBikeDetail: {
             default: false,
-            type: Boolean
+            type: Boolean,
         },
         eBike: {
-            required: true
-        }
+            required: true,
+        },
     },
-    data () {
+    data() {
         return {
             eBikeService: new EBikeService(),
             loading: false,
             switching: false,
-            statusOn: null
+            statusOn: null,
         }
     },
-    mounted () {
+    mounted() {
         this.statusOn = this.eBike.statusOn
     },
     methods: {
-        cancel () {
+        cancel() {
             this.$emit('hideEBikeDetail')
         },
-        async save () {
+        async save() {
             try {
                 this.loading = true
                 await this.eBikeService.switchEBike({
@@ -134,14 +191,19 @@ export default {
                     status: this.statusOn,
                     manufacturerName: this.eBike.manufacturer.name,
                 })
-                this.alertNotify('success', this.$tc('messages.successfullyUpdated', {item: this.$tc('words.e_bike', 1)}))
+                this.alertNotify(
+                    'success',
+                    this.$tc('messages.successfullyUpdated', {
+                        item: this.$tc('words.e_bike', 1),
+                    }),
+                )
             } catch (e) {
                 this.statusOn = !this.statusOn
                 this.alertNotify('error', e.message)
             }
             this.loading = false
         },
-    }
+    },
 }
 </script>
 
@@ -169,7 +231,7 @@ export default {
 
 .information-cell {
     min-height: 3rem;
-    margin-top: 0.5rem
+    margin-top: 0.5rem;
 }
 
 .data-stream-switch {

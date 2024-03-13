@@ -1,13 +1,9 @@
 const ticketCreateResponse = require('./responses/ticket/ticketCreate.json')
 
 export default {
-    create(){
+    create() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(ticketCreateResponse)
-            )
-
+            process.nextTick(() => resolve(ticketCreateResponse))
         })
-    }
-
+    },
 }

@@ -2,13 +2,12 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export default class CountryService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('country')
         this.list = []
     }
 
-    async getCountries () {
+    async getCountries() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {

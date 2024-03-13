@@ -1,5 +1,5 @@
 <template>
-    <CategoryManagement/>
+    <CategoryManagement />
 </template>
 
 <script>

@@ -4,11 +4,10 @@ import { baseUrl } from './Client/AxiosClient'
 export const resource = `${baseUrl}/api/registration-tails`
 
 export default {
-
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    update(Id,tail){
-        return Client.put(`${resource}/${Id}`,tail)
-    }
+    update(Id, tail) {
+        return Client.put(`${resource}/${Id}`, tail)
+    },
 }

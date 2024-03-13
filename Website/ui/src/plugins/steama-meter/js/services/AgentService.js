@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class AgentService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('agent')
         this.list = []
         this.isSync = false
@@ -12,7 +12,7 @@ export class AgentService {
         this.agent = {
             id: null,
             name: null,
-            surname:null,
+            surname: null,
             phone: null,
             siteName: null,
             isCreditLimited: null,
@@ -20,28 +20,27 @@ export class AgentService {
         }
     }
 
-    fromJson (agentData) {
-        this.agent={
-            id :agentData.id,
-            name :agentData.mpm_agent.person.name,
-            surname :agentData.mpm_agent.person.surname,
-            phone :agentData.mpm_agent.person.addresses[0].phone,
-            siteName:agentData.site.mpm_mini_grid.name,
-            isCreditLimited:agentData.is_credit_limited,
-            creditBalance:agentData.credit_balance
-
+    fromJson(agentData) {
+        this.agent = {
+            id: agentData.id,
+            name: agentData.mpm_agent.person.name,
+            surname: agentData.mpm_agent.person.surname,
+            phone: agentData.mpm_agent.person.addresses[0].phone,
+            siteName: agentData.site.mpm_mini_grid.name,
+            isCreditLimited: agentData.is_credit_limited,
+            creditBalance: agentData.credit_balance,
         }
         return this.agent
     }
 
-    updateList (data) {
-        this.list=[]
+    updateList(data) {
+        this.list = []
         for (let a in data) {
-            let agent =  this.fromJson(data[a])
+            let agent = this.fromJson(data[a])
             this.list.push(agent)
         }
     }
-    async syncAgents () {
+    async syncAgents() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -54,12 +53,11 @@ export class AgentService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async checkAgents () {
+    async checkAgents() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -68,7 +66,7 @@ export class AgentService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async getAgentsCount () {
+    async getAgentsCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {

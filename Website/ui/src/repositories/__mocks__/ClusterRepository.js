@@ -5,45 +5,29 @@ const clusterMiniGridRevenueResponse = require('./responses/cluster/clusterMiniG
 const clusterTrendsResponse = require('./responses/cluster/clusterTrends.json')
 
 export default {
-    list(){
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(clusterListResponse)
-            )
-
+            process.nextTick(() => resolve(clusterListResponse))
         })
     },
-    create(){
+    create() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(clusterCreateResponse)
-            )
-
+            process.nextTick(() => resolve(clusterCreateResponse))
         })
     },
-    getAllRevenues(){
+    getAllRevenues() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(clustersRevenueResponse)
-            )
-
+            process.nextTick(() => resolve(clustersRevenueResponse))
         })
     },
-    getClusterCitiesRevenue(){
+    getClusterCitiesRevenue() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(clusterMiniGridRevenueResponse)
-            )
-
+            process.nextTick(() => resolve(clusterMiniGridRevenueResponse))
         })
     },
-    getClusterTrends () {
+    getClusterTrends() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(clusterTrendsResponse)
-            )
-
+            process.nextTick(() => resolve(clusterTrendsResponse))
         })
-    }
-
+    },
 }

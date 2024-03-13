@@ -4,9 +4,7 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/agents/balance/history`
 
 export default {
-
-    list () {
+    list() {
         return Client.get(`${resource}`)
-    }
-
+    },
 }

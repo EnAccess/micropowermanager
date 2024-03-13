@@ -2,7 +2,7 @@ import { Paginator } from '../paginator'
 import { resources } from '@/resources'
 
 export class Ticket {
-    constructor () {
+    constructor() {
         this.id = null
         this.name = null
         this.description = null
@@ -14,8 +14,7 @@ export class Ticket {
         this.created_at = null
     }
 
-    fromJson (ticketData) {
-
+    fromJson(ticketData) {
         console.log('from json ', ticketData)
 
         let comments = ticketData?.comments
@@ -33,9 +32,9 @@ export class Ticket {
 
             const commentList = comments.map(function (comment) {
                 return {
-                    'comment': comment.comment,
-                    'date': comment.created_at,
-                    'username': comment.ticket_user.user_name,
+                    comment: comment.comment,
+                    date: comment.created_at,
+                    username: comment.ticket_user.user_name,
                 }
             })
             this.comments = commentList
@@ -45,48 +44,49 @@ export class Ticket {
         return this
     }
 
-    commentCount () {
+    commentCount() {
         return this.comments.length
     }
 
-    close () {
-        axios.delete(resources.ticket.close, { data: { 'ticketId': this.id } }).then(() => {
-            this.closed = true
-        })
+    close() {
+        axios
+            .delete(resources.ticket.close, { data: { ticketId: this.id } })
+            .then(() => {
+                this.closed = true
+            })
     }
 }
 
 export class UserTickets {
-    constructor (personId) {
+    constructor(personId) {
         this.list = []
         this.paginator = new Paginator(resources.ticket.getUser + personId)
     }
 
-    addTicket (ticket) {
+    addTicket(ticket) {
         this.list.push(ticket)
     }
 
-    search () {
+    search() {
         // this.paginator = new Paginator(resources.meters.search);
         // EventBus.$emit('loadPage', this.paginator, {'term': term});
     }
 
-    showAll () {
+    showAll() {
         //this.paginator = new Paginator(resources.meters.list);
         //EventBus.$emit('loadPage', this.paginator);
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
-        if (('data' in data)) {
+        if ('data' in data) {
             this.list = data.data.map(function (ticket) {
-                return (new Ticket()).fromJson(ticket)
+                return new Ticket().fromJson(ticket)
             })
         }
     }
 
-    newComment (commentData) {
+    newComment(commentData) {
         axios.post(resources.ticket.comments, commentData)
     }
-
 }

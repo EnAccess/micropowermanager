@@ -3,7 +3,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/classes/paginator'
 
 export class UserService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('user')
         this.paginator = new Paginator(resources.user.list)
         this.users = []
@@ -17,18 +17,21 @@ export class UserService {
             cityId: null,
         }
     }
-    fromJson (user) {
+    fromJson(user) {
         this.user = {
             id: user.id,
             name: user.name,
             email: user.email,
             phone: user.address_details ? user.address_details.phone : null,
             street: user.address_details ? user.address_details.street : null,
-            cityId: (user.address_details && user.address_details.city ) ? user.address_details.city.id : null,
+            cityId:
+                user.address_details && user.address_details.city
+                    ? user.address_details.city.id
+                    : null,
         }
         return this.user
     }
-    updateList (users) {
+    updateList(users) {
         this.users = []
         for (let u in users) {
             this.users.push(this.fromJson(users[u]))
@@ -36,7 +39,7 @@ export class UserService {
         this.resetUser()
         return this.users
     }
-    async list () {
+    async list() {
         try {
             const { data, status } = await this.repository.list()
             if (status !== 200) {
@@ -44,26 +47,26 @@ export class UserService {
             }
             this.users = data.data
             return this.users
-
         } catch (e) {
             return new ErrorHandler(e, 'http')
         }
     }
-    async create () {
-
+    async create() {
         try {
-            const { data, status,error } = await this.repository.create(this.user)
+            const { data, status, error } = await this.repository.create(
+                this.user,
+            )
             if (status !== 200) {
                 return new ErrorHandler(error, status)
             }
             this.resetUser()
-            return  data.data
+            return data.data
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async get (id) {
+    async get(id) {
         try {
             const { data, status } = await this.repository.get(id)
             if (status !== 200) {
@@ -75,16 +78,17 @@ export class UserService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async update () {
+    async update() {
         const userDataPm = {
             id: this.user.id,
             phone: this.user.phone,
             street: this.user.street,
             city_id: this.user.cityId,
-            name: this.user.name
+            name: this.user.name,
         }
         try {
-            const { data, status,error } = await this.repository.put(userDataPm)
+            const { data, status, error } =
+                await this.repository.put(userDataPm)
             if (!status === 200) {
                 return new ErrorHandler(error, 'http', status)
             }
@@ -94,9 +98,8 @@ export class UserService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
-    resetUser(){
+    resetUser() {
         this.user = {
             id: null,
             name: null,

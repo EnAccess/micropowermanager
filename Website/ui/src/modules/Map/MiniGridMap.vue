@@ -1,7 +1,5 @@
 <template>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
 </template>
 
 <script>
@@ -18,17 +16,17 @@ export default {
         miniGridId: {
             // eslint-disable-next-line vue/require-prop-type-constructor
             type: Number | String,
-            required: false
-        }
+            required: false,
+        },
     },
-    data () {
+    data() {
         return {
             clusterService: new ClusterService(),
             miniGridService: new MiniGridService(),
             miniGridDeviceService: new MiniGridDeviceService(),
         }
     },
-    mounted () {
+    mounted() {
         if (this.isMiniGridIdProvided()) {
             this.setMiniGridMapData(this.miniGridId)
         }
@@ -51,13 +49,20 @@ export default {
                 drawingLayer.addLayer(layer)
                 const geoDataItem = {
                     type: type,
-                    coordinates: layer._latlng
+                    coordinates: layer._latlng,
                 }
 
-                this.$emit('locationSet', { error: undefined, geoDataItem: geoDataItem })
+                this.$emit('locationSet', {
+                    error: undefined,
+                    geoDataItem: geoDataItem,
+                })
             } else {
-                const errorMessage = 'Please position your mini-grid within the selected cluster boundaries.'
-                this.$emit('locationSet', { error: errorMessage, geoDataItem: undefined })
+                const errorMessage =
+                    'Please position your mini-grid within the selected cluster boundaries.'
+                this.$emit('locationSet', {
+                    error: errorMessage,
+                    geoDataItem: undefined,
+                })
             }
         })
         this.map.on('draw:edited', (event) => {
@@ -75,11 +80,12 @@ export default {
                     const geoDataItem = {
                         serialNumber: layer._tooltip._content,
                         lat: layer._latlng.lat,
-                        lon: layer._latlng.lng
+                        lon: layer._latlng.lng,
                     }
                     editedItems.push(geoDataItem)
                 } else {
-                    const errorMessage = 'Please position your device within the selected cluster boundaries. Otherwise, it will not be updated.'
+                    const errorMessage =
+                        'Please position your device within the selected cluster boundaries. Otherwise, it will not be updated.'
                     this.alertNotify('warning', errorMessage)
                 }
             })
@@ -87,7 +93,6 @@ export default {
             if (editedItems.length) {
                 this.$emit('locationEdited', editedItems)
             }
-
         })
         this.map.on('draw:toolbaropened', function () {
             map.removeLayer(markersLayer)
@@ -106,37 +111,55 @@ export default {
         })
     },
     methods: {
-        drawCluster () {
+        drawCluster() {
             this.editableLayer.clearLayers()
             const geoData = this.mappingService.geoData.geo_data
             const geoType = geoData.geojson.type
-            const coordinatesClone = geoData.geojson.coordinates[0].reduce((acc, coord) => {
-                acc[0].push([coord[1], coord[0]])
-                return acc
-            }, [[]])
+            const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+                (acc, coord) => {
+                    acc[0].push([coord[1], coord[0]])
+                    return acc
+                },
+                [[]],
+            )
             const drawing = {
                 type: 'FeatureCollection',
                 crs: {
                     type: 'name',
                     properties: {
-                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84'
-                    }
-                },
-                features: [{
-                    type: 'Feature',
-                    properties: {
-                        popupContent: geoData.display_name,
-                        draw_type: geoData.draw_type === undefined ? 'set' : geoData.draw_type,
-                        selected: geoData.selected === undefined ? false : geoData.selected,
-                        clusterId: geoData.clusterId === undefined ? -1 : geoData.clusterId,
+                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84',
                     },
-                    geometry: {
-                        type: geoType,
-                        coordinates: geoData.searched ? geoData.geojson.coordinates : coordinatesClone
-                    }
-                }]
+                },
+                features: [
+                    {
+                        type: 'Feature',
+                        properties: {
+                            popupContent: geoData.display_name,
+                            draw_type:
+                                geoData.draw_type === undefined
+                                    ? 'set'
+                                    : geoData.draw_type,
+                            selected:
+                                geoData.selected === undefined
+                                    ? false
+                                    : geoData.selected,
+                            clusterId:
+                                geoData.clusterId === undefined
+                                    ? -1
+                                    : geoData.clusterId,
+                        },
+                        geometry: {
+                            type: geoType,
+                            coordinates: geoData.searched
+                                ? geoData.geojson.coordinates
+                                : coordinatesClone,
+                        },
+                    },
+                ],
             }
-            const polygonColor = this.mappingService.strToHex(geoData.display_name)
+            const polygonColor = this.mappingService.strToHex(
+                geoData.display_name,
+            )
             // "this"  cannot be used inside the L.geoJson function
 
             const nonEditableLayers = this.nonEditableLayer
@@ -149,7 +172,11 @@ export default {
                     const type = layer.feature.geometry.type
                     const clusterId = layer.feature.properties.clusterId
                     if (type === 'Polygon' && clusterId !== -1) {
-                        layer.on('click', () => { this.$router.push({ path: '/clusters/' + clusterId })})
+                        layer.on('click', () => {
+                            this.$router.push({
+                                path: '/clusters/' + clusterId,
+                            })
+                        })
                     }
 
                     nonEditableLayers.addLayer(layer)
@@ -159,7 +186,10 @@ export default {
                         type: 'manual',
                         geojson: {
                             type: geoData.geojson.type,
-                            coordinates: geoData.searched === true ? coordinatesClone : geoData.geojson.coordinates
+                            coordinates:
+                                geoData.searched === true
+                                    ? coordinatesClone
+                                    : geoData.geojson.coordinates,
                         },
                         searched: false,
                         display_name: geoData.display_name,
@@ -169,78 +199,116 @@ export default {
                         lon: geoData.lon,
                     }
                     geoDataItems.push(geoDataItem)
-                }
+                },
             })
             const bounds = drawnCluster.getBounds()
             this.map.fitBounds(bounds)
         },
-        setMiniGridMarkers () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID).map((markingInfo) => {
-                const miniGridMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+        setMiniGridMarkers() {
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.MINI_GRID,
+                )
+                .map((markingInfo) => {
+                    const miniGridMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const miniGridMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: miniGridMarkerIcon },
+                    )
+                    miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
+                    miniGridMarker.addTo(this.map)
                 })
-                const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], { icon: miniGridMarkerIcon })
-                miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
-                miniGridMarker.addTo(this.map)
-            })
         },
-        setDeviceMarkers () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.METER || markingInfo.markerType === MARKER_TYPE.SHS || markingInfo.markerType === MARKER_TYPE.E_BIKE).map((markingInfo) => {
-                const deviceMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+        setDeviceMarkers() {
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.METER ||
+                        markingInfo.markerType === MARKER_TYPE.SHS ||
+                        markingInfo.markerType === MARKER_TYPE.E_BIKE,
+                )
+                .map((markingInfo) => {
+                    const deviceMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const deviceMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: deviceMarkerIcon },
+                    )
+                    deviceMarker.bindTooltip(markingInfo.serialNumber)
+
+                    if (markingInfo.markerType === MARKER_TYPE.METER) {
+                        const parent = this
+                        deviceMarker.on('click', () => {
+                            parent.routeToDetail(
+                                '/meters',
+                                markingInfo.serialNumber,
+                            )
+                        })
+                    }
+                    if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
+                        const parent = this
+                        deviceMarker.on('click', () => {
+                            parent.routeToDetailWithQueryParam(
+                                '/e-bikes',
+                                'serialNumber',
+                                markingInfo.serialNumber,
+                            )
+                        })
+                    }
+                    deviceMarker.addTo(this.markersLayer) //this layer is used to show markers as marker cluster
+
+                    const editableMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: deviceMarkerIcon },
+                    ).setOpacity(0)
+                    editableMarker.addTo(this.editableLayer) //we create invisible editable markers as well to be able to edit them once toolbar opened
                 })
-                const deviceMarker = L.marker([markingInfo.lat, markingInfo.lon], { icon: deviceMarkerIcon })
-                deviceMarker.bindTooltip(markingInfo.serialNumber)
-
-                if (markingInfo.markerType === MARKER_TYPE.METER) {
-                    const parent = this
-                    deviceMarker.on('click', () => {
-                        parent.routeToDetail('/meters', markingInfo.serialNumber)
-                    })
-                }
-                if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
-                    const parent = this
-                    deviceMarker.on('click', () => {
-                        parent.routeToDetailWithQueryParam('/e-bikes','serialNumber', markingInfo.serialNumber)
-                    })
-                }
-                deviceMarker.addTo(this.markersLayer) //this layer is used to show markers as marker cluster
-
-                const editableMarker = L.marker([markingInfo.lat, markingInfo.lon], { icon: deviceMarkerIcon }).setOpacity(0)
-                editableMarker.addTo(this.editableLayer) //we create invisible editable markers as well to be able to edit them once toolbar opened
-            })
             this.map.addLayer(this.markersLayer)
         },
-        setMiniGridMarkerManually (location) {
+        setMiniGridMarkerManually(location) {
             const editableLayers = this.nonEditableLayer.getLayers()
-            const polygon = editableLayers.find((layer) => layer.feature && layer.feature.geometry.type === 'Polygon')
+            const polygon = editableLayers.find(
+                (layer) =>
+                    layer.feature && layer.feature.geometry.type === 'Polygon',
+            )
             const bounds = polygon.getBounds()
             if (!bounds.contains(location)) {
-                const errorMessage = 'Please position your mini-grid within the selected cluster boundaries.'
-                this.$emit('locationSet', { error: errorMessage, geoDataItem: undefined })
+                const errorMessage =
+                    'Please position your mini-grid within the selected cluster boundaries.'
+                this.$emit('locationSet', {
+                    error: errorMessage,
+                    geoDataItem: undefined,
+                })
             } else {
                 this.removeExistingMarkers()
 
                 const miniGridMarkerIcon = L.icon({
                     ...ICON_OPTIONS,
-                    iconUrl: ICONS.MINI_GRID
+                    iconUrl: ICONS.MINI_GRID,
                 })
 
-                const miniGridMarker = L.marker(location, { icon: miniGridMarkerIcon })
+                const miniGridMarker = L.marker(location, {
+                    icon: miniGridMarkerIcon,
+                })
                 miniGridMarker.addTo(this.editableLayer)
             }
         },
-        isMiniGridIdProvided () {
+        isMiniGridIdProvided() {
             if (this.miniGridId !== undefined && this.miniGridId !== '') {
                 return true
             }
             return false
         },
-        async setMiniGridMapData (miniGridId) {
+        async setMiniGridMapData(miniGridId) {
             const markingInfos = []
-            const miniGridWithGeoData = await this.miniGridService.getMiniGridGeoData(miniGridId)
+            const miniGridWithGeoData =
+                await this.miniGridService.getMiniGridGeoData(miniGridId)
             const points = miniGridWithGeoData.location.points.split(',')
             if (points.length !== 2) {
                 this.alertNotify('error', 'Mini-Grid has no location')
@@ -249,8 +317,12 @@ export default {
             const lat = parseFloat(points[0])
             const lon = parseFloat(points[1])
             const clusterId = miniGridWithGeoData.cluster_id
-            const clusterGeoData = await this.clusterService.getClusterGeoLocation(clusterId)
-            this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
+            const clusterGeoData =
+                await this.clusterService.getClusterGeoLocation(clusterId)
+            this.mappingService.setCenter([
+                clusterGeoData.lat,
+                clusterGeoData.lon,
+            ])
             this.mappingService.setGeoData(clusterGeoData)
             markingInfos.push({
                 id: miniGridWithGeoData.id,
@@ -262,7 +334,8 @@ export default {
                 deviceType: null,
                 markerType: MARKER_TYPE.MINI_GRID,
             })
-            const devicesInMiniGrid = await this.miniGridDeviceService.getMiniGridDevices(miniGridId)
+            const devicesInMiniGrid =
+                await this.miniGridDeviceService.getMiniGridDevices(miniGridId)
             devicesInMiniGrid.map((device) => {
                 const points = device.address.geo.points.split(',')
                 if (points.length !== 2) {
@@ -272,14 +345,14 @@ export default {
                 const lon = parseFloat(points[1])
                 let markerType = ''
                 switch (device.device_type) {
-                case 'e_bike':
-                    markerType = MARKER_TYPE.E_BIKE
-                    break
-                case 'shs':
-                    markerType = MARKER_TYPE.SHS
-                    break
-                default:
-                    markerType = MARKER_TYPE.METER
+                    case 'e_bike':
+                        markerType = MARKER_TYPE.E_BIKE
+                        break
+                    case 'shs':
+                        markerType = MARKER_TYPE.SHS
+                        break
+                    default:
+                        markerType = MARKER_TYPE.METER
                 }
                 markingInfos.push({
                     id: miniGridWithGeoData.id,
@@ -298,7 +371,7 @@ export default {
             this.setMiniGridMarkers()
             this.setDeviceMarkers()
         },
-    }
+    },
 }
 </script>
 

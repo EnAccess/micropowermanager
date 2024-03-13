@@ -3,7 +3,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class MeterDetailService {
-    constructor () {
+    constructor() {
         this.repository = new RepositoryFactory.get('meterDetail')
         this.meter = {
             id: null,
@@ -23,7 +23,7 @@ export class MeterDetailService {
         }
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.meter = {
             id: data.id,
             serialNumber: data.serial_number,
@@ -37,14 +37,24 @@ export class MeterDetailService {
             connectionType: data.connection_type,
             connectionGroup: data.connection_group,
             tokens: data.tokens,
-            totalRevenue: data.tokens.reduce((acc, curr) => acc + curr.transaction.amount, 0),
-            lastPaymentDate: data.tokens.length > 0 ? data.tokens.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0].created_at : null
+            totalRevenue: data.tokens.reduce(
+                (acc, curr) => acc + curr.transaction.amount,
+                0,
+            ),
+            lastPaymentDate:
+                data.tokens.length > 0
+                    ? data.tokens.sort(
+                          (a, b) =>
+                              new Date(b.created_at) - new Date(a.created_at),
+                      )[0].created_at
+                    : null,
         }
     }
 
-    async getDetail (serialNumber) {
+    async getDetail(serialNumber) {
         try {
-            const { status, data, error } = await this.repository.detail(serialNumber)
+            const { status, data, error } =
+                await this.repository.detail(serialNumber)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return this.fromJson(data.data)
@@ -52,19 +62,21 @@ export class MeterDetailService {
             const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async searchPersonForNewOwner (personService, term) {
+    async searchPersonForNewOwner(personService, term) {
         try {
-            const { status, data } = await personService.searchPerson({ params: { term: term, paginate: 0 } })
-            if (status !== 200) return new ErrorHandler(data.data.message, 'http', status)
+            const { status, data } = await personService.searchPerson({
+                params: { term: term, paginate: 0 },
+            })
+            if (status !== 200)
+                return new ErrorHandler(data.data.message, 'http', status)
             return data.data.map((person) => {
                 return {
                     id: person.id,
                     name: person.name + ' ' + person.surname,
                     toLowerCase: () => person.name.toLowerCase(),
-                    toString: () => person.name
+                    toString: () => person.name,
                 }
             })
         } catch (e) {
@@ -73,11 +85,15 @@ export class MeterDetailService {
         }
     }
 
-    async updateMeterDetails (meterData) {
+    async updateMeterDetails(meterData) {
         const params = convertObjectKeysToSnakeCase(meterData)
         try {
-            const { data, status, error } = await this.repository.update(meterData.id, params)
-            if (status !== 200 && status!== 201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } = await this.repository.update(
+                meterData.id,
+                params,
+            )
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
             return data.data
         } catch (e) {
             return new ErrorHandler(e.response.data.data.message, 'http')

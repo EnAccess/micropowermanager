@@ -2,7 +2,7 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class SmsAndroidSettingService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('smsAndroidSetting')
         this.list = []
         this.smsAndroidSetting = {
@@ -10,10 +10,10 @@ export class SmsAndroidSettingService {
             url: null,
             token: null,
             key: null,
-            callback: null
+            callback: null,
         }
     }
-    fromJson (smsAndroidSettings) {
+    fromJson(smsAndroidSettings) {
         this.list = []
         for (let s in smsAndroidSettings) {
             let smsAndroidSetting = {
@@ -21,12 +21,12 @@ export class SmsAndroidSettingService {
                 url: smsAndroidSettings[s].url,
                 token: smsAndroidSettings[s].token,
                 key: smsAndroidSettings[s].key,
-                callback: smsAndroidSettings[s].callback
+                callback: smsAndroidSettings[s].callback,
             }
             this.list.push(smsAndroidSetting)
         }
     }
-    async getSmsAndroidSettings () {
+    async getSmsAndroidSettings() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -35,48 +35,51 @@ export class SmsAndroidSettingService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let erorMessage = e.response.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
-    async updateSmsAndroidSettings (smsAndroidSetting) {
+    async updateSmsAndroidSettings(smsAndroidSetting) {
         let smsAndroidSettingPm = {
-            id:smsAndroidSetting.id,
+            id: smsAndroidSetting.id,
             url: smsAndroidSetting.url,
             token: smsAndroidSetting.token,
             key: smsAndroidSetting.key,
-            callback: smsAndroidSetting.callback
+            callback: smsAndroidSetting.callback,
         }
         return await this.repository.update(smsAndroidSettingPm)
     }
-    async createSmsAndroidSettings (smsAndroidSetting) {
+    async createSmsAndroidSettings(smsAndroidSetting) {
         let smsAndroidSettingPm = {
             token: smsAndroidSetting.token,
             key: smsAndroidSetting.key,
-            callback: smsAndroidSetting.callback
+            callback: smsAndroidSetting.callback,
         }
         return await this.repository.create(smsAndroidSettingPm)
     }
-    async removeSmsAndroidSetting (smsAndroidSettingId) {
-
+    async removeSmsAndroidSetting(smsAndroidSettingId) {
         if (smsAndroidSettingId > 0) {
             try {
-                let response  =  await this.repository.delete(smsAndroidSettingId)
+                let response = await this.repository.delete(smsAndroidSettingId)
                 if (response.status === 200) {
                     this.fromJson(response.data.data)
                     return response.data.data
                 } else {
-                    return new ErrorHandler(response.error, 'http', response.status)
+                    return new ErrorHandler(
+                        response.error,
+                        'http',
+                        response.status,
+                    )
                 }
-            }catch (e) {
+            } catch (e) {
                 let errorMessage = e.response.data.message
                 return new ErrorHandler(errorMessage, 'http')
             }
-
-        }else{
-            let smsAndroidSetting = this.list.filter(x => x.id === smsAndroidSettingId)[0]
+        } else {
+            let smsAndroidSetting = this.list.filter(
+                (x) => x.id === smsAndroidSettingId,
+            )[0]
             if (smsAndroidSetting !== null) {
                 for (let i = 0; i < this.list.length; i++) {
                     if (this.list[i].id === smsAndroidSetting.id) {
@@ -85,18 +88,18 @@ export class SmsAndroidSettingService {
                 }
             }
         }
-
-
     }
-    async saveSmsAndroidSetting (smsAndroidSetting) {
+    async saveSmsAndroidSetting(smsAndroidSetting) {
         try {
             let response
             if (smsAndroidSetting.id < 0) {
-                response = await this.createSmsAndroidSettings(smsAndroidSetting)
+                response =
+                    await this.createSmsAndroidSettings(smsAndroidSetting)
             } else {
-                response = await this.updateSmsAndroidSettings(smsAndroidSetting)
+                response =
+                    await this.updateSmsAndroidSettings(smsAndroidSetting)
             }
-            if (response.status === 200 || response.status ===201) {
+            if (response.status === 200 || response.status === 201) {
                 this.fromJson(response.data.data)
                 return response.data.data
             } else {
@@ -106,17 +109,14 @@ export class SmsAndroidSettingService {
             let errorMessage = e.response.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
-    addAdditionalSmsAndroidSettings () {
-
+    addAdditionalSmsAndroidSettings() {
         let smsAndroidSetting = {
             id: -1 * Math.floor(Math.random() * 10000000),
             token: '',
             key: '',
-            callback: ''
+            callback: '',
         }
         this.list.push(smsAndroidSetting)
     }
-
 }

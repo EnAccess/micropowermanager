@@ -1,7 +1,6 @@
 <template>
-    <Register/>
+    <Register />
 </template>
-
 
 <script>
 import Register from '@/modules/Register/Register.vue'

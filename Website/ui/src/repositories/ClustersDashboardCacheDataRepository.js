@@ -4,17 +4,15 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/dashboard/clusters`
 
 export default {
-
-    list(){
+    list() {
         return Client.get(`${resource}`)
     },
 
-    update(){
+    update() {
         return Client.put(`${resource}`)
     },
 
-    detail(id){
+    detail(id) {
         return Client.get(`${resource}/${id}`)
-    }
-
+    },
 }

@@ -4,16 +4,16 @@ export const state = {
     deviceTypes: [
         {
             type: 'meter',
-            display: 'Meter'
+            display: 'Meter',
         },
         {
             type: 'solar_home_system',
-            display: 'Solar Home System'
+            display: 'Solar Home System',
         },
         {
             type: 'e_bike',
-            display: 'E-Bike'
-        }
+            display: 'E-Bike',
+        },
         /*  Will be enabled in future
     {
             type: 'appliance',
@@ -22,5 +22,5 @@ export const state = {
     ],
 }
 export const getters = {
-    getDeviceTypes: state => state.deviceTypes
+    getDeviceTypes: (state) => state.deviceTypes,
 }

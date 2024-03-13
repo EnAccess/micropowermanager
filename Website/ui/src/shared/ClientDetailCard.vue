@@ -3,42 +3,70 @@
         <div class="md-layout-item md-size-100">
             <widget title="Customer Detail">
                 <div class="md-layout md-gutter">
-                    <div class="md-layout-item" :class="showCustomerInformation ? 'md-size-20' : 'md-size-100' " align="center">
+                    <div
+                        class="md-layout-item"
+                        :class="
+                            showCustomerInformation
+                                ? 'md-size-20'
+                                : 'md-size-100'
+                        "
+                        align="center"
+                    >
                         <md-icon class="md-size-4x">account_circle</md-icon>
-                        <h1>{{ this.person.title }} {{ this.person.name }}
-                            {{ this.person.surname }}</h1>
+                        <h1>
+                            {{ this.person.title }} {{ this.person.name }}
+                            {{ this.person.surname }}
+                        </h1>
                     </div>
-                    <div class="md-layout-item md-size-80" v-if="showCustomerInformation">
+                    <div
+                        class="md-layout-item md-size-80"
+                        v-if="showCustomerInformation"
+                    >
                         <div class="md-layout-item md-layout md-size-100">
-                            <div class="md-layout-item md-layout md-gutter md-size-100" style="margin-bottom: 3vh">
+                            <div
+                                class="md-layout-item md-layout md-gutter md-size-100"
+                                style="margin-bottom: 3vh"
+                            >
                                 <div class="md-layout-item md-size-35">
                                     <h4>
                                         <md-icon>wc</md-icon>
-                                        {{ $tc('words.gender') }}:{{ this.person.gender }}
+                                        {{ $tc('words.gender') }}:{{
+                                            this.person.gender
+                                        }}
                                     </h4>
                                 </div>
                                 <div class="md-layout-item md-size-35">
                                     <h4>
-                                        <md-icon>school</md-icon>&nbsp;{{ $tc('words.education') }}: {{ this.person.education }}
+                                        <md-icon>school</md-icon>
+                                        &nbsp;{{ $tc('words.education') }}:
+                                        {{ this.person.education }}
                                     </h4>
                                 </div>
 
                                 <div class="md-layout-item md-size-30">
                                     <h4>
-                                        <md-icon>cake</md-icon>&nbsp;{{ $tc('words.birthday') }}: {{ this.person.birthDate }}
+                                        <md-icon>cake</md-icon>
+                                        &nbsp;{{ $tc('words.birthday') }}:
+                                        {{ this.person.birthDate }}
                                     </h4>
                                 </div>
-
                             </div>
-                            <div class="md-layout-item md-layout md-gutter md-size-100" v-if="person.addresses.length > 0">
+                            <div
+                                class="md-layout-item md-layout md-gutter md-size-100"
+                                v-if="person.addresses.length > 0"
+                            >
                                 <div class="md-layout-item md-size-35">
                                     <h4>
-                                        <md-icon>email</md-icon>&nbsp;{{ $tc('words.email') }}: {{ person.addresses[0].email }}
+                                        <md-icon>email</md-icon>
+                                        &nbsp;{{ $tc('words.email') }}:
+                                        {{ person.addresses[0].email }}
                                     </h4>
                                 </div>
                                 <div class="md-layout-item md-size-35">
                                     <h4>
-                                        <md-icon>phone</md-icon>&nbsp;{{ $tc('words.phone') }}: {{ person.addresses[0].phone }}
+                                        <md-icon>phone</md-icon>
+                                        &nbsp;{{ $tc('words.phone') }}:
+                                        {{ person.addresses[0].phone }}
                                     </h4>
                                 </div>
                             </div>
@@ -57,10 +85,10 @@ import { PersonService } from '@/services/PersonService'
 export default {
     name: 'ClientDetailCard',
     components: { widget },
-    data(){
-        return{
+    data() {
+        return {
             personService: new PersonService(),
-            person:{}
+            person: {},
         }
     },
     props: {
@@ -69,33 +97,30 @@ export default {
         },
         showCustomerInformation: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
-    created () {
+    created() {
         this.getPersonDetail(this.personId)
     },
-    methods:{
-        async getPersonDetail(personId){
+    methods: {
+        async getPersonDetail(personId) {
             try {
                 this.person = await this.personService.getPerson(personId)
-            }catch (e) {
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
-
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

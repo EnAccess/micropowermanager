@@ -2,8 +2,13 @@
     <div>
         <widget
             color="green"
-            @widgetAction="() => {showSellApplianceModal = true; key++}"
-            :button-text="$tc('phrases.assignAppliance',0)"
+            @widgetAction="
+                () => {
+                    showSellApplianceModal = true
+                    key++
+                }
+            "
+            :button-text="$tc('phrases.assignAppliance', 0)"
             :button="true"
             :title="$tc('phrases.soldAppliances')"
             :button-color="'red'"
@@ -12,22 +17,35 @@
                 <md-table-row>
                     <md-table-head>{{ $tc('words.name') }}</md-table-head>
                     <md-table-head>{{ $tc('words.cost') }}</md-table-head>
-                    <md-table-head> Down Payment</md-table-head>
+                    <md-table-head>Down Payment</md-table-head>
                     <md-table-head>{{ $tc('words.rate', 1) }}</md-table-head>
                 </md-table-row>
-                <md-table-row v-for="(item, index) in soldAppliancesList" :key="index"
-                              :class="selectedApplianceId === item.id  ? 'selected-row' : ''">
-                    <md-table-cell md-label="Name" md-sort-by="name">{{ item.asset.name }}</md-table-cell>
-                    <md-table-cell md-label="Cost" md-sort-by="total_cost">{{ moneyFormat(item.total_cost) }}
+                <md-table-row
+                    v-for="(item, index) in soldAppliancesList"
+                    :key="index"
+                    :class="
+                        selectedApplianceId === item.id ? 'selected-row' : ''
+                    "
+                >
+                    <md-table-cell md-label="Name" md-sort-by="name">
+                        {{ item.asset.name }}
                     </md-table-cell>
-                    <md-table-cell md-label="Down Payment" md-sort-by="Down Payment">
+                    <md-table-cell md-label="Cost" md-sort-by="total_cost">
+                        {{ moneyFormat(item.total_cost) }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Down Payment"
+                        md-sort-by="Down Payment"
+                    >
                         {{ moneyFormat(item.down_payment) }}
                     </md-table-cell>
                     <md-table-cell md-label="Rates" md-sort-by="rate_count">
                         {{ item.rate_count }}
                         <div
-                            :class="index=== -999?'text-danger':'text-success'"
-                            style="cursor: pointer; display:inline-block"
+                            :class="
+                                index === -999 ? 'text-danger' : 'text-success'
+                            "
+                            style="cursor: pointer; display: inline-block"
                             @click="showDetails(soldAppliancesList[index].id)"
                         >
                             <md-icon>remove_red_eye</md-icon>
@@ -37,8 +55,13 @@
                 </md-table-row>
             </md-table>
         </widget>
-        <sell-appliance-modal v-if="person" :person="person" :showSellApplianceModal="showSellApplianceModal"
-                              @hideModal="() => showSellApplianceModal = false" :key="key"/>
+        <sell-appliance-modal
+            v-if="person"
+            :person="person"
+            :showSellApplianceModal="showSellApplianceModal"
+            @hideModal="() => (showSellApplianceModal = false)"
+            :key="key"
+        />
     </div>
 </template>
 
@@ -57,48 +80,50 @@ export default {
             required: true,
         },
         personId: {
-            required: true
-        }
+            required: true,
+        },
     },
-    data () {
+    data() {
         return {
             personService: new PersonService(),
             currency: this.$store.getters['settings/getMainSettings'].currency,
             selectedApplianceId: null,
             person: null,
             showSellApplianceModal: false,
-            key: 0
+            key: 0,
         }
     },
-    created () {
+    created() {
         this.selectedApplianceId = parseInt(this.$route.params.id)
     },
-    mounted () {
+    mounted() {
         this.getPersonDetails()
     },
     methods: {
-        async getPersonDetails () {
+        async getPersonDetails() {
             try {
                 this.person = await this.personService.getPerson(this.personId)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        showDetails (id) {
+        showDetails(id) {
             this.selectedRow(id)
-            this.$router.push({ path: '/sold-appliance-detail/' + id }).catch(err => err)
+            this.$router
+                .push({ path: '/sold-appliance-detail/' + id })
+                .catch((err) => err)
         },
-        selectedRow (id) {
+        selectedRow(id) {
             if (this.selectedApplianceId !== id) {
                 this.selectedApplianceId = id
             }
-        }
-    }
+        },
+    },
 }
 </script>
 
 <style scoped>
 .selected-row {
-    background-color: #ccc
+    background-color: #ccc;
 }
 </style>

@@ -1,17 +1,15 @@
 <template>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
 </template>
 
 <script>
-import {ICON_OPTIONS, ICONS, MARKER_TYPE} from '@/services/MappingService'
-import {notify, sharedMap} from '@/mixins'
+import { ICON_OPTIONS, ICONS, MARKER_TYPE } from '@/services/MappingService'
+import { notify, sharedMap } from '@/mixins'
 
 export default {
     name: 'ClientMap',
     mixins: [notify, sharedMap],
-    mounted () {
+    mounted() {
         this.map.on('draw:edited', (event) => {
             const editedItems = []
             const editedLayers = event.layers
@@ -19,7 +17,7 @@ export default {
                 const geoDataItem = {
                     serialNumber: layer._tooltip._content,
                     lat: layer._latlng.lat,
-                    lon: layer._latlng.lng
+                    lon: layer._latlng.lng,
                 }
                 editedItems.push(geoDataItem)
             })
@@ -27,34 +25,49 @@ export default {
             if (editedItems.length) {
                 this.$emit('locationEdited', editedItems)
             }
-
         })
     },
     methods: {
-        setDeviceMarkers () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.METER || markingInfo.markerType === MARKER_TYPE.SHS || markingInfo.markerType === MARKER_TYPE.E_BIKE).map((markingInfo) => {
-                const deviceMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+        setDeviceMarkers() {
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.METER ||
+                        markingInfo.markerType === MARKER_TYPE.SHS ||
+                        markingInfo.markerType === MARKER_TYPE.E_BIKE,
+                )
+                .map((markingInfo) => {
+                    const deviceMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const deviceMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: deviceMarkerIcon },
+                    )
+                    deviceMarker.bindTooltip(markingInfo.serialNumber)
+
+                    if (markingInfo.markerType === MARKER_TYPE.METER) {
+                        const parent = this
+                        deviceMarker.on('click', () => {
+                            parent.routeToDetail(
+                                '/meters',
+                                markingInfo.serialNumber,
+                            )
+                        })
+                    }
+                    if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
+                        const parent = this
+                        deviceMarker.on('click', () => {
+                            parent.routeToDetailWithQueryParam(
+                                '/e-bikes',
+                                'serialNumber',
+                                markingInfo.serialNumber,
+                            )
+                        })
+                    }
+                    deviceMarker.addTo(this.editableLayer)
                 })
-                const deviceMarker = L.marker([markingInfo.lat, markingInfo.lon], {icon: deviceMarkerIcon})
-                deviceMarker.bindTooltip(markingInfo.serialNumber)
-
-                if (markingInfo.markerType === MARKER_TYPE.METER) {
-                    const parent = this
-                    deviceMarker.on('click', () => {
-                        parent.routeToDetail('/meters', markingInfo.serialNumber)
-                    })
-                }
-                if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
-                    const parent = this
-                    deviceMarker.on('click', () => {
-                        parent.routeToDetailWithQueryParam('/e-bikes','serialNumber', markingInfo.serialNumber)
-                    })
-                }
-                deviceMarker.addTo(this.editableLayer)
-            })
-
         },
     },
 }
@@ -71,4 +84,3 @@ export default {
     background: white !important;
 }
 </style>
-

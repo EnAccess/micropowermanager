@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class MeterService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('meter')
         this.list = []
         this.isSync = false
@@ -14,16 +13,16 @@ export class MeterService {
             terminalId: null,
             meterName: null,
             meterAddress: null,
-            owner: null
+            owner: null,
         }
     }
-    updateList (responseData) {
+    updateList(responseData) {
         this.list = []
         for (let data of responseData) {
             this.list.push(data.data.attributes)
         }
     }
-    async syncMeters () {
+    async syncMeters() {
         try {
             const response = await this.repository.sync()
             if (response.status === 200) {
@@ -36,12 +35,11 @@ export class MeterService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async checkMeters () {
+    async checkMeters() {
         try {
             const response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }

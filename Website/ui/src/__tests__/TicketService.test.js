@@ -9,6 +9,5 @@ describe('TicketService #createMaintenanceTicket', function () {
         expect(data[0]).toHaveProperty('ticket_id')
         expect(data[0].ticket_id).not.toBeNull()
         expect(data[0].ticket_id).not.toBeUndefined()
-
     })
 })

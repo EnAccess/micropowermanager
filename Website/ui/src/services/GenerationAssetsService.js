@@ -3,18 +3,18 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '@/shared/eventbus'
 
 export class GenerationAssetsService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('generationAssets')
-        this.list=[]
+        this.list = []
         this.subscriber = null
         this.chartData = []
     }
     setSubscriber(subscriber) {
-        this.subscriber= subscriber
+        this.subscriber = subscriber
     }
-    async getList(miniGridId, startDate =null, endDate= null){
+    async getList(miniGridId, startDate = null, endDate = null) {
         let params = {}
-        if(startDate !== null) {
+        if (startDate !== null) {
             params['start_date'] = startDate
         }
         if (endDate !== null) {
@@ -22,25 +22,37 @@ export class GenerationAssetsService {
         }
 
         try {
-            const response = await  this.repository.list(miniGridId, params)
-            if(response.status === 200) {
+            const response = await this.repository.list(miniGridId, params)
+            if (response.status === 200) {
                 this.list = response.data.data
                 return true
             }
-        } catch(e){
+        } catch (e) {
             const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
 
-    prepareChartData(){
+    prepareChartData() {
         let chartData = []
         //chart headers
-        chartData.push(['Date', 'PV Power Output', 'Total Electrical Load Served', 'From Batteries','Generator'])
+        chartData.push([
+            'Date',
+            'PV Power Output',
+            'Total Electrical Load Served',
+            'From Batteries',
+            'Generator',
+        ])
 
-        this.list.map(reading => {
+        this.list.map((reading) => {
             chartData.push([
-                new Date(Date.parse(reading['data_reading_date']+ ' '+ reading['data_reading_time'] )),
+                new Date(
+                    Date.parse(
+                        reading['data_reading_date'] +
+                            ' ' +
+                            reading['data_reading_time'],
+                    ),
+                ),
                 {
                     v: reading.new_generated_energy,
                     f: `${reading.new_generated_energy} ${reading.new_generated_energy_unit}`,
@@ -57,11 +69,9 @@ export class GenerationAssetsService {
                     v: reading.d_newly_energy,
                     f: `${reading.d_newly_energy} ${reading.d_newly_energy_unit}`,
                 },
-
-
             ])
         })
-        this.chartData =  chartData
+        this.chartData = chartData
         EventBus.$emit('chartLoaded', 'energy')
         return chartData
     }

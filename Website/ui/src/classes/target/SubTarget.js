@@ -1,7 +1,6 @@
-import {ConnectionsType} from '../connection/ConnectionsType'
+import { ConnectionsType } from '../connection/ConnectionsType'
 
 export class SubTarget {
-
     constructor() {
         this.id = null
         this.targetId = null
@@ -10,9 +9,7 @@ export class SubTarget {
         this.revenue = null
     }
 
-
     fromJson(jsonData) {
-
         this.id = jsonData.id
         this.targetId = jsonData.target_id
         this.revenue = jsonData.revenue
@@ -23,5 +20,4 @@ export class SubTarget {
         this.connections = connectionType.fromJson(jsonData.connection_type)
         return this
     }
-
 }

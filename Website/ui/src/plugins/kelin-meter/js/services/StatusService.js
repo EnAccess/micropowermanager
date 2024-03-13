@@ -2,13 +2,12 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class StatusService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('status')
         this.status = {}
     }
 
-    async getMeterStatus (meterId) {
+    async getMeterStatus(meterId) {
         try {
             const response = await this.repository.show(meterId)
             if (response.status === 200) {
@@ -22,11 +21,11 @@ export class StatusService {
         }
     }
 
-    async changeMeterStatus (meterId,status) {
+    async changeMeterStatus(meterId, status) {
         try {
             const statusPM = {
-                'status': status === true ? 'ON' : 'OFF',
-                'meterId':meterId
+                status: status === true ? 'ON' : 'OFF',
+                meterId: meterId,
             }
             const response = await this.repository.update(statusPM)
             if (response.status === 200) {

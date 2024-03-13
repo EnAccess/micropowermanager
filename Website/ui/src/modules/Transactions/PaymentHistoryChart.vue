@@ -1,27 +1,21 @@
 <template>
     <div>
-
         <GChart
-            v-if="donutData.length>0"
+            v-if="donutData.length > 0"
             type="PieChart"
             :data="donutData"
             :options="donutChartOptions"
         />
     </div>
-
-
 </template>
 
 <script>
-
 export default {
     name: 'PaymentHistoryChart',
     props: ['paymentdata'],
-    data () {
+    data() {
         return {
-            donutData: [
-                ['Paid For', 'Amount']
-            ],
+            donutData: [['Paid For', 'Amount']],
             donutChartOptions: {
                 title: this.$tc('phrases.paymentDistribution'),
                 pieHole: 0.4,
@@ -34,21 +28,20 @@ export default {
         }
     },
     methods: {
-        prepareChartData () {
+        prepareChartData() {
             for (let i in this.paymentdata) {
                 this.donutData.push([
-                    this.paymentdata[i].payment_type, this.paymentdata[i].amount
+                    this.paymentdata[i].payment_type,
+                    this.paymentdata[i].amount,
                 ])
             }
             return this.donutData
-        }
+        },
     },
-    mounted () {
+    mounted() {
         this.prepareChartData()
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

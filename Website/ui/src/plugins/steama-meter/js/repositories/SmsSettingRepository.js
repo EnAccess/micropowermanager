@@ -8,5 +8,4 @@ export default {
     update(smsListPM) {
         return Client.put(`${resource}`, smsListPM)
     },
-
 }

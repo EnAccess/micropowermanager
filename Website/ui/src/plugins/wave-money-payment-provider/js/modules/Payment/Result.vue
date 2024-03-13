@@ -5,18 +5,19 @@
                 <span class="title highlight">MicroPowerManager</span>
             </div>
 
-            <span>Dear customer, </span><br>
+            <span>Dear customer,</span>
+            <br />
             <p class="cloud-description">
-                Your payment has been received. You will be informed about the payment details as soon as possible.
+                Your payment has been received. You will be informed about the
+                payment details as soon as possible.
             </p>
-
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Result'
+    name: 'Result',
 }
 </script>
 
@@ -36,7 +37,6 @@ export default {
     max-width: 720px;
     text-align: center;
     margin-top: 18rem;
-
 }
 
 .title {

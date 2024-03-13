@@ -2,16 +2,15 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class RestrictionService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('restriction')
-
     }
 
-    async sendPurchaseCode (purchaseCode, email) {
+    async sendPurchaseCode(purchaseCode, email) {
         try {
             let code_PM = {
                 purchaseCode: purchaseCode,
-                email: email
+                email: email,
             }
             let response = await this.repository.sendCode(code_PM)
 
@@ -25,11 +24,11 @@ export class RestrictionService {
         }
     }
 
-    async purchaseCodeIsValid (purchaseCode, productCode, Type) {
+    async purchaseCodeIsValid(purchaseCode, productCode, Type) {
         let restriction_PM = {
             token: purchaseCode,
             product_id: productCode,
-            type: Type
+            type: Type,
         }
         try {
             let response = await this.repository.check(restriction_PM)

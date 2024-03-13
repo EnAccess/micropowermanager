@@ -1,5 +1,5 @@
 <template>
-    <Dashboard/>
+    <Dashboard />
 </template>
 <script>
 import Dashboard from '@/modules/Dashboard/Dashboard'
@@ -9,4 +9,3 @@ export default {
     components: { Dashboard },
 }
 </script>
-

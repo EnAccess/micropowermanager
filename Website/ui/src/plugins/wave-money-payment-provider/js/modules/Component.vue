@@ -1,24 +1,16 @@
 <!-- eslint-disable-next-line vue/valid-template-root -->
-<template>
-</template>
+<template></template>
 
 <script>
 export default {
     name: 'Component',
-    data () {
+    data() {
         return {}
     },
-    mounted () {
-
-    },
-    beforeDestroy () {
-
-    },
-    methods: {
-
-    }
+    mounted() {},
+    beforeDestroy() {},
+    methods: {},
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

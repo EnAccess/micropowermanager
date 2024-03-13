@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class MeterService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('meter')
         this.list = []
         this.isSync = false
@@ -14,22 +13,24 @@ export class MeterService {
             id: null,
             serial: null,
             site: null,
-            owner: null
+            owner: null,
         }
     }
 
-    fromJson (meterData) {
-
+    fromJson(meterData) {
         this.meter = {
             id: meterData.id,
             serial: meterData.mpm_meter.serial_number,
             site: meterData.stm_customer.site.mpm_mini_grid.name,
-            owner: meterData.stm_customer.mpm_person.name + ' ' + meterData.stm_customer.mpm_person.surname
+            owner:
+                meterData.stm_customer.mpm_person.name +
+                ' ' +
+                meterData.stm_customer.mpm_person.surname,
         }
         return this.meter
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let m in data) {
             let meter = this.fromJson(data[m])
@@ -37,7 +38,7 @@ export class MeterService {
         }
     }
 
-    async syncMeters () {
+    async syncMeters() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -51,12 +52,11 @@ export class MeterService {
         }
     }
 
-    async checkMeters () {
+    async checkMeters() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -66,7 +66,7 @@ export class MeterService {
         }
     }
 
-    async getMetersCount () {
+    async getMetersCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {

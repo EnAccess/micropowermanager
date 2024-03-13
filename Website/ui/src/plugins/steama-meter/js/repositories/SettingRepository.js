@@ -8,5 +8,4 @@ export default {
     list() {
         return Client.get(`${resource}`)
     },
-
 }

@@ -5,71 +5,150 @@
             style="max-width: 60rem; margin: auto"
         >
             <md-dialog-title>
-                <div
-                    class="divider-title">
+                <div class="divider-title">
                     {{ $tc('phrases.addCustomer') }}
                 </div>
             </md-dialog-title>
 
-            <md-dialog-content style="overflow-y: auto;" class="md-layout-item md-size-100">
+            <md-dialog-content
+                style="overflow-y: auto"
+                class="md-layout-item md-size-100"
+            >
                 <div v-if="loading">
-                    <loader/>
+                    <loader />
                 </div>
                 <div v-else class="md-layout md-gutter">
                     <div class="md-layout-item md-size-100">
-                        <form class="md-layout md-gutter" data-vv-scope="customer-add-form">
+                        <form
+                            class="md-layout md-gutter"
+                            data-vv-scope="customer-add-form"
+                        >
                             <div class="md-layout-item md-size-100">
-                                <div
-                                    class="divider-title">
+                                <div class="divider-title">
                                     {{ $tc('phrases.personalInformation') }}
                                 </div>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
-                                    <label for="title">{{ $tc('words.title') }}</label>
+                                    <label for="title">
+                                        {{ $tc('words.title') }}
+                                    </label>
                                     <md-input
                                         type="text"
                                         name="title"
                                         id="title"
                                         v-model="personService.person.title"
                                     />
-                                    <span class="md-error">{{ errors.first('customer-add-form.title') }}</span>
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.title',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has($tc('customer-add-form.name'))}">
-                                    <label for="name">{{ $tc('words.name') }}</label>
-                                    <md-input type="text" name="name" id="name" v-validate="'required|min:2'"
-                                              v-model="personService.person.name"/>
-                                    <span class="md-error">{{ errors.first('customer-add-form.name') }}</span>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            $tc('customer-add-form.name'),
+                                        ),
+                                    }"
+                                >
+                                    <label for="name">
+                                        {{ $tc('words.name') }}
+                                    </label>
+                                    <md-input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        v-validate="'required|min:2'"
+                                        v-model="personService.person.name"
+                                    />
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.name',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has($tc('customer-add-form.surname'))}">
-                                    <label for="surname">{{ $tc('words.surname') }}</label>
-                                    <md-input type="text" name="surname" id="surname"
-                                              v-model="personService.person.surname" v-validate="'required|min:2'"/>
-                                    <span class="md-error">{{ errors.first('customer-add-form.surname') }}</span>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            $tc('customer-add-form.surname'),
+                                        ),
+                                    }"
+                                >
+                                    <label for="surname">
+                                        {{ $tc('words.surname') }}
+                                    </label>
+                                    <md-input
+                                        type="text"
+                                        name="surname"
+                                        id="surname"
+                                        v-model="personService.person.surname"
+                                        v-validate="'required|min:2'"
+                                    />
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.surname',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-datepicker md-immediately name="birthDate"
-                                               v-model="personService.person.birthDate">
-                                    <label for="birth-date">{{ $tc('words.birthday') }} :</label>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-datepicker
+                                    md-immediately
+                                    name="birthDate"
+                                    v-model="personService.person.birthDate"
+                                >
+                                    <label for="birth-date">
+                                        {{ $tc('words.birthday') }} :
+                                    </label>
                                 </md-datepicker>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
-                                    <label for="gender">{{ $tc('words.gender') }} :</label>
-                                    <md-select name="gender" id="gender" v-model="personService.person.gender">
-                                        <md-option value="male">{{ $tc('words.male') }}</md-option>
-                                        <md-option value="female">{{ $tc('words.female') }}</md-option>
+                                    <label for="gender">
+                                        {{ $tc('words.gender') }} :
+                                    </label>
+                                    <md-select
+                                        name="gender"
+                                        id="gender"
+                                        v-model="personService.person.gender"
+                                    >
+                                        <md-option value="male">
+                                            {{ $tc('words.male') }}
+                                        </md-option>
+                                        <md-option value="female">
+                                            {{ $tc('words.female') }}
+                                        </md-option>
                                     </md-select>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
                                 <md-field>
-                                    <label for="education">{{ $tc('words.education') }}</label>
+                                    <label for="education">
+                                        {{ $tc('words.education') }}
+                                    </label>
                                     <md-input
                                         type="text"
                                         name="education"
@@ -78,69 +157,158 @@
                                     />
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has($tc('customer-add-form.email'))}">
-                                    <label for="email">{{ $tc('words.email') }}</label>
-                                    <md-input type="text" name="email" v-validate="'email'" id="email"
-                                              v-model="personService.person.address.email"/>
-                                    <span class="md-error">{{ errors.first('customer-add-form.email') }}</span>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            $tc('customer-add-form.email'),
+                                        ),
+                                    }"
+                                >
+                                    <label for="email">
+                                        {{ $tc('words.email') }}
+                                    </label>
+                                    <md-input
+                                        type="text"
+                                        name="email"
+                                        v-validate="'email'"
+                                        id="email"
+                                        v-model="
+                                            personService.person.address.email
+                                        "
+                                    />
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.email',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has('customer-add-form.phone')}">
-                                    <label for="phone">{{ $tc('words.phone') }}</label>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            'customer-add-form.phone',
+                                        ),
+                                    }"
+                                >
+                                    <label for="phone">
+                                        {{ $tc('words.phone') }}
+                                    </label>
                                     <md-input
                                         name="phone"
                                         id="phone"
-                                        v-model="personService.person.address.phone"
+                                        v-model="
+                                            personService.person.address.phone
+                                        "
                                         v-validate="'required|min:9'"
                                         placeholder="Phone (+___ ____ ____)"
                                     />
-                                    <span class="md-error">{{ errors.first('customer-add-form.phone') }}</span>
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.phone',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
                             <div class="md-layout-item md-size-100">
-                                <div
-                                    class="divider-title">
+                                <div class="divider-title">
                                     {{ $tc('words.address') }}
                                 </div>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has('customer-add-form.city')}">
-                                    <label for="city">{{ $tc('words.city') }}</label>
-                                    <md-select name="city" id="city" v-model="selectedCityId" v-validate="'required'">
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            'customer-add-form.city',
+                                        ),
+                                    }"
+                                >
+                                    <label for="city">
+                                        {{ $tc('words.city') }}
+                                    </label>
+                                    <md-select
+                                        name="city"
+                                        id="city"
+                                        v-model="selectedCityId"
+                                        v-validate="'required'"
+                                    >
                                         <md-option
                                             v-for="city in cityService.list"
                                             :key="city.id"
                                             :value="city.id"
-                                        >{{ city.name }}
+                                        >
+                                            {{ city.name }}
                                         </md-option>
                                     </md-select>
-                                    <span class="md-error">{{ errors.first('customer-add-form.city') }}</span>
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.city',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-                            <div class="md-layout-item md-size-50 md-small-size-100">
-                                <md-field :class="{'md-invalid': errors.has('customer-add-form.street')}">
-                                    <label for="street">{{ $tc('words.street') }}</label>
-                                    <md-input type="text" id="street" name="street"
-                                              v-model="personService.person.address.street"
-                                              v-validate="'required|min:5'"/>
-                                    <span class="md-error">{{ errors.first('customer-add-form.street') }}</span>
+                            <div
+                                class="md-layout-item md-size-50 md-small-size-100"
+                            >
+                                <md-field
+                                    :class="{
+                                        'md-invalid': errors.has(
+                                            'customer-add-form.street',
+                                        ),
+                                    }"
+                                >
+                                    <label for="street">
+                                        {{ $tc('words.street') }}
+                                    </label>
+                                    <md-input
+                                        type="text"
+                                        id="street"
+                                        name="street"
+                                        v-model="
+                                            personService.person.address.street
+                                        "
+                                        v-validate="'required|min:5'"
+                                    />
+                                    <span class="md-error">
+                                        {{
+                                            errors.first(
+                                                'customer-add-form.street',
+                                            )
+                                        }}
+                                    </span>
                                 </md-field>
                             </div>
-
                         </form>
-
                     </div>
                 </div>
             </md-dialog-content>
             <md-dialog-actions>
-                <md-button role="button" class="md-raised md-primary" :disabled="loading" @click="save">
+                <md-button
+                    role="button"
+                    class="md-raised md-primary"
+                    :disabled="loading"
+                    @click="save"
+                >
                     {{ $tc('words.save') }}
                 </md-button>
-                <md-button role="button" class="md-raised" @click="cancel">{{ $tc('words.close') }}</md-button>
+                <md-button role="button" class="md-raised" @click="cancel">
+                    {{ $tc('words.close') }}
+                </md-button>
             </md-dialog-actions>
-            <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+            <md-progress-bar md-mode="indeterminate" v-if="loading" />
         </md-dialog>
     </div>
 </template>
@@ -157,11 +325,11 @@ export default {
     props: {
         showAddClient: {
             required: true,
-            type: Boolean
+            type: Boolean,
         },
     },
     components: { Loader },
-    data () {
+    data() {
         return {
             personService: new PersonService(),
             cityService: new CityService(),
@@ -169,12 +337,13 @@ export default {
             selectedCityId: null,
         }
     },
-    beforeMount () {
+    beforeMount() {
         this.cityService.getCities()
     },
     methods: {
-        async save () {
-            const validator = await this.$validator.validateAll('customer-add-form')
+        async save() {
+            const validator =
+                await this.$validator.validateAll('customer-add-form')
             if (!validator) return
             try {
                 const personParams = {
@@ -189,25 +358,30 @@ export default {
                     education: this.personService.person.education,
                     birthDate: this.personService.person.birthDate,
                     sex: this.personService.person.gender,
-                    isCustomer: true
+                    isCustomer: true,
                 }
-                const person = await this.personService.createPerson(personParams)
-                this.alertNotify('success', this.$tc('messages.successfullyCreated', { item: this.$tc('words.customer', 1) }))
+                const person =
+                    await this.personService.createPerson(personParams)
+                this.alertNotify(
+                    'success',
+                    this.$tc('messages.successfullyCreated', {
+                        item: this.$tc('words.customer', 1),
+                    }),
+                )
                 await this.$router.push(`/people/${person.id}`)
-            }
-            catch (e){
+            } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        cancel () {
+        cancel() {
             this.$emit('hideAddCustomer')
         },
     },
     watch: {
         selectedCityId: function (val) {
             this.personService.person.address.cityId = val
-        }
-    }
+        },
+    },
 }
 </script>
 <style scoped>

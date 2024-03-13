@@ -4,17 +4,16 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/solar-home-systems`
 
 export default {
-    create (shs) {
+    create(shs) {
         return Client.post(`${resource}`, shs)
     },
-    detail (shsId) {
+    detail(shsId) {
         return Client.get(`${resource}/${shsId}`)
     },
-    update (shsId,shs) {
-
+    update(shsId, shs) {
         return Client.put(`${resource}/${shsId}`, shs)
     },
-    delete (shsId) {
+    delete(shsId) {
         return Client.delete(`${resource}/${shsId}`)
     },
     resource,

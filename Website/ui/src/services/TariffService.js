@@ -5,7 +5,7 @@ import { Paginator } from '@/classes/paginator'
 import { resource } from '@/repositories/TariffRepository'
 
 export class TariffService {
-    constructor () {
+    constructor() {
         this.touService = new TimeOfUsageService()
         this.repository = Repository.get('tariff')
         this.list = []
@@ -26,10 +26,10 @@ export class TariffService {
                 dailyAllowance: null,
                 price: null,
                 initialEnergyBudget: null,
-                maximumStackedEnergy: null
+                maximumStackedEnergy: null,
             },
             components: [],
-            tous: []
+            tous: [],
         }
         this.hasAccessRate = false
         this.socialOptions = false
@@ -38,7 +38,7 @@ export class TariffService {
         this.paginator = new Paginator(resource)
     }
 
-    fromJson (tariffData) {
+    fromJson(tariffData) {
         let tariff = {
             id: tariffData.id,
             name: tariffData.name,
@@ -56,68 +56,81 @@ export class TariffService {
                 dailyAllowance: null,
                 price: null,
                 initialEnergyBudget: null,
-                maximumStackedEnergy: null
+                maximumStackedEnergy: null,
             },
             components: tariffData.pricing_component,
-            tous: tariffData.tou
+            tous: tariffData.tou,
         }
 
-        if (tariffData.access_rate !== undefined && tariffData.access_rate !== null) {
+        if (
+            tariffData.access_rate !== undefined &&
+            tariffData.access_rate !== null
+        ) {
             this.hasAccessRate = true
             tariff.accessRate = {
                 id: tariffData.access_rate.id,
                 amount: tariffData.access_rate.amount,
-                period: tariffData.access_rate.period
+                period: tariffData.access_rate.period,
             }
         }
-        if (tariffData.social_tariff !== undefined && tariffData.social_tariff !== null) {
+        if (
+            tariffData.social_tariff !== undefined &&
+            tariffData.social_tariff !== null
+        ) {
             tariff.socialTariff = {
                 id: tariffData.social_tariff.id,
                 dailyAllowance: tariffData.social_tariff.daily_allowance,
                 price: tariffData.social_tariff.price,
-                initialEnergyBudget: tariffData.social_tariff.initial_energy_budget,
-                maximumStackedEnergy: tariffData.social_tariff.maximum_stacked_energy,
+                initialEnergyBudget:
+                    tariffData.social_tariff.initial_energy_budget,
+                maximumStackedEnergy:
+                    tariffData.social_tariff.maximum_stacked_energy,
             }
             this.socialOptions = true
         }
-        if ('pricingComponent' in tariff && tariffData.pricing_component.length > 0) {
-            tariff.components = tariffData.pricing_component.map(component => {
-                return {
-                    id: component.id,
-                    name: component.name,
-                    price: component.price
-                }
-            })
+        if (
+            'pricingComponent' in tariff &&
+            tariffData.pricing_component.length > 0
+        ) {
+            tariff.components = tariffData.pricing_component.map(
+                (component) => {
+                    return {
+                        id: component.id,
+                        name: component.name,
+                        price: component.price,
+                    }
+                },
+            )
         }
         if (tariffData.tou.length > 0) {
             let price = tariffData.price / 100
-            tariff.tous = tariffData.tou.map(tou => {
+            tariff.tous = tariffData.tou.map((tou) => {
                 return {
                     id: tou.id,
                     start: tou.start,
                     end: tou.end,
                     value: tou.value,
-                    cost: (price * tou.value) / 100
+                    cost: (price * tou.value) / 100,
                 }
             })
         }
         return tariff
     }
 
-    updateList (data) {
-        this.list = data.map(tariff => {
+    updateList(data) {
+        this.list = data.map((tariff) => {
             return this.fromJson(tariff)
         })
     }
 
-    async getTariffs () {
+    async getTariffs() {
         try {
             let response = await this.repository.list()
 
             if (response.status === 200 || response.status === 201) {
                 this.list = []
                 let data = response.data.data
-                this.list = data.map(tariff => {
+                this.list = data.map((tariff) => {
                     return this.fromJson(tariff)
                 })
                 return this.list
@@ -128,10 +141,9 @@ export class TariffService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async getTariff (tariffId) {
+    async getTariff(tariffId) {
         try {
             let response = await this.repository.get(tariffId)
             if (response.status === 200) {
@@ -148,13 +160,13 @@ export class TariffService {
         }
     }
 
-    async saveTariff (method) {
+    async saveTariff(method) {
         let tariffPM = {
             name: this.tariff.name,
             price: Number(this.tariff.price),
             currency: this.currency,
             factor: this.tariff.factor,
-            minimum_purchase_amount: Number(this.tariff.minimumPurchaseAmount)
+            minimum_purchase_amount: Number(this.tariff.minimumPurchaseAmount),
         }
         if (this.tariff.components.length > 0)
             tariffPM.components = this.tariff.components
@@ -166,15 +178,20 @@ export class TariffService {
                 id: this.tariff.socialTariff.id,
                 daily_allowance: this.tariff.socialTariff.dailyAllowance,
                 price: this.tariff.socialTariff.price,
-                initial_energy_budget: this.tariff.socialTariff.initialEnergyBudget,
-                maximum_stacked_energy: this.tariff.socialTariff.maximumStackedEnergy
+                initial_energy_budget:
+                    this.tariff.socialTariff.initialEnergyBudget,
+                maximum_stacked_energy:
+                    this.tariff.socialTariff.maximumStackedEnergy,
             }
         }
-        if (this.tariff.accessRate.period != null && this.tariff.accessRate.amount != null) {
+        if (
+            this.tariff.accessRate.period != null &&
+            this.tariff.accessRate.amount != null
+        ) {
             tariffPM.access_rate = {
                 id: this.tariff.accessRate.id,
                 access_rate_period: this.tariff.accessRate.period,
-                access_rate_amount: this.tariff.accessRate.amount
+                access_rate_amount: this.tariff.accessRate.amount,
             }
         }
         try {
@@ -184,18 +201,15 @@ export class TariffService {
                 tariffPM.id = this.tariff.id
                 await this.repository.update(tariffPM)
             }
-
         } catch (e) {
-
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async removeAdditionalComponent (addedType, id) {
+    async removeAdditionalComponent(addedType, id) {
         if (addedType === 'component') {
-            let component = this.tariff.components.filter(x => x.id === id)[0]
+            let component = this.tariff.components.filter((x) => x.id === id)[0]
             if (component !== null) {
                 for (let i = 0; i < this.tariff.components.length; i++) {
                     if (this.tariff.components[i].id === component.id) {
@@ -207,7 +221,7 @@ export class TariffService {
             if (id > 0) {
                 await this.touService.deleteTou(id)
             }
-            let tou = this.tariff.tous.filter(x => x.id === id)[0]
+            let tou = this.tariff.tous.filter((x) => x.id === id)[0]
             if (tou !== null) {
                 for (let i = 0; i < this.tariff.tous.length; i++) {
                     if (this.tariff.tous[i].id === tou.id) {
@@ -219,7 +233,7 @@ export class TariffService {
         }
     }
 
-    async tariffUsageCount (id) {
+    async tariffUsageCount(id) {
         try {
             let response = await this.repository.usages(id)
             if (response.status === 200) {
@@ -233,7 +247,7 @@ export class TariffService {
         }
     }
 
-    async deleteTariff (id) {
+    async deleteTariff(id) {
         try {
             let response = await this.repository.delete(id)
             if (response.status === 200) {
@@ -247,7 +261,7 @@ export class TariffService {
         }
     }
 
-    async changeMetersTariff (currentId, changeId) {
+    async changeMetersTariff(currentId, changeId) {
         try {
             let response = await this.repository.change(currentId, changeId)
             if (response.status === 200) {
@@ -261,16 +275,16 @@ export class TariffService {
         }
     }
 
-    setCurrency (currency) {
+    setCurrency(currency) {
         this.currency = currency
     }
 
-    addToList (tariff) {
+    addToList(tariff) {
         this.list.push(tariff)
         return this.list
     }
 
-    resetAccessRate () {
+    resetAccessRate() {
         this.tariff.accessRate = {
             id: null,
             amount: null,
@@ -278,12 +292,12 @@ export class TariffService {
         }
     }
 
-    addAdditionalCostComponent (addedType) {
+    addAdditionalCostComponent(addedType) {
         if (addedType === 'component') {
             let component = {
                 id: -1 * Math.floor(Math.random() * 10000000),
                 name: '',
-                price: null
+                price: null,
             }
             this.tariff.components.push(component)
         } else {
@@ -292,9 +306,11 @@ export class TariffService {
                 start: this.getMinimumAvailableTime('start'),
                 end: this.getMinimumAvailableTime('end'),
                 value: null,
-                cost: 0
+                cost: 0,
             }
-            let redundantTime = this.tariff.tous.filter(x => x.start === tou.start && x.end === tou.end)[0]
+            let redundantTime = this.tariff.tous.filter(
+                (x) => x.start === tou.start && x.end === tou.end,
+            )[0]
             if (!redundantTime) {
                 this.times.forEach((e) => {
                     if (e.time === tou.end || e.time === tou.start) {
@@ -307,10 +323,10 @@ export class TariffService {
         }
     }
 
-    getMinimumAvailableTime (type) {
+    getMinimumAvailableTime(type) {
         let endTime = this.tariff.tous.reduce((acc, val) => {
             let timeEnd = Number(val.end.split(':')[0])
-            acc = (acc[1] === undefined || timeEnd > acc[1]) ? timeEnd : acc[1]
+            acc = acc[1] === undefined || timeEnd > acc[1] ? timeEnd : acc[1]
             return acc
         }, 0)
         endTime = endTime === 23 ? undefined : endTime
@@ -328,11 +344,10 @@ export class TariffService {
             } else {
                 return '01:00'
             }
-
         }
     }
 
-    resetTariff () {
+    resetTariff() {
         this.tariff = {
             id: null,
             name: '',
@@ -350,15 +365,14 @@ export class TariffService {
                 dailyAllowance: null,
                 price: null,
                 initialEnergyBudget: null,
-                maximumStackedEnergy: null
+                maximumStackedEnergy: null,
             },
             components: [],
             tous: [],
-
         }
     }
 
-    resetSocialTariff () {
+    resetSocialTariff() {
         this.tariff.socialTariff = {
             id: null,
             dailyAllowance: null,
@@ -368,10 +382,10 @@ export class TariffService {
         }
     }
 
-    generateTimes () {
+    generateTimes() {
         let times = []
         for (let i = 0; i < 24; i++) {
-            let timesObj = { 'id': 0, time: '', using: false }
+            let timesObj = { id: 0, time: '', using: false }
             timesObj.id = i + 1
             if (i < 10) {
                 timesObj.time = '0' + i + ':00'
@@ -383,11 +397,11 @@ export class TariffService {
         return times
     }
 
-    findConflicts () {
+    findConflicts() {
         this.conflicts = this.tariff.tous.map(this.checkOverlaps)
     }
 
-    checkOverlaps (usage) {
+    checkOverlaps(usage) {
         let overlaps = []
         let data = []
         let start = Number(usage.start.split(':')[0])
@@ -409,13 +423,19 @@ export class TariffService {
         return overlaps
     }
 
-    async createNewShsTariff (name, assignToDeviceSerial, minimumPayableAmount, amount, currency) {
+    async createNewShsTariff(
+        name,
+        assignToDeviceSerial,
+        minimumPayableAmount,
+        amount,
+        currency,
+    ) {
         let tariffPM = {
             name: name,
             price: Number(amount),
             currency: currency,
             factor: 2,
-            minimum_purchase_amount: Number(minimumPayableAmount)
+            minimum_purchase_amount: Number(minimumPayableAmount),
         }
         try {
             const response = await this.repository.create(tariffPM)
@@ -430,16 +450,18 @@ export class TariffService {
         }
     }
 
-    async changeTariffForSpecificMeter (meterSerial, tariffId) {
+    async changeTariffForSpecificMeter(meterSerial, tariffId) {
         try {
-            const response = await this.repository.changeTariffForSpecificMeter(meterSerial, tariffId)
+            const response = await this.repository.changeTariffForSpecificMeter(
+                meterSerial,
+                tariffId,
+            )
             if (response.status === 200) {
                 return response
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
         } catch (e) {
-
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }

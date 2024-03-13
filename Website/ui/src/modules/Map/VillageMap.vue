@@ -1,7 +1,5 @@
 <template>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
 </template>
 
 <script>
@@ -11,7 +9,7 @@ import { ICON_OPTIONS, ICONS, MARKER_TYPE } from '@/services/MappingService'
 export default {
     name: 'VillageMap',
     mixins: [sharedMap, notify],
-    mounted () {
+    mounted() {
         const drawingLayer = this.editableLayer
         const map = this.map
         this.map.on('draw:created', (event) => {
@@ -31,47 +29,72 @@ export default {
                 drawingLayer.addLayer(layer)
                 const geoDataItem = {
                     type: type,
-                    coordinates: layer._latlng
+                    coordinates: layer._latlng,
                 }
-                this.$emit('locationSet', { error: undefined, geoDataItem: geoDataItem })
+                this.$emit('locationSet', {
+                    error: undefined,
+                    geoDataItem: geoDataItem,
+                })
             } else {
-                const errorMessage = 'Please position your village within the selected cluster boundaries.'
-                this.$emit('locationSet', { error: errorMessage, geoDataItem: undefined })
+                const errorMessage =
+                    'Please position your village within the selected cluster boundaries.'
+                this.$emit('locationSet', {
+                    error: errorMessage,
+                    geoDataItem: undefined,
+                })
             }
         })
     },
     methods: {
-        drawCluster () {
+        drawCluster() {
             this.editableLayer.clearLayers()
             const geoData = this.mappingService.geoData.geo_data
             const geoType = geoData.geojson.type
-            const coordinatesClone = geoData.geojson.coordinates[0].reduce((acc, coord) => {
-                acc[0].push([coord[1], coord[0]])
-                return acc
-            }, [[]])
+            const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+                (acc, coord) => {
+                    acc[0].push([coord[1], coord[0]])
+                    return acc
+                },
+                [[]],
+            )
             const drawing = {
                 type: 'FeatureCollection',
                 crs: {
                     type: 'name',
                     properties: {
-                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84'
-                    }
-                },
-                features: [{
-                    type: 'Feature',
-                    properties: {
-                        popupContent: geoData.display_name,
-                        draw_type: geoData.draw_type === undefined ? 'set' : geoData.draw_type,
-                        selected: geoData.selected === undefined ? false : geoData.selected,
-                        clusterId: geoData.clusterId === undefined ? -1 : geoData.clusterId,
+                        name: 'urn:ogc:def:crs:OGC:1.3:CRS84',
                     },
-                    geometry: {
-                        type: geoType,
-                        coordinates: geoData.searched ? geoData.geojson.coordinates : coordinatesClone
-                    }
-                }]
+                },
+                features: [
+                    {
+                        type: 'Feature',
+                        properties: {
+                            popupContent: geoData.display_name,
+                            draw_type:
+                                geoData.draw_type === undefined
+                                    ? 'set'
+                                    : geoData.draw_type,
+                            selected:
+                                geoData.selected === undefined
+                                    ? false
+                                    : geoData.selected,
+                            clusterId:
+                                geoData.clusterId === undefined
+                                    ? -1
+                                    : geoData.clusterId,
+                        },
+                        geometry: {
+                            type: geoType,
+                            coordinates: geoData.searched
+                                ? geoData.geojson.coordinates
+                                : coordinatesClone,
+                        },
+                    },
+                ],
             }
-            const polygonColor = this.mappingService.strToHex(geoData.display_name)
+            const polygonColor = this.mappingService.strToHex(
+                geoData.display_name,
+            )
             // "this"  cannot be used inside the L.geoJson function
             const editableLayer = this.editableLayer
             const geoDataItems = this.geoDataItems
@@ -81,7 +104,11 @@ export default {
                     const type = layer.feature.geometry.type
                     const clusterId = layer.feature.properties.clusterId
                     if (type === 'Polygon' && clusterId !== -1) {
-                        layer.on('click', () => { this.$router.push({ path: '/clusters/' + clusterId })})
+                        layer.on('click', () => {
+                            this.$router.push({
+                                path: '/clusters/' + clusterId,
+                            })
+                        })
                     }
                     editableLayer.addLayer(layer)
 
@@ -90,7 +117,10 @@ export default {
                         type: 'manual',
                         geojson: {
                             type: geoData.geojson.type,
-                            coordinates: geoData.searched === true ? coordinatesClone : geoData.geojson.coordinates
+                            coordinates:
+                                geoData.searched === true
+                                    ? coordinatesClone
+                                    : geoData.geojson.coordinates,
                         },
                         searched: false,
                         display_name: geoData.display_name,
@@ -100,45 +130,64 @@ export default {
                         lon: geoData.lon,
                     }
                     geoDataItems.push(geoDataItem)
-                }
+                },
             })
             const bounds = drawnCluster.getBounds()
             this.map.fitBounds(bounds)
         },
-        setMiniGridMarker () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID ).map((markingInfo) => {
-                const miniGridMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+        setMiniGridMarker() {
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.MINI_GRID,
+                )
+                .map((markingInfo) => {
+                    const miniGridMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const miniGridMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: miniGridMarkerIcon },
+                    )
+                    miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
+                    const parent = this
+                    miniGridMarker.on('click', () => {
+                        parent.routeToDetail(markingInfo.id, markingInfo.name)
+                    })
+                    miniGridMarker.addTo(this.map)
                 })
-                const miniGridMarker = L.marker([markingInfo.lat,markingInfo.lon], { icon: miniGridMarkerIcon })
-                miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
-                const parent = this
-                miniGridMarker.on('click', () => { parent.routeToDetail(markingInfo.id, markingInfo.name) })
-                miniGridMarker.addTo(this.map)
-            })
         },
-        setVillageMarkerManually (location) {
+        setVillageMarkerManually(location) {
             const editableLayers = this.editableLayer.getLayers()
-            const polygon = editableLayers.find((layer) => layer.feature && layer.feature.geometry.type === 'Polygon')
+            const polygon = editableLayers.find(
+                (layer) =>
+                    layer.feature && layer.feature.geometry.type === 'Polygon',
+            )
             const bounds = polygon.getBounds()
 
             if (!bounds.contains(location)) {
-                const errorMessage = 'Please position your village within the selected cluster boundaries.'
-                this.$emit('locationSet', { error: errorMessage, geoDataItem: undefined })
+                const errorMessage =
+                    'Please position your village within the selected cluster boundaries.'
+                this.$emit('locationSet', {
+                    error: errorMessage,
+                    geoDataItem: undefined,
+                })
             } else {
                 this.removeExistingMarkers()
 
                 const villageMarkerIcon = L.icon({
                     ...ICON_OPTIONS,
-                    iconUrl: ICONS.VILLAGE
+                    iconUrl: ICONS.VILLAGE,
                 })
 
-                const villageMarker = L.marker(location, { icon: villageMarkerIcon })
+                const villageMarker = L.marker(location, {
+                    icon: villageMarkerIcon,
+                })
                 villageMarker.addTo(this.editableLayer)
             }
         },
-    }
+    },
 }
 </script>
 
@@ -153,4 +202,3 @@ export default {
     background: white !important;
 }
 </style>
-

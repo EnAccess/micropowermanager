@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class PaymentService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('payment')
         this.paymentRequest = {
             meterSerial: null,
@@ -10,13 +10,16 @@ export class PaymentService {
         }
     }
 
-    async startTransaction (companyId) {
+    async startTransaction(companyId) {
         try {
             let paymentRequest = {
                 meterSerial: this.paymentRequest.meterSerial,
                 amount: this.paymentRequest.amount,
             }
-            const { data } = await this.repository.post(paymentRequest, companyId)
+            const { data } = await this.repository.post(
+                paymentRequest,
+                companyId,
+            )
 
             console.log(data)
             if (data.data.redirectionUrl) {
@@ -24,7 +27,6 @@ export class PaymentService {
             } else {
                 return new ErrorHandler(data.data.error, 'http', 400)
             }
-
         } catch (error) {
             let errorMessage = ''
             console.log(error)
@@ -36,5 +38,4 @@ export class PaymentService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

@@ -1,5 +1,5 @@
 <template>
-    <div style="margin: 2vh;">
+    <div style="margin: 2vh">
         <md-card>
             <md-card-header>
                 {{ $tc('words.filter') }}
@@ -7,19 +7,28 @@
             <md-card-content>
                 <div class="md-layout">
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-field>
                             <label for="device">Device Type</label>
-                            <md-select v-model="selectedDevice" name="device" id="device">
-
-                                <md-option v-for="device in deviceTypes" :value="device.type" :key="device.type">
+                            <md-select
+                                v-model="selectedDevice"
+                                name="device"
+                                id="device"
+                            >
+                                <md-option
+                                    v-for="device in deviceTypes"
+                                    :value="device.type"
+                                    :key="device.type"
+                                >
                                     {{ device.display }}
                                 </md-option>
                             </md-select>
                         </md-field>
                     </div>
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-field>
                             <label for="serial_number">Serial Number</label>
                             <md-input
@@ -30,35 +39,51 @@
                             ></md-input>
                         </md-field>
                     </div>
-                    <div v-if="selectedDevice === 'meter'"
-                         class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                    <div
+                        v-if="selectedDevice === 'meter'"
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-field>
                             <label for="tariff">Tariff Name</label>
-                            <md-select v-model="selectedTariff" name="tariff" id="tariff" @md-selected="setTariff">
-                                <md-option v-for="tariff in tariffs" :value="tariff.id" :key="tariff.id">
+                            <md-select
+                                v-model="selectedTariff"
+                                name="tariff"
+                                id="tariff"
+                                @md-selected="setTariff"
+                            >
+                                <md-option
+                                    v-for="tariff in tariffs"
+                                    :value="tariff.id"
+                                    :key="tariff.id"
+                                >
                                     {{ tariff.name }}
                                 </md-option>
                             </md-select>
                         </md-field>
                     </div>
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-field>
                             <label for="provider">Transaction Provider</label>
-                            <md-select name="provider" id="provider"
-                                       v-model="selectedProvider"
+                            <md-select
+                                name="provider"
+                                id="provider"
+                                v-model="selectedProvider"
                             >
-                                <md-option v-for="(p,i) in transactionProviders" :key="i" :value="p.value">
+                                <md-option
+                                    v-for="(p, i) in transactionProviders"
+                                    :key="i"
+                                    :value="p.value"
+                                >
                                     {{ p.name }}
                                 </md-option>
-
                             </md-select>
-
-
                         </md-field>
                     </div>
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-field>
                             <label for="transaction">Status</label>
                             <md-select
@@ -68,14 +93,19 @@
                                 @md-selected="seTransaction"
                             >
                                 <md-option value="All">All</md-option>
-                                <md-option value="Only Approved">{{ $tc('phrases.onlyApproved') }}</md-option>
-                                <md-option value="Only Rejected">{{ $tc('phrases.onlyRejected') }}</md-option>
+                                <md-option value="Only Approved">
+                                    {{ $tc('phrases.onlyApproved') }}
+                                </md-option>
+                                <md-option value="Only Rejected">
+                                    {{ $tc('phrases.onlyRejected') }}
+                                </md-option>
                             </md-select>
                         </md-field>
                     </div>
 
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-datepicker
                             v-model="filterFrom"
                             md-immediately
@@ -86,42 +116,55 @@
                     </div>
 
                     <div
-                        class="md-layout-item  md-xlarge-size-100  md-large-size-100 md-medium-size-100  md-small-size-100 md-xsmall-size-100">
+                        class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
+                    >
                         <md-datepicker
                             v-model="filterTo"
                             md-immediately
-                            :md-model-type="String">
+                            :md-model-type="String"
+                        >
                             <label>{{ $tc('phrases.toDate') }}</label>
                         </md-datepicker>
                     </div>
                 </div>
             </md-card-content>
             <md-card-actions>
-                <md-button class="md-raised md-secondary" v-if="!loading" @click="exportTransactions">
+                <md-button
+                    class="md-raised md-secondary"
+                    v-if="!loading"
+                    @click="exportTransactions"
+                >
                     <md-icon>download</md-icon>
                 </md-button>
-                <md-button class="md-raised md-primary" v-if="!loading" @click="submitFilter">{{ $tc('words.search') }}
+                <md-button
+                    class="md-raised md-primary"
+                    v-if="!loading"
+                    @click="submitFilter"
+                >
+                    {{ $tc('words.search') }}
                 </md-button>
-                <md-button class="md-raised md-accent" @click="closeFilter">{{ $tc('words.close') }}</md-button>
+                <md-button class="md-raised md-accent" @click="closeFilter">
+                    {{ $tc('words.close') }}
+                </md-button>
             </md-card-actions>
-            <md-progress-bar md-mode="indeterminate" v-if="loading"/>
+            <md-progress-bar md-mode="indeterminate" v-if="loading" />
         </md-card>
     </div>
 </template>
 
 <script>
-import {TransactionService} from '@/services/TransactionService'
-import {TariffService} from '@/services/TariffService'
-import {EventBus} from '@/shared/eventbus'
-import {TransactionProviderService} from '@/services/TransactionProviderService'
-import {mapGetters} from 'vuex'
+import { TransactionService } from '@/services/TransactionService'
+import { TariffService } from '@/services/TariffService'
+import { EventBus } from '@/shared/eventbus'
+import { TransactionProviderService } from '@/services/TransactionProviderService'
+import { mapGetters } from 'vuex'
 import moment from 'moment-timezone'
 import store from '@/store/store'
-import {TransactionExportService} from '@/services/TransactionExportService'
+import { TransactionExportService } from '@/services/TransactionExportService'
 
 export default {
     name: 'FilterTransaction',
-    data () {
+    data() {
         return {
             transactionService: new TransactionService(),
             transactionProviderService: new TransactionProviderService(),
@@ -148,80 +191,83 @@ export default {
             transactionProviders: [],
         }
     },
-    created () {
+    created() {
         if (this.$route.query.deviceType) {
             this.selectedDevice = this.$route.query.deviceType
         }
     },
-    mounted () {
+    mounted() {
         this.getTariffs()
         this.getSearch()
         this.getTransactionProviders()
         EventBus.$on('dataLoaded', this.dataLoaded)
     },
     methods: {
-        async getTariffs () {
+        async getTariffs() {
             let tariffs = await this.tariffService.getTariffs()
             tariffs.forEach((e) => {
                 let tariff = {
                     id: e.id,
-                    name: e.name
+                    name: e.name,
                 }
                 this.tariffs.push(tariff)
             })
-            this.tariffs.unshift({id: 'all', name: 'All'})
+            this.tariffs.unshift({ id: 'all', name: 'All' })
             this.selectedTariff = this.tariffs[0].id
-
         },
-        async getTransactionProviders () {
-            this.transactionProviders = [{
-                name: 'All',
-                value: '-1'
-            }, ...await this.transactionProviderService.getTransactionProviders(),]
+        async getTransactionProviders() {
+            this.transactionProviders = [
+                {
+                    name: 'All',
+                    value: '-1',
+                },
+                ...(await this.transactionProviderService.getTransactionProviders()),
+            ]
         },
-        dataLoaded () {
+        dataLoaded() {
             this.loading = false
             this.closeFilter()
         },
-        setTariff (tariff) {
+        setTariff(tariff) {
             this.filter.tariff = tariff
         },
-        closeFilter () {
+        closeFilter() {
             EventBus.$emit('transactionFilterClosed')
         },
-        seTransaction (transaction) {
+        seTransaction(transaction) {
             switch (transaction) {
-            case 'All':
-                this.filter.status = 'all'
-                break
-            case 'Only Approved':
-                this.filter.status = '1'
-                break
-            case 'Only Rejected':
-                this.filter.status = '-1'
-                break
+                case 'All':
+                    this.filter.status = 'all'
+                    break
+                case 'Only Approved':
+                    this.filter.status = '1'
+                    break
+                case 'Only Rejected':
+                    this.filter.status = '-1'
+                    break
 
-            default:
-                break
+                default:
+                    break
             }
         },
-        submitFilter () {
+        submitFilter() {
             this.loading = true
             this.adjustFilter()
             this.$emit('searchSubmit', this.filter)
-
         },
-        async exportTransactions () {
+        async exportTransactions() {
             this.adjustFilter()
             const data = {
                 ...this.filter,
                 timeZone: moment.tz.guess(),
-                currency: store.getters['settings/getMainSettings'].currency
+                currency: store.getters['settings/getMainSettings'].currency,
             }
             const email = this.$store.getters['auth/getAuthenticateUser'].email
-            window.open(this.transactionExportService.exportTransactions(email, data))
+            window.open(
+                this.transactionExportService.exportTransactions(email, data),
+            )
         },
-        getSearch () {
+        getSearch() {
             let search = this.$store.getters.search
 
             if (Object.keys(search).length) {
@@ -236,7 +282,7 @@ export default {
                 }
             }
         },
-        adjustFilter () {
+        adjustFilter() {
             this.filter.provider = this.selectedProvider
             if (this.filter.serial_number === '') {
                 this.filter.serial_number = null
@@ -255,21 +301,19 @@ export default {
             }
             if (this.filterTo !== null) {
                 this.filter.to = this.filterTo.toString() + ' 23:59:59'
-
             }
             console.log(this.filter)
-        }
+        },
     },
     computed: {
         ...mapGetters({
-            deviceTypes: 'device/getDeviceTypes'
-        })
+            deviceTypes: 'device/getDeviceTypes',
+        }),
     },
     watch: {
-        selectedDevice (val) {
+        selectedDevice(val) {
             this.filter.deviceType = val
-        }
-    }
+        },
+    },
 }
 </script>
-

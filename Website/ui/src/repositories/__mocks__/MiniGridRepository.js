@@ -2,21 +2,14 @@ const miniGridListResponse = require('./responses/miniGrid/miniGridList.json')
 const miniGridCreateResponse = require('./responses/miniGrid/miniGridCreate.json')
 
 export default {
-    list(){
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(miniGridListResponse)
-            )
-
+            process.nextTick(() => resolve(miniGridListResponse))
         })
     },
-    create(){
+    create() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(miniGridCreateResponse)
-            )
-
+            process.nextTick(() => resolve(miniGridCreateResponse))
         })
-    }
-
+    },
 }

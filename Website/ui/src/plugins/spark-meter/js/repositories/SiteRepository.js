@@ -5,22 +5,22 @@ const resource = `${baseUrl}/api/spark-meters/sm-site`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    update(site){
-        return Client.put(`${resource}/${site.id}`,site)
+    update(site) {
+        return Client.put(`${resource}/${site.id}`, site)
     },
-    sync () {
+    sync() {
         return Client.get(`${resource}/sync`)
     },
-    syncCheck () {
+    syncCheck() {
         return Client.get(`${resource}/sync-check`)
     },
-    count () {
+    count() {
         return Client.get(`${resource}/count`)
     },
-    location(){
-        return  Client.get(`${resource}/location`)
+    location() {
+        return Client.get(`${resource}/location`)
     },
 }

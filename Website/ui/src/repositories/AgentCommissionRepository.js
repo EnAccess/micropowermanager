@@ -4,18 +4,16 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/agents/commissions`
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    create (commission) {
+    create(commission) {
         return Client.post(`${resource}`, commission)
     },
-    update (commission) {
-
+    update(commission) {
         return Client.put(`${resource}/${commission.id}`, commission)
     },
-    delete (commissionId) {
+    delete(commissionId) {
         return Client.delete(`${resource}/${commissionId}`)
-    }
-
+    },
 }

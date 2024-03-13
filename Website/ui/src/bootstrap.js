@@ -6,7 +6,7 @@ window.axios = require('axios')
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 // Add a request interceptor
 window.axios.interceptors.request.use(
-    config => {
+    (config) => {
         const token = localStorage.getItem('token')
         if (token) {
             config.headers['Authorization'] = 'Bearer ' + token
@@ -14,9 +14,9 @@ window.axios.interceptors.request.use(
         // config.headers['Content-Type'] = 'application/json';
         return config
     },
-    error => {
+    (error) => {
         Promise.reject(error)
-    }
+    },
 )
 
 import { config } from './config'
@@ -70,11 +70,14 @@ Vue.use(VueSweetalert2)
 
 window.audio = new Audio('../notification/to-the-point.mp3')
 window.onclick = function (e) {
-
     let target = e.target
     if (target.localName === 'a' || target.localName === 'i') {
         let className = target.getAttribute('class')
-        let validClassNames = ['fa fa-compress', 'fa fa-expand', 'button-icon jarviswidget-fullscreen-btn']
+        let validClassNames = [
+            'fa fa-compress',
+            'fa fa-expand',
+            'button-icon jarviswidget-fullscreen-btn',
+        ]
         if (validClassNames.indexOf(className) > -1) {
             window.dispatchEvent(new Event('resize'))
         }
@@ -116,10 +119,10 @@ import 'vue-tel-input/dist/vue-tel-input.css'
 const opt = {
     dropdownOptions: {
         disabledDialCode: false,
-        showSearchBox:true
+        showSearchBox: true,
     },
     inputOptions: {
-        showDialCode: true
-    }
+        showDialCode: true,
+    },
 }
 Vue.use(VueTelInput, opt)

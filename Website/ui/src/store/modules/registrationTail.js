@@ -8,27 +8,30 @@ export const state = {
     isWizardShown: false,
 }
 export const mutations = {
-    SET_REGISTRATION_TAIL (state, registrationTail) {
+    SET_REGISTRATION_TAIL(state, registrationTail) {
         state.registrationTail = registrationTail
     },
-    SET_IS_WIZARD_SHOWN (state,param) {
+    SET_IS_WIZARD_SHOWN(state, param) {
         state.isWizardShown = param
     },
 }
 export const actions = {
-    getRegistrationTail ({ commit }) {
+    getRegistrationTail({ commit }) {
         return new Promise((resolve, reject) => {
-            state.service.getRegistrationTail().then(registrationTail => {
-                commit('SET_REGISTRATION_TAIL', registrationTail)
-                resolve(registrationTail)
-            }).catch((e) => {
-                reject(e)
-            })
+            state.service
+                .getRegistrationTail()
+                .then((registrationTail) => {
+                    commit('SET_REGISTRATION_TAIL', registrationTail)
+                    resolve(registrationTail)
+                })
+                .catch((e) => {
+                    reject(e)
+                })
         })
-    }
+    },
 }
 
 export const getters = {
-    getTail: state => state.registrationTail,
-    getIsWizardShown: state => state.isWizardShown
+    getTail: (state) => state.registrationTail,
+    getIsWizardShown: (state) => state.isWizardShown,
 }

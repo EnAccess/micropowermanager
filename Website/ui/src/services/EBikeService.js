@@ -1,11 +1,14 @@
 import RepositoryFactory from '@/repositories/RepositoryFactory'
 import { Paginator } from '@/classes/paginator'
-import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import {
+    convertObjectKeysToCamelCase,
+    convertObjectKeysToSnakeCase,
+} from '@/Helpers/Utils'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '@/shared/eventbus'
 
 export class EBikeService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('eBike')
         this.paginator = new Paginator(this.repository.resource)
         this.list = []
@@ -22,19 +25,20 @@ export class EBikeService {
             soh: null,
             batteryLevel: null,
             batteryVoltage: null,
-            statusOn:null,
+            statusOn: null,
         }
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = data.map((eBike) => convertObjectKeysToCamelCase(eBike))
     }
 
-    async createEBike () {
+    async createEBike() {
         try {
             const eBike = convertObjectKeysToSnakeCase(this.eBike)
             const { data, status, error } = await this.repository.create(eBike)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -45,10 +49,12 @@ export class EBikeService {
 
     async getEBikeBySerialNumber(serialNumber) {
         try {
-            const { data, status, error } = await this.repository.detail(serialNumber)
+            const { data, status, error } =
+                await this.repository.detail(serialNumber)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             this.eBike = convertObjectKeysToCamelCase(data.data)
-            this.eBike.statusOn = this.eBike.status && this.eBike.status.includes('ACCON')
+            this.eBike.statusOn =
+                this.eBike.status && this.eBike.status.includes('ACCON')
             return this.eBike
         } catch (e) {
             const errorMessage = e.response.data.data.message
@@ -56,10 +62,13 @@ export class EBikeService {
         }
     }
 
-    async switchEBike (postData) {
+    async switchEBike(postData) {
         try {
-            const { data, status, error } = await this.repository.switch(convertObjectKeysToSnakeCase(postData))
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } = await this.repository.switch(
+                convertObjectKeysToSnakeCase(postData),
+            )
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -68,12 +77,12 @@ export class EBikeService {
         }
     }
 
-    search (term) {
+    search(term) {
         this.paginator = new Paginator(`${this.repository.resource}/search`)
-        EventBus.$emit('loadPage', this.paginator, {'term': term})
+        EventBus.$emit('loadPage', this.paginator, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.paginator = new Paginator(this.repository.resource)
         EventBus.$emit('loadPage', this.paginator)
     }

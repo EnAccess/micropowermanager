@@ -1,29 +1,31 @@
 <template>
     <div>
         <md-dialog
-                :md-active.sync="dialogActive"
-                :md-close-on-esc="false"
-                :md-click-outside-to-close="false"
+            :md-active.sync="dialogActive"
+            :md-close-on-esc="false"
+            :md-click-outside-to-close="false"
         >
             <md-dialog-title>Redirection</md-dialog-title>
             <md-dialog-content>
-
                 <div class="exclamation">
-                        <span class="success-span">
-                            <md-icon style="color: green">priority_high</md-icon>
-                        </span>
+                    <span class="success-span">
+                        <md-icon style="color: green">priority_high</md-icon>
+                    </span>
                     <div class="md-layout-item md-size-100 exclamation-div">
-                        <span>{{message}}</span>
+                        <span>{{ message }}</span>
                     </div>
                 </div>
                 <div class="md-layout-item md-size-100 exclamation-button-div">
-                    <md-button role="button" type="button" class="md-raised md-primary" @click="redirect()">
+                    <md-button
+                        role="button"
+                        type="button"
+                        class="md-raised md-primary"
+                        @click="redirect()"
+                    >
                         Redirect
                     </md-button>
                 </div>
-
             </md-dialog-content>
-
         </md-dialog>
     </div>
 </template>
@@ -34,65 +36,63 @@ export default {
     props: {
         redirectionUrl: {
             type: String,
-            default: '/'
+            default: '/',
         },
         dialogActive: {
             type: Boolean,
-            default: false
+            default: false,
         },
         message: {
             type: String,
-            default: 'API credentials not authenticated.'
-        }
+            default: 'API credentials not authenticated.',
+        },
     },
     methods: {
-        async redirect () {
+        async redirect() {
             await this.$router.replace(this.redirectionUrl)
-        }
-    }
+        },
+    },
 }
 </script>
 
 <style lang="scss">
-    .success-span {
-        font-size: large;
-        font-weight: 700;
-        color: green;
-    }
+.success-span {
+    font-size: large;
+    font-weight: 700;
+    color: green;
+}
 
-    .exclamation-div {
-        margin-top: 2% !important;
-    }
+.exclamation-div {
+    margin-top: 2% !important;
+}
 
-    .exclamation {
-        width: 100% !important;
-        margin: auto;
-        align-items: center;
-        display: inline-grid;
-        text-align: center;
+.exclamation {
+    width: 100% !important;
+    margin: auto;
+    align-items: center;
+    display: inline-grid;
+    text-align: center;
+}
 
-    }
+.exclamation-div span {
+    font-size: medium !important;
+}
 
-    .exclamation-div span {
-        font-size: medium !important
-    }
+.md-dialog-title {
+    margin: auto !important;
+}
 
-    .md-dialog-title {
+.md-dialog-content {
+    margin-top: 1.5rem !important;
+}
 
-        margin: auto !important;
-    }
+.md-dialog-container {
+    min-width: 490px !important;
+    min-height: 240px !important;
+}
 
-    .md-dialog-content {
-        margin-top: 1.5rem !important;
-    }
-
-    .md-dialog-container {
-        min-width: 490px !important;
-        min-height: 240px !important;
-    }
-
-    .exclamation-button-div {
-        margin-top: 2rem;
-        text-align: right !important;
-    }
+.exclamation-button-div {
+    margin-top: 2rem;
+    text-align: right !important;
+}
 </style>

@@ -14,10 +14,10 @@ export let resources = {
     },
     reports: {
         weekly: {
-            list: '/api/reports?type=weekly'
+            list: '/api/reports?type=weekly',
         },
         monthly: {
-            list: '/api/reports?type=monthly'
+            list: '/api/reports?type=monthly',
         },
         download: '/api/reports/', //{id}/download
     },
@@ -32,8 +32,8 @@ export let resources = {
         delete: '/api/addresses',
     },
     city: {
-        'list': '/api/cities',
-        'create': '/api/cities',
+        list: '/api/cities',
+        create: '/api/cities',
     },
 
     admin: {
@@ -43,46 +43,45 @@ export let resources = {
     },
     maintenance: {
         list: '/api/maintenance',
-        person: '/api/maintenance/user'
+        person: '/api/maintenance/user',
     },
     person: {
-        'create': '/api/people',
-        'update': '/api/people/',
-        'detail': '/api/people/',
-        'delete': '/api/people/',
-        'search': '/api/people/search',
-        'list': '/api/people',
-        'addresses': '/api/people/',
-        'maintenance_list': '/api/people/?is_customer=0'
-
+        create: '/api/people',
+        update: '/api/people/',
+        detail: '/api/people/',
+        delete: '/api/people/',
+        search: '/api/people/search',
+        list: '/api/people',
+        addresses: '/api/people/',
+        maintenance_list: '/api/people/?is_customer=0',
     },
     tariff: {
-        'list': '/api/tariffs',
-        'create': '/api/tariffs',
+        list: '/api/tariffs',
+        create: '/api/tariffs',
     },
     ticket: {
-        'list': '/tickets/api/ticket',
-        'detail': '/tickets/api/ticket/',
-        'close': '/tickets/api/ticket',
-        'create': '/tickets/api/ticket',
-        'createMaintenance': '/tickets/api/ticket',
-        'getUser': '/tickets/api/tickets/user/',
-        'users': '/tickets/api/users/',
-        'createUserTicket': '/tickets/api/tickets/users',
-        'labels': '/tickets/api/labels',
-        'comments': '/tickets/api/tickets/comments',
+        list: '/tickets/api/ticket',
+        detail: '/tickets/api/ticket/',
+        close: '/tickets/api/ticket',
+        create: '/tickets/api/ticket',
+        createMaintenance: '/tickets/api/ticket',
+        getUser: '/tickets/api/tickets/user/',
+        users: '/tickets/api/users/',
+        createUserTicket: '/tickets/api/tickets/users',
+        labels: '/tickets/api/labels',
+        comments: '/tickets/api/tickets/comments',
     },
 
     transactions: {
-        'list': {
-            'all': '/api/transactions',
-            'confirmed': '/api/transactions/confirmed',
-            'cancelled': '/api/transactions/cancelled',
+        list: {
+            all: '/api/transactions',
+            confirmed: '/api/transactions/confirmed',
+            cancelled: '/api/transactions/cancelled',
         },
-        'analytics': '/api/transactions/analytics/',
-        'detail': '/api/transactions/',
-        'search': '/api/transactions/search',
-        'searchAdvanced': '/api/transactions/advanced',
+        analytics: '/api/transactions/analytics/',
+        detail: '/api/transactions/',
+        search: '/api/transactions/search',
+        searchAdvanced: '/api/transactions/advanced',
     },
     paymenthistories: '/api/paymenthistories/',
     debt: '/api/paymenthistories/debt/',
@@ -97,54 +96,51 @@ export let resources = {
             person: '/api/assets/types/people/',
         },
         rate: {
-            'update': '/api/assets/rates/'
-        }
-
+            update: '/api/assets/rates/',
+        },
     },
     meters: {
-        'list': '/api/meters',
-        'search': '/api/meters/search',
-        'getMeters': '/api/meters/',
-        'delete': '/api/meters/',
-        'revenue': '/api/meters/',
-        'transactions': '/api/meters/',
-        'consumptions': '/api/meters/',
-        'geo': '/api/meters/geoList'
+        list: '/api/meters',
+        search: '/api/meters/search',
+        getMeters: '/api/meters/',
+        delete: '/api/meters/',
+        revenue: '/api/meters/',
+        transactions: '/api/meters/',
+        consumptions: '/api/meters/',
+        geo: '/api/meters/geoList',
     },
     manufacturer: {
-        'detail':
-            '/api/manufacturers/',
-        'list':
-            '/api/manufacturers',
+        detail: '/api/manufacturers/',
+        list: '/api/manufacturers',
     },
     revenues: {
-        'analysis': '/api/revenue/analysis',
-        'trends': '/api/revenue/trends',
-        'batch': '/api/revenue',
-        'tickets': '/api/revenue/tickets'
+        analysis: '/api/revenue/analysis',
+        trends: '/api/revenue/trends',
+        batch: '/api/revenue',
+        tickets: '/api/revenue/tickets',
     },
     target: {
-        'list': '/api/targets',
-        'store': '/api/targets',
-        'available_slots': '/api/targets/slots',
+        list: '/api/targets',
+        store: '/api/targets',
+        available_slots: '/api/targets/slots',
     },
     connections: {
-        'list': '/api/connection-groups',
-        'sublist': '/api/sub-connection-types',
-        'number_of_customers': '/api/meters/parameters/connection-types',
-        'store': '/api/connection-types',
+        list: '/api/connection-groups',
+        sublist: '/api/sub-connection-types',
+        number_of_customers: '/api/meters/parameters/connection-types',
+        store: '/api/connection-types',
     },
     clusters: {
-        'list': '/api/clusterlist',
-        'geo': '/api/clusters/geo/',
-        'show_geo': '/api/clusters/',
-        'revenue': {
-            'overview': '/api/clusters/revenue',
-            'trends': '/api/clusters/', //{id}/revenue/analysis
+        list: '/api/clusterlist',
+        geo: '/api/clusters/geo/',
+        show_geo: '/api/clusters/',
+        revenue: {
+            overview: '/api/clusters/revenue',
+            trends: '/api/clusters/', //{id}/revenue/analysis
         },
 
-        'save': '/api/clusters',
-        'detail': '/api/clusters/',
+        save: '/api/clusters',
+        detail: '/api/clusters/',
     },
 
     miniGrids: {
@@ -157,7 +153,7 @@ export let resources = {
         detail: '/api/mini-grids/',
     },
     pv: {
-        list: '/api/pv/'
+        list: '/api/pv/',
     },
     agents: {
         list: '/api/agents',
@@ -166,6 +162,6 @@ export let resources = {
         sold_appliances: '/api/agents/sold/',
         transactions: '/api/agents/transactions/',
         tickets: '/tickets/api/agents',
-        receipts: '/api/agents/receipt'
-    }
+        receipts: '/api/agents/receipt',
+    },
 }

@@ -2,15 +2,13 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class SidebarService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('sidebar')
         this.sidebar = []
     }
 
-
-    async list(){
+    async list() {
         try {
-
             let response = await this.repository.list()
 
             if (response.status === 200) {
@@ -22,7 +20,6 @@ export class SidebarService {
         } catch (e) {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
-
         }
     }
 }

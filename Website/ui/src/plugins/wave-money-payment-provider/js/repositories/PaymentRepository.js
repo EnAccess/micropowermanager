@@ -4,8 +4,7 @@ const resource = `${baseUrl}/api/wave-money/wave-money-transaction/start`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-
-    post (paymentRequest,companyId) {
+    post(paymentRequest, companyId) {
         return Client.post(`${resource}/${companyId}`, paymentRequest)
-    }
+    },
 }

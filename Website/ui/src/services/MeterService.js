@@ -2,7 +2,7 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MeterService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('meter')
         this.meters = []
         this.selectedMeter = null
@@ -15,14 +15,13 @@ export class MeterService {
             tariff: {
                 id: null,
                 name: null,
-                price: null
+                price: null,
             },
-            geo: []
-
+            geo: [],
         }
     }
 
-    async getMeterGeos (miniGridId) {
+    async getMeterGeos(miniGridId) {
         try {
             let response = await this.repository.geoList(miniGridId)
 
@@ -37,7 +36,7 @@ export class MeterService {
         }
     }
 
-    async getMeterDetails (meterId) {
+    async getMeterDetails(meterId) {
         try {
             let response = await this.repository.get(meterId)
 
@@ -49,17 +48,16 @@ export class MeterService {
                 }
                 this.meter = {
                     id: meterId,
-                    'meter_parameter': data.meter_parameter,
-                    'serial_number': data.serial_number,
-                    'max_current': data.meter_type.max_current,
-                    'phase': data.meter_type.phase,
-                    'tariff': {
-                        'id': data.meter_parameter.tariff.id,
-                        'name': data.meter_parameter.tariff.name,
-                        'price': data.meter_parameter.tariff.price
+                    meter_parameter: data.meter_parameter,
+                    serial_number: data.serial_number,
+                    max_current: data.meter_type.max_current,
+                    phase: data.meter_type.phase,
+                    tariff: {
+                        id: data.meter_parameter.tariff.id,
+                        name: data.meter_parameter.tariff.name,
+                        price: data.meter_parameter.tariff.price,
                     },
-                    'geo': [points[0], points[1]]
-
+                    geo: [points[0], points[1]],
                 }
                 return this.meter
             } else {
@@ -70,12 +68,10 @@ export class MeterService {
         }
     }
 
-    async updateMeter (meters) {
+    async updateMeter(meters) {
         try {
-
             let response = await this.repository.update(meters)
             if (response.status === 200) {
-
                 return response
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -85,11 +81,11 @@ export class MeterService {
         }
     }
 
-    getMeters () {
+    getMeters() {
         return this.meters
     }
 
-    addMeter (meter) {
+    addMeter(meter) {
         this.meters.push(meter)
     }
 }

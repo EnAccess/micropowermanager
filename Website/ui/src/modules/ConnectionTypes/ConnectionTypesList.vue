@@ -1,9 +1,9 @@
 <template>
     <div>
-        <NewConnectionType/>
+        <NewConnectionType />
         <widget
             :id="'connection-types-list'"
-            :title="$tc('phrases.connectionType',2)"
+            :title="$tc('phrases.connectionType', 2)"
             :paginator="connectionTypes.paginator"
             :subscriber="subscriber"
             :button="true"
@@ -11,35 +11,37 @@
             @widgetAction="addNew"
             :color="'green'"
         >
-
-                <md-table md-card style="margin-left: 0">
-                    <md-table-row>
-                        <md-table-head>#</md-table-head>
-                        <md-table-head>{{ $tc('words.id') }}</md-table-head>
-                        <md-table-head>{{ $tc('words.name') }}</md-table-head>
-                    </md-table-row>
-                    <md-table-row v-for="(type,index) in connectionTypes" :key="type.id" @click="connectionTypeDetail(type)" style="cursor: pointer">
-                        <md-table-cell> {{ index+1}}</md-table-cell>
-                        <md-table-cell> {{ type.id}}</md-table-cell>
-                        <md-table-cell> {{ type.name}}</md-table-cell>
-                    </md-table-row>
-                </md-table>
-
+            <md-table md-card style="margin-left: 0">
+                <md-table-row>
+                    <md-table-head>#</md-table-head>
+                    <md-table-head>{{ $tc('words.id') }}</md-table-head>
+                    <md-table-head>{{ $tc('words.name') }}</md-table-head>
+                </md-table-row>
+                <md-table-row
+                    v-for="(type, index) in connectionTypes"
+                    :key="type.id"
+                    @click="connectionTypeDetail(type)"
+                    style="cursor: pointer"
+                >
+                    <md-table-cell>{{ index + 1 }}</md-table-cell>
+                    <md-table-cell>{{ type.id }}</md-table-cell>
+                    <md-table-cell>{{ type.name }}</md-table-cell>
+                </md-table-row>
+            </md-table>
         </widget>
     </div>
-
 </template>
 
 <script>
 import Widget from '../../shared/widget'
-import {EventBus} from '@/shared/eventbus'
-import {ConnectionTypeService} from '@/services/ConnectionTypeService'
-import {SubConnectionTypeService} from '@/services/SubConnectionTypeService'
+import { EventBus } from '@/shared/eventbus'
+import { ConnectionTypeService } from '@/services/ConnectionTypeService'
+import { SubConnectionTypeService } from '@/services/SubConnectionTypeService'
 import NewConnectionType from './NewConnectionType'
 
 export default {
     name: 'ConnectionTypesList',
-    components: { Widget, NewConnectionType},
+    components: { Widget, NewConnectionType },
     mounted() {
         EventBus.$on('pageLoaded', this.reloadList)
         EventBus.$on('searching', this.searching)
@@ -58,7 +60,7 @@ export default {
         }
     },
     methods: {
-        connectionTypeDetail(type){
+        connectionTypeDetail(type) {
             this.$router.push({ path: '/connection-types/' + type.id })
             EventBus.$emit('connectionTypeDetail', type.name)
         },
@@ -68,8 +70,13 @@ export default {
         },
         async getConnectionTypes() {
             try {
-                this.connectionTypes = await this.connectionTypeService.getConnectionTypes()
-                EventBus.$emit('widgetContentLoaded', this.subscriber, this.connectionTypes.length)
+                this.connectionTypes =
+                    await this.connectionTypeService.getConnectionTypes()
+                EventBus.$emit(
+                    'widgetContentLoaded',
+                    this.subscriber,
+                    this.connectionTypes.length,
+                )
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
@@ -77,19 +84,16 @@ export default {
         addNew() {
             EventBus.$emit('showNewConnectionType')
         },
-
     },
     alertNotify(type, message) {
         this.$notify({
             group: 'notify',
             type: type,
             title: type + ' !',
-            text: message
+            text: message,
         })
     },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

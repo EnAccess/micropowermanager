@@ -1,8 +1,8 @@
 {
-    "cluster_id":1,
-    "geo_data":{
+    "cluster_id": 1,
+    "geo_data": {
         "lat": -2.84733,
         "lon": 35.93834
     },
-    "name":"test"
+    "name": "test"
 }

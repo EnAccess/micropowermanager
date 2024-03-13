@@ -2,13 +2,12 @@ import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class ProtectedPageService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('protectedPage')
     }
 
-    async getProtectedPages () {
+    async getProtectedPages() {
         try {
-
             let response = await this.repository.list()
             if (response.status === 200 || response.status === 201) {
                 return response.data.data

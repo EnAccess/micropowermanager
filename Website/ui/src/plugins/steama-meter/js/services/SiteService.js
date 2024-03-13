@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SiteService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('site')
         this.list = []
         this.isSync = false
@@ -14,29 +13,29 @@ export class SiteService {
             id: null,
             name: null,
             latitude: null,
-            longitude: null
+            longitude: null,
         }
     }
 
-    fromJson (siteData) {
+    fromJson(siteData) {
         this.site = {
             id: siteData.id,
             name: siteData.mpm_mini_grid.name,
             latitude: siteData.mpm_mini_grid.location.points.split(',')[0],
-            longitude: siteData.mpm_mini_grid.location.points.split(',')[1]
+            longitude: siteData.mpm_mini_grid.location.points.split(',')[1],
         }
         return this.site
     }
 
-    updateList (data) {
-        this.list=[]
+    updateList(data) {
+        this.list = []
         for (let s in data) {
             let site = this.fromJson(data[s])
             this.list.push(site)
         }
     }
 
-    async syncSites () {
+    async syncSites() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -50,12 +49,11 @@ export class SiteService {
         }
     }
 
-    async checkSites () {
+    async checkSites() {
         try {
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data.result
-
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
@@ -65,7 +63,7 @@ export class SiteService {
         }
     }
 
-    async getSitesCount () {
+    async getSitesCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {
@@ -80,9 +78,8 @@ export class SiteService {
         }
     }
 
-    async checkLocation () {
+    async checkLocation() {
         try {
-
             let response = await this.repository.location()
             if (response.status === 200) {
                 return response.data.data

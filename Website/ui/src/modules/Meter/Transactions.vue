@@ -1,6 +1,6 @@
 <template>
     <widget
-        v-if="transactions!==null"
+        v-if="transactions !== null"
         :title="$tc('phrases.meterTransaction')"
         class="col-sm-7"
         :id="'meter-transactions'"
@@ -10,31 +10,41 @@
     >
         <md-card>
             <md-card-content>
-
                 <md-table>
                     <md-table-row>
-                        <md-table-head v-for="(item, index) in headers" :key="index">{{ item }}
+                        <md-table-head
+                            v-for="(item, index) in headers"
+                            :key="index"
+                        >
+                            {{ item }}
                         </md-table-head>
                     </md-table-row>
-                    <md-table-row v-for="token in transactions.tokens" :key="token.id">
+                    <md-table-row
+                        v-for="token in transactions.tokens"
+                        :key="token.id"
+                    >
                         <md-table-cell
                             v-text="token.transaction.original_transaction_type"
                         ></md-table-cell>
-                        <md-table-cell v-text="moneyFormat(token.transaction.amount)"></md-table-cell>
                         <md-table-cell
-                            v-if="token.paid_for_type === 'token'"
-                        >Token {{ token.paid_for.token }}
+                            v-text="moneyFormat(token.transaction.amount)"
+                        ></md-table-cell>
+                        <md-table-cell v-if="token.paid_for_type === 'token'">
+                            Token {{ token.paid_for.token }}
                         </md-table-cell>
-                        <md-table-cell v-else>{{ token.paid_for_type }}</md-table-cell>
+                        <md-table-cell v-else>
+                            {{ token.paid_for_type }}
+                        </md-table-cell>
                         <md-table-cell
                             v-if="token.paid_for_type === 'token'"
                             v-text="readable(token.paid_for.energy) + 'kWh'"
                         ></md-table-cell>
                         <md-table-cell v-else>-</md-table-cell>
-                        <md-table-cell v-text="timeForTimeZone(token.created_at)"></md-table-cell>
+                        <md-table-cell
+                            v-text="timeForTimeZone(token.created_at)"
+                        ></md-table-cell>
                     </md-table-row>
                 </md-table>
-
             </md-card-content>
         </md-card>
     </widget>
@@ -52,36 +62,44 @@ export default {
     components: { Widget },
     props: {
         transactions: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     computed: {
         transactionType: () => {
             return this.token.transaction.original_transaction_type
-        }
+        },
     },
-    created () {
+    created() {
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    data () {
+    data() {
         return {
             subscriber: 'meter.transactions',
-            headers: [this.$tc('words.provider'), this.$tc('words.amount'),
-                this.$tc('phrases.paidFor'), this.$tc('phrases.inReturn'), this.$tc('words.date')],
-            tableName: 'Meter Transactions'
+            headers: [
+                this.$tc('words.provider'),
+                this.$tc('words.amount'),
+                this.$tc('phrases.paidFor'),
+                this.$tc('phrases.inReturn'),
+                this.$tc('words.date'),
+            ],
+            tableName: 'Meter Transactions',
         }
     },
     methods: {
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) {
                 return
             }
             this.transactions.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.transactions.tokens.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.transactions.tokens.length,
+            )
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

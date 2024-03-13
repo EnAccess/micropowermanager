@@ -2,8 +2,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import RepositoryFactory from '../repositories/RepositoryFactory'
 
 export class CsvUploadService {
-
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('csv')
         this.recentlyCreatedRecords = {
             cluster: 0,
@@ -14,19 +13,19 @@ export class CsvUploadService {
             connectionType: 0,
             connectionGroup: 0,
             meter: 0,
-
         }
     }
 
-    async create (csvData) {
-
+    async create(csvData) {
         let formData = new FormData()
         if (csvData == null) {
             return
         }
         formData.append('csv', csvData)
         try {
-            const { data, status } = await this.repository.post(formData, { header: { 'Content-Type': 'csv' } })
+            const { data, status } = await this.repository.post(formData, {
+                header: { 'Content-Type': 'csv' },
+            })
 
             if (data.data.attributes.alert !== '') {
                 return new ErrorHandler(data.data.attributes.alert, 'http', 422)
@@ -34,7 +33,9 @@ export class CsvUploadService {
             if (!status === 201) {
                 return new ErrorHandler('Failed', status)
             }
-            this.fillRecentlyCreatedRecords(data.data.attributes.recently_created_records)
+            this.fillRecentlyCreatedRecords(
+                data.data.attributes.recently_created_records,
+            )
 
             return data.data
         } catch (error) {
@@ -53,10 +54,9 @@ export class CsvUploadService {
                 return new ErrorHandler(errorMessage, 'http')
             }
         }
-
     }
 
-    fillRecentlyCreatedRecords (recentlyCreatedRecords) {
+    fillRecentlyCreatedRecords(recentlyCreatedRecords) {
         this.recentlyCreatedRecords = {
             cluster: recentlyCreatedRecords.cluster,
             miniGrid: recentlyCreatedRecords.mini_grid,

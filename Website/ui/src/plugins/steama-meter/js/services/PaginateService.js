@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class PaginateService {
-
-    constructor (url) {
+    constructor(url) {
         this.repository = Repository.get('paginate')
         this.paginator = {
             url: url,
@@ -15,25 +14,24 @@ export class PaginateService {
             totalEntries: 0,
             perPage: 15,
             postData: null,
-            data: []
+            data: [],
         }
     }
 
-    setPostData (data) {
+    setPostData(data) {
         this.paginator.postData = data
     }
 
-    nextPage () {
+    nextPage() {
         if (this.paginator.currentPage < this.paginator.totalPage)
             this.paginator.currentPage++
     }
 
-    prevPage () {
-        if (this.paginator.currentPage > 1)
-            this.paginator.currentPage--
+    prevPage() {
+        if (this.paginator.currentPage > 1) this.paginator.currentPage--
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.paginator.from = data.from
         this.paginator.to = data.to
         this.paginator.totalPage = data.last_page
@@ -43,12 +41,10 @@ export class PaginateService {
         return this.paginator
     }
 
-    async loadPage (page, param = {}) {
+    async loadPage(page, param = {}) {
         param['page'] = page
         param['per_page'] = this.paginator.perPage
         try {
-
-
             let response = await this.repository.get(this.paginator.url, param)
 
             if (response.status === 200) {
@@ -61,6 +57,5 @@ export class PaginateService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 }

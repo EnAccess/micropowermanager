@@ -1,10 +1,18 @@
 <template>
     <div>
-        <new-user @newUserClosed="showNewUser=false" :showNewUser="showNewUser"
-                  :user="userService.user" @createUser="createUser"></new-user>
-        <edit-user @editUserClosed="showEditUser = false" :showEditUser="showEditUser"
-                   :user="userService.user" @updateUser="updateUser"
-                   :cities="cities"/>
+        <new-user
+            @newUserClosed="showNewUser = false"
+            :showNewUser="showNewUser"
+            :user="userService.user"
+            @createUser="createUser"
+        ></new-user>
+        <edit-user
+            @editUserClosed="showEditUser = false"
+            :showEditUser="showEditUser"
+            :user="userService.user"
+            @updateUser="updateUser"
+            :cities="cities"
+        />
         <widget
             :title="$tc('phrases.userManagement')"
             :button-text="$tc('phrases.newUser')"
@@ -21,17 +29,25 @@
                     >
                         <md-table md-card style="margin-left: 0">
                             <md-table-row>
-                                <md-table-head>{{ $tc('words.id') }}</md-table-head>
-                                <md-table-head>{{ $tc('words.name') }}</md-table-head>
-                                <md-table-head>{{ $tc('words.email') }}</md-table-head>
-                                <md-table-head>{{ $tc('words.phone') }}</md-table-head>
+                                <md-table-head>
+                                    {{ $tc('words.id') }}
+                                </md-table-head>
+                                <md-table-head>
+                                    {{ $tc('words.name') }}
+                                </md-table-head>
+                                <md-table-head>
+                                    {{ $tc('words.email') }}
+                                </md-table-head>
+                                <md-table-head>
+                                    {{ $tc('words.phone') }}
+                                </md-table-head>
                             </md-table-row>
 
                             <md-table-row
                                 @click="userDetail(user)"
                                 v-for="user in userService.users"
                                 :key="user.id"
-                                style="cursor:pointer;"
+                                style="cursor: pointer"
                             >
                                 <md-table-cell>{{ user.id }}</md-table-cell>
                                 <md-table-cell>{{ user.name }}</md-table-cell>
@@ -43,8 +59,7 @@
                 </div>
             </div>
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="sending"/>
-
+        <md-progress-bar md-mode="indeterminate" v-if="sending" />
     </div>
 </template>
 <script>
@@ -58,7 +73,7 @@ import EditUser from './EditUser'
 export default {
     name: 'ProfileManagement',
     components: { Widget, NewUser, EditUser },
-    data () {
+    data() {
         return {
             subscriber: 'user-management',
             sending: false,
@@ -69,28 +84,32 @@ export default {
             userId: 0,
             showNewUser: false,
             resetKey: 1,
-            cities: []
+            cities: [],
         }
     },
-    created () {
+    created() {
         this.getCities()
     },
-    mounted () {
+    mounted() {
         EventBus.$on('pageLoaded', this.reloadList)
         EventBus.$on('newUserCreated', () => this.resetKey++)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded')
     },
     methods: {
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) {
                 return
             }
             this.userService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.userService.users.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.userService.users.length,
+            )
         },
-        async getCities () {
+        async getCities() {
             try {
                 await this.cityService.getCities()
                 this.cities = this.cityService.cities
@@ -98,7 +117,7 @@ export default {
                 this.alertNotify('error', error.message)
             }
         },
-        async userDetail (user) {
+        async userDetail(user) {
             try {
                 await this.userService.get(user.id)
                 this.showEditUser = true
@@ -106,7 +125,7 @@ export default {
                 this.alertNotify('error', error)
             }
         },
-        async updateUser (user) {
+        async updateUser(user) {
             this.sending = true
             if (user.cityId !== 0) {
                 this.userService.user.cityId = user.cityId
@@ -121,7 +140,7 @@ export default {
             }
             this.sending = false
         },
-        async createUser () {
+        async createUser() {
             this.sending = true
             try {
                 await this.userService.create()
@@ -133,14 +152,14 @@ export default {
             }
             this.sending = false
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>

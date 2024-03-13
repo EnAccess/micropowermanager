@@ -5,13 +5,13 @@ const resource = `${baseUrl}/api/spark-meters/sm-credential`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    get(){
-        return  Client.get(`${resource}`)
+    get() {
+        return Client.get(`${resource}`)
     },
-    put(credentials){
-        return    Client.put(`${resource}`,credentials)
+    put(credentials) {
+        return Client.put(`${resource}`, credentials)
     },
-    check(){
-        return  Client.get(`${resource}/check`)
-    }
+    check() {
+        return Client.get(`${resource}/check`)
+    },
 }

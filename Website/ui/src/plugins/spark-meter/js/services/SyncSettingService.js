@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SyncSettingService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('syncSetting')
         this.list = []
         this.syncSetting = {
@@ -16,17 +15,18 @@ export class SyncSettingService {
         }
     }
 
-    async updateSyncSettings (syncSettings) {
+    async updateSyncSettings(syncSettings) {
         try {
             let syncListPM = []
             for (let s in syncSettings) {
                 let settingPm = {
                     id: syncSettings[s].settingType.id,
                     action_name: syncSettings[s].settingType.actionName,
-                    sync_in_value_str: syncSettings[s].settingType.syncInValueStr,
-                    sync_in_value_num: syncSettings[s].settingType.syncInValueNum,
-                    max_attempts: syncSettings[s].settingType.maxAttempts
-
+                    sync_in_value_str:
+                        syncSettings[s].settingType.syncInValueStr,
+                    sync_in_value_num:
+                        syncSettings[s].settingType.syncInValueNum,
+                    max_attempts: syncSettings[s].settingType.maxAttempts,
                 }
                 syncListPM.push(settingPm)
             }

@@ -1,5 +1,5 @@
 <template>
-    <EBikes/>
+    <EBikes />
 </template>
 
 <script>
@@ -7,10 +7,8 @@ import EBikes from '@/modules/EBikes/EBikes.vue'
 
 export default {
     name: 'EBikesPage',
-    components: { EBikes }
+    components: { EBikes },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

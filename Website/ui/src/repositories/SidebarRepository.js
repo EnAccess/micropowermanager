@@ -6,5 +6,5 @@ const resource = `${baseUrl}/api/sidebar`
 export default {
     list() {
         return Client.get(`${resource}`)
-    }
+    },
 }

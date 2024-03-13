@@ -1,20 +1,14 @@
 const mapSettingsResponse = require('./responses/settings/mapSettingsList.json')
 
 export default {
-    list () {
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(mapSettingsResponse)
-            )
-
+            process.nextTick(() => resolve(mapSettingsResponse))
         })
     },
-    update () {
+    update() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(mapSettingsResponse)
-            )
-
+            process.nextTick(() => resolve(mapSettingsResponse))
         })
     },
 }

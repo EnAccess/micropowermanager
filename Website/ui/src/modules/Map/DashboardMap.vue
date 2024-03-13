@@ -1,7 +1,5 @@
 <template>
-    <div id="map">
-
-    </div>
+    <div id="map"></div>
 </template>
 
 <script>
@@ -12,37 +10,55 @@ export default {
     name: 'DashboardMap',
     mixins: [sharedMap, notify],
     methods: {
-        drawClusters () {
+        drawClusters() {
             this.editableLayer.clearLayers()
-            this.mappingService.geoData.map((geoData)=>{
+            this.mappingService.geoData.map((geoData) => {
                 const geoType = geoData.geojson.type
-                const coordinatesClone = geoData.geojson.coordinates[0].reduce((acc, coord) => {
-                    acc[0].push([coord[1], coord[0]])
-                    return acc
-                }, [[]])
+                const coordinatesClone = geoData.geojson.coordinates[0].reduce(
+                    (acc, coord) => {
+                        acc[0].push([coord[1], coord[0]])
+                        return acc
+                    },
+                    [[]],
+                )
                 const drawing = {
                     type: 'FeatureCollection',
                     crs: {
                         type: 'name',
                         properties: {
-                            name: 'urn:ogc:def:crs:OGC:1.3:CRS84'
-                        }
-                    },
-                    features: [{
-                        type: 'Feature',
-                        properties: {
-                            popupContent: geoData.display_name,
-                            draw_type: geoData.draw_type === undefined ? 'set' : geoData.draw_type,
-                            selected: geoData.selected === undefined ? false : geoData.selected,
-                            clusterId: geoData.clusterId === undefined ? -1 : geoData.clusterId,
+                            name: 'urn:ogc:def:crs:OGC:1.3:CRS84',
                         },
-                        geometry: {
-                            type: geoType,
-                            coordinates: geoData.searched ? geoData.geojson.coordinates : coordinatesClone
-                        }
-                    }]
+                    },
+                    features: [
+                        {
+                            type: 'Feature',
+                            properties: {
+                                popupContent: geoData.display_name,
+                                draw_type:
+                                    geoData.draw_type === undefined
+                                        ? 'set'
+                                        : geoData.draw_type,
+                                selected:
+                                    geoData.selected === undefined
+                                        ? false
+                                        : geoData.selected,
+                                clusterId:
+                                    geoData.clusterId === undefined
+                                        ? -1
+                                        : geoData.clusterId,
+                            },
+                            geometry: {
+                                type: geoType,
+                                coordinates: geoData.searched
+                                    ? geoData.geojson.coordinates
+                                    : coordinatesClone,
+                            },
+                        },
+                    ],
                 }
-                const polygonColor = this.mappingService.strToHex(geoData.display_name)
+                const polygonColor = this.mappingService.strToHex(
+                    geoData.display_name,
+                )
                 // "this"  cannot be used inside the L.geoJson function
                 const editableLayer = this.editableLayer
                 const geoDataItems = this.geoDataItems
@@ -64,7 +80,10 @@ export default {
                             type: 'manual',
                             geojson: {
                                 type: geoData.geojson.type,
-                                coordinates: geoData.searched === true ? coordinatesClone : geoData.geojson.coordinates
+                                coordinates:
+                                    geoData.searched === true
+                                        ? coordinatesClone
+                                        : geoData.geojson.coordinates,
                             },
                             searched: false,
                             display_name: geoData.display_name,
@@ -74,25 +93,32 @@ export default {
                             lon: geoData.lon,
                         }
                         geoDataItems.push(geoDataItem)
-                    }
+                    },
                 })
                 const bounds = drawnCluster.getBounds()
                 this.map.fitBounds(bounds)
             })
-
         },
-        setMiniGridMarkers () {
-            this.mappingService.markingInfos.filter((markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID).map((markingInfo) => {
-                const miniGridMarkerIcon = L.icon({
-                    ...ICON_OPTIONS,
-                    iconUrl: ICONS[markingInfo.markerType]
+        setMiniGridMarkers() {
+            this.mappingService.markingInfos
+                .filter(
+                    (markingInfo) =>
+                        markingInfo.markerType === MARKER_TYPE.MINI_GRID,
+                )
+                .map((markingInfo) => {
+                    const miniGridMarkerIcon = L.icon({
+                        ...ICON_OPTIONS,
+                        iconUrl: ICONS[markingInfo.markerType],
+                    })
+                    const miniGridMarker = L.marker(
+                        [markingInfo.lat, markingInfo.lon],
+                        { icon: miniGridMarkerIcon },
+                    )
+                    miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
+                    miniGridMarker.addTo(this.map)
                 })
-                const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], { icon: miniGridMarkerIcon })
-                miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
-                miniGridMarker.addTo(this.map)
-            })
-        }
-    }
+        },
+    },
 }
 </script>
 

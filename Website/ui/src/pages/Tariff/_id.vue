@@ -1,11 +1,10 @@
 <template>
-    <Tariff/>
+    <Tariff />
 </template>
 <script>
 import Tariff from '@/modules/Tariff/Tariff.vue'
 export default {
     name: 'TariffPage',
-    components: { Tariff }
+    components: { Tariff },
 }
 </script>
-

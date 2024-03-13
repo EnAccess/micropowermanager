@@ -2,14 +2,13 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class SmsVariableDefaultValueService {
-
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('smsVariableDefaultValue')
         this.list = []
         this.shownMessage = 'Your message will seem like..'
     }
 
-    fromJson (smsVariableDefaultValues) {
+    fromJson(smsVariableDefaultValues) {
         this.list = []
         for (let s in smsVariableDefaultValues) {
             let defaultValue = smsVariableDefaultValues[s]
@@ -21,7 +20,7 @@ export class SmsVariableDefaultValueService {
         }
     }
 
-    async getSmsVariableDefaultValues () {
+    async getSmsVariableDefaultValues() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -36,14 +35,14 @@ export class SmsVariableDefaultValueService {
         }
     }
 
-    prepareShownMessage (body, list) {
-        this.shownMessage=''
+    prepareShownMessage(body, list) {
+        this.shownMessage = ''
         list.forEach((e) => {
             body = body.replaceAll(e.variable, e.value)
         })
         this.shownMessage = body
-        if (!(body.length)){
-            this.shownMessage= 'Your message will seem like..'
+        if (!body.length) {
+            this.shownMessage = 'Your message will seem like..'
         }
         return this.shownMessage
     }

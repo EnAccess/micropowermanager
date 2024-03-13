@@ -5,7 +5,7 @@ const resource = `${baseUrl}/api/bulk-register/import-csv`
 import Client from '@/repositories/Client/AxiosClient'
 
 export default {
-    post (csvData) {
+    post(csvData) {
         return Client.post(`${resource}`, csvData)
-    }
+    },
 }

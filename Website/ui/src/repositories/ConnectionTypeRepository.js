@@ -13,9 +13,7 @@ export default {
     show(connectionTypeId) {
         return Client.get(`${resource}/${connectionTypeId}?meter_count=1`)
     },
-    update(connectionType){
-        return Client.put(`${resource}/${connectionType.id}`,connectionType)
-    }
+    update(connectionType) {
+        return Client.put(`${resource}/${connectionType.id}`, connectionType)
+    },
 }
-
-

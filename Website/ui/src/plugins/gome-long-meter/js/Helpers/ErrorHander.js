@@ -1,5 +1,5 @@
 export class ErrorHandler {
-    constructor (_message, _type, _status_code) {
+    constructor(_message, _type, _status_code) {
         this.exception = {
             message: _message,
             type: _type,
@@ -8,7 +8,7 @@ export class ErrorHandler {
         this.throwException()
     }
 
-    throwException () {
+    throwException() {
         throw this.exception
     }
 }

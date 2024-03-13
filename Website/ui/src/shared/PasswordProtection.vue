@@ -9,31 +9,31 @@ import { EventBus } from '@/shared/eventbus'
 export default {
     name: 'PasswordProtection',
 
-    mounted () {
+    mounted() {
         EventBus.$on('checkPageProtection', (to) => {
             console.log('route changed')
             this.confirm(to.path)
         })
-
     },
     computed: {
         ...mapGetters({
             password: 'protection/getPassword',
             protectedPages: 'protection/getProtectedPages',
-        })
+        }),
     },
     methods: {
-        confirm (path) {
-
+        confirm(path) {
             if (this.protectedPages.includes(path)) {
                 if (this.password === '' || this.password === null) {
-                    this.$swal.fire(
-                        'Password is not set',
-                        'Please contact your administrator to set the password',
-                        'warning'
-                    ).then(() => {
-                        this.$router.replace('/')
-                    })
+                    this.$swal
+                        .fire(
+                            'Password is not set',
+                            'Please contact your administrator to set the password',
+                            'warning',
+                        )
+                        .then(() => {
+                            this.$router.replace('/')
+                        })
                 } else {
                     this.$swal({
                         type: 'question',
@@ -55,16 +55,13 @@ export default {
                                     this.$router.replace('/')
                                 })
                             }
-                        }
+                        },
                     })
                 }
             }
-
-        }
-    }
+        },
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

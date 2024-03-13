@@ -1,9 +1,9 @@
 import Repository from '../repositories/RepositoryFactory'
 export class OutstandingDebtsExportService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('outstandingDebtsExportRepository')
     }
-    exportOutstandingDebts (email) {
+    exportOutstandingDebts(email) {
         return this.repository.download(email)
     }
 }

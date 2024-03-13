@@ -9,16 +9,16 @@ import MeterRepository from './MeterRepository'
 import StatusRepository from './StatusRepository'
 
 const repositories = {
-    'credential': CredentialRepository,
-    'paginate': PaginatorRepository,
-    'daily': DailyConsumptionRepository,
-    'minutely': MinutelyConsumptionRepository,
-    'setting': SettingRepository,
-    'syncSetting': SyncSettingRepository,
-    'customer':CustomerRepository,
-    'meter':MeterRepository,
-    'status':StatusRepository,
+    credential: CredentialRepository,
+    paginate: PaginatorRepository,
+    daily: DailyConsumptionRepository,
+    minutely: MinutelyConsumptionRepository,
+    setting: SettingRepository,
+    syncSetting: SyncSettingRepository,
+    customer: CustomerRepository,
+    meter: MeterRepository,
+    status: StatusRepository,
 }
 export default {
-    get: name => repositories[name]
+    get: (name) => repositories[name],
 }

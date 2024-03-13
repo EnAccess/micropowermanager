@@ -1,6 +1,6 @@
 <template>
     <widget
-        :title="$tc('phrases.financeOverview',0, {period: periodText})"
+        :title="$tc('phrases.financeOverview', 0, { period: periodText })"
         :id="'clusters-finance-overview'"
         button
         button-text="Set Period"
@@ -12,49 +12,66 @@
             <p>{{ $tc('phrases.selectPeriod') }}</p>
             <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-100">
-                    <md-datepicker v-model="period.from" md-immediately v-validate="'required'">
+                    <md-datepicker
+                        v-model="period.from"
+                        md-immediately
+                        v-validate="'required'"
+                    >
                         <label>{{ $tc('phrases.fromDate') }}</label>
                     </md-datepicker>
-                    <span class="md-error">{{ errors.first($tc('phrases.fromDate')) }}</span>
+                    <span class="md-error">
+                        {{ errors.first($tc('phrases.fromDate')) }}
+                    </span>
                 </div>
                 <div class="md-layout-item md-size-100">
-                    <md-datepicker v-model="period.to" md-immediately v-validate="'required'">
+                    <md-datepicker
+                        v-model="period.to"
+                        md-immediately
+                        v-validate="'required'"
+                    >
                         <label>{{ $tc('phrases.toDate') }}</label>
                     </md-datepicker>
-                    <span class="md-error">{{ errors.first($tc('phrases.toDate')) }}</span>
+                    <span class="md-error">
+                        {{ errors.first($tc('phrases.toDate')) }}
+                    </span>
                 </div>
             </div>
-            <div style="margin-top: 5px;">
-                <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-                <button style="width:100%;" v-if="!loading" class="btn btn-primary" @click="getClusterFinancialData">
+            <div style="margin-top: 5px">
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
+                <button
+                    style="width: 100%"
+                    v-if="!loading"
+                    class="btn btn-primary"
+                    @click="getClusterFinancialData"
+                >
                     {{ $tc('words.send') }}
                 </button>
             </div>
         </div>
         <div class="md-layout md-gutter" style="padding: 10px">
-            <chart-card type="LineChart"
-                        :header-text="$tc('phrases.revenueLine')"
-                        :chartData="lineChartData"
-                        :chartOptions="chartOptions"
-                        :extendable="true"
+            <chart-card
+                type="LineChart"
+                :header-text="$tc('phrases.revenueLine')"
+                :chartData="lineChartData"
+                :chartOptions="chartOptions"
+                :extendable="true"
             />
-            <chart-card type="ColumnChart"
-                        :header-text="$tc('phrases.revenueColumns')"
-                        :chartData="columnChartData"
-                        :chartOptions="chartOptions"
-                        :extendable="true"
+            <chart-card
+                type="ColumnChart"
+                :header-text="$tc('phrases.revenueColumns')"
+                :chartData="columnChartData"
+                :chartOptions="chartOptions"
+                :extendable="true"
             />
-            <chart-card type="PieChart"
-                        :header-text="$tc('phrases.revenuePercentiles')"
-                        :chartData="pieChartData"
-                        :chartOptions="chartOptions"
-                        :extendable="true"
+            <chart-card
+                type="PieChart"
+                :header-text="$tc('phrases.revenuePercentiles')"
+                :chartData="pieChartData"
+                :chartOptions="chartOptions"
+                :extendable="true"
             />
         </div>
-
     </widget>
-
-
 </template>
 
 <script>
@@ -79,10 +96,10 @@ export default {
         },
         periodChanged: {
             type: Function,
-            required: true
-        }
+            required: true,
+        },
     },
-    data () {
+    data() {
         return {
             clusterService: new ClusterService(),
             period: {
@@ -93,20 +110,19 @@ export default {
             setPeriod: false,
             periodText: '-',
             disabled: {
-                customPredictor:
-                    function (date) {
-                        let today = new Date()
-                        let minDate = new Date('2018-01-01')
-                        // disables the date if it is a multiple of 5
-                        if (date > today || date < minDate) {
-                            return true
-                        }
+                customPredictor: function (date) {
+                    let today = new Date()
+                    let minDate = new Date('2018-01-01')
+                    // disables the date if it is a multiple of 5
+                    if (date > today || date < minDate) {
+                        return true
                     }
+                },
             },
             chartOptions: {
                 chart: {
                     title: '',
-                    subtitle: ''
+                    subtitle: '',
                 },
             },
         }
@@ -114,26 +130,32 @@ export default {
 
     watch: {
         // eslint-disable-next-line no-unused-vars
-        revenue (newVal, oldVal) {
+        revenue(newVal, oldVal) {
             this.clusterService.financialData = newVal
-        }
+        },
     },
     methods: {
-        showPeriod () {
+        showPeriod() {
             this.period = {
                 from: null,
                 to: null,
             }
             this.setPeriod = !this.setPeriod
         },
-        async getClusterFinancialData () {
+        async getClusterFinancialData() {
             let validator = await this.$validator.validateAll()
             if (!validator) {
                 return
             }
             this.loading = true
-            const from = this.period.from !== null ? moment(this.period.from).format('YYYY-MM-DD') : null
-            const to = this.period.to !== null ? moment(this.period.to).format('YYYY-MM-DD') : null
+            const from =
+                this.period.from !== null
+                    ? moment(this.period.from).format('YYYY-MM-DD')
+                    : null
+            const to =
+                this.period.to !== null
+                    ? moment(this.period.to).format('YYYY-MM-DD')
+                    : null
             this.periodChanged(from, to)
             if (from !== null) {
                 this.periodText = from + ' - ' + to
@@ -142,13 +164,13 @@ export default {
             this.loading = false
         },
 
-        dateSelectedFrom (date) {
+        dateSelectedFrom(date) {
             this.setDate(date, 'from')
         },
-        dateSelectedTo (date) {
+        dateSelectedTo(date) {
             this.setDate(date, 'to')
         },
-        setDate (dateData, target) {
+        setDate(dateData, target) {
             let date = moment(dateData)
             if (target === 'from') {
                 this.period.from = date.format('YYYY-MM-DD')
@@ -158,17 +180,16 @@ export default {
         },
     },
     computed: {
-        lineChartData () {
+        lineChartData() {
             return this.clusterService.lineChartData(true)
         },
-        columnChartData () {
+        columnChartData() {
             return this.clusterService.columnChartData(false, 'cluster')
         },
-        pieChartData () {
+        pieChartData() {
             return this.clusterService.columnChartData(false, 'cluster')
-        }
-    }
-
+        },
+    },
 }
 </script>
 
@@ -176,7 +197,6 @@ export default {
 .datepicker-right .vdp-datepicker__calendar {
     right: 0;
 }
-
 
 .period-selector {
     position: absolute;
@@ -187,8 +207,6 @@ export default {
     background-color: white;
     border: 1px solid #ccc;
     margin-right: 1rem;
-    margin-top: 2rem
+    margin-top: 2rem;
 }
-
-
 </style>

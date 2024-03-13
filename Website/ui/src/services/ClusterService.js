@@ -4,7 +4,7 @@ import i18n from '../i18n'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class ClusterService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('cluster')
         this.clusters = []
         this.financialData = []
@@ -13,11 +13,12 @@ export class ClusterService {
         this.list = []
     }
 
-    async createCluster (clusterData) {
-        const params =  convertObjectKeysToSnakeCase(clusterData)
+    async createCluster(clusterData) {
+        const params = convertObjectKeysToSnakeCase(clusterData)
         try {
             const { data, status, error } = await this.repository.create(params)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return data.data
         } catch (e) {
@@ -26,7 +27,7 @@ export class ClusterService {
         }
     }
 
-    async getClusters () {
+    async getClusters() {
         try {
             const { data, status, error } = await this.repository.list()
             if (status !== 200) return new ErrorHandler(error, 'http', status)
@@ -40,9 +41,10 @@ export class ClusterService {
         }
     }
 
-    async getClusterGeoLocation (clusterId) {
+    async getClusterGeoLocation(clusterId) {
         try {
-            const { data, status, error } = await this.repository.getGeoLocation(clusterId)
+            const { data, status, error } =
+                await this.repository.getGeoLocation(clusterId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return data.data
@@ -52,7 +54,7 @@ export class ClusterService {
         }
     }
 
-    async getDetails (clusterId) {
+    async getDetails(clusterId) {
         try {
             const { data, status, error } = await this.repository.get(clusterId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
@@ -64,9 +66,10 @@ export class ClusterService {
         }
     }
 
-    async getClusterRevenues (clusterId) {
+    async getClusterRevenues(clusterId) {
         try {
-            const { data, status, error } = await this.repository.getClusterRevenues(clusterId)
+            const { data, status, error } =
+                await this.repository.getClusterRevenues(clusterId)
             if (status !== 200) return new ErrorHandler(error, 'http', status)
 
             return data.data
@@ -76,12 +79,15 @@ export class ClusterService {
         }
     }
 
-    async getAllRevenues (period, startDate, endDate) {
-        const queryString = `?period=${period}&startDate=${startDate ??
-        ''}&endDate=${endDate ?? ''}`
+    async getAllRevenues(period, startDate, endDate) {
+        const queryString = `?period=${period}&startDate=${
+            startDate ?? ''
+        }&endDate=${endDate ?? ''}`
         try {
-            const { data, status, error } = await this.repository.getAllRevenues(queryString)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            const { data, status, error } =
+                await this.repository.getAllRevenues(queryString)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             this.financialData = data.data
             return this.financialData
@@ -91,30 +97,30 @@ export class ClusterService {
         }
     }
 
-    fillTrends () {
-        let trendKeys = (Object.keys(this.clusterTrends))
-        this.trendChartData.base = [(Object.keys(this.clusterTrends))]
+    fillTrends() {
+        let trendKeys = Object.keys(this.clusterTrends)
+        this.trendChartData.base = [Object.keys(this.clusterTrends)]
         this.trendChartData.base[0].unshift('Date')
-        for (let i in this.clusterTrends[trendKeys[0]]) { // iterate over periods
+        for (let i in this.clusterTrends[trendKeys[0]]) {
+            // iterate over periods
             let tmpData = []
-            for (let j in trendKeys) { //iterate over connection names
-                tmpData.push(
-                    this.clusterTrends[trendKeys[j]][i]
-                )
+            for (let j in trendKeys) {
+                //iterate over connection names
+                tmpData.push(this.clusterTrends[trendKeys[j]][i])
             }
             tmpData.unshift(i)
             this.trendChartData.base.push(tmpData)
         }
     }
 
-    insertCityNames (count, data) {
+    insertCityNames(count, data) {
         for (let i = 0; i < count; i++) {
             data.push(this.financialData[i].name)
         }
         return data
     }
 
-    lineChartData (summary) {
+    lineChartData(summary) {
         let data = []
         data.push([i18n.tc('words.period')])
 
@@ -135,7 +141,7 @@ export class ClusterService {
         return data
     }
 
-    getPeriodicData (count, periodName, summary) {
+    getPeriodicData(count, periodName, summary) {
         let data = []
         let sum = 0
         data.push(periodName)
@@ -154,10 +160,13 @@ export class ClusterService {
     /**
      * Generates data array for column and donut chart
      */
-    columnChartData (summary, type) {
+    columnChartData(summary, type) {
         let data = []
         let summaryRevenue = 0
-        let infoData = type === 'cluster' ? i18n.tc('words.cluster') : i18n.tc('words.miniGrid')
+        let infoData =
+            type === 'cluster'
+                ? i18n.tc('words.cluster')
+                : i18n.tc('words.miniGrid')
         data.push([infoData, i18n.tc('words.revenue')])
         for (let i in this.financialData) {
             let cD = this.financialData[i]

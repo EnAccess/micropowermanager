@@ -5,10 +5,10 @@ const resource = `${baseUrl}/api/steama-meters/steama-setting/sms-setting/sms-bo
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    update (smsBodies) {
+    update(smsBodies) {
         return Client.put(`${resource}`, smsBodies)
-    }
+    },
 }

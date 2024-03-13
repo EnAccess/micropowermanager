@@ -3,17 +3,20 @@ import { EventBus } from '@/shared/eventbus'
 import Client from '../repositories/Client/AxiosClient'
 
 export class BatteryService {
-    constructor () {
+    constructor() {
         this.batteryData = []
         this.stateChartData = []
         this.energyChartData = []
         this.subscriber = null
-
     }
 
-    async getBatteryUsageList (
-        miniGridId, withChartData = false, startDate = null, endDate = null) {
-        if (typeof (miniGridId) === 'undefined') {
+    async getBatteryUsageList(
+        miniGridId,
+        withChartData = false,
+        startDate = null,
+        endDate = null,
+    ) {
+        if (typeof miniGridId === 'undefined') {
             return null
         }
         let params = {}
@@ -28,9 +31,9 @@ export class BatteryService {
             { params: params },
         )
 
-        list.data.data.map((battery) => (
-            this.fetchBatteryData(battery, withChartData)
-        ))
+        list.data.data.map((battery) =>
+            this.fetchBatteryData(battery, withChartData),
+        )
         if (withChartData) {
             EventBus.$emit('chartLoaded', this.subscriber)
         }
@@ -38,45 +41,35 @@ export class BatteryService {
         return true
     }
 
-    fetchBatteryData (battery, withCartData) {
+    fetchBatteryData(battery, withCartData) {
         this.batteryData.push(new Battery().fromJson(battery))
         if (withCartData) {
             this.chartDataDistributor(battery)
         }
-
     }
 
-    chartDataDistributor (data) {
-
+    chartDataDistributor(data) {
         this.prepareStateChartData(data)
-
     }
 
-    prepareStateChartData (batteryData) {
+    prepareStateChartData(batteryData) {
         if (this.stateChartData.length === 0) {
             this.stateChartData.push(['Date', 'SoC'])
         }
         let chartData = []
-        chartData.push(
-            new Date(Date.parse(batteryData.read_out)),
-            {
-                v: batteryData.soc_average,
-                f: `${batteryData.soc_average}%`,
-            },
-        )
+        chartData.push(new Date(Date.parse(batteryData.read_out)), {
+            v: batteryData.soc_average,
+            f: `${batteryData.soc_average}%`,
+        })
         this.stateChartData.push(chartData)
     }
 
-    async prepareChartData () {
+    async prepareChartData() {
         if (this.batteryData.length === 0) {
             return null
         }
 
-        this.batteryData.map((battery) => (
-            this.chartDataDistributor(battery)
-        ))
+        this.batteryData.map((battery) => this.chartDataDistributor(battery))
         EventBus.$emit('chartLoaded', this.subscriber)
-
     }
-
 }

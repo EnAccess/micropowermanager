@@ -5,8 +5,7 @@ const resource = `${baseUrl}/api/spark-meters/sm-setting/sms-setting/sms-variabl
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-
 }

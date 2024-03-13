@@ -4,20 +4,15 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/tickets/api`
 
 export default {
-
-    list () {
-
+    list() {
         return Client.get(`${resource}/users`)
     },
 
-    create (user) {
-
+    create(user) {
         return Client.post(`${resource}/users`, user)
     },
 
-    createExternal (user) {
-
+    createExternal(user) {
         return Client.post(`${resource}/users/external`, user)
-    }
-
+    },
 }

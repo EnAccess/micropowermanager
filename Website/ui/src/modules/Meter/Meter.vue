@@ -3,13 +3,17 @@
         <div class="md-layout">
             <div class="md-layout-item md-size-100 md-small-size-100">
                 <div class="md-layout md-gutter md-size-100">
-                    <div class="md-layout-item md-layout-size-50 md-small-size-100">
+                    <div
+                        class="md-layout-item md-layout-size-50 md-small-size-100"
+                    >
                         <meter-basic
                             v-if="showDetails"
                             :meter="meterDetailService.meter"
                         />
                     </div>
-                    <div class="md-layout-item md-layout-size-50 md-small-size-100">
+                    <div
+                        class="md-layout-item md-layout-size-50 md-small-size-100"
+                    >
                         <meter-details
                             v-if="showDetails"
                             :meter="meterDetailService.meter"
@@ -19,19 +23,16 @@
                 </div>
             </div>
             <div class="md-layout-item md-size-100 md-small-size-100">
-                <meter-transactions
-                    :transactions="transactions"
-                />
+                <meter-transactions :transactions="transactions" />
             </div>
         </div>
 
-        <div style="margin-top: 1rem;"></div>
+        <div style="margin-top: 1rem"></div>
 
-        <meter-readings v-if="showMeterReadings"
-                        :meter="meterDetailService.meter"
+        <meter-readings
+            v-if="showMeterReadings"
+            :meter="meterDetailService.meter"
         />
-
-
     </div>
 </template>
 
@@ -48,29 +49,32 @@ export default {
     name: 'Meter',
     mixins: [notify],
     components: { MeterBasic, MeterDetails, MeterTransactions, MeterReadings },
-    data () {
+    data() {
         return {
             serialNumber: this.$route.params.id,
             meterDetailService: new MeterDetailService(),
             transactions: null,
         }
     },
-    created () {
+    created() {
         this.getMeterDetails()
         this.transactions = new Transactions(this.$route.params.id)
     },
     methods: {
-        async getMeterDetails () {
+        async getMeterDetails() {
             try {
                 await this.meterDetailService.getDetail(this.serialNumber)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async updateMeterDetails (meterDetail) {
+        async updateMeterDetails(meterDetail) {
             try {
                 await this.meterDetailService.updateMeterDetails(meterDetail)
-                this.alertNotify('success', this.$t('phrases.successfullyUpdated'))
+                this.alertNotify(
+                    'success',
+                    this.$t('phrases.successfullyUpdated'),
+                )
                 await this.getMeterDetails()
             } catch (e) {
                 this.alertNotify('error', e.message)
@@ -78,12 +82,12 @@ export default {
         },
     },
     computed: {
-        showMeterReadings () {
+        showMeterReadings() {
             if (!this.meterDetailService.meter.meterType) {
                 return false
             } else return this.meterDetailService.meter.meterType.online === 1
         },
-        showDetails () {
+        showDetails() {
             return this.meterDetailService.meter.loaded === true
         },
     },

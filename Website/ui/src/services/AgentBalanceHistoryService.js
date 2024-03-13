@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { Paginator } from '@/classes/paginator'
 
 export class AgentBalanceHistoryService {
-
-    constructor (agentId) {
+    constructor(agentId) {
         this.repository = Repository.get('balanceHistory')
         this.list = []
         this.agentId = null
@@ -11,24 +10,28 @@ export class AgentBalanceHistoryService {
             id: null,
             type: null,
             amount: false,
-            createdAt: null
+            createdAt: null,
         }
-        this.paginator = new Paginator(resources.agents.balance_histories + agentId)
+        this.paginator = new Paginator(
+            resources.agents.balance_histories + agentId,
+        )
     }
 
-    fromJson (data) {
+    fromJson(data) {
         let balanceHistory = {
             id: data.id,
             type: data.trigger_type,
             amount: data.amount,
-            createdAt: data.created_at.toString().replace(/T/, ' ').replace(/\..+/, '')
+            createdAt: data.created_at
+                .toString()
+                .replace(/T/, ' ')
+                .replace(/\..+/, ''),
         }
         return balanceHistory
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = data.map(this.fromJson)
         return this.list
     }
-
 }

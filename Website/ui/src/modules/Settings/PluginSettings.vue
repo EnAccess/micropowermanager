@@ -1,28 +1,43 @@
 <template>
     <div>
         <div class="md-layout md-gutter">
-            <div v-for="plugin in enrichedPlugins.filter(p => p.plugin_for_usage_type || p.checked)" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
+            <div
+                v-for="plugin in enrichedPlugins.filter(
+                    (p) => p.plugin_for_usage_type || p.checked,
+                )"
+                :key="plugin.id"
+                class="box md-layout-item md-size-25 md-small-size-50"
+            >
                 <div class="header-text">{{ plugin.name }}</div>
-                <div class="usage-type-warning" v-if="plugin.checked && !plugin.plugin_for_usage_type">⚠️ Plugin not supported for current usageType. It is recommended that you disable this plugin.</div>
+                <div
+                    class="usage-type-warning"
+                    v-if="plugin.checked && !plugin.plugin_for_usage_type"
+                >
+                    ⚠️ Plugin not supported for current usageType. It is
+                    recommended that you disable this plugin.
+                </div>
                 <small class="sub-text">{{ plugin.description }}</small>
                 <div class="sub-text">Usage type: {{ plugin.usage_type }}</div>
-                <md-switch v-model="plugin.checked" @change="onSwitchChange($event,plugin)" class="data-stream-switch"
-                           :disabled="switching"/>
+                <md-switch
+                    v-model="plugin.checked"
+                    @change="onSwitchChange($event, plugin)"
+                    class="data-stream-switch"
+                    :disabled="switching"
+                />
             </div>
         </div>
-        <md-progress-bar md-mode="indeterminate" v-if="progressing"/>
+        <md-progress-bar md-mode="indeterminate" v-if="progressing" />
     </div>
 </template>
 
 <script>
-
 import { MpmPluginService } from '@/services/MpmPluginService'
 import { PluginService } from '@/services/PluginService'
 import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'PluginSettings',
-    data () {
+    data() {
         return {
             mpmPluginsService: new MpmPluginService(),
             pluginService: new PluginService(),
@@ -33,33 +48,33 @@ export default {
     props: {
         plugins: {
             type: Array,
-            required: true
+            required: true,
         },
         mainSettings: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     computed: {
-        enrichedPlugins: function() {
-            return this.plugins.map(plugin => ({
+        enrichedPlugins: function () {
+            return this.plugins.map((plugin) => ({
                 ...plugin,
                 plugin_for_usage_type: this.validUsageType(
                     plugin.usage_type,
-                    this.mainSettings.usageType
-                )
+                    this.mainSettings.usageType,
+                ),
             }))
-        }
+        },
     },
     methods: {
-        async onSwitchChange (event, plugin) {
+        async onSwitchChange(event, plugin) {
             this.switching = true
             this.progressing = true
             try {
                 await this.pluginService.updatePlugin(plugin)
                 EventBus.$emit('setSidebar')
                 this.alertNotify('success', 'Plugin updated successfully')
-            }catch (e) {
+            } catch (e) {
                 this.switching = false
                 this.alertNotify('error', e.message)
             }
@@ -67,18 +82,21 @@ export default {
             this.switching = false
             this.progressing = false
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
         validUsageType(plugin_usage_type, customer_usage_types) {
-            return plugin_usage_type === 'general' || customer_usage_types.includes(plugin_usage_type)
-        }
-    }
+            return (
+                plugin_usage_type === 'general' ||
+                customer_usage_types.includes(plugin_usage_type)
+            )
+        },
+    },
 }
 </script>
 
@@ -87,7 +105,10 @@ export default {
     border-radius: 5px;
     padding: 1.3vw;
     margin-top: 1vh;
-    box-shadow: 0 1px 5px -2px rgb(53 53 53 / 30%), 0 0px 4px 0 rgb(0 0 0 / 12%), 0 0px 0px -5px #8e8e8e
+    box-shadow:
+        0 1px 5px -2px rgb(53 53 53 / 30%),
+        0 0px 4px 0 rgb(0 0 0 / 12%),
+        0 0px 0px -5px #8e8e8e;
 }
 
 .header-text {

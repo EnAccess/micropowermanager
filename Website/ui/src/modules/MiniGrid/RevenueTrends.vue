@@ -1,13 +1,13 @@
 <template>
     <div>
-        <widget :id="'revenue-trends'" :title="$tc('phrases.revenueTrends')"
-
-        >
+        <widget :id="'revenue-trends'" :title="$tc('phrases.revenueTrends')">
             <div v-if="loading">
-                <loader/>
+                <loader />
             </div>
             <div class="md-layout md-gutter" v-else>
-                <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                <div
+                    class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+                >
                     <GChart
                         type="ColumnChart"
                         :data="trendChartData.base"
@@ -15,7 +15,9 @@
                         :resizeDebounce="500"
                     />
                 </div>
-                <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                <div
+                    class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+                >
                     <GChart
                         type="LineChart"
                         :data="trendChartData.overview"
@@ -24,11 +26,12 @@
                     />
                 </div>
             </div>
-
-
         </widget>
-        <redirection-modal :redirection-url="redirectionUrl" :imperative-item="imperativeItem"
-                           :dialog-active="redirectDialogActive"/>
+        <redirection-modal
+            :redirection-url="redirectionUrl"
+            :imperative-item="imperativeItem"
+            :dialog-active="redirectDialogActive"
+        />
     </div>
 </template>
 
@@ -45,29 +48,26 @@ export default {
     mixins: [notify],
     props: {
         chartOptions: {
-            required: true
+            required: true,
         },
         trendChartData: {
-            required: true
-        }
-
+            required: true,
+        },
     },
-    mounted () {
+    mounted() {
         EventBus.$on('miniGridCachedDataLoading', (loading) => {
             this.loading = loading
         })
     },
-    data () {
+    data() {
         return {
             loading: false,
             redirectionUrl: '/locations/add-village',
             imperativeItem: 'City',
             redirectDialogActive: false,
         }
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,8 +1,8 @@
 import CsvUploadRepository from './CsvUploadRepository'
 
 const repositories = {
-    'csv': CsvUploadRepository,
+    csv: CsvUploadRepository,
 }
 export default {
-    get: name => repositories[name]
+    get: (name) => repositories[name],
 }

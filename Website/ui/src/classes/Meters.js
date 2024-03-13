@@ -4,51 +4,52 @@ import { Manufacturers } from './Manufacturer'
 import { EventBus } from '@/shared/eventbus'
 
 export class Meter {
-    constructor () {
+    constructor() {}
 
-    }
-
-    fromJson (jsonData) {
+    fromJson(jsonData) {
         this.id = jsonData.id
         this.serialNumber = jsonData.serial_number
         this.inUse = jsonData.in_use
         this.lastUpdate = jsonData.updated_at
         this.manufacturerId = jsonData.manufacturer_id
         this.manufacturer = null
-        this.type = jsonData.meter_type.max_current + ' A ' + jsonData.meter_type.phase + ' P '
+        this.type =
+            jsonData.meter_type.max_current +
+            ' A ' +
+            jsonData.meter_type.phase +
+            ' P '
         this.online = jsonData.meter_type.online
         this.tariff = jsonData.tariff.name
         return this
     }
-
 }
 
 export class Meters {
-    constructor () {
+    constructor() {
         this.list = []
         this.manufacturerList = []
         this.paginator = new Paginator(resources.meters.list)
         this.manufacturers = new Manufacturers()
     }
 
-    addMeter (meter) {
+    addMeter(meter) {
         this.list.add(meter)
     }
 
-    search (term) {
+    search(term) {
         this.paginator = new Paginator(resources.meters.search)
-        EventBus.$emit('loadPage', this.paginator, {'term': term})
+        EventBus.$emit('loadPage', this.paginator, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.paginator = new Paginator(resources.meters.list)
         EventBus.$emit('loadPage', this.paginator)
     }
 
-    async updateList (data) {
+    async updateList(data) {
         this.list = []
         if (this.manufacturerList.length === 0) {
-            this.manufacturerList = await (new Manufacturers()).getList()
+            this.manufacturerList = await new Manufacturers().getList()
         }
         for (let m in data) {
             let meter = new Meter()
@@ -59,6 +60,4 @@ export class Meters {
             this.list.push(meter)
         }
     }
-
 }
-

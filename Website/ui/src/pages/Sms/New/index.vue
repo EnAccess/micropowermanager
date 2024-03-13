@@ -1,5 +1,5 @@
 <template>
-    <NewSms/>
+    <NewSms />
 </template>
 
 <script>
@@ -7,10 +7,8 @@ import NewSms from '@/modules/Sms/NewSms'
 
 export default {
     name: 'NewSmsPage',
-    components: { NewSms }
+    components: { NewSms },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

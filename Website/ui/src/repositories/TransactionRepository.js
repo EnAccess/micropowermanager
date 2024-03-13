@@ -4,18 +4,16 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/transactions`
 
 export default {
-
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    analytics (period) {
+    analytics(period) {
         return Client.get(`${resource}/analytics/${period}`)
     },
-    filteredList (term) {
+    filteredList(term) {
         return Client.post(`${resource}/advanced`, term)
     },
-    get (id) {
+    get(id) {
         return Client.get(`${resource}/${id}`)
     },
-
 }

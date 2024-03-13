@@ -3,7 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import { EventBus } from '../eventbus'
 
 export class CustomerService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('customer')
         this.list = []
         this.isSync = false
@@ -15,13 +15,12 @@ export class CustomerService {
             name: null,
             sparkId: null,
             siteName: null,
-            creditBalance:null,
-            LowBalanceLimit:null
+            creditBalance: null,
+            LowBalanceLimit: null,
         }
     }
 
-    fromJson (customerData) {
-
+    fromJson(customerData) {
         this.customer = {
             id: customerData.id,
             name: customerData.mpm_person.name,
@@ -29,12 +28,11 @@ export class CustomerService {
             siteName: customerData.site.mpm_mini_grid.name,
             creditBalance: customerData.credit_balance,
             lowBalanceLimit: customerData.low_balance_limit,
-
         }
         return this.customer
     }
 
-    updateList (data) {
+    updateList(data) {
         this.list = []
         for (let c in data) {
             let customer = this.fromJson(data[c])
@@ -42,7 +40,7 @@ export class CustomerService {
         }
     }
 
-    async getCustomers () {
+    async getCustomers() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -56,7 +54,7 @@ export class CustomerService {
         }
     }
 
-    async syncCustomers () {
+    async syncCustomers() {
         try {
             let response = await this.repository.sync()
             if (response.status === 200) {
@@ -70,9 +68,8 @@ export class CustomerService {
         }
     }
 
-    async checkCustomers () {
+    async checkCustomers() {
         try {
-
             let response = await this.repository.syncCheck()
             if (response.status === 200) {
                 return response.data.data
@@ -85,7 +82,7 @@ export class CustomerService {
         }
     }
 
-    async getCustomersCount () {
+    async getCustomersCount() {
         try {
             let response = await this.repository.count()
             if (response.status === 200) {
@@ -100,9 +97,8 @@ export class CustomerService {
         }
     }
 
-    async checkConnectionTypes () {
+    async checkConnectionTypes() {
         try {
-
             let response = await this.repository.connections()
             if (response.status === 200) {
                 return response.data.data
@@ -115,11 +111,11 @@ export class CustomerService {
         }
     }
 
-    async updateCustomer(customer){
+    async updateCustomer(customer) {
         try {
             let customerPM = {
                 id: customer.id,
-                low_balance_limit: customer.lowBalanceLimit
+                low_balance_limit: customer.lowBalanceLimit,
             }
             let response = await this.repository.update(customerPM)
             if (response.status === 200) {
@@ -133,13 +129,13 @@ export class CustomerService {
         }
     }
 
-    search (term) {
-        this.pagingUrl='/api/spark-meters/sm-customer/search'
-        EventBus.$emit('loadPage', this.pagingUrl,{ 'term': term })
+    search(term) {
+        this.pagingUrl = '/api/spark-meters/sm-customer/search'
+        EventBus.$emit('loadPage', this.pagingUrl, { term: term })
     }
 
-    showAll () {
+    showAll() {
         this.pagingUrl = '/api/spark-meters/sm-customer'
-        EventBus.$emit('loadPage',this.pagingUrl,{})
+        EventBus.$emit('loadPage', this.pagingUrl, {})
     }
 }

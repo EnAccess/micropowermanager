@@ -1,45 +1,57 @@
 <template>
-    <div
-        class="sidebar"
-        :data-color="sidebarItemColor"
-        :style="sidebarStyle"
-    >
+    <div class="sidebar" :data-color="sidebarItemColor" :style="sidebarStyle">
         <div class="logo">
             <div class="brand-column">
+                <img class="logo" alt="logo" :src="imgLogo" />
 
-                <img class="logo" alt="logo" :src="imgLogo"/>
-
-                <div class="company-header">{{ $store.getters['settings/getMainSettings'].companyName }}<br><small>Powered
-                    by MPM</small></div>
+                <div class="company-header">
+                    {{ $store.getters['settings/getMainSettings'].companyName }}
+                    <br />
+                    <small>Powered by MPM</small>
+                </div>
             </div>
-
-
         </div>
 
         <div class="sidebar-wrapper">
             <slot name="content"></slot>
-            <md-list class="no-bg p-15" md-expand-single >
-                <component :is="menu.url_slug !== '' ? 'router-link' : 'div'" v-for="(menu,index) in menus" :key="index"
-                           :md-expand="menu.sub_menu_items.length !== 0"
-                           :to="route(menu.url_slug)"
+            <md-list class="no-bg p-15" md-expand-single>
+                <component
+                    :is="menu.url_slug !== '' ? 'router-link' : 'div'"
+                    v-for="(menu, index) in menus"
+                    :key="index"
+                    :md-expand="menu.sub_menu_items.length !== 0"
+                    :to="route(menu.url_slug)"
                 >
                     <md-list-item :md-expand="menu.sub_menu_items.length !== 0">
                         <!-- add icon if icon is defined -->
-                        <md-icon v-if="menu.md_icon !== ''" class="c-white icon-box">{{ menu.md_icon }}</md-icon>
-                        <span class="md-list-item-text c-white">{{ translateItem(menu.name) }}</span>
-                        <md-list slot="md-expand" v-if="menu.sub_menu_items.length !== 0" class="no-bg">
-                            <md-list-item v-for="(sub,index) in menu.sub_menu_items"
-                                          :key="index"
-
+                        <md-icon
+                            v-if="menu.md_icon !== ''"
+                            class="c-white icon-box"
+                        >
+                            {{ menu.md_icon }}
+                        </md-icon>
+                        <span class="md-list-item-text c-white">
+                            {{ translateItem(menu.name) }}
+                        </span>
+                        <md-list
+                            slot="md-expand"
+                            v-if="menu.sub_menu_items.length !== 0"
+                            class="no-bg"
+                        >
+                            <md-list-item
+                                v-for="(sub, index) in menu.sub_menu_items"
+                                :key="index"
                             >
                                 <router-link
                                     :to="route(sub.url_slug)"
-                                    class="sub-menu">
+                                    class="sub-menu"
+                                >
                                     <md-list-item class="md-inset c-white">
-                                        <span
-                                            class="md-list-item-text c-white"> {{
+                                        <span class="md-list-item-text c-white">
+                                            {{
                                                 $tc('menu.subMenu.' + sub.name)
-                                            }}</span>
+                                            }}
+                                        </span>
                                     </md-list-item>
                                 </router-link>
                             </md-list-item>
@@ -47,57 +59,54 @@
                     </md-list-item>
                 </component>
             </md-list>
-
         </div>
     </div>
 </template>
 <script>
-
 import { translateItem } from '@/Helpers/TranslateItem'
 import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'SideBar',
-    data () {
+    data() {
         return {
             show_extender: false,
             admin: null,
             menus: this.$store.getters['settings/getSidebar'],
-            translateItem: translateItem
+            translateItem: translateItem,
         }
     },
 
     props: {
         title: {
             type: String,
-            default: 'MicroPowerManager Open Source'
+            default: 'MicroPowerManager Open Source',
         },
         sidebarBackgroundImage: {
             type: String,
-            default: null
+            default: null,
         },
         imgLogo: {
             type: String,
-            default: require('../../assets/images/Logo1.png')
+            default: require('../../assets/images/Logo1.png'),
         },
         sidebarItemColor: {
             type: String,
             default: 'green',
-
         },
 
         autoClose: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
-    provide () {
+    provide() {
         return {
-            autoClose: this.autoClose
+            autoClose: this.autoClose,
         }
     },
 
-    mounted () {
+    mounted() {
         this.setSidebar()
         EventBus.$on('setSidebar', async () => {
             await this.$store.dispatch('settings/setSidebar')
@@ -105,24 +114,21 @@ export default {
         })
     },
     methods: {
-        async setSidebar () {
-
+        async setSidebar() {
             if (!this.menus.length) {
-
                 await this.$store.dispatch('settings/setSidebar')
 
                 this.menus = this.$store.getters['settings/getSidebar']
             }
         },
-        translateMenuItem (name) {
+        translateMenuItem(name) {
             if (this.$tc('menu.' + name).search('menu') !== -1) {
                 return name
             } else {
                 return this.$tc('menu.' + name)
             }
-
         },
-        route (routeUrl) {
+        route(routeUrl) {
             if (routeUrl !== '') {
                 if (routeUrl.includes('/page/1')) {
                     routeUrl = routeUrl.split('/page/1')[0]
@@ -131,22 +137,18 @@ export default {
                     return { path: routeUrl }
                 }
             }
-
-        }
-
+        },
     },
     computed: {
-        adminName () {
+        adminName() {
             return this.$store.getters['auth/getAuthenticateUser'].name
         },
-        sidebarStyle () {
+        sidebarStyle() {
             return {
-
-                background: '#2b2b2b !important'
+                background: '#2b2b2b !important',
             }
-        }
-
-    }
+        },
+    },
 }
 </script>
 <style>
@@ -174,13 +176,13 @@ export default {
 
 .brand-column {
     text-align: center;
-    padding-left: 2rem !important
+    padding-left: 2rem !important;
 }
 
 @media screen and (min-width: 991px) {
     .brand-column {
         dtext-align: center;
-        padding-left: 1rem !important
+        padding-left: 1rem !important;
     }
 }
 
@@ -202,7 +204,6 @@ export default {
 
 .active-link {
     background-color: rgba(32, 66, 32, 0.74);
-
 }
 
 .exact-active {
@@ -229,14 +230,12 @@ export default {
     position: absolute;
     height: 100%;
     width: 100%;
-
 }
 
 .icon-box {
     margin-right: 10px !important;
     width: 25px !important;
     height: 25px !important;
-
 }
 
 .sub-menu {
@@ -260,6 +259,4 @@ export default {
 .p-15 {
     padding: 10px;
 }
-
 </style>
-

@@ -1,8 +1,7 @@
 <template>
-
     <widget :id="'revenue-trends'" :title="'Revenue Trends'">
         <div v-if="loading">
-            <loader/>
+            <loader />
         </div>
         <div class="md-layout md-gutter" v-else>
             <div class="md-layout-item md-size-100">
@@ -41,9 +40,9 @@ export default {
         },
         clusterRevenueAnalysis: {
             required: true,
-        }
+        },
     },
-    data () {
+    data() {
         return {
             clusterService: new ClusterService(),
             period: {},
@@ -51,56 +50,50 @@ export default {
             chartOptions: {
                 chart: {
                     legend: {
-                        position: 'top'
+                        position: 'top',
                     },
                 },
                 hAxis: {
                     textPosition: 'out',
-                    slantedText: true
+                    slantedText: true,
                 },
                 vAxis: {
-
                     //scaleType: 'mirrorLog',
                 },
-                colors: ['#739e73', '#3276b1', '#78002e', '#dce775',],
+                colors: ['#739e73', '#3276b1', '#78002e', '#dce775'],
                 height: 550,
             },
             chartOptionsSmall: {
                 chart: {
-
                     legend: {
-                        position: 'top'
+                        position: 'top',
                     },
                 },
                 hAxis: {
                     textPosition: 'out',
-                    slantedText: true
+                    slantedText: true,
                 },
                 vAxis: {
-
                     //scaleType: 'mirrorLog',
                 },
-                colors: ['#739e73', '#3276b1', '#78002e', '#dce775',],
+                colors: ['#739e73', '#3276b1', '#78002e', '#dce775'],
                 height: 220,
             },
         }
     },
-    mounted () {
+    mounted() {
         EventBus.$on('clustersCachedDataLoading', (loading) => {
             this.loading = loading
         })
     },
     watch: {
         // eslint-disable-next-line no-unused-vars
-        clusterRevenueAnalysis (newVal, oldVal) {
+        clusterRevenueAnalysis(newVal, oldVal) {
             this.clusterService.clusterTrends = newVal
             this.clusterService.fillTrends()
-        }
+        },
     },
-
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class TicketLabelService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('ticketLabel')
         this.list = []
         this.colors = {
@@ -23,9 +23,8 @@ export class TicketLabelService {
         this.outSourcing = false
     }
 
-    async getLabels () {
+    async getLabels() {
         try {
-
             let response = await this.repository.list()
             if (response.status === 200) {
                 this.list = response.data.data
@@ -38,15 +37,14 @@ export class TicketLabelService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async createLabel (name, color, outsourcing) {
+    async createLabel(name, color, outsourcing) {
         try {
             let labelPM = {
-                'labelName': name,
-                'labelColor': color,
-                'outSourcing': outsourcing,
+                labelName: name,
+                labelColor: color,
+                outSourcing: outsourcing,
             }
             let response = await this.repository.create(labelPM)
             if (response.status === 201 || response.status === 200) {
@@ -59,10 +57,9 @@ export class TicketLabelService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    resetLabel () {
+    resetLabel() {
         this.newLabelName = ''
         this.currentColor = null
         this.outSourcing = false

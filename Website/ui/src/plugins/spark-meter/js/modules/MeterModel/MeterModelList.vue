@@ -1,39 +1,59 @@
 <template>
     <div>
-
-        <widget id="meter-model-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="meterModelService.pagingUrl"
-                :route_name="meterModelService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncMeterModels()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="meter-model-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="meterModelService.pagingUrl"
+            :route_name="meterModelService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncMeterModels()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-
-            <md-table v-model="meterModelService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="meterModelService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Name" md-sort-by="model_name">{{ item.modelName }}</md-table-cell>
-                    <md-table-cell md-label="Continuous Limit" md-sort-by="continuous_limit">{{ item.continuousLimit}}
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
                     </md-table-cell>
-                    <md-table-cell md-label="Inrush Limit" md-sort-by="inrush_limit">{{ item.inrushLimit }}
+                    <md-table-cell md-label="Name" md-sort-by="model_name">
+                        {{ item.modelName }}
                     </md-table-cell>
-                    <md-table-cell md-label="Site" md-sort-by="siteName">{{ item.siteName }}</md-table-cell>
+                    <md-table-cell
+                        md-label="Continuous Limit"
+                        md-sort-by="continuous_limit"
+                    >
+                        {{ item.continuousLimit }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Inrush Limit"
+                        md-sort-by="inrush_limit"
+                    >
+                        {{ item.inrushLimit }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Site" md-sort-by="siteName">
+                        {{ item.siteName }}
+                    </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"
-                     :message="redirectionMessage"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+            :message="redirectionMessage"
+        />
     </div>
 </template>
 
@@ -49,9 +69,8 @@ import { SiteService } from '../../services/SiteService'
 export default {
     name: 'MeterModelList',
     components: { Widget, Redirection },
-    data () {
+    data() {
         return {
-
             credentialService: new CredentialService(),
             meterModelService: new MeterModelService(),
             siteService: new SiteService(),
@@ -64,18 +83,18 @@ export default {
             redirectDialogActive: false,
             buttonText: 'Get Updates From Spark Meter',
             label: 'Meter Model Records Not Up to Date.',
-            redirectionMessage: 'API credentials not authenticated.'
+            redirectionMessage: 'API credentials not authenticated.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkCredential()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -83,19 +102,20 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
 
-        async checkSync () {
+        async checkSync() {
             try {
                 this.loading = true
-                let checkingResult = await this.meterModelService.checkMeterModels()
+                let checkingResult =
+                    await this.meterModelService.checkMeterModels()
                 this.isSynced = true
                 if (checkingResult.available_site_count === 0) {
-                    this.redirectionMessage = 'There is no authenticated Site to download Meter Model updates.'
+                    this.redirectionMessage =
+                        'There is no authenticated Site to download Meter Model updates.'
                     this.redirectionUrl = '/spark-meters/sm-site'
                     this.redirectDialogActive = true
                     return
@@ -116,9 +136,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncMeterModels()
                         }
@@ -129,13 +147,16 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async syncMeterModels () {
+        async syncMeterModels() {
             if (!this.loading) {
                 try {
                     this.loading = true
                     let sitesSynced = await this.siteService.checkSites()
                     if (!sitesSynced) {
-                        this.alertNotify('warn', 'Sites must be updated to update Meter Models.')
+                        this.alertNotify(
+                            'warn',
+                            'Sites must be updated to update Meter Models.',
+                        )
                         return
                     }
                     this.isSynced = false
@@ -148,25 +169,26 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.meterModelService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.meterModelService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.meterModelService.list.length,
+            )
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -5,10 +5,10 @@ const resource = `${baseUrl}/api/micro-star-meters/micro-star-credential`
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    get () {
+    get() {
         return Client.get(`${resource}`)
     },
-    put (credentials) {
+    put(credentials) {
         return Client.put(`${resource}`, credentials)
-    }
+    },
 }

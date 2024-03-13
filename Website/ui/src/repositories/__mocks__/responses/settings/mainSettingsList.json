@@ -1,6 +1,6 @@
 {
-    "data":{
-        "data":[
+    "data": {
+        "data": [
             {
                 "company_name": "Demo MPM",
                 "country": "Germany",
@@ -16,5 +16,4 @@
         ]
     },
     "status": 200
-
 }

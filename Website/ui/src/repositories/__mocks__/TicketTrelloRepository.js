@@ -1,14 +1,9 @@
 const ticketTrelloDetailResponse = require('./responses/ticket/ticketTrelloDetail.json')
 
 export default {
-
-    detail(){
+    detail() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(ticketTrelloDetailResponse)
-            )
-
+            process.nextTick(() => resolve(ticketTrelloDetailResponse))
         })
-    }
-
+    },
 }

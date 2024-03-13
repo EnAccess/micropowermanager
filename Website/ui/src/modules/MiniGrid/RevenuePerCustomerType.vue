@@ -4,17 +4,17 @@
             :id="'revenue-pie'"
             :headless="true"
             :title="$tc('phrases.revenuePerCustomerType')"
-            color="red">
+            color="red"
+        >
             <div v-if="loading">
-                <loader size="sm"/>
+                <loader size="sm" />
             </div>
             <div v-else>
                 <GChart
                     type="PieChart"
                     :options="donutChartOptions"
-                    :data="donutData">
-
-                </GChart>
+                    :data="donutData"
+                ></GChart>
             </div>
         </widget>
     </div>
@@ -30,27 +30,24 @@ export default {
     components: { Loader, Widget },
     props: {
         donutChartOptions: {
-            required: true
+            required: true,
         },
         donutData: {
-            required: true
-        }
-
+            required: true,
+        },
     },
-    data () {
+    data() {
         return {
             loading: false,
         }
     },
-    mounted(){
-        EventBus.$on('miniGridCachedDataLoading', (loading)=>{
+    mounted() {
+        EventBus.$on('miniGridCachedDataLoading', (loading) => {
             this.loading = loading
         })
     },
-    methods: {}
+    methods: {},
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

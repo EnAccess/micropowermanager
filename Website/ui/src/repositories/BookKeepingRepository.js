@@ -3,13 +3,11 @@ import { baseUrl } from './Client/AxiosClient'
 
 const resource = `${baseUrl}/tickets/api/export`
 
-export default{
-
-    list(){
+export default {
+    list() {
         return Client.get(`${resource}`)
     },
-    download(id,reference){
-        return `${resource}/download/`+`${id}`+`${reference}`
-    }
-
+    download(id, reference) {
+        return `${resource}/download/` + `${id}` + `${reference}`
+    },
 }

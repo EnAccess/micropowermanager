@@ -4,8 +4,7 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/agents/transactions`
 
 export default {
-
-    list(){
+    list() {
         return Client.get(`${resource}`)
-    }
+    },
 }

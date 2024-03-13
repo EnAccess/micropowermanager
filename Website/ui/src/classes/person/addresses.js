@@ -1,9 +1,7 @@
-import {Paginator} from '../paginator'
-import {resources} from '@/resources'
+import { Paginator } from '../paginator'
+import { resources } from '@/resources'
 
 export class Address {
-
-
     fromJson(data) {
         let item = data
         this.id = item.id
@@ -21,7 +19,9 @@ export class Address {
 export class Addresses {
     constructor(personId) {
         this.list = []
-        this.paginator = new Paginator(resources.person.addresses + personId + '/addresses')
+        this.paginator = new Paginator(
+            resources.person.addresses + personId + '/addresses',
+        )
     }
 
     appendList(data) {
@@ -36,7 +36,6 @@ export class Addresses {
             let address = new Address()
             address.fromJson(data[t])
             this.list.push(address)
-
         }
     }
 }

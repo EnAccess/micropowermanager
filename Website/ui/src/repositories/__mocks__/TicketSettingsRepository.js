@@ -1,22 +1,14 @@
 const ticketSettingsListResponse = require('./responses/settings/ticketSettingsList.json')
 
 export default {
-    list () {
+    list() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(ticketSettingsListResponse)
-            )
-
+            process.nextTick(() => resolve(ticketSettingsListResponse))
         })
     },
-    update(){
+    update() {
         return new Promise((resolve) => {
-            process.nextTick(() =>
-                resolve(ticketSettingsListResponse)
-            )
-
+            process.nextTick(() => resolve(ticketSettingsListResponse))
         })
-    }
+    },
 }
-
-

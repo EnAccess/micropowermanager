@@ -4,22 +4,20 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/e-bikes`
 
 export default {
-    create (eBike) {
+    create(eBike) {
         return Client.post(`${resource}`, eBike)
     },
-    detail (serialNumber) {
+    detail(serialNumber) {
         return Client.get(`${resource}/${serialNumber}`)
     },
-    update (eBikeId,eBike) {
-
+    update(eBikeId, eBike) {
         return Client.put(`${resource}/${eBikeId}`, eBike)
     },
-    delete (eBikeId) {
+    delete(eBikeId) {
         return Client.delete(`${resource}/${eBikeId}`)
     },
-    switch (postData) {
+    switch(postData) {
         return Client.post(`${resource}/switch`, postData)
-
     },
     resource,
 }

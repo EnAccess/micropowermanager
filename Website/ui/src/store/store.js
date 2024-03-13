@@ -21,32 +21,30 @@ const vuexLocalStorage = new VuexPersist({
         settings: {
             mainSettings: state.settings.mainSettings,
             ticketSettings: state.settings.ticketSettings,
-            mapSettings: state.settings.mapSettings
+            mapSettings: state.settings.mapSettings,
         },
         resolution: {
             width: state.resolution.width,
             height: state.resolution.height,
-            isMobile: state.resolution.isMobile
+            isMobile: state.resolution.isMobile,
         },
         breadcrumb: {
-            breadcrumb: state.breadcrumb
+            breadcrumb: state.breadcrumb,
         },
         clusterDashboard: {
-            clustersCacheData: state.clusterDashboard.clustersCacheData
+            clustersCacheData: state.clusterDashboard.clustersCacheData,
         },
         registrationTail: {
             registrationTail: state.registrationTail.registrationTail,
-            isWizardShown: state.registrationTail.isWizardShown
+            isWizardShown: state.registrationTail.isWizardShown,
         },
-        protection : {
+        protection: {
             protectedPages: state.protection.protectedPages,
-            password: state.protection.password
+            password: state.protection.password,
         },
         miniGridsDashboard: {
-            miniGridsCacheData: state.miniGridsCacheData
-
+            miniGridsCacheData: state.miniGridsCacheData,
         },
-
     }),
     key: 'vuex',
     storage: window.localStorage,
@@ -61,8 +59,7 @@ export default new Vuex.Store({
         registrationTail,
         protection,
         miniGridDashboard,
-        device
-
+        device,
     },
     plugins: [vuexLocalStorage.plugin],
     state: {
@@ -71,10 +68,10 @@ export default new Vuex.Store({
         search: {},
     },
     getters: {
-        person: state => state.person,
-        devices: state => state.devices,
-        search: state => state.search,
-        resolution: state => state.resolution,
-        breadcrumb: state => state.breadcrumb
-    }
+        person: (state) => state.person,
+        devices: (state) => state.devices,
+        search: (state) => state.search,
+        resolution: (state) => state.resolution,
+        breadcrumb: (state) => state.breadcrumb,
+    },
 })

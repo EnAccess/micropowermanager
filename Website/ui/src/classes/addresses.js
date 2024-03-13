@@ -1,3 +1,1 @@
-
-export  class Addresses {
-}
+export class Addresses {}

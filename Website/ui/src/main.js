@@ -64,8 +64,14 @@ Vue.component('AgentTransactionDetail', AgentTransactionDetail)
 Vue.component('Angaza-SHS', Angaza)
 Vue.component('Daly-Bms', DalyBms)
 
-
-const unauthorizedPaths = ['login', 'forgot_password', 'welcome', 'register', '/wave-money/payment', '/wave-money/result']
+const unauthorizedPaths = [
+    'login',
+    'forgot_password',
+    'welcome',
+    'register',
+    '/wave-money/payment',
+    '/wave-money/result',
+]
 
 router.beforeEach((to, from, next) => {
     const authToken = store.getters['auth/getToken']
@@ -78,25 +84,27 @@ router.beforeEach((to, from, next) => {
         return next({ name: 'welcome' })
     }
 
-    store.dispatch('auth/refreshToken', authToken, intervalId).then((result) => {
-        if (result) {
-            EventBus.$emit('checkPageProtection', to)
-            return next()
-        }
-        next({ name: 'login' })
-    }).catch(() => {
-        return next({ name: 'welcome' })
-    })
-
+    store
+        .dispatch('auth/refreshToken', authToken, intervalId)
+        .then((result) => {
+            if (result) {
+                EventBus.$emit('checkPageProtection', to)
+                return next()
+            }
+            next({ name: 'login' })
+        })
+        .catch(() => {
+            return next({ name: 'welcome' })
+        })
 })
 
 /*eslint-disable */
 const app = new Vue({
     el: '#app',
     components: {
-        UserData
+        UserData,
     },
-    data () {
+    data() {
         return {
             mainSettingsService: new MainSettingsService(),
             mapSettingService: new MapSettingsService(),
@@ -104,20 +112,20 @@ const app = new Vue({
             resolution: {
                 width: window.innerWidth,
                 height: window.innerHeight,
-                isMobile: false
-            }
+                isMobile: false,
+            },
         }
     },
-    mounted () {
+    mounted() {
         this.handleResize()
         window.addEventListener('resize', this.handleResize)
         this.$el.addEventListener('click', this.onHtmlClick)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         window.removeEventListener('resize', this.handleResize)
     },
     methods: {
-        handleResize () {
+        handleResize() {
             this.resolution.width = window.innerWidth
             this.resolution.height = window.innerHeight
             if (this.resolution.width <= 960) {
@@ -125,15 +133,16 @@ const app = new Vue({
             } else {
                 this.resolution.isMobile = false
             }
-            this.$store.dispatch('resolution/setResolution', this.resolution).then(() => {
-            }).catch((err) => {
-                console.log(err)
-            })
-        }
-
+            this.$store
+                .dispatch('resolution/setResolution', this.resolution)
+                .then(() => {})
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
     },
     router: router,
     store: store,
     i18n,
-    render: h => h(App),
+    render: (h) => h(App),
 })

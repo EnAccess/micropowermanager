@@ -2,7 +2,7 @@ const SidebarStore = {
     showSidebar: false,
     displaySidebar(value) {
         this.showSidebar = value
-    }
+    },
 }
 
 const Sidebar = {
@@ -10,19 +10,18 @@ const Sidebar = {
         Vue.mixin({
             data() {
                 return {
-                    sidebarStore: SidebarStore
+                    sidebarStore: SidebarStore,
                 }
-            }
+            },
         })
 
         Object.defineProperty(Vue.prototype, '$sidebar', {
             get() {
                 return this.$root.sidebarStore
-            }
+            },
         })
         Vue.component('side-bar', Sidebar)
-
-    }
+    },
 }
 
 export default Sidebar

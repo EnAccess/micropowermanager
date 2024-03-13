@@ -1,5 +1,5 @@
 <template>
-    <AgentCommissionList/>
+    <AgentCommissionList />
 </template>
 
 <script>
@@ -7,6 +7,6 @@ import AgentCommissionList from '@/modules/Agent/Commission/AgentCommissionList.
 
 export default {
     name: 'AgentCommissionsPage',
-    components: { AgentCommissionList }
+    components: { AgentCommissionList },
 }
 </script>

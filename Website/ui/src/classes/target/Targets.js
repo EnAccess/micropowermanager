@@ -5,39 +5,36 @@ import RepositoryFactory from '../../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class Targets {
-
-    constructor () {
+    constructor() {
         this.list = []
         this.paginator = new Paginator(resources.target.list)
         this.repository = RepositoryFactory.get('target')
-
     }
 
-    targetAtIndex (index) {
+    targetAtIndex(index) {
         return index >= this.list.length ? null : this.list[index]
     }
 
-    async store (period, targetType, targetId, list) {
+    async store(period, targetType, targetId, list) {
         let target = {
             period: period,
             targetForType: targetType,
             targetForId: targetId,
-            data: list
+            data: list,
         }
         try {
             let response = await this.repository.store(target)
-            if(response.status === 201){
+            if (response.status === 201) {
                 return response
-            }else{
+            } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e, 'http')
         }
-
     }
 
-    async updateList (data) {
+    async updateList(data) {
         this.list = []
 
         for (let t in data) {
@@ -49,8 +46,8 @@ export class Targets {
             owner = data[t].owner_type
 
             this.list.push({
-                'target': target,
-                'owner': owner,
+                target: target,
+                owner: owner,
             })
         }
     }

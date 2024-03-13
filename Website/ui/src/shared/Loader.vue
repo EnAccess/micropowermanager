@@ -1,8 +1,12 @@
 <template>
     <div class="center-container">
         <div class="centered-item">
-            <img v-if="size!=='sm'" src="../assets/spinner/spinner.gif" alt="">
-            <img v-else src="../assets/spinner/spinner_sm.gif" alt="">
+            <img
+                v-if="size !== 'sm'"
+                src="../assets/spinner/spinner.gif"
+                alt=""
+            />
+            <img v-else src="../assets/spinner/spinner_sm.gif" alt="" />
         </div>
     </div>
 </template>
@@ -13,9 +17,9 @@ export default {
     props: {
         size: {
             type: String,
-            default: 'md'
-        }
-    }
+            default: 'md',
+        },
+    },
 }
 </script>
 
@@ -30,5 +34,4 @@ export default {
 .centered-item {
     /* Styles for your centered item */
 }
-
 </style>

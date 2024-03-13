@@ -3,7 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHandler'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
 export class CredentialService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('credential')
         this.credential = {
             id: null,
@@ -11,7 +11,7 @@ export class CredentialService {
             password: null,
         }
     }
-    fromJson (credentialData) {
+    fromJson(credentialData) {
         this.credential = {
             id: credentialData.id,
             userName: credentialData.user_name,
@@ -19,22 +19,22 @@ export class CredentialService {
         }
         return this.credential
     }
-    async getCredential () {
+    async getCredential() {
         try {
             const { data, status, error } = await this.repository.get()
             if (status !== 200) return new ErrorHandler(error, 'http', status)
             return this.fromJson(data.data)
-
         } catch (e) {
             const errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-    async updateCredential () {
+    async updateCredential() {
         try {
             const params = convertObjectKeysToSnakeCase(this.credential)
             const { data, status, error } = await this.repository.put(params)
-            if (status !== 200 && status !== 201) return new ErrorHandler(error, 'http', status)
+            if (status !== 200 && status !== 201)
+                return new ErrorHandler(error, 'http', status)
 
             return this.fromJson(data.data)
         } catch (e) {
@@ -42,5 +42,4 @@ export class CredentialService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

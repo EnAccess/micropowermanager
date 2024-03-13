@@ -7,12 +7,12 @@ export class UsageTypeListService {
         this.list = []
     }
 
-    async getUsageTypes () {
+    async getUsageTypes() {
         try {
             this.list = []
             let response = await this.repository.list()
             if (response.status === 200 || response.status === 201) {
-                this.list  = response.data.data
+                this.list = response.data.data
                 return this.list
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
@@ -21,6 +21,5 @@ export class UsageTypeListService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 }

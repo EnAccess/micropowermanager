@@ -4,17 +4,13 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/meter-types`
 
 export default {
-
-    index () {
+    index() {
         return Client.get(`${resource}`)
-
     },
-    store (meterType) {
+    store(meterType) {
         return Client.post(`${resource}`, meterType)
     },
-    update (meterType) {
+    update(meterType) {
         return Client.put(`${resource}/${meterType}`)
-    }
-
-
+    },
 }

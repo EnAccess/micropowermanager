@@ -1,20 +1,31 @@
 <template>
-    <div class="md-layout-item  md-medium-size-100" :class="wide? 'md-size-100' : 'md-size-33'">
+    <div
+        class="md-layout-item md-medium-size-100"
+        :class="wide ? 'md-size-100' : 'md-size-33'"
+    >
         <md-card class="chart-card">
             <md-card-header>
                 <md-card-header-text>
                     <div class="chart-header-text">{{ headerText }}</div>
                 </md-card-header-text>
-                <md-menu v-if="extendable" class="md-medium-hide" md-size="big" md-direction="bottom-end">
-                    <md-button class="md-icon-button" md-menu-trigger
-                               @click="maximize">
+                <md-menu
+                    v-if="extendable"
+                    class="md-medium-hide"
+                    md-size="big"
+                    md-direction="bottom-end"
+                >
+                    <md-button
+                        class="md-icon-button"
+                        md-menu-trigger
+                        @click="maximize"
+                    >
                         <md-icon>fullscreen</md-icon>
                     </md-button>
                 </md-menu>
             </md-card-header>
             <md-card-content>
                 <div v-if="loading">
-                    <loader size="sm"/>
+                    <loader size="sm" />
                 </div>
                 <div v-else>
                     <GChart
@@ -26,11 +37,9 @@
                         :events="chartEvents"
                     />
                 </div>
-
             </md-card-content>
         </md-card>
     </div>
-
 </template>
 
 <script>
@@ -43,38 +52,35 @@ export default {
     props: {
         type: {
             type: String,
-            required: true
+            required: true,
         },
         headerText: {
             type: String,
-            required: true
+            required: true,
         },
         chartData: {
             // eslint-disable-next-line vue/require-prop-type-constructor
-            type: Array|undefined,
-            required: true
+            type: Array | undefined,
+            required: true,
         },
         chartOptions: {
             type: Object,
-            required: true
+            required: true,
         },
         extendable: {
             type: Boolean,
-            default: false
-        }
-
+            default: false,
+        },
     },
     data: () => ({
         loading: false,
         chartEvents: {
-            select: () => {
-            },
+            select: () => {},
             click: () => {
                 let parent = this
                 setTimeout(function () {
                     if (parent.clicks >= 2) {
                         parent.chartType = parent.toggleChartType()
-
                     }
                     parent.clicks = 0
                 }, 250)
@@ -82,24 +88,22 @@ export default {
         },
         fullScreen: false,
     }),
-    mounted(){
-        EventBus.$on('clustersCachedDataLoading', (loading)=>{
+    mounted() {
+        EventBus.$on('clustersCachedDataLoading', (loading) => {
             this.loading = loading
         })
     },
     methods: {
-        maximize () {
+        maximize() {
             this.fullScreen = !this.fullScreen
             window.dispatchEvent(new Event('resize'))
         },
-
     },
     computed: {
-        wide () {
+        wide() {
             return this.fullScreen
         },
-    }
-
+    },
 }
 </script>
 
@@ -113,5 +117,4 @@ export default {
     font-size: larger;
     font-weight: 300;
 }
-
 </style>

@@ -1,15 +1,16 @@
 <template>
     <div>
         <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
-            <side-bar/>
+            <side-bar />
             <div class="main-panel">
                 <top-navbar class="top-nav-bar"></top-navbar>
-                <mobile-top-navbar class="mobile-top-nav-bar"></mobile-top-navbar>
+                <mobile-top-navbar
+                    class="mobile-top-nav-bar"
+                ></mobile-top-navbar>
                 <div class="content">
-                    <slot/>
+                    <slot />
                 </div>
-                <footer-bar/>
-
+                <footer-bar />
             </div>
         </div>
 
@@ -18,19 +19,31 @@
             :md-close-on-esc="false"
             :md-click-outside-to-close="false"
         >
-            <md-dialog-title>{{ $tc('phrases.expireSession') }}</md-dialog-title>
+            <md-dialog-title>
+                {{ $tc('phrases.expireSession') }}
+            </md-dialog-title>
             <md-dialog-content>
-                {{ $tc('phrases.expireSessionLabel', 2, { expires_in: expires_in }) }}<br>{{ $tc('phrases.expireSessionLabel', 1) }}
+                {{
+                    $tc('phrases.expireSessionLabel', 2, {
+                        expires_in: expires_in,
+                    })
+                }}
+                <br />
+                {{ $tc('phrases.expireSessionLabel', 1) }}
             </md-dialog-content>
 
             <md-dialog-actions>
-                <md-button class="md-primary md-raised" @click="extendToken" :disabled="confirmed">
+                <md-button
+                    class="md-primary md-raised"
+                    @click="extendToken"
+                    :disabled="confirmed"
+                >
                     {{ $tc('words.confirm') }}
                 </md-button>
             </md-dialog-actions>
         </md-dialog>
-        <tail-wizard :show-wizard="showWizard" :tail="tail"/>
-        <password-protection/>
+        <tail-wizard :show-wizard="showWizard" :tail="tail" />
+        <password-protection />
     </div>
 </template>
 <script>
@@ -51,25 +64,25 @@ export default {
         FooterBar,
         SideBar,
         MobileTopNavbar,
-        TailWizard
+        TailWizard,
     },
-    created () {
+    created() {
         if (this.status !== '') {
-
             const tail = JSON.parse(this.registrationTail.tail)
             for (const tailElement of tail) {
                 if (tailElement.adjusted === false && !this.isWizardShown) {
                     this.showWizard = true
                 }
             }
-            this.tail = tail.filter(x => x.adjusted === false && x.tag !== null)
+            this.tail = tail.filter(
+                (x) => x.adjusted === false && x.tag !== null,
+            )
         }
     },
-    mounted () {
+    mounted() {
         //register the time extender
         EventBus.$on('ask.for.extend', this.showExtender)
         EventBus.$on('session.end', this.logout)
-
     },
     data: () => ({
         active: false,
@@ -79,10 +92,10 @@ export default {
         sidebarBackground: 'green',
         sidebarBackgroundImage: null,
         showWizard: false,
-        tail: []
+        tail: [],
     }),
     methods: {
-        showExtender (val) {
+        showExtender(val) {
             this.expires_in = val
             if (this.showed === true) {
                 return
@@ -90,28 +103,26 @@ export default {
             this.showed = true
             this.active = true
         },
-        extendToken () {
+        extendToken() {
             this.confirmed = true
             location.reload()
         },
-        logout () {
+        logout() {
             this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
             this.$store.dispatch('auth/logOut').then(() => {
                 this.$router.replace('/login')
             })
-
-        }
+        },
     },
     computed: {
         ...mapGetters({
             status: 'auth/getStatus',
             registrationTail: 'registrationTail/getTail',
             isWizardShown: 'registrationTail/getIsWizardShown',
-        })
-    }
+        }),
+    },
 }
 </script>
-
 
 <style lang="css" scoped>
 .container {
@@ -122,7 +133,6 @@ export default {
     .sidebar {
         width: 8%;
         min-width: 200px;
-
     }
 
     .main-panel {
@@ -135,7 +145,6 @@ export default {
     .sidebar {
         width: 10%;
         min-width: 230px;
-
     }
 
     .main-panel {
@@ -148,7 +157,6 @@ export default {
     .sidebar {
         width: 15%;
         min-width: 260px;
-
     }
 
     .main-panel {
@@ -161,15 +169,11 @@ export default {
     .top-nav-bar {
         display: none;
     }
-
 }
 
 @media screen and (min-width: 992px) {
     .mobile-top-nav-bar {
         display: none;
     }
-
 }
-
-
 </style>

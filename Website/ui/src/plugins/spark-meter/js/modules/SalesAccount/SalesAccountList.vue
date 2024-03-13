@@ -1,42 +1,69 @@
 <template>
     <div>
-
-        <widget id="sales-account-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="salesAccountService.pagingUrl"
-                :route_name="salesAccountService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncSalesAccount()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="sales-account-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="salesAccountService.pagingUrl"
+            :route_name="salesAccountService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncSalesAccount()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-            <md-table v-model="salesAccountService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="salesAccountService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-                    <md-table-cell md-label="Account Type" md-sort-by="accountType">{{ item.accountType }}
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Name" md-sort-by="name">
+                        {{ item.name }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Account Type"
+                        md-sort-by="accountType"
+                    >
+                        {{ item.accountType }}
                     </md-table-cell>
                     <md-table-cell md-label="Active" md-sort-by="active">
-                        <md-icon v-if="item.active" style="color:#1a921a">check_circle_outline</md-icon>
-                        <md-icon v-if="!item.active" style="color:#d01111">remove</md-icon>
+                        <md-icon v-if="item.active" style="color: #1a921a">
+                            check_circle_outline
+                        </md-icon>
+                        <md-icon v-if="!item.active" style="color: #d01111">
+                            remove
+                        </md-icon>
                     </md-table-cell>
-                    <md-table-cell md-label="Credit" md-sort-by="credit">{{ item.credit }}</md-table-cell>
-                    <md-table-cell md-label="Credit" md-sort-by="credit">{{ item.credit }}</md-table-cell>
-                    <md-table-cell md-label="Markup" md-sort-by="markup">{{ item.markup}}</md-table-cell>
-                    <md-table-cell md-label="Site" md-sort-by="siteName">{{ item.siteName }}</md-table-cell>
+                    <md-table-cell md-label="Credit" md-sort-by="credit">
+                        {{ item.credit }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Credit" md-sort-by="credit">
+                        {{ item.credit }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Markup" md-sort-by="markup">
+                        {{ item.markup }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Site" md-sort-by="siteName">
+                        {{ item.siteName }}
+                    </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+        />
     </div>
 </template>
 
@@ -50,7 +77,7 @@ import { EventBus } from '../../eventbus'
 export default {
     name: 'SalesAccountList',
     components: { Redirection, Widget },
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             salesAccountService: new SalesAccountService(),
@@ -61,18 +88,18 @@ export default {
             redirectionUrl: '/spark-meters/sm-overview',
             redirectDialogActive: false,
             buttonText: 'Get Updates From Spark Meter',
-            label: 'Sales Account Records Not Up to Date.'
+            label: 'Sales Account Records Not Up to Date.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkCredential()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -80,17 +107,18 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
-        async checkSync () {
+        async checkSync() {
             try {
-                let checkingResult = await this.salesAccountService.checkSalesAccounts()
+                let checkingResult =
+                    await this.salesAccountService.checkSalesAccounts()
                 this.isSynced = true
                 if (checkingResult.available_site_count === 0) {
-                    this.redirectionMessage = 'There is no authenticated Site to download Sales Accounts updates.'
+                    this.redirectionMessage =
+                        'There is no authenticated Site to download Sales Accounts updates.'
                     this.redirectionUrl = '/spark-meters/sm-site'
                     this.redirectDialogActive = true
                     return
@@ -112,9 +140,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncSalesAccount()
                         }
@@ -126,7 +152,7 @@ export default {
             }
         },
 
-        async syncSalesAccount () {
+        async syncSalesAccount() {
             if (!this.loading) {
                 try {
                     this.loading = true
@@ -140,25 +166,26 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.salesAccountService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.salesAccountService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.salesAccountService.list.length,
+            )
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

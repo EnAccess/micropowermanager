@@ -1,58 +1,83 @@
 <template>
     <div>
-        <add/>
-        <widget id="tariff-list"
-                :title="$tc('words.tariff',2)"
-                :button="true"
-                :subscriber="subscriber"
-                :buttonText="$tc('phrases.newTariff')"
-                @widgetAction="showNewTariff"
-                color="green"
-                :paginator="tariffService.paginator">
-
+        <add />
+        <widget
+            id="tariff-list"
+            :title="$tc('words.tariff', 2)"
+            :button="true"
+            :subscriber="subscriber"
+            :buttonText="$tc('phrases.newTariff')"
+            @widgetAction="showNewTariff"
+            color="green"
+            :paginator="tariffService.paginator"
+        >
             <md-table
                 v-model="tariffService.list"
                 md-sort="id"
                 md-sort-order="asc"
-                md-card>
-
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell :md-label="$tc('words.name')" md-sort-by="name">{{ item.name }}</md-table-cell>
-                    <md-table-cell :md-label="$tc('words.price') + '/ kWh'" md-numeric>
+                    <md-table-cell
+                        :md-label="$tc('words.name')"
+                        md-sort-by="name"
+                    >
+                        {{ item.name }}
+                    </md-table-cell>
+                    <md-table-cell
+                        :md-label="$tc('words.price') + '/ kWh'"
+                        md-numeric
+                    >
                         {{ moneyFormat(item.price) }}
                     </md-table-cell>
-                    <md-table-cell :md-label="$tc('phrases.minimumPurchaseAmount')" md-numeric>
+                    <md-table-cell
+                        :md-label="$tc('phrases.minimumPurchaseAmount')"
+                        md-numeric
+                    >
                         {{ moneyFormat(item.minimumPurchaseAmount) }}
                     </md-table-cell>
-                    <md-table-cell :md-label="$tc('phrases.accessRate')" md-numeric md-sort-by="accessRate.amount">
+                    <md-table-cell
+                        :md-label="$tc('phrases.accessRate')"
+                        md-numeric
+                        md-sort-by="accessRate.amount"
+                    >
                         <div v-if="item.accessRate">
                             {{ moneyFormat(item.accessRate.amount) }}
                         </div>
                         <div v-else>-</div>
                     </md-table-cell>
-                    <md-table-cell :md-label="$tc('phrases.accessRatePeriodInDays')"
-                                   md-numeric
+                    <md-table-cell
+                        :md-label="$tc('phrases.accessRatePeriodInDays')"
+                        md-numeric
                     >
                         <div v-if="item.accessRate.period">
                             {{ item.accessRate.period }} {{ $tc('words.day') }}
                         </div>
                         <div v-else>-</div>
-
                     </md-table-cell>
                     <md-table-cell md-label="#">
-                        <md-button class="md-icon-button" @click="editTariff(item.id)">
-                            <md-tooltip md-direction="top">{{ $tc('words.edit') }}</md-tooltip>
+                        <md-button
+                            class="md-icon-button"
+                            @click="editTariff(item.id)"
+                        >
+                            <md-tooltip md-direction="top">
+                                {{ $tc('words.edit') }}
+                            </md-tooltip>
                             <md-icon>edit</md-icon>
                         </md-button>
-                        <md-button class="md-icon-button" @click="showConfirmation(item.id)">
-                            <md-tooltip md-direction="top">{{ $tc('words.delete') }}</md-tooltip>
+                        <md-button
+                            class="md-icon-button"
+                            @click="showConfirmation(item.id)"
+                        >
+                            <md-tooltip md-direction="top">
+                                {{ $tc('words.delete') }}
+                            </md-tooltip>
                             <md-icon>delete</md-icon>
                         </md-button>
                     </md-table-cell>
                 </md-table-row>
             </md-table>
-            <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-
+            <md-progress-bar md-mode="indeterminate" v-if="loading" />
         </widget>
     </div>
 </template>
@@ -69,53 +94,57 @@ export default {
     name: 'Tariffs',
     mixins: [currency, notify],
     components: { Widget, Add },
-    data () {
+    data() {
         return {
             subscriber: 'tariff-list',
             tariffService: new TariffService(),
             tariffList: [],
-            loading: false
+            loading: false,
         }
     },
-    mounted () {
-
+    mounted() {
         EventBus.$on('pageLoaded', this.reloadList)
         EventBus.$on('tariffAdded', () => {
             this.getTariffs()
         })
-
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-
-        reloadList (subscriber, data) {
-
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) {
                 return
             }
             this.tariffService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.tariffService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.tariffService.list.length,
+            )
         },
-        async getTariffs () {
+        async getTariffs() {
             try {
                 await this.tariffService.getTariffs()
-                EventBus.$emit('widgetContentLoaded', this.subscriber, this.tariffService.list.length)
+                EventBus.$emit(
+                    'widgetContentLoaded',
+                    this.subscriber,
+                    this.tariffService.list.length,
+                )
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        showNewTariff () {
+        showNewTariff() {
             EventBus.$emit('showNewTariff')
         },
-        addToList (tariff) {
+        addToList(tariff) {
             this.tariffService.addToList(tariff)
         },
-        editTariff (id) {
+        editTariff(id) {
             this.$router.push({ path: '/tariffs/' + id })
         },
-        async deleteTariff (id) {
+        async deleteTariff(id) {
             try {
                 this.loading = true
                 await this.tariffService.deleteTariff(id)
@@ -127,7 +156,7 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async changeUsingMeterTariff (currentId, changeId) {
+        async changeUsingMeterTariff(currentId, changeId) {
             try {
                 this.loading = true
                 await this.tariffService.changeMetersTariff(currentId, changeId)
@@ -138,7 +167,7 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async showConfirmation (id) {
+        async showConfirmation(id) {
             let countObject = await this.tariffService.tariffUsageCount(id)
             let usageCount = countObject.count
             let tariffs = this.tariffService.list
@@ -158,13 +187,13 @@ export default {
             if (usageCount > 0) {
                 swalOptions.input = 'select'
                 swalOptions.inputOptions = tariffObj
-                swalOptions.text = this.$tc('phrases.tariffNotify2', 2, { usageCount: usageCount })
+                swalOptions.text = this.$tc('phrases.tariffNotify2', 2, {
+                    usageCount: usageCount,
+                })
             } else {
                 swalOptions.text = this.$tc('phrases.tariffNotify2', 1)
             }
-            this.$swal(
-                swalOptions
-            ).then((result) => {
+            this.$swal(swalOptions).then((result) => {
                 if (result.value) {
                     // eslint-disable-next-line no-constant-condition
                     if (typeof result.value == 'string') {
@@ -173,11 +202,9 @@ export default {
                     this.deleteTariff(id)
                 }
             })
-        }
+        },
     },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

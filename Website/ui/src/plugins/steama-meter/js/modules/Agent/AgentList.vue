@@ -1,39 +1,61 @@
 <template>
     <div>
-
-        <widget id="customer-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="agentService.pagingUrl"
-                :route_name="agentService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncAgents()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="customer-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="agentService.pagingUrl"
+            :route_name="agentService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncAgents()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-
-            <md-table v-model="agentService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="agentService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-                    <md-table-cell md-label="Surname" md-sort-by="name">{{ item.surname }}</md-table-cell>
-                    <md-table-cell md-label="Site" md-sort-by="siteName">{{ item.siteName}}</md-table-cell>
-                    <md-table-cell md-label="Is Credit Limited" md-sort-by="isCreditLimited">{{ item.isCreditLimited}}
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
                     </md-table-cell>
-                    <md-table-cell md-label="Credit Balance" md-sort-by="creditBalance">{{ item.creditBalance }}
+                    <md-table-cell md-label="Name" md-sort-by="name">
+                        {{ item.name }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Surname" md-sort-by="name">
+                        {{ item.surname }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Site" md-sort-by="siteName">
+                        {{ item.siteName }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Is Credit Limited"
+                        md-sort-by="isCreditLimited"
+                    >
+                        {{ item.isCreditLimited }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Credit Balance"
+                        md-sort-by="creditBalance"
+                    >
+                        {{ item.creditBalance }}
                     </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+        />
     </div>
 </template>
 
@@ -47,7 +69,7 @@ import { AgentService } from '../../services/AgentService'
 export default {
     name: 'AgentList',
     components: { Redirection, Widget },
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             agentService: new AgentService(),
@@ -58,18 +80,18 @@ export default {
             redirectionUrl: '/steama-meters/steama-overview',
             redirectDialogActive: false,
             buttonText: 'Get Updates From Steama.co',
-            label: 'Agent Records Not Up to Date.'
+            label: 'Agent Records Not Up to Date.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkCredential()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -77,12 +99,11 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
-        async checkSync () {
+        async checkSync() {
             try {
                 this.loading = true
                 this.isSynced = await this.agentService.checkAgents()
@@ -96,9 +117,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncAgents()
                         }
@@ -110,7 +129,7 @@ export default {
             }
         },
 
-        async syncAgents () {
+        async syncAgents() {
             if (!this.loading) {
                 try {
                     this.loading = true
@@ -124,25 +143,26 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.agentService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.agentService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.agentService.list.length,
+            )
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

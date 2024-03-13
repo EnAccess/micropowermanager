@@ -2,16 +2,15 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class AuthenticationService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('authentication')
         this.authentication = {
             id: null,
             token: null,
-
         }
     }
 
-    fromJson (authenticationData) {
+    fromJson(authenticationData) {
         this.authentication = {
             id: authenticationData.id,
             token: authenticationData.token,
@@ -19,7 +18,7 @@ export class AuthenticationService {
         return this.authentication
     }
 
-    async getAuthentication () {
+    async getAuthentication() {
         try {
             let response = await this.repository.get()
             if (response.status === 200) {
@@ -32,5 +31,4 @@ export class AuthenticationService {
             return new ErrorHandler(errorMessage, 'http')
         }
     }
-
 }

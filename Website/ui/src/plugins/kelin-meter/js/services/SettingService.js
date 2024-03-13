@@ -3,8 +3,7 @@ import { ErrorHandler } from '../Helpers/ErrorHander'
 import { SyncSettingService } from './SyncSettingService'
 
 export class SettingService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('setting')
         this.syncSettingsService = new SyncSettingService()
         this.list = []
@@ -17,16 +16,14 @@ export class SettingService {
         }
     }
 
-    updateList (data) {
-
+    updateList(data) {
         this.list = []
         for (let s in data) {
             this.list.push(data[s].data.attributes)
         }
-
     }
 
-    async getSettings () {
+    async getSettings() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -40,7 +37,7 @@ export class SettingService {
         }
     }
 
-    async updateSyncSettings () {
+    async updateSyncSettings() {
         try {
             await this.syncSettingsService.updateSyncSettings(this.list)
         } catch (e) {

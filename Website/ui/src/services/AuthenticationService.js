@@ -3,7 +3,7 @@ import { EventBus } from '@/shared/eventbus'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class AuthenticationService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('authentication')
         this.authenticateUser = {
             name: null,
@@ -11,11 +11,11 @@ export class AuthenticationService {
             email: null,
             token: null,
             remaining_time: 0,
-            intervalId: 0
+            intervalId: 0,
         }
     }
 
-    _fetchData (data) {
+    _fetchData(data) {
         try {
             this.authenticateUser = {
                 id: data.user.id,
@@ -23,23 +23,23 @@ export class AuthenticationService {
                 token: data.access_token,
                 remaining_time: data.expires_in,
                 name: data.user.name,
-                intervalId: 0
+                intervalId: 0,
             }
             localStorage.setItem('token', this.authenticateUser.token)
             this.startTimer()
             return this.authenticateUser
         } catch (e) {
-            return this.setAuthenticateUserEmpty(this.authenticateUser.intervalId)
-
+            return this.setAuthenticateUserEmpty(
+                this.authenticateUser.intervalId,
+            )
         }
-
     }
 
-    async authenticate (email, password) {
+    async authenticate(email, password) {
         try {
             let userPM = {
                 email: email,
-                password: password
+                password: password,
             }
             let response = await this.repository.login(userPM)
             if (response.status === 200) {
@@ -51,11 +51,9 @@ export class AuthenticationService {
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    async refreshToken (token, intervalId) {
-
+    async refreshToken(token, intervalId) {
         try {
             let response = await this.repository.refresh(token)
             clearInterval(intervalId)
@@ -70,32 +68,35 @@ export class AuthenticationService {
         }
     }
 
-    async logOut (intervalId) {
-
+    async logOut(intervalId) {
         this.stopTimer(intervalId)
         this.setAuthenticateUserEmpty(intervalId)
     }
 
-    startTimer () {
+    startTimer() {
         if (this.authenticateUser.remaining_time <= 0) return
         this.authenticateUser.intervalId = setInterval(() => {
             this.authenticateUser.remaining_time--
-            if (this.authenticateUser.remaining_time <= 300 && this.authenticateUser.remaining_time > 0) {
-                EventBus.$emit('ask.for.extend', this.authenticateUser.remaining_time)
+            if (
+                this.authenticateUser.remaining_time <= 300 &&
+                this.authenticateUser.remaining_time > 0
+            ) {
+                EventBus.$emit(
+                    'ask.for.extend',
+                    this.authenticateUser.remaining_time,
+                )
             } else if (this.authenticateUser.remaining_time === 0) {
                 EventBus.$emit('session.end', true)
                 clearInterval(this.authenticateUser.intervalId)
             }
         }, 1000)
-
     }
 
-    stopTimer (intervalId) {
-
+    stopTimer(intervalId) {
         clearInterval(intervalId)
     }
 
-    setAuthenticateUserEmpty (intervalId) {
+    setAuthenticateUserEmpty(intervalId) {
         clearInterval(intervalId)
         this.authenticateUser = {}
         return this.authenticateUser

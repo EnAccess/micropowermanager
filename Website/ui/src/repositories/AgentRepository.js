@@ -4,21 +4,19 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/agents`
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    create (agentPm) {
+    create(agentPm) {
         return Client.post(`${resource}`, agentPm)
     },
-    detail (agentId) {
+    detail(agentId) {
         return Client.get(`${resource}/${agentId}`)
     },
-    update (agent) {
-
+    update(agent) {
         return Client.put(`${resource}/${agent.id}`, agent)
     },
-    delete (agentId) {
+    delete(agentId) {
         return Client.delete(`${resource}/${agentId}`)
     },
-
 }

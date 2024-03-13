@@ -2,24 +2,23 @@ import { baseUrl } from '../../../../repositories/Client/AxiosClient'
 
 const resource = `${baseUrl}/api/kelin-meters/kelin-customer`
 
-
 import Client from '../../../../repositories/Client/AxiosClient'
 
 export default {
-    list () {
+    list() {
         return Client.get(`${resource}`)
     },
-    sync () {
+    sync() {
         return Client.get(`${resource}/sync`)
     },
-    get (customerId) {
+    get(customerId) {
         return Client.get(`${resource}/${customerId}`)
     },
-    syncCheck () {
+    syncCheck() {
         return Client.get(`${resource}/sync-check`)
     },
 
-    update(customer){
-        return Client.put(`${resource}/${customer.id}`,customer)
+    update(customer) {
+        return Client.put(`${resource}/${customer.id}`, customer)
     },
 }

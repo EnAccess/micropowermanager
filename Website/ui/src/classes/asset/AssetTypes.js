@@ -2,7 +2,7 @@ import { Paginator } from '../paginator'
 import { AssetType } from './AssetType'
 
 export class AssetTypes {
-    constructor () {
+    constructor() {
         this.list = []
         this.paginator = new Paginator(resources.assets.list)
     }
@@ -12,7 +12,7 @@ export class AssetTypes {
 
         for (let a in data) {
             let assetType = new AssetType()
-            assetType  = assetType.fromJson(data[a])
+            assetType = assetType.fromJson(data[a])
             this.list.push(assetType)
         }
     }

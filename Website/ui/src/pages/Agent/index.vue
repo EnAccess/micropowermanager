@@ -1,5 +1,5 @@
 <template>
-    <AgentList/>
+    <AgentList />
 </template>
 
 <script>

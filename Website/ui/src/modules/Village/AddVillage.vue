@@ -4,104 +4,182 @@
             <md-card class="md-layout-item md-size-100">
                 <md-card-content>
                     <div class="md-layout md-gutter md-size-100">
-                        <div class="md-layout-item md-size-70 md-small-size-100">
-                            <md-field :class="{'md-invalid': errors.has($tc('words.name'))}">
-                                <label for="city_name">{{ $tc('words.name') }} </label>
+                        <div
+                            class="md-layout-item md-size-70 md-small-size-100"
+                        >
+                            <md-field
+                                :class="{
+                                    'md-invalid': errors.has($tc('words.name')),
+                                }"
+                            >
+                                <label for="city_name">
+                                    {{ $tc('words.name') }}
+                                </label>
                                 <md-input
                                     id="cityName"
                                     :name="$tc('words.name')"
                                     v-model="cityName"
-                                    v-validate="'required|min:3'"/>
-                                <span class="md-error">{{ errors.first($tc('words.name')) }}</span>
+                                    v-validate="'required|min:3'"
+                                />
+                                <span class="md-error">
+                                    {{ errors.first($tc('words.name')) }}
+                                </span>
                             </md-field>
                         </div>
-                        <div class="md-layout-item md-size-30 md-small-size-100">
-                            <md-field :class="{'md-invalid': errors.has($tc('words.miniGrid'))}">
-                                <label for="miniGrid">{{ $tc('words.miniGrid') }}</label>
+                        <div
+                            class="md-layout-item md-size-30 md-small-size-100"
+                        >
+                            <md-field
+                                :class="{
+                                    'md-invalid': errors.has(
+                                        $tc('words.miniGrid'),
+                                    ),
+                                }"
+                            >
+                                <label for="miniGrid">
+                                    {{ $tc('words.miniGrid') }}
+                                </label>
                                 <md-select
                                     v-model="selectedMiniGridId"
                                     name="miniGrid"
                                     id="miniGrid"
                                     v-validate="'required'"
                                 >
-                                    <md-option v-for="mg in miniGridService.list" :value="mg.id"
-                                               :key="mg.id">
+                                    <md-option
+                                        v-for="mg in miniGridService.list"
+                                        :value="mg.id"
+                                        :key="mg.id"
+                                    >
                                         {{ mg.name }}
                                     </md-option>
                                 </md-select>
-                                <span class="md-error">{{ errors.first($tc('words.miniGrid')) }}</span>
+                                <span class="md-error">
+                                    {{ errors.first($tc('words.miniGrid')) }}
+                                </span>
                             </md-field>
                         </div>
                     </div>
 
                     <div class="md-layout md-gutter md-size-100">
-                        <div class="md-layout md-gutter md-size-60 md-small-size-100"
-                             style="padding-left: 1.5rem !important;">
-                            <form class="md-layout md-gutter" @submit.prevent="setPoints"
-                                  style="padding-left: 1.5rem !important;"
+                        <div
+                            class="md-layout md-gutter md-size-60 md-small-size-100"
+                            style="padding-left: 1.5rem !important"
+                        >
+                            <form
+                                class="md-layout md-gutter"
+                                @submit.prevent="setPoints"
+                                style="padding-left: 1.5rem !important"
                             >
-                                <div class="md-layout-item md-size-30 md-small-size-100">
-                                    <md-field :class="{'md-invalid': errors.has($tc('words.latitude'))}">
-                                        <label for="latitude">{{ $tc('words.latitude') }}</label>
+                                <div
+                                    class="md-layout-item md-size-30 md-small-size-100"
+                                >
+                                    <md-field
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                $tc('words.latitude'),
+                                            ),
+                                        }"
+                                    >
+                                        <label for="latitude">
+                                            {{ $tc('words.latitude') }}
+                                        </label>
                                         <md-input
                                             id="latitude"
                                             :name="$tc('words.latitude')"
                                             v-model="cityLatLng.lat"
                                             step="any"
                                             maxlength="8"
-                                            v-validate="'required|decimal:5|max:8'"/>
-                                        <span class="md-error">{{ errors.first($tc('words.latitude')) }}</span>
-
+                                            v-validate="
+                                                'required|decimal:5|max:8'
+                                            "
+                                        />
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    $tc('words.latitude'),
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
-                                <div class="md-layout-item md-size-30 md-small-size-100">
-                                    <md-field :class="{'md-invalid': errors.has($tc('words.longitude'))}">
-                                        <label for="longitude">{{ $tc('words.longitude') }}</label>
+                                <div
+                                    class="md-layout-item md-size-30 md-small-size-100"
+                                >
+                                    <md-field
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                $tc('words.longitude'),
+                                            ),
+                                        }"
+                                    >
+                                        <label for="longitude">
+                                            {{ $tc('words.longitude') }}
+                                        </label>
                                         <md-input
                                             id="longitude"
                                             :name="$tc('words.longitude')"
                                             v-model="cityLatLng.lon"
                                             step="any"
                                             maxlength="8"
-                                            v-validate="'required|decimal:5|max:8'"/>
-                                        <span class="md-error">{{ errors.first($tc('words.longitude')) }}</span>
+                                            v-validate="
+                                                'required|decimal:5|max:8'
+                                            "
+                                        />
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    $tc('words.longitude'),
+                                                )
+                                            }}
+                                        </span>
                                     </md-field>
                                 </div>
-                                <div class="md-layout-item md-size-40 md-small-size-100">
-                                    <md-button type="submit" class="md-primary set-button">{{
-                                            $tc('phrases.setPoints')
-                                        }}
+                                <div
+                                    class="md-layout-item md-size-40 md-small-size-100"
+                                >
+                                    <md-button
+                                        type="submit"
+                                        class="md-primary set-button"
+                                    >
+                                        {{ $tc('phrases.setPoints') }}
                                     </md-button>
-
                                 </div>
                             </form>
-
                         </div>
 
-                        <div class="md-layout-item md-size-40 md-small-size-100">
-                            <md-button class="md-primary save-button" @click="saveVillage">{{
-                                    $tc('words.save')
-                                }}
+                        <div
+                            class="md-layout-item md-size-40 md-small-size-100"
+                        >
+                            <md-button
+                                class="md-primary save-button"
+                                @click="saveVillage"
+                            >
+                                {{ $tc('words.save') }}
                             </md-button>
-
                         </div>
                     </div>
 
                     <div class="md-layout-item md-size-100 map-area">
-                        <VillageMap ref="villageMapRef"
-                                    :mapping-service="mappingService"
-                                    :marker="true"
-                                    @locationSet="villageLocationSet"
+                        <VillageMap
+                            ref="villageMapRef"
+                            :mapping-service="mappingService"
+                            :marker="true"
+                            @locationSet="villageLocationSet"
                         />
                     </div>
                 </md-card-content>
-                <md-progress-bar md-mode="indeterminate" class="md-progress-bar" v-if="loading"/>
-
+                <md-progress-bar
+                    md-mode="indeterminate"
+                    class="md-progress-bar"
+                    v-if="loading"
+                />
             </md-card>
-
         </widget>
-        <redirection-modal :redirection-url="redirectionUrl" :imperative-item="imperativeItem"
-                           :dialog-active="redirectDialogActive"/>
+        <redirection-modal
+            :redirection-url="redirectionUrl"
+            :imperative-item="imperativeItem"
+            :dialog-active="redirectDialogActive"
+        />
     </div>
 </template>
 
@@ -122,9 +200,9 @@ export default {
     components: {
         VillageMap,
         Widget,
-        RedirectionModal
+        RedirectionModal,
     },
-    data () {
+    data() {
         return {
             clusterService: new ClusterService(),
             miniGridService: new MiniGridService(),
@@ -140,24 +218,24 @@ export default {
             cityService: new CityService(),
             cityLatLng: {
                 lat: null,
-                lon: null
+                lon: null,
             },
             redirectionUrl: '/locations/add-mini-grid',
             imperativeItem: 'Mini-Grid',
             redirectDialogActive: false,
         }
     },
-    created () {
+    created() {
         this.redirectedMiniGridId = this.$route.params.id
         this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
         this.mappingService.setMarkerUrl(ICONS.VILLAGE)
     },
-    mounted () {
+    mounted() {
         this.setMiniGridOfVillage()
     },
 
     methods: {
-        async setMiniGridOfVillage () {
+        async setMiniGridOfVillage() {
             try {
                 if (this.redirectedMiniGridId) {
                     this.selectedMiniGridId = this.redirectedMiniGridId
@@ -166,7 +244,10 @@ export default {
                 await this.getMiniGrids()
 
                 if (this.miniGridService.list.length) {
-                    const selectedMiniGrid = this.miniGridService.list[this.miniGridService.list.length - 1]
+                    const selectedMiniGrid =
+                        this.miniGridService.list[
+                            this.miniGridService.list.length - 1
+                        ]
                     this.selectedMiniGridId = selectedMiniGrid.id
                 } else {
                     this.redirectDialogActive = true
@@ -175,54 +256,65 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async getMiniGrids () {
+        async getMiniGrids() {
             try {
                 await this.miniGridService.getMiniGrids()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async getMiniGridWithGeoData (miniGridId) {
+        async getMiniGridWithGeoData(miniGridId) {
             try {
                 return await this.miniGridService.getMiniGridGeoData(miniGridId)
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async getClusterGeoData (clusterId) {
+        async getClusterGeoData(clusterId) {
             try {
                 this.clusterId = clusterId
-                return await this.clusterService.getClusterGeoLocation(clusterId)
+                return await this.clusterService.getClusterGeoLocation(
+                    clusterId,
+                )
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
         },
-        async saveVillage () {
+        async saveVillage() {
             const validator = await this.$validator.validateAll()
-            if (validator ){
+            if (validator) {
                 try {
                     this.loading = true
-                    const city  = {
-                        'name': this.cityName,
-                        'clusterId': this.clusterId,
-                        'miniGridId': this.selectedMiniGridId,
-                        'points': `${this.cityLatLng.lat},${this.cityLatLng.lon}`
+                    const city = {
+                        name: this.cityName,
+                        clusterId: this.clusterId,
+                        miniGridId: this.selectedMiniGridId,
+                        points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
                     }
                     await this.cityService.createCity(city)
-                    this.alertNotify('success', this.$tc('phrases.newVillageNotify', 1))
+                    this.alertNotify(
+                        'success',
+                        this.$tc('phrases.newVillageNotify', 1),
+                    )
                     this.loading = false
-                    await this.$router.replace(`/dashboards/mini-grid/${this.selectedMiniGridId}`)
+                    await this.$router.replace(
+                        `/dashboards/mini-grid/${this.selectedMiniGridId}`,
+                    )
                 } catch (e) {
                     this.loading = false
                     this.alertNotify('error', e.message)
                 }
             }
         },
-        villageLocationSet (data) {
-            if(!data.error){
-                this.cityLatLng.lat = Number(data.geoDataItem.coordinates.lat.toFixed(5))
-                this.cityLatLng.lon = Number(data.geoDataItem.coordinates.lng.toFixed(5))
-            }else{
+        villageLocationSet(data) {
+            if (!data.error) {
+                this.cityLatLng.lat = Number(
+                    data.geoDataItem.coordinates.lat.toFixed(5),
+                )
+                this.cityLatLng.lon = Number(
+                    data.geoDataItem.coordinates.lng.toFixed(5),
+                )
+            } else {
                 this.cityLatLng.lat = null
                 this.cityLatLng.lon = null
                 this.$swal({
@@ -231,17 +323,17 @@ export default {
                 })
             }
         },
-        setPoints () {
+        setPoints() {
             const location = [this.cityLatLng.lat, this.cityLatLng.lon]
             this.$refs.villageMapRef.setVillageMarkerManually(location)
         },
-
     },
     watch: {
-        async selectedMiniGridId () {
-
+        async selectedMiniGridId() {
             const markingInfos = []
-            const miniGridWithGeoData = await this.getMiniGridWithGeoData(this.selectedMiniGridId)
+            const miniGridWithGeoData = await this.getMiniGridWithGeoData(
+                this.selectedMiniGridId,
+            )
             const points = miniGridWithGeoData.location.points.split(',')
             if (points.length !== 2) {
                 this.alertNotify('error', 'Mini-Grid has no location')
@@ -251,7 +343,10 @@ export default {
             const lon = parseFloat(points[1])
             const clusterId = miniGridWithGeoData.cluster_id
             const clusterGeoData = await this.getClusterGeoData(clusterId)
-            this.mappingService.setCenter([clusterGeoData.lat, clusterGeoData.lon])
+            this.mappingService.setCenter([
+                clusterGeoData.lat,
+                clusterGeoData.lon,
+            ])
             this.mappingService.setGeoData(clusterGeoData)
             markingInfos.push({
                 id: miniGridWithGeoData.id,
@@ -267,7 +362,7 @@ export default {
             this.$refs.villageMapRef.drawCluster()
             this.$refs.villageMapRef.setMiniGridMarker()
         },
-    }
+    },
 }
 </script>
 
@@ -294,7 +389,6 @@ export default {
 }
 
 .map-area {
-    z-index: 1 !important
+    z-index: 1 !important;
 }
-
 </style>

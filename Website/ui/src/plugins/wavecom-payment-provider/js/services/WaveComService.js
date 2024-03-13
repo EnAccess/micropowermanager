@@ -1,8 +1,8 @@
 import WaveComRepository from '@/plugins/wavecom-payment-provider/js/repositories/WaveComRepository'
-import {ErrorHandler} from '@/plugins/bulk-registration/js/Helpers/ErrorHander'
+import { ErrorHandler } from '@/plugins/bulk-registration/js/Helpers/ErrorHander'
 
 export class WaveComService {
-    constructor () {
+    constructor() {
         this.reasons = []
     }
 
@@ -15,15 +15,16 @@ export class WaveComService {
 
         try {
             formData.append('transaction_file', filePath)
-            const {data, status} = await WaveComRepository.post(formData, {header: {'Content-Type': 'csv'}})
+            const { data, status } = await WaveComRepository.post(formData, {
+                header: { 'Content-Type': 'csv' },
+            })
             if (status !== 200 && status !== 201) {
                 return new ErrorHandler('Failed with http status ', status)
             }
 
-            if('reason' in data.data) {
+            if ('reason' in data.data) {
                 this.reasons = data.data['reason']
             }
-
         } catch (error) {
             if (error.response) {
                 if (error.response.status && error.response.status === 422) {
@@ -40,7 +41,5 @@ export class WaveComService {
                 return new ErrorHandler(errorMessage, 'http')
             }
         }
-
-
     }
 }

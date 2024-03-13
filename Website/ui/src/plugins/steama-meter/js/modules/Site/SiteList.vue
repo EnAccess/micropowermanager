@@ -1,38 +1,50 @@
 <template>
     <div>
-
-        <widget id="site-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="siteService.pagingUrl"
-                :route_name="siteService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncSites()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="site-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="siteService.pagingUrl"
+            :route_name="siteService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncSites()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-
-            <md-table v-model="siteService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="siteService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-                    <md-table-cell md-label="Latitude" md-sort-by="latitude">{{ item.latitude}}
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
                     </md-table-cell>
-                    <md-table-cell md-label="Longitude" md-sort-by="longitude">{{ item.longitude }}
+                    <md-table-cell md-label="Name" md-sort-by="name">
+                        {{ item.name }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Latitude" md-sort-by="latitude">
+                        {{ item.latitude }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Longitude" md-sort-by="longitude">
+                        {{ item.longitude }}
                     </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"
-                     :message="redirectionMessage"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+            :message="redirectionMessage"
+        />
     </div>
 </template>
 
@@ -46,7 +58,7 @@ import Widget from '../Shared/Widget'
 export default {
     name: 'SiteList',
     components: { Redirection, Widget },
-    data () {
+    data() {
         return {
             siteService: new SiteService(),
             credentialService: new CredentialService(),
@@ -58,19 +70,18 @@ export default {
             redirectDialogActive: false,
             redirectionMessage: 'API credentials not authenticated.',
             buttonText: 'Get Updates From Steama.co',
-            label: 'Site Records Not Up to Date.'
-
+            label: 'Site Records Not Up to Date.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkLocation()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -78,13 +89,12 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
 
-        async checkSync () {
+        async checkSync() {
             try {
                 this.loading = true
                 this.isSynced = await this.siteService.checkSites()
@@ -98,9 +108,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncSites()
                         }
@@ -111,7 +119,7 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async syncSites () {
+        async syncSites() {
             if (!this.loading) {
                 try {
                     this.loading = true
@@ -125,38 +133,38 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        async checkLocation () {
-
+        async checkLocation() {
             let response = await this.siteService.checkLocation()
 
             if (response.length === 0) {
                 this.redirectionUrl = '/locations/add-cluster'
-                this.redirectionMessage = 'Please make your location settings first.'
+                this.redirectionMessage =
+                    'Please make your location settings first.'
                 this.redirectDialogActive = true
             } else {
                 await this.checkCredential()
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.siteService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.siteService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.siteService.list.length,
+            )
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

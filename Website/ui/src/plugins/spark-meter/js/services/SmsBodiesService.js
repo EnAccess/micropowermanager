@@ -2,7 +2,7 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 
 export class SmsBodiesService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('smsBodies')
         this.meterResetFeedbackList = []
         this.lowBalanceNotifierList = []
@@ -14,11 +14,11 @@ export class SmsBodiesService {
             placeholder: null,
             title: null,
             variables: [],
-            validation: false
+            validation: false,
         }
     }
 
-    fromJson (smsBodies) {
+    fromJson(smsBodies) {
         this.meterResetFeedbackList = []
         this.lowBalanceNotifierList = []
         this.balanceFeedbacksList = []
@@ -36,15 +36,15 @@ export class SmsBodiesService {
 
             if (smsBody.reference.includes('LowBalance')) {
                 this.lowBalanceNotifierList.push(smsBody)
-            } else if(smsBody.reference.includes('BalanceFeedback')) {
+            } else if (smsBody.reference.includes('BalanceFeedback')) {
                 this.balanceFeedbacksList.push(smsBody)
-            }else{
+            } else {
                 this.meterResetFeedbackList.push(smsBody)
             }
         }
     }
 
-    async getSmsBodies () {
+    async getSmsBodies() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -53,18 +53,16 @@ export class SmsBodiesService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let erorMessage = e.response.data.message
             return new ErrorHandler(erorMessage, 'http')
         }
     }
 
-    async updateSmsBodies (tabName) {
+    async updateSmsBodies(tabName) {
         try {
             let smsBodiesPM = []
             if (tabName === 'notification-settings') {
-
                 this.lowBalanceNotifierList.forEach((e) => {
                     let smsBody = {
                         id: e.id,
@@ -73,8 +71,7 @@ export class SmsBodiesService {
                     }
                     smsBodiesPM.push(smsBody)
                 })
-            }
-            else if(tabName === 'meter-reset-settings'){
+            } else if (tabName === 'meter-reset-settings') {
                 this.meterResetFeedbackList.forEach((e) => {
                     let smsBody = {
                         id: e.id,
@@ -83,8 +80,7 @@ export class SmsBodiesService {
                     }
                     smsBodiesPM.push(smsBody)
                 })
-            }
-            else {
+            } else {
                 this.balanceFeedbacksList.forEach((e) => {
                     let smsBody = {
                         id: e.id,
@@ -102,7 +98,6 @@ export class SmsBodiesService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-
         } catch (e) {
             let errorMessage = e.response.data.message
             return new ErrorHandler(errorMessage, 'http')

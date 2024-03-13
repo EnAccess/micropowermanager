@@ -1,45 +1,66 @@
 <template>
     <div>
-        <widget id="tariff-list"
-                :title="title"
-                :paginator="true"
-                :paging_url="tariffService.pagingUrl"
-                :route_name="tariffService.routeName"
-                :show_per_page="true"
-                :subscriber="subscriber"
-                color="green"
-                @widgetAction="syncTariffs()"
-                :button="true"
-                buttonIcon="cloud_download"
-                :button-text="buttonText"
-                :emptyStateLabel="label"
-                :emptyStateButtonText="buttonText"
-                :newRecordButton="false"
+        <widget
+            id="tariff-list"
+            :title="title"
+            :paginator="true"
+            :paging_url="tariffService.pagingUrl"
+            :route_name="tariffService.routeName"
+            :show_per_page="true"
+            :subscriber="subscriber"
+            color="green"
+            @widgetAction="syncTariffs()"
+            :button="true"
+            buttonIcon="cloud_download"
+            :button-text="buttonText"
+            :emptyStateLabel="label"
+            :emptyStateButtonText="buttonText"
+            :newRecordButton="false"
         >
-
-            <md-table v-model="tariffService.list" md-sort="id" md-sort-order="asc" md-card>
+            <md-table
+                v-model="tariffService.list"
+                md-sort="id"
+                md-sort-order="asc"
+                md-card
+            >
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
-                    <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-                    <md-table-cell md-label="Flat Price" md-sort-by="price">{{ item.price}}</md-table-cell>
-                    <md-table-cell md-label="Flat Load Limit" md-sort-by="flat_load_limit">{{ item.flatLoadLimit }}
+                    <md-table-cell md-label="ID" md-sort-by="id">
+                        {{ item.id }}
                     </md-table-cell>
-                    <md-table-cell md-label="Site" md-sort-by="siteName">{{ item.siteName }}</md-table-cell>
+                    <md-table-cell md-label="Name" md-sort-by="name">
+                        {{ item.name }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Flat Price" md-sort-by="price">
+                        {{ item.price }}
+                    </md-table-cell>
+                    <md-table-cell
+                        md-label="Flat Load Limit"
+                        md-sort-by="flat_load_limit"
+                    >
+                        {{ item.flatLoadLimit }}
+                    </md-table-cell>
+                    <md-table-cell md-label="Site" md-sort-by="siteName">
+                        {{ item.siteName }}
+                    </md-table-cell>
                     <md-table-cell md-label="#">
-                        <md-button class="md-icon-button" @click="editTariff(item.tariffId)">
+                        <md-button
+                            class="md-icon-button"
+                            @click="editTariff(item.tariffId)"
+                        >
                             <md-tooltip md-direction="top">Edit</md-tooltip>
                             <md-icon>edit</md-icon>
                         </md-button>
                     </md-table-cell>
                 </md-table-row>
             </md-table>
-
         </widget>
-        <md-progress-bar md-mode="indeterminate" v-if="loading"/>
-        <redirection :redirection-url="redirectionUrl" :dialog-active="redirectDialogActive"
-                     :message="redirectionMessage"/>
+        <md-progress-bar md-mode="indeterminate" v-if="loading" />
+        <redirection
+            :redirection-url="redirectionUrl"
+            :dialog-active="redirectDialogActive"
+            :message="redirectionMessage"
+        />
     </div>
-
 </template>
 
 <script>
@@ -54,7 +75,7 @@ import { SiteService } from '../../services/SiteService'
 export default {
     name: 'TariffList',
     components: { Widget, Redirection },
-    data () {
+    data() {
         return {
             credentialService: new CredentialService(),
             tariffService: new TariffService(),
@@ -69,18 +90,18 @@ export default {
             redirectDialogActive: false,
             buttonText: 'Get Updates From Spark Meter',
             label: 'Tariff Records Not Up to Date.',
-            redirectionMessage: 'API credentials not authenticated.'
+            redirectionMessage: 'API credentials not authenticated.',
         }
     },
-    mounted () {
+    mounted() {
         this.checkCredential()
         EventBus.$on('pageLoaded', this.reloadList)
     },
-    beforeDestroy () {
+    beforeDestroy() {
         EventBus.$off('pageLoaded', this.reloadList)
     },
     methods: {
-        async checkCredential () {
+        async checkCredential() {
             try {
                 await this.credentialService.getCredential()
                 if (!this.credentialService.credential.isAuthenticated) {
@@ -88,18 +109,18 @@ export default {
                 } else {
                     await this.checkSync()
                 }
-
             } catch (e) {
                 this.redirectDialogActive = true
             }
         },
-        async checkSync () {
+        async checkSync() {
             try {
                 this.loading = true
                 let checkingResult = await this.tariffService.checkTariffs()
                 this.isSynced = true
                 if (checkingResult.available_site_count === 0) {
-                    this.redirectionMessage = 'There is no authenticated Site to download Tariff updates.'
+                    this.redirectionMessage =
+                        'There is no authenticated Site to download Tariff updates.'
                     this.redirectionUrl = '/spark-meters/sm-site'
                     this.redirectDialogActive = true
                     return
@@ -120,9 +141,7 @@ export default {
                         confirmButtonText: 'Update',
                         cancelButtonText: 'Cancel',
                     }
-                    this.$swal(
-                        swalOptions
-                    ).then((result) => {
+                    this.$swal(swalOptions).then((result) => {
                         if (result.value) {
                             this.syncTariffs()
                         }
@@ -133,18 +152,25 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async syncTariffs () {
+        async syncTariffs() {
             if (!this.loading) {
                 try {
                     this.loading = true
                     let sitesSynced = await this.siteService.checkSites()
                     if (!sitesSynced) {
-                        this.alertNotify('warn', 'Sites must be updated to update Tariffs.')
+                        this.alertNotify(
+                            'warn',
+                            'Sites must be updated to update Tariffs.',
+                        )
                         return
                     }
-                    let metersSynced = await this.meterModelService.checkMeterModels()
+                    let metersSynced =
+                        await this.meterModelService.checkMeterModels()
                     if (!metersSynced) {
-                        this.alertNotify('warn', 'MeterModels must be updated to update Tariffs.')
+                        this.alertNotify(
+                            'warn',
+                            'MeterModels must be updated to update Tariffs.',
+                        )
                         return
                     }
                     this.isSynced = false
@@ -157,28 +183,29 @@ export default {
                     this.alertNotify('error', e.message)
                 }
             }
-
         },
-        reloadList (subscriber, data) {
+        reloadList(subscriber, data) {
             if (subscriber !== this.subscriber) return
             this.tariffService.updateList(data)
-            EventBus.$emit('widgetContentLoaded', this.subscriber, this.tariffService.list.length)
+            EventBus.$emit(
+                'widgetContentLoaded',
+                this.subscriber,
+                this.tariffService.list.length,
+            )
         },
-        editTariff (tariffId) {
+        editTariff(tariffId) {
             this.$router.push({ path: '/spark-meters/sm-tariff/' + tariffId })
         },
-        alertNotify (type, message) {
+        alertNotify(type, message) {
             this.$notify({
                 group: 'notify',
                 type: type,
                 title: type + ' !',
-                text: message
+                text: message,
             })
         },
-    }
+    },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

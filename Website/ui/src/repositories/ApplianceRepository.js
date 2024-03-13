@@ -4,18 +4,18 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/api/assets`
 
 export default {
-    list(){
+    list() {
         return Client.get(`${resource}`)
     },
-    create (appliance) {
+    create(appliance) {
         return Client.post(`${resource}`, appliance)
     },
 
-    update (appliance) {
+    update(appliance) {
         return Client.put(`${resource}/${appliance.id}`, appliance)
     },
 
-    delete (id) {
+    delete(id) {
         return Client.delete(`${resource}/${id}`)
-    }
+    },
 }

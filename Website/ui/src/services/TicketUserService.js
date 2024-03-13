@@ -2,7 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class TicketUserService {
-    constructor () {
+    constructor() {
         this.repository = Repository.get('ticketUser')
         this.list = []
         this.newUser = {
@@ -11,7 +11,7 @@ export class TicketUserService {
         }
     }
 
-    async getUsers () {
+    async getUsers() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -30,7 +30,7 @@ export class TicketUserService {
     async getAvailableUsers() {
         try {
             const response = await this.repository.getAvailableUsers()
-            if(response.status === 200) {
+            if (response.status === 200) {
                 this.availableUserList = response.data.data
             } else {
                 new ErrorHandler(response.error, 'http', response.status)
@@ -40,19 +40,21 @@ export class TicketUserService {
         }
     }
 
-    pushUsers(user){
+    pushUsers(user) {
         return {
             id: user.id,
             name: user.name,
-            isTicketingUser : user.relation_ticket_user !== null ,
-            created_at : user.relation_ticket_user  ?user.relation_ticket_user.created_at :'-'
+            isTicketingUser: user.relation_ticket_user !== null,
+            created_at: user.relation_ticket_user
+                ? user.relation_ticket_user.created_at
+                : '-',
         }
     }
-    async createExternalUser (name, phone) {
+    async createExternalUser(name, phone) {
         try {
             const user = {
-                'username': name,
-                'phone': phone,
+                username: name,
+                phone: phone,
             }
 
             let response = await this.repository.createExternal(user)
@@ -65,13 +67,12 @@ export class TicketUserService {
             let errorMessage = e.response.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 
-    resetNewUser () {
+    resetNewUser() {
         this.newUser = {
-            'name': '',
-            'phone': '',
+            name: '',
+            phone: '',
         }
     }
 }

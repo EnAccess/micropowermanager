@@ -2,30 +2,30 @@ import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class MailSettingsService {
-    constructor () {
+    constructor() {
         this.repository = RepositoryFactory.get('mailSettings')
         this.mailSettings = {
             mailHost: null,
             mailPort: null,
             mailEncryption: null,
             mailUserName: null,
-            mailPassword: null
+            mailPassword: null,
         }
     }
 
-    fromJson (mailSettings) {
+    fromJson(mailSettings) {
         this.mailSettings = {
             id: mailSettings.id,
             mailHost: mailSettings.mail_host,
             mailPort: mailSettings.mail_port,
             mailEncryption: mailSettings.mail_encryption,
             mailUserName: mailSettings.mail_username,
-            mailPassword: mailSettings.mail_password
+            mailPassword: mailSettings.mail_password,
         }
         return this.mailSettings
     }
 
-    async list () {
+    async list() {
         try {
             let response = await this.repository.list()
             if (response.status === 200) {
@@ -38,7 +38,7 @@ export class MailSettingsService {
         }
     }
 
-    async update(){
+    async update() {
         try {
             const mailSettingsPm = {
                 id: this.mailSettings.id,
@@ -46,26 +46,31 @@ export class MailSettingsService {
                 mail_port: parseInt(this.mailSettings.mailPort),
                 mail_encryption: this.mailSettings.mailEncryption,
                 mail_username: this.mailSettings.mailUserName,
-                mail_password: this.mailSettings.mailPassword
+                mail_password: this.mailSettings.mailPassword,
             }
-            if(mailSettingsPm.id === undefined){
-                return (await this.create(mailSettingsPm))
-            }else{
-                let response = await this.repository.update(mailSettingsPm.id,
-                    mailSettingsPm)
+            if (mailSettingsPm.id === undefined) {
+                return await this.create(mailSettingsPm)
+            } else {
+                let response = await this.repository.update(
+                    mailSettingsPm.id,
+                    mailSettingsPm,
+                )
                 if (response.status === 200) {
                     return this.fromJson(response.data.data)
                 } else {
-                    return new ErrorHandler(response.error, 'http', response.status)
+                    return new ErrorHandler(
+                        response.error,
+                        'http',
+                        response.status,
+                    )
                 }
             }
-
         } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
     }
 
-    async create(mailSettingsPm){
+    async create(mailSettingsPm) {
         try {
             let response = await this.repository.create(mailSettingsPm)
             if (response.status === 201) {
@@ -73,10 +78,8 @@ export class MailSettingsService {
             } else {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
-        }catch (e) {
+        } catch (e) {
             return new ErrorHandler(e.response.data.message, 'http')
         }
-
     }
-
 }

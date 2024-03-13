@@ -1,5 +1,5 @@
 export class Report {
-    constructor () {
+    constructor() {
         this.id = null
         this.name = null
         this.path = null
@@ -7,7 +7,7 @@ export class Report {
         this.type = null
     }
 
-    fromJson (data) {
+    fromJson(data) {
         this.id = data.id
         this.name = data.name
         this.path = data.path
@@ -15,5 +15,4 @@ export class Report {
         this.type = data.type
         return this
     }
-
 }

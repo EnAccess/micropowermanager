@@ -4,15 +4,14 @@ import { baseUrl } from './Client/AxiosClient'
 const resource = `${baseUrl}/tickets/api`
 
 export default {
-    listCategory () {
+    listCategory() {
         return Client.get(`${resource}/labels`)
     },
 
-    create (maintenanceData) {
+    create(maintenanceData) {
         return Client.post(`${resource}/ticket`, maintenanceData)
     },
-    close (id) {
+    close(id) {
         return Client.delete(`${resource}/ticket/${id}`)
-    }
-
+    },
 }

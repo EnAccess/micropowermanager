@@ -2,8 +2,7 @@ import { City } from '../Cities/city'
 import { SubTarget } from './SubTarget'
 
 export class Target {
-
-    constructor () {
+    constructor() {
         this.id = null
         this.startDate = null
         this.endDate = null
@@ -11,7 +10,7 @@ export class Target {
         this.city = new City()
     }
 
-    fromJson (jsonData) {
+    fromJson(jsonData) {
         this.id = jsonData.id
         this.targetDate = jsonData.target_date
         this.type = jsonData.type
@@ -27,5 +26,4 @@ export class Target {
         }
         return this
     }
-
 }

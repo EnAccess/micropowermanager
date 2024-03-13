@@ -2,8 +2,7 @@ import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 export class TicketTrelloService {
-
-    constructor () {
+    constructor() {
         this.repository = Repository.get('ticketTrello')
         this.ticket = {
             created: null,
@@ -16,12 +15,11 @@ export class TicketTrelloService {
             comments: [],
             category: null,
             owner: [],
-            assigned: null
+            assigned: null,
         }
     }
 
-    fromJson (ticketData) {
-
+    fromJson(ticketData) {
         ticketData = ticketData.data
         let ticket = ticketData.ticket
         let actions = ticketData.actions
@@ -40,7 +38,7 @@ export class TicketTrelloService {
             comments: [],
             category: ticketData.category,
             owner: ticketData.owner,
-            assigned: ticketData.assigned_to
+            assigned: ticketData.assigned_to,
         }
 
         for (let i = 0; i < actions.length; i++) {
@@ -50,22 +48,21 @@ export class TicketTrelloService {
             }
 
             this.ticket.comments.push({
-                'comment': action.data.text,
-                'date': action.date,
-                'fullName': action.memberCreator.fullName,
-                'username': action.memberCreator.username,
+                comment: action.data.text,
+                date: action.date,
+                fullName: action.memberCreator.fullName,
+                username: action.memberCreator.username,
             })
         }
         return this.ticket
     }
 
-    commentCount () {
+    commentCount() {
         return this.ticket.comments.length
     }
 
-    async getTicketDetail (ticketData) {
+    async getTicketDetail(ticketData) {
         try {
-
             let response = await this.repository.detail(ticketData.ticket_id)
             if (response.status === 200) {
                 return this.fromJson(response.data)
@@ -73,10 +70,8 @@ export class TicketTrelloService {
                 return new ErrorHandler(response.error, 'http', response.status)
             }
         } catch (e) {
-
             let errorMessage = e.response.data.data.message
             return new ErrorHandler(errorMessage, 'http')
         }
-
     }
 }
