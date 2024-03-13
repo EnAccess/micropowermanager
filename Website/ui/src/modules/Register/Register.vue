@@ -121,15 +121,35 @@
                     <div class="exclamation">
                         <div>
                             <div class="md-layout-item md-size-100 exclamation-div">
-                                <h2 class="stepper-title"> Please select the plugin(s) you would like to use with your
-                                    MicroPowerManager</h2>
+                                <h2 class="stepper-title"> Please select usage type and the plugin(s) you would like to use with your MicroPowerManager</h2>
+                            </div>
+                            <div class="md-layout-item md-size-50 md-small-size-100">
+                                <md-field
+                                    :class="{'md-invalid': errors.has('Plugins.usage_type')}">
+                                    <label for="usage_type">Usage Type</label>
+                                    <md-select
+                                        name="usage_type"
+                                        id="usage_type"
+                                        v-model="companyForm.usage_type"
+                                    >
+                                    <md-option disabled>Select Usage Types</md-option>
+                                    <md-option v-for="ut in usageTypeListService.list" :key="ut.id"
+                                        :value="ut.value">{{ ut.name }}
+                                    </md-option>
+                                    </md-select>
+                                    <span class="md-error">{{errors.first('Plugins.usage_type')}}</span>
+                                </md-field>
                             </div>
                             <div class="md-layout md-gutter">
-                                <div v-for="plugin in mpmPluginsService.list" :key=plugin.id class="box md-layout-item  md-size-25 md-small-size-50">
-                                    <div class="header-text">{{ plugin.name }}
-                                        <input type="checkbox" v-model="plugin.checked"/>
-                                    </div>
+                                <div v-for="plugin in mpmPluginsService.list.filter(p => validUsageType(p.usage_type, companyForm.usage_type) || p.checked)"
+                                    :key=plugin.id
+                                    class="box md-layout-item  md-size-25 md-small-size-50"
+                                >
+                                    <div class="header-text">{{ plugin.name }} </div>
+                                    <div class="usage-type-warning" v-if="plugin.checked && !validUsageType(plugin.usage_type, companyForm.usage_type)">⚠️ Plugin not supported for current usageType. It is recommended that you disable this plugin.</div>
                                     <small class="sub-text">{{ plugin.description }}</small>
+                                    <div class="sub-text">Usage type: {{ plugin.usage_type }}</div>
+                                    <md-switch v-model="plugin.checked" class="plugin-selector-switch"/>
 
                                 </div>
                             </div>
@@ -274,6 +294,7 @@
 <script>
 import { MpmPluginService } from '@/services/MpmPluginService'
 import { CompanyService } from '@/services/CompanyService'
+import { UsageTypeListService } from '@/services/UsageTypeListService'
 
 export default {
     name: 'Register',
@@ -281,6 +302,7 @@ export default {
         return {
             mpmPluginsService: new MpmPluginService(),
             companyService: new CompanyService(),
+            usageTypeListService: new UsageTypeListService(),
             loadingNextStep: false,
             activeStep: 'Company-Form',
             firstStepClicked: false,
@@ -303,6 +325,7 @@ export default {
                     password: '',
                     confirmPassword: ''
                 },
+                usage_type: '',
                 plugins: []
             },
             successMessage: '',
@@ -311,6 +334,7 @@ export default {
     },
     mounted () {
         this.mpmPluginsService.getMpmPlugins()
+        this.usageTypeListService.getUsageTypes()
     },
     methods: {
         async nextStep (id, index) {
@@ -370,6 +394,9 @@ export default {
                 this.succeed = false
                 this.loading = false
             }
+        },
+        validUsageType(plugin_usage_type, customer_usage_types) {
+            return plugin_usage_type === 'general' || customer_usage_types.includes(plugin_usage_type)
         }
     },
 }
@@ -465,6 +492,17 @@ export default {
     font-size: 0.7rem;
 }
 
+.usage-type-warning {
+    font-weight: 400;
+    font-size: 0.7rem;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-radius: 5px;
+    color: #333333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Optional: Add shadow for depth
+    max-width: 400px; // Optional: Set maximum width for responsiveness
+}
+
 .stepper-title {
     text-align: center !important;
     font-size: large !important;
@@ -477,5 +515,10 @@ export default {
     box-shadow: none;
     display: flex;
     border-bottom: 1px solid #bbb;
+}
+
+.plugin-selector-switch {
+    margin-left: 3rem !important;
+    float: right;
 }
 </style>

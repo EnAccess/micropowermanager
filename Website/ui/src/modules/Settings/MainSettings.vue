@@ -98,7 +98,7 @@
                     <label for="usage_type">Usage Type</label>
                     <md-select name="usage_type" id="usage_type" v-model="mainSettingsService.mainSettings.usageType">
                         <md-option disabled>Select Usage Types</md-option>
-                        <md-option v-for="ut in usageTypeListService.usageTypeList" :key="ut.id"
+                        <md-option v-for="ut in usageTypeListService.list" :key="ut.id"
                                    :value="ut.value">{{ ut.name }}
                         </md-option>
                     </md-select>
@@ -140,7 +140,6 @@ export default {
             currencyList: [],
             languagesList: [],
             countryList: [],
-            usageTypeList: [],
             progress: false,
         }
 
@@ -185,7 +184,7 @@ export default {
         },
         async getUsageTypeList () {
             try {
-                await this.usageTypeListService.list()
+                await this.usageTypeListService.getUsageTypes()
             } catch (e) {
                 this.alertNotify('error', e.message)
             }
