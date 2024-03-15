@@ -3,4 +3,9 @@ module.exports = {
     devServer: {
         allowedHosts: 'all',
     },
+    configureWebpack: {
+        performance: {
+            hints: false,
+        },
+    },
 }
