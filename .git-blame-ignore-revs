@@ -1,0 +1,8 @@
+# .git-blame-ignore-revs
+# Apply EditorConfig lint
+9fd9a5a991b9a33e7a91b0a3c9753f61555a9ced
+# Apply ESLint fixes to `ui`
+e7b5fd09e3531896ae308469697a494040061ba8
+527029941adbe125c49dbaf86dfe772f1624ed2f
+# Apply Prettier to `ui`
+b534c22dd341d1d2b35c8e0b7d5419f56e3dd6b1
