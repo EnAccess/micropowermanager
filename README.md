@@ -212,11 +212,23 @@ When you run the application for the first time, you need to run the following c
 docker exec -it laravel bash
 cd mpmanager
 php artisan sharding:initialize
-php artisan dummy:create-company-with-dummy-data
 ```
 
-These commands will create the central database and the first company database. The first company database will have
-dummy data.
+This command will create the central database which is required for MPM to function.
+
+If you want to load sample (dummy) data for testing run:
+
+```bash
+docker exec -it laravel bash
+cd mpmanager
+php artisan dummy:create-company-with-dummy-data
+php artisan migrator:copy
+php artisan migrator:migrate
+```
+
+This commands will create the first company database with dummy data from a snapshot.
+It will then apply any migrations that have been added to the application after the snapshot has been taken.
+
 You can use the following credentials to login to the application:
 
 ```sh
