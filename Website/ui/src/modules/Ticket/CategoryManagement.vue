@@ -240,10 +240,6 @@ export default {
 </script>
 
 <style lang="scss">
-.md-list-item-text {
-    display: contents !important;
-}
-
 .colored-box {
     width: 22px;
     height: 22px;

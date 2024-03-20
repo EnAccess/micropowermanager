@@ -33,28 +33,40 @@
                         <span class="md-list-item-text c-white">
                             {{ translateItem(menu.name) }}
                         </span>
+                        <md-icon
+                            v-if="protectedPages.includes(menu.url_slug)"
+                            class="c-white password-protected-lock-icon"
+                        >
+                            lock
+                        </md-icon>
+
                         <md-list
                             slot="md-expand"
                             v-if="menu.sub_menu_items.length !== 0"
                             class="no-bg"
                         >
-                            <md-list-item
-                                v-for="(sub, index) in menu.sub_menu_items"
-                                :key="index"
+                            <router-link
+                                v-for="sub in menu.sub_menu_items"
+                                :to="route(sub.url_slug)"
+                                :key="sub.url_slug"
+                                class="sub-menu"
                             >
-                                <router-link
-                                    :to="route(sub.url_slug)"
-                                    class="sub-menu"
-                                >
-                                    <md-list-item class="md-inset c-white">
-                                        <span class="md-list-item-text c-white">
-                                            {{
-                                                $tc('menu.subMenu.' + sub.name)
-                                            }}
-                                        </span>
-                                    </md-list-item>
-                                </router-link>
-                            </md-list-item>
+                                <md-list-item>
+                                    <span class="md-list-item-text c-white">
+                                        {{ $tc('menu.subMenu.' + sub.name) }}
+                                    </span>
+                                    <md-icon
+                                        v-if="
+                                            protectedPages.includes(
+                                                sub.url_slug,
+                                            )
+                                        "
+                                        class="c-white password-protected-lock-icon"
+                                    >
+                                        lock
+                                    </md-icon>
+                                </md-list-item>
+                            </router-link>
                         </md-list>
                     </md-list-item>
                 </component>
@@ -65,9 +77,12 @@
 <script>
 import { translateItem } from '@/Helpers/TranslateItem'
 import { EventBus } from '@/shared/eventbus'
+import PasswordProtection from '@/shared/PasswordProtection'
 
 export default {
     name: 'SideBar',
+    mixins: [PasswordProtection],
+
     data() {
         return {
             show_extender: false,
@@ -209,17 +224,16 @@ export default {
 .exact-active {
     background: #6b6a6a !important;
     position: relative;
-    left: -15px;
-    width: calc(100% + 30px) !important;
+    width: calc(100%) !important;
+    border-right: 5px solid #9d302a;
 }
-
-/*  .md-list-item-text {
-      color: #f5e8e8 !important;
-
-  }*/
 
 .no-bg {
     background-color: transparent !important;
+}
+
+.md-icon.md-theme-default.md-icon-image svg {
+    fill: #f5e8e8 !important;
 }
 
 .c-white {
@@ -236,6 +250,10 @@ export default {
     margin-right: 10px !important;
     width: 25px !important;
     height: 25px !important;
+}
+
+.md-icon.password-protected-lock-icon {
+    font-size: 16px !important;
 }
 
 .sub-menu {
