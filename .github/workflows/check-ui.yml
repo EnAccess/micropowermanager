@@ -49,6 +49,41 @@ jobs:
         run: npm run prettier
         working-directory: ./Website/ui
 
+  misc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.10.0
+
+      - name: Check i18n JSON's
+        # We check if JSON are sorted alphabetically
+        # Too sort a translation JSON you can run
+        # > cat lang.json | jq -S . > tmp.json && mv tmp.json lang.json
+        # Remember to apply Prettier formatting after.
+        working-directory: ./Website/ui/src/assets/locales
+        run: |
+          # Flag to track if any file fails the check
+          failed=0
+
+          for file in *.json; do
+              if [[ "$(jq -S . "$file")" != "$(jq . "$file")" ]]; then
+                  echo "$file: JSON is invalid or keys are not sorted"
+                  failed=1
+              fi
+          done
+
+          if [ $failed -eq 1 ]; then
+              exit 1
+          else
+              echo "All JSON files are valid and keys are sorted"
+          fi
+
   build-production:
     runs-on: ubuntu-latest
 
