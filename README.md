@@ -80,28 +80,11 @@ install it separately.
 
 ---
 
-The development environment is served under <http://mpmanager.local> To reach the site over the given url; enter the
-following lines to your hosts file.
-
-### For Linux/Mac Users
-
-```sh
-/etc/hosts
-127.0.0.1       mpmanager.local
-127.0.0.1       db.mpmanager.local
-```
-
-### For Windows Users
-
-```sh
-c:\windows\system32\drivers\etc\hosts
-127.0.0.1       mpmanager.local
-127.0.0.1       db.mpmanager.local
-```
+The development environment is served under <http://localhost:8000>
 
 ## Frontend
 
-The frontend is served under <http://mpmanager.local>. You can find frontend files under `Website/ui`.
+The frontend is served under <http://localhost:8001>. You can find frontend files under `Website/ui`.
 The frontend is built with Vue.js. After first run with `docker-compose up` dependencies will be installed
 automatically.
 If you want to install dependencies manually, you can run `npm install` under `Website/ui` folder.
@@ -153,7 +136,7 @@ In the backend section, you'll find instructions on how to create a plugin.
 
 ## Backend
 
-The backend is built with Laravel. The backend is served under <http://api.mpmanager.local/api>. You can find backend
+The backend is built with Laravel. The backend is served under <http://localhost:8000/api>. You can find backend
 files under `Website/htdocs/mpmanager`. After the first run with `docker-compose up`, dependencies will be installed
 automatically. If you prefer to install dependencies manually or need to add additional packages, follow these steps:
 
