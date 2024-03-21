@@ -118,6 +118,8 @@ export default {
                             dataStream: miniGrid.data_stream,
                             deviceType: null,
                             markerType: MARKER_TYPE.MINI_GRID,
+                            clusterId: clusterGeo.clusterId,
+                            clusterDisplayName: clusterGeo.display_name,
                         })
                     })
                 }
