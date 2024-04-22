@@ -184,7 +184,8 @@ return [
         \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
         \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
         \Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider::class,
-        \Inensus\DalyBms\Providers\DalyBmsServiceProvider::class
+        \Inensus\DalyBms\Providers\DalyBmsServiceProvider::class,
+        \Inensus\AirtelPaymentProvider\Providers\AirtelServiceProvider::class,
 
     ],
 

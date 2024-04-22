@@ -30,11 +30,6 @@ class Transaction
             && in_array($request->ip(), Config::get('services.vodacom.ips'))
         ) {
             return resolve('VodacomPaymentProvider');
-        } elseif (
-            preg_match('/\/airtel/', $request->url())
-            && in_array($request->ip(), Config::get('services.airtel.ips'))
-        ) {
-            return resolve('AirtelPaymentProvider');
         } elseif (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
             return resolve('AgentPaymentProvider');
         } else {

@@ -84,7 +84,8 @@
       "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src",
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
-      "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src"
+      "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
+      "Inensus\\AirtelPaymentProvider\\": "packages/inensus/airtel-payment-provider/src"
     }
   },
   "minimum-stability": "dev",

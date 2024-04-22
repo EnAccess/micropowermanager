@@ -150,7 +150,15 @@ class MpmPluginsSeeder extends Seeder
                     'installation_command' => 'angaza-shs:install',
                     'root_class' => 'AngazaSHS',
                     'usage_type' => 'shs'
-                ]
+                ],
+                [
+                    'name' => 'AirtelPayment',
+                    'description' => 'This plugin developed for getting Airtel payments into MicroPowerManager.',
+                    'tail_tag' => null,
+                    'installation_command' => 'airtel-payment-provider:install',
+                    'root_class' => 'AirtelPaymentProvider',
+                    'usage_type' => 'general'
+                ],
             )
         );
     }

@@ -22,6 +22,7 @@ use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMete
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage;
 use Inensus\DalyBms\Console\Commands\InstallPackage as InstallDalyBmsPackage;
+use Inensus\AirtelPaymentProvider\Console\Commands\InstallPackage as InstallAirtelPaymentProviderPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel
         InstallWaveComPackage::class,
         InstallAngazaSHSPackage::class,
         InstallDalyBmsPackage::class,
+        InstallAirtelPaymentProviderPackage::class,
     ];
 
     /**
