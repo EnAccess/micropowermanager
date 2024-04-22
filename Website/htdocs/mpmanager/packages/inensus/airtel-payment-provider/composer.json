@@ -1,0 +1,27 @@
+{
+  "name": "inensus/airtel-payment-provider",
+  "description": "Airtel Payment Provider integration to Micropowermanager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "author",
+      "email": "developer@inensus.com",
+      "role": "developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\AirtelPaymentProvider\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\AirtelPaymentProvider\\Providers\\AirtelServiceProvider"
+      ]
+    }
+  }
+}
