@@ -365,7 +365,8 @@
         "writeMessage": " စာတို ေရးပါ။...",
         "wrongPassword": "Wrong password",
         "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-        "yourMessage": "သင်၏မက်ေဆ့ချက် ယခုကဲ့သUိမျ+ိး ြမင်ရလိမ့်မည်။"
+        "yourMessage": "သင်၏မက်ေဆ့ချက် ယခုကဲ့သUိမျ+ိး ြမင်ရလိမ့်မည်။",
+        "yourAuthTokenForAirtel": "Your auth token for Airtel Payments, please share this with Airtel to use this token in their API requests."
     },
     "words": {
         "access": "သံုးစဲွခွင့် ",
