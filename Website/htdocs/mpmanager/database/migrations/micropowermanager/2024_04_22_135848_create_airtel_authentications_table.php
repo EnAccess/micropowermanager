@@ -15,7 +15,7 @@ return new class  extends Migration
     {
         Schema::connection('shard')->create('airtel_authentications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('token')->nullable();
+            $table->text('token')->nullable();
             $table->unsignedInteger('expire_date')->nullable();
             $table->timestamps();
         });

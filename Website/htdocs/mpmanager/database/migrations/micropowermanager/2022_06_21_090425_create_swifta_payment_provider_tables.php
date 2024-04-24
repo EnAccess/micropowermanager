@@ -24,7 +24,7 @@ return new class extends Migration {
         if (!Schema:: hasTable('swifta_authentication')) {
             Schema::connection('shard')->create('swifta_authentication', static function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('token')->nullable();
+                $table->text('token')->nullable();
                 $table->unsignedInteger('expire_date')->nullable();
                 $table->timestamps();
             });

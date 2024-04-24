@@ -27,11 +27,11 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function validateRequest($request)
     {
-        $meterSerial = $request->input('meterSerial');
+        $serialNumber = $request->input('meterSerial');
         $amount = $request->input('amount');
 
         try {
-            $this->waveMoneyTransactionService->validatePaymentOwner($meterSerial, $amount);
+            $this->waveMoneyTransactionService->validatePaymentOwner($serialNumber, $amount);
             $waveMoneyTransactionData = $this->waveMoneyTransactionService->initializeTransactionData();
 
             // We need to make sure that the payment is fully processable from our end .

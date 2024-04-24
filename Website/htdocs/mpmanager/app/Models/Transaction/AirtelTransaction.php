@@ -22,6 +22,8 @@ use MPM\Transaction\FullySupportedTransactionInterface;
 class AirtelTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
     public const RELATION_NAME = 'airtel_transaction';
+    public  const STATUS_SUCCESS = 1;
+    public  const STATUS_FAILED = -1;
     /**
      * @return MorphOne
      */

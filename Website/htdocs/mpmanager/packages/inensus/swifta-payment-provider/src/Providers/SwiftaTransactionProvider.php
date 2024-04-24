@@ -30,11 +30,11 @@ class SwiftaTransactionProvider implements ITransactionProvider
 
     public function validateRequest($request)
     {
-        $meterSerial = $request->input('meter_number');
+        $serialNumber = $request->input('meter_number');
         $amount = $request->input('amount');
 
         try {
-            $this->swiftaTransactionService->validatePaymentOwner($meterSerial, $amount);
+            $this->swiftaTransactionService->validatePaymentOwner($serialNumber, $amount);
             $swiftaTransactionData = $this->swiftaTransactionService->initializeTransactionData($request->all());
 
             // We need to make sure that the payment is fully processable from our end .
