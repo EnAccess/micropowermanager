@@ -7,54 +7,61 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\BaseModel;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
+use MPM\Device\DeviceService;
 
 abstract class AbstractPaymentAggregatorTransactionService
 {
+    protected Person $owner;
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
     protected string $payerPhoneNumber;
-    protected string $meterSerialNumber;
-    protected float $minimumPurchaseAmount;
-    protected int $customerId;
+    protected string $serialNumber;
+    protected float $minimumPurchaseAmount = 0;
     protected float $amount;
 
     public function __construct(
-        private Meter $meter,
+        private DeviceService $deviceService,
         private Address $address,
         private Transaction $transaction,
-        private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
     ) {
     }
 
-    public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
+    public function validatePaymentOwner(string $serialNumber, float $amount): void
     {
-        if (!$meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
-            throw new ModelNotFoundException('Meter not found with serial number you entered');
+        if (!$device = $this->deviceService->getBySerialNumber($serialNumber)) {
+            throw new ModelNotFoundException('Device not found with serial number you entered');
         }
 
-        if (!$meterTariff = $meter->meterParameter->tariff) {
-            throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
+        if (!$owner = $device->person) {
+            throw new ModelNotFoundException('Customer not found with serial number you entered');
         }
 
-        $customerId = $meter->MeterParameter->owner_id;
+        $deviceType = $device->device_type;
+        $isMeter = $deviceType == Meter::RELATION_NAME;
 
-        if (!$customerId) {
-            throw new ModelNotFoundException('Customer not found with meter serial number you entered');
+        if($isMeter){
+
+            $tariff = $device->device->tariff()->first();
+
+            if(!$tariff){
+                throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
+            }
+            $this->minimumPurchaseAmount = $tariff->minimum_purchase_amount ?? self::MINIMUM_TRANSACTION_AMOUNT;
         }
 
-        $this->meterSerialNumber = $meterSerialNumber;
-        $this->minimumPurchaseAmount = $meterTariff->minimum_purchase_amount ?? self::MINIMUM_TRANSACTION_AMOUNT;
-        $this->customerId = $customerId;
+        $this->owner = $owner;
+        $this->serialNumber = $serialNumber;
         $this->amount = $amount;
 
         try {
-            $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
+            $this->payerPhoneNumber = $this->getTransactionSender();
         } catch (\Exception $exception) {
             throw  new \Exception($exception->getMessage());
         }
@@ -71,7 +78,7 @@ abstract class AbstractPaymentAggregatorTransactionService
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
             'sender' => $this->payerPhoneNumber,
-            'message' => $this->meterSerialNumber,
+            'message' => $this->serialNumber,
             'type' => 'energy',
             'original_transaction_type' => $this->paymentAggregatorTransaction::class,
         ]);
@@ -106,17 +113,9 @@ abstract class AbstractPaymentAggregatorTransactionService
         }
     }
 
-    private function getTransactionSender($meterSerialNumber)
+    private function getTransactionSender()
     {
-        $meterParameter = $this->meterParameter->newQuery()
-            ->whereHas(
-                'meter',
-                function ($q) use ($meterSerialNumber) {
-                    $q->where('serial_number', $meterSerialNumber);
-                }
-            )->first();
-
-        $personId = $meterParameter->owner_id;
+        $personId = $this->owner->id;
         try {
             $address = $this->address->newQuery()
                 ->whereHasMorph(
@@ -134,12 +133,12 @@ abstract class AbstractPaymentAggregatorTransactionService
 
     public function getCustomerId(): int
     {
-        return $this->customerId;
+        return $this->owner->id;
     }
 
-    public function getMeterSerialNumber()
+    public function getSerialNumber()
     {
-        return $this->meterSerialNumber;
+        return $this->serialNumber;
     }
 
     public function getAmount()
@@ -155,5 +154,15 @@ abstract class AbstractPaymentAggregatorTransactionService
     public function getPaymentAggregatorTransaction(): IRawTransaction
     {
         return $this->paymentAggregatorTransaction;
+    }
+
+    public function getTransaction(): Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function getPayerPhoneNumber()
+    {
+        return $this->payerPhoneNumber;
     }
 }
