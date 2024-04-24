@@ -46,11 +46,10 @@ abstract class AbstractPaymentAggregatorTransactionService
         $deviceType = $device->device_type;
         $isMeter = $deviceType == Meter::RELATION_NAME;
 
-        if($isMeter){
-
+        if ($isMeter) {
             $tariff = $device->device->tariff()->first();
 
-            if(!$tariff){
+            if (!$tariff) {
                 throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
             }
             $this->minimumPurchaseAmount = $tariff->minimum_purchase_amount ?? self::MINIMUM_TRANSACTION_AMOUNT;
