@@ -364,9 +364,9 @@
         "wholeVillage": "Whole Village",
         "writeMessage": "Write a message...",
         "wrongPassword": "Wrong password",
+        "yourAuthTokenForAirtel": "Your auth token for Airtel Payments, please share this with Airtel to use this token in their API requests.",
         "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-        "yourMessage": "Your message will seen like that",
-        "yourAuthTokenForAirtel": "Your auth token for Airtel Payments, please share this with Airtel to use this token in their API requests."
+        "yourMessage": "Your message will seen like that"
     },
     "words": {
         "access": "Access",
