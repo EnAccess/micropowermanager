@@ -643,5 +643,5 @@ export const exportedRoutes = [
         require('./plugins/airtel-payment-provider/js/modules/Overview/Overview')
             .default,
         meta: { layout: 'default' },
-    }
+    },
 ]
