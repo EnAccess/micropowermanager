@@ -48,7 +48,7 @@ class InstallPackage extends Command
             'email' => $company->getName() . '-airtel-user-' . Carbon::now()->timestamp,
             'company_id' => $companyId
         ]);
-        $companyDatabase = $this->companyDatabaseService->getById($companyId);
+        $companyDatabase = $this->companyDatabaseService->findByCompanyId($companyId);
         $databaseProxyData = [
             'email' => $user->getEmail(),
             'fk_company_id' => $user->getCompanyId(),
