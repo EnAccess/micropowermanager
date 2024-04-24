@@ -71,45 +71,6 @@ class AirtelTransactionController extends  Controller
             $airtelTransaction = $this->airtelTransactionService->getByTrId($trId);
             $airtelTransaction->trans_id = $transId;
             $airtelTransaction->save();
-            $transactionProvider = resolve('AirtelV2PaymentProvider');
-            $transactionProvider->init($airtelTransaction);
-
-            ProcessPayment::dispatch($transactionProvider->getTransaction()->id)
-                ->allOnConnection('redis')
-                ->onQueue(config('services.queues.payment'));
-
-            $xmlResponse =
-                '<?xml version="1.0" encoding="UTF-8"?>' .
-                '<COMMAND>' .
-                '<STATUS>200</STATUS>' .
-                '<MESSAGE>Success</MESSAGE>' .
-                '<TXNID>' . $trId . '</TXNID>' .
-                '</COMMAND>';
-
-            echo $xmlResponse;
-        } catch (\Exception $exception) {
-            $xmlResponse =
-                '<?xml version="1.0" encoding="UTF-8"?>' .
-                '<COMMAND>' .
-                '<STATUS>400</STATUS>' .
-                '<MESSAGE>' . $exception->getMessage() . '</MESSAGE>' .
-                '<TXNID>' . $trId . '</TXNID>' .
-                '</COMMAND>';
-
-            echo $xmlResponse;
-        }
-    }
-
-    public function test(Request $request)
-    {
-        try {
-
-            $trId = $request->input('trId');
-            $transId = $request->input('transId');
-
-            $airtelTransaction = $this->airtelTransactionService->getByTrId($trId);
-            $airtelTransaction->trans_id = $transId;
-            $airtelTransaction->save();
             $transactionProvider = resolve('AirtelPaymentProvider');
             $transactionProvider->init($airtelTransaction);
 

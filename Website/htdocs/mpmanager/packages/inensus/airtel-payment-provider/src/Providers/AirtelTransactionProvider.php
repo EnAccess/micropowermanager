@@ -1,10 +1,15 @@
 <?php
+
 namespace Inensus\AirtelPaymentProvider\Providers;
 
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
+use App\Services\SmsService;
+use App\Sms\Senders\SmsConfigs;
+use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Inensus\AirtelPaymentProvider\Services\AirtelTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
@@ -30,15 +35,19 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     public function sendResult(bool $requestType, Transaction $transaction)
     {
-        //approve transaction : airtel transactions are automatically confirmed thus
-        //only save it as successful
+        $airtelTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
-            $this->airtelTransaction->status = 1;
-            $this->airtelTransaction->save();
+            $updateData = [
+                'status' => AirtelTransaction::STATUS_SUCCESS
+            ];
+            $smsService = app()->make(SmsService::class);
+            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
-            $this->airtelTransaction->status = -1;
-            $this->airtelTransaction->save();
+            $updateData = [
+                'status' => AirtelTransaction::STATUS_FAILED
+            ];
         }
+        $this->airtelTransactionService->update($airtelTransaction, $updateData);
     }
 
     public function validateRequest($request)
@@ -59,13 +68,12 @@ class AirtelTransactionProvider implements ITransactionProvider
             throw  new \Exception("Invalid request");
         }
 
-        $meterSerial = $transactionData['REFERENCE'];
+        $serialNumber = $transactionData['REFERENCE'];
         $amount = $transactionData['AMOUNT'];
 
         try {
-            $this->airtelTransactionService->validatePaymentOwner($meterSerial, $amount);
+            $this->airtelTransactionService->validatePaymentOwner($serialNumber, $amount);
             $airtelTransactionData = $this->airtelTransactionService->initializeTransactionData($transactionData);
-
             // We need to make sure that the payment is fully processable from our end .
             $this->airtelTransactionService->imitateTransactionForValidation($airtelTransactionData, $amount);
 
@@ -81,10 +89,6 @@ class AirtelTransactionProvider implements ITransactionProvider
         $this->validData = $airtelTransactionData;
     }
 
-    public function getSubTransaction()
-    {
-        return $this->airtelTransaction;
-    }
 
     public function confirm(): void
     {
@@ -93,7 +97,7 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     public function getMessage(): string
     {
-        return $this->airtelTransactionService->getMeterSerialNumber();
+        return $this->airtelTransactionService->getSerialNumber();
     }
 
     public function getAmount(): int
@@ -103,7 +107,7 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     public function getSender(): string
     {
-        return $this->airtelTransactionService->getMeterSerialNumber();
+        return $this->airtelTransactionService->getPayerPhoneNumber();
     }
 
     public function saveCommonData(): Model
@@ -129,10 +133,4 @@ class AirtelTransactionProvider implements ITransactionProvider
     {
         return $this->transaction;
     }
-
-    public function notifyCustomerViaSms(): bool
-    {
-        return $this->notifyCustomerViaSms;
-    }
-
 }

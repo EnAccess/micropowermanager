@@ -19,6 +19,17 @@ class AirtelTransactionAuthorizationMiddleware
         $expiration = Carbon::createFromTimestamp($payload['exp']);
         $tokenExpired = (Carbon::now()->diffInSeconds($expiration, false) < 0);
 
+        $user = auth('api')->user();
+        if (!$user ){
+            $xmlResponse =
+                '<?xml version="1.0" encoding="UTF-8"?>' .
+                '<COMMAND>' .
+                '<STATUS>401</STATUS>' .
+                '<MESSAGE>Invalid Token</MESSAGE>' .
+                '</COMMAND>';
+
+            return $xmlResponse;
+        }
         if ($tokenExpired) {
             $xmlResponse =
                 '<?xml version="1.0" encoding="UTF-8"?>' .
@@ -31,32 +42,6 @@ class AirtelTransactionAuthorizationMiddleware
             return false;
         }
 
-        $transactionXml = new SimpleXMLElement($request->getContent());
-        $transactionData = json_encode($transactionXml);
-        $transactionData = json_decode($transactionData, true);
-
-        $transId = null;
-
-        if (isset($transactionData['TXNID'])) {
-            $transId = $transactionData['TXNID'];
-        }
-
-        if (isset($transactionData['REFERENCE1'])) {
-            $transId = $transactionData['REFERENCE1'];
-        }
-
-
-        if (!$transId || $transId !== $payload['Payload']['txnId']) {
-            $xmlResponse =
-                '<?xml version="1.0" encoding="UTF-8"?>' .
-                '<COMMAND>' .
-                '<STATUS>401</STATUS>' .
-                '<MESSAGE>Invalid Token</MESSAGE>' .
-                '</COMMAND>';
-
-
-            return $xmlResponse;
-        }
         return $next($request);
     }
 }
