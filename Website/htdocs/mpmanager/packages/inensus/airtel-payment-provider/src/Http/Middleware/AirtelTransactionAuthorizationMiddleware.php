@@ -33,7 +33,7 @@ class AirtelTransactionAuthorizationMiddleware
             $payload = $decoded->payload ?? null;
             $txId = $payload->txnId ?? null;
 
-            $transactionXml = new SimpleXMLElement($request);
+            $transactionXml = new SimpleXMLElement($request->getContent());
             $transactionData = json_encode($transactionXml);
             $transactionData = json_decode($transactionData, true);
 
