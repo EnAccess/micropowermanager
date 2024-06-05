@@ -5,7 +5,6 @@ use Inensus\AirtelPaymentProvider\Http\Middleware\AirtelTransactionAuthorization
 use Inensus\AirtelPaymentProvider\Http\Middleware\AirtelTransactionValidationMiddleware;
 
 Route::group(['prefix' => 'airtel'], function () {
-    Route::get('/authentication', 'AirtelAuthenticationController@show')->middleware('jwt.verify');
     Route::group(['prefix' => '/transactions', 'middleware' => [AirtelTransactionAuthorizationMiddleware::class]],
         function () {
             Route::post('/validation',

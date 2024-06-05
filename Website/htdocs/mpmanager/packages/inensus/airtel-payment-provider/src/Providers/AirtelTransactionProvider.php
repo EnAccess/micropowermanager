@@ -9,11 +9,13 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Inensus\AirtelPaymentProvider\Services\AirtelTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 use SimpleXMLElement;
+use Illuminate\Validation\ValidationException;
 
 class AirtelTransactionProvider implements ITransactionProvider
 {
@@ -56,18 +58,32 @@ class AirtelTransactionProvider implements ITransactionProvider
         $transactionData = json_encode($transactionXml);
         $transactionData = json_decode($transactionData, true);
 
+        Validator::extend('unique_reference1', function ($attribute, $value, $parameters, $validator) {
+            return !DB::connection('shard')->table('airtel_transactions')->where('tr_id', $value)->exists();
+        });
+
         $validator = Validator::make($transactionData, [
             'TYPE' => 'required',
             'CUSTOMERMSISDN' => 'required',
             'MERCHANTMSISDN' => 'required',
             'AMOUNT' => 'required',
             'REFERENCE' => 'required',
-            'REFERENCE1' => 'required',
+            'REFERENCE1' => 'required|unique_reference1',
+        ], [
+            'REFERENCE1.unique_reference1' => 'Duplicate Reference1',
         ]);
-        if ($validator->fails()) {
-            throw  new \Exception("Invalid request");
-        }
 
+        try {
+            $validator->validate();
+        } catch (ValidationException $e) {
+            $errors = $validator->errors();
+            if ($errors->has('REFERENCE1')) {
+                throw new \Exception('Duplicate Reference1');
+            } else {
+                $errorMessage = $errors->first();
+                throw new \Exception($errorMessage);
+            }
+        }
         $serialNumber = $transactionData['REFERENCE'];
         $amount = $transactionData['AMOUNT'];
 
