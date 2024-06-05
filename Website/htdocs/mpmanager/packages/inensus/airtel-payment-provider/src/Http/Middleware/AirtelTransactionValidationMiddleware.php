@@ -15,7 +15,6 @@ class AirtelTransactionValidationMiddleware
     public function handle(Request $request, Closure $next)
     {
         $transactionProvider = resolve('AirtelPaymentProvider');
-
         try {
             $transactionProvider->validateRequest($request->getContent());
             $transactionProvider->saveTransaction();

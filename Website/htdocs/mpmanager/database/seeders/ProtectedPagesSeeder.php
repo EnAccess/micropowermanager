@@ -45,7 +45,6 @@ class ProtectedPagesSeeder extends Seeder
             ['name' => '/calin-smart-meters/calin-smart-overview'],
             ['name' => '/micro-star-meters/micro-star-overview'],
             ['name' => '/gome-long-meters/gome-long-overview'],
-            ['name' => '/airtel-payment/airtel-payment-overview'],
         ));
     }
 }

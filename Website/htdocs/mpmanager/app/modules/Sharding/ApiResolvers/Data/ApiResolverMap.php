@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MPM\Sharding\ApiResolvers\Data;
 
+use MPM\Sharding\ApiResolvers\AirtelPaymentApiResolver;
 use MPM\Sharding\ApiResolvers\AndroidGatewayCallbackApiResolver;
 use MPM\Sharding\ApiResolvers\DataExportResolver;
 use MPM\Sharding\ApiResolvers\DownloadingReportsResolver;
@@ -23,6 +24,8 @@ class ApiResolverMap
     public const  JETSON_API = 'api/jetson';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
+    public const AIRTEL_PAYMENT_API = 'api/airtel';
+
     public const RESOLVABLE_APIS = [
         self::TEST_API,
         self::VIBER_API,
@@ -31,7 +34,8 @@ class ApiResolverMap
         self::SWIFTA_PAYMENT_API,
         self::JETSON_API,
         self::REPORT_DOWNLOADING_API,
-        self::DATA_EXPORTING_API
+        self::DATA_EXPORTING_API,
+        self::AIRTEL_PAYMENT_API
     ];
 
     private const API_RESOLVER = [
@@ -42,9 +46,9 @@ class ApiResolverMap
         self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class,
         self::JETSON_API => JetsonApiResolver::class,
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
-        self::DATA_EXPORTING_API => DataExportResolver::class
+        self::DATA_EXPORTING_API => DataExportResolver::class,
+        self::AIRTEL_PAYMENT_API => AirtelPaymentApiResolver::class
     ];
-
 
     public function getResolvableApis(): array
     {

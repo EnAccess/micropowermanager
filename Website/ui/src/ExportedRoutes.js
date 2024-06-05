@@ -636,12 +636,5 @@ export const exportedRoutes = [
         component: require('./plugins/angaza-shs/js/modules/Overview/Overview')
             .default,
         meta: { layout: 'default' },
-    },
-    {
-        path: '/airtel-payment/airtel-payment-overview',
-        component:
-        require('./plugins/airtel-payment-provider/js/modules/Overview/Overview')
-            .default,
-        meta: { layout: 'default' },
-    },
+    }
 ]
