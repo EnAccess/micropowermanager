@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-class MigratorStatusCentralDatabase extends AbstractSharedCommand
+class MigratorStatusCentralDatabase extends Command
 {
     protected $signature = 'migrator:migrate_status_central_database';
     protected $description = 'Show the status of all core migrations on the central `micro_power_manager` database';

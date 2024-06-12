@@ -7,35 +7,9 @@ use Illuminate\Console\Command;
 
 class MigrationCreator extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'migrator:create {migration-name}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create new migration file for company databases';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
         $migrationName = $this->argument('migration-name');
