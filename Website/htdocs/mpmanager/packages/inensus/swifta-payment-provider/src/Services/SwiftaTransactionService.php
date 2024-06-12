@@ -2,38 +2,30 @@
 
 namespace Inensus\SwiftaPaymentProvider\Services;
 
-
-use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
-use App\Models\AssetPerson;
-use App\Models\AssetRate;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
-use App\Models\Person\Person;
+use App\Models\Device;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\IBaseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaction\TransactionConflicts;
+use MPM\Device\DeviceService;
 
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
 
     public function __construct(
-        private Meter $meter,
+        private DeviceService $deviceService,
         private Address $address,
         private Transaction $transaction,
-        private MeterParameter $meterParameter,
         private SwiftaTransaction $swiftaTransaction,
     ) {
         parent::__construct(
-            $this->meter,
+            $this->deviceService,
             $this->address,
             $this->transaction,
-            $this->meterParameter,
             $this->swiftaTransaction
         );
     }

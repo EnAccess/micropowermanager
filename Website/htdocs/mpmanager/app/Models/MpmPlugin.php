@@ -30,6 +30,8 @@ class MpmPlugin extends MasterModel
     public const DALY_BMS = 16;
     public const AGAZA_SHS = 17;
 
+    public const AIRTEL_PAYMENT_PROVIDER = 18;
+
     protected $table = 'mpm_plugins';
 
     //has many used

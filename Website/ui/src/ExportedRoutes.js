@@ -636,5 +636,5 @@ export const exportedRoutes = [
         component: require('./plugins/angaza-shs/js/modules/Overview/Overview')
             .default,
         meta: { layout: 'default' },
-    },
+    }
 ]

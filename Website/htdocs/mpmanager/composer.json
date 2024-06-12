@@ -14,6 +14,7 @@
     "doctrine/dbal": "^3.1",
     "enlightn/enlightn": "^1.22",
     "fideloper/proxy": "^4.0",
+    "firebase/php-jwt": "^6.10",
     "fruitcake/laravel-cors": "^3.0",
     "guzzlehttp/guzzle": "^7.3.0",
     "laravel/framework": "^9",
@@ -84,7 +85,8 @@
       "Inensus\\GomeLongMeter\\": "packages/inensus/gome-long-meter/src",
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
-      "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src"
+      "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
+      "Inensus\\AirtelPaymentProvider\\": "packages/inensus/airtel-payment-provider/src"
     }
   },
   "minimum-stability": "dev",

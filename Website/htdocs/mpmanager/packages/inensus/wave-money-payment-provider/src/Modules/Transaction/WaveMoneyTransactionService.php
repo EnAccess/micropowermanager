@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Transaction;
 
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
@@ -11,35 +12,23 @@ use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\IBaseService;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
+use MPM\Device\DeviceService;
 use Ramsey\Uuid\Uuid;
 
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
 
-    private Meter $meter;
-    private Address $address;
-    private Transaction $transaction;
-    private MeterParameter $meterParameter;
-    private WaveMoneyTransaction $waveMoneyTransaction;
-
     public function __construct(
-        Meter $meter,
-        Address $address,
-        Transaction $transaction,
-        MeterParameter $meterParameter,
-        WaveMoneyTransaction $waveMoneyTransaction,
+        private DeviceService $deviceService,
+        private Address $address,
+        private Transaction $transaction,
+        private WaveMoneyTransaction $waveMoneyTransaction,
     ) {
-        $this->meterParameter = $meterParameter;
-        $this->transaction = $transaction;
-        $this->address = $address;
-        $this->meter = $meter;
-        $this->waveMoneyTransaction = $waveMoneyTransaction;
 
         parent::__construct(
-            $this->meter,
+            $this->deviceService,
             $this->address,
             $this->transaction,
-            $this->meterParameter,
             $this->waveMoneyTransaction
         );
     }
@@ -52,7 +41,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return [
             'order_id' => $orderId,
             'reference_id' => $referenceId,
-            'meter_serial' => $this->getMeterSerialNumber(),
+            'meter_serial' => $this->getSerialNumber(),
             'status' => WaveMoneyTransaction::STATUS_REQUESTED,
             'currency' => 'MMK',
             'customer_id' => $this->getCustomerId(),
