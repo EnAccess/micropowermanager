@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
+
 class MigratorCentralDatabase extends Command
 {
     protected $signature = 'migrator:migrate_central_database';
