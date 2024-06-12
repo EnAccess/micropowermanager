@@ -2,24 +2,23 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 
-class MigrationCreator extends Command
+class MigratorCentralDatabase extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'migrator:create {migration-name}';
+    protected $signature = 'migrator:migrate_central_database';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create new migration file for company databases';
+    protected $description = 'Run all core migrations on the central `micro_power_manager` database';
 
     /**
      * Create a new command instance.
@@ -38,13 +37,10 @@ class MigrationCreator extends Command
      */
     public function handle()
     {
-        $migrationName = $this->argument('migration-name');
-        $this->call('make:migration', [
-            'name' => $migrationName,
-            '--path' => '/database/migrations/micropowermanager'
+        $this->call('optimize:clear');
+        $this->call('migrate', [
+            '--database' => 'micro_power_manager',
+            '--path' => '/database/migrations/base',
         ]);
-
-
-        return 0;
     }
 }
