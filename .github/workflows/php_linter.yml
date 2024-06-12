@@ -25,6 +25,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, zip
+          tools: composer:2.6
 
       - name: Install Composer Dependencies
         run: |
