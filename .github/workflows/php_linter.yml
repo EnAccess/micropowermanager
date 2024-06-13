@@ -33,7 +33,7 @@ jobs:
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run Code sniffer
-        run: ./vendor/bin/phpcs --exclude=Generic.Files.LineLength app/
+        run: ./vendor/bin/phpcs app/
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHPStan
