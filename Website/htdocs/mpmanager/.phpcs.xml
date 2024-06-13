@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset name="micropowermanager">
+    <!-- The standard(s) to apply -->
+    <rule ref="PSR12" />
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+</ruleset>
