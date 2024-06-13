@@ -269,7 +269,7 @@ class DummyDataCreator extends AbstractSharedCommand
                 'token' => Str::random(30),
                 'energy' => round(
                     $transactionData->transaction->amount /
-                    ($randomMeter['meterParameter']['tariff']['price']),
+                        ($randomMeter['meterParameter']['tariff']['price']),
                     2
                 ),
                 'created_at' => $dummyDate,
@@ -356,7 +356,8 @@ class DummyDataCreator extends AbstractSharedCommand
     private function generateFakeSentence($minWords = 5, $maxWords = 15)
     {
         $loremIpsum =
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do" .
+            " eiusmod tempor incididunt ut labore et dolore magna aliqua.";
         $words = explode(" ", $loremIpsum);
         $numWords = rand($minWords, $maxWords);
 

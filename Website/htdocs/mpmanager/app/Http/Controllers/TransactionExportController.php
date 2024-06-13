@@ -41,7 +41,9 @@ class TransactionExportController
             $fromDate,
             $toDate,
         );
-        $this->transactionExportService->createSpreadSheetFromTemplate($this->transactionExportService->getTemplatePath());
+        $this->transactionExportService->createSpreadSheetFromTemplate(
+            $this->transactionExportService->getTemplatePath()
+        );
         $this->transactionExportService->setCurrency($currency);
         $this->transactionExportService->setTimeZone($timeZone);
         $this->transactionExportService->setTransactionData($data);

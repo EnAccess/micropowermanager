@@ -37,7 +37,8 @@ class AgentBalanceMiddleware
         $agentBalance = $agent->balance;
 
         if ($routeName === 'agent-sell-appliance') {
-            $assignedApplianceCost = $this->agentAssignedApplianceService->getById($request->input('agent_assigned_appliance_id'));
+            $assignedApplianceCost = $this->agentAssignedApplianceService
+                ->getById($request->input('agent_assigned_appliance_id'));
             $downPayment = $request->input('down_payment');
             if (!$assignedApplianceCost) {
                 throw new ModelNotFoundException('Assigned Appliance not found');

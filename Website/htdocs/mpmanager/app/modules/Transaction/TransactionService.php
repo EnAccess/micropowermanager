@@ -72,7 +72,10 @@ class TransactionService implements IAssociative, IBaseService
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService
+    public function getRelatedService(string $type): ApplianceTransactionService|
+    MeterTransactionService|
+    SolarHomeSystemTransactionService|
+    EBikeTransactionService
     {
         switch ($type) {
             case SolarHomeSystem::RELATION_NAME:
@@ -266,7 +269,8 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])->find($id);
+            'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])
+        ])->find($id);
     }
 
     public function getAll($limit = null): Collection|LengthAwarePaginator

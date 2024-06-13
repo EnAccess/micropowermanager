@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Log;
 
 class DatabaseProxyManagerService
 {
-    public function __construct(private DatabaseProxy $databaseProxy, private DatabaseManager $databaseManager, private CompanyDatabase $companyDatabase)
-    {
+    public function __construct(
+        private DatabaseProxy $databaseProxy,
+        private DatabaseManager $databaseManager,
+        private CompanyDatabase $companyDatabase
+    ) {
     }
 
     public function findByEmail(string $email): DatabaseProxy

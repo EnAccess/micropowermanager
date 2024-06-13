@@ -39,11 +39,13 @@ class TransactionAdvancedController extends Controller
     {
         $comparisonPeriod = $this->transactionService->determinePeriod($period);
         //get transactions for both current and previous periods
-        $transactions = $this->transactionService ->getByComparisonPeriod($comparisonPeriod);
+        $transactions = $this->transactionService->getByComparisonPeriod($comparisonPeriod);
         // get data for the current period
-        $currentTransactions = $this->transactionService->getAnalysis($transactions['current']) ?? $this->transactionService->getEmptyCompareResult();
+        $currentTransactions = $this->transactionService
+            ->getAnalysis($transactions['current']) ?? $this->transactionService->getEmptyCompareResult();
         // get data for the previous period
-        $pastTransactions = $this->transactionService->getAnalysis($transactions['past']) ?? $this->transactionService->getEmptyCompareResult();
+        $pastTransactions = $this->transactionService
+            ->getAnalysis($transactions['past']) ?? $this->transactionService->getEmptyCompareResult();
 
         //compare current period with the previous period
         return [

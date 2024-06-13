@@ -50,7 +50,9 @@ class OutsourceReportGenerator extends AbstractSharedCommand
 
             $row = 3;
             foreach ($tickets as $t) {
-                $owner = $t->owner !== null ? $t->owner->name .' '.$t->owner->surname:"No assigned user found, please check your history reports";
+                $owner = $t->owner !== null
+                    ? $t->owner->name .' '.$t->owner->surname
+                    :"No assigned user found, please check your history reports";
                 $sheet->setCellValue('A' . $row, $owner);
                 $sheet->setCellValue('B' . $row, $t->created_at);
                 $sheet->setCellValue('C' . $row, $t->outsource->amount);

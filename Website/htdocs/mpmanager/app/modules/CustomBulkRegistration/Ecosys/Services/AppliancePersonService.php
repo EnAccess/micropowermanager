@@ -205,7 +205,12 @@ class AppliancePersonService extends CreatorService
                         $this->createPaymentHistory($rate['remaining'], $person, $applianceRate, $secondTransaction);
                     } else {
                         $applianceRate = $this->updateRateRemaining($rate['id'], $this->secondPaymentAmount);
-                        $this->createPaymentHistory($this->secondPaymentAmount, $person, $applianceRate, $secondTransaction);
+                        $this->createPaymentHistory(
+                            $this->secondPaymentAmount,
+                            $person,
+                            $applianceRate,
+                            $secondTransaction
+                        );
                         $this->secondPaymentAmount = 0;
                     }
                 }

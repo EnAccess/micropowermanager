@@ -20,8 +20,13 @@ class MailHelperMock implements MailHelperInterface
         return;
     }
 
-    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void
-    {
+    public function sendViaTemplate(
+        string $to,
+        string $title,
+        string $templatePath,
+        ?array $variables = null,
+        ?string $attachmentPath = null
+    ): void {
         return;
     }
 }

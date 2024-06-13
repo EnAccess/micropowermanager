@@ -72,7 +72,12 @@ class SmsService
         try {
             $smsAndroidSettings = $this->getSmsAndroidSettings();
             $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
-        } catch (SmsTypeNotFoundException | SmsAndroidSettingNotExistingException | SmsBodyParserNotExtendedException $exception) {
+        } catch (
+            SmsTypeNotFoundException |
+            SmsAndroidSettingNotExistingException |
+            SmsBodyParserNotExtendedException
+            $exception
+        ) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
             return;
         }

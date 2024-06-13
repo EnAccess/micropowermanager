@@ -76,7 +76,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    //we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
+    // we need to provide the company id in the token to encode and
+    // find the right database when an authenticated requests hits the api
     public function getJWTCustomClaims(): array
     {
         return [

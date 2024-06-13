@@ -22,7 +22,10 @@ class SubConnectionTypeController extends Controller
         $limit = $request->get('limit');
 
         if ($connectionTypeId !== null) {
-            return ApiResource::make($this->subConnectionTypeService->getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit));
+            return ApiResource::make($this->subConnectionTypeService->getSubConnectionTypesByConnectionTypeId(
+                $connectionTypeId,
+                $limit
+            ));
         }
 
         return  ApiResource::make($this->subConnectionTypeService->getAll($limit));
