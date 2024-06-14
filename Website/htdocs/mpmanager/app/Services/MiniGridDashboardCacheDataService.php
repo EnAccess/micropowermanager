@@ -37,7 +37,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
     public function setData($dateRange = [])
     {
         if (empty($dateRange)) {
-            $startDate = date('Y-01-01'); //first day of the year
+            $startDate = date('Y-01-01');//first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
@@ -109,13 +109,12 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]["registered_connections"];
                 $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
 
-                $connectionsData = $this->meterRevenueService
-                    ->getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
-                        $miniGridId,
-                        $connectionGroup->id,
-                        $startDate,
-                        $endDate
-                    );
+                $connectionsData = $this->meterRevenueService->getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
+                    $miniGridId,
+                    $connectionGroup->id,
+                    $startDate,
+                    $endDate
+                );
                 $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'];
             }
 

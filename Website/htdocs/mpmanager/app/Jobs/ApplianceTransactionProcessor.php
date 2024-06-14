@@ -58,9 +58,7 @@ class ApplianceTransactionProcessor extends AbstractJob
     {
         $minimumPurchaseAmount = $container->installmentCost;
         if ($container->amount < $minimumPurchaseAmount) {
-            throw new TransactionAmountNotEnoughException(
-                "Minimum purchase amount not reached for {$container->device->device_serial}"
-            );
+            throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}");
         }
     }
 

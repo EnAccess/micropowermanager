@@ -38,9 +38,7 @@ trait RestExceptionHandler
             case $e instanceof JWTException:
                 return response()->json(['error' => 'There was an issue with the token'], 401);
             case $this->isModelNotFoundException($e):
-                $response = $this->modelNotFound(
-                    ['model not found ' .  implode(' ', $e->getIds()), $e->getMessage(), $e->getTrace()]
-                );
+                $response = $this->modelNotFound(['model not found ' .  implode(' ', $e->getIds()) , $e->getMessage(), $e->getTrace()]);
                 break;
             case $this->isValidationException($e):
                 $response = $this->validationError($e->errors());

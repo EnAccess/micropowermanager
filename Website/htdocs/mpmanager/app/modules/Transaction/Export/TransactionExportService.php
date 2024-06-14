@@ -30,9 +30,7 @@ class TransactionExportService extends AbstractExportService
     public function setExportingData(): void
     {
         $this->exportingData = $this->transactionData->map(function ($transaction) {
-            $status = $transaction->originalTransaction->status == 1
-                ? 'Success'
-                : ($transaction->status == 0 ? 'Pending' : 'Failed');
+            $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->status == 0 ? 'Pending' : 'Failed');
             $readableAmount = $this->readable($transaction->amount);
             return [
                 $status,

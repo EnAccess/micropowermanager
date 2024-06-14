@@ -48,14 +48,7 @@ class MaintenanceUserController extends Controller
         } catch (ModelNotFoundException) {
             $personData = $this->personService->createPersonDataFromRequest($request);
             $person = $this->personService->createMaintenancePerson($personData);
-            $this->addressService->createForPerson(
-                $person->getId(),
-                $request->getCityId(),
-                $request->getPhone(),
-                $request->getEmail(),
-                $request->getStreet(),
-                true
-            );
+            $this->addressService->createForPerson($person->getId(), $request->getCityId(), $request->getPhone(), $request->getEmail(), $request->getStreet(), true);
         }
 
         $maintenanceUser = $this->maintenanceUsers::query()->create(
@@ -65,8 +58,9 @@ class MaintenanceUserController extends Controller
             ]
         );
 
-        return (new ApiResource($maintenanceUser))
-            ->response()
-            ->setStatusCode(201);
+        return
+            (new ApiResource($maintenanceUser))
+                ->response()
+                ->setStatusCode(201);
     }
 }

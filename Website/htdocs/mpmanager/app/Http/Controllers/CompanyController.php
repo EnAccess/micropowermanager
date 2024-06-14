@@ -34,7 +34,7 @@ class CompanyController extends Controller
 
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {
-        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id', 'protected_page_password']);
+        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id','protected_page_password']);
         $company = $this->companyService->create($companyData);
 
         $adminData = $request->input('user');
@@ -90,14 +90,10 @@ class CompanyController extends Controller
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
                 $mainSettings = $this->mainSettingsService->getAll()->first();
-                $this->mainSettingsService->update(
-                    $mainSettings,
-                    ['company_name' => $company->name, 'usage_type' => $usageType]
-                );
+                $this->mainSettingsService->update($mainSettings, ['company_name' => $company->name, 'usage_type' => $usageType]);
 
                 return response()->json([
-                    'message' => 'Congratulations! you have registered to MicroPowerManager successfully.' .
-                        'You will be redirected to dashboard  in seconds..',
+                    'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',
                     'company' => $company,
                     'sidebarData' => $this->menuItemsService->getAll()
                 ], 201);

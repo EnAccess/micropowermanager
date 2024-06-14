@@ -46,8 +46,7 @@ class ApplianceInstallmentPayer
     }
 
 
-    // This function processes the payment of all installments (excluding device-recorded ones)
-    // that are due, right before generating the meter token.
+    // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
     public function payInstallments()
     {
@@ -63,7 +62,7 @@ class ApplianceInstallmentPayer
     {
         $installments = $this->getInstallments($this->customer);
         $installments->each(function ($installment) {
-            if ($installment->remaining > $this->consumableAmount) { // money is not enough to cover the
+            if ($installment->remaining > $this->consumableAmount) {// money is not enough to cover the
                 // whole rate
                 $this->consumableAmount = 0;
 
@@ -100,7 +99,7 @@ class ApplianceInstallmentPayer
     private function pay(Collection $installments, mixed $customer): void
     {
         $installments->map(function ($installment) use ($customer) {
-            if ($installment->remaining > $this->transaction->amount) { // money is not enough to cover the whole rate
+            if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 //add payment history for the installment
                 event('payment.successful', [
                     'amount' => $this->transaction->amount,
