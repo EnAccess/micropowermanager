@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use MPM\Target\TargetAssignable;
 
 /**
- * Class Cluster
+ * Class Cluster.
  *
- * @package App\Models
- *
- * @property int $id
+ * @property int    $id
  * @property string $name
  * @property int manager_id
  * @property string geo_data
@@ -23,9 +21,8 @@ class Cluster extends BaseModel implements TargetAssignable
     public const RELATION_NAME = 'cluster';
 
     protected $casts = [
-        'geo_data' => 'array'
+        'geo_data' => 'array',
     ];
-
 
     public function manager(): BelongsTo
     {

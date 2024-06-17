@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Class GeographicalInformation
- *
- * @package App\Models
+ * Class GeographicalInformation.
  *
  * @property string $points
  */

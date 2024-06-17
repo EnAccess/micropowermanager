@@ -14,15 +14,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Tariff
+ * Class Tariff.
  *
- * @package App
- *
- * @property string $name
- * @property int $price (100 times the price. Allows to play with .00 decimals)
- * @property int $total_price (100 times the price. Allows to play with .00 decimals)
- * @property string $currency
- * @property int|null $factor
+ * @property string     $name
+ * @property int        $price       (100 times the price. Allows to play with .00 decimals)
+ * @property int        $total_price (100 times the price. Allows to play with .00 decimals)
+ * @property string     $currency
+ * @property int|null   $factor
  * @property AccessRate $accessRate
  */
 class MeterTariff extends BaseModel
@@ -30,8 +28,8 @@ class MeterTariff extends BaseModel
     use SoftDeletes;
 
     public const RELATION_NAME = 'meter_tariff';
-    public const DEFAULT_FACTOR = 1; //for energy usage
-    public const SHS_FACTOR = 2; //for shs usage
+    public const DEFAULT_FACTOR = 1; // for energy usage
+    public const SHS_FACTOR = 2; // for shs usage
 
     protected $table = 'meter_tariffs';
     protected $guarded = [];
@@ -53,7 +51,6 @@ class MeterTariff extends BaseModel
         return $this->hasMany(CustomerGroup::class, 'tariff_id');
     }
 
-
     public function accessRate(): HasOne
     {
         return $this->hasOne(AccessRate::class, 'tariff_id');
@@ -68,6 +65,7 @@ class MeterTariff extends BaseModel
     {
         return $this->hasOne(SocialTariff::class, 'tariff_id');
     }
+
     public function tou(): HasMany
     {
         return $this->hasMany(TimeOfUsage::class, 'tariff_id');

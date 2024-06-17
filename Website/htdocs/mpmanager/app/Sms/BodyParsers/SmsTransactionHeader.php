@@ -8,6 +8,7 @@ class SmsTransactionHeader extends SmsBodyParser
 {
     protected $variables = ['name', 'surname', 'transaction_amount'];
     protected $transaction;
+
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
@@ -15,7 +16,6 @@ class SmsTransactionHeader extends SmsBodyParser
 
     protected function getVariableValue($variable)
     {
-
         $person = $this->transaction->meter->meterParameter->owner()->first();
         switch ($variable) {
             case 'name':

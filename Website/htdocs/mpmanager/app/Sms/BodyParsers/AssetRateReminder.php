@@ -6,8 +6,9 @@ use App\Models\AssetRate;
 
 class AssetRateReminder extends SmsBodyParser
 {
-    protected $variables = ['appliance_type_name','remaining','due_date'];
+    protected $variables = ['appliance_type_name', 'remaining', 'due_date'];
     protected $reminderData;
+
     public function __construct(AssetRate $reminderData)
     {
         $this->reminderData = $reminderData;
@@ -26,6 +27,7 @@ class AssetRateReminder extends SmsBodyParser
                 $variable = $this->reminderData->due_date;
                 break;
         }
+
         return $variable;
     }
 }

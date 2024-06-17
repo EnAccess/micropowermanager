@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Agent;
-use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 
 class AgentChargeService implements IBaseService

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\MaintenanceUsers;
-use App\Models\Person\Person;
 use Inensus\Ticket\Models\Ticket;
 
 class MaintenanceUserTicketService implements IAssignationService

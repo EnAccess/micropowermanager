@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\Models\Meter\MeterType;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MeterTypeService implements IBaseService
 {
@@ -36,6 +33,7 @@ class MeterTypeService implements IBaseService
         if ($limit) {
             return $this->meterType->newQuery()->paginate($limit);
         }
+
         return $this->meterType->newQuery()->get();
     }
 

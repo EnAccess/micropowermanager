@@ -14,7 +14,7 @@ class GeographicalInformationService extends CreatorService
 
     public function resolveCsvDataFromComingRow($csvData)
     {
-        $geoConfig =  [
+        $geoConfig = [
             'owner_type' => 'meter_parameter',
             'owner_id' => 'meter_parameter_id',
             'points' => 'location',
@@ -23,7 +23,7 @@ class GeographicalInformationService extends CreatorService
             'points' => $csvData[$geoConfig['points']],
             'owner_type' => $geoConfig['owner_type'],
             'owner_id' => $csvData[$geoConfig['owner_id']],
-            ];
+        ];
 
         return $this->createRelatedDataIfDoesNotExists($geographicalInformationData);
     }

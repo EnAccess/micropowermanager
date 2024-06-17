@@ -21,10 +21,10 @@ class AirtelVoltTerraProvider implements ITransactionProvider
     private $validData;
 
     /**
-     * DI will initialize the needed models
+     * DI will initialize the needed models.
      *
      * @param AirtelTransaction $airtelTransaction
-     * @param Transaction $transaction
+     * @param Transaction       $transaction
      */
     public function __construct(
         private AirtelTransaction $airtelTransaction,
@@ -36,15 +36,15 @@ class AirtelVoltTerraProvider implements ITransactionProvider
     {
         $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
-        //assign data
+        // assign data
         $this->assignData();
 
-        //save transaction
+        // save transaction
         $this->saveData($this->airtelTransaction);
     }
 
     /**
-     * @param bool $requestType
+     * @param bool        $requestType
      * @param Transaction $transaction
      */
     public function sendResult(bool $requestType, Transaction $transaction): void
@@ -72,10 +72,10 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         $amount = $request['amount'];
         $validator = Validator::make([
             'meterSerial' => $meterSerial,
-            'amount' => $amount
+            'amount' => $amount,
         ], [
             'meterSerial' => 'required',
-            'amount' => 'required'
+            'amount' => 'required',
         ]);
         if ($validator->fails()) {
             throw new \Exception($validator->errors()->first());
@@ -105,7 +105,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         try {
             $payerPhoneNumber = $this->getTransactionSender($meterSerial);
         } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
 
         $this->validData = [
@@ -114,14 +114,13 @@ class AirtelVoltTerraProvider implements ITransactionProvider
             'amount' => $amount,
             'customerId' => $customerId,
             'phoneNumber' => $payerPhoneNumber,
-
         ];
+
         return true;
     }
 
     private function getTransactionSender($meterSerial)
     {
-
         $meterParameter = MeterParameter::query()
             ->whereHas(
                 'meter',
@@ -140,6 +139,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
                         $q->where('owner_id', $personId);
                     }
                 )->where('is_primary', 1)->firstOrFail();
+
             return $address->phone;
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('No phone number record found by customer.');
@@ -148,13 +148,13 @@ class AirtelVoltTerraProvider implements ITransactionProvider
 
     private function assignData(): void
     {
-        //provider specific data
+        // provider specific data
         $this->airtelTransaction->interface_id = 'Airtel Transactions Email Interface';
         $this->airtelTransaction->business_number = 'Airtel Transactions Email Interface';
         $this->airtelTransaction->trans_id = 'Airtel Transactions Email Interface';
         $this->airtelTransaction->tr_id = 'Airtel Transactions Email Interface';
         // common transaction data
-        $this->transaction->amount = (int)$this->validData['amount'];
+        $this->transaction->amount = (int) $this->validData['amount'];
         $this->transaction->sender = $this->validData['phoneNumber'];
         $this->transaction->message = $this->validData['meterSerial'];
     }
@@ -180,26 +180,26 @@ class AirtelVoltTerraProvider implements ITransactionProvider
 
     public function confirm(): void
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function getMessage(): string
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function getAmount(): int
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function getSender(): string
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function getTransaction(): Transaction
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 }

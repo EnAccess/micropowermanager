@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentHistory;
 use App\Services\AgentCustomersPaymentHistoryService;
 use App\Services\AgentService;
-use Illuminate\Http\Request;
 
 class AgentCustomersPaymentHistoryController extends Controller
 {
@@ -24,7 +22,6 @@ class AgentCustomersPaymentHistoryController extends Controller
             $order
         );
     }
-
 
     public function index(string $period, $limit = null, $order = 'ASC')
     {

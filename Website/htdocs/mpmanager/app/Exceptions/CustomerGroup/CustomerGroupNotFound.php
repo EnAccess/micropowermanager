@@ -2,8 +2,6 @@
 
 namespace App\Exceptions\CustomerGroup;
 
-use Exception;
-
-class CustomerGroupNotFound extends Exception
+class CustomerGroupNotFound extends \Exception
 {
 }

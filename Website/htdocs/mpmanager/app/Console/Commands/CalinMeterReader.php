@@ -4,13 +4,10 @@ namespace App\Console\Commands;
 
 use App\ManufacturerApi\CalinReadMeter;
 use App\Models\Meter\Meter;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Reads the daily consumptions of meters
- * Class CalinMeterReader
- *
+ * Class CalinMeterReader.
  */
 class CalinMeterReader extends AbstractSharedCommand
 {

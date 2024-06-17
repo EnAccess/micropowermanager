@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\NotificationSendFailedException;
-use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
-use mysql_xdevapi\Exception;
+use Illuminate\Support\Facades\Log;
 
 class FirebaseService
 {
@@ -27,10 +26,11 @@ class FirebaseService
                     ],
                 ]
             );
-            return (string)$request->getBody();
+
+            return (string) $request->getBody();
         } catch (NotificationSendFailedException $exception) {
-            Log::critical("Notification could not send  " . $exception);
-            throw  $exception;
+            Log::critical('Notification could not send  '.$exception);
+            throw $exception;
         }
     }
 }

@@ -5,23 +5,23 @@ namespace App\Console;
 use app\Console\Commands\MailApplianceDebtsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
-use Inensus\SparkMeter\Console\Commands\InstallSparkMeterPackage;
-use Inensus\CalinSmartMeter\Console\Commands\InstallPackage as InstallCalinSmartMeterPackage;
-use Inensus\KelinMeter\Console\Commands\InstallPackage as InstallKelinMeterPackage;
-use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPackage;
-use Inensus\SteamaMeter\Console\Commands\InstallPackage as InstallStemacoMeterPackage;
-use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
-use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
-use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
-use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
-use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
-use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
-use Inensus\SunKingSHS\Console\Commands\InstallPackage as InstallSunKingSHSPackage;
-use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
-use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage;
+use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
+use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
+use Inensus\CalinSmartMeter\Console\Commands\InstallPackage as InstallCalinSmartMeterPackage;
 use Inensus\DalyBms\Console\Commands\InstallPackage as InstallDalyBmsPackage;
+use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
+use Inensus\KelinMeter\Console\Commands\InstallPackage as InstallKelinMeterPackage;
+use Inensus\MesombPaymentProvider\Console\Commands\InstallPackage as InstallMsombPaymentProviderPackage;
+use Inensus\MicroStarMeter\Console\Commands\InstallPackage as InstallMicroStarMeterPackage;
+use Inensus\SparkMeter\Console\Commands\InstallSparkMeterPackage;
+use Inensus\SteamaMeter\Console\Commands\InstallPackage as InstallStemacoMeterPackage;
+use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPackage;
+use Inensus\SunKingSHS\Console\Commands\InstallPackage as InstallSunKingSHSPackage;
+use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
+use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
+use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
+use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 
 class Kernel extends ConsoleKernel
 {
@@ -31,7 +31,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-
         Commands\AddMeterAddress::class,
         InstallSparkMeterPackage::class,
         InstallCalinMeterPackage::class,
@@ -80,7 +79,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         include base_path('routes/console.php');
     }

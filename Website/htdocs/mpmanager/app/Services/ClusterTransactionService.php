@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Transaction\Transaction;
 use App\Models\Cluster;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
+use App\Models\Transaction\Transaction;
 
 class ClusterTransactionService
 {

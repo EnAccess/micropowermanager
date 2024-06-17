@@ -43,7 +43,7 @@ class JetsonMiniGridSolarController extends Controller
             $query->take($limit);
         }
 
-        return  ApiResource::make($query->get());
+        return ApiResource::make($query->get());
     }
 
     public function store(SolarCreateRequest $request): ApiResource
@@ -57,14 +57,14 @@ class JetsonMiniGridSolarController extends Controller
         $timestamp = $request->input('time_stamp');
         $storageFolder = $request->input('storage_folder');
 
-        if ($frequencyStr !== "0" && $frequencyStr !== 0) {
-            $frequency = (int)str_replace('\n', '', $frequencyStr);
+        if ($frequencyStr !== '0' && $frequencyStr !== 0) {
+            $frequency = (int) str_replace('\n', '', $frequencyStr);
         } else {
             $frequency = null;
         }
 
-        if ($pvPowerStr !== "0" && $pvPowerStr !== 0) {
-            $pvPower = (int)str_replace('\n', '', $pvPowerStr);
+        if ($pvPowerStr !== '0' && $pvPowerStr !== 0) {
+            $pvPower = (int) str_replace('\n', '', $pvPowerStr);
         } else {
             $pvPower = null;
         }
@@ -76,14 +76,14 @@ class JetsonMiniGridSolarController extends Controller
             'time_stamp' => $timestamp,
             'starting_time' => $solarData['starting_time'] ?? 0,
             'ending_time' => $solarData['ending_time'] ?? 0,
-            'min' => (int)($solarData['min'] ?? 0),
-            'max' => (int)($solarData['max'] ?? 0),
-            'average' => (int)$solarData['average'],
+            'min' => (int) ($solarData['min'] ?? 0),
+            'max' => (int) ($solarData['max'] ?? 0),
+            'average' => (int) $solarData['average'],
             'duration' => $solarData['duration'] ?? 0,
             'readings' => $solarData['readings'],
             'frequency' => $frequency,
             'pv_power' => $pvPower,
-            'storage_folder' => $storageFolder
+            'storage_folder' => $storageFolder,
         ];
 
         return ApiResource::make($this->miniGridSolarService->create($solarData));

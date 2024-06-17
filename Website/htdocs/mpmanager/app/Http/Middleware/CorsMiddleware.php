@@ -11,7 +11,7 @@ class CorsMiddleware
         $accessControlRequestMethod = $request->header('access-control-request-method');
         $accessControlRequestHeaders = $request->header('access-control-request-headers');
 
-        if ($request->getMethod() === "OPTIONS") {
+        if ($request->getMethod() === 'OPTIONS') {
             return response('')->header('Access-Control-Allow-Origin', '*')
                 ->header('Access-Control-Max-Age', 0)
                 ->header('Access-Control-Allow-Methods', $accessControlRequestMethod)
@@ -28,6 +28,7 @@ class CorsMiddleware
         if ($accessControlRequestHeaders) {
             $response->header('Access-Control-Allow-Headers', $accessControlRequestHeaders);
         }
+
         return $response;
     }
 }

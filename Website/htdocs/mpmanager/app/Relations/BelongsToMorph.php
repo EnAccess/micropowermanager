@@ -4,17 +4,17 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 14.09.18
- * Time: 12:23
+ * Time: 12:23.
  */
 
 namespace App\Relations;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BelongsToMorph extends BelongsTo
 {
@@ -41,23 +41,21 @@ class BelongsToMorph extends BelongsTo
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  Builder     $query
-     * @param  Builder     $parent
-     * @param  array|mixed $columns
+     * @param Builder     $query
+     * @param Builder     $parent
+     * @param array|mixed $columns
+     *
      * @return Builder
      */
     /**
      * @deprecated
      **\
-    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
-    {
-        $table = $this->getParent()->getTable();
-        $query = parent::getRelationQuery($query, $parent, $columns);
-        return $query->where("{$table}.{$this->morphType}", '=', $this->morphName);
-    }
-
-    /**
-     * Get the results of the relationship.
+     * public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
+     * {
+     * $table = $this->getParent()->getTable();
+     * $query = parent::getRelationQuery($query, $parent, $columns);
+     * return $query->where("{$table}.{$this->morphType}", '=', $this->morphName);
+     * }
      *
      * @return mixed
      */
@@ -66,6 +64,7 @@ class BelongsToMorph extends BelongsTo
         if ($this->getParent()->{$this->morphType} === $this->morphName) {
             return $this->query->first();
         }
+
         return null;
     }
 
@@ -80,21 +79,22 @@ class BelongsToMorph extends BelongsTo
      */
     protected static function getMorphs($name, $type, $id): array
     {
-        $type = $type ?: $name . '_type';
-        $id = $id ?: $name . '_id';
+        $type = $type ?: $name.'_type';
+        $id = $id ?: $name.'_id';
+
         return [$type, $id];
     }
 
     /**
      * Define an inverse morph relationship.
      *
-     * @param Model $parent
+     * @param Model  $parent
      * @param string $related
      * @param string $name
-     * @param null $type
-     * @param null $id
-     * @param null $otherKey
-     * @param null $relation
+     * @param null   $type
+     * @param null   $id
+     * @param null   $otherKey
+     * @param null   $relation
      *
      * @return BelongsToMorph
      */
@@ -122,6 +122,7 @@ class BelongsToMorph extends BelongsTo
         // actually be responsible for retrieving and hydrating every relations.
         $query = $instance->newQuery();
         $otherKey = $otherKey ?: $instance->getKeyName();
+
         return new BelongsToMorph($query, $parent, $morphName, $type, $id, $otherKey, $relation);
     }
 }

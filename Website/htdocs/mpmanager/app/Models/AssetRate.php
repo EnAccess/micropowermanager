@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * Class AssetRate
+ * Class AssetRate.
  *
- * @package App\Models
- *
- * @property int $asset_person_id
- * @property int $rate_cost
- * @property int $remaining
+ * @property int    $asset_person_id
+ * @property int    $rate_cost
+ * @property int    $remaining
  * @property string $due_date
  * @property AssetPerson assetPerson
  */
@@ -28,7 +25,7 @@ class AssetRate extends BaseModel
         'rate_cost',
         'remaining',
         'due_date',
-        'remind'
+        'remind',
     ];
 
     public function assetPerson(): BelongsTo
@@ -40,7 +37,6 @@ class AssetRate extends BaseModel
     {
         return $this->morphMany(Log::class, 'affected');
     }
-
 
     public function paymentHistory(): MorphOne
     {

@@ -4,11 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTargetRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\City;
-use App\Models\Cluster;
-use App\Models\MiniGrid;
-use App\Models\SubTarget;
-use App\Models\Target;
 use App\Services\ClusterService;
 use App\Services\MiniGridService;
 use App\Services\SubTargetService;
@@ -34,7 +29,7 @@ class TargetController extends Controller
 
     public function show($targetId): ApiResource
     {
-        return  ApiResource::make($this->targetService->getById($targetId));
+        return ApiResource::make($this->targetService->getById($targetId));
     }
 
     public function getSlotsForDate(Request $request): ApiResource
@@ -44,7 +39,7 @@ class TargetController extends Controller
         $firstDayOfMonth = date('Y-m-1', strtotime($date));
         $targetData = [$firstDayOfMonth, $lastDayOfMonth];
 
-        return  ApiResource::make($this->targetService->getTakenSlots($targetData));
+        return ApiResource::make($this->targetService->getTakenSlots($targetData));
     }
 
     public function store(CreateTargetRequest $request): ApiResource
@@ -54,7 +49,7 @@ class TargetController extends Controller
             'targetForType' => $request->getTargetForType(),
         ];
 
-        if ($request->getTargetForType() === "cluster") {
+        if ($request->getTargetForType() === 'cluster') {
             $targetOwner = $this->clusterService->getById($request->getTargetForId());
         } else {
             $targetOwner = $this->miniGridService->getById($request->getTargetForId());
@@ -62,7 +57,6 @@ class TargetController extends Controller
 
         $targetData['owner'] = $targetOwner;
         $target = $this->targetService->create($request->getPeriod(), $request->getTargetForType(), $targetOwner);
-
 
         $subTargetData = [
             'data' => $request->getData(),

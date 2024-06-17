@@ -18,12 +18,10 @@ class CompanyDatabase extends MasterModel
     public const COL_DATABASE_NAME = 'database_name';
     public const COL_COMPANY_ID = 'company_id';
 
-
     public function company(): HasOne
     {
         return $this->HasOne(Company::class);
     }
-
 
     public function findByCompanyId(int $companyId): CompanyDatabase
     {

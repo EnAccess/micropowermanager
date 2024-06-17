@@ -10,7 +10,6 @@ class AgentCommissionHistoryBalanceService implements IAssignationService
     private AgentCommission $agentCommission;
     private AgentBalanceHistory $agentBalanceHistory;
 
-
     public function setAssigned($agentBalanceHistory)
     {
         $this->agentBalanceHistory = $agentBalanceHistory;

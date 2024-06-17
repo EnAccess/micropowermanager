@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Agent;
 use App\Models\BaseModel;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class SessionService

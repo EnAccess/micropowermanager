@@ -4,22 +4,12 @@ namespace App\Services;
 
 use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
-use App\Services\CountryService;
-use App\Services\PeriodService;
-use App\Models\Address\Address;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
-use App\Models\Country;
-use App\Models\Person\Person;
 use Complex\Exception;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\This;
 
 class AgentService implements IBaseService
 {
@@ -33,6 +23,7 @@ class AgentService implements IBaseService
 
     /**
      * @param string $email
+     *
      * @return int|string
      */
     public function resetPassword(string $email)
@@ -46,12 +37,14 @@ class AgentService implements IBaseService
             $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();
         } catch (ModelNotFoundException $x) {
             $message = 'Invalid email.';
+
             return $message;
         }
 
         $agent->password = $newPassword;
         $agent->update();
         $agent->fresh();
+
         return $newPassword;
     }
 
@@ -81,19 +74,19 @@ class AgentService implements IBaseService
             return $this->agent->newQuery()->with('miniGrid')->WhereHas(
                 'miniGrid',
                 function ($q) use ($searchTerm) {
-                    $q->where('name', 'LIKE', '%' . $searchTerm . '%');
+                    $q->where('name', 'LIKE', '%'.$searchTerm.'%');
                 }
-            )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')->paginate(15);
+            )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
+                ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->paginate(15);
         }
 
         return $this->agent->newQuery()->with('miniGrid')->WhereHas(
             'miniGrid',
             function ($q) use ($searchTerm) {
-                $q->where('name', 'LIKE', '%' . $searchTerm . '%');
+                $q->where('name', 'LIKE', '%'.$searchTerm.'%');
             }
-        )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-            ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')->get();
+        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
+            ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->get();
     }
 
     public function getByAuthenticatedUser()
@@ -156,17 +149,17 @@ class AgentService implements IBaseService
     /**
      * @param $agent
      * @param $data
+     *
      * @return Model|Builder
      */
     public function update($agent, $agentData, $personService = null)
     {
-
         $person = $personService->getById($agentData['personId']);
         $personData = [
             'name' => $agentData['name'],
             'surname' => $agentData['surname'],
             'sex' => $agentData['gender'],
-            'birth_date' => $agentData['birthday']
+            'birth_date' => $agentData['birthday'],
         ];
         $person = $personService->update($person, $personData);
         $address = $person->addresses()->where('is_primary', 1)->first();

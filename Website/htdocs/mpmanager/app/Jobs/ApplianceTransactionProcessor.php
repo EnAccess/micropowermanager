@@ -32,7 +32,7 @@ class ApplianceTransactionProcessor extends AbstractJob
             $container = $this->payApplianceInstallments($container);
             $this->processToken($container);
         } catch (\Exception $e) {
-            Log::info('Transaction failed.: ' . $e->getMessage());
+            Log::info('Transaction failed.: '.$e->getMessage());
             event('transaction.failed', [$this->transaction, $e->getMessage()]);
         }
     }
@@ -71,6 +71,7 @@ class ApplianceTransactionProcessor extends AbstractJob
 
         return $container;
     }
+
     private function processToken(TransactionDataContainer $transactionData): void
     {
         $kWhToBeCharged = 0.0;

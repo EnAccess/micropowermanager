@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 31.07.18
- * Time: 22:03
+ * Time: 22:03.
  */
 
 namespace App\Observers;
@@ -22,9 +22,10 @@ class MeterParameterObserver
     }
 
     /**
-     * Handle "deleted" event
+     * Handle "deleted" event.
      *
      * @param MeterParameter $meterParameter
+     *
      * @return void
      */
     public function deleted(MeterParameter $meterParameter): void
@@ -35,10 +36,8 @@ class MeterParameterObserver
         $meter->save();
     }
 
-
     public function created(MeterParameter $meterParameter): void
     {
-
         /*        CreatePiggyBankEntry::dispatchSync(
                     $meterParameter,$this->meterParameterService);*/
 

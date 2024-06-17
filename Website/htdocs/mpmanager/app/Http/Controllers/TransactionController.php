@@ -14,15 +14,18 @@ class TransactionController extends Controller
         private TransactionService $transactionService,
     ) {
     }
+
     public function index(): ApiResource
     {
         $limit = \request()->get('per_page') ?? 15;
+
         return ApiResource::make($this->transactionService->getAll($limit));
     }
 
     public function show(int $id): ApiResource
     {
         $transaction = $this->transactionService->getById($id);
+
         return ApiResource::make($transaction);
     }
 

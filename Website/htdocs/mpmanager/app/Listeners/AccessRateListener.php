@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Exceptions\AccessRates\NoAccessRateFound;
-use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
 use Illuminate\Events\Dispatcher;

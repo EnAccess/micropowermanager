@@ -33,7 +33,6 @@ class TimeOfUsageService implements IBaseService
         return $timeOfUsage->delete();
     }
 
-
     public function getAll($limit = null)
     {
         // TODO: Implement getAll() method.

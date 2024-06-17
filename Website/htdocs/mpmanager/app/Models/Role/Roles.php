@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 13.07.18
- * Time: 13:46
+ * Time: 13:46.
  */
 
 namespace App\Models\Role;
@@ -16,10 +16,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Roles extends BaseModel
 {
     protected $connection = 'micro_power_manager';
+
     /**
-     * @return belongsTo
+     * @return BelongsTo
      */
-    public function definitions(): belongsTo
+    public function definitions(): BelongsTo
     {
         return $this->belongsTo(RoleDefinition::class, 'role_definition_id');
     }

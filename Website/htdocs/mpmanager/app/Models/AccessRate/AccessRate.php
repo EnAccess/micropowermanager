@@ -10,9 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
- * Class AccessRate
+ * Class AccessRate.
  *
- * @package  App
  * @property int id
  * @property int amount
  * @property int tariff_id
@@ -21,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class AccessRate extends BaseModel
 {
     public const RELATION_NAME = 'access_rate';
+
     public function tariff(): BelongsTo
     {
         return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');

@@ -11,7 +11,7 @@ abstract class SmsConfigsCore
         SmsTypes::APPLIANCE_RATE => 'App\Sms\Senders\AssetRateNotification',
         SmsTypes::OVER_DUE_APPLIANCE_RATE => 'App\Sms\Senders\OverDueAssetRateNotification',
         SmsTypes::MANUAL_SMS => 'App\Sms\Senders\ManualSms',
-        SmsTypes::RESEND_INFORMATION => 'App\Sms\Senders\ResendInformationNotification'
+        SmsTypes::RESEND_INFORMATION => 'App\Sms\Senders\ResendInformationNotification',
     ];
     public $bodyParsersPath = 'App\\Sms\\BodyParsers\\';
     public $servicePath = 'App\Services\SmsBodyService';

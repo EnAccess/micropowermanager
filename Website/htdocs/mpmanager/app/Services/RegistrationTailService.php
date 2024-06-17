@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\RegistrationTail;
-use Illuminate\Support\Facades\Log;
 
 class RegistrationTailService implements IBaseService
 {
@@ -43,6 +42,7 @@ class RegistrationTailService implements IBaseService
     {
         return $this->registrationTail->newQuery()->get();
     }
+
     public function getFirst($limit = null)
     {
         return $this->registrationTail->newQuery()->first();
@@ -52,6 +52,7 @@ class RegistrationTailService implements IBaseService
      * @param mixed $tail
      * @param mixed $mpmPlugin
      * @param mixed $registrationTail
+     *
      * @return mixed
      */
     public function resetTail(mixed $tail, mixed $mpmPlugin, mixed $registrationTail): mixed
@@ -59,8 +60,8 @@ class RegistrationTailService implements IBaseService
         array_push($tail, [
             'tag' => $mpmPlugin->tail_tag,
             'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                " ",
-                "-",
+                ' ',
+                '-',
                 $mpmPlugin->tail_tag
             ) : null,
             'adjusted' => !isset($mpmPlugin->tail_tag),
@@ -69,6 +70,7 @@ class RegistrationTailService implements IBaseService
             $registrationTail,
             ['tail' => json_encode($tail)]
         );
+
         return $tail;
     }
 }

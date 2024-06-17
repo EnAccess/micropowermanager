@@ -19,10 +19,10 @@ class UserController extends Controller
     ) {
     }
 
-
     public function index(Request $request): ApiResource
     {
         $users = $this->userService->list();
+
         return new ApiResource($users);
     }
 
@@ -48,6 +48,7 @@ class UserController extends Controller
     public function update(User $user, Request $request): ApiResource
     {
         $this->userService->update($user, $request->all());
+
         return new ApiResource($user->fresh());
     }
 }

@@ -7,22 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * Class User
+ * Class User.
  *
- * @package App\Models
- *
- * @property int $id
- * @property int $company_id
- * @property string $name
- * @property null|string $email
- *
+ * @property int         $id
+ * @property int         $company_id
+ * @property string      $name
+ * @property string|null $email
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -53,7 +50,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'company_id'
+        'company_id',
     ];
 
     /**
@@ -76,14 +73,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    //we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
+    // we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
     public function getJWTCustomClaims(): array
     {
         return [
-            'companyId' => $this->getCompanyId()
+            'companyId' => $this->getCompanyId(),
         ];
     }
-
 
     public function address(): MorphOne
     {
@@ -111,7 +107,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->BelongsTo(Company::class, 'company_id');
     }
 
-
     public function getCompanyId(): int
     {
         return $this->company_id;
@@ -131,6 +126,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->email;
     }
+
     public function relationTicketUser(): HasOne
     {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);

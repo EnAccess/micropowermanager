@@ -10,7 +10,6 @@ class AgentTransactionTransactionService implements IAssignationService
     private AgentTransaction $agentTransaction;
     private Transaction $transaction;
 
-
     public function setAssigned($transaction)
     {
         $this->transaction = $transaction;
@@ -24,7 +23,6 @@ class AgentTransactionTransactionService implements IAssignationService
     public function assign()
     {
         $this->transaction->originalTransaction()->associate($this->agentTransaction);
-        ;
 
         return $this->transaction;
     }

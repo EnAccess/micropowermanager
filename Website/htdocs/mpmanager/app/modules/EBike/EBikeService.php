@@ -3,7 +3,6 @@
 namespace MPM\EBike;
 
 use App\Models\EBike;
-use App\Models\SolarHomeSystem;
 use App\Services\IBaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -18,6 +17,7 @@ class EBikeService implements IBaseService
         if ($limit) {
             return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
         }
+
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
@@ -39,14 +39,14 @@ class EBikeService implements IBaseService
                 'device',
                 fn ($q) => $q->whereHas(
                     'person',
-                    fn ($q) => $q->where('name', 'LIKE', '%' . $term . '%')
-                    ->orWhere('surname', 'LIKE', '%' . $term . '%')
+                    fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%')
+                    ->orWhere('surname', 'LIKE', '%'.$term.'%')
                 )
             )
             ->orWhere(
                 'serial_number',
                 'LIKE',
-                '%' . $term . '%'
+                '%'.$term.'%'
             )->paginate($paginate);
     }
 

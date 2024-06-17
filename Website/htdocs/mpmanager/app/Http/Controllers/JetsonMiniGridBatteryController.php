@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBatteryStateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\MiniGridBatteryService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class JetsonMiniGridBatteryController extends Controller
@@ -23,11 +22,13 @@ class JetsonMiniGridBatteryController extends Controller
     }
 
     /**
-     * Store battery status
+     * Store battery status.
      *
      * @urlParam miniGridId integer required
-     * @param    StoreBatteryStateRequest $request
-     * @return   ApiResource
+     *
+     * @param StoreBatteryStateRequest $request
+     *
+     * @return ApiResource
      */
     public function store(StoreBatteryStateRequest $request): ApiResource
     {
@@ -43,7 +44,7 @@ class JetsonMiniGridBatteryController extends Controller
         $temperature['max'] = str_replace(':', '-', $temperature['max']);
         $temperature['average'] = str_replace(':', '-', $temperature['average']);
 
-        $batteryData =   [
+        $batteryData = [
             'mini_grid_id' => $request->input('mini_grid_id'),
             'node_id' => $request->input('node_id'),
             'device_id' => $request->input('device_id'),
@@ -53,10 +54,10 @@ class JetsonMiniGridBatteryController extends Controller
             'soc_min' => $stateOfChargeData['min'] ?? 0,
             'soc_max' => $stateOfChargeData['max'] ?? 0,
 
-            'soh_average' => 100 - (float)$stateOfHealthData['average'],
+            'soh_average' => 100 - (float) $stateOfHealthData['average'],
             'soh_unit' => $stateOfHealthData['unit'],
-            'soh_min' => 100 - (float)($stateOfHealthData['min'] ?? 0),
-            'soh_max' => 100 - (float)($stateOfHealthData['max'] ?? 0),
+            'soh_min' => 100 - (float) ($stateOfHealthData['min'] ?? 0),
+            'soh_max' => 100 - (float) ($stateOfHealthData['max'] ?? 0),
 
             'd_total' => str_replace(',', '.', $total['discharge']),
             'd_total_unit' => $total['unit'],
@@ -73,6 +74,7 @@ class JetsonMiniGridBatteryController extends Controller
             'temperature_unit' => $temperature['unit'],
             'read_out' => date('Y-m-d H:i:s', strtotime($batteryData['time_stamp'])),
         ];
-        return  ApiResource::make($this->miniGridBatteryService->create($batteryData));
+
+        return ApiResource::make($this->miniGridBatteryService->create($batteryData));
     }
 }

@@ -18,6 +18,7 @@ class SolarHomeSystemService implements IBaseService
         if ($limit) {
             return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
         }
+
         return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
@@ -47,24 +48,24 @@ class SolarHomeSystemService implements IBaseService
                 'device',
                 fn ($q) => $q->whereHas(
                     'person',
-                    fn ($q) => $q->where('name', 'LIKE', '%' . $term . '%')
-                        ->orWhere('surname', 'LIKE', '%' . $term . '%')
+                    fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%')
+                        ->orWhere('surname', 'LIKE', '%'.$term.'%')
                 )
             )
             ->orWhere(
                 'serial_number',
                 'LIKE',
-                '%' . $term . '%'
+                '%'.$term.'%'
             )->paginate($paginate);
     }
 
     public function update($model, $data)
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function delete($model)
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 }

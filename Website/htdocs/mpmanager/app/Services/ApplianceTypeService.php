@@ -19,6 +19,7 @@ class ApplianceTypeService
         if ($perPage) {
             return $this->assetType->newQuery()->paginate($perPage);
         }
+
         return $this->assetType->newQuery()->get();
     }
 
@@ -34,6 +35,7 @@ class ApplianceTypeService
     {
         $appliance->update($request->only(['name', 'price']));
         $appliance->fresh();
+
         return $appliance;
     }
 

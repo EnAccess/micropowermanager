@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 12.07.18
- * Time: 18:59
+ * Time: 18:59.
  */
 
 namespace App\Services;
@@ -41,7 +41,7 @@ class RolesService
     /**
      * @return Builder[]|Collection
      *
-     * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
+     * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
      */
     public function findRoleByDefinition(RoleDefinition $definition)
     {
@@ -51,7 +51,7 @@ class RolesService
     /**
      * @return Model|false
      */
-    public function attachToOwner(RoleInterface $roleOwner, Roles $role) //person or a company
+    public function attachToOwner(RoleInterface $roleOwner, Roles $role) // person or a company
     {
         return $roleOwner->roleowner()->save($role);
     }
@@ -59,6 +59,7 @@ class RolesService
     public function create(RoleDefinition $definition): Roles
     {
         $this->role->definitions()->associate($definition);
+
         return $this->role;
     }
 }

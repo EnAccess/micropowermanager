@@ -22,7 +22,6 @@ class CreateTargetRequest extends FormRequest
         ];
     }
 
-
     public function getTargetForType(): string
     {
         return $this->input('targetForType');

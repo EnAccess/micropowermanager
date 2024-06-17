@@ -39,6 +39,7 @@ class AddEBikesItemToNavbar extends AbstractSharedCommand
     public function handle()
     {
         $this->addSolarHomeSystemsToNavBar();
+
         return 0;
     }
 

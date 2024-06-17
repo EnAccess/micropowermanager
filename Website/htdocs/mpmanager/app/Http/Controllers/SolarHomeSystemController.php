@@ -21,6 +21,7 @@ class SolarHomeSystemController extends Controller
     public function index(Request $request): ApiResource
     {
         $limit = $request->input('per_page');
+
         return ApiResource::make($this->solarHomeSystemService->getAll($limit));
     }
 
@@ -29,7 +30,7 @@ class SolarHomeSystemController extends Controller
         $solarHomeSystemData = $request->all();
         $deviceData = [
             'device_serial' => $solarHomeSystemData['serial_number'],
-            'person_id' => $solarHomeSystemData['person_id']
+            'person_id' => $solarHomeSystemData['person_id'],
         ];
 
         $device = $this->deviceService->make($deviceData);

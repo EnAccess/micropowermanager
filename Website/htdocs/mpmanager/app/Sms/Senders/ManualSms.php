@@ -9,6 +9,7 @@ class ManualSms extends SmsSender
     protected $references = [
         'body' => '',
     ];
+
     public function prepareBody()
     {
         $this->body .= $this->data['message'];

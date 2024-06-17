@@ -6,7 +6,6 @@ use App\Exceptions\MissingSmsReferencesException;
 use App\Sms\BodyParsers\ResendInformation;
 use App\Sms\BodyParsers\ResendInformationLastTransactionNotFound;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ResendInformationNotification extends SmsSender
@@ -18,6 +17,7 @@ class ResendInformationNotification extends SmsSender
         'footer' => 'SmsResendInformationFooter',
         'body' => 'ResendInformation',
     ];
+
     public function prepareBody()
     {
         if (!is_array($this->data)) {
@@ -27,6 +27,7 @@ class ResendInformationNotification extends SmsSender
                 $exception = new MissingSmsReferencesException('ResendInformation SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
 
@@ -36,6 +37,7 @@ class ResendInformationNotification extends SmsSender
                     $this->body .= $smsObject->parseSms($smsBody->body);
                 } catch (\Exception $exception) {
                     Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
+
                     return;
                 }
             });
@@ -46,6 +48,7 @@ class ResendInformationNotification extends SmsSender
                 $exception = new MissingSmsReferencesException('ResendInformation SMS body
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
             $smsObject = new ResendInformationLastTransactionNotFound($this->data);
@@ -53,6 +56,7 @@ class ResendInformationNotification extends SmsSender
                 $this->body .= $smsObject->parseSms($smsBody->body);
             } catch (\Exception $exception) {
                 Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
         }

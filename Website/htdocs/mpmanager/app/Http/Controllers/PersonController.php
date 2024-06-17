@@ -4,21 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
-use App\Services\CountryService;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
+use App\Services\CountryService;
 use App\Services\MaintenanceUserService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class PersonController
- *
- * @package App\Http\Controllers
+ * Class PersonController.
  *
  * @group People
  */
@@ -35,7 +32,7 @@ class PersonController extends Controller
 
     /**
      * List customer/other
-     * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ]
+     * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ].
      *
      * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
      *
@@ -51,20 +48,20 @@ class PersonController extends Controller
         return ApiResource::make($this->personService->getAll($limit, $customerType));
     }
 
-
     /**
      * Detail
      * Displays the person with following relations
      * - Addresses
      * - Citizenship
      * - Role
-     * - Meter list
+     * - Meter list.
      *
      * @param int $personId
      *
      * @return ApiResource
      *
      * @apiResourceModel App\Models\Person\Person
+     *
      * @responseFile     responses/people/people.detail.json
      */
     public function show(int $personId): ApiResource
@@ -73,7 +70,7 @@ class PersonController extends Controller
     }
 
     /**
-     * Create
+     * Create.
      *
      * @param PersonRequest $request
      *
@@ -91,7 +88,7 @@ class PersonController extends Controller
                 $person = $this->personService->createMaintenancePerson($personData);
                 $maintenanceUserData = [
                     'person_id' => $person->id,
-                    'mini_grid_id' => $miniGridId
+                    'mini_grid_id' => $miniGridId,
                 ];
                 $this->maintenanceUserService->create($maintenanceUserData);
             } else {
@@ -109,6 +106,7 @@ class PersonController extends Controller
             $this->personAddressService->assign();
             $this->addressService->save($address);
             DB::connection('shard')->commit();
+
             return ApiResource::make($person)->response()->setStatusCode(201);
         } catch (\Exception $e) {
             DB::connection('shard')->rollBack();
@@ -118,19 +116,23 @@ class PersonController extends Controller
 
     /**
      * Update
-     * Updates the given parameter of that person
+     * Updates the given parameter of that person.
      *
      * @urlParam  id required The ID of the person to update
+     *
      * @bodyParam title string. The title of the person. Example: Dr.
      * @bodyParam name string. The title of the person. Example: Dr.
      * @bodyParam surname string. The title of the person. Example: Dr.
      * @bodyParam birth_date string. The title of the person. Example: Dr.
      * @bodyParam sex string. The title of the person. Example: Dr.
      * @bodyParam education string. The title of the person. Example: Dr.
+     *
      * @param int $personId
-     * @return    ApiResource
+     *
+     * @return ApiResource
      *
      * @apiResourceModel App\Models\Person\Person
+     *
      * @responseFile     responses/people/person.update.json
      */
     public function update(
@@ -146,13 +148,14 @@ class PersonController extends Controller
     /**
      * Transactions
      * The list of all transactions(paginated) which belong to that person.
-     * Each page contains 7 entries of the last transaction
+     * Each page contains 7 entries of the last transaction.
      *
      * @param $personId
      *
      * @return ApiResource
      *
      * @bodyParam    person_id int required the ID of the person. Example: 2
+     *
      * @responseFile responses/people/person.transaction.list.json
      */
     public function transactions(
@@ -170,12 +173,13 @@ class PersonController extends Controller
      * - phone number
      * - meter serial number
      * - name
-     * - surname
+     * - surname.
      *
      * @urlParam term  The ID of the post. Example: John Doe
      * @urlParam paginage int The page number. Example:1
      *
-     * @return       ApiResource
+     * @return ApiResource
+     *
      * @responseFile responses/people/people.search.json
      */
     public function search(
@@ -187,16 +191,18 @@ class PersonController extends Controller
         return ApiResource::make($this->personService->searchPerson($term, $paginate));
     }
 
-
     /**
      * Delete
      * Deletes that person with all his/her relations from the database. The person model uses soft deletes.
-     * That means the orinal record wont be deleted but all mentioned relations will be removed permanently
+     * That means the orinal record wont be deleted but all mentioned relations will be removed permanently.
      *
      * @urlParam person required The ID of the person. Example:1
+     *
      * @param int $personId
-     * @return   ApiResource
-     * @throws   Exception
+     *
+     * @return ApiResource
+     *
+     * @throws \Exception
      *
      * @apiResourceModel App\Models\Person\Person
      */

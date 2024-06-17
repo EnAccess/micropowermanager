@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAgentTicketRequest extends FormRequest
@@ -27,8 +26,7 @@ class CreateAgentTicketRequest extends FormRequest
         return [
             'owner_id' => 'required',
             'title' => 'required',
-            'description' => 'required'
-
+            'description' => 'required',
         ];
     }
 }

@@ -5,12 +5,6 @@ namespace App\Services;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\This;
-
-use function Symfony\Component\String\s;
 
 class AgentSoldApplianceService implements IBaseService
 {
@@ -20,12 +14,10 @@ class AgentSoldApplianceService implements IBaseService
     ) {
     }
 
-
     public function create($applianceData)
     {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
-
 
     public function getById($agentId, $customerId = null)
     {
@@ -52,7 +44,6 @@ class AgentSoldApplianceService implements IBaseService
         // TODO: Implement delete() method.
     }
 
-
     public function getAll($limit = null, $agentId = null, $customerId = null, $forApp = false)
     {
         if ($forApp) {
@@ -62,7 +53,7 @@ class AgentSoldApplianceService implements IBaseService
         $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
             'assignedAppliance.applianceType',
-            'person'
+            'person',
         ]);
 
         if ($agentId) {
@@ -90,7 +81,6 @@ class AgentSoldApplianceService implements IBaseService
 
     public function list($agentId)
     {
-
         return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
             ->whereHasMorph(
                 'creator',

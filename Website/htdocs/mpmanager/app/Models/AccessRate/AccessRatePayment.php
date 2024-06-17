@@ -4,17 +4,14 @@ namespace App\Models\AccessRate;
 
 use App\Models\BaseModel;
 use App\Models\Meter\Meter;
-use DateTime;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class AccessRatePayment
+ * Class AccessRatePayment.
  *
- * @package  App
  * @property int meter_id
  * @property int access_rate_id
- * @property DateTime due_date
+ * @property \DateTime due_date
  * @property int debt
  */
 class AccessRatePayment extends BaseModel

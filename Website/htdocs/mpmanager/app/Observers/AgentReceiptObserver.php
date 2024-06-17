@@ -2,8 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\Agent;
-use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
 use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptDetailService;
@@ -50,8 +48,7 @@ class AgentReceiptObserver
             'collected' => $collected ?? 0,
             'since_last_visit' => $sinceLastVisit ?? 0,
             'earlier' => $earlier ?? 0,
-            'summary' => $summary ?? 0
-
+            'summary' => $summary ?? 0,
         ];
         $this->agentReceiptDetailService->create($agentReceiptDetailData);
         $agentBalanceHistoryData = [
@@ -59,7 +56,7 @@ class AgentReceiptObserver
             'amount' => $receipt->amount,
             'transaction_id' => $receipt->id,
             'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier
+            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentReceiptHistoryBalanceService->setAssignee($receipt);

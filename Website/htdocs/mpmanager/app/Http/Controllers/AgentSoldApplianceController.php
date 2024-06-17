@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentSoldApplianceRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
-use App\Models\AgentSoldAppliance;
 use App\Services\AgentService;
 use App\Services\AgentSoldApplianceService;
 use Illuminate\Http\Request;
@@ -39,11 +37,11 @@ class AgentSoldApplianceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CreateAgentSoldApplianceRequest $request
+     *
      * @return ApiResource
      */
     public function store(CreateAgentSoldApplianceRequest $request)
     {
-
         $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
 
         return ApiResource::make($this->agentSoldApplianceService->create($soldApplianceData));

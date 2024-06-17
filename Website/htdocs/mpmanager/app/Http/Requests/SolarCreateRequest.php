@@ -32,7 +32,6 @@ class SolarCreateRequest extends FormRequest
             'solar_reading.average' => 'required',
             'solar_reading.total' => 'required',
             'time_stamp' => 'required',
-
         ];
     }
 }

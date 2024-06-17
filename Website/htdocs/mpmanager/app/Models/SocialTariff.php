@@ -2,12 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
- * Class SocialTariff
- *
- * @package App\Models
+ * Class SocialTariff.
  *
  * @property int $id
  * @property int $tariff_id

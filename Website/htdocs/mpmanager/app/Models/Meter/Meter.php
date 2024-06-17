@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * @property int $id
+ * @property int         $id
  * @property MeterTariff $tariff
- * @property bool $in_use
+ * @property bool        $in_use
  */
 class Meter extends BaseModel
 {
@@ -49,14 +49,17 @@ class Meter extends BaseModel
     {
         return $this->belongsTo(MeterTariff::class);
     }
+
     public function connectionType(): BelongsTo
     {
         return $this->belongsTo(ConnectionType::class, 'connection_type_id', 'id');
     }
+
     public function connectionGroup(): BelongsTo
     {
         return $this->belongsTo(ConnectionGroup::class);
     }
+
     public function accessRatePayment(): HasOne
     {
         return $this->hasOne(AccessRatePayment::class);
@@ -84,7 +87,7 @@ class Meter extends BaseModel
 
     public function findBySerialNumber(string $meterSerialNumber): ?self
     {
-        /** @var null|Meter $result */
+        /** @var Meter|null $result */
         $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
 
         return $result;

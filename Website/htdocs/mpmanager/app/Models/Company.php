@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property int $id
+ * @property int    $id
  * @property string $name;
  */
 class Company extends MasterModel
@@ -14,11 +14,12 @@ class Company extends MasterModel
 
     public const COL_ID = 'id';
 
-    //has many Users
+    // has many Users
     public function users()
     {
         return $this->hasMany(User::class);
     }
+
     // has one company database
     public function database()
     {
@@ -34,6 +35,7 @@ class Company extends MasterModel
     {
         return $this->name;
     }
+
     // has many company jobs
     public function jobs()
     {

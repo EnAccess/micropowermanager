@@ -11,11 +11,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Token
+ * Class Token.
  *
- * @package  App
  * @property string $token
- * @property double $energy
+ * @property float  $energy
  */
 class MeterToken extends BaseModel
 {
@@ -33,7 +32,7 @@ class MeterToken extends BaseModel
 
     public function __toString(): string
     {
-        return 'Token: ' . $this->token . ' for ' . $this->energy . 'kWh';
+        return 'Token: '.$this->token.' for '.$this->energy.'kWh';
     }
 
     public function paymentHistories(): MorphOne
@@ -41,11 +40,10 @@ class MeterToken extends BaseModel
         return $this->morphOne(PaymentHistory::class, 'paid_for');
     }
 
-
     public function soldEnergyPerPeriod($startDate, $endDate): Builder
     {
         return $this::query()
-        ->select(DB::raw(" SUM( energy) as sold,YEARWEEK(created_at,3) as period"))
+        ->select(DB::raw(' SUM( energy) as sold,YEARWEEK(created_at,3) as period'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(created_at,3)'));
     }

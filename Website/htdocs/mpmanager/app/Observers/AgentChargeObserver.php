@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentChargeHistoryBalanceService;
@@ -24,9 +23,9 @@ class AgentChargeObserver
             'agent_id' => $agent->id,
             'amount' => request()->input('amount'),
             'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier
+            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
-        $agentBalanceHistory =  $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
+        $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentChargeHistoryBalanceService->setAssigned($agentBalanceHistory);
         $this->agentChargeHistoryBalanceService->setAssignee($agentCharge);
         $this->agentChargeHistoryBalanceService->assign();

@@ -15,6 +15,7 @@ class SmsListener
     private $smsResendInformationKeyService;
     private $transaction;
     private $smsService;
+
     public function __construct(
         SmsResendInformationKeyService $smsResendInformationKeyService,
         Transaction $transaction,
@@ -33,9 +34,9 @@ class SmsListener
         }
         $resend = strpos(strtolower($message), strtolower($resendInformationKey));
         if (!$resend) {
-            return ;
+            return;
         }
-        $wordsInMessage = explode(" ", $message);
+        $wordsInMessage = explode(' ', $message);
         $meterSerial = end($wordsInMessage);
         try {
             $transaction = $this->transaction->newQuery()->with('paymentHistories')
@@ -44,11 +45,12 @@ class SmsListener
         } catch (ModelNotFoundException $ex) {
             $data = [
                 'phone' => $sender,
-                'meter' => $meterSerial
+                'meter' => $meterSerial,
             ];
             $this->smsService->sendSms($data, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
         }
     }
+
     public function subscribe(Dispatcher $events)
     {
         $events->listen('sms.stored', 'App\Listeners\SmsListener@onSmsStored');

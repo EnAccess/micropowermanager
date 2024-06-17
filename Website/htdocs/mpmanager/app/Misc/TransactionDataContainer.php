@@ -17,7 +17,7 @@ class TransactionDataContainer
     public int $accessRateDebt;
     public Transaction $transaction;
     public Device $device;
-    public MeterTariff|null $tariff;
+    public ?MeterTariff $tariff;
     public Manufacturer $manufacturer;
     public Token $token;
     public array $paidRates;
@@ -61,8 +61,9 @@ class TransactionDataContainer
                     $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
             }
         } catch (ModelNotFoundException $e) {
-            throw new \Exception("Unexpected error occurred while processing transaction. " . $e->getMessage());
+            throw new \Exception('Unexpected error occurred while processing transaction. '.$e->getMessage());
         }
+
         return $container;
     }
 }

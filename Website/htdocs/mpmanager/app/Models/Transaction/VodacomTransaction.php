@@ -20,6 +20,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
 class VodacomTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
     public const RELATION_NAME = 'vodacom_transaction';
+
     /**
      * @return MorphOne
      */

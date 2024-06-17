@@ -24,19 +24,18 @@ class ConnectionTypeController extends Controller
         $meterCountRelation = $request->input('meter_count');
 
         if ($meterCountRelation) {
-            return  ApiResource::make($this->connectionTypeService->getByIdWithMeterCountRelation($connectionTypeId));
+            return ApiResource::make($this->connectionTypeService->getByIdWithMeterCountRelation($connectionTypeId));
         }
 
-        return  ApiResource::make($this->connectionTypeService->getById($connectionTypeId));
+        return ApiResource::make($this->connectionTypeService->getById($connectionTypeId));
     }
 
     public function store(Request $request): ApiResource
     {
         $connectionTypeData = $request->all();
 
-        return   ApiResource::make($this->connectionTypeService->create($connectionTypeData));
+        return ApiResource::make($this->connectionTypeService->create($connectionTypeData));
     }
-
 
     public function update($connectionTypeId, Request $request): ApiResource
     {

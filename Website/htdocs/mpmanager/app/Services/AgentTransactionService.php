@@ -3,13 +3,8 @@
 namespace App\Services;
 
 use App\Models\Device;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-
-use function Symfony\Component\String\s;
 
 class AgentTransactionService implements IBaseService
 {
@@ -20,16 +15,14 @@ class AgentTransactionService implements IBaseService
     ) {
     }
 
-
-
     public function getAll($limit = null, $agentId = null, $forApp = false)
     {
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
-            $query->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device','person'])]);
+            $query->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
         } else {
-            $query->with(['device' => fn ($q) => $q->whereHas('person')->with(['device','person'])]);
+            $query->with(['device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
         }
 
         $query->whereHasMorph(
@@ -43,6 +36,7 @@ class AgentTransactionService implements IBaseService
         if ($limit) {
             return $query->paginate($limit);
         }
+
         return $query->get();
     }
 
@@ -54,8 +48,9 @@ class AgentTransactionService implements IBaseService
         if (!$customerDeviceSerials->count()) {
             return null;
         }
+
         return $this->transaction->newQuery()
-            ->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device','person'])])
+            ->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])
             ->whereHasMorph(
                 'originalTransaction',
                 [AgentTransaction::class],

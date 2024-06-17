@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Address\Address;
 use App\Http\Requests\ManufacturerRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Manufacturer;
 use App\Services\AddressesService;
 use App\Services\ManufacturerAddressService;
 use App\Services\ManufacturerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class ManufacturerController extends Controller
 {
@@ -34,11 +31,11 @@ class ManufacturerController extends Controller
         return ApiResource::make($this->manufacturerService->getAll($limit));
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param  ManufacturerRequest $request
+     * @param ManufacturerRequest $request
+     *
      * @return JsonResponse
      */
     public function store(ManufacturerRequest $request): JsonResponse
@@ -58,11 +55,12 @@ class ManufacturerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $manufacturerId
+     * @param int $manufacturerId
+     *
      * @return ApiResource
      */
     public function show($manufacturerId): ApiResource
     {
-        return  ApiResource::make($this->manufacturerService->getById($manufacturerId));
+        return ApiResource::make($this->manufacturerService->getById($manufacturerId));
     }
 }

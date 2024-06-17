@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class VodacomTransactionController extends Controller
 {
@@ -17,7 +16,7 @@ class VodacomTransactionController extends Controller
      */
     public function store(Request $request): void
     {
-        //get Transaction object
+        // get Transaction object
         $transactionData = request('transaction')->transaction;
 
         /** @var VodacomTransaction $vodacomTransaction */

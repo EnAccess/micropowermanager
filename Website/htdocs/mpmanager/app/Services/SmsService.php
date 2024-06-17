@@ -8,7 +8,6 @@ use App\Exceptions\SmsTypeNotFoundException;
 use App\Jobs\SmsProcessor;
 use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
-use App\Models\Transaction\Transaction;
 use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
@@ -28,7 +27,7 @@ class SmsService
 
     public function checkMessageType($message)
     {
-        $wordsInMessage = explode(" ", $message);
+        $wordsInMessage = explode(' ', $message);
         $firstWord = $wordsInMessage[0];
         switch (strtolower($firstWord)) {
             case 'ticket':
@@ -44,7 +43,7 @@ class SmsService
 
         $data = [
             'message' => $smsData['body'],
-            'phone' => $smsData['receiver']
+            'phone' => $smsData['receiver'],
         ];
         $this->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
 
@@ -55,6 +54,7 @@ class SmsService
     {
         /** @var Sms $sms */
         $sms = $this->sms->newQuery()->create($smsData);
+
         return $sms;
     }
 
@@ -72,18 +72,19 @@ class SmsService
         try {
             $smsAndroidSettings = $this->getSmsAndroidSettings();
             $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
-        } catch (SmsTypeNotFoundException | SmsAndroidSettingNotExistingException | SmsBodyParserNotExtendedException $exception) {
+        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
+
             return;
         }
         $receiver = $smsType->getReceiver();
-        //set the uuid for the callback
+        // set the uuid for the callback
         $uuid = $smsType->generateCallbackAndGetUuid($smsAndroidSettings->callback);
         try {
-            //sends sms or throws exception
+            // sends sms or throws exception
             $smsType->validateReferences();
         } catch (\Exception $e) {
-            Log::error('Sms Service failed ' . $receiver, ['reason' => $e->getMessage()]);
+            Log::error('Sms Service failed '.$receiver, ['reason' => $e->getMessage()]);
             throw $e;
         }
         SmsProcessor::dispatch($smsType)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
@@ -94,20 +95,20 @@ class SmsService
     {
         $configs = resolve($smsConfigs);
         if (!array_key_exists($smsType, $configs->smsTypes)) {
-            throw new  SmsTypeNotFoundException('SmsType could not resolve.');
+            throw new SmsTypeNotFoundException('SmsType could not resolve.');
         }
         $smsBodyService = resolve($configs->servicePath);
         $reflection = new \ReflectionClass($configs->smsTypes[$smsType]);
 
         if (!$reflection->isSubclassOf(SmsSender::class)) {
-            throw new  SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
+            throw new SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
         }
 
         return $reflection->newInstanceArgs([
             $data,
             $smsBodyService,
             $configs->bodyParsersPath,
-            $smsAndroidSettings
+            $smsAndroidSettings,
         ]);
     }
 
@@ -118,7 +119,7 @@ class SmsService
                 'uuid' => $uuid,
                 'body' => $smsType->body,
                 'receiver' => $receiver,
-                'gateway_id' => $smsAndroidSettings->getId()
+                'gateway_id' => $smsAndroidSettings->getId(),
             ]);
             $sms->trigger()->associate($data);
             $sms->save();
@@ -130,7 +131,7 @@ class SmsService
             if ($lastSentManualSms) {
                 $lastSentManualSms->update([
                     'uuid' => $uuid,
-                    'gateway_id' => $smsAndroidSettings->getId()
+                    'gateway_id' => $smsAndroidSettings->getId(),
                 ]);
             }
         }

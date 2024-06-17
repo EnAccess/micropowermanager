@@ -8,9 +8,7 @@ use Illuminate\Http\JsonResponse;
  * @group   Authenticator
  * Class AuthController
  * Responsible for API-Call authentications.
- * @package App\Http\Controllers
  */
-
 class AuthController extends Controller
 {
     /**
@@ -24,7 +22,7 @@ class AuthController extends Controller
     }
 
     /**
-     * JWT authentication
+     * JWT authentication.
      *
      * @bodyParam email string required
      * @bodyParam password string required
@@ -65,7 +63,7 @@ class AuthController extends Controller
     /**
      * Refresh token
      * Generates a new valid token for the next 3600 seconds
-     * Inorder to generate the new token, a working (Bearer)token has to be provided in the header
+     * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
      *
      * @return JsonResponse
      */
@@ -85,10 +83,10 @@ class AuthController extends Controller
     {
         return response()->json(
             [
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => auth('api')->user(),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
+                'user' => auth('api')->user(),
             ]
         );
     }

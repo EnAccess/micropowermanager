@@ -6,8 +6,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
-use App\Services\AccessRateService;
-use Illuminate\Support\Facades\Log;
 
 class AccessRatePayer
 {
@@ -28,7 +26,7 @@ class AccessRatePayer
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
         if ($accessRatePayment) {
-            $this->debtAmount =  $accessRatePayment->debt;
+            $this->debtAmount = $accessRatePayment->debt;
             $this->accessRatePayment = $accessRatePayment;
         }
 
@@ -40,7 +38,7 @@ class AccessRatePayer
     {
         $meter = $this->transactionData->device->device;
         $owner = $this->transactionData->device->person;
-        if ($this->debtAmount > self::MINIMUM_AMOUNT) { //there is unpaid amount
+        if ($this->debtAmount > self::MINIMUM_AMOUNT) { // there is unpaid amount
             if ($this->debtAmount > $this->transactionData->transaction->amount) {
                 $this->debtAmount -= $this->transactionData->transaction->amount;
                 $this->transactionData->transaction->amount = self::MINIMUM_AMOUNT;
@@ -51,7 +49,7 @@ class AccessRatePayer
 
             $this->accessRatePaymentService->update($this->accessRatePayment, ['debt' => $this->debtAmount]);
             $this->transactionData->accessRateDebt = $this->debtAmount;
-            //add payment history for the client
+            // add payment history for the client
             event('payment.successful', [
                 'amount' => $this->debtAmount,
                 'paymentService' => $this->transactionData->transaction->original_transaction_type,
@@ -62,9 +60,9 @@ class AccessRatePayer
                 'transaction' => $this->transactionData->transaction,
             ]);
         }
+
         return $this->transactionData;
     }
-
 
     public function consumeAmount()
     {

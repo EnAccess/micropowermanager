@@ -16,7 +16,7 @@ class RoutesGenerator extends AbstractSharedCommand
         file_put_contents($routeTmp, file($exportedRoutes));
         $this->removeLine($routeTmp, 'last');
 
-        $directories = glob('resources/assets/js/plugins' . '/*', GLOB_ONLYDIR);
+        $directories = glob('resources/assets/js/plugins/*', GLOB_ONLYDIR);
         if (count($directories) > 0) {
             foreach ($directories as $key => $value) {
                 $this->createPluginRoutesTmp($value, $routeTmp);
@@ -30,8 +30,8 @@ class RoutesGenerator extends AbstractSharedCommand
 
     private function createPluginRoutesTmp(string $src, string $coreRoutesTmp): void
     {
-        $packageRoutes = $src . "/js/routes.js";
-        $packageRoutesTmp = $src . "/js/routes.tmp";
+        $packageRoutes = $src.'/js/routes.js';
+        $packageRoutesTmp = $src.'/js/routes.tmp';
         fopen($packageRoutesTmp, 'w');
         file_put_contents($packageRoutesTmp, file($packageRoutes));
         $this->removeLine($packageRoutesTmp, 'first');
@@ -58,7 +58,6 @@ class RoutesGenerator extends AbstractSharedCommand
 
     private function appendLines(string $packageRoutesTmp, $coreRoutesTmp): void
     {
-
         $lines = file($packageRoutesTmp);
         $tmp = fopen($coreRoutesTmp, 'a+');
         $counter = 1;
@@ -69,7 +68,7 @@ class RoutesGenerator extends AbstractSharedCommand
                 $newLine = str_pad($value, strlen($value) + 4, ' ', STR_PAD_LEFT);
             }
             fwrite($tmp, $newLine);
-            $counter++;
+            ++$counter;
         }
         fclose($tmp);
     }

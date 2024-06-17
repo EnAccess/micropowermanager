@@ -3,12 +3,6 @@
 namespace App\Services;
 
 use App\Models\AgentReceipt;
-use App\Models\AgentBalanceHistory;
-use App\Models\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Matrix\Exception;
 
 class AgentReceiptService implements IBaseService
 {
@@ -58,7 +52,7 @@ class AgentReceiptService implements IBaseService
 
     public function getLastReceipt($agentId)
     {
-        return  $this->agentReceipt->newQuery()->where('agent_id', $agentId)
+        return $this->agentReceipt->newQuery()->where('agent_id', $agentId)
             ->latest('id')->first();
     }
 
@@ -69,6 +63,7 @@ class AgentReceiptService implements IBaseService
         if ($lastReceiptDate) {
             return $lastReceiptDate->created_at;
         }
+
         return $agent->created_at;
     }
 }

@@ -2,13 +2,12 @@
 
 namespace MPM\CustomBulkRegistration\Ecosys\Services;
 
-use App\Models\Address\Address;
 use App\Models\Person\Person;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
 class PersonService extends CreatorService
 {
-    private $phone = null;
+    private $phone;
 
     public function __construct(Person $person)
     {
@@ -22,22 +21,22 @@ class PersonService extends CreatorService
             'gender' => 'gender',
             'age' => 'age',
             'phone' => 'phone',
-
         ];
         $personData = [
             'name' => $csvData[$personConfig['name']],
-            'surname' => "",
+            'surname' => '',
             'sex' => strtolower($csvData[$personConfig['gender']]),
             'birth_date' => $this->getBirthDateByGivenAge($csvData[$personConfig['age']]),
         ];
 
         $this->phone = $csvData[$personConfig['phone']];
+
         return $this->createRelatedDataIfDoesNotExists($personData);
     }
 
     private function getBirthDateByGivenAge($age)
     {
-        return date('Y-m-d', strtotime('-' . $age . ' years'));
+        return date('Y-m-d', strtotime('-'.$age.' years'));
     }
 
     public function createRelatedDataIfDoesNotExists($personData)

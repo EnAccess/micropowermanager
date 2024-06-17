@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\SocialTariff;
 use App\Models\SocialTariffPiggyBank;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -34,14 +33,13 @@ class SocialTariffPiggyBankManager extends AbstractJob
      */
     public function executeJob()
     {
-        //get all social tariffs
+        // get all social tariffs
         $socialTariffs = SocialTariff::all();
 
         foreach ($socialTariffs as $socialTariff) {
             $this->chargeClients($socialTariff);
         }
     }
-
 
     private function chargeClients(SocialTariff $socialTariff): void
     {

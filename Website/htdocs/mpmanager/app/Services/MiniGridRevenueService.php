@@ -3,11 +3,8 @@
 namespace App\Services;
 
 use App\Models\Meter\MeterToken;
-use App\Models\MiniGrid;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class MiniGridRevenueService
 {
@@ -22,6 +19,7 @@ class MiniGridRevenueService
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
+
         return $this->transaction->newQuery()
             ->selectRaw('COUNT(id) as amount, SUM(amount) as revenue')
             ->whereHasMorph(

@@ -16,11 +16,11 @@ class DatabaseBackupCommand extends Command
         config(['database.connections.mysql' => config('database.connections.micro_power_manager')]);
         $this->call('backup:run', [
             '--only-db' => true,
-            '--filename' => 'master_' . date('y-m-d H:i:s') . '.zip',
+            '--filename' => 'master_'.date('y-m-d H:i:s').'.zip',
             '--disable-notifications' => true,
-            '--db-name' => ['mysql']
+            '--db-name' => ['mysql'],
         ]);
-        $this->info("Starting backup for sharding databases");
+        $this->info('Starting backup for sharding databases');
         $this->call('shard:db.backup');
     }
 }

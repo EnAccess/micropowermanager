@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Subscription
+ * Class Subscription.
  *
- * @package App\Models
- *
- * @property int $id
- * @property int $upgrade_id
+ * @property int    $id
+ * @property int    $upgrade_id
  * @property string $expires
  * @property string $transaction_id
  */

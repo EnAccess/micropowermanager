@@ -26,6 +26,7 @@ class CustomerRegistrationAppService
         private AddressGeographicalInformationService $addressGeographicalInformationService
     ) {
     }
+
     public function createCustomer(AndroidAppRequest $request): Person
     {
         $serialNumber = $request->input('serial_number');
@@ -80,7 +81,7 @@ class CustomerRegistrationAppService
         $this->addressGeographicalInformationService->setAssignee($address);
         $this->addressGeographicalInformationService->assign();
         $this->geographicalInformationService->save($geographicalInformation);
-        //initializes a new Access Rate Payment for the next Period
+        // initializes a new Access Rate Payment for the next Period
         event('accessRatePayment.initialize', $meter);
 
         return $person;

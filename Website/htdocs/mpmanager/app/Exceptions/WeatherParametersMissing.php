@@ -2,8 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class WeatherParametersMissing extends Exception
+class WeatherParametersMissing extends \Exception
 {
 }

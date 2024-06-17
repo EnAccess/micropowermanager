@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Person\Person;
 use App\Models\Address\Address;
+use App\Models\Person\Person;
 
 class PersonAddressService implements IAssignationService
 {

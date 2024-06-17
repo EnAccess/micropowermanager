@@ -13,12 +13,12 @@ class MenuItemsService implements IBaseService
     {
     }
 
-
     public function getAll($limit = null): LengthAwarePaginator|Collection
     {
         if ($limit) {
             return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->paginate($limit);
         }
+
         return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->get();
     }
 
@@ -36,9 +36,9 @@ class MenuItemsService implements IBaseService
             $this->subMenuItems->newQuery()->firstOrCreate(
                 ['url_slug' => $value['url_slug']],
                 [
-                'name' => $value['name'],
-                'url_slug' => $value['url_slug'],
-                'parent_id' => $menuItem->id
+                    'name' => $value['name'],
+                    'url_slug' => $value['url_slug'],
+                    'parent_id' => $menuItem->id,
                 ]
             );
         }
@@ -60,7 +60,6 @@ class MenuItemsService implements IBaseService
 
     public function removeMenuItemAndSubmenuItemForMenuItemName($plugin)
     {
-
         $rootClass = $plugin['root_class'];
         try {
             $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
@@ -98,11 +97,11 @@ class MenuItemsService implements IBaseService
 
     public function update($model, $data)
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 
     public function delete($model)
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 }

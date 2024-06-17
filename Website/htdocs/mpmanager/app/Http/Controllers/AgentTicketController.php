@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\TrelloAPIException;
 use App\Http\Requests\CreateAgentTicketRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentService;
@@ -52,17 +51,17 @@ class AgentTicketController extends Controller
             'label',
             'title',
             'description',
-            'assignedId'
+            'assignedId',
         ]);
         $ownerId = $ticketData['owner_id'];
         $owner = $this->personService->getById($ownerId);
 
         if (!$owner) {
-            throw new TicketOwnerNotFoundException('Ticket owner with following id not found ' . $ownerId);
+            throw new TicketOwnerNotFoundException('Ticket owner with following id not found '.$ownerId);
         }
 
         $agent = $this->agentService->getByAuthenticatedUser();
-        //reformat due date if it is set
+        // reformat due date if it is set
         $dueDate = isset($ticketData['due_date']) ? date('Y-m-d H:i:00', strtotime($ticketData['due_date'])) : null;
         $categoryId = $ticketData['label'];
 
@@ -71,7 +70,7 @@ class AgentTicketController extends Controller
             'content' => $ticketData['description'],
             'due_date' => $dueDate === '1970-01-01' ? null : $dueDate,
             'category_id' => $categoryId,
-            'assigned_id' => $ticketData['assignedId'] ?? null
+            'assigned_id' => $ticketData['assignedId'] ?? null,
         ];
         $ticket = $this->ticketService->make($ticketData);
         $this->agentTicketService->setAssigned($ticket);

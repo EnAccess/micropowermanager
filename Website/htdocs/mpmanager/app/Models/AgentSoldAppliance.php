@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AgentSoldAppliance extends BaseModel

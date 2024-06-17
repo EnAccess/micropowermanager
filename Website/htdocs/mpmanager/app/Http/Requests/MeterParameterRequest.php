@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class MeterParameterRequest
- *
- * @package App\Http\Requests
+ * Class MeterParameterRequest.
  *
  * @bodyParam meter_id int required
  * @bodyParam tariff_id int required

@@ -3,17 +3,14 @@
 namespace App\Services;
 
 use App\Models\AgentCommission;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\This;
 
 class AgentCommissionService implements IBaseService
 {
     public function __construct(private AgentCommission $agentCommission)
     {
     }
-
 
     /**
      * @return Model|Builder
@@ -24,7 +21,7 @@ class AgentCommissionService implements IBaseService
     }
 
     /**
-     * @param  $agentCommission
+     * @param       $agentCommission
      * @param array $data
      */
     public function update($agentCommission, $agentCommissiondata)
@@ -50,6 +47,7 @@ class AgentCommissionService implements IBaseService
         if ($limit) {
             return $this->agentCommission->newQuery()->paginate($limit);
         }
+
         return $this->agentCommission->newQuery()->get();
     }
 }

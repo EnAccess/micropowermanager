@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class PVRequest extends FormRequest
 {
@@ -19,7 +18,7 @@ class PVRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-
+     *
      * @return array
      */
     public function rules()
@@ -28,7 +27,6 @@ class PVRequest extends FormRequest
             'mini_grid_id' => 'required|exists:shard.mini_grids,id',
             'node_id' => 'required',
             'device_id' => 'required',
-
         ];
     }
 }

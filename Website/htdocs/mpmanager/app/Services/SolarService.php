@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SolarService implements ISolarService
 {
@@ -21,16 +20,16 @@ class SolarService implements ISolarService
             'mini_grid_id' => request()->input('mini_grid_id'),
             'starting_time' => $solarData['starting_time'] ?? 0,
             'readings' => $solarData['readings'],
-            'average' => (int)$solarData['average'],
-            'min' => (int)($solarData['min'] ?? 0),
-            'max' => (int)($solarData['max'] ?? 0),
+            'average' => (int) $solarData['average'],
+            'min' => (int) ($solarData['min'] ?? 0),
+            'max' => (int) ($solarData['max'] ?? 0),
             'duration' => $solarData['duration'] ?? 0,
             'ending_time' => $solarData['ending_time'] ?? 0,
             'time_stamp' => request()->input('time_stamp'),
         ];
 
         /** @var Solar $solar */
-        $solar =  Solar::query()->create($solarRecord);
+        $solar = Solar::query()->create($solarRecord);
 
         return $solar;
     }
@@ -38,7 +37,7 @@ class SolarService implements ISolarService
     /**
      * @return Builder[]|Collection
      *
-     * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, Builder>
+     * @psalm-return Collection|array<array-key, Builder>
      */
     public function list(): Collection
     {
@@ -50,12 +49,13 @@ class SolarService implements ISolarService
     /**
      * @return Builder[]|Collection
      *
-     * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, Builder>
+     * @psalm-return Collection|array<array-key, Builder>
      */
     public function lisByMiniGrid(int $miniGridId): Collection
     {
         $solarReadings = $this->filter(Solar::query());
         $solarReadings->where('mini_grid_id', $miniGridId);
+
         return $solarReadings->get();
     }
 
@@ -66,7 +66,6 @@ class SolarService implements ISolarService
     {
         return Solar::query()->where('mini_grid_id', $miniGridId)->first();
     }
-
 
     private function filter(Builder $query): Builder
     {
@@ -90,6 +89,7 @@ class SolarService implements ISolarService
         if (request()->input('weather')) {
             $query->with('weatherData');
         }
+
         return $query;
     }
 }

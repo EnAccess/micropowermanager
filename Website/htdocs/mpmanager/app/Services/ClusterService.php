@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\City;
 use App\Models\Cluster;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -37,9 +36,9 @@ class ClusterService implements IBaseService
         $this->setClusterMeterCount($cluster, $meterCount);
         $this->setRevenue($cluster, $totalTransactionsAmount);
         $this->setPopulation($cluster, $populationCount);
+
         return $cluster;
     }
-
 
     public function getClusterCities($clusterId)
     {
@@ -73,7 +72,7 @@ class ClusterService implements IBaseService
 
     public function getById($clusterId): Cluster
     {
-        return $this->cluster->newQuery()->with(['miniGrids.location','cities'])->find($clusterId);
+        return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
     }
 
     public function create($clusterData)
@@ -86,6 +85,7 @@ class ClusterService implements IBaseService
         if ($limit !== null) {
             return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();
         }
+
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
 

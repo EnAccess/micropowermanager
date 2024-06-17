@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * Class AgentCommission
+ * Class AgentCommission.
  *
- * @package  App\Models
- * @property int $id
- * @property double $energy_commission
- * @property double $appliance_commission
- * @property double $risk_balance
+ * @property int   $id
+ * @property float $energy_commission
+ * @property float $appliance_commission
+ * @property float $risk_balance
  */
 class AgentCommission extends BaseModel
 {

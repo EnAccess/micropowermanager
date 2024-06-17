@@ -3,9 +3,9 @@
 namespace App\Listeners;
 
 use App\Models\Transaction\Transaction;
-use MPM\Transaction\Provider\TransactionAdapter;
 use Illuminate\Events\Dispatcher;
 use MPM\Transaction\Provider\ITransactionProvider;
+use MPM\Transaction\Provider\TransactionAdapter;
 
 class TransactionListener
 {

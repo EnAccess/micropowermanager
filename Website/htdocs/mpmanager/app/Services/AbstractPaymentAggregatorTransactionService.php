@@ -6,7 +6,6 @@ use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
-use App\Models\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
@@ -56,10 +55,9 @@ abstract class AbstractPaymentAggregatorTransactionService
         try {
             $this->payerPhoneNumber = $this->getTransactionSender($meterSerialNumber);
         } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
     }
-
 
     /**
      * @throws TransactionIsInvalidForProcessingIncomingRequestException
@@ -97,12 +95,12 @@ abstract class AbstractPaymentAggregatorTransactionService
 
         try {
             if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
-                throw new TransactionAmountNotEnoughException("Transaction amount is not enough");
+                throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {
             throw new TransactionAmountNotEnoughException($e->getMessage());
         } catch (\Exception $e) {
-            throw new TransactionIsInvalidForProcessingIncomingRequestException(("Invalid Transaction request."));
+            throw new TransactionIsInvalidForProcessingIncomingRequestException('Invalid Transaction request.');
         }
     }
 
@@ -126,6 +124,7 @@ abstract class AbstractPaymentAggregatorTransactionService
                         $q->where('owner_id', $personId);
                     }
                 )->where('is_primary', 1)->firstOrFail();
+
             return $address->phone;
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('No phone number record found by customer.');

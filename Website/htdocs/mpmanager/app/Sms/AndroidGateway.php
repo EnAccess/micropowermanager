@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 13.01.19
- * Time: 22:49
+ * Time: 22:49.
  */
 
 namespace App\Sms;
@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Log;
 class AndroidGateway implements ISmsProvider
 {
     /**
-     * Sends the sms to the sms provider
+     * Sends the sms to the sms provider.
      *
-     * @param string $number
-     * @param string $body
-     * @param string $callback
+     * @param string            $number
+     * @param string            $body
+     * @param string            $callback
      * @param SmsAndroidSetting $smsAndroidSettings
      */
     public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting)
@@ -32,7 +32,7 @@ class AndroidGateway implements ISmsProvider
             return;
         }
         try {
-            $callbackWithoutProtocolRoot = explode("micropowermanager.com/api/", $callback)[1];
+            $callbackWithoutProtocolRoot = explode('micropowermanager.com/api/', $callback)[1];
         } catch (\Exception $e) {
             Log::error(
                 'Error while sending sms',
@@ -42,7 +42,7 @@ class AndroidGateway implements ISmsProvider
             throw new \Exception('Error while sending sms');
         }
 
-        //add sms to sms_gateway job
+        // add sms to sms_gateway job
         SmsLoadBalancer::dispatch([
             'number' => $number,
             'message' => $body,

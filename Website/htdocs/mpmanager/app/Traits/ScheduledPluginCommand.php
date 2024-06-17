@@ -12,6 +12,6 @@ trait ScheduledPluginCommand
     {
         $plugin = Plugins::query()->where('mpm_plugin_id', $mpmPluginId)->first();
 
-        return ($plugin && $plugin->status === self::$ACTIVE);
+        return $plugin && $plugin->status === self::$ACTIVE;
     }
 }

@@ -20,6 +20,7 @@ class TargetService
     {
         /** @var Target $model */
         $model = $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
+
         return $model;
     }
 
@@ -30,7 +31,7 @@ class TargetService
             'target_date' => $period->format('Y-m-d'),
             'type' => $targetForType,
         ]);
-        if (!$targetOwner instanceof  Model) {
+        if (!$targetOwner instanceof Model) {
             throw new ValidationException('target owner should be a model');
         }
         $target->owner()->associate($targetOwner);

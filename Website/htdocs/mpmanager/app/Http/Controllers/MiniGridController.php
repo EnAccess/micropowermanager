@@ -21,11 +21,12 @@ class MiniGridController extends Controller
     }
 
     /**
-     * List
+     * List.
      *
      * @urlParam data_stream filters the list based on data_stream column
      *
      * @param Request $request
+     *
      * @return ApiResource
      */
     public function index(Request $request): ApiResource
@@ -37,12 +38,11 @@ class MiniGridController extends Controller
     }
 
     /**
-     * Detail
+     * Detail.
      *
      * @bodyParam id int required
      *
-     * @param int $id
-     *
+     * @param int     $id
      * @param Request $request
      *
      * @return ApiResource
@@ -51,7 +51,7 @@ class MiniGridController extends Controller
     {
         $relation = $request->get('relation');
 
-        if ((int)$relation === 1) {
+        if ((int) $relation === 1) {
             return ApiResource::make($this->miniGridService->getByIdWithLocation($miniGridId));
         } else {
             return ApiResource::make($this->miniGridService->getById($miniGridId));
@@ -72,19 +72,21 @@ class MiniGridController extends Controller
     }
 
     /**
-     * Update
+     * Update.
      *
      * @bodyParam name string The name of the MiniGrid.
      * @bodyParam data_stream int If the data_stream is enabled or not.
      *
-     * @param MiniGrid $miniGrid
+     * @param MiniGrid              $miniGrid
      * @param UpdateMiniGridRequest $request
+     *
      * @return ApiResource
      */
     public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource
     {
         $miniGrid = $this->miniGridService->getById($miniGridId);
         $this->miniGridService->update($miniGrid, $request->only(['name', 'data_stream']));
+
         return ApiResource::make($this->miniGridService->getById($miniGridId));
     }
 }

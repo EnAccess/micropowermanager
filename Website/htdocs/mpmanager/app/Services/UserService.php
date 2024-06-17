@@ -6,7 +6,6 @@ use App\Exceptions\MailNotSentException;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\PasswordGenerator;
 use App\Models\User;
-use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -39,6 +38,7 @@ class UserService
     public function update($user, $data)
     {
         $user->update(['password' => $data['password']]);
+
         return $user->fresh();
     }
 
@@ -46,7 +46,7 @@ class UserService
     {
         try {
             $newPassword = PasswordGenerator::generatePassword();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $newPassword = time();
         }
 
@@ -63,10 +63,11 @@ class UserService
                 $user->getEmail(),
                 'Your new Password | Micro Power Manager',
                 'templates.mail.forgot_password',
-                ["userName" => $user->getName(), 'password' => $newPassword]
+                ['userName' => $user->getName(), 'password' => $newPassword]
             );
         } catch (MailNotSentException $exception) {
             report($exception);
+
             return null;
         }
 

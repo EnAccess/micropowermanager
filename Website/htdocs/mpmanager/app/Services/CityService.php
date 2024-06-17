@@ -4,29 +4,22 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 2019-03-13
- * Time: 19:24
+ * Time: 19:24.
  */
 
 namespace App\Services;
 
 use App\Models\City;
-use App\Models\Cluster;
-use App\Models\MiniGrid;
-use App\Models\Person\Person;
-use App\Services\SessionService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 
 class CityService implements IBaseService
 {
     public function __construct(private City $city)
     {
     }
+
     public function getCityIdsByMiniGridId($miniGridId): array
     {
-        return
-            $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
+        return $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
     }
 
     public function getByIdWithRelation($cityId, $relation)
@@ -56,16 +49,18 @@ class CityService implements IBaseService
     {
         return $this->city->newQuery()->create($data);
     }
+
     public function getAll($limit = null)
     {
         if ($limit) {
             return $this->city->newQuery()->with('location')->paginate($limit);
         }
+
         return $this->city->newQuery()->with('location')->get();
     }
 
     public function delete($model)
     {
-        throw new \Exception("not implemented");
+        throw new \Exception('not implemented');
     }
 }

@@ -6,10 +6,10 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property bool $online
+ * @property int    $id
+ * @property bool   $online
  * @property string $phase
- * @property int $max_current
+ * @property int    $max_current
  */
 class MeterType extends BaseModel
 {

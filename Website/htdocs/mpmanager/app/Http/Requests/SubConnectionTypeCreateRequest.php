@@ -26,7 +26,7 @@ class SubConnectionTypeCreateRequest extends FormRequest
         return [
             'name' => 'required|min:3',
             'connection_type_id' => 'required|numeric',
-            'tariff_id' => 'required|numeric'
+            'tariff_id' => 'required|numeric',
         ];
     }
 }
