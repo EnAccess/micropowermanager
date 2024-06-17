@@ -32,6 +32,7 @@ class MiniGridDashboardCacheController extends Controller
         } else {
             $this->miniGridDashboardCacheDataService->setData();
         }
+
         return ['data' => $this->miniGridDashboardCacheDataService->getData()];
     }
 }

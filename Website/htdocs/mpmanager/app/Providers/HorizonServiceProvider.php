@@ -39,7 +39,6 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
                 return in_array(
                     $user->email,
                     [
-                    //
                     ]
                 );
             }

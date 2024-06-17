@@ -28,7 +28,7 @@ class MailSettingsRequest extends FormRequest
             'mail_port' => 'required|numeric',
             'mail_encryption' => 'required|min:3',
             'mail_username' => 'required|min:8|email',
-            'mail_password' => 'required|min:3'
+            'mail_password' => 'required|min:3',
         ];
     }
 }

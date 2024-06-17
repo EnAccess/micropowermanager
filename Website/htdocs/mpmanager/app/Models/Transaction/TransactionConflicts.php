@@ -6,9 +6,8 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Class TransactionConflicts
+ * Class TransactionConflicts.
  *
- * @package  App
  * @property int id
  * @property string state
  */

@@ -10,7 +10,6 @@ use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
 
 class PluginController extends Controller
 {
@@ -36,7 +35,7 @@ class PluginController extends Controller
         $tail = json_decode($registrationTail->tail, true);
         $pluginData = [
             'mpm_plugin_id' => $mpmPluginId,
-            'status' => $request->input('checked')
+            'status' => $request->input('checked'),
         ];
 
         if (!$plugin && !$request->input('checked')) {
@@ -73,6 +72,7 @@ class PluginController extends Controller
                 ['tail' => array_values($updatedTail)]
             );
         }
+
         return ApiResource::make($updatedPlugin);
     }
 }

@@ -3,15 +3,12 @@
 namespace App\Models;
 
 use App\Models\Meter\MeterParameter;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class ConnectionType
- *
- * @package App\Models
+ * Class ConnectionType.
  *
  * @property string $name
  */

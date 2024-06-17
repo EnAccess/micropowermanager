@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class CreateUserRequest
- *
- * @package App\Http\Requests
+ * Class CreateUserRequest.
  */
 class CreateAgentRequest extends FormRequest
 {
@@ -30,13 +27,12 @@ class CreateAgentRequest extends FormRequest
     public function rules()
     {
         return [
-
             'email' => 'required',
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
             'password' => 'required|min:6',
             'city_id' => 'required',
-            'agent_commission_id' => 'required'
+            'agent_commission_id' => 'required',
         ];
     }
 }

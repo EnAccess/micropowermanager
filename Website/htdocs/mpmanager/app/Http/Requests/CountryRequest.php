@@ -25,7 +25,7 @@ class CountryRequest extends FormRequest
     {
         return [
             'country_name' => 'required',
-            'country_code' => 'required|min:2'
+            'country_code' => 'required|min:2',
         ];
     }
 }

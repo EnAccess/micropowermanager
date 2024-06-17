@@ -9,6 +9,7 @@ class CityGeographicalInformationService implements IAssignationService
 {
     private City $city;
     private GeographicalInformation $geographicInformation;
+
     public function setAssigned($assigned)
     {
         $this->geographicInformation = $assigned;
@@ -22,6 +23,7 @@ class CityGeographicalInformationService implements IAssignationService
     public function assign()
     {
         $this->geographicInformation->owner()->associate($this->city);
+
         return $this->geographicInformation;
     }
 }

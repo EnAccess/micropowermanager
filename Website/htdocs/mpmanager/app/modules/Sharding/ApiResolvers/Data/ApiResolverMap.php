@@ -20,7 +20,7 @@ class ApiResolverMap
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
     public const ANDROID_GATEWAY_CALLBACK_API = 'api/sms-android-callback';
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
-    public const  JETSON_API = 'api/jetson';
+    public const JETSON_API = 'api/jetson';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
     public const RESOLVABLE_APIS = [
@@ -31,7 +31,7 @@ class ApiResolverMap
         self::SWIFTA_PAYMENT_API,
         self::JETSON_API,
         self::REPORT_DOWNLOADING_API,
-        self::DATA_EXPORTING_API
+        self::DATA_EXPORTING_API,
     ];
 
     private const API_RESOLVER = [
@@ -42,9 +42,8 @@ class ApiResolverMap
         self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class,
         self::JETSON_API => JetsonApiResolver::class,
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
-        self::DATA_EXPORTING_API => DataExportResolver::class
+        self::DATA_EXPORTING_API => DataExportResolver::class,
     ];
-
 
     public function getResolvableApis(): array
     {

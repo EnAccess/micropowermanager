@@ -23,15 +23,16 @@ class MaintenanceUserController extends Controller
     ) {
     }
 
-
     public function index(): ApiResource
     {
         $maintenance_user_list = $this->maintenanceUsers::with('person')->get();
+
         return new ApiResource($maintenance_user_list);
     }
 
     /**
      * @param MaintenanceRequest $request
+     *
      * @return JsonResponse
      */
     public function store(MaintenanceRequest $request): JsonResponse

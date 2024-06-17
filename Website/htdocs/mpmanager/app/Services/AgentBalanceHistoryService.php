@@ -2,18 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Agent;
-use App\Models\AgentAssignedAppliances;
 use App\Models\AgentBalanceHistory;
-use App\Models\AgentCharge;
-use App\Models\AgentCommission;
-use App\Models\AgentReceipt;
-use App\Models\Transaction\AgentTransaction;
-use DateTime;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\This;
 
 class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
@@ -36,7 +26,8 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         if ($limit) {
             return $query->latest()->paginate($limit);
         }
-        return  $query->latest()->get();
+
+        return $query->latest()->get();
     }
 
     public function create($agentBalanceHistoryData)
@@ -83,6 +74,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
                 ->get()
                 ->avg('amount');
         }
+
         return -1 * $averageTransactionAmounts;
     }
 
@@ -91,23 +83,23 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         $periodDate = $lastReceiptDate;
         $period = $this->getPeriod($agent, $periodDate);
         $history = $this->agentBalanceHistory->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,' .
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as date,id,trigger_Type,amount,'.
                 'available_balance,due_to_supplier')
             ->where('agent_id', $agent->id)
             ->where('created_at', '>=', $periodDate)
             ->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
-                ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\'),date,id,trigger_Type,amount,' .
+                ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\'),date,id,trigger_Type,amount,'.
                     'available_balance,due_to_supplier'))->get();
 
         if (count($history) === 1 && $history[0]->trigger_Type === 'agent_receipt') {
             $period[$history[0]->date]['balance'] = -1 * ($history[0]->due_to_supplier - $history[0]->amount);
             $period[$history[0]->date]['due'] = $history[0]->due_to_supplier - $history[0]->amount;
         } elseif (count($history) === 0) {
-            $date = new DateTime();
+            $date = new \DateTime();
             $key = $date->format('Y-m-d');
             $period[$key] = [
                 'balance' => 0,
-                'due' => 0
+                'due' => 0,
             ];
 
             return $period;
@@ -138,6 +130,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
                 }
             }
         }
+
         return $period;
     }
 
@@ -152,20 +145,21 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
             )->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
                 ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
-        $period = array();
+        $period = [];
         foreach ($days as $key => $item) {
             $period[$item->day] = [
                 'balance' => 0,
-                'due' => 0
+                'due' => 0,
             ];
         }
+
         return $period;
     }
 
     public function getAgentRevenuesWeekly($agent): array
     {
-        $startDate = date("Y-m-d", strtotime("-3 months"));
-        $endDate = date("Y-m-d");
+        $startDate = date('Y-m-d', strtotime('-3 months'));
+        $endDate = date('Y-m-d');
         $Revenues = $this->agentBalanceHistory->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%u\') as period, SUM(amount) as revenue')
             ->where('trigger_type', 'agent_commission')
@@ -178,6 +172,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         foreach ($Revenues as $rIndex => $revenue) {
             $p[$revenue->period]['revenue'] = $revenue->revenue;
         }
+
         return $p;
     }
 

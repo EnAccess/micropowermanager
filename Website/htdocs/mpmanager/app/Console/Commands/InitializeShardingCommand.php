@@ -4,13 +4,11 @@ namespace App\Console\Commands;
 
 use Database\Seeders\ShardingDatabaseSeeder;
 use Illuminate\Console\Command;
-use PDO;
 
 class InitializeShardingCommand extends Command
 {
     protected $signature = 'sharding:initialize';
     protected $description = 'Creates all necessity sharding tables and do the migrations';
-
 
     public function handle()
     {

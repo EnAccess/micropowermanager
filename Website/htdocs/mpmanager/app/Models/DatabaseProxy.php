@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Dflydev\DotAccessData\Data;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property  int $fk_company_id
+ * @property int $fk_company_id
  */
 class DatabaseProxy extends MasterModel
 {
@@ -35,13 +33,14 @@ class DatabaseProxy extends MasterModel
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
             ->where(self::COL_EMAIL, '=', $email)
             ->firstOrFail();
+
         return $result;
     }
 
     public function findByCompanyId(int $companyId): DatabaseProxy
     {
         /** @var DatabaseProxy $result */
-        $result =  $this->buildQuery($companyId)
+        $result = $this->buildQuery($companyId)
             ->select(CompanyDatabase::COL_DATABASE_NAME)
             ->firstOrFail();
 

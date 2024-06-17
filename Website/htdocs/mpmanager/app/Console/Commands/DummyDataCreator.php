@@ -9,7 +9,9 @@ use App\Models\Meter\MeterToken;
 use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
+use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -23,8 +25,6 @@ use Inensus\Ticket\Models\TicketOutsource;
 use Inensus\Ticket\Models\TicketUser;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\VodacomTransaction;
 
 class DummyDataCreator extends AbstractSharedCommand
 {
@@ -37,7 +37,7 @@ class DummyDataCreator extends AbstractSharedCommand
         WaveMoneyTransaction::class,
         AgentTransaction::class,
         VodacomTransaction::class,
-        AirtelTransaction::class
+        AirtelTransaction::class,
     ];
 
     public function __construct(
@@ -71,10 +71,11 @@ class DummyDataCreator extends AbstractSharedCommand
 
         if (config('app.env') == 'production') {
             echo 'production mode is not allowed to create fake transactions';
+
             return;
         }
 
-        for ($i = 1; $i <= $amount; $i++) {
+        for ($i = 1; $i <= $amount; ++$i) {
             echo "$type is generating number: $i  \n";
             try {
                 DB::connection('shard')->beginTransaction();
@@ -94,25 +95,28 @@ class DummyDataCreator extends AbstractSharedCommand
     private function generateTransaction(): void
     {
         try {
-            //get randomly a user
+            // get randomly a user
             $randomMeter = $this->meter::inRandomOrder()->with([
                 'device',
                 'tariff'
             ])->limit(1)->firstOrFail();
         } catch (ModelNotFoundException $x) {
             echo 'failed to find a random meter';
+
             return;
         } catch (\Exception $x) {
             echo 'boom';
+
             return;
         }
 
-        $dummyDate = date('Y-m-d', strtotime('-' . mt_rand(0, 30) . ' days'));
+        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
 
         try {
             $meterOwnerPhoneNumber = $randomMeter->device->person->addresses()->firstOrFail();
         } catch (\Exception $x) {
             echo 'failed to get meter owner address';
+
             return;
         }
 
@@ -231,7 +235,7 @@ class DummyDataCreator extends AbstractSharedCommand
         $transaction->save();
 
         try {
-            //create an object for the token job
+            // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
             event('transaction.failed', [$this->transaction, $e->getMessage()]);
@@ -294,7 +298,7 @@ class DummyDataCreator extends AbstractSharedCommand
         $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = $this->user->inRandomOrder()->first();
-        $dummyDate = date('Y-m-d', strtotime('-' . mt_rand(0, 30) . ' days'));
+        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
         $ticketUser = $this->ticketUser->inRandomOrder()->first();
         $randomMaintenanceUser = $this->maintenanceUsers->inRandomOrder()->first();
         $randomPerson = $this->person->inRandomOrder()->where('is_customer', 1)->first();
@@ -341,12 +345,12 @@ class DummyDataCreator extends AbstractSharedCommand
     private function generateFakeSentence($minWords = 5, $maxWords = 15)
     {
         $loremIpsum =
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-        $words = explode(" ", $loremIpsum);
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+        $words = explode(' ', $loremIpsum);
         $numWords = rand($minWords, $maxWords);
 
         shuffle($words);
-        $fakeSentence = implode(" ", array_slice($words, 0, $numWords));
+        $fakeSentence = implode(' ', array_slice($words, 0, $numWords));
 
         // Capitalize the first letter of the sentence.
         $fakeSentence = ucfirst($fakeSentence);

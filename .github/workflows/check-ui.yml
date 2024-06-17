@@ -61,7 +61,7 @@ jobs:
         with:
           node-version: 16.10.0
 
-      - name: Check i18n JSON's
+      - name: Check i18n JSON's sorting
         # We check if JSON are sorted alphabetically
         # Too sort a translation JSON you can run
         # > cat lang.json | jq -S . > tmp.json && mv tmp.json lang.json
@@ -82,6 +82,36 @@ jobs:
               exit 1
           else
               echo "All JSON files are valid and keys are sorted"
+          fi
+
+      - name: Check i18n JSON's length
+        # We check if all JSON have the same number of rows
+        working-directory: ./Website/ui/src/assets/locales
+        run: |
+          # Flag to track if any file fails the check
+          failed=0
+
+          # Define the reference file
+          reference_file="en.json"
+
+          # Get the number of lines in the reference file
+          line_count=$(wc -l < "$reference_file")
+
+          # Loop through all JSON files and compare line counts
+          for file in ./*.json; do
+              if [ "$file" != "$reference_file" ]; then
+                  current_line_count=$(wc -l < "$file")
+                  if [ "$current_line_count" -ne "$line_count" ]; then
+                      echo "Line count mismatch in file: $file"
+                      failed=1
+                  fi
+              fi
+          done
+
+          if [ $failed -eq 1 ]; then
+              exit 1
+          else
+              echo "All JSON files in the current directory have the same number of lines."
           fi
 
   build-production:

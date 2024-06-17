@@ -13,7 +13,6 @@ class ClusterPopulationService
 
     public function getById($clusterId, $onlyCustomers = true): int
     {
-
         if ($onlyCustomers) {
             $population = $this->person->newQuery()
                 ->where('is_customer', 1)

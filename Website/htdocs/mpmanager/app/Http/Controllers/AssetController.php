@@ -28,13 +28,14 @@ class AssetController extends Controller
     public function store(CreateAssetRequest $request): ApiResource
     {
         $this->assetService->createAsset($request);
+
         return ApiResource::make($this->assetService->getAssets($request));
     }
-
 
     public function update(UpdateAssetRequest $request, Asset $asset): ApiResource
     {
         $this->assetService->updateAsset($request, $asset);
+
         return ApiResource::make($this->assetService->getAssets($request));
     }
 

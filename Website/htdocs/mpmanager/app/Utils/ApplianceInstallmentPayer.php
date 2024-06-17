@@ -18,7 +18,7 @@ class ApplianceInstallmentPayer
     private Person $customer;
     private Transaction $transaction;
     public array $paidRates = [];
-    public AssetPerson|null $shsLoan = null;
+    public ?AssetPerson $shsLoan = null;
     public $consumableAmount;
 
     public function __construct(
@@ -36,7 +36,7 @@ class ApplianceInstallmentPayer
         $this->customer = $this->getCustomerByDeviceSerial($this->transaction->message);
     }
 
-    //This function pays the installments for the device number that provided in transaction
+    // This function pays the installments for the device number that provided in transaction
     public function payInstallmentsForDevice(TransactionDataContainer $container)
     {
         $customer = $container->appliancePerson->person;
@@ -44,7 +44,6 @@ class ApplianceInstallmentPayer
         $installments = $container->appliancePerson->rates;
         $this->pay($installments, $customer);
     }
-
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
@@ -85,7 +84,6 @@ class ApplianceInstallmentPayer
             throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
         }
 
-
         return $device->person;
     }
 
@@ -100,7 +98,7 @@ class ApplianceInstallmentPayer
     {
         $installments->map(function ($installment) use ($customer) {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                //add payment history for the installment
+                // add payment history for the installment
                 event('payment.successful', [
                     'amount' => $this->transaction->amount,
                     'paymentService' => $this->transaction->original_transaction_type,
@@ -122,7 +120,7 @@ class ApplianceInstallmentPayer
 
                 return false;
             } else {
-                //add payment history for the loan
+                // add payment history for the loan
                 event('payment.successful', [
                     'amount' => $installment->remaining,
                     'paymentService' => $this->transaction->original_transaction_type,

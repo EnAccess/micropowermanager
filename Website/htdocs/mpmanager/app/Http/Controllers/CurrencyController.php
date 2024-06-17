@@ -11,6 +11,7 @@ class CurrencyController extends Controller
     {
         $currency = Storage::disk('local')->get('currency.json');
         $currency = json_decode($currency, true);
+
         return new ApiResource($currency);
     }
 }

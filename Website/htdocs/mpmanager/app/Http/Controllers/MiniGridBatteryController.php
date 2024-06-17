@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\MiniGridBatteryService;
-use App\Services\MiniGridService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MiniGridBatteryController extends Controller
@@ -15,13 +13,14 @@ class MiniGridBatteryController extends Controller
     }
 
     /**
-     * Battery details for Mini-Grid
+     * Battery details for Mini-Grid.
      *
      * @urlParam miniGridId int required
      * @urlParam limit int Default 50
      *
-     * @param  Request $request
-     * @param  $id
+     * @param Request $request
+     * @param         $id
+     *
      * @return ApiResource
      */
     public function show($miniGridId, Request $request): ApiResource

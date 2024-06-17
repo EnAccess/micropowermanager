@@ -29,13 +29,11 @@ class RestrictionController extends Controller
         $this->httpClient = $httpClient;
     }
 
-
     /**
      * @return Response
      */
     public function store(Request $request, Response $response): Response
     {
-
         $productId = $request->input('product_id');
         $token = $request->input('token');
         $type = $request->input('type');
@@ -51,8 +49,8 @@ class RestrictionController extends Controller
                         'token' => $token,
                     ],
                     'headers' => [
-                        'mpm-secret' => '22]Qq&e5[2FYu\'t{'
-                    ]
+                        'mpm-secret' => '22]Qq&e5[2FYu\'t{',
+                    ],
                 ]
             );
 
@@ -62,16 +60,18 @@ class RestrictionController extends Controller
         } catch (RequestException $e) {
             if (
                 $e->getResponse()->getStatusCode() === 400
-                && (string)$e->getResponse()->getBody() === 'Invalid code.'
+                && (string) $e->getResponse()->getBody() === 'Invalid code.'
             ) {
                 $response->setContent('Invalid token');
             }
+
             return $response->setStatusCode(409);
         } catch (GuzzleException $e) {
             Log::critical(
                 'Token validation failed ',
                 ['purchase_token' => $token, 'id' => '896789ghjk79gjklig6778tf']
             );
+
             return $response->setStatusCode(409);
         }
 
@@ -86,28 +86,31 @@ class RestrictionController extends Controller
                 'Unknown type of purchase ',
                 ['purchase_token' => $token, 'id' => '43edui4ed09rdkceqw0s289']
             );
+
             return $response->setStatusCode(409);
         }
 
         try {
             $this->updateRestriction($target, $toAdd);
+
             return $response->setStatusCode(201);
         } catch (PurchaseNotProcessable $e) {
             Log::critical(
                 'Purchase is not processable',
                 ['purchase_token' => $token, 'id' => '48fkj24ofdhjkl4fhlsqjkl']
             );
+
             return $response->setStatusCode(409);
         }
     }
 
     /**
-     * @param $target
+     * @param     $target
      * @param int $toAdd
      *
      * @return void
-     * @throws PurchaseNotProcessable
      *
+     * @throws PurchaseNotProcessable
      */
     private function updateRestriction(string $target, int $toAdd = 1): void
     {

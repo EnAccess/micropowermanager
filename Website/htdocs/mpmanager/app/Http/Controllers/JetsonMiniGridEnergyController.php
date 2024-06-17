@@ -7,9 +7,7 @@ use App\Http\Requests\StoreEnergyRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Energy;
 use App\Services\MiniGridEnergyService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class JetsonMiniGridEnergyController extends Controller
 {
@@ -64,12 +62,12 @@ class JetsonMiniGridEnergyController extends Controller
             $totalAbsorbedEnergyUnit = '';
             foreach ($meter['values'] as $value) {
                 if ($value['name'] === 'Total yield') {
-                    //get rid of thousand separator
-                    $totalEnergy = str_replace(array('.', ','), array('', '.'), $value['value']);
+                    // get rid of thousand separator
+                    $totalEnergy = str_replace(['.', ','], ['', '.'], $value['value']);
                     break;
                 }
                 if ($value['name'] === 'Absorbed energy') {
-                    $totalAbsorbedEnergy = str_replace(array('.', ','), array('', '.'), $value['value']);
+                    $totalAbsorbedEnergy = str_replace(['.', ','], ['', '.'], $value['value']);
                     $totalAbsorbedEnergyUnit = $value['unit'];
                 }
             }
@@ -91,7 +89,7 @@ class JetsonMiniGridEnergyController extends Controller
                 PowerConverter::convert($lastTotalAbsorbed, $lastTotalAbsorbedUnit, 'Wh');
             Energy::query()->create(
                 [
-                    'meter_id' => $meter["id"],
+                    'meter_id' => $meter['id'],
                     'active' => 1,
                     'mini_grid_id' => $request->input('mini_grid_id'),
                     'node_id' => $request->input('node_id'),
@@ -103,10 +101,10 @@ class JetsonMiniGridEnergyController extends Controller
                     'total_absorbed_unit' => $totalAbsorbedEnergyUnit,
                     'absorbed_energy_since_last' => $absorbedEnergySinceLastInput,
                     'absorbed_energy_since_last_unit' => 'Wh',
-
                 ]
             );
         }
+
         return new ApiResource(['result' => 'success']);
     }
 }

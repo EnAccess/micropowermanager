@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 02.07.18
- * Time: 10:57
+ * Time: 10:57.
  */
 
 namespace App\PaymentHandler;
@@ -27,7 +27,6 @@ class AccessRate
      */
     private $meterParameter;
 
-
     /**
      * AccessRatePayment constructor.
      *
@@ -37,20 +36,22 @@ class AccessRate
     {
     }
 
-
     /**
      * @param MeterParameter $meterParameter
+     *
      * @return AccessRate
+     *
      * @throws NoAccessRateFound
      */
     public static function withMeterParameters(MeterParameter $meterParameter): AccessRate
     {
         if ($meterParameter->tariffAccessRate() === null) {
-            throw new NoAccessRateFound('Tariff  ' . $meterParameter->tariff()->first()->name . ' has no access rate');
+            throw new NoAccessRateFound('Tariff  '.$meterParameter->tariff()->first()->name.' has no access rate');
         }
         $accessRate = new self();
         $accessRate->accessRate = $meterParameter->tariffAccessRate();
         $accessRate->setMeterParameter($meterParameter);
+
         return $accessRate;
     }
 
@@ -59,36 +60,31 @@ class AccessRate
         $this->meterParameter = $meterParameter;
     }
 
-
     /**
      * @return AccessRatePayment
+     *
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment
     {
         if ($this->accessRate === null || $this->meterParameter === null) {
-            throw new NoAccessRateFound(
-                sprintf(
-                    '%s %s',
-                    $this->accessRate === null ? 'Access Rate is not set' : '',
-                    $this->meterParameter === null ? 'Meter Parameter is not set' : ''
-                )
-            );
+            throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meterParameter === null ? 'Meter Parameter is not set' : ''));
         }
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period)->toDateString();
-        //create accessRatePayment instance and fill with the variables
+        // create accessRatePayment instance and fill with the variables
         $accessRatePayment = new AccessRatePayment();
         $accessRatePayment->accessRate()->associate($this->accessRate);
         $accessRatePayment->meter()->associate($this->meterParameter->meter()->first());
         $accessRatePayment->due_date = $nextPaymentDate;
         $accessRatePayment->debt = 0;
+
         return $accessRatePayment;
     }
 
-
     /**
      * @return int
+     *
      * @throws NoAccessRateFound
      */
     private function getDebt(Meter $meter): int
@@ -103,21 +99,23 @@ class AccessRate
 
     /**
      * @param TransactionDataContainer $transactionData
+     *
      * @return int
+     *
      * @deprecated
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer
     {
         $nonStaticGateway = new self();
-        //get accessRatePayment
+        // get accessRatePayment
         $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
         try {
             $debt_amount = $nonStaticGateway->getDebt($transactionData->meter);
-        } catch (NoAccessRateFound $e) { //no access rate found
+        } catch (NoAccessRateFound $e) { // no access rate found
             return $transactionData;
         }
 
-        if ($debt_amount > 0) { //there is unpaid amount
+        if ($debt_amount > 0) { // there is unpaid amount
             $satisfied = true;
             if ($debt_amount > $transactionData->transaction->amount) {
                 $debt_amount = $transactionData->transaction->amount;
@@ -128,7 +126,7 @@ class AccessRate
             }
             $nonStaticGateway->updatePayment($accessRatePayment, $debt_amount, $satisfied);
             $transactionData->accessRateDebt = $debt_amount;
-            //add payment history for the client
+            // add payment history for the client
             event(
                 'payment.successful',
                 [
@@ -142,9 +140,9 @@ class AccessRate
                 ]
             );
         }
+
         return $transactionData;
     }
-
 
     public function updatePayment($accessRatePayment, int $paidAmount, bool $satisfied = false): void
     {

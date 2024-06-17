@@ -22,6 +22,7 @@ class SmsAndroidSetting extends BaseModel
             } catch (ModelNotFoundException $e) {
                 $responsibleGateway = $smsAndroidSettings[0];
             }
+
             return $responsibleGateway;
         } else {
             throw new SmsAndroidSettingNotExistingException('No SMS android setting registered.');

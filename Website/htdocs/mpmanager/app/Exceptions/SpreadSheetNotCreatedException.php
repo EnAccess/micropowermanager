@@ -2,8 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class SpreadSheetNotCreatedException extends Exception
+class SpreadSheetNotCreatedException extends \Exception
 {
 }

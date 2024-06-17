@@ -8,8 +8,6 @@ use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Services\IAssociative;
 use App\Services\IBaseService;
-use DateInterval;
-use DateTime;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -49,8 +47,7 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
             '*',
-            static fn ($q) =>
-            $q->where('status', $status)
+            static fn ($q) => $q->where('status', $status)
         )
             ->whereIn('id', $transactionIds)
             ->count();
@@ -58,12 +55,11 @@ class TransactionService implements IAssociative, IBaseService
 
     private function getPercentage(int $base, int $wanted, bool $baseShouldGreater = true): float
     {
-
         if ($base === 0 || $wanted === 0) {
             return 0;
         }
 
-        $percentage = (float)$wanted * self::PERCENTAGE_DIVIDER / (float)$base;
+        $percentage = (float) $wanted * self::PERCENTAGE_DIVIDER / (float) $base;
 
         if ($baseShouldGreater) {
             return round(100 - $percentage, 2);
@@ -91,56 +87,56 @@ class TransactionService implements IAssociative, IBaseService
         $comparisonPeriod = null;
         switch ($period) {
             case self::YESTERDAY:
-                $duration = new DateInterval('P1D');
+                $duration = new \DateInterval('P1D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new DateTime())->format('Y-m-d 00:00:00'),
-                        'ends' => (new DateTime())->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
             case self::SAME_DAY_LAST_WEEK:
-                $duration = new DateInterval('P7D');
+                $duration = new \DateInterval('P7D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new DateTime())->format('Y-m-d 00:00:00'),
-                        'ends' => (new DateTime())->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
             case self::LAST_SEVEN_DAYS:
-                $currentDuration = new DateInterval('P7D');
-                $lastDuration = new DateInterval('P14D');
+                $currentDuration = new \DateInterval('P7D');
+                $lastDuration = new \DateInterval('P14D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new DateTime())->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new DateTime())->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new DateTime())->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;
             case self::LAST_THIRTY_DAYS:
-                $currentDuration = new DateInterval('P30D');
-                $lastDuration = new DateInterval('P60D');
+                $currentDuration = new \DateInterval('P30D');
+                $lastDuration = new \DateInterval('P60D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new DateTime())->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new DateTime())->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new DateTime())->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;
@@ -151,7 +147,6 @@ class TransactionService implements IAssociative, IBaseService
 
     public function getByComparisonPeriod(array $comparisonPeriod): array
     {
-
         $currentTransactions = $this->transaction->newQuery()->whereBetween(
             'created_at',
             [
@@ -168,6 +163,7 @@ class TransactionService implements IAssociative, IBaseService
             ]
         )
             ->pluck('id');
+
         return [
             'current' => $currentTransactions,
             'past' => $pastTransactions,
@@ -176,7 +172,6 @@ class TransactionService implements IAssociative, IBaseService
 
     public function getAnalysis($transactionIds): ?array
     {
-
         if (count($transactionIds) === 0) {
             return null;
         }
@@ -189,7 +184,6 @@ class TransactionService implements IAssociative, IBaseService
         $confirmation = $this->getTransactionCountByStatus($transactionIds, true);
         // The number of cancelled transactions
         $cancellation = $this->getTransactionCountByStatus($transactionIds, false);
-
 
         $cancellationPercentage = $cancellation * self::PERCENTAGE_DIVIDER / $total;
         $confirmationPercentage = $confirmation * self::PERCENTAGE_DIVIDER / $total;
@@ -228,6 +222,7 @@ class TransactionService implements IAssociative, IBaseService
             2
         );
         $amountPercentage = $this->getPercentage($pastTransactions['amount'], $currentTransactions['amount'], false);
+
         return [
             'totalPercentage' => [
                 'percentage' => $totalPercentage,
@@ -266,7 +261,7 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])->find($id);
+            'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
     }
 
     public function getAll($limit = null): Collection|LengthAwarePaginator
@@ -274,6 +269,7 @@ class TransactionService implements IAssociative, IBaseService
         if ($limit) {
             return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
         }
+
         return $this->transaction->newQuery()->latest()->get();
     }
 

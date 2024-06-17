@@ -43,8 +43,9 @@ class AssetPersonController extends Controller
      * Store a newly created resource in storage.
      *
      * @param AssetType $assetType
-     * @param Person $person
-     * @param Request $request
+     * @param Person    $person
+     * @param Request   $request
+     *
      * @return ApiResource
      */
     public function store(
@@ -56,9 +57,9 @@ class AssetPersonController extends Controller
             $userId = $request->input('user_id');
             $applianceId = $request->input('id');
             $personId = $request->input('person_id');
-            $cost = (double)$request->input('cost');
-            $installmentCount = (int)$request->input('rate');
-            $downPayment = (double)$request->input('down_payment');
+            $cost = (float) $request->input('cost');
+            $installmentCount = (int) $request->input('rate');
+            $downPayment = (float) $request->input('down_payment');
             $deviceSerial = $request->input('device_serial');
             $addressData = $request->input('address');
             $user = $this->userService->getById($userId);
@@ -141,8 +142,9 @@ class AssetPersonController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Person $person
+     * @param Person  $person
      * @param Request $request
+     *
      * @return ApiResource
      */
     public function index(Person $person, Request $request): ApiResource
@@ -150,6 +152,7 @@ class AssetPersonController extends Controller
         $assets = $this->assetPerson::with('asset.assetType', 'rates.logs', 'logs.owner')
             ->where('person_id', $person->id)
             ->get();
+
         return ApiResource::make($assets);
     }
 

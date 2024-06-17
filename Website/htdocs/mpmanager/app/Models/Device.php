@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -14,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Device extends BaseModel
 {
     public const RELATION_NAME = 'device';
+
     public function device(): MorphTo
     {
         return $this->morphTo();
@@ -23,7 +22,6 @@ class Device extends BaseModel
     {
         return $this->belongsTo(Person::class);
     }
-
 
     public function address(): MorphOne
     {

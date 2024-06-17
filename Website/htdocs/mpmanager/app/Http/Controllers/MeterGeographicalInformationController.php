@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Services\CityService;
 use App\Models\Meter\Meter;
+use App\Services\CityService;
 use App\Services\MeterGeographicalInformationService;
 use App\Services\MeterService;
 use App\Services\PersonMeterService;
@@ -20,7 +20,6 @@ class MeterGeographicalInformationController extends Controller
     ) {
     }
 
-
     /**
      * List with geo and access rate
      * A list of meters with their positions and access rate payments
@@ -28,7 +27,8 @@ class MeterGeographicalInformationController extends Controller
      *
      * @urlParam mini_grid_id
      *
-     * @return       ApiResource
+     * @return ApiResource
+     *
      * @responseFile responses/meters/meters.geo.list.json
      */
     public function index($miniGridId): ApiResource
@@ -41,7 +41,7 @@ class MeterGeographicalInformationController extends Controller
             $meters = $this->meterService->getUsedMetersGeoWithAccessRatePaymentsInCities($cityIds);
         }
 
-        return  ApiResource::make($meters);
+        return ApiResource::make($meters);
     }
 
     /**
@@ -52,27 +52,30 @@ class MeterGeographicalInformationController extends Controller
      *   - Meter coordinates
      * A list of meters which belong to that given person
      * The list is wether sorted or paginated
+     *
      * @urlParam person required The ID of the person
+     *
      * @param int $person
-     * @return   ApiResource
+     *
+     * @return ApiResource
      *
      * @responseFile responses/people/person.meter.list.json
      */
     public function show(int $personId): ApiResource
     {
-        return  ApiResource::make($this->personMeterService->getPersonMetersGeographicalInformation($personId));
+        return ApiResource::make($this->personMeterService->getPersonMetersGeographicalInformation($personId));
     }
-
 
     /**
      * Update
-     * Updates the geo coordinates of the meter
+     * Updates the geo coordinates of the meter.
      *
      * @urlParam  meter int
+     *
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
      *
      * @param Request $request
-     * @param Meter $meter
+     * @param Meter   $meter
      */
     public function update(Request $request): ApiResource
     {
