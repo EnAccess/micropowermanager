@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         // customisation
         'no_superfluous_phpdoc_tags' => false,
+        'yoda_style' => false,
         // disabled for editor integration
         'no_unused_imports' => false,
     ])

@@ -14,6 +14,7 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         // customisation
         'no_superfluous_phpdoc_tags' => false,
+        'yoda_style' => false,
     ])
     ->setFinder($finder)
 ;
