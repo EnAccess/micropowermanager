@@ -1,5 +1,10 @@
 <?php
 
+// The is the main file that governs the PHP code style for this project.
+
+// When updating this file, please make sure to also update the
+// convienience copy for easier editor integration at the root of the repository.
+
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
 ;
@@ -7,10 +12,6 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
-        // Keeping consistency fow now.
-        // Later change to:
-        // '@PER-CS' => true,
-        // '@PHP82Migration' => true,
     ])
     ->setFinder($finder)
 ;
