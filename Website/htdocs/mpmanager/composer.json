@@ -43,7 +43,7 @@
     "roave/security-advisories": "dev-latest",
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-web-tinker": "^1.7",
-    "vimeo/psalm": "^4.4"
+    "vimeo/psalm": "^5.24"
   },
   "config": {
     "optimize-autoloader": true,
@@ -102,6 +102,7 @@
     "lint": "find . -name \\*.php -not -path './lib/composer/*' -not -path './vendor/*' -not -path './build/.phan/*' -exec php -l \"{}\" \\;",
     "php-cs-fixer-fix": "php-cs-fixer fix --diff app/",
     "php-cs-fixer-check": "php-cs-fixer check --diff app/",
-    "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/"
+    "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/",
+    "psalm-check": "psalm app/"
   }
 }
