@@ -40,11 +40,11 @@ class PersonService implements IBaseService
 
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn($q) => $q->orderBy('is_primary')->with('city', fn($q) => $q->whereHas('location'))
+                'addresses' => fn ($q) => $q->orderBy('is_primary')->with('city', fn ($q) => $q->whereHas('location'))
                     ->get(),
                 'citizenship',
                 'roleOwner.definitions',
-                'devices' => fn($q) => $q->whereHas('address')->with('address.geo'),
+                'devices' => fn ($q) => $q->whereHas('address')->with('address.geo'),
             ]
         )->find($personID);
     }
@@ -61,10 +61,10 @@ class PersonService implements IBaseService
     {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+            fn ($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
         )->orWhereHas(
             'devices',
-            fn($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
+            fn ($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
         )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%');
 
@@ -97,7 +97,7 @@ class PersonService implements IBaseService
     {
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn($q) => $q->where('is_primary', '=', 1),
+                'addresses' => fn ($q) => $q->where('is_primary', '=', 1),
                 'addresses.city',
                 'citizenship',
                 'roleOwner.definitions',
@@ -201,7 +201,7 @@ class PersonService implements IBaseService
 
     public function getByPhoneNumber($phoneNumber): ?Person
     {
-        return $this->person->newQuery()->whereHas('addresses', fn($q) => $q->where('phone', $phoneNumber))
+        return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
     }
 }

@@ -34,7 +34,7 @@ class MeterService implements IBaseService
     public function search($term, $paginate): LengthAwarePaginator
     {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
-            ->whereHas('tariff', fn($q) => $q->where('name', 'LIKE', '%' . $term . '%'))
+            ->whereHas('tariff', fn ($q) => $q->where('name', 'LIKE', '%' . $term . '%'))
             ->orWhere(
                 'serial_number',
                 'LIKE',
@@ -61,7 +61,7 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
-                fn($q) => $q->whereHas(
+                fn ($q) => $q->whereHas(
                     'address',
                     function ($q) use ($cities) {
                         $q->whereIn('city_id', $cities);

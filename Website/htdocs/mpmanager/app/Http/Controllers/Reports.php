@@ -487,7 +487,7 @@ class Reports
         }
 
         if ($unit !== null) {
-            $this->totalSold[$connectionGroupName]['unit'] += (double)$unit;
+            $this->totalSold[$connectionGroupName]['unit'] += (float)$unit;
         }
         foreach ($amount as $type => $soldAmount) {
             $this->totalSold[$connectionGroupName][$type] += (int)$soldAmount;

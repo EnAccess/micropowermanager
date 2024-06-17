@@ -53,10 +53,10 @@ class JetsonMiniGridBatteryController extends Controller
             'soc_min' => $stateOfChargeData['min'] ?? 0,
             'soc_max' => $stateOfChargeData['max'] ?? 0,
 
-            'soh_average' => 100 - (double)$stateOfHealthData['average'],
+            'soh_average' => 100 - (float)$stateOfHealthData['average'],
             'soh_unit' => $stateOfHealthData['unit'],
-            'soh_min' => 100 - (double)($stateOfHealthData['min'] ?? 0),
-            'soh_max' => 100 - (double)($stateOfHealthData['max'] ?? 0),
+            'soh_min' => 100 - (float)($stateOfHealthData['min'] ?? 0),
+            'soh_max' => 100 - (float)($stateOfHealthData['max'] ?? 0),
 
             'd_total' => str_replace(',', '.', $total['discharge']),
             'd_total_unit' => $total['unit'],

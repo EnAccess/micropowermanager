@@ -40,7 +40,7 @@ class AgentAssignedApplianceService implements IBaseService
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null, $agentId = null,)
+    public function getAll($limit = null, $agentId = null)
     {
         $query = $this->agentAssignedAppliance->newQuery();
 

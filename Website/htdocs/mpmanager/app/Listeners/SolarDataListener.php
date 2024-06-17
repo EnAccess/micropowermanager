@@ -107,8 +107,7 @@ class SolarDataListener
      */
     private function getMiniGridLocation(int $miniGridId): array
     {
-        $miniGrid = $this->miniGrid
-            ::with('location')
+        $miniGrid = $this->miniGrid::with('location')
             ->findOrFail($miniGridId);
 
         return explode(',', $miniGrid->location->points);

@@ -41,8 +41,7 @@ class SmsController extends Controller
 
     public function index(): ApiResource
     {
-        $list = $this->sms
-            ::with('address.owner')
+        $list = $this->sms::with('address.owner')
             ->orderBy('id', 'DESC')
             ->select('receiver', DB::raw('count(*) as total'))
             ->groupBy('receiver')

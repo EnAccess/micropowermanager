@@ -72,8 +72,8 @@ class JetsonMiniGridPVController extends Controller
 
     private function formatEnergyData($val): float
     {
-        $val = (double)(str_replace('.', '', $val));
-        $val = (double)(str_replace(',', '.', $val));
+        $val = (float)(str_replace('.', '', $val));
+        $val = (float)(str_replace(',', '.', $val));
         return $val;
     }
 }

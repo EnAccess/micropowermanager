@@ -26,7 +26,7 @@ class AddEBikesItemToNavbar extends AbstractSharedCommand
      *
      * @return void
      */
-    public function __construct(private MenuItemsService $menuItemsService,)
+    public function __construct(private MenuItemsService $menuItemsService)
     {
         parent::__construct();
     }

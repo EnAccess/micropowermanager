@@ -20,7 +20,7 @@ class AgentCommission extends BaseModel
 
     public function agent(): HasMany
     {
-        return $this->hasMany(Agent::Class);
+        return $this->hasMany(Agent::class);
     }
 
     public function history(): MorphOne

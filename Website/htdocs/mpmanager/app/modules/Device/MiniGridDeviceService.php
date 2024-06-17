@@ -22,7 +22,7 @@ class MiniGridDeviceService
                 'device',
                 Meter::class
             )
-            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId)))
+            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId)))
             ->get()->pluck('device');
     }
 
@@ -34,7 +34,7 @@ class MiniGridDeviceService
                 'device',
                 '*'
             )
-            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('mini_grid_id', $miniGridId)))
+            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('mini_grid_id', $miniGridId)))
             ->get();
     }
 }

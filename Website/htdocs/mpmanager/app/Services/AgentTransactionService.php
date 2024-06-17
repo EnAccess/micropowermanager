@@ -27,9 +27,9 @@ class AgentTransactionService implements IBaseService
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
-            $query->with(['originalAgent', 'device' => fn($q) => $q->whereHas('person')->with(['device','person'])]);
+            $query->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device','person'])]);
         } else {
-            $query->with(['device' => fn($q) => $q->whereHas('person')->with(['device','person'])]);
+            $query->with(['device' => fn ($q) => $q->whereHas('person')->with(['device','person'])]);
         }
 
         $query->whereHasMorph(
@@ -55,11 +55,11 @@ class AgentTransactionService implements IBaseService
             return null;
         }
         return $this->transaction->newQuery()
-            ->with(['originalAgent', 'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])
+            ->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device','person'])])
             ->whereHasMorph(
                 'originalTransaction',
                 [AgentTransaction::class],
-                fn  ($q) => $q->where('agent_id', $agentId)
+                fn ($q) => $q->where('agent_id', $agentId)
             )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()->paginate();

@@ -107,12 +107,12 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 
     public function agent(): HasOne
     {
-        return $this->hasOne(Agent::Class);
+        return $this->hasOne(Agent::class);
     }
 
     public function agentSoldAppliance(): HasOne
     {
-        return $this->hasOne(AgentSoldAppliance::Class);
+        return $this->hasOne(AgentSoldAppliance::class);
     }
 
     public function __toString()

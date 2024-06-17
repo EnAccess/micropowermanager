@@ -30,14 +30,14 @@ abstract class AbstractJob implements ShouldQueue
         $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();
 
-            $this->companyJob = CompanyJob::query()->create(
-                [
-                    'company_id' => $this->companyId,
-                    'status' => CompanyJob::STATUS_PENDING,
-                    'job_name' => $jobName,
-                    'job_id' => $this->parentId
-                ]
-            );
+        $this->companyJob = CompanyJob::query()->create(
+            [
+                'company_id' => $this->companyId,
+                'status' => CompanyJob::STATUS_PENDING,
+                'job_name' => $jobName,
+                'job_id' => $this->parentId
+            ]
+        );
     }
 
     public function handle()

@@ -28,7 +28,7 @@ class PaymentHistoryService implements IAssociative
     public function findCustomerLastPayment(int $customerId): PaymentHistory
     {
         return $this->paymentHistory
-            ->whereHasMorph('owner', [Person::class], fn(Builder $q) => $q->where('id', $customerId))
+            ->whereHasMorph('owner', [Person::class], fn (Builder $q) => $q->where('id', $customerId))
             ->latest('created_at')
             ->first();
     }

@@ -27,7 +27,7 @@ class AppliancePaymentService
     public function getPaymentForAppliance($request, $appliancePerson)
     {
         $creatorId = auth('api')->user()->id;
-        $this->paymentAmount = $amount = (double)$request->input('amount');
+        $this->paymentAmount = $amount = (float)$request->input('amount');
         $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
         $this->validateAmount($applianceDetail, $amount);
         $deviceSerial = $applianceDetail->device_serial;
@@ -41,7 +41,7 @@ class AppliancePaymentService
         } else {
             $this->createPaymentLog($appliancePerson, $amount, $creatorId);
         }
-        $applianceDetail->rates->map(fn($installment) => $this->payInstallment(
+        $applianceDetail->rates->map(fn ($installment) => $this->payInstallment(
             $installment,
             $applianceOwner,
             $transaction
@@ -64,7 +64,7 @@ class AppliancePaymentService
     {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
-        $currency = $mainSettings  ? $mainSettings->currency : '€';
+        $currency = $mainSettings ? $mainSettings->currency : '€';
         event(
             'new.log',
             [
