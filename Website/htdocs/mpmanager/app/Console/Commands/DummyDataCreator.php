@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\MainSettings;
 use App\Models\MaintenanceUsers;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
 use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
@@ -15,7 +14,6 @@ use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inensus\CalinMeter\Models\CalinTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -98,7 +96,7 @@ class DummyDataCreator extends AbstractSharedCommand
             // get randomly a user
             $randomMeter = $this->meter::inRandomOrder()->with([
                 'device',
-                'tariff'
+                'tariff',
             ])->limit(1)->firstOrFail();
         } catch (ModelNotFoundException $x) {
             echo 'failed to find a random meter';
@@ -261,9 +259,9 @@ class DummyDataCreator extends AbstractSharedCommand
                 'token' => Str::random(30),
                 'load' => round(
                     $transactionData->transaction->amount /
-                    ($randomMeter['tariff']['price']),
+                    $randomMeter['tariff']['price'],
                     2
-                )
+                ),
             ];
             $token = $this->token->newQuery()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
             $token->transaction()->associate($transaction);
