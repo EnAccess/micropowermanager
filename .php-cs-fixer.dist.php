@@ -15,6 +15,8 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
+        // customisation
+        'no_superfluous_phpdoc_tags' => false,
         // disabled for editor integration
         'no_unused_imports' => false,
     ])
