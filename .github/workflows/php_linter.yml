@@ -35,8 +35,6 @@ jobs:
       - name: Run PHP-CS-Fixer
         run: composer run php-cs-fixer-check
         working-directory: ./Website/htdocs/mpmanager
-        # temporarily allow failure
-        continue-on-error: true
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --error-format=table  app/Http app/Services app/Models/ app/Events app/Listeners app/Misc app/modules --memory-limit=2G  --level=1
