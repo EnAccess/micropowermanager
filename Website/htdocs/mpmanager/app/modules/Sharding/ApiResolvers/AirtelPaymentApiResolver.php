@@ -31,7 +31,7 @@ class AirtelPaymentApiResolver implements ApiResolverInterface
             return (int)$companyId;
         } catch (\Exception $e) {
            Log::error('Error while decoding JWT token: ' . $e->getMessage());
-            return false;
+            return -1;
         }
     }
 

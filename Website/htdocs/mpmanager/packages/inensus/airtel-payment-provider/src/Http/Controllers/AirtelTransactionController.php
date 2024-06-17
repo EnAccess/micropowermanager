@@ -55,6 +55,8 @@ class AirtelTransactionController extends  Controller
                 return 'Success';
             case -1:
                 return 'Failed';
+            case 2:
+                return 'Not Found';
             default:
                 return 'Pending';
         }
@@ -66,6 +68,7 @@ class AirtelTransactionController extends  Controller
             case 'Success':
                 return 200;
             case 'Failed':
+            case 'Not Found':
                 return 404;
             case 'Pending':
                 return 400;
@@ -97,6 +100,7 @@ class AirtelTransactionController extends  Controller
 
             $airtelTransaction = $this->airtelTransactionService->getByTrId($trId);
             $airtelTransaction->trans_id = $transId;
+            $airtelTransaction->status = 0;
             $airtelTransaction->save();
             $transactionProvider = resolve('AirtelPaymentProvider');
             $transactionProvider->init($airtelTransaction);

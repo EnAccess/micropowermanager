@@ -80,6 +80,18 @@ class UserDefaultDatabaseConnectionMiddleware
             if (!is_numeric($companyId)) {
                 throw new \Exception("JWT is not provided");
             }
+            if ($companyId === -1) {
+                $xmlResponse =
+                    '<?xml version="1.0" encoding="UTF-8"?>' .
+                    '<COMMAND>' .
+                    '<STATUS>400</STATUS>' .
+                    '<MESSAGE>Invalid Token</MESSAGE>' .
+                    '</COMMAND>';
+
+                echo $xmlResponse;
+                exit;
+            }
+
         } else { //web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
 
