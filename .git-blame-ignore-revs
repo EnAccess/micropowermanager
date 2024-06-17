@@ -6,3 +6,7 @@ e7b5fd09e3531896ae308469697a494040061ba8
 527029941adbe125c49dbaf86dfe772f1624ed2f
 # Apply Prettier to `ui`
 b534c22dd341d1d2b35c8e0b7d5419f56e3dd6b1
+# Apply `PSR12`
+f424854667e15daf0ad59d5fc68cc3eba6ea152e
+# Apply `Symfony` Code Style
+3929b03030d64a2fe9ce9ac25b52fec2da6d1391
