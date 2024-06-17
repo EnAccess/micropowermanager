@@ -31,6 +31,7 @@ class PricingDetails extends SmsBodyParser
                 $variable = $this->vatOtherStaffs;
                 break;
         }
+
         return $variable;
     }
 
@@ -38,7 +39,7 @@ class PricingDetails extends SmsBodyParser
     {
         $mainSettings = MainSettings::query()->first();
         $energy = $this->transaction->paymentHistories->where('payment_type', 'energy')->sum('amount');
-        $other =  $this->transaction->paymentHistories->where('payment_type', '!=', 'energy')->sum('amount');
+        $other = $this->transaction->paymentHistories->where('payment_type', '!=', 'energy')->sum('amount');
         $this->vatEnergy = $energy * $mainSettings->vat_energy / 100;
         $this->vatOtherStaffs = $other * $mainSettings->vat_appliance / 100;
     }

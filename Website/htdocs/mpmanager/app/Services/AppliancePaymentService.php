@@ -27,7 +27,7 @@ class AppliancePaymentService
     public function getPaymentForAppliance($request, $appliancePerson)
     {
         $creatorId = auth('api')->user()->id;
-        $this->paymentAmount = $amount = (double)$request->input('amount');
+        $this->paymentAmount = $amount = (float) $request->input('amount');
         $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
         $this->validateAmount($applianceDetail, $amount);
         $deviceSerial = $applianceDetail->device_serial;
@@ -41,7 +41,7 @@ class AppliancePaymentService
         } else {
             $this->createPaymentLog($appliancePerson, $amount, $creatorId);
         }
-        $applianceDetail->rates->map(fn($installment) => $this->payInstallment(
+        $applianceDetail->rates->map(fn ($installment) => $this->payInstallment(
             $installment,
             $applianceOwner,
             $transaction
@@ -57,6 +57,7 @@ class AppliancePaymentService
         $applianceRate->remaining -= $amount;
         $applianceRate->update();
         $applianceRate->save();
+
         return $applianceRate;
     }
 
@@ -64,15 +65,15 @@ class AppliancePaymentService
     {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
-        $currency = $mainSettings  ? $mainSettings->currency : '€';
+        $currency = $mainSettings ? $mainSettings->currency : '€';
         event(
             'new.log',
             [
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
-                    'action' => $amount . ' ' . $currency . ' of payment is made '
-                ]
+                    'action' => $amount.' '.$currency.' of payment is made ',
+                ],
             ]
         );
     }
@@ -99,21 +100,15 @@ class AppliancePaymentService
         $installmentCost = $applianceDetail->rates[1]['rate_cost'];
 
         if ($amount > $totalRemainingAmount) {
-            throw new PaymentAmountBiggerThanTotalRemainingAmount(
-                'Payment Amount can not bigger than Total Remaining Amount'
-            );
+            throw new PaymentAmountBiggerThanTotalRemainingAmount('Payment Amount can not bigger than Total Remaining Amount');
         }
 
         if ($amount < $installmentCost) {
-            throw new PaymentAmountSmallerThanZero(
-                'Payment amount can not smaller than installment cost'
-            );
+            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than installment cost');
         }
 
         if ($amount <= 0) {
-            throw new PaymentAmountSmallerThanZero(
-                'Payment amount can not smaller than zero'
-            );
+            throw new PaymentAmountSmallerThanZero('Payment amount can not smaller than zero');
         }
     }
 
@@ -155,7 +150,7 @@ class AppliancePaymentService
         $tokenData = $manufacturerApi->chargeDevice($transactionData);
         $token = Token::query()->make([
             'token' => $tokenData['token'],
-            'load' => $tokenData['load']
+            'load' => $tokenData['load'],
         ]);
         $token->transaction()->associate($transactionData->transaction);
         $token->save();

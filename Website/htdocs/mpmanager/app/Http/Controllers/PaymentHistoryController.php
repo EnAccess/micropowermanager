@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 31.07.18
- * Time: 10:47
+ * Time: 10:47.
  */
 
 namespace App\Http\Controllers;
@@ -16,14 +16,10 @@ use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use DatePeriod;
-
-use function count;
 
 /**
  * @group   Payment-History
  * Class PaymentHistoryController
- * @package App\Http\Controllers
  */
 class PaymentHistoryController
 {
@@ -43,17 +39,19 @@ class PaymentHistoryController
     }
 
     /**
-     * Detail
+     * Detail.
      *
      * @urlParam payerId integer required
      * @urlParam period string required
      * @urlParam limit integer
      * @urlParam order string
-     * @param int $payerId
+     *
+     * @param int    $payerId
      * @param string $period
-     * @param null $limit
+     * @param null   $limit
      * @param string $order
-     * @return   array
+     *
+     * @return array
      */
     public function show(int $payerId, string $period, $limit = null, $order = 'ASC')
     {
@@ -79,17 +77,20 @@ class PaymentHistoryController
             $limit,
             $order
         );
+
         return $this->preparePaymentFlow($payments);
     }
 
-
     /**
-     * Payment Periods
+     * Payment Periods.
      *
      * @urlParam personId integer required
-     * @param    $personId
-     * @return   ApiResource
-     * @throws   \Exception
+     *
+     * @param $personId
+     *
+     * @return ApiResource
+     *
+     * @throws \Exception
      */
     public function getPaymentPeriod(Person $person)
     {
@@ -97,45 +98,48 @@ class PaymentHistoryController
 
         $difference = 'no data available';
         $lastTransactionDate = null;
-        if (count($payments)) {
+        if (\count($payments)) {
             $lastTransactionDate = $newest = $payments[0]->created_at;
             $newest = new Carbon($newest);
-            $lastTransactionDate = $newest->diffInDays(Carbon::now()) . ' days ago';
-            $eldest = new Carbon($payments[count($payments) - 1]->created_at);
-            $difference = $eldest->diffInDays($newest) . ' days';
+            $lastTransactionDate = $newest->diffInDays(Carbon::now()).' days ago';
+            $eldest = new Carbon($payments[\count($payments) - 1]->created_at);
+            $difference = $eldest->diffInDays($newest).' days';
         }
+
         return ApiResource::make(['difference' => $difference, 'lastTransaction' => $lastTransactionDate]);
     }
 
     /**
-     * Person payment flow per year
+     * Person payment flow per year.
      *
      * @urlParam personId integer required
      *
-     * @param int $personId
+     * @param int      $personId
      * @param int|null $year
      *
      * @return array
      **/
-    public function byYear(int $personId, int $year = null): array
+    public function byYear(int $personId, ?int $year = null): array
     {
-        $year = $year ?? (int)date('Y');
+        $year = $year ?? (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
         $paymentFlow = array_fill(0, 11, 0);
         foreach ($payments as $payment) {
-            $paymentFlow[$payment['month'] - 1] = (double)$payment['amount'];
+            $paymentFlow[$payment['month'] - 1] = (float) $payment['amount'];
         }
+
         return $paymentFlow;
     }
 
-
     /**
-     * Person Debts
+     * Person Debts.
      *
      * @urlParam personId integer required
      * checks if the person has any debts to the system
+     *
      * @param int $personId
-     * @return   ApiResource
+     *
+     * @return ApiResource
      */
     public function debts($personId)
     {
@@ -154,26 +158,29 @@ class PaymentHistoryController
             }
         }
         $deferredDebt = 0;
+
         return ApiResource::make(['access_rate' => $accessRateDebt, 'deferred' => $deferredDebt]);
     }
 
     /**
-     * Payments list with date range
+     * Payments list with date range.
      *
      * @bodyParam begin string
      * @bodyParam end string
-     * @return    ApiResource
-     * @throws    \Exception
+     *
+     * @return ApiResource
+     *
+     * @throws \Exception
      */
     public function getPaymentRange(): ApiResource
     {
         $begin = request('begin'); // Y-m-d
         $end = request('end'); // Y-m- d
-        //create a sequence of dates
-        $period = new DatePeriod(
+        // create a sequence of dates
+        $period = new \DatePeriod(
             Carbon::parse($begin),
             CarbonInterval::day(),
-            Carbon::parse($end . ' 00:01')
+            Carbon::parse($end.' 00:01')
         );
         $result = [];
         foreach ($period as $p) {
@@ -183,6 +190,7 @@ class PaymentHistoryController
         foreach ($payments as $p) {
             $result[$p['dato']] = ['date' => $p['dato'], 'amount' => $p['total']];
         }
+
         return ApiResource::make(array_values($result));
     }
 
@@ -197,6 +205,7 @@ class PaymentHistoryController
         foreach ($payments as $payment) {
             $flowList[$payment['aperiod']][$payment['payment_type']] = $payment['amount'];
         }
+
         return $flowList;
     }
 }

@@ -15,10 +15,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int manufacturer_transaction_id
  * @property string manufacturer_transaction_type
  */
-
 class CashTransaction extends BaseModel implements IRawTransaction
 {
     public const RELATION_NAME = 'cash_transaction';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

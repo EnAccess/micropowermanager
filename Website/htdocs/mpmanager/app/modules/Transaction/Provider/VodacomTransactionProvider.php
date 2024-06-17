@@ -9,41 +9,38 @@ use App\Models\Transaction\VodacomTransaction;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
-use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use SimpleXMLElement;
 
 class VodacomTransactionProvider implements ITransactionProvider
 {
     private VodacomTransaction $vodacomTransaction;
     private Transaction $transaction;
-    private SimpleXMLElement $valid_data;
-
+    private \SimpleXMLElement $valid_data;
 
     /**
-     * Is responsible for the whole incoming Transaction process
+     * Is responsible for the whole incoming Transaction process.
      */
     public function saveTransaction(): void
     {
-        //initializes needed model
+        // initializes needed model
         $this->vodacomTransaction = new VodacomTransaction();
 
         $this->transaction = new Transaction();
 
-        //assign data
+        // assign data
         $this->assignData($this->valid_data);
-        //save transaction
+        // save transaction
         $this->saveData($this->vodacomTransaction);
     }
 
     /**
-     * Sends the final state of the transaction based on resultType
+     * Sends the final state of the transaction based on resultType.
      *
-     * @param bool $requestType
+     * @param bool        $requestType
      * @param Transaction $transaction
      */
     public function sendResult(bool $requestType, Transaction $transaction): void
@@ -77,7 +74,6 @@ class VodacomTransactionProvider implements ITransactionProvider
                             'id' => '64324632786d78638762387',
                             'response' => $response->getBody(),
                             'body' => $requestContent,
-
                         ]
                     );
                 } else {
@@ -85,22 +81,22 @@ class VodacomTransactionProvider implements ITransactionProvider
                     $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
                 }
 
-                //make response xml object
+                // make response xml object
                 try {
-                    $xmlResponse = new SimpleXMLElement($response->getBody());
-                    //vodacom returns 0 for confirmation and 999 for cancellation request
+                    $xmlResponse = new \SimpleXMLElement($response->getBody());
+                    // vodacom returns 0 for confirmation and 999 for cancellation request
                     // cast bool to int gives (0,1) as number. Multiply its inverse by
                     // 999 gives 0 for true and 999 for false
-                    $expectedResponseCode = (int)!$requestType * 999;
-                    if ((int)$xmlResponse->response->responseCode === $expectedResponseCode) {
-                        //mark transaction as done
+                    $expectedResponseCode = (int) !$requestType * 999;
+                    if ((int) $xmlResponse->response->responseCode === $expectedResponseCode) {
+                        // mark transaction as done
                         $this->vodacomTransaction->status = $requestType === true ? 1 : -1;
                         $this->vodacomTransaction->save();
                     } else {
-                        $this->addConflict('Transaction got ' . $response->getStatusCode() . ' as HTTP Status code '
-                            . $response->getBody());
+                        $this->addConflict('Transaction got '.$response->getStatusCode().' as HTTP Status code '
+                            .$response->getBody());
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     Log::critical(
                         'Vodacom transaction Finalize',
                         [
@@ -112,10 +108,11 @@ class VodacomTransactionProvider implements ITransactionProvider
                     );
                 }
             } else {
-                $this->addConflict('Transaction got ' . $response->getStatusCode() . ' as HTTP Status code');
+                $this->addConflict('Transaction got '.$response->getStatusCode().' as HTTP Status code');
             }
+
             return;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->addConflict($e->getMessage());
             Log::critical(
                 'Failed to send final transaction request',
@@ -126,32 +123,31 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * Validates incoming request
-     * stores the request data to valid_data if  request is valid
+     * stores the request data to valid_data if  request is valid.
      *
      * @param $request
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function validateRequest($request): void
     {
         if ($request === '<FailSafe>JUMEME</FailSafe>') {
             throw new VodacomHeartBeatException('heartbeat');
         }
-        $transaction_xml = new SimpleXMLElement($request);
+        $transaction_xml = new \SimpleXMLElement($request);
         $transaction_data = json_encode($transaction_xml);
         $transaction_data = json_decode($transaction_data, true);
 
         $validator = Validator::make(
             $transaction_data,
             [
-                'request.serviceProvider.spId' => 'required|in:' . Config::get('services.vodacom.sp_id'),
+                'request.serviceProvider.spId' => 'required|in:'.Config::get('services.vodacom.sp_id'),
                 'request.serviceProvider.spPassword' => 'required',
                 'request.transaction.amount' => 'required',
                 'request.transaction.commandID' => 'required',
                 'request.transaction.initiator' => 'required',
                 'request.transaction.conversationID' => 'required|unique:vodacom_transactions,conversation_id',
-                'request.transaction.originatorConversationID'
-                => 'required|unique:vodacom_transactions,originator_conversation_id',
+                'request.transaction.originatorConversationID' => 'required|unique:vodacom_transactions,originator_conversation_id',
                 'request.transaction.recipient' => 'required',
                 'request.transaction.mpesaReceipt' => 'required',
                 'request.transaction.transactionDate' => 'required',
@@ -160,34 +156,34 @@ class VodacomTransactionProvider implements ITransactionProvider
             ]
         );
         if ($validator->fails()) {
-            throw new Exception($validator->errors());
+            throw new \Exception($validator->errors());
         }
         $this->valid_data = $transaction_xml;
     }
 
     /**
      * Send a confirmation (output for incoming api request) that the transaction passed validation and will be
-     * processed
+     * processed.
      */
     public function confirm(): void
     {
         echo $xmlResponse =
-            '<?xml version="1.0" encoding="UTF-8"?>' .
-            '<mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">' .
-            '<response>' .
-            '<conversationID>' . $this->vodacomTransaction->conversation_id . '</conversationID>' .
-            '<originatorConversationID>' . $this->vodacomTransaction->originator_conversation_id .
-            '</originatorConversationID>' .
-            '<transactionID>' . $this->vodacomTransaction->transaction_id . '</transactionID>' .
-            '<responseCode>0</responseCode>' .
-            '<responseDesc>Received</responseDesc>' .
-            '<serviceStatus>Success</serviceStatus>' .
-            '</response>' .
+            '<?xml version="1.0" encoding="UTF-8"?>'.
+            '<mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">'.
+            '<response>'.
+            '<conversationID>'.$this->vodacomTransaction->conversation_id.'</conversationID>'.
+            '<originatorConversationID>'.$this->vodacomTransaction->originator_conversation_id.
+            '</originatorConversationID>'.
+            '<transactionID>'.$this->vodacomTransaction->transaction_id.'</transactionID>'.
+            '<responseCode>0</responseCode>'.
+            '<responseDesc>Received</responseDesc>'.
+            '<serviceStatus>Success</serviceStatus>'.
+            '</response>'.
             '</mpesaBroker>';
     }
 
     /**
-     * The message which is been typed by the user
+     * The message which is been typed by the user.
      *
      * @return string
      */
@@ -197,7 +193,7 @@ class VodacomTransactionProvider implements ITransactionProvider
     }
 
     /**
-     * The amount sent by the user
+     * The amount sent by the user.
      *
      * @return int
      */
@@ -207,7 +203,7 @@ class VodacomTransactionProvider implements ITransactionProvider
     }
 
     /**
-     * The number, which sent money
+     * The number, which sent money.
      *
      * @return string
      */
@@ -217,40 +213,38 @@ class VodacomTransactionProvider implements ITransactionProvider
     }
 
     /**
-     * Store the commonly used data
+     * Store the commonly used data.
      *
      * @return Transaction
      */
     public function saveCommonData(): Model
     {
-        return  $this->vodacomTransaction->transaction()->save($this->transaction);
+        return $this->vodacomTransaction->transaction()->save($this->transaction);
     }
 
-
     /**
-     * Assign request data to model
+     * Assign request data to model.
      *
      * @param $data
      */
-    private function assignData(SimpleXMLElement $data): void
+    private function assignData(\SimpleXMLElement $data): void
     {
         $transaction_data = $data->request->transaction;
-        $this->vodacomTransaction->conversation_id = (string)$transaction_data->conversationID;
-        $this->vodacomTransaction->originator_conversation_id = (string)$transaction_data->originatorConversationID;
-        $this->vodacomTransaction->mpesa_receipt = (string)$transaction_data->mpesaReceipt;
-        $this->vodacomTransaction->transaction_date = (string)$transaction_data->transactionDate;
-        $this->vodacomTransaction->transaction_id = (string)$transaction_data->transactionID;
+        $this->vodacomTransaction->conversation_id = (string) $transaction_data->conversationID;
+        $this->vodacomTransaction->originator_conversation_id = (string) $transaction_data->originatorConversationID;
+        $this->vodacomTransaction->mpesa_receipt = (string) $transaction_data->mpesaReceipt;
+        $this->vodacomTransaction->transaction_date = (string) $transaction_data->transactionDate;
+        $this->vodacomTransaction->transaction_id = (string) $transaction_data->transactionID;
 
-        $this->transaction->amount = (int)$transaction_data->amount;
-        $this->transaction->sender = (string)$transaction_data->initiator;
-        $this->transaction->message = (string)$transaction_data->accountReference;
+        $this->transaction->amount = (int) $transaction_data->amount;
+        $this->transaction->sender = (string) $transaction_data->initiator;
+        $this->transaction->message = (string) $transaction_data->accountReference;
     }
 
-
-    public function saveData(\App\Models\Transaction\VodacomTransaction $vodacomTransaction): void
+    public function saveData(VodacomTransaction $vodacomTransaction): void
     {
         $vodacomTransaction->save();
-        //confirm transaction with
+        // confirm transaction with
         event('transaction.confirm', $this);
     }
 
@@ -277,17 +271,18 @@ class VodacomTransactionProvider implements ITransactionProvider
                 0
             );
         }
+
         return $requestContent;
     }
 
     /**
-     * Generates result for cancel/approve transaction
+     * Generates result for cancel/approve transaction.
      *
      * @param string $serviceProviderPassword
      * @param string $phonePassword
-     * @param string $time Y-md H:i:s
+     * @param string $time                    Y-md H:i:s
      * @param string $result
-     * @param int $resultCode
+     * @param int    $resultCode
      *
      * @return string
      */
@@ -303,28 +298,27 @@ class VodacomTransactionProvider implements ITransactionProvider
         <mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">
         <result>
             <serviceProvider>
-                <spId>' . \config()->get('services.vodacom.sp_id') . '</spId>
-                <spPassword>' . $serviceProviderPassword . '</spPassword>
-                <timestamp>' . $time . '</timestamp>
+                <spId>'.\config()->get('services.vodacom.sp_id').'</spId>
+                <spPassword>'.$serviceProviderPassword.'</spPassword>
+                <timestamp>'.$time.'</timestamp>
             </serviceProvider>
             <transaction>
                 <resultType>Completed</resultType>
-                <resultCode>' . $resultCode . '</resultCode>
-                <resultDesc>' . $result . ' </resultDesc>
-                <serviceReceipt>' . $this->transaction->id . '</serviceReceipt>
-                <serviceDate>' . date('Y-m-d H:i:s') . '</serviceDate>
-                <serviceID>' . $this->transaction->id . '</serviceID>
-                <originatorConversationID>' . $this->vodacomTransaction->originator_conversation_id .
+                <resultCode>'.$resultCode.'</resultCode>
+                <resultDesc>'.$result.' </resultDesc>
+                <serviceReceipt>'.$this->transaction->id.'</serviceReceipt>
+                <serviceDate>'.date('Y-m-d H:i:s').'</serviceDate>
+                <serviceID>'.$this->transaction->id.'</serviceID>
+                <originatorConversationID>'.$this->vodacomTransaction->originator_conversation_id.
                 '</originatorConversationID>
-                <conversationID>' . $this->vodacomTransaction->conversation_id . '</conversationID>
-                <transactionID>' . $this->vodacomTransaction->transaction_id . '</transactionID>
-                <initiator>' . $this->transaction->sender . '</initiator>
-                <initiatorPassword>' . $phonePassword . '</initiatorPassword>
+                <conversationID>'.$this->vodacomTransaction->conversation_id.'</conversationID>
+                <transactionID>'.$this->vodacomTransaction->transaction_id.'</transactionID>
+                <initiator>'.$this->transaction->sender.'</initiator>
+                <initiatorPassword>'.$phonePassword.'</initiatorPassword>
             </transaction >
         </result >
         </mpesaBroker >';
     }
-
 
     private function encryptProviderPassword(string $time): string
     {
@@ -340,6 +334,7 @@ class VodacomTransactionProvider implements ITransactionProvider
                 true
             )
         );
+
         return base64_encode($password);
     }
 
@@ -352,9 +347,9 @@ class VodacomTransactionProvider implements ITransactionProvider
         $publicKey = fread($keyFile, 8192);
         fclose($keyFile);
         openssl_public_encrypt($this->transaction->sender, $encrypted, $publicKey);
+
         return base64_encode($encrypted);
     }
-
 
     public function init($transaction): void
     {

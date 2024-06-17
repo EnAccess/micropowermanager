@@ -7,25 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 interface ITransactionProvider
 {
-    //saves the main transaction
+    // saves the main transaction
     public function saveTransaction();
 
-    //accepts the payment or cancel the payment
+    // accepts the payment or cancel the payment
     public function sendResult(bool $requestType, Transaction $transaction);
 
-    //validates incoming request
+    // validates incoming request
     public function validateRequest($request);
 
-    //the first contact, confirms that the request data is valid and could be processed
+    // the first contact, confirms that the request data is valid and could be processed
     public function confirm(): void;
 
-    //user message from mobile provider
+    // user message from mobile provider
     public function getMessage(): string;
 
-    //sent amount
+    // sent amount
     public function getAmount(): int;
 
-    //sender
+    // sender
     public function getSender(): string;
 
     public function saveCommonData(): Model;

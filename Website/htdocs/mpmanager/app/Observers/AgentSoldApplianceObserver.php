@@ -46,8 +46,7 @@ class AgentSoldApplianceObserver
         $appliance = $assignedAppliance->applianceType()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
 
-
-        //create agent transaction
+        // create agent transaction
         $agentTransactionData = [
             'agent_id' => $agent->id,
             'device_id' => $agent->device_id,
@@ -59,7 +58,7 @@ class AgentSoldApplianceObserver
         $transactionData = [
             'amount' => request()->input('down_payment') ?: 0,
             'sender' => $agent->device_id,
-            'message' => '-'
+            'message' => '-',
         ];
 
         $transaction = $this->transactionService->make($transactionData);
@@ -68,7 +67,7 @@ class AgentSoldApplianceObserver
         $this->agentTransactionTransactionService->assign();
         $this->transactionService->save($transaction);
 
-        //assign agent to appliance person
+        // assign agent to appliance person
         $appliancePersonData = [
             'person_id' => request()->input('person_id'),
             'first_payment_date' => request()->input('first_payment_date'),
@@ -88,20 +87,19 @@ class AgentSoldApplianceObserver
             [
                 'assetType' => $appliance,
                 'assetPerson' => $appliancePerson,
-                'transaction' => $transaction
+                'transaction' => $transaction,
             ]
         );
 
         event('appliance.sold', $soldApplianceDataContainer);
 
-        //assign agent assigned appliance to agent balance history
+        // assign agent assigned appliance to agent balance history
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
             'amount' => (-1 * request()->input('down_payment')),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier
-
+            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentAssignedApplianceHistoryBalanceService->setAssignee($assignedAppliance);
@@ -109,17 +107,16 @@ class AgentSoldApplianceObserver
         $this->agentAssignedApplianceHistoryBalanceService->assign();
         $this->agentBalanceHistoryService->save($agentBalanceHistory);
 
-        //create agent commission
+        // create agent commission
         $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
 
-        //assign agent commission to agent balance history
+        // assign agent commission to agent balance history
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
             'amount' => ($assignedAppliance->cost * $agentCommission->appliance_commission),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->commission_revenue,
-            'due_to_supplier' => $agent->due_to_energy_supplier
-
+            'due_to_supplier' => $agent->due_to_energy_supplier,
         ];
         $agentBalanceHistory = $this->agentBalanceHistoryService->make($agentBalanceHistoryData);
         $this->agentCommissionHistoryBalanceService->setAssignee($agentCommission);

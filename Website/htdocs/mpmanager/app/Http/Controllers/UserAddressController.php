@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 class UserAddressController extends Controller
 {
     private $userAddressService;
+
     public function __construct(UserAddressService $userAddressService)
     {
         $this->userAddressService = $userAddressService;
@@ -24,6 +25,7 @@ class UserAddressController extends Controller
     public function admin(User $user, Request $request)
     {
         $address = $user->addressDetails()->first();
+
         return new ApiResource($address);
     }
 

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Inensus\Ticket\Http\Controllers\TicketExportController;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -20,13 +19,13 @@ class OutsourceReportGenerator extends AbstractSharedCommand
 
     public function runInCompanyScope(): void
     {
-        if ($this->option('start-date') !== "") {
+        if ($this->option('start-date') !== '') {
             $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
         } else {
             $toDay = Carbon::now()->subDays(1)->format('Y-m-d');
         }
-        $startDay = Carbon::parse($toDay)->modify("first day of this month")->format('Y-m-d');
-        //TODO: fix for Saas.
+        $startDay = Carbon::parse($toDay)->modify('first day of this month')->format('Y-m-d');
+        // TODO: fix for Saas.
 
         /*$this->reports->outsourceWithJob($startDay, $toDay);
         try {

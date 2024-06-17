@@ -3,8 +3,7 @@
 namespace App\Models;
 
 /**
- * Class MailSettings
- * @package App\Models
+ * Class MailSettings.
  */
 class MailSettings extends BaseModel
 {

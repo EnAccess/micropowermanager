@@ -3,8 +3,8 @@
 namespace App\Misc;
 
 use App\Models\Asset;
-use App\Models\AssetType;
 use App\Models\AssetPerson;
+use App\Models\AssetType;
 use App\Models\Transaction\Transaction;
 
 class SoldApplianceDataContainer
@@ -21,6 +21,7 @@ class SoldApplianceDataContainer
     {
         return $this->asset;
     }
+
     public function getAssetType()
     {
         return $this->assetType;

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Report;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ReportController
 {
@@ -40,9 +39,9 @@ class ReportController
             'monthly' => $this->getMonthlyReports($startDate, $endDate),
             default => $this->getAllReports($startDate, $endDate),
         };
+
         return new ApiResource($reports);
     }
-
 
     private function getWeeklyReports($startDate, $endDate)
     {

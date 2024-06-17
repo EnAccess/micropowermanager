@@ -32,9 +32,9 @@ class GenerationAssetsService
         $this->energy = $energy;
     }
 
-
     /**
      * @param $miniGridId
+     *
      * @return array (mixed|null)[][]
      */
     public function getGenerationAssets($miniGridId): array
@@ -86,7 +86,6 @@ class GenerationAssetsService
                     $a['c_newly_energy_unit'] = 'kWh';
                 }
 
-
                 if (
                     $a['c_newly_energy'] !== null
                     && $a['d_newly_energy'] !== null
@@ -115,26 +114,27 @@ class GenerationAssetsService
         return $arrays;
     }
 
-
     /**
-     * fills the array if the given array doesnt contain all required fields
+     * fills the array if the given array doesnt contain all required fields.
      *
-     * @param  $a
+     * @param $a
+     *
      * @return array
      */
     private function fillArray($a): array
     {
         $baseArray = [
-            "d_newly_energy" => 0,
-            "d_newly_energy_unit" => "Wh",
-            "new_generated_energy" => 0,
-            "new_generated_energy_unit" => "kWh",
-            "absorbed_energy_since_last" => 0,
-            "absorbed_energy_since_last_unit" => 'kWh',
-            "energyFromDieselGen" => 0,
-            "c_newly_energy" => 0,
-            "c_newly_energy_unit" => 'kWh',
+            'd_newly_energy' => 0,
+            'd_newly_energy_unit' => 'Wh',
+            'new_generated_energy' => 0,
+            'new_generated_energy_unit' => 'kWh',
+            'absorbed_energy_since_last' => 0,
+            'absorbed_energy_since_last_unit' => 'kWh',
+            'energyFromDieselGen' => 0,
+            'c_newly_energy' => 0,
+            'c_newly_energy_unit' => 'kWh',
         ];
+
         return array_merge($baseArray, $a);
     }
 
@@ -142,15 +142,16 @@ class GenerationAssetsService
      * @param $miniGridId
      * @param $startDate
      * @param $endDate
+     *
      * @return Collection
      */
     private function getBatteryReadings($miniGridId, $startDate, $endDate): Collection
     {
         $readings = $this->battery::query()
-            ->select(DB::raw("CONCAT(DATE(read_out),\"-\"," .
-                "DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900),\"%H-%i-%S\")) as read_key, " .
-                "DATE(read_out) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900) " .
-                "as data_reading_time, d_newly_energy, d_newly_energy_unit,c_newly_energy, c_newly_energy_unit"))
+            ->select(DB::raw('CONCAT(DATE(read_out),"-",'.
+                'DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900),"%H-%i-%S")) as read_key, '.
+                'DATE(read_out) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900) '.
+                'as data_reading_time, d_newly_energy, d_newly_energy_unit,c_newly_energy, c_newly_energy_unit'))
             ->where('mini_grid_id', $miniGridId);
 
         if ($startDate) {
@@ -159,6 +160,7 @@ class GenerationAssetsService
         if ($endDate) {
             $readings->whereDate('read_out', '<=', $endDate);
         }
+
         return $readings
             ->orderBy('read_out')
             ->get()->keyBy('read_key');
@@ -168,15 +170,16 @@ class GenerationAssetsService
      * @param $miniGridId
      * @param $startDate
      * @param $endDate
+     *
      * @return GenerationAssetsService|Builder[]|Collection
      */
     private function getPvReadings($miniGridId, $startDate, $endDate)
     {
         $readings = $this->pv::query()
-            ->select(DB::raw("CONCAT(DATE(reading_date),\"-\"," .
-                "DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(reading_date)+450)/900)*900),\"%H-%i-%S\")) as read_key," .
-                " DATE(reading_date) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(reading_date)+450)/900)*900)" .
-                " as data_reading_time, new_generated_energy, new_generated_energy_unit"))
+            ->select(DB::raw('CONCAT(DATE(reading_date),"-",'.
+                'DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(reading_date)+450)/900)*900),"%H-%i-%S")) as read_key,'.
+                ' DATE(reading_date) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(reading_date)+450)/900)*900)'.
+                ' as data_reading_time, new_generated_energy, new_generated_energy_unit'))
             ->where('mini_grid_id', $miniGridId);
 
         if ($startDate) {
@@ -185,6 +188,7 @@ class GenerationAssetsService
         if ($endDate) {
             $readings->whereDate('reading_date', '<=', $endDate);
         }
+
         return $readings
             ->orderBy('reading_date')
             ->get()->keyBy('read_key');
@@ -194,15 +198,16 @@ class GenerationAssetsService
      * @param $miniGridId
      * @param $startDate
      * @param $endDate
+     *
      * @return Collection
      */
     private function getServedEnergyReadings($miniGridId, $startDate, $endDate): Collection
     {
         $readings = $this->energy::query()
-            ->select(DB::raw("CONCAT(DATE(read_out),\"-\"," .
-                "DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900),\"%H-%i-%S\")) as read_key," .
-                " DATE(read_out) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900) " .
-                "as data_reading_time, absorbed_energy_since_last,absorbed_energy_since_last_unit"))
+            ->select(DB::raw('CONCAT(DATE(read_out),"-",'.
+                'DATE_FORMAT(SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900),"%H-%i-%S")) as read_key,'.
+                ' DATE(read_out) as data_reading_date,SEC_TO_TIME(FLOOR((TIME_TO_SEC(read_out)+450)/900)*900) '.
+                'as data_reading_time, absorbed_energy_since_last,absorbed_energy_since_last_unit'))
             ->where('mini_grid_id', $miniGridId);
 
         if ($startDate) {
@@ -211,6 +216,7 @@ class GenerationAssetsService
         if ($endDate) {
             $readings->whereDate('read_out', '<=', $endDate);
         }
+
         return $readings
             ->orderBy('read_out')
             ->get()->keyBy('read_key');

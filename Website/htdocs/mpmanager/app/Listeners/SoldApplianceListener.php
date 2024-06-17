@@ -3,12 +3,8 @@
 namespace App\Listeners;
 
 use App\Misc\SoldApplianceDataContainer;
-use App\Models\AssetRate;
-use App\Models\Person\Person;
-use App\Models\Transaction\CashTransaction;
 use App\Services\ApplianceRateService;
 use App\Services\PersonService;
-use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 
 class SoldApplianceListener
@@ -35,8 +31,7 @@ class SoldApplianceListener
                 'payment.successful',
                 [
                     'amount' => $transaction->amount,
-                    'paymentService' =>
-                        $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
+                    'paymentService' => $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
                     'paymentType' => 'down payment',
                     'sender' => $transaction->sender,
                     'paidFor' => $applianceRate,
@@ -46,7 +41,6 @@ class SoldApplianceListener
             );
         }
     }
-
 
     public function subscribe(Dispatcher $events): void
     {

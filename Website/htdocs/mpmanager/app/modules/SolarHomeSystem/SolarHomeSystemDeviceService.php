@@ -10,6 +10,7 @@ class SolarHomeSystemDeviceService implements IAssignationService
 {
     private Device $device;
     protected SolarHomeSystem $shs;
+
     public function setAssigned($assigned)
     {
         $this->device = $assigned;

@@ -25,6 +25,7 @@ class MeterService extends CreatorService
             'manufacturer_id' => $csvData[$meterConfig['manufacturer_id']],
             'meter_type_id' => 1,
         ];
+
         return $this->createRelatedDataIfDoesNotExists($meterData);
     }
 }

@@ -2,15 +2,9 @@
 
 namespace App\Services;
 
-use App\Http\Requests\MeterRequest;
-use App\Models\City;
 use App\Models\Meter\Meter;
-use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
-
-use function count;
 
 class MeterService implements IBaseService
 {
@@ -27,18 +21,18 @@ class MeterService implements IBaseService
             'connectionType',
             'connectionGroup',
             'manufacturer',
-            'tokens.transaction'
+            'tokens.transaction',
         ])->where('serial_number', $serialNumber)->first();
     }
 
     public function search($term, $paginate): LengthAwarePaginator
     {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
-            ->whereHas('tariff', fn($q) => $q->where('name', 'LIKE', '%' . $term . '%'))
+            ->whereHas('tariff', fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%'))
             ->orWhere(
                 'serial_number',
                 'LIKE',
-                '%' . $term . '%'
+                '%'.$term.'%'
             )->paginate($paginate);
     }
 
@@ -47,7 +41,7 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with([
             'tariff',
             'device.geo',
-            'meterType'
+            'meterType',
         ])->find($meterId);
     }
 
@@ -61,7 +55,7 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
-                fn($q) => $q->whereHas(
+                fn ($q) => $q->whereHas(
                     'address',
                     function ($q) use ($cities) {
                         $q->whereIn('city_id', $cities);
@@ -92,7 +86,7 @@ class MeterService implements IBaseService
             'meterType',
             'connectionType',
             'connectionGroup',
-            'manufacturer'
+            'manufacturer',
         ])->find($meterId);
     }
 
@@ -109,6 +103,7 @@ class MeterService implements IBaseService
                 $inUse
             )->paginate($limit);
         }
+
         return $this->meter->newQuery()->with(['meterType', 'tariff'])->paginate($limit);
     }
 

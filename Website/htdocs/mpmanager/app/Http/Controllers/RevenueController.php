@@ -3,22 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
+use App\Models\City;
 use App\Models\Cluster;
 use App\Models\ConnectionGroup;
+use App\Models\ConnectionType;
 use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Services\MeterRevenueService;
 use App\Services\PeriodService;
-use App\Models\City;
-use App\Models\ConnectionType;
 use App\Services\RevenueService;
-use DateInterval;
-use DatePeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Models\Ticket;
-use stdClass;
+use Inensus\Ticket\Models\TicketCategory;
 
 class RevenueController extends Controller
 {
@@ -37,9 +34,9 @@ class RevenueController extends Controller
     {
         $begin = date_create('2018-08-01');
         $end = date_create();
-        $end->add(new DateInterval('P1D')); //
-        $i = new DateInterval('P1W');
-        $period = new DatePeriod($begin, $i, $end);
+        $end->add(new \DateInterval('P1D'));
+        $i = new \DateInterval('P1W');
+        $period = new \DatePeriod($begin, $i, $end);
 
         $openedTicketsWithCategories = $this->ticket->ticketsOpenedWithCategories($id);
         $closedTicketsWithCategories = $this->ticket->ticketsClosedWithCategories($id);
@@ -57,15 +54,15 @@ class RevenueController extends Controller
         }
 
         foreach ($closedTicketsWithCategories as $closedTicketsWithCategory) {
-            $date = $this->reformatPeriod($closedTicketsWithCategory["period"]);
-            $result[$date][$closedTicketsWithCategory["label_name"]]["closed"]
-                = $closedTicketsWithCategory["closed_tickets"];
+            $date = $this->reformatPeriod($closedTicketsWithCategory['period']);
+            $result[$date][$closedTicketsWithCategory['label_name']]['closed']
+                = $closedTicketsWithCategory['closed_tickets'];
         }
 
         foreach ($openedTicketsWithCategories as $openedTicketsWithCategory) {
-            $date = $this->reformatPeriod($openedTicketsWithCategory["period"]);
-            $result[$date][$openedTicketsWithCategory["label_name"]]["opened"]
-                = $openedTicketsWithCategory["new_tickets"];
+            $date = $this->reformatPeriod($openedTicketsWithCategory['period']);
+            $result[$date][$openedTicketsWithCategory['label_name']]['opened']
+                = $openedTicketsWithCategory['new_tickets'];
         }
 
         return ApiResource::make($result);
@@ -83,10 +80,11 @@ class RevenueController extends Controller
 
         if (!count($cities)) {
             $response = ['data' => null, 'message' => 'There is no city for this MiniGrid'];
+
             return ApiResource::make($response);
         }
 
-        //get list of tariffs
+        // get list of tariffs
         $connections = ConnectionType::query()->get();
         $connectionNames = $connections->pluck('name')->toArray();
         $initialData = array_fill_keys($connectionNames, ['revenue' => 0]);
@@ -98,7 +96,6 @@ class RevenueController extends Controller
             $initialData
         );
 
-
         $connections->each(function (ConnectionType $connection) use ($endDate, $startDate, $cityIds, &$response) {
             $this->meterRevenueService->getConnectionTypeBasedRevenueInWeeklyPeriodForCities(
                 $cityIds,
@@ -106,7 +103,7 @@ class RevenueController extends Controller
                 $startDate,
                 $endDate
             )->each(function (Transaction $transaction) use ($connection, &$response) {
-                $totalRevenue = (int)$transaction['total'];
+                $totalRevenue = (int) $transaction['total'];
                 $date = $this->reformatPeriod($transaction['result_date']);
                 $response[$date][$connection->name] = [
                     'revenue' => $totalRevenue,
@@ -114,12 +111,11 @@ class RevenueController extends Controller
             });
         });
 
-
         return ApiResource::make($response);
     }
 
     /**
-     * Prepares the data for revenue dashboard
+     * Prepares the data for revenue dashboard.
      *
      * @param Request $request
      *
@@ -132,11 +128,10 @@ class RevenueController extends Controller
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
         $targetType = $request->get('target_type'); // cluster or mini-grid
         if ($targetType !== 'mini-grid' && $targetType !== 'cluster') {
-            throw  new \Exception('target type must either mini-grid or cluster');
+            throw new \Exception('target type must either mini-grid or cluster');
         }
 
-
-        //get target
+        // get target
         if ($targetType === 'mini-grid') {
             $targets = $this->target->targetForMiniGrid($targetTypeId, $endDate)->first();
         } else {
@@ -150,8 +145,8 @@ class RevenueController extends Controller
 
         $formattedTarget = [];
 
-        if ($targets === null) { //no target defined for that mini-grid
-            $targets = new stdClass();
+        if ($targets === null) { // no target defined for that mini-grid
+            $targets = new \stdClass();
             $connections = ConnectionGroup::query()->get();
             foreach ($connections as $connection) {
                 $formattedTarget[$connection->name] = [
@@ -178,7 +173,7 @@ class RevenueController extends Controller
             $targets->targets = $formattedTarget;
         }
 
-        //get all types of connections
+        // get all types of connections
         $connectionGroups = ConnectionGroup::query()->select('id', 'name')->get();
 
         $connections = [];
@@ -212,8 +207,7 @@ class RevenueController extends Controller
                 );
             }
 
-
-            $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]["registered_connections"];
+            $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]['registered_connections'];
 
             $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
             if ($targetType === 'mini-grid') {
@@ -235,6 +229,7 @@ class RevenueController extends Controller
             }
             $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'];
         }
+
         return ApiResource::make(
             [
                 'target' => $targets,

@@ -8,6 +8,5 @@ interface IWeatherDataProvider
 {
     public function getCurrentWeatherData(array $geoLocation): ResponseInterface;
 
-
     public function getWeatherForeCast(array $geoLocation): ResponseInterface;
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\AgentReceipt;
 use App\Models\AgentReceiptDetail;
 
 class AgentReceiptDetailService implements IBaseService
@@ -21,6 +20,7 @@ class AgentReceiptDetailService implements IBaseService
                 }
             )->latest()->firstOrFail()->summary;
     }
+
     public function getById($id)
     {
         // TODO: Implement getById() method.

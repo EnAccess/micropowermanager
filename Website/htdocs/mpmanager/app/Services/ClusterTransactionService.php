@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Transaction\Transaction;
 use App\Models\Cluster;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
+use App\Models\Transaction\Transaction;
 
 class ClusterTransactionService
 {
@@ -18,7 +16,7 @@ class ClusterTransactionService
         return $this->transaction->newQuery()->whereHas(
             'device',
             function ($q) use ($clusterId) {
-                $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id', $clusterId)));
+                $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)));
             }
         )->whereHasMorph(
             'originalTransaction',

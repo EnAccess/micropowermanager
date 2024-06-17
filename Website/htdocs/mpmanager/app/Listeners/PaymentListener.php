@@ -28,15 +28,14 @@ class PaymentListener
     ) {
     }
 
-
     public function onEnergyPayment(ITransactionProvider $transactionProvider): void
     {
         $transaction = $transactionProvider->getTransaction();
-        //get meter preferences
+        // get meter preferences
         try {
             $meterParameter = MeterParameter::with('meter')->where('meter_id', $transaction->message)->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            Log::critical('Unkown meterId', ["meter_id" => $transaction->message, "amount" => $transaction->amount]);
+            Log::critical('Unkown meterId', ['meter_id' => $transaction->message, 'amount' => $transaction->amount]);
             event('transaction.failed', $transactionProvider);
         }
     }
@@ -45,20 +44,19 @@ class PaymentListener
     {
     }
 
-
     public function onPaymentFailed(): void
     {
         Log::debug('payment failed event');
     }
 
     /**
-     * @param int $amount
+     * @param int    $amount
      * @param string $paymentService the name of the Payment gateway
-     * @param $paymentType
-     * @param mixed $sender : The number or person who sent the money
-     * @param mixed $paidFor the identifier for the payment. Ex; { LoanID, TokenID }
-     * @param $payer
-     * @param $transaction
+     * @param        $paymentType
+     * @param mixed  $sender         : The number or person who sent the money
+     * @param mixed  $paidFor        the identifier for the payment. Ex; { LoanID, TokenID }
+     * @param        $payer
+     * @param        $transaction
      */
     public function onPaymentSuccess(
         $amount,

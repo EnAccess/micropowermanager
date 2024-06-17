@@ -22,8 +22,10 @@ class AgentAssignedApplianceWebController extends Controller
      * @bodyParam user_id integer required
      * @bodyParam appliance_type_id integer required
      * @bodyParam cost integer required
+     *
      * @param CreateAgentAssignedApplianceRequest $request
-     * @return    ApiResource
+     *
+     * @return ApiResource
      */
     public function store(CreateAgentAssignedApplianceRequest $request)
     {
@@ -37,12 +39,12 @@ class AgentAssignedApplianceWebController extends Controller
         return ApiResource::make($this->agentAssignedApplianceService->create($assignedApplianceData));
     }
 
-
     /**
      * List for Web interface.
      *
-     * @param Agent $agent
+     * @param Agent   $agent
      * @param Request $request
+     *
      * @return ApiResource
      */
     public function index($agentId, Request $request)

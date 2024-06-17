@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDeviceRequest;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Device;
@@ -27,12 +26,13 @@ class DeviceController extends Controller
         $deviceData = $request->validated();
         $updatedDevice = $this->deviceService->update($device, $deviceData);
         event('new.log', [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $device,
-                    'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner"
-                ]
-            ]);
+            'logData' => [
+                'user_id' => $creatorId,
+                'affected' => $device,
+                'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner",
+            ],
+        ]);
+
         return ApiResource::make($updatedDevice);
     }
 }

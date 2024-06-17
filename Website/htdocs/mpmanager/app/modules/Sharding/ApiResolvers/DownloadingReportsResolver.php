@@ -16,6 +16,6 @@ class DownloadingReportsResolver implements ApiResolverInterface
 
         $companyId = $segments[4];
 
-        return (int)$companyId;
+        return (int) $companyId;
     }
 }

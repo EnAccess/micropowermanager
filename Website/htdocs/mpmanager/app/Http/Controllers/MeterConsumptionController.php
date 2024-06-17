@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\MeterConsumptionService;
-use App\Models\Meter\MeterConsumption;
 use App\Services\MeterService;
 
 class MeterConsumptionController extends Controller
@@ -18,16 +17,18 @@ class MeterConsumptionController extends Controller
     /**
      * Consumption List
      * If the meter has the ability to send data to your server. That is the endpoint where you get the
-     * meter readings ( used energy, credit on meter etc.)
+     * meter readings ( used energy, credit on meter etc.).
      *
      * @urlParam     serialNumber
      * @urlParam     start YYYY-mm-dd format
      * @urlParam     end YYYY-mm-dd format
+     *
      * @responseFile responses/meters/meter.consumption.list.json
      *
-     * @param  $serialNumber
-     * @param  $start
-     * @param  $end
+     * @param $serialNumber
+     * @param $start
+     * @param $end
+     *
      * @return ApiResource
      */
     public function show($serialNumber, $start, $end): ApiResource

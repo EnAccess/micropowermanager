@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentCommissionRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\AgentCommission;
 use App\Services\AgentCommissionService;
 use Illuminate\Http\Request;
 
@@ -26,11 +25,11 @@ class AgentCommissionWebController extends Controller
         return ApiResource::make($this->agentCommissionService->getAll($limit));
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
      * @param CreateAgentCommissionRequest $request
+     *
      * @return ApiResource
      */
     public function store(CreateAgentCommissionRequest $request)
@@ -40,12 +39,12 @@ class AgentCommissionWebController extends Controller
         return ApiResource::make($this->agentCommissionService->create($commissionData));
     }
 
-
     /**
      * Update the specified resource in storage.
      *
-     * @param $agentCommissionId
+     * @param                              $agentCommissionId
      * @param CreateAgentCommissionRequest $request
+     *
      * @return ApiResource
      */
     public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource
@@ -59,6 +58,7 @@ class AgentCommissionWebController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $agentCommissionId
+     *
      * @return ApiResource
      */
     public function destroy($agentCommissionId): ApiResource

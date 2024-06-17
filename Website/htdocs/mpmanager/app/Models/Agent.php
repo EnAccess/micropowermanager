@@ -16,27 +16,26 @@ use Inensus\Ticket\Models\Ticket;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * Class Agent
+ * Class Agent.
  *
- * @package App\Models
- *
- * @property int $id
- * @property int $person_id
- * @property int $mini_grid_id
- * @property int $agent_commission_id
+ * @property int    $id
+ * @property int    $person_id
+ * @property int    $mini_grid_id
+ * @property int    $agent_commission_id
  * @property string $device_id
  * @property string $name
  * @property string $email
  * @property string $password
  * @property string $fire_base_token
- * @property double $balance
- * @property double $available_balance
+ * @property float  $balance
+ * @property float  $available_balance
  * @property string $remember_token
- * @property int $company_id
+ * @property int    $company_id
  */
 class Agent extends Authenticatable implements JWTSubject
 {
     public const RELATION_NAME = 'agent';
+
     public function __construct(array $attributes = [])
     {
         $this->setConnection('shard');
@@ -58,15 +57,13 @@ class Agent extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        'device_id'
+        'device_id',
     ];
-
 
     public function miniGrid(): HasOne
     {
-        return $this->hasOne(MiniGrid::Class, 'id', 'mini_grid_id');
+        return $this->hasOne(MiniGrid::class, 'id', 'mini_grid_id');
     }
-
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -88,10 +85,9 @@ class Agent extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'companyId' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID]
+            'companyId' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID],
         ];
     }
-
 
     public function address(): MorphOne
     {
@@ -117,7 +113,6 @@ class Agent extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
-
 
     public function addressDetails()
     {

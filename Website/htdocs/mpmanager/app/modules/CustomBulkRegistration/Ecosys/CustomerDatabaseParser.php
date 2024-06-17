@@ -9,7 +9,6 @@ use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\MeterTariff;
 use App\Models\MiniGrid;
-use App\Models\SubConnectionType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use MPM\CustomBulkRegistration\Ecosys\Services\AddressService;
@@ -30,7 +29,7 @@ class CustomerDatabaseParser
 
     public function __construct(private Csv $csv)
     {
-        $this->path = __DIR__ . '/CustomerDb/customer_db.csv';
+        $this->path = __DIR__.'/CustomerDb/customer_db.csv';
         $this->recentlyCreatedRecords = [
             'customer' => 0,
             'connection_group' => 0,
@@ -40,10 +39,10 @@ class CustomerDatabaseParser
         ];
     }
 
-
     private function parseCsvFromFilePath()
     {
         $this->csv->auto($this->path);
+
         return $this->csv->data;
     }
 
@@ -71,7 +70,6 @@ class CustomerDatabaseParser
             $manufacturer,
             $tariff
         ) {
-
             try {
                 DB::connection('shard')->beginTransaction();
                 $row['cluster_id'] = $cluster->id;
@@ -86,7 +84,6 @@ class CustomerDatabaseParser
 
                 $city = $this->createRecordFromCsv($row, CityService::class);
                 $row['city_id'] = $city->id;
-
 
                 if (!$isExistingPerson) {
                     $this->createRecordFromCsv($row, AddressService::class);
@@ -137,13 +134,14 @@ class CustomerDatabaseParser
     private function createRecordFromCsv($row, $service)
     {
         $service = app()->make($service);
+
         return $service->resolveCsvDataFromComingRow($row);
     }
 
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            $this->recentlyCreatedRecords[$type]++;
+            ++$this->recentlyCreatedRecords[$type];
         }
     }
 }

@@ -2,13 +2,11 @@
 
 namespace App\Observers;
 
-use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\AgentReceipt;
-use App\Models\AgentSoldAppliance;
 use App\Models\Transaction\AgentTransaction;
 use App\Services\AgentService;
 
@@ -23,6 +21,7 @@ class AgentBalanceHistoryObserver
      * Handle the asset person "updated" event.
      *
      * @param AgentBalanceHistory $agentBalanceHistory
+     *
      * @return void
      */
     public function created(AgentBalanceHistory $agentBalanceHistory)

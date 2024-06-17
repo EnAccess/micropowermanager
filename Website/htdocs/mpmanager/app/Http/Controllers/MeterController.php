@@ -5,18 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MeterRequest;
 use App\Http\Requests\UpdateMeterRequest;
 use App\Http\Resources\ApiResource;
-use App\Services\MeterGeographicalInformationService;
-use App\Services\MeterService;
-use App\Models\City;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterConsumption;
-use App\Models\Meter\MeterToken;
-use App\Models\PaymentHistory;
-use App\Models\Person\Person;
-use App\Models\Transaction\Transaction;
+use App\Services\MeterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class MeterController extends Controller
@@ -29,13 +21,16 @@ class MeterController extends Controller
     /**
      * List
      * Lists all used meters with meterType and meterParameters.tariff
-     * The response is paginated with 15 results on each page/request
+     * The response is paginated with 15 results on each page/request.
      *
      * @urlParam     page int
      * @urlParam     in_use int to list wether used or all meters
+     *
      * @responseFile responses/meters/meters.list.json
+     *
      * @param Request $request
-     * @return       ApiResource
+     *
+     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -47,18 +42,21 @@ class MeterController extends Controller
 
     /**
      * Create
-     * Stores a new meter
+     * Stores a new meter.
      *
      * @param MeterRequest $request
+     *
      * @bodyParam serial_number string required
      * @bodyParam meter_type_id int required
      * @bodyParam manufacturer_id int required
-     * @return    mixed
-     * @throws    ValidationException
+     *
+     * @return mixed
+     *
+     * @throws ValidationException
      */
     public function store(MeterRequest $request)
     {
-        $meterData = (array)$request->all();
+        $meterData = (array) $request->all();
 
         return ApiResource::make($this->meterService->create($meterData));
     }
@@ -71,9 +69,10 @@ class MeterController extends Controller
      * - Meter Type
      * - MeterParameter.connectionType
      * - MeterParameter.connectionGroup
-     * - Manufacturer
+     * - Manufacturer.
      *
      * @urlParam serialNumber string
+     *
      * @param string $serialNumber
      *
      * @return ApiResource
@@ -89,7 +88,7 @@ class MeterController extends Controller
      * Search
      * The search term will be searched in following fields
      * - Tariff.name
-     * - Serial number
+     * - Serial number.
      *
      * @bodyParam term string required
      *
@@ -107,15 +106,18 @@ class MeterController extends Controller
 
     /**
      * Delete
-     * Deletes the meter with its all releations
+     * Deletes the meter with its all releations.
      *
      * @urlParam meterId. The ID of the meter to be delete
-     * @param    $meterId
-     * @return   JsonResponse
+     *
+     * @param $meterId
+     *
+     * @return JsonResponse
      */
     public function destroy($meterId): JsonResponse
     {
         $this->meterService->getById($meterId);
+
         return response()->json(null, 204);
     }
 
@@ -126,12 +128,13 @@ class MeterController extends Controller
         $updatedMeter = $this->meterService->update($meter, $request->validated());
         $updatedDataOfMeter = json_encode($updatedMeter->toArray());
         event('new.log', [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $meter,
-                    'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter"
-                ]
-            ]);
+            'logData' => [
+                'user_id' => $creatorId,
+                'affected' => $meter,
+                'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter",
+            ],
+        ]);
+
         return ApiResource::make($updatedMeter);
     }
 }

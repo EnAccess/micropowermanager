@@ -26,7 +26,7 @@ class AddEBikesItemToNavbar extends AbstractSharedCommand
      *
      * @return void
      */
-    public function __construct(private MenuItemsService $menuItemsService,)
+    public function __construct(private MenuItemsService $menuItemsService)
     {
         parent::__construct();
     }
@@ -39,6 +39,7 @@ class AddEBikesItemToNavbar extends AbstractSharedCommand
     public function handle()
     {
         $this->addSolarHomeSystemsToNavBar();
+
         return 0;
     }
 

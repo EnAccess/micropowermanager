@@ -24,7 +24,7 @@ class UpdateMiniGridRequest extends FormRequest
     public function rules()
     {
         return [
-            'data_stream' => 'sometimes|integer|in:0,1'
+            'data_stream' => 'sometimes|integer|in:0,1',
         ];
     }
 }

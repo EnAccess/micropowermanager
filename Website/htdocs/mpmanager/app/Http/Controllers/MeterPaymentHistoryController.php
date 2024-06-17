@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Services\MeterService;
 use App\Services\PaymentHistoryService;
-use Illuminate\Http\Request;
 
 class MeterPaymentHistoryController
 {

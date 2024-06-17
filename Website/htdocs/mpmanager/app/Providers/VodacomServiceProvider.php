@@ -15,7 +15,6 @@ class VodacomServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 
     /**
@@ -25,6 +24,5 @@ class VodacomServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

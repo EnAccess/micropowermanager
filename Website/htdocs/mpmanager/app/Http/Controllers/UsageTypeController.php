@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\UsageType;
 use App\Services\UsageTypeService;
 use Illuminate\Http\Request;
 

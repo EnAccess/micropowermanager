@@ -2,11 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Cluster;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
-use App\Models\Cluster;
-use DateInterval;
-use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -31,16 +29,15 @@ class ClusterRevenueService
                 'device',
                 function ($q) use ($clusterId, $connectionType, $miniGridId) {
                     $query = $miniGridId ?
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                             'mini_grid_id',
                             $miniGridId
                         )))
                         :
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                             'cluster_id',
                             $clusterId
                         )));
-
 
                     if ($connectionType) {
                         $query->whereHasMorph(
@@ -51,6 +48,7 @@ class ClusterRevenueService
                             }
                         );
                     }
+
                     return $query;
                 }
             )
@@ -72,7 +70,7 @@ class ClusterRevenueService
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
-                    $query = $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                    $query = $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                         'cluster_id',
                         $clusterId
                     )));
@@ -85,6 +83,7 @@ class ClusterRevenueService
                             }
                         );
                     }
+
                     return $query;
                 }
             )
@@ -117,7 +116,7 @@ class ClusterRevenueService
             foreach ($revenues as $rIndex => $revenue) {
                 if ($period === 'weekMonth') {
                     $p[$revenue->period][$revenue->week]['revenue'] = $revenue->revenue;
-                } elseif ($period = "monthly") {
+                } elseif ($period = 'monthly') {
                     $p[$revenue->period]['revenue'] += $revenue->revenue;
                 }
                 $totalRevenue += $revenue->revenue;
@@ -126,6 +125,7 @@ class ClusterRevenueService
             $clusters[$clusterIndex]['period'] = $p;
             $clusters[$clusterIndex]['totalRevenue'] = $totalRevenue;
         }
+
         return $clusters;
     }
 
@@ -201,6 +201,7 @@ class ClusterRevenueService
         }
 
         asort($revenueAnalysis);
+
         return $revenueAnalysis;
     }
 
@@ -232,6 +233,7 @@ class ClusterRevenueService
             }
         }
         asort($revenueAnalysis);
+
         return $revenueAnalysis;
     }
 
@@ -294,7 +296,7 @@ class ClusterRevenueService
             foreach ($revenues as $rIndex => $revenue) {
                 if ($period === 'weekMonth') {
                     $p[$revenue->period][$revenue->week]['revenue'] = $revenue->revenue;
-                } elseif ($period = "monthly") {
+                } elseif ($period = 'monthly') {
                     $p[$revenue->period]['revenue'] += $revenue->revenue;
                 }
                 $totalRevenue += $revenue->revenue;
@@ -310,13 +312,14 @@ class ClusterRevenueService
     public function setDatesForRequest($startDate, $endDate): array
     {
         if (!$startDate) {
-            $start = new DateTime();
+            $start = new \DateTime();
             $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
             $start->setTime(0, 0, 0); // Normalize time to midnight
-            $start->sub(new DateInterval('P12M'));
+            $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
         }
         $endDate = $endDate ?? date('Y-m-t');
+
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }
 

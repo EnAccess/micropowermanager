@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
-use App\Models\Transaction\AgentTransaction;
 use App\Services\AgentService;
 use App\Services\AgentTransactionService;
 use Illuminate\Http\Request;
@@ -26,7 +24,6 @@ class AgentTransactionsController extends Controller
 
         return ApiResource::make($this->agentTransactionService->getAll($limit, $agent->id, self::FOR_APP));
     }
-
 
     public function show($customerId, Request $request): ApiResource
     {

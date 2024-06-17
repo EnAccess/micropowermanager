@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Class AssetPerson
- *
- * @package App\Models
+ * Class AssetPerson.
  *
  * @property int $asset_type_id
  * @property int $person_id
@@ -26,7 +24,6 @@ class AssetPerson extends BaseModel
         'created' => AssetPersonCreated::class,
     ];
 
-
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
@@ -36,7 +33,6 @@ class AssetPerson extends BaseModel
     {
         return $this->morphMany(Log::class, 'affected');
     }
-
 
     public function asset(): BelongsTo
     {
@@ -52,6 +48,7 @@ class AssetPerson extends BaseModel
     {
         return $this->morphTo();
     }
+
     public function device(): BelongsTo
     {
         return $this->belongsTo(Device::class);

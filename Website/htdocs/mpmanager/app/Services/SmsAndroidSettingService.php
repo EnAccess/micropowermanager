@@ -2,11 +2,7 @@
 
 namespace App\Services;
 
-use App\Exceptions\SmsAndroidSettingNotExistingException;
-use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 
 class SmsAndroidSettingService
 {
@@ -16,9 +12,8 @@ class SmsAndroidSettingService
     public function __construct(private SmsAndroidSetting $smsAndroidSetting, private UserService $userService)
     {
         $this->fireBaseKey = config('services.sms.android.key');
-        $this->callbackUrl = config('services.sms.callback') . $this->userService->getCompanyId();
+        $this->callbackUrl = config('services.sms.callback').$this->userService->getCompanyId();
     }
-
 
     public function getSmsAndroidSetting()
     {
@@ -40,19 +35,21 @@ class SmsAndroidSettingService
     public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, $androidPhoneToken)
     {
         $fireBaseKey = config('services.sms.android.key');
-        $callbackUrl = config('services.sms.android.callback_url') . $this->userService->getCompanyId();
+        $callbackUrl = config('services.sms.android.callback_url').$this->userService->getCompanyId();
 
         $smsAndroidSetting->update([
             'callback' => $this->callbackUrl,
             'token' => $androidPhoneToken,
             'key' => $this->fireBaseKey,
         ]);
+
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
     public function deleteSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting)
     {
         $smsAndroidSetting->delete();
+
         return $this->smsAndroidSetting->newQuery()->get();
     }
 }

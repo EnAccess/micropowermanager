@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Models\Transaction\Transaction;
-use App\Relations\BelongsToMorph;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -16,7 +14,6 @@ class AgentBalanceHistory extends BaseModel
     {
         $this->belongsTo(Agent::class);
     }
-
 
     public function trigger(): MorphTo
     {

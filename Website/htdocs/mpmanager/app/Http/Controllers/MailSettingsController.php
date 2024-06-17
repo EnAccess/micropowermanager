@@ -12,7 +12,6 @@ class MailSettingsController extends Controller
     /**
      * @MailSettings
      */
-
     private $mailSettings;
     private $mailSettingsService;
 

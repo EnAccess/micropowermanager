@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Services\ClusterService;
 use App\Models\Cluster;
 use App\Services\ClusterManagerService;
+use App\Services\ClusterService;
 use App\Services\MailService;
 use App\Services\PaymentHistoryService;
 use App\Services\PdfService;
 use App\Services\PersonService;
 use Carbon\CarbonImmutable;
-use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
 class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
@@ -41,18 +40,18 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
         $endDate = $this->option('end-date') ? CarbonImmutable::make($this->option('end-date')) : CarbonImmutable::make(
             'last day of last month'
         );
-        $this->info($startDate->format('Y-m-d') . '- ' . $endDate->format('Y-m-d'));
+        $this->info($startDate->format('Y-m-d').'- '.$endDate->format('Y-m-d'));
 
         $clusters = $this->clusterService->getAll();
 
         $generatedPdfs = [];
 
-        //fetch non-paying customers in all clusters for the given time range
+        // fetch non-paying customers in all clusters for the given time range
         $clusters->each(function (Cluster $cluster) use ($startDate, $endDate, &$generatedPdfs) {
             $nonPayingCustomers = [];
             $this->personService->livingInCluster($cluster->id)->chunk(
                 50,
-                function (Collection $people) use ($startDate, $endDate, &$nonPayingCustomers, $cluster) {
+                function (Collection $people) use ($startDate, $endDate, &$nonPayingCustomers) {
                     $customersToExclude = $this->paymentHistoryService->findPayingCustomersInRange(
                         $people->pluck('id')->toArray(),
                         $startDate,
@@ -75,7 +74,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
                     'title' => $cluster->name,
                     'start_date' => $startDate->format('Y-m-d'),
                     'end_date' => $endDate->format('Y-m-d'),
-                    'customers' => $this->personService->getBulkDetails($nonPayingCustomers)->get()
+                    'customers' => $this->personService->getBulkDetails($nonPayingCustomers)->get(),
                 ]
             );
 
@@ -84,12 +83,12 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
                 [
                     'manager' => $cluster->manager,
                     'cluster_name' => $cluster->name,
-                    'period' => $startDate->format('d-m') . ' & ' . $endDate->format('d-m-Y')
+                    'period' => $startDate->format('d-m').' & '.$endDate->format('d-m-Y'),
                 ],
                 [
                     'to' => $cluster->manager->email,
                     'from' => 'alchalade@gmail.com',
-                    'title' => 'Monthly payment report for ' . $cluster->name,
+                    'title' => 'Monthly payment report for '.$cluster->name,
                 ],
                 [$generatedPdfs[$cluster->name]]
             );

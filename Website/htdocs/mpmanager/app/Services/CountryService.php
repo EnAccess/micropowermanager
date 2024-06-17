@@ -10,7 +10,7 @@ class CountryService implements IBaseService
     {
     }
 
-    public function getByCode(string|null $countryCode)
+    public function getByCode(?string $countryCode)
     {
         return $countryCode !== null ? $this->country->where('country_code', $countryCode)->first() : $countryCode;
     }
