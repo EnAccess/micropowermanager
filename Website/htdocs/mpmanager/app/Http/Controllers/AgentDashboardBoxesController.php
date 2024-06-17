@@ -16,10 +16,11 @@ class AgentDashboardBoxesController extends Controller
         private AgentReceiptService $agentReceiptService,
     ) {
     }
+
     public function show(Request $request, Response $response)
     {
         $agent = $this->agentService->getByAuthenticatedUser();
-        $lastReceipt  = $this->agentReceiptService->getLastReceipt($agent->id);
+        $lastReceipt = $this->agentReceiptService->getLastReceipt($agent->id);
         $average = $this->agentBalanceHistoryService->getTransactionAverage($agent, $lastReceipt);
         $since = $this->agentReceiptService->getLastReceiptDate($agent);
 
@@ -31,8 +32,8 @@ class AgentDashboardBoxesController extends Controller
                     'dept' => $agent->due_to_energy_supplier,
                     'average' => $average,
                     'since' => $since,
-                    'status_code' => 200
-                ]
+                    'status_code' => 200,
+                ],
             ]
         );
     }

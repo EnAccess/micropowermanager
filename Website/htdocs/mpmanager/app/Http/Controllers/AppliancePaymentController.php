@@ -20,6 +20,7 @@ class AppliancePaymentController extends Controller
             DB::connection('shard')->beginTransaction();
             $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);
             DB::connection('shard')->commit();
+
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
             DB::connection('shard')->rollBack();

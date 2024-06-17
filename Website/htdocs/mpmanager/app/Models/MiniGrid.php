@@ -10,14 +10,12 @@ use Illuminate\Support\Collection;
 use MPM\Target\TargetAssignable;
 
 /**
- * Class MiniGrid
+ * Class MiniGrid.
  *
- * @package App
- *
- * @property int $id
- * @property string $name
- * @property int $cluster_id
- * @property int $data_stream
+ * @property int        $id
+ * @property string     $name
+ * @property int        $cluster_id
+ * @property int        $data_stream
  * @property Collection $cities
  */
 class MiniGrid extends BaseModel implements TargetAssignable
@@ -25,12 +23,10 @@ class MiniGrid extends BaseModel implements TargetAssignable
     public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];
 
-
     public function cities(): HasMany
     {
         return $this->hasMany(City::class);
     }
-
 
     public function cluster(): BelongsTo
     {

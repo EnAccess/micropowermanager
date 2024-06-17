@@ -6,11 +6,6 @@ use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
-use App\PaymentHandler\AccessRate;
-use App\Services\SmsAndroidSettingService;
-use App\Sms\Senders\SmsConfigs;
-use App\Sms\SmsTypes;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class EnergyTransactionProcessor extends AbstractJob
@@ -28,6 +23,7 @@ class EnergyTransactionProcessor extends AbstractJob
      * Execute the job.
      *
      * @return void
+     *
      * @throws TransactionNotInitializedException
      */
     public function executeJob()
@@ -46,7 +42,7 @@ class EnergyTransactionProcessor extends AbstractJob
                 $this->completeTransactionWithNotification($transactionData);
             }
         } catch (\Exception $e) {
-            Log::info('Transaction failed.: ' . $e->getMessage());
+            Log::info('Transaction failed.: '.$e->getMessage());
             event('transaction.failed', [$this->transaction, $e->getMessage()]);
         }
     }
@@ -68,7 +64,6 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-
     private function checkForMinimumPurchaseAmount(TransactionDataContainer $transactionData): void
     {
         $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
@@ -84,7 +79,6 @@ class EnergyTransactionProcessor extends AbstractJob
             }
         }
     }
-
 
     private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer
     {
@@ -105,9 +99,9 @@ class EnergyTransactionProcessor extends AbstractJob
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
         }
+
         return $transactionData;
     }
-
 
     private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void
     {

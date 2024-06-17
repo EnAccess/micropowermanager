@@ -3,20 +3,20 @@
 namespace App\Console\Commands;
 
 use App\Models\Meter\MeterToken;
+use App\Services\AddressesService;
 use App\Services\CityGeographicalInformationService;
 use App\Services\CityService;
+use App\Services\GeographicalInformationService;
 use App\Services\ManufacturerService;
 use App\Services\MenuItemsService;
-use App\Services\MiniGridService;
-use App\Services\TokenService;
-use MPM\Meter\MeterDeviceService;
-use App\Services\AddressesService;
-use App\Services\GeographicalInformationService;
 use App\Services\MeterParameterService;
 use App\Services\MeterService;
+use App\Services\MiniGridService;
+use App\Services\TokenService;
 use Illuminate\Support\Facades\DB;
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
+use MPM\Meter\MeterDeviceService;
 
 class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
 {
@@ -120,13 +120,14 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         if ($city->location == null) {
             $miniGridLocation = $this->miniGridService->getByIdWithLocation($city->mini_grid_id)->location;
             $cityGeo = $this->geographicalInformationService->make([
-                'points' => $miniGridLocation->points
+                'points' => $miniGridLocation->points,
             ]);
             $this->cityGeographicalInformationService->setAssigned($cityGeo);
             $this->cityGeographicalInformationService->setAssignee($city);
             $this->cityGeographicalInformationService->assign();
             $this->geographicalInformationService->save($cityGeo);
         }
+
         return $city;
     }
 

@@ -19,7 +19,7 @@ class LoanDataContainer
     private ?Person $meterOwner;
     private Transaction $transaction;
 
-    public array $paid_rates = array();
+    public array $paid_rates = [];
 
     public function initialize(Transaction $transaction): void
     {
@@ -35,17 +35,17 @@ class LoanDataContainer
 
         foreach ($loans as $loan) {
             if ($loan->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                //add payment history for the loan
+                // add payment history for the loan
                 event(
                     'payment.successful',
                     [
-                    'amount' => $this->transaction->amount,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $loan,
-                    'payer' => $this->meterOwner,
-                    'transaction' => $this->transaction,
+                        'amount' => $this->transaction->amount,
+                        'paymentService' => $this->transaction->original_transaction_type,
+                        'paymentType' => 'installment',
+                        'sender' => $this->transaction->sender,
+                        'paidFor' => $loan,
+                        'payer' => $this->meterOwner,
+                        'transaction' => $this->transaction,
                     ]
                 );
                 $loan->update(
@@ -60,17 +60,17 @@ class LoanDataContainer
                 $this->transaction->amount = 0;
                 break;
             } else {
-                //add payment history for the loan
+                // add payment history for the loan
                 event(
                     'payment.successful',
                     [
-                    'amount' => $loan->remaining,
-                    'paymentService' => $this->transaction->original_transaction_type,
-                    'paymentType' => 'installment',
-                    'sender' => $this->transaction->sender,
-                    'paidFor' => $loan,
-                    'payer' => $this->meterOwner,
-                    'transaction' => $this->transaction,
+                        'amount' => $loan->remaining,
+                        'paymentService' => $this->transaction->original_transaction_type,
+                        'paymentType' => 'installment',
+                        'sender' => $this->transaction->sender,
+                        'paidFor' => $loan,
+                        'payer' => $this->meterOwner,
+                        'transaction' => $this->transaction,
                     ]
                 );
                 $this->paid_rates[] = [
@@ -82,19 +82,21 @@ class LoanDataContainer
                 $loan->update();
             }
         }
+
         return $this->transaction->amount;
     }
 
-
     /**
      * @param $owner
+     *
      * @return Builder[]|Collection
      *
-     * @psalm-return \Illuminate\Database\Eloquent\Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
+     * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
      */
     private function getCustomerDueRates($owner): Collection
     {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
+
         return AssetRate::with('assetPerson.assetType')
             ->whereIn('asset_person_id', $loans)
             ->where('remaining', '>', 0)
@@ -103,9 +105,10 @@ class LoanDataContainer
     }
 
     /**
-     * @param String $serialNumber
+     * @param string $serialNumber
      *
      * @return mixed
+     *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
@@ -120,10 +123,11 @@ class LoanDataContainer
             throw new MeterIsNotAssignedToCustomer('');
         }
 
-        //meter is not been used by anyone
+        // meter is not been used by anyone
         if (!$meter->in_use) {
-            throw new MeterIsNotInUse($serialNumber . ' meter is not in use');
+            throw new MeterIsNotInUse($serialNumber.' meter is not in use');
         }
+
         return $meter->meterParameter->owner;
     }
 }

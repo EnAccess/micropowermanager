@@ -28,7 +28,6 @@ class MiniGridSolarService
 
     public function getForJetsonById($miniGridId, $startDate, $endDate, $limit, $weatherData): Collection|array
     {
-
         $solarReadings = $this->solar->newQuery()
             ->where('mini_grid_id', $miniGridId);
 
@@ -58,18 +57,19 @@ class MiniGridSolarService
 
         return $solarReadings->get();
     }
+
     public function create($solarData)
     {
-
         $solar = $this->solar->newQuery()->create($solarData);
         $solar->fraction =
             round($this->findSlope($solarData['mini_grid_id'], $solarData['node_id'], $solarData['device_id']), 5);
         $solar->save();
+
         return $solar;
     }
+
     private function findSlope($miniGridId, $nodeId, $deviceId)
     {
-
         $query = $this->solar->newQuery()
             ->where('mini_grid_id', $miniGridId)
             ->where('node_id', $nodeId)
@@ -95,7 +95,7 @@ class MiniGridSolarService
             $sum_xx = 0;
             $sum_yy = 0;
 
-            for ($i = 0; $i < $n; $i++) {
+            for ($i = 0; $i < $n; ++$i) {
                 $sum_x += $x[$i];
                 $sum_y += $y[$i];
                 $sum_xy += ($x[$i] * $y[$i]);
@@ -105,10 +105,12 @@ class MiniGridSolarService
             try {
                 return ($n * $sum_xy - $sum_x * $sum_y) / ($n * $sum_xx - $sum_x * $sum_x);
             } catch (\Exception $e) {
-                Log::error('Error in finding slope: ' . $e->getMessage());
+                Log::error('Error in finding slope: '.$e->getMessage());
+
                 return 0;
             }
         }
+
         return 0;
     }
 }

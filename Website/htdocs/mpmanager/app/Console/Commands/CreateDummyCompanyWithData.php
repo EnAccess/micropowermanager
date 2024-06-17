@@ -19,7 +19,7 @@ class CreateDummyCompanyWithData extends Command
         'phone' => '+255123456789',
         'country_id' => -1,
         'email' => 'dummy@company.com',
-        'protected_page_password' => '123123'
+        'protected_page_password' => '123123',
     ];
     public const DUMMY_COMPANY_USER = [
         'password' => '123123',
@@ -35,17 +35,16 @@ class CreateDummyCompanyWithData extends Command
         private CompanyDatabaseService $companyDatabaseService,
         private DatabaseProxyManagerService $databaseProxyManagerService
     ) {
-
         parent::__construct();
     }
 
     public function handle()
     {
         try {
-            $path = __DIR__ . '/../../../database/dummyData/' . self::SQL_DUMMY_DATA_FILE_NAME;
-            $creatorShellPath = __DIR__ . '/../../..';
+            $path = __DIR__.'/../../../database/dummyData/'.self::SQL_DUMMY_DATA_FILE_NAME;
+            $creatorShellPath = __DIR__.'/../../..';
             if (!file_exists($path)) {
-                $message = "The specified SQL dump file does not exist.";
+                $message = 'The specified SQL dump file does not exist.';
                 throw new \Exception($message);
             }
 
@@ -55,7 +54,7 @@ class CreateDummyCompanyWithData extends Command
 
             $companyDatabaseData = [
                 'company_id' => $company->getId(),
-                'database_name' => $databaseName
+                'database_name' => $databaseName,
             ];
 
             $companyDatabase = CompanyDatabase::query()->firstOrCreate($companyDatabaseData, $companyDatabaseData);
@@ -64,7 +63,7 @@ class CreateDummyCompanyWithData extends Command
             $databaseProxyData = [
                 'email' => $adminData['email'],
                 'fk_company_id' => $company->getId(),
-                'fk_company_database_id' => $companyDatabase->getId()
+                'fk_company_database_id' => $companyDatabase->getId(),
             ];
 
             DatabaseProxy::query()->firstOrCreate($databaseProxyData, $databaseProxyData);
@@ -88,7 +87,7 @@ class CreateDummyCompanyWithData extends Command
             $sql = file_get_contents($path);
             DB::unprepared($sql);
         } catch (\Exception $e) {
-            $message = "Error while importing sql dump. " . $e->getMessage();
+            $message = 'Error while importing sql dump. '.$e->getMessage();
             throw new \Exception(mb_substr($message, 0, 1000));
         }
     }

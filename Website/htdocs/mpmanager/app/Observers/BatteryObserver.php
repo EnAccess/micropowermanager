@@ -12,17 +12,14 @@ class BatteryObserver
      */
     private $battery;
 
-
     public function __construct(Battery $battery)
     {
         $this->battery = $battery;
     }
 
-
     public function created(): void
     {
         $b = $this->battery->newQuery()->latest()->take(2)->get();
-
 
         if (count($b) === 1) {
             return;

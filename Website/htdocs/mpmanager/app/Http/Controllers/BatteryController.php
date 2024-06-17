@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreBatteryStateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Battery;
 use Carbon\Carbon;
@@ -11,12 +10,10 @@ use Illuminate\Http\Request;
 /**
  * @group   Battery
  * Class BatteryController
- * @package App\Http\Controllers
  */
 class BatteryController extends Controller
 {
     /**
-     *
      * @var Battery
      */
     private $battery;
@@ -25,7 +22,6 @@ class BatteryController extends Controller
     {
         $this->battery = $battery;
     }
-
 
     public function show(Request $request, $miniGridId): ApiResource
     {
@@ -46,18 +42,19 @@ class BatteryController extends Controller
                 Carbon::createFromTimestamp($endDate)->format('Y-m-d H:i:s')
             );
         }
+
         return new ApiResource($batteryReadings->get());
     }
 
-
     /**
-     * Battery details for Mini-Grid
+     * Battery details for Mini-Grid.
      *
      * @urlParam miniGridId int required
      * @urlParam limit int Default 50
      *
-     * @param  Request $request
-     * @param  $id
+     * @param Request $request
+     * @param         $id
+     *
      * @return ApiResource
      */
     public function showByMiniGrid(Request $request, $miniGridId): ApiResource
@@ -86,6 +83,7 @@ class BatteryController extends Controller
         }
         $batteryReadings->orderBy('read_out');
         $batteryReadings->latest();
+
         return new ApiResource($batteryReadings->get()->reverse()->values());
     }
 }

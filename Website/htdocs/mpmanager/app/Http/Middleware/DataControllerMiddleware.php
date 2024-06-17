@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Models\MiniGrid;
 use App\Models\Restriction;
-use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DataControllerMiddleware
@@ -27,11 +26,12 @@ class DataControllerMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, \Closure $next)
     {
         $restriction = $this->restriction->select('limit')->where(
             'target',

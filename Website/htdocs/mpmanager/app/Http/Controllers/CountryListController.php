@@ -12,6 +12,6 @@ class CountryListController extends Controller
         $country = Storage::disk('local')->get('countries.json');
         $country = json_decode($country, true);
 
-        return  ApiResource::make($country);
+        return ApiResource::make($country);
     }
 }

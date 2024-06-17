@@ -5,9 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class CreateUserRequest
- *
- * @package App\Http\Requests
+ * Class CreateUserRequest.
  */
 class CreateAdminRequest extends FormRequest
 {
@@ -31,7 +29,7 @@ class CreateAdminRequest extends FormRequest
         return [
             'email' => 'required',
             'name' => 'required|min:3',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
         ];
     }
 }

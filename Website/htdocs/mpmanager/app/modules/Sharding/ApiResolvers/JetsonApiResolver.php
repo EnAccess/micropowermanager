@@ -16,6 +16,6 @@ class JetsonApiResolver implements ApiResolverInterface
 
         $companyId = $segments[5];
 
-        return (int)$companyId;
+        return (int) $companyId;
     }
 }

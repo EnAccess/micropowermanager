@@ -5,9 +5,6 @@ namespace App\Services;
 use App\Models\Agent;
 use App\Models\Person\Person;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 
 class AgentCustomerService
 {
@@ -31,17 +28,16 @@ class AgentCustomerService
             ->paginate(config('settings.paginate'));
     }
 
-
     public function search($searchTerm, $limit, $agent)
     {
         return $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn ($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+            fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
         )->orWhereHas(
             'devices',
-            fn ($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
-        )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-            ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%')
+            fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
+        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
+            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%')
             ->paginate($limit);
     }
 }

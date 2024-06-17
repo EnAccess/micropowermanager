@@ -13,10 +13,8 @@ class ClusterManagerService
         $this->user = $user;
     }
 
-
     public function findManagerById(int $managerId): User
     {
-
         return $this->user->find($managerId);
     }
 }

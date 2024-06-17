@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 class UserPasswordController extends Controller
 {
     private $userService;
+
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
@@ -24,23 +25,24 @@ class UserPasswordController extends Controller
                 [
                     'data' => [
                         'message' => 'Failed to send password email. Please try it again later.',
-                        'status_code' => 409
-                    ]
+                        'status_code' => 409,
+                    ],
                 ]
             );
         }
+
         return $response->setStatusCode(200)->setContent(
             [
                 'data' => [
                     'message' => 'New password sent to your email address',
-                    'status_code' => 200
-                ]
+                    'status_code' => 200,
+                ],
             ]
         );
     }
 
     public function update(User $user, UserChangePasswordRequest $changePasswordRequest)
     {
-        return  new ApiResource($this->userService->update($user, $changePasswordRequest->all()));
+        return new ApiResource($this->userService->update($user, $changePasswordRequest->all()));
     }
 }

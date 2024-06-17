@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 02.10.18
- * Time: 10:44
+ * Time: 10:44.
  */
 
 namespace App\Http\Controllers;
@@ -13,16 +13,14 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Http\Request;
 
 /**
- * Class DailyTransactions
- *
- * @package App\Http\Controllers\Export
+ * Class DailyTransactions.
  *
  * @group Export
  */
 class DailyTransactions extends Controller
 {
     /**
-     * The used transaction model
+     * The used transaction model.
      *
      * @var Transaction
      */
@@ -33,7 +31,6 @@ class DailyTransactions extends Controller
         $this->transaction = $transaction;
     }
 
-
     public function getDailyReport(Request $request)
     {
         $date = $request->get('date') ?? date('Y-m-d');
@@ -41,16 +38,15 @@ class DailyTransactions extends Controller
         $transactions = $this->transaction::with('originalTransaction')->whereDate('created_at', $date)->get();
         $transactionOutput = [];
         foreach ($transactions as $t) {
-            if ($t->originalTransaction->status !== 1) { //the transaction is either not confirmed or cancelled
+            if ($t->originalTransaction->status !== 1) { // the transaction is either not confirmed or cancelled
                 continue;
             }
 
             $paymentHistory = $t->paymentHistories()->first();
             $payer = 'Unknown';
             if ($paymentHistory !== null) {
-                $payer = $paymentHistory->payer()->first()->name . ' ' . $paymentHistory->payer()->first()->surname;
+                $payer = $paymentHistory->payer()->first()->name.' '.$paymentHistory->payer()->first()->surname;
             }
-
 
             $transactionOutput[] = [
                 'TxDate' => date('Y/m/d', strtotime($t->created_at)),
@@ -59,7 +55,7 @@ class DailyTransactions extends Controller
                 'UseTax' => 'Y',
                 'TaxType' => '2',
                 'TaxAccount' => '9600',
-                'TaxAmount' => round(($t->amount * 100 / 118) * 0.18, 2), //18 percent of the total
+                'TaxAmount' => round(($t->amount * 100 / 118) * 0.18, 2), // 18 percent of the total
                 'Project' => 'Jumeme',
                 'Account' => 'P10100>P101200',
                 'IsDebit' => 'N',
@@ -82,11 +78,10 @@ class DailyTransactions extends Controller
                 'SagePayExtra1' => '',
                 'SagePayExtra2' => '',
                 'SagePayExtra3' => '',
-
             ];
         }
 
-        return $this->downloadCSV($transactionOutput, $date . '-transactions');
+        return $this->downloadCSV($transactionOutput, $date.'-transactions');
     }
 
     private function downloadCSV(array $transactionData, string $fileName)
@@ -97,7 +92,7 @@ class DailyTransactions extends Controller
         $headers = [
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename=' . $fileName . '.csv',
+            'Content-Disposition' => 'attachment; filename='.$fileName.'.csv',
             'Expires' => '0',
             'Pragma' => 'public',
         ];

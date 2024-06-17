@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\ConnectionType;
 use App\Services\ClusterRevenueService;
 use App\Services\ClusterService;
 use App\Services\ConnectionTypeService;
-use App\Services\MeterRevenueService;
-use App\Services\PeriodService;
 use Illuminate\Http\Request;
 
 class ClusterRevenueAnalysisController extends Controller
@@ -26,7 +23,7 @@ class ClusterRevenueAnalysisController extends Controller
          * !!!!
          * To group revenue by city -> connection type
          * use following structure
-         * $revenueAnalysis[$connectionType->name] = $periods;
+         * $revenueAnalysis[$connectionType->name] = $periods;.
          */
         $revenueAnalysis = [];
 

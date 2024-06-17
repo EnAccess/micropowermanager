@@ -26,6 +26,7 @@ class CreateAgentAssignedApplianceRequest extends FormRequest
     {
         $sessionService = app()->make(SessionService::class);
         $database = $sessionService->getAuthenticatedUserDatabaseName();
+
         return [
             'agent_id' => 'required',
             'user_id' => 'required',

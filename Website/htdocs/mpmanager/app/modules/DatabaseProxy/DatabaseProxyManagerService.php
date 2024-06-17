@@ -8,7 +8,6 @@ use App\Models\CompanyDatabase;
 use App\Models\DatabaseProxy;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 
 class DatabaseProxyManagerService
 {
@@ -20,7 +19,6 @@ class DatabaseProxyManagerService
     {
         return $this->databaseProxy->findByEmail($email);
     }
-
 
     public function runForCompany(int $companyId, callable $callable)
     {
@@ -34,7 +32,6 @@ class DatabaseProxyManagerService
     {
         return $this->companyDatabase->newQuery();
     }
-
 
     private function buildDatabaseConnection(string $databaseName): void
     {

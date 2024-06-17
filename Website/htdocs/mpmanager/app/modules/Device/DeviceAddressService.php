@@ -24,6 +24,7 @@ class DeviceAddressService implements IAssignationService
     public function assign(): Address
     {
         $this->address->owner()->associate($this->device);
+
         return $this->address;
     }
 
@@ -43,11 +44,12 @@ class DeviceAddressService implements IAssignationService
      */
     public function updateDeviceAddress($deviceAddress, $addressData): Address
     {
-        $points = $addressData['lat'] . ',' . $addressData['lon'];
+        $points = $addressData['lat'].','.$addressData['lon'];
         $deviceAddress->geo()->update([
-                'points' => $points,
-            ]);
+            'points' => $points,
+        ]);
         $deviceAddress->save();
+
         return $deviceAddress->fresh();
     }
 }

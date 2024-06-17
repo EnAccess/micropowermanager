@@ -24,7 +24,6 @@ class SolarReadingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

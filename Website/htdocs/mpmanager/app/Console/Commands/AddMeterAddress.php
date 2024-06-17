@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Address\Address;
 use App\Models\Meter\MeterParameter;
-use Illuminate\Console\Command;
 
 class AddMeterAddress extends AbstractSharedCommand
 {
@@ -27,7 +26,7 @@ class AddMeterAddress extends AbstractSharedCommand
             }
             $address = $this->address->create(
                 [
-                'city_id' => $city,
+                    'city_id' => $city,
                 ]
             );
             $address->owner()->associate($meter);

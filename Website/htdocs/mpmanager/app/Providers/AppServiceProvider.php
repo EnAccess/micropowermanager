@@ -36,9 +36,6 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
-use MPM\Transaction\Provider\AgentTransactionProvider as AgentTransactionProvider;
-use MPM\Transaction\Provider\AirtelVoltTerraProvider;
-use MPM\Transaction\Provider\VodacomTransactionProvider as VodacomTransactionProvider;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
@@ -47,6 +44,9 @@ use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use MPM\Transaction\Provider\AgentTransactionProvider;
+use MPM\Transaction\Provider\AirtelVoltTerraProvider;
+use MPM\Transaction\Provider\VodacomTransactionProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,10 +57,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //Maria DB work-around
+        // Maria DB work-around
         Schema::defaultStringLength(191);
 
-        //Rename polymorphic relations
+        // Rename polymorphic relations
         Relation::morphMap(
             [
                 Person::RELATION_NAME => Person::class,

@@ -12,11 +12,10 @@ use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use SimpleXMLElement;
 
 class AirtelTransactionProvider implements ITransactionProvider
 {
-    private SimpleXMLElement $validData;
+    private \SimpleXMLElement $validData;
 
     public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction)
     {
@@ -26,10 +25,10 @@ class AirtelTransactionProvider implements ITransactionProvider
     {
         $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
-        //assign data
+        // assign data
         $this->assignData($this->validData);
 
-        //save transaction
+        // save transaction
         $this->saveData($this->airtelTransaction);
     }
 
@@ -39,15 +38,14 @@ class AirtelTransactionProvider implements ITransactionProvider
      */
     public function sendResult(bool $requestType, Transaction $transaction): void
     {
-
-        //approve transaction : airtel transactions are automatically confirmed thus
-        //only save it as successful
+        // approve transaction : airtel transactions are automatically confirmed thus
+        // only save it as successful
         if ($requestType) {
             $this->airtelTransaction->status = 1;
             $this->airtelTransaction->save();
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-        } else { //send cancellation to airtel gateway server and this will send the final request to airtel
+        } else { // send cancellation to airtel gateway server and this will send the final request to airtel
             $requestContent = $this->prepareRequest($this->transaction, $this->airtelTransaction);
 
             $client = new Client();
@@ -64,8 +62,8 @@ class AirtelTransactionProvider implements ITransactionProvider
             Log::critical(
                 'airtel transaction is been cancelled',
                 [
-                'code' => $response->getStatusCode(),
-                'response' => $response->getBody(),
+                    'code' => $response->getStatusCode(),
+                    'response' => $response->getBody(),
                 ]
             );
             $this->airtelTransaction->status = -1;
@@ -75,44 +73,46 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     public function validateRequest($request): bool
     {
-        $transactionXml = new SimpleXMLElement($request);
+        $transactionXml = new \SimpleXMLElement($request);
         $transactionData = json_encode($transactionXml);
         $transactionData = json_decode($transactionData, true);
 
         $validator = Validator::make(
             $transactionData,
             [
-            'APIUser' => 'required|in:' . config('services.airtel.api_user'),
-            'APIPassword' => 'required|in:' . config('services.airtel.api_password'),
-            'INTERFACEID' => 'required',
-            'BusinessNumber' => 'required',
-            'TransID' => 'required',
-            'Amount' => 'required',
-            'ReferenceField' => 'required',
-            'Msisdn' => 'required',
-            'TRID' => 'required',
+                'APIUser' => 'required|in:'.config('services.airtel.api_user'),
+                'APIPassword' => 'required|in:'.config('services.airtel.api_password'),
+                'INTERFACEID' => 'required',
+                'BusinessNumber' => 'required',
+                'TransID' => 'required',
+                'Amount' => 'required',
+                'ReferenceField' => 'required',
+                'Msisdn' => 'required',
+                'TRID' => 'required',
             ]
         );
         if ($validator->fails()) {
             dd($validator->errors());
+
             return false;
         }
         $this->validData = $transactionXml;
+
         return true;
     }
 
     public function confirm(): void
     {
         echo $xmlResponse =
-            '<?xml version="1.0" encoding="UTF-8"?>' .
-            '<Response>' .
-            '<TYPE>CMPRRES</TYPE>' .
-            '<TXNID>' . $this->airtelTransaction->id . '</TXNID>' . // the TransID from original request
-            '<TXNSTATUS>200</TXNSTATUS>' .
-            '<ReferenceField>' . $this->transaction->message . '</ReferenceField>' .
-            '<MESSAGE>' . $this->transaction->message . '</MESSAGE>' .
-            '<TransID>' . $this->airtelTransaction->id . '</TransID>' .
-            '<Msisdn>' . $this->airtelTransaction->id . '</Msisdn>' . // is not been processed by airtel.
+            '<?xml version="1.0" encoding="UTF-8"?>'.
+            '<Response>'.
+            '<TYPE>CMPRRES</TYPE>'.
+            '<TXNID>'.$this->airtelTransaction->id.'</TXNID>'. // the TransID from original request
+            '<TXNSTATUS>200</TXNSTATUS>'.
+            '<ReferenceField>'.$this->transaction->message.'</ReferenceField>'.
+            '<MESSAGE>'.$this->transaction->message.'</MESSAGE>'.
+            '<TransID>'.$this->airtelTransaction->id.'</TransID>'.
+            '<Msisdn>'.$this->airtelTransaction->id.'</Msisdn>'. // is not been processed by airtel.
             '</Response>';
     }
 
@@ -142,22 +142,21 @@ class AirtelTransactionProvider implements ITransactionProvider
         $this->transaction = $transaction->transaction()->first();
     }
 
-
-    private function assignData(SimpleXMLElement $data): void
+    private function assignData(\SimpleXMLElement $data): void
     {
-        //provider specific data
-        $this->airtelTransaction->interface_id = (string)$data->INTERFACEID;
-        $this->airtelTransaction->business_number = (string)$data->BusinessNumber;
-        $this->airtelTransaction->trans_id = (string)$data->TransID;
-        $this->airtelTransaction->tr_id = (string)$data->TRID;
+        // provider specific data
+        $this->airtelTransaction->interface_id = (string) $data->INTERFACEID;
+        $this->airtelTransaction->business_number = (string) $data->BusinessNumber;
+        $this->airtelTransaction->trans_id = (string) $data->TransID;
+        $this->airtelTransaction->tr_id = (string) $data->TRID;
         // common transaction data
-        $this->transaction->amount = (int)$data->Amount;
-        $this->transaction->sender = '255' . (string)$data->Msisdn;
+        $this->transaction->amount = (int) $data->Amount;
+        $this->transaction->sender = '255'.(string) $data->Msisdn;
         $this->transaction->message = $data->ReferenceField;
     }
 
     /**
-     * Saves the airtel transaction
+     * Saves the airtel transaction.
      *
      * @param AirtelTransaction $airtelTransaction
      */
@@ -184,11 +183,11 @@ class AirtelTransactionProvider implements ITransactionProvider
         Transaction $transaction,
         AirtelTransaction $airtelTransaction
     ): string {
-        return '<COMMAND>' .
-            '<TYPE>ROLLBACK</TYPE>' .
-            '<TXNID>' . $airtelTransaction->trans_id . '</TXNID>' .
-            '<TRID>' . $airtelTransaction->id . '</TRID>' .
-            '<MESSAGE>Transaction is cancelled</MESSAGE>' .
+        return '<COMMAND>'.
+            '<TYPE>ROLLBACK</TYPE>'.
+            '<TXNID>'.$airtelTransaction->trans_id.'</TXNID>'.
+            '<TRID>'.$airtelTransaction->id.'</TRID>'.
+            '<MESSAGE>Transaction is cancelled</MESSAGE>'.
             '</COMMAND>';
     }
 }

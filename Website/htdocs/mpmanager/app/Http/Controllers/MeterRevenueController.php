@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\MeterRevenueService;
-use App\Services\MeterService;
 
 class MeterRevenueController extends Controller
 {
@@ -18,11 +17,13 @@ class MeterRevenueController extends Controller
      * The total revenue that the meter made.
      *
      * @group     Meters
+     *
      * @bodyParam serialNumber string required.
      *
      * @responseFile responses/meters/meter.revenue.json
      *
-     * @param  $serialNumber
+     * @param $serialNumber
+     *
      * @return ApiResource
      */
     public function show(string $serialNumber): ApiResource

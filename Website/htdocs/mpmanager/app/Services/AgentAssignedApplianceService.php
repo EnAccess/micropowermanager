@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\Models\AgentAssignedAppliances;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class AgentAssignedApplianceService implements IBaseService
 {
@@ -13,10 +10,8 @@ class AgentAssignedApplianceService implements IBaseService
     {
     }
 
-
     public function create($applianceData)
     {
-
         return $this->agentAssignedAppliance->newQuery()->create([
             'agent_id' => $applianceData['agent_id'],
             'user_id' => $applianceData['user_id'],

@@ -4,7 +4,6 @@ namespace MPM\Transaction;
 
 use App\Models\EBike;
 use App\Models\Transaction\Transaction;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EBikeTransactionService
 {
@@ -13,23 +12,22 @@ class EBikeTransactionService
     }
 
     public function search(
-        string $serialNumber = null,
-        int $tariffId = null,
-        string $transactionProvider = null,
-        int $status = null,
-        string $fromDate = null,
-        string $toDate = null,
-        int $limit = null,
+        ?string $serialNumber = null,
+        ?int $tariffId = null,
+        ?string $transactionProvider = null,
+        ?int $status = null,
+        ?string $fromDate = null,
+        ?string $toDate = null,
+        ?int $limit = null,
         bool $whereApplied = false
     ) {
-
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
             fn ($q) => $q->whereHasMorph('device', EBike::class)
         );
 
         if ($serialNumber) {
-            $query->where('message', 'LIKE', '%' . request('serial_number') . '%');
+            $query->where('message', 'LIKE', '%'.request('serial_number').'%');
         }
 
         if ($transactionProvider) {

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\ConnectionGroup;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
-use App\Models\Revenue;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

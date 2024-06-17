@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Upgrades
- *
- * @package App\Models
+ * Class Upgrades.
  *
  * @property int $id
  * @property int $restriction_id

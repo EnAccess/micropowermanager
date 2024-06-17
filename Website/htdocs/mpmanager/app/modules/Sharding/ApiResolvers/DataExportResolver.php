@@ -23,6 +23,6 @@ class DataExportResolver implements ApiResolverInterface
         $databaseProxy = $this->databaseProxyManager->findByEmail($email);
         $companyId = $databaseProxy->getCompanyId();
 
-        return (int)$companyId;
+        return (int) $companyId;
     }
 }

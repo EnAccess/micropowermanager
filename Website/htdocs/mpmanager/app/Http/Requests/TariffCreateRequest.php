@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class TariffCreateRequest extends FormRequest
@@ -28,7 +26,6 @@ class TariffCreateRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'name' => 'required',
             'price' => 'required|numeric', // 100 times of original price to support 2 decimal numbers.

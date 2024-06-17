@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 
 class MigrationCreator extends Command
@@ -41,9 +40,8 @@ class MigrationCreator extends Command
         $migrationName = $this->argument('migration-name');
         $this->call('make:migration', [
             'name' => $migrationName,
-            '--path' => '/database/migrations/micropowermanager'
+            '--path' => '/database/migrations/micropowermanager',
         ]);
-
 
         return 0;
     }

@@ -13,6 +13,4 @@ class AgentTicket extends BaseModel
     {
         return $this->morphOne(Ticket::class, 'original_');
     }
-
-    //
 }

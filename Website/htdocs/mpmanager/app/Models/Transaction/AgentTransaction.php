@@ -19,6 +19,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
 class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
     public const RELATION_NAME = 'agent_transaction';
+
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

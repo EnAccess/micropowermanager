@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use ReflectionClass;
-use ReflectionMethod;
 
 trait RelationsManager
 {
@@ -25,9 +23,9 @@ trait RelationsManager
         'belongsto' => BelongsTo::class,
         'belongstomany' => BelongsToMany::class,
         'belongstomorph' => BelongsToMorph::class,
-        'morphone' => morphOne::class,
-        'morphto' => morphTo::class,
-        'morphmany' => morphMany::class
+        'morphone' => MorphOne::class,
+        'morphto' => MorphTo::class,
+        'morphmany' => MorphMany::class,
     ];
 
     public static function getAllRelations($type = null): array
@@ -36,7 +34,7 @@ trait RelationsManager
             self::initAllRelations();
         }
         if ($type) {
-            return  self::$relationsList[strtolower($type)];
+            return self::$relationsList[strtolower($type)];
         } else {
             return self::$relationsList;
         }
@@ -46,12 +44,12 @@ trait RelationsManager
     {
         self::$relationsInitialized = true;
 
-        $reflect = new ReflectionClass(static::class);
+        $reflect = new \ReflectionClass(static::class);
 
-        foreach ($reflect->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($reflect->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             if ($method->hasReturnType()) {
                 foreach (self::$relationClasses as $key => $relationClass) {
-                    if ((string)$method->getReturnType() === $relationClass) {
+                    if ((string) $method->getReturnType() === $relationClass) {
                         self::$relationsList[$key][] = $method->getName();
                     }
                 }
