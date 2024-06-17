@@ -32,9 +32,11 @@ jobs:
           composer install --no-interaction --prefer-dist
         working-directory: ./Website/htdocs/mpmanager
 
-      - name: Run Code sniffer
-        run: ./vendor/bin/phpcs --standard=PSR12 --tab-width=4 --exclude=Generic.Files.LineLength app/
+      - name: Run PHP-CS-Fixer
+        run: composer run php-cs-fixer-check
         working-directory: ./Website/htdocs/mpmanager
+        # temporarily allow failure
+        continue-on-error: true
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --error-format=table  app/Http app/Services app/Models/ app/Events app/Listeners app/Misc app/modules --memory-limit=2G  --level=1

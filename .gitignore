@@ -45,7 +45,9 @@ DB/mysql/*
 NginxProxy/conf.d/default.conf
 node_modules/
 
+# PHP related
 vendor/
+.php-cs-fixer.cache
 
 redis/dump.rdb
 /redis/dump.rdb
