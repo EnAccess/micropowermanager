@@ -9,6 +9,6 @@ class AgentReceiptDetail extends BaseModel
 {
     public function receipt(): BelongsTo
     {
-        return $this->belongsTo(AgentReceipt::Class, 'agent_receipt_id');
+        return $this->belongsTo(AgentReceipt::class, 'agent_receipt_id');
     }
 }

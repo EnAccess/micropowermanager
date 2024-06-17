@@ -64,7 +64,7 @@ class Agent extends Authenticatable implements JWTSubject
 
     public function miniGrid(): HasOne
     {
-        return $this->hasOne(MiniGrid::Class, 'id', 'mini_grid_id');
+        return $this->hasOne(MiniGrid::class, 'id', 'mini_grid_id');
     }
 
 

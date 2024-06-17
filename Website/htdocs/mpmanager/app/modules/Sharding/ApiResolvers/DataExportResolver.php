@@ -8,7 +8,7 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class DataExportResolver implements ApiResolverInterface
 {
-    public function __construct(private DatabaseProxyManagerService $databaseProxyManager,)
+    public function __construct(private DatabaseProxyManagerService $databaseProxyManager)
     {
     }
 

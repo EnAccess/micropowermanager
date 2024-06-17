@@ -7,7 +7,7 @@ use App\Services\MenuItemsService;
 
 class SidebarController extends Controller
 {
-    public function __construct(private MenuItemsService $menuItemsService,)
+    public function __construct(private MenuItemsService $menuItemsService)
     {
     }
 

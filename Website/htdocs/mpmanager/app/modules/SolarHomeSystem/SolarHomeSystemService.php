@@ -45,9 +45,9 @@ class SolarHomeSystemService implements IBaseService
             ->with(['manufacturer', 'appliance', 'device.person'])
             ->whereHas(
                 'device',
-                fn($q) => $q->whereHas(
+                fn ($q) => $q->whereHas(
                     'person',
-                    fn($q) => $q->where('name', 'LIKE', '%' . $term . '%')
+                    fn ($q) => $q->where('name', 'LIKE', '%' . $term . '%')
                         ->orWhere('surname', 'LIKE', '%' . $term . '%')
                 )
             )

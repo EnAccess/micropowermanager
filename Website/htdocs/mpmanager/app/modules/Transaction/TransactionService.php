@@ -266,7 +266,7 @@ class TransactionService implements IAssociative, IBaseService
             'originalTransaction.conflicts',
             'sms',
             'paymentHistories',
-            'device' => fn($q) => $q->whereHas('person')->with(['device','person'])])->find($id);
+            'device' => fn ($q) => $q->whereHas('person')->with(['device','person'])])->find($id);
     }
 
     public function getAll($limit = null): Collection|LengthAwarePaginator

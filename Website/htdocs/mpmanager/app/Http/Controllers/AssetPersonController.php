@@ -56,9 +56,9 @@ class AssetPersonController extends Controller
             $userId = $request->input('user_id');
             $applianceId = $request->input('id');
             $personId = $request->input('person_id');
-            $cost = (double)$request->input('cost');
+            $cost = (float)$request->input('cost');
             $installmentCount = (int)$request->input('rate');
-            $downPayment = (double)$request->input('down_payment');
+            $downPayment = (float)$request->input('down_payment');
             $deviceSerial = $request->input('device_serial');
             $addressData = $request->input('address');
             $user = $this->userService->getById($userId);

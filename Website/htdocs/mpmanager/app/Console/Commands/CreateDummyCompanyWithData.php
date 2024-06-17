@@ -70,7 +70,7 @@ class CreateDummyCompanyWithData extends Command
             DatabaseProxy::query()->firstOrCreate($databaseProxyData, $databaseProxyData);
             $this->databaseProxyManagerService->runForCompany(
                 $company->getId(),
-                fn() => $this->importSqlDump($path, $databaseName)
+                fn () => $this->importSqlDump($path, $databaseName)
             );
 
             return 0;

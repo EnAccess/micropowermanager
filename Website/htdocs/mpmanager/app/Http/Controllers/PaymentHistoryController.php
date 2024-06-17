@@ -123,7 +123,7 @@ class PaymentHistoryController
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
         $paymentFlow = array_fill(0, 11, 0);
         foreach ($payments as $payment) {
-            $paymentFlow[$payment['month'] - 1] = (double)$payment['amount'];
+            $paymentFlow[$payment['month'] - 1] = (float)$payment['amount'];
         }
         return $paymentFlow;
     }

@@ -31,12 +31,12 @@ class ClusterRevenueService
                 'device',
                 function ($q) use ($clusterId, $connectionType, $miniGridId) {
                     $query = $miniGridId ?
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                             'mini_grid_id',
                             $miniGridId
                         )))
                         :
-                        $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                        $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                             'cluster_id',
                             $clusterId
                         )));
@@ -72,7 +72,7 @@ class ClusterRevenueService
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
-                    $query = $q->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where(
+                    $query = $q->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where(
                         'cluster_id',
                         $clusterId
                     )));

@@ -44,7 +44,7 @@ class MiniGrid extends BaseModel implements TargetAssignable
 
     public function agent(): HasOne
     {
-        return $this->hasOne(Agent::Class);
+        return $this->hasOne(Agent::class);
     }
 
     public function setClusterId(int $clusterId): void

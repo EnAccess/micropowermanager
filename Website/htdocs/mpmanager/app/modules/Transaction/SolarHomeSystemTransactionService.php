@@ -25,7 +25,7 @@ class SolarHomeSystemTransactionService
 
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
-            fn($q) => $q->whereHasMorph('device', SolarHomeSystem::class)
+            fn ($q) => $q->whereHasMorph('device', SolarHomeSystem::class)
         );
 
         if ($serialNumber) {
@@ -33,17 +33,17 @@ class SolarHomeSystemTransactionService
         }
 
         if ($transactionProvider) {
-            $query->with($transactionProvider)->where(fn($q) => $q->whereHas(
+            $query->with($transactionProvider)->where(fn ($q) => $q->whereHas(
                 $transactionProvider,
-                fn($q) => $q->whereNotNull('id')
+                fn ($q) => $q->whereNotNull('id')
             ));
         }
 
         if ($status) {
             if ($transactionProvider && $transactionProvider !== '-1') {
-                $query->where(fn($q) => $q->whereHas($transactionProvider, fn($q) => $q->where('status', $status)));
+                $query->where(fn ($q) => $q->whereHas($transactionProvider, fn ($q) => $q->where('status', $status)));
             } else {
-                $query->whereHasMorph('originalTransaction', '*', fn($q) => $q->where('status', $status))->get();
+                $query->whereHasMorph('originalTransaction', '*', fn ($q) => $q->where('status', $status))->get();
             }
         }
 
