@@ -46,7 +46,8 @@ class AirtelTransactionAuthorizationMiddleware
 
         } catch (Exception $e) {
             Log::error('Error while decoding JWT token: ' . $e->getMessage());
-            return $this->generateXmlResponse(401, $e->getMessage());
+            $status = strpos($e->getMessage(), 'contains wrong') ? 400 : 401;
+            return $this->generateXmlResponse($status, $e->getMessage());
         }
 
         return $next($request);

@@ -32,7 +32,7 @@ class AirtelTransactionService extends AbstractPaymentAggregatorTransactionServi
             'amount' => $transactionData['AMOUNT'],
             'interface_id' => $transactionData['MERCHANTMSISDN'],
             'business_number' => $transactionData['MERCHANTMSISDN'],
-            'status' => 0, // 0 for pending
+            'status' => 2, // 2 for validated, waits for processing
             'trans_id' => "",
             'tr_id' => $transactionData['REFERENCE1'],
         ];
