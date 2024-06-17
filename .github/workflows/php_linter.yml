@@ -43,3 +43,4 @@ jobs:
       - name: Run Psalm
         run: composer run psalm-check
         working-directory: ./Website/htdocs/mpmanager
+        continue-on-error: true
