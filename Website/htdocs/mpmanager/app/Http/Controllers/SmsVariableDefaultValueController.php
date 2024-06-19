@@ -8,6 +8,7 @@ use App\Services\SmsVariableDefaultValueService;
 class SmsVariableDefaultValueController extends Controller
 {
     private $smsVariableDefaultSValueService;
+
     public function __construct(SmsVariableDefaultValueService $smsVariableDefaultSValueService)
     {
         $this->smsVariableDefaultSValueService = $smsVariableDefaultSValueService;

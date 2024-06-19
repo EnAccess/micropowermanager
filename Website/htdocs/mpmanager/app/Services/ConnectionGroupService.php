@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\ConnectionGroup;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ConnectionGroupService implements IBaseService
@@ -36,6 +35,7 @@ class ConnectionGroupService implements IBaseService
         if ($limit) {
             return $this->connectionGroup->newQuery()->paginate($limit);
         }
+
         return $this->connectionGroup->newQuery()->get();
     }
 

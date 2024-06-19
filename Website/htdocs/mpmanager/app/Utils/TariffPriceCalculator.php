@@ -5,7 +5,6 @@ namespace App\Utils;
 use App\Http\Requests\TariffCreateRequest;
 use App\Models\Meter\MeterTariff;
 use App\Services\AccessRateService;
-use App\Services\MeterTariffService;
 use App\Services\SocialTariffService;
 use App\Services\TariffPricingComponentService;
 use App\Services\TimeOfUsageService;
@@ -45,7 +44,7 @@ class TariffPriceCalculator
                 $updatedAccessRate = $this->accessRateService->getById($accessRate['id']);
                 $accessRateData = [
                     'amount' => $accessRate['access_rate_amount'],
-                    'period' => $accessRate['access_rate_period']
+                    'period' => $accessRate['access_rate_period'],
                 ];
 
                 $this->accessRateService->update($updatedAccessRate, $accessRateData);
@@ -53,7 +52,7 @@ class TariffPriceCalculator
                 $accessRateData = [
                     'tariff_id' => $meterTariff->id,
                     'amount' => $accessRate['access_rate_amount'],
-                    'period' => $accessRate['access_rate_period']
+                    'period' => $accessRate['access_rate_period'],
                 ];
 
                 $this->accessRateService->create($accessRateData);
@@ -103,7 +102,7 @@ class TariffPriceCalculator
                     $touData = [
                         'start' => $timeOfUsage[$key]['start'],
                         'end' => $timeOfUsage[$key]['end'],
-                        'value' => $timeOfUsage[$key]['value']
+                        'value' => $timeOfUsage[$key]['value'],
                     ];
                     $this->timeOfUsageService->update($tou, $touData);
                 } else {
@@ -111,7 +110,7 @@ class TariffPriceCalculator
                         'tariff_id' => $meterTariff->id,
                         'start' => $timeOfUsage[$key]['start'],
                         'end' => $timeOfUsage[$key]['end'],
-                        'value' => $timeOfUsage[$key]['value']
+                        'value' => $timeOfUsage[$key]['value'],
                     ];
                     $this->timeOfUsageService->create($touData);
                 }

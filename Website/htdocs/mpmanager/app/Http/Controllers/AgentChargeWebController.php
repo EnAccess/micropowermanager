@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentChargeRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AgentChargeService;
-use Illuminate\Http\Request;
 
 class AgentChargeWebController extends Controller
 {
@@ -21,7 +19,7 @@ class AgentChargeWebController extends Controller
         $agentChargeData = [
             'agent_id' => $request->input('agent_id'),
             'amount' => $request->input('amount'),
-            'user_id' => $userId
+            'user_id' => $userId,
         ];
 
         return ApiResource::make($this->agentChargeService->create($agentChargeData));

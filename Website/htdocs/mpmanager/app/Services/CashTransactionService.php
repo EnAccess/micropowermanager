@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Facades\Log;
 
 class CashTransactionService
 {
@@ -30,7 +29,7 @@ class CashTransactionService
             [
                 'amount' => $amount,
                 'sender' => $sender,
-                'message' => $deviceSerial ??  '-',
+                'message' => $deviceSerial ?? '-',
                 'type' => 'deferred_payment',
             ]
         );

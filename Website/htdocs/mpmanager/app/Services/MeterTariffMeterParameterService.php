@@ -29,7 +29,7 @@ class MeterTariffMeterParameterService
 
     public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo): array
     {
-        return  $this->meterParameter->newQuery()->where('tariff_id', $meterTariffIdFrom)
+        return $this->meterParameter->newQuery()->where('tariff_id', $meterTariffIdFrom)
             ->get()
             ->each(function ($meterParameter) use ($meterTariffIdTo) {
                 $meterParameter->tariff_id = $meterTariffIdTo;
@@ -37,6 +37,7 @@ class MeterTariffMeterParameterService
                 $meterParameter->save();
             });
     }
+
     public function changeMeterTariff($meterSerial, $tariffId): MeterParameter
     {
         $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->firstOrFail();
@@ -44,6 +45,7 @@ class MeterTariffMeterParameterService
         $meterParameter->tariff_id = $tariffId;
         $meterParameter->update();
         $meterParameter->save();
+
         return $meterParameter;
     }
 }

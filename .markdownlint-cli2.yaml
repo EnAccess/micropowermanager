@@ -11,6 +11,5 @@ config:
 globs:
   - "**/*.md"
 
-ignores:
-  - "**/node_modules/**"
-  - "**/vendor/**"
+# Ignore files that are not part of version control
+gitignore: true

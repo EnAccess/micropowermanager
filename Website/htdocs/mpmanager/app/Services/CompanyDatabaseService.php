@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\CompanyDatabase;
 use Database\Seeders\DatabaseSeeder;
-use Exception;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -17,7 +16,7 @@ class CompanyDatabaseService implements IBaseService
     public function getById($id): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
-        $result =  $this->companyDatabase->newQuery()->find($id);
+        $result = $this->companyDatabase->newQuery()->find($id);
 
         return $result;
     }
@@ -25,7 +24,7 @@ class CompanyDatabaseService implements IBaseService
     public function create($data): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
-        $result =  $this->companyDatabase->newQuery()->create($data);
+        $result = $this->companyDatabase->newQuery()->create($data);
 
         return $result;
     }
@@ -47,9 +46,9 @@ class CompanyDatabaseService implements IBaseService
 
     public function createNewDatabaseForCompany(string $databaseName, int $companyId): void
     {
-        $sourcePath = __DIR__ . '/../../';
-        shell_exec(__DIR__ . '/../../database_creator.sh --database='
-            . $databaseName . ' --user=root' . ' --path=' . $sourcePath . ' --company_id=' . $companyId);
+        $sourcePath = __DIR__.'/../../';
+        shell_exec(__DIR__.'/../../database_creator.sh --database='
+            .$databaseName.' --user=root --path='.$sourcePath.' --company_id='.$companyId);
     }
 
     public function doMigrations(): void
@@ -74,7 +73,7 @@ class CompanyDatabaseService implements IBaseService
         $rootClass = $plugin['root_class'];
         try {
             $menuItemService = app()->make(sprintf('Inensus\%s\Services\MenuItemService', $rootClass));
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             // we return here if company chooses a plugin which does not have UI components
             return;
         }

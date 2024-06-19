@@ -25,6 +25,7 @@ class MiniGridService implements IBaseService
     {
         /** @var MiniGrid $model */
         $model = $this->miniGrid->newQuery()->find($miniGridId);
+
         return $model;
     }
 

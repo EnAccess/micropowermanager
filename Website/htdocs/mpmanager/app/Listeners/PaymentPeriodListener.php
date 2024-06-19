@@ -9,8 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-use function count;
-
 class PaymentPeriodListener
 {
     /**
@@ -41,16 +39,15 @@ class PaymentPeriodListener
             ->latest()->take(10)
             ->groupBy('transaction_id')->get();
         $totalAmount = 0;
-        $difference = ((new Carbon($transactions[0]->created_at))
-                ->diffInDays((new Carbon($transactions[count($transactions) - 1]->created_at)))) / count($transactions);
+        $difference = (new Carbon($transactions[0]->created_at))
+                ->diffInDays(new Carbon($transactions[\count($transactions) - 1]->created_at)) / \count($transactions);
         foreach ($transactions as $transaction) {
             $totalAmount += $transaction->amount;
         }
 
-        Log::debug("total transactions" . count($transactions));
-        Log::debug("average payment per transaction : " . $totalAmount / count($transactions));
-        Log::debug("average payment period: " . $difference);
-
+        Log::debug('total transactions'.\count($transactions));
+        Log::debug('average payment per transaction : '.$totalAmount / \count($transactions));
+        Log::debug('average payment period: '.$difference);
 
         //   $this->history->
     }

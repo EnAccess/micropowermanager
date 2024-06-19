@@ -11,10 +11,8 @@ class SmsResendInformationKeyController extends Controller
 {
     private $smsResendInformationKeyService;
 
-
     public function __construct(SmsResendInformationKeyService $smsResendInformationKeyService)
     {
-
         $this->smsResendInformationKeyService = $smsResendInformationKeyService;
     }
 

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Inensus\Ticket\Models\Ticket;
@@ -11,6 +10,7 @@ use Inensus\Ticket\Models\Ticket;
 class MaintenanceUsers extends BaseModel
 {
     public const RELATION_NAME = 'maintenance_user';
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

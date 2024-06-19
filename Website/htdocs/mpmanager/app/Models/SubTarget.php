@@ -2,16 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\ConnectionType;
-use App\Models\Target;
-use Illuminate\Database\Connection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class SubTarget
- *
- * @package App
+ * Class SubTarget.
  *
  * @property int $id
  * @property int $target_id

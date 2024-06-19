@@ -5,12 +5,12 @@ namespace MPM\Transaction\Provider;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCommission;
+use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\FirebaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\Transaction\AgentTransaction as AgentTransactionModel;
 
 class AgentTransactionProvider implements ITransactionProvider
 {
@@ -27,21 +27,21 @@ class AgentTransactionProvider implements ITransactionProvider
     {
         $this->agentTransaction = new AgentTransactionModel();
         $this->transaction = new Transaction();
-        //assign data
+        // assign data
         $this->assignData($this->validData);
-        //save transaction
+        // save transaction
         $this->saveData($this->agentTransaction);
     }
 
     private function assignData(array $data): void
     {
-        //provider specific data
-        $this->agentTransaction->agent_id = (int)$data['agent_id'];
-        $this->agentTransaction->device_id = (int)$data['device_id'];
+        // provider specific data
+        $this->agentTransaction->agent_id = (int) $data['agent_id'];
+        $this->agentTransaction->device_id = (int) $data['device_id'];
 
         // common transaction data
-        $this->transaction->amount = (float)$data['amount'];
-        $this->transaction->sender = 'Agent-' . $data['agent_id'];
+        $this->transaction->amount = (float) $data['amount'];
+        $this->transaction->sender = 'Agent-'.$data['agent_id'];
         $this->transaction->message = $data['device_serial'];
         $this->transaction->type = 'energy';
         $this->transaction->original_transaction_type = 'agent_transaction';
@@ -60,22 +60,23 @@ class AgentTransactionProvider implements ITransactionProvider
         if (!$requestType) {
             $body = $this->prepareBodyFail($transaction);
             $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
+
             return;
         }
 
         $body = $this->prepareBodySuccess($transaction);
         $history = AgentBalanceHistory::query()->make([
             'agent_id' => $agent->id,
-            'amount' => ($transaction->amount) > 0 ? (-1 * ($transaction->amount)) : ($transaction->amount),
+            'amount' => $transaction->amount > 0 ? (-1 * $transaction->amount) : ($transaction->amount),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->balance,
-            'due_to_supplier' => $agent->due_to_energy_supplier
+            'due_to_supplier' => $agent->due_to_energy_supplier,
         ]);
 
         $history->trigger()->associate($this->agentTransaction);
         $history->save();
 
-        //create agent commission
+        // create agent commission
         $commission = AgentCommission::query()->find($agent->agent_commission_id);
         $history = AgentBalanceHistory::query()->make(
             [
@@ -85,7 +86,7 @@ class AgentTransactionProvider implements ITransactionProvider
                     ($transaction->amount * $commission->energy_commission),
                 'transaction_id' => $transaction->id,
                 'available_balance' => $agent->commission_revenue,
-                'due_to_supplier' => $agent->due_to_energy_supplier
+                'due_to_supplier' => $agent->due_to_energy_supplier,
             ]
         );
         $history->trigger()->associate($commission);
@@ -107,13 +108,13 @@ class AgentTransactionProvider implements ITransactionProvider
         )->where('id', $transaction->id)->first();
 
         $transaction['firebase_notify_status'] = 1;
-        $transaction['title'] = "Successful Payment!";
+        $transaction['title'] = 'Successful Payment!';
         $transaction['content'] = 1;
 
         return [
             'id' => $transaction->id,
             'firebase_notification_status' => 1,
-            'payload' => $transaction
+            'payload' => $transaction,
         ];
     }
 
@@ -124,7 +125,7 @@ class AgentTransactionProvider implements ITransactionProvider
             'type' => 'agent_transaction',
             'firebase_notify_status' => -1,
             'meter' => $transaction->message,
-            'date' => $transaction->created_at
+            'date' => $transaction->created_at,
         ];
     }
 

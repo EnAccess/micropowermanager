@@ -13,14 +13,13 @@ class SolarObserver
 
     public function __construct(Solar $solar)
     {
-
         $this->solar = $solar;
     }
 
     public function created(Solar $solar): void
     {
         if (app()->environment() !== 'testing') {
-            //dispatch an event to get  weather data for mini-grid
+            // dispatch an event to get  weather data for mini-grid
             event(
                 'solar.received',
                 [

@@ -5,13 +5,8 @@ namespace App\Jobs;
 use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
-use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
-use App\Sms\Senders\ManualSms;
 use App\Sms\Senders\SmsSender;
-use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -24,18 +19,15 @@ class SmsProcessor extends AbstractJob
     use Queueable;
     use SerializesModels;
 
-
-
     /**
      * Create a new job instance.
      *
      * @param     $data
      * @param int $smsType
-     * @param $smsConfigs
+     * @param     $smsConfigs
      */
     public function __construct(private SmsSender $smsSender)
     {
-
         parent::__construct(get_class($this));
     }
 
@@ -48,8 +40,9 @@ class SmsProcessor extends AbstractJob
     {
         try {
             $this->smsSender->sendSms();
-        } catch (SmsTypeNotFoundException | SmsAndroidSettingNotExistingException | SmsBodyParserNotExtendedException $exception) {
+        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
             Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
+
             return;
         }
     }

@@ -24,7 +24,7 @@ class AssetTypeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'sometimes|min:4'
+            'name' => 'sometimes|min:4',
         ];
     }
 }

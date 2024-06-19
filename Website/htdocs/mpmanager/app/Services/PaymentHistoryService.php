@@ -5,11 +5,8 @@ namespace App\Services;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use Carbon\CarbonImmutable;
-use Faker\Provider\Payment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class PaymentHistoryService implements IAssociative
 {
@@ -28,7 +25,7 @@ class PaymentHistoryService implements IAssociative
     public function findCustomerLastPayment(int $customerId): PaymentHistory
     {
         return $this->paymentHistory
-            ->whereHasMorph('owner', [Person::class], fn(Builder $q) => $q->where('id', $customerId))
+            ->whereHasMorph('owner', [Person::class], fn (Builder $q) => $q->where('id', $customerId))
             ->latest('created_at')
             ->first();
     }
@@ -43,7 +40,6 @@ class PaymentHistoryService implements IAssociative
                 }
             )->latest()->paginate($paginate);
     }
-
 
     public function make($paymentHistoryData)
     {

@@ -13,7 +13,9 @@ class ClusterGeoListener
 {
     /**
      * Handle the event.
+     *
      * @param ClusterEvent $event
+     *
      * @return void
      */
     public function handle(ClusterEvent $event): void
@@ -28,6 +30,7 @@ class ClusterGeoListener
                     'Cluster polygon creating failed. External geo-coordinate object is not well formatted.',
                     ['id' => '58gjw3f9w392de12dkbkwelkkud', 'message' => $exception->getMessage()]
                 );
+
                 return;
             }
         } else {
@@ -44,19 +47,18 @@ class ClusterGeoListener
     }
 
     /**
-     * Creates a json file which has the same name as the cluster
+     * Creates a json file which has the same name as the cluster.
      *
      * @param Cluster $cluster
-     * @param $data
+     * @param         $data
      */
     private function storeData(Cluster $cluster, $data): void
     {
-        Storage::disk('local')->put($cluster->name . '.json', json_encode($data));
+        Storage::disk('local')->put($cluster->name.'.json', json_encode($data));
     }
 
-
     /**
-     * External geojson resource has lon,lat format. Change order to lat,lon
+     * External geojson resource has lon,lat format. Change order to lat,lon.
      *
      * @param $data
      *
@@ -73,7 +75,6 @@ class ClusterGeoListener
             $data = $data[0];
         }
 
-
         if (!array_key_exists('geojson', $data)) {
             throw new GeoFormatException('external resource should contain a geojson key');
         }
@@ -87,6 +88,7 @@ class ClusterGeoListener
         foreach ($coordinates as $coordinate) {
             $formatted[] = [$coordinate[1], $coordinate[0]];
         }
+
         return $formatted;
     }
 }

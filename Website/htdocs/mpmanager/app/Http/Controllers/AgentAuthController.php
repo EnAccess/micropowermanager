@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
  * @group   Agent-Authenticator
  * Class AgentAuthController
  * Responsible for AgentAPP-API-Call authentications.
- * @package App\Http\Controllers
  */
 class AgentAuthController extends Controller
 {
@@ -30,7 +29,8 @@ class AgentAuthController extends Controller
      *
      * @bodyParam email string required
      * @bodyParam password string required
-     * @return    JsonResponse
+     *
+     * @return JsonResponse
      */
     public function login(Request $request)
     {
@@ -92,10 +92,10 @@ class AgentAuthController extends Controller
     {
         return response()->json(
             [
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('agent_api')->factory()->getTTL() * 60,
-            'agent' => auth('agent_api')->user(),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('agent_api')->factory()->getTTL() * 60,
+                'agent' => auth('agent_api')->user(),
             ]
         );
     }

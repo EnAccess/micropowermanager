@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ApiResource;
 use App\Http\Requests\SubConnectionTypeCreateRequest;
+use App\Http\Resources\ApiResource;
 use App\Models\SubConnectionType;
-use App\Models\Meter\MeterTariff;
 use App\Services\SubConnectionTypeService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class SubConnectionTypeController extends Controller
 {
     public function __construct(private SubConnectionTypeService $subConnectionTypeService)
     {
     }
-
 
     public function index(Request $request, $connectionTypeId = null): ApiResource
     {
@@ -25,21 +22,21 @@ class SubConnectionTypeController extends Controller
             return ApiResource::make($this->subConnectionTypeService->getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit));
         }
 
-        return  ApiResource::make($this->subConnectionTypeService->getAll($limit));
+        return ApiResource::make($this->subConnectionTypeService->getAll($limit));
     }
 
     /**
      * Show the form for creating a new resource.
      *
      * @param SubConnectionTypeCreateRequest $request
+     *
      * @return ApiResource
      */
-
     public function store(SubConnectionTypeCreateRequest $request): ApiResource
     {
         $subConnectionTypeData = $request->only(['name', 'connection_type_id', 'tariff_id']);
 
-        return  ApiResource::make($this->subConnectionTypeService->create($subConnectionTypeData));
+        return ApiResource::make($this->subConnectionTypeService->create($subConnectionTypeData));
     }
 
     /**
@@ -54,6 +51,6 @@ class SubConnectionTypeController extends Controller
         $subConnectionType = $this->subConnectionTypeService->getById($subConnectionTypeId);
         $subConnectionTypeData = $request->only(['name', 'tariff_id']);
 
-        return  ApiResource::make($this->subConnectionTypeService->update($subConnectionType, $subConnectionTypeData));
+        return ApiResource::make($this->subConnectionTypeService->update($subConnectionType, $subConnectionTypeData));
     }
 }

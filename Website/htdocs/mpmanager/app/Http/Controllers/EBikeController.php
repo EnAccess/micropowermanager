@@ -6,10 +6,10 @@ use App\Http\Requests\StoreEBikeRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AppliancePersonService;
 use App\Services\ManufacturerService;
+use Illuminate\Http\Request;
 use MPM\Device\DeviceService;
 use MPM\EBike\EBikeDeviceService;
 use MPM\EBike\EBikeService;
-use Illuminate\Http\Request;
 
 class EBikeController extends Controller
 {
@@ -25,6 +25,7 @@ class EBikeController extends Controller
     public function index(Request $request): ApiResource
     {
         $limit = $request->input('per_page');
+
         return ApiResource::make($this->eBikeService->getAll($limit));
     }
 
@@ -33,7 +34,7 @@ class EBikeController extends Controller
         $eBikeData = $request->all();
         $deviceData = [
             'device_serial' => $eBikeData['serial_number'],
-            'person_id' => null
+            'person_id' => null,
         ];
 
         $device = $this->deviceService->make($deviceData);
@@ -75,10 +76,11 @@ class EBikeController extends Controller
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
-                    'action' => 'Bike (' . $serialNumber . ') is set as ' . $status . ' manually.'
-                ]
+                    'action' => 'Bike ('.$serialNumber.') is set as '.$status.' manually.',
+                ],
             ]
         );
+
         return ApiResource::make($this->eBikeService->getBySerialNumber($serialNumber));
     }
 }

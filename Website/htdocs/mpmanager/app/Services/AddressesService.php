@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class AddressesService implements IBaseService, IAssociative
@@ -21,7 +20,7 @@ class AddressesService implements IBaseService, IAssociative
             'email' => $params['email'] ?? null,
             'phone' => $params['phone'],
             'street' => $params['street'] ?? null,
-            'is_primary' => $params['is_primary'] ?? null
+            'is_primary' => $params['is_primary'] ?? null,
         ]);
     }
 
@@ -56,6 +55,7 @@ class AddressesService implements IBaseService, IAssociative
         if ($limit) {
             return $this->address->newQuery()->paginate($limit);
         }
+
         return $this->address->newQuery()->get();
     }
 

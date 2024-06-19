@@ -8,7 +8,6 @@ use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
-use Illuminate\Http\Request;
 
 class PersonAddressesController extends Controller
 {
@@ -21,10 +20,12 @@ class PersonAddressesController extends Controller
 
     /**
      * Addresses
-     * A list of registered addresses for that person
+     * A list of registered addresses for that person.
      *
      * @bodyParam    person int required the ID of the person. Example: 2
+     *
      * @responseFile responses/people/person.addresses.list.json
+     *
      * @param int $personId
      *
      * @return ApiResource

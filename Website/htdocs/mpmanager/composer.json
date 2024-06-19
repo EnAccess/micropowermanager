@@ -14,7 +14,6 @@
     "doctrine/dbal": "^3.1",
     "enlightn/enlightn": "^1.22",
     "fideloper/proxy": "^4.0",
-    "fruitcake/laravel-cors": "^3.0",
     "guzzlehttp/guzzle": "^7.3.0",
     "laravel/framework": "^9",
     "laravel/helpers": "^1.2",
@@ -35,6 +34,7 @@
     "barryvdh/laravel-debugbar": "^3.5",
     "beyondcode/laravel-dump-server": "^1.8",
     "filp/whoops": "^2.0",
+    "friendsofphp/php-cs-fixer": "^3.58",
     "fzaninotto/faker": "^1.9.1",
     "mockery/mockery": "^1.0",
     "nunomaduro/collision": "^6.1",
@@ -43,8 +43,7 @@
     "roave/security-advisories": "dev-latest",
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-web-tinker": "^1.7",
-    "squizlabs/php_codesniffer": "*",
-    "vimeo/psalm": "^4.4"
+    "vimeo/psalm": "^5.24"
   },
   "config": {
     "optimize-autoloader": true,
@@ -101,8 +100,9 @@
       "@php artisan key:generate --ansi"
     ],
     "lint": "find . -name \\*.php -not -path './lib/composer/*' -not -path './vendor/*' -not -path './build/.phan/*' -exec php -l \"{}\" \\;",
-    "phpcs": "phpcs --colors  -p --no-cache --standard=PSR12   --exclude=Generic.Files.LineLength --tab-width=4 ./app/",
-    "phpcbf": "phpcbf --standard=PSR12 --tab-width=4 app/",
-    "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/"
+    "php-cs-fixer-fix": "php-cs-fixer fix --diff app/",
+    "php-cs-fixer-check": "php-cs-fixer check --diff app/",
+    "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/",
+    "psalm-check": "psalm app/"
   }
 }

@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\ConnectionType;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
@@ -43,6 +41,7 @@ class ConnectionTypeService implements IBaseService
         if ($limit) {
             return $this->connectionType->newQuery()->paginate($limit);
         }
+
         return $this->connectionType->newQuery()->get();
     }
 

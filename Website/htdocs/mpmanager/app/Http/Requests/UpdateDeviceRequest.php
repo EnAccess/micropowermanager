@@ -28,7 +28,7 @@ class UpdateDeviceRequest extends FormRequest
             'person_id' => 'required|numeric',
             'device_type' => 'required',
             'device_serial' => 'required',
-            'device_id' => 'required|numeric'
+            'device_id' => 'required|numeric',
         ];
     }
 }

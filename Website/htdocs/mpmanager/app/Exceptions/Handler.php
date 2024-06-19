@@ -8,7 +8,6 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -20,7 +19,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -36,10 +34,11 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  Throwable $exception
+     * @param \Throwable $exception
+     *
      * @return void
      */
-    public function report(Throwable $exception)
+    public function report(\Throwable $exception)
     {
         Log::critical(get_class($exception), ['message' => $exception->getMessage(), 'trace' => array_slice($exception->getTrace(), 0, 10)]);
         parent::report($exception);
@@ -48,11 +47,12 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  Request   $request
-     * @param  Throwable $exception
+     * @param Request    $request
+     * @param \Throwable $exception
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function render($request, Exception|Throwable $exception)
+    public function render($request, \Exception|\Throwable $exception)
     {
         // api request outputs are json
         if (preg_match('/.*\.local\/api.*/', $request->url()) || preg_match('/.*\.com\/api.*/', $request->url())) {

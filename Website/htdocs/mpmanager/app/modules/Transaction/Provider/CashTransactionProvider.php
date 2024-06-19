@@ -22,21 +22,21 @@ class CashTransactionProvider implements ITransactionProvider
         $this->cashTransaction = new CashTransaction();
         $this->transaction = new Transaction();
 
-        //assign data
+        // assign data
         $this->assignData($this->validData);
 
-        //save transaction
+        // save transaction
         $this->saveData($this->cashTransaction);
     }
 
     private function assignData(array $data): void
     {
-        //provider specific data
-        $this->cashTransaction->user_id = (int)$data['user_id'];
+        // provider specific data
+        $this->cashTransaction->user_id = (int) $data['user_id'];
 
         // common transaction data
-        $this->transaction->amount = (int)$data['amount'];
-        $this->transaction->sender = 'User-' . $data['user_id'];
+        $this->transaction->amount = (int) $data['amount'];
+        $this->transaction->sender = 'User-'.$data['user_id'];
         $this->transaction->type = 'deferred_payment';
         $this->transaction->original_transaction_type = 'cash_transaction';
     }

@@ -3,14 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ShardAwareMigrator extends Command
 {
     protected $description = 'Runs artisan:migrate based on provided company_id';
     protected $signature = 'shard:migrate {company_id} {--force}';
-
 
     public function handle()
     {
@@ -21,8 +19,8 @@ class ShardAwareMigrator extends Command
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 
         $databaseProxyManagerService->runForCompany($companyId, function () use ($force) {
-            $command = 'migrate' . ($force ? ':fresh' : '');
-            $this->info('Calling ' . $command);
+            $command = 'migrate'.($force ? ':fresh' : '');
+            $this->info('Calling '.$command);
 
             $this->call($command);
         });

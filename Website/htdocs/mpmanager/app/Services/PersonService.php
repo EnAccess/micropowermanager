@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App;
-use App\Models\Address\Address;
-use App\Models\MaintenanceUsers;
-use App\Models\Person\Person;
 use App\Models\Country;
+use App\Models\Person\Person;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +16,6 @@ class PersonService implements IBaseService
     public function __construct(private Person $person)
     {
     }
-
 
     public function getAllRegisteredPeople(): Collection|array
     {
@@ -40,17 +36,17 @@ class PersonService implements IBaseService
 
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn($q) => $q->orderBy('is_primary')->with('city', fn($q) => $q->whereHas('location'))
+                'addresses' => fn ($q) => $q->orderBy('is_primary')->with('city', fn ($q) => $q->whereHas('location'))
                     ->get(),
                 'citizenship',
                 'roleOwner.definitions',
-                'devices' => fn($q) => $q->whereHas('address')->with('address.geo'),
+                'devices' => fn ($q) => $q->whereHas('address')->with('address.geo'),
             ]
         )->find($personID);
     }
 
     /**
-     * @param string $searchTerm could either phone, name or surname
+     * @param string                   $searchTerm could either phone, name or surname
      * @param Request|array|int|string $paginate
      *
      * @return Builder[]|Collection|LengthAwarePaginator
@@ -61,12 +57,12 @@ class PersonService implements IBaseService
     {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
-            fn($q) => $q->where('phone', 'LIKE', '%' . $searchTerm . '%')
+            fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
         )->orWhereHas(
             'devices',
-            fn($q) => $q->where('device_serial', 'LIKE', '%' . $searchTerm . '%')
-        )->orWhere('name', 'LIKE', '%' . $searchTerm . '%')
-            ->orWhere('surname', 'LIKE', '%' . $searchTerm . '%');
+            fn ($q) => $q->where('device_serial', 'LIKE', '%'.$searchTerm.'%')
+        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
+            ->orWhere('surname', 'LIKE', '%'.$searchTerm.'%');
 
         if ($paginate === 1) {
             return $query->paginate(15);
@@ -85,6 +81,7 @@ class PersonService implements IBaseService
         $personData['is_customer'] = 0;
         /** @var Person $person */
         $person = $this->person->newQuery()->create($personData);
+
         return $person;
     }
 
@@ -97,7 +94,7 @@ class PersonService implements IBaseService
     {
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn($q) => $q->where('is_primary', '=', 1),
+                'addresses' => fn ($q) => $q->where('is_primary', '=', 1),
                 'addresses.city',
                 'citizenship',
                 'roleOwner.definitions',
@@ -115,7 +112,7 @@ class PersonService implements IBaseService
 
     public function isMaintenancePerson($customerType): bool
     {
-        return ($customerType !== null && $customerType !== 'customer' && $customerType === 'maintenance');
+        return $customerType !== null && $customerType !== 'customer' && $customerType === 'maintenance';
     }
 
     public function createPersonDataFromRequest(Request $request): array
@@ -135,6 +132,7 @@ class PersonService implements IBaseService
     {
         /** @var Person $model */
         $model = $this->person->newQuery()->find($personId);
+
         return $model;
     }
 
@@ -158,6 +156,7 @@ class PersonService implements IBaseService
     public function delete($person)
     {
         $person->delete();
+
         return $person;
     }
 
@@ -187,9 +186,9 @@ class PersonService implements IBaseService
         $addressService = app()->make(AddressesService::class);
         $addressParams = [
             'city_id' => $request->get('city_id') ?? 1,
-            'email' => $request->get('email') ?? "",
-            'phone' => $request->get('phone') ?? "",
-            'street' => $request->get('street') ?? "",
+            'email' => $request->get('email') ?? '',
+            'phone' => $request->get('phone') ?? '',
+            'street' => $request->get('street') ?? '',
             'is_primary' => 1,
         ];
 
@@ -201,7 +200,7 @@ class PersonService implements IBaseService
 
     public function getByPhoneNumber($phoneNumber): ?Person
     {
-        return $this->person->newQuery()->whereHas('addresses', fn($q) => $q->where('phone', $phoneNumber))
+        return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
     }
 }

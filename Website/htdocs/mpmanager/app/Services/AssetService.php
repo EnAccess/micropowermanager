@@ -16,6 +16,7 @@ class AssetService
         if ($perPage) {
             return $this->asset->newQuery()->with(['assetType'])->paginate($perPage);
         }
+
         return $this->asset->newQuery()->with(['assetType'])->get();
     }
 
@@ -31,6 +32,7 @@ class AssetService
     {
         $asset->update($request->only(['name', 'asset_type_id', 'price']));
         $asset->fresh();
+
         return $asset;
     }
 

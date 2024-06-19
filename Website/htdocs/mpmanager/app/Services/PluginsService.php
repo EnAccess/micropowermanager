@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Plugins;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
 class PluginsService implements IBaseService
 {
@@ -40,6 +38,7 @@ class PluginsService implements IBaseService
         if ($limit) {
             return $this->plugin->newQuery()->paginate($limit);
         }
+
         return $this->plugin->newQuery()->get();
     }
 
