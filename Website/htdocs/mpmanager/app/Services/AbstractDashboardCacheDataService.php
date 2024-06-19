@@ -26,6 +26,7 @@ abstract class AbstractDashboardCacheDataService
     public function getDataById($id)
     {
         $cachedData = Cache::get(self::cacheKeyGenerator());
+
         return $cachedData ? collect($cachedData)->filter(function ($data) use ($id) {
             return $data['id'] == $id;
         })->first() : [];
@@ -36,7 +37,8 @@ abstract class AbstractDashboardCacheDataService
         $user = User::query()->first();
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
-        return $this->cacheDataKey . '-' . $companyId;
+
+        return $this->cacheDataKey.'-'.$companyId;
     }
 
     protected function reformatPeriod($period): string

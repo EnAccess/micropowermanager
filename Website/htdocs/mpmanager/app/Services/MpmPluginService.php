@@ -39,6 +39,7 @@ class MpmPluginService implements IBaseService
             return $this->mpmPlugin->newQuery()
                 ->paginate($limit);
         }
+
         return $this->mpmPlugin->newQuery()
             ->get();
     }

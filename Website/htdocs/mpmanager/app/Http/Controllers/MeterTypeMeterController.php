@@ -14,14 +14,16 @@ class MeterTypeMeterController extends Controller
 
     /**
      * List with Meters
-     * Displays the meter types with the associated meters
+     * Displays the meter types with the associated meters.
      *
      * @urlParam id required
      *
      * @responseFile responses/metertypes/metertypes.meter.list.json
-     * @param        Request $request
-     * @param        $meterTypeId
-     * @return       ApiResource
+     *
+     * @param Request $request
+     * @param         $meterTypeId
+     *
+     * @return ApiResource
      */
     public function show(Request $request, $meterTypeId)
     {

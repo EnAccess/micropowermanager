@@ -17,7 +17,7 @@ class OutstandingDebtsExportController
 
     public function download(): BinaryFileResponse
     {
-        $path  = $this->outstandingDebtsExportService->createReport(CarbonImmutable::now());
+        $path = $this->outstandingDebtsExportService->createReport(CarbonImmutable::now());
 
         return response()->download($path);
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessPayment;
 
-//WorkAround for only VOLTTERRA
+// WorkAround for only VOLTTERRA
 class AirtelVoltTerraController extends Controller
 {
     public function store($meterSerial, $amount)
@@ -33,6 +33,7 @@ class AirtelVoltTerraController extends Controller
         }
         $jsonString = json_encode($jsonData);
         file_put_contents($tempFile, $jsonString);
+
         return response()->file($tempFile);
     }
 }

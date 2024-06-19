@@ -24,6 +24,7 @@ class AssetRatePayment extends SmsBodyParser
                 $variable = $this->paymentHistory->amount;
                 break;
         }
+
         return $variable;
     }
 }

@@ -11,19 +11,21 @@ class CityService extends CreatorService
     {
         parent::__construct($city);
     }
+
     public function resolveCsvDataFromComingRow($csvData)
     {
         $cityConfig = [
             'cluster_id' => 'cluster_id',
             'mini_grid_id' => 'mini_grid_id',
-            'name' => 'city'
+            'name' => 'city',
         ];
         $cityData = [
             'cluster_id' => $csvData[$cityConfig['cluster_id']],
             'country_id' => 0,
             'mini_grid_id' => $csvData[$cityConfig['mini_grid_id']],
-            'name' => $csvData[$cityConfig['name']]
+            'name' => $csvData[$cityConfig['name']],
         ];
+
         return $this->createRelatedDataIfDoesNotExists($cityData);
     }
 }

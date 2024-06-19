@@ -1,6 +1,6 @@
 <?php
 
-namespace  MPM\Sharding\ApiResolvers;
+namespace MPM\Sharding\ApiResolvers;
 
 use Illuminate\Http\Request;
 

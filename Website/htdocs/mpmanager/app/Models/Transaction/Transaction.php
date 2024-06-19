@@ -16,14 +16,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use PDO;
 
 /**
- * Class Transaction
+ * Class Transaction.
  *
- * @package  App
- * @property integer $id
- * @property integer $amount
+ * @property int    $id
+ * @property int    $amount
  * @property string $type
  * @property string $sender
  * @property string $message
@@ -36,7 +34,7 @@ class Transaction extends BaseModel
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
-    public function originalTransaction(): morphTo
+    public function originalTransaction(): MorphTo
     {
         return $this->morphTo();
     }
@@ -68,38 +66,37 @@ class Transaction extends BaseModel
 
     public function periodTargetAlternative($cityId, $startDate, $endDate)
     {
-
-        $sql = "SELECT sum(transactions.amount) as revenue," .
-            " count(transactions.id) as total," .
-            " AVG(transactions.amount) as average," .
-            " YEARWEEK(transactions.created_at,3) as period" .
-            " from transactions" .
-            " WHERE transactions.id in (" .
-            " SELECT DISTINCT(transactions.id) " .
-            " from transactions" .
-            " LEFT join airtel_transactions on transactions.original_transaction_id = airtel_transactions.id and" .
-            " transactions.original_transaction_type = 'airtel_transaction'" .
-            " LEFT join vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id and" .
-            " transactions.original_transaction_type = 'vodacom_transaction'" .
-            " LEFT join meters on transactions.message = meters.serial_number" .
-            " LEFT JOIN meter_parameters on meter_parameters.meter_id = meters.id" .
-            " LEFT JOIN people on people.id = meter_parameters.owner_id and owner_type = 'person'" .
-            " LEFT JOIN addresses on addresses.owner_id = people.id and addresses.owner_type = 'person'" .
-            " WHERE DATE(transactions.created_at) BETWEEN :periodStartDate and :periodEndDate" .
-            " AND (airtel_transactions.status = 1 or vodacom_transactions.status = 1)" .
-            " AND addresses.city_id = :city_id " .
-            ")";
-        //" GROUP BY CONCAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))" .
-        //" ORDER BY CON CAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))";
-
+        $sql = 'SELECT sum(transactions.amount) as revenue,'.
+            ' count(transactions.id) as total,'.
+            ' AVG(transactions.amount) as average,'.
+            ' YEARWEEK(transactions.created_at,3) as period'.
+            ' from transactions'.
+            ' WHERE transactions.id in ('.
+            ' SELECT DISTINCT(transactions.id) '.
+            ' from transactions'.
+            ' LEFT join airtel_transactions on transactions.original_transaction_id = airtel_transactions.id and'.
+            " transactions.original_transaction_type = 'airtel_transaction'".
+            ' LEFT join vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id and'.
+            " transactions.original_transaction_type = 'vodacom_transaction'".
+            ' LEFT join meters on transactions.message = meters.serial_number'.
+            ' LEFT JOIN meter_parameters on meter_parameters.meter_id = meters.id'.
+            " LEFT JOIN people on people.id = meter_parameters.owner_id and owner_type = 'person'".
+            " LEFT JOIN addresses on addresses.owner_id = people.id and addresses.owner_type = 'person'".
+            ' WHERE DATE(transactions.created_at) BETWEEN :periodStartDate and :periodEndDate'.
+            ' AND (airtel_transactions.status = 1 or vodacom_transactions.status = 1)'.
+            ' AND addresses.city_id = :city_id '.
+            ')';
+        // " GROUP BY CONCAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))" .
+        // " ORDER BY CON CAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))";
 
         $sth = DB::connection()->getPdo()->prepare($sql);
-        $sth->bindValue(':city_id', $cityId, PDO::PARAM_INT);
-        $sth->bindValue(':periodStartDate', $startDate, PDO::PARAM_STR);
-        $sth->bindValue(':periodEndDate', $endDate, PDO::PARAM_STR);
+        $sth->bindValue(':city_id', $cityId, \PDO::PARAM_INT);
+        $sth->bindValue(':periodStartDate', $startDate, \PDO::PARAM_STR);
+        $sth->bindValue(':periodEndDate', $endDate, \PDO::PARAM_STR);
 
         $sth->execute();
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getAmount(): int

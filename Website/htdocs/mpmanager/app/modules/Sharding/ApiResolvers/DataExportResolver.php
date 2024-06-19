@@ -8,7 +8,7 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class DataExportResolver implements ApiResolverInterface
 {
-    public function __construct(private DatabaseProxyManagerService $databaseProxyManager,)
+    public function __construct(private DatabaseProxyManagerService $databaseProxyManager)
     {
     }
 
@@ -23,6 +23,6 @@ class DataExportResolver implements ApiResolverInterface
         $databaseProxy = $this->databaseProxyManager->findByEmail($email);
         $companyId = $databaseProxy->getCompanyId();
 
-        return (int)$companyId;
+        return (int) $companyId;
     }
 }

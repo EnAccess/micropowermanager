@@ -12,20 +12,20 @@ class MigrationMultiplexer extends Command
 
     public function handle(): void
     {
-        $sourcePath = __DIR__ . '/../../../';
+        $sourcePath = __DIR__.'/../../../';
         CompanyDatabase::all()->each(function ($companyDatabase) use ($sourcePath) {
-            $this->info('copying migration files in ' . $sourcePath . 'database/migrations/' .
+            $this->info('copying migration files in '.$sourcePath.'database/migrations/'.
                 $companyDatabase->database_name);
-            shell_exec('cp -r ' . $sourcePath . 'database/migrations/micropowermanager/* ' . $sourcePath .
-                'database/migrations/' . $companyDatabase->database_name);
+            shell_exec('cp -r '.$sourcePath.'database/migrations/micropowermanager/* '.$sourcePath.
+                'database/migrations/'.$companyDatabase->database_name);
             $this->info('migration files copied');
 
-            $this->info('sed applying to migration files in ' . $sourcePath . '/database/migrations/' .
+            $this->info('sed applying to migration files in '.$sourcePath.'/database/migrations/'.
                 $companyDatabase->database_name);
             shell_exec(
-                'for file in ' . $sourcePath . '/database/migrations/' . $companyDatabase->database_name . '/*.php
+                'for file in '.$sourcePath.'/database/migrations/'.$companyDatabase->database_name.'/*.php
             do
-                ##sed -i \'\' \'s/micropowermanager/\'' . $companyDatabase->database_name . '\'/g\' $file
+                ##sed -i \'\' \'s/micropowermanager/\''.$companyDatabase->database_name.'\'/g\' $file
                 sed -i  \'s/micropowermanager/\'shard\'/g\' $file
             done'
             );

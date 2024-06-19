@@ -35,6 +35,7 @@ class SmsResendInformationHeader extends SmsBodyParser
                 $variable = $person->surname;
                 break;
         }
+
         return $variable;
     }
 }

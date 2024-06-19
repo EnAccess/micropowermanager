@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 12.07.18
- * Time: 17:33
+ * Time: 17:33.
  */
 
 namespace App\Models\Role;

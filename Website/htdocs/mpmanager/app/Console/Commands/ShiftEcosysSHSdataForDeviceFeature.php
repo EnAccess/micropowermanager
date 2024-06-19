@@ -2,31 +2,27 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Asset;
 use App\Models\AssetPerson;
 use App\Models\ConnectionGroup;
 use App\Models\Device;
 use App\Models\Manufacturer;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
-use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use Illuminate\Support\Facades\DB;
 
 class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
 {
-    //--company-id=36
+    // --company-id=36
     protected $signature = 'ecosys:shift-data {--company-id=}';
     protected $description = 'custom data shifting command for ecosys';
 
     private $assetTypePricePeer = [
         6450 => 2,
-        6000 => 3
+        6000 => 3,
     ];
 
     private $connectionAssetPeer = [
         2 => 1,
-        3 => 2
+        3 => 2,
     ];
 
     public function __construct()
@@ -37,7 +33,7 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
     public function handle()
     {
         $this->info('Command started');
-        $this->info('command running w ' . $this->option('company-id'));
+        $this->info('command running w '.$this->option('company-id'));
         $manufacturer = Manufacturer::query()->where('name', 'SunKing SHS')->first();
         try {
             $devices = Device::query()->with('device')->get();
@@ -68,7 +64,7 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
             DB::connection('shard')->table('meters')->truncate();
             DB::connection('shard')->table('meter_tariffs')->truncate();
 
-            ConnectionGroup::query()->whereIn('id', [2,3])->get()->map(function ($q) {
+            ConnectionGroup::query()->whereIn('id', [2, 3])->get()->map(function ($q) {
                 $q->delete();
             });
         } catch (\Exception $e) {

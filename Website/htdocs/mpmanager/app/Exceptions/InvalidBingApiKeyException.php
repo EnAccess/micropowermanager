@@ -2,9 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class InvalidBingApiKeyException extends Exception
+class InvalidBingApiKeyException extends \Exception
 {
-    //
 }

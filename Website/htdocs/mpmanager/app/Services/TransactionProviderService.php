@@ -20,6 +20,6 @@ class TransactionProviderService
 
     public function getTransactionProviders()
     {
-        return  $this->transaction->withAll('BelongsToMorph');
+        return $this->transaction->withAll('BelongsToMorph');
     }
 }

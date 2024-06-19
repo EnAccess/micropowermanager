@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateAddressRequest extends FormRequest
@@ -21,7 +20,8 @@ class CreateAddressRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @bodyParam city_id int required
-     * @return    array
+     *
+     * @return array
      */
     public function rules()
     {

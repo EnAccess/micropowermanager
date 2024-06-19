@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\Meter\MeterTariff;
 use App\Services\MeterTariffMeterParameterService;
 
 class MeterTariffMeterParameterController extends Controller
@@ -16,7 +15,8 @@ class MeterTariffMeterParameterController extends Controller
     /**
      * Display a list of meters which using a particular tariff.
      *
-     * @param  $meterTariffId
+     * @param $meterTariffId
+     *
      * @return ApiResource
      */
     public function show($meterTariffId): ApiResource
@@ -25,8 +25,9 @@ class MeterTariffMeterParameterController extends Controller
     }
 
     /**
-     * @param $meterTariffId
+     * @param     $meterTariffId
      * @param int $changeId
+     *
      * @return ApiResource
      */
     public function update($meterTariffId, int $changeId): ApiResource

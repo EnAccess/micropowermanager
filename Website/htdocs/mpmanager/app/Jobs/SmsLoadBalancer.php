@@ -4,17 +4,16 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 21.01.19
- * Time: 12:26
+ * Time: 12:26.
  */
 
 namespace App\Jobs;
 
 use GuzzleHttp\Client;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
@@ -28,7 +27,6 @@ class SmsLoadBalancer extends AbstractJob
     public $timeout = 600;
     public $tries = 250;
     public $gateways;
-
 
     public $smsBody;
 
@@ -61,7 +59,7 @@ class SmsLoadBalancer extends AbstractJob
             [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'key=' . $smsCollection[1]['setting']['key'],
+                    'Authorization' => 'key='.$smsCollection[1]['setting']['key'],
                     'Accept' => 'application/json',
                 ],
                 'json' => [
@@ -70,6 +68,7 @@ class SmsLoadBalancer extends AbstractJob
                 ],
             ]
         );
-        return (string)$request->getBody();
+
+        return (string) $request->getBody();
     }
 }

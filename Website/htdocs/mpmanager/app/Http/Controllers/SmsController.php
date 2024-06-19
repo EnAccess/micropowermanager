@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 09.10.18
- * Time: 19:08
+ * Time: 19:08.
  */
 
 namespace App\Http\Controllers;
@@ -13,12 +13,9 @@ use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\SmsSearchResultResource;
-use App\Models\ConnectionGroup;
-use App\Models\ConnectionType;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Sms;
-use App\Services\SmsResendInformationKeyService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -41,12 +38,12 @@ class SmsController extends Controller
 
     public function index(): ApiResource
     {
-        $list = $this->sms
-            ::with('address.owner')
+        $list = $this->sms::with('address.owner')
             ->orderBy('id', 'DESC')
             ->select('receiver', DB::raw('count(*) as total'))
             ->groupBy('receiver')
             ->paginate(20);
+
         return new ApiResource($list);
     }
 
@@ -75,25 +72,24 @@ class SmsController extends Controller
                 $this->smsService->createSms($smsData);
                 $data = [
                     'message' => $message,
-                    'phone' => $phone
+                    'phone' => $phone,
                 ];
                 $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
             }
         } elseif ($type === 'group' || $type === 'type' || $type === 'all') {
-            //get connection group meters and owners
+            // get connection group meters and owners
             if ($type === 'group') {
                 $meters = $this->meterParameter::with(
                     [
-                        'owner.addresses' =>
-                            static function ($q) {
-                                $q->where('is_primary', 1);
-                            },
+                        'owner.addresses' => static function ($q) {
+                            $q->where('is_primary', 1);
+                        },
                     ]
                 )
                     ->whereHas(
                         'address',
                         static function ($q) use ($miniGrid) {
-                            if ((int)$miniGrid === 0) {
+                            if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
                             } else {
                                 $q->where('city_id', $miniGrid);
@@ -108,16 +104,15 @@ class SmsController extends Controller
             } elseif ($type === 'all') {
                 $meters = $this->meterParameter::with(
                     [
-                        'owner.addresses' =>
-                            static function ($q) {
-                                $q->where('is_primary', 1);
-                            },
+                        'owner.addresses' => static function ($q) {
+                            $q->where('is_primary', 1);
+                        },
                     ]
                 )
                     ->whereHas(
                         'address',
                         static function ($q) use ($miniGrid) {
-                            if ((int)$miniGrid === 0) {
+                            if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
                             } else {
                                 $q->where('city_id', $miniGrid);
@@ -127,16 +122,15 @@ class SmsController extends Controller
             } else {
                 $meters = $this->meterParameter::with(
                     [
-                        'owner.addresses' =>
-                            static function ($q) {
-                                $q->where('is_primary', 1);
-                            },
+                        'owner.addresses' => static function ($q) {
+                            $q->where('is_primary', 1);
+                        },
                     ]
                 )
                     ->whereHas(
                         'address',
                         static function ($q) use ($miniGrid) {
-                            if ((int)$miniGrid === 0) {
+                            if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
                             } else {
                                 $q->where('city_id', $miniGrid);
@@ -149,7 +143,6 @@ class SmsController extends Controller
                         }
                     )->get();
             }
-
 
             $addresses = $meters->pluck('owner.addresses');
             foreach ($addresses as $address) {
@@ -166,7 +159,7 @@ class SmsController extends Controller
                 );
                 $data = [
                     'message' => $message,
-                    'phone' => $address[0]->phone
+                    'phone' => $address[0]->phone,
                 ];
                 $this->smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
             }
@@ -193,6 +186,7 @@ class SmsController extends Controller
                 $this->commentService->storeComment($sender, $message);
                 break;
         }
+
         return new ApiResource($sms);
     }
 
@@ -202,7 +196,7 @@ class SmsController extends Controller
         $message = $request->get('message');
         $senderId = $request->get('senderId');
         if ($personId !== null) {
-            //get person primary phone
+            // get person primary phone
             $primaryAddress = $this->person::with('addresses')
                 ->whereHas(
                     'addresses',
@@ -220,7 +214,7 @@ class SmsController extends Controller
             'receiver' => $phone,
             'body' => $message,
             // TODO MPM-78
-            //'direction' => SmsService::DIRECTION_OUTGOING,
+            // 'direction' => SmsService::DIRECTION_OUTGOING,
             'sender_id' => $senderId,
         ];
         $sms = $this->smsService->createAndSendSms($smsData);
@@ -229,7 +223,7 @@ class SmsController extends Controller
     }
 
     /**
-     * Marks the sms as sent
+     * Marks the sms as sent.
      *
      * @param string $uuid
      *
@@ -252,6 +246,7 @@ class SmsController extends Controller
             );
         }
     }
+
     public function updateForFailed($uuid): void
     {
         try {
@@ -287,6 +282,7 @@ class SmsController extends Controller
             );
         }
     }
+
     public function show($person_id): ApiResource
     {
         $personAddresses = $this->person::with(
@@ -300,28 +296,30 @@ class SmsController extends Controller
             ->first();
         $numbers = $personAddresses->addresses->toArray();
         $smses = $this->sms::whereIn('receiver', $numbers)->orderBy('id', 'ASC')->get();
+
         return new ApiResource($smses);
     }
 
     public function byPhone($phone): ApiResource
     {
         $smses = $this->sms->where('receiver', $phone)->get();
+
         return new ApiResource($smses);
     }
 
     public function search($search)
     {
-        //search in people
+        // search in people
         $list = $this->person::with('addresses')
             ->whereHas(
                 'addresses',
                 function ($q) use ($search) {
-                    $q->where('phone', 'like', '%' . $search . '%')
+                    $q->where('phone', 'like', '%'.$search.'%')
                         ->where('is_primary', 1);
                 }
             )
-            ->orWhere('name', 'like', '%' . $search . '%')
-            ->orWhere('surname', 'like', '%' . $search . '%')
+            ->orWhere('name', 'like', '%'.$search.'%')
+            ->orWhere('surname', 'like', '%'.$search.'%')
             ->get();
 
         return SmsSearchResultResource::collection($list);

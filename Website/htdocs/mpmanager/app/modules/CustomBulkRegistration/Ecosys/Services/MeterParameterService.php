@@ -11,6 +11,7 @@ class MeterParameterService extends CreatorService
     {
         parent::__construct($meterParameter);
     }
+
     public function resolveCsvDataFromComingRow($csvData)
     {
         $meterParameterConfig = [
@@ -19,7 +20,7 @@ class MeterParameterService extends CreatorService
             'meter_id' => 'meter_id',
             'connection_type_id' => 'connection_type_id',
             'connection_group_id' => 'connection_group_id',
-            'tariff_id' => 'tariff_id'
+            'tariff_id' => 'tariff_id',
         ];
         $meterParameterData = [
             'owner_type' => $meterParameterConfig['owner_type'],
@@ -27,8 +28,9 @@ class MeterParameterService extends CreatorService
             'meter_id' => $csvData[$meterParameterConfig['meter_id']],
             'connection_type_id' => $csvData[$meterParameterConfig['connection_type_id']],
             'connection_group_id' => $csvData[$meterParameterConfig['connection_group_id']],
-            'tariff_id' => $csvData[$meterParameterConfig['tariff_id']]
+            'tariff_id' => $csvData[$meterParameterConfig['tariff_id']],
         ];
+
         return $this->createRelatedDataIfDoesNotExists($meterParameterData);
     }
 }

@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateAgentAssignedApplianceRequest;
 use App\Http\Requests\CreateAgentReceiptRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
-use App\Models\User;
 use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptService;
 use Illuminate\Http\Request;
@@ -22,8 +19,9 @@ class AgentReceiptWebController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param $agentId
+     * @param         $agentId
      * @param Request $request
+     *
      * @return ApiResource
      */
     public function show($agentId, Request $request)
@@ -36,7 +34,8 @@ class AgentReceiptWebController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  Request $request
+     * @param Request $request
+     *
      * @return ApiResource
      */
     public function index(Request $request)
@@ -49,13 +48,13 @@ class AgentReceiptWebController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  $agentId
-     * @param  CreateAgentReceiptRequest $request
+     * @param                           $agentId
+     * @param CreateAgentReceiptRequest $request
+     *
      * @return ApiResource
      */
     public function store(CreateAgentReceiptRequest $request)
     {
-
         $userId = auth('api')->user()->id;
         $agentId = $request->input('agent_id');
         $lastBalanceHistory = $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);
@@ -63,9 +62,9 @@ class AgentReceiptWebController extends Controller
             'user_id' => $userId,
             'agent_id' => $agentId,
             'amount' => $request->input('amount'),
-            'last_controlled_balance_history_id' => $lastBalanceHistory->id
+            'last_controlled_balance_history_id' => $lastBalanceHistory->id,
         ];
 
-        return  ApiResource::make($this->agentReceiptService->create($receiptData));
+        return ApiResource::make($this->agentReceiptService->create($receiptData));
     }
 }

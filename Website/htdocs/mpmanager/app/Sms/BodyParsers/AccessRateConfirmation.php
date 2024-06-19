@@ -13,6 +13,7 @@ class AccessRateConfirmation extends SmsBodyParser
     {
         $this->paymentHistory = $paymentHistory;
     }
+
     protected function getVariableValue($variable)
     {
         switch ($variable) {
@@ -20,6 +21,7 @@ class AccessRateConfirmation extends SmsBodyParser
                 $variable = $this->paymentHistory->amount;
                 break;
         }
+
         return $variable;
     }
 }

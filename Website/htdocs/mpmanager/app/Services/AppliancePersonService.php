@@ -7,7 +7,6 @@ use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\MainSettings;
-use PhpParser\Node\Stmt\Throw_;
 
 class AppliancePersonService implements IBaseService, IAssociative
 {
@@ -31,9 +30,7 @@ class AppliancePersonService implements IBaseService, IAssociative
     private function checkDownPaymentIsBigger($downPayment, $cost)
     {
         if ($downPayment > $cost) {
-            throw new DownPaymentBiggerThanAppliancePriceException(
-                'Down payment is not bigger than appliance sold cost '
-            );
+            throw new DownPaymentBiggerThanAppliancePriceException('Down payment is not bigger than appliance sold cost ');
         }
     }
 
@@ -47,7 +44,7 @@ class AppliancePersonService implements IBaseService, IAssociative
                 'total_cost' => $request->input('cost'),
                 'down_payment' => $request->input('downPayment'),
                 'rate_count' => $request->input('rate'),
-                'creator_id' => $request->input('creatorId')
+                'creator_id' => $request->input('creatorId'),
             ]
         );
 
@@ -70,7 +67,7 @@ class AppliancePersonService implements IBaseService, IAssociative
             )->first();
             $meter = $meterParameter?->meter;
         }
-        if ((int)$request->input('downPayment') > 0) {
+        if ((int) $request->input('downPayment') > 0) {
             $transaction = $this->cashTransactionService->createCashTransaction(
                 $request->input('creatorId'),
                 $request->input('downPayment'),
@@ -105,7 +102,7 @@ class AppliancePersonService implements IBaseService, IAssociative
                 'asset' => $asset,
                 'assetType' => $asset->assetType,
                 'assetPerson' => $assetPerson,
-                'transaction' => $transaction
+                'transaction' => $transaction,
             ]
         );
         event('appliance.sold', $soldApplianceDataContainer);
@@ -121,9 +118,9 @@ class AppliancePersonService implements IBaseService, IAssociative
                 'logData' => [
                     'user_id' => auth('api')->user()->id,
                     'affected' => $assetPerson,
-                    'action' => 'Appliance is sold to ' . $cost . ' ' . $currency .
-                        ' instead of Preferred Price (' . $preferredPrice . ' ' . $currency . ')'
-                ]
+                    'action' => 'Appliance is sold to '.$cost.' '.$currency.
+                        ' instead of Preferred Price ('.$preferredPrice.' '.$currency.')',
+                ],
             ]
         );
     }
@@ -131,6 +128,7 @@ class AppliancePersonService implements IBaseService, IAssociative
     public function getCurrencyFromMainSettings()
     {
         $mainSettings = $this->mainSettings->newQuery()->first();
+
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
@@ -189,6 +187,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         if ($limit) {
             return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);
         }
+
         return $this->assetPerson->newQuery()->with(['person.devices'])->get();
     }
 

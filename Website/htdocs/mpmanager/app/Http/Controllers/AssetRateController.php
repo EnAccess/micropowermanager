@@ -4,22 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Models\AssetRate;
-use App\Models\Person\Person;
 use App\Services\ApplianceRateService;
 use App\Services\CashTransactionService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class AssetRateController extends Controller
 {
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param Request   $request
      * @param AssetRate $assetRate
+     *
      * @return ApiResource
      */
-
     private $cashTransactionService;
     private $applianceRateService;
 
@@ -43,7 +41,7 @@ class AssetRateController extends Controller
         if ($newCost === 0) {
             $this->applianceRateService
                 ->deleteUpdatedApplianceRateIfCostZero($applianceRate, $creatorId, $cost, $newCost);
-            $appliancePerson->rate_count -= 1;
+            --$appliancePerson->rate_count;
         } else {
             $this->applianceRateService->updateApplianceRateCost($applianceRate, $creatorId, $cost, $newCost);
         }

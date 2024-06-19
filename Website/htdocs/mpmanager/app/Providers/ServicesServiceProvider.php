@@ -19,7 +19,6 @@ class ServicesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 
     /**
@@ -33,7 +32,7 @@ class ServicesServiceProvider extends ServiceProvider
         $this->app->bind(IUserService::class, UserService::class);
         $this->app->bind(ISolarService::class, SolarService::class);
 
-        //Bind open weather map service   to IWeatherDataProvider interface
+        // Bind open weather map service   to IWeatherDataProvider interface
         $this->app->bind(IWeatherDataProvider::class, OpenWeatherMap::class);
     }
 }

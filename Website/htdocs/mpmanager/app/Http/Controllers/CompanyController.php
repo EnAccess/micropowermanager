@@ -34,7 +34,7 @@ class CompanyController extends Controller
 
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {
-        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id','protected_page_password']);
+        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id', 'protected_page_password']);
         $company = $this->companyService->create($companyData);
 
         $adminData = $request->input('user');
@@ -43,7 +43,7 @@ class CompanyController extends Controller
 
         $companyDatabaseData = [
             'company_id' => $company->getId(),
-            'database_name' => str_replace(" ", "", preg_replace('/[^a-z\d_ ]/i', '', $company->getName())) . '_' .
+            'database_name' => str_replace(' ', '', preg_replace('/[^a-z\d_ ]/i', '', $company->getName())).'_'.
                 Carbon::now()->timestamp,
         ];
         $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
@@ -66,7 +66,7 @@ class CompanyController extends Controller
                 foreach ($plugins as $plugin) {
                     $pluginData = [
                         'mpm_plugin_id' => $plugin['id'],
-                        'status' => 1
+                        'status' => 1,
                     ];
                     $this->pluginsService->create($pluginData);
                     $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase(
@@ -78,12 +78,11 @@ class CompanyController extends Controller
                     $registrationTail[] = [
                         'tag' => $mpmPlugin->tail_tag,
                         'component' => isset($mpmPlugin->tail_tag) ? str_replace(
-                            " ",
-                            "-",
+                            ' ',
+                            '-',
                             $mpmPlugin->tail_tag
                         ) : null,
-                        'adjusted' => !isset($mpmPlugin->tail_tag)
-
+                        'adjusted' => !isset($mpmPlugin->tail_tag),
                     ];
                     Artisan::call($mpmPlugin->installation_command);
                 }
@@ -95,7 +94,7 @@ class CompanyController extends Controller
                 return response()->json([
                     'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',
                     'company' => $company,
-                    'sidebarData' => $this->menuItemsService->getAll()
+                    'sidebarData' => $this->menuItemsService->getAll(),
                 ], 201);
             }
         );
@@ -104,6 +103,7 @@ class CompanyController extends Controller
     public function get($email): ApiResource
     {
         $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
+
         return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));
     }
 }

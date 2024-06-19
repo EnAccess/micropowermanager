@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Models\Agent;
 use App\Services\AgentTransactionService;
 use Illuminate\Http\Request;
 
@@ -17,6 +16,6 @@ class AgentTransactionWebController extends Controller
     {
         $limit = $request->input('per_page');
 
-        return  ApiResource::make($this->agentTransactionService->getAll($limit, $agentId));
+        return ApiResource::make($this->agentTransactionService->getAll($limit, $agentId));
     }
 }

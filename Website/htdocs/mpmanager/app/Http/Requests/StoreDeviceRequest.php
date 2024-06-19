@@ -24,7 +24,6 @@ class StoreDeviceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

@@ -29,8 +29,7 @@ class SmsApplianceRemindRateService
         $smsApplianceRemindRate->update([
             'appliance_id' => $data['appliance_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
-            'remind_rate' => $data['remind_rate']
-
+            'remind_rate' => $data['remind_rate'],
         ]);
 
         /** @var Asset $result */
@@ -44,8 +43,9 @@ class SmsApplianceRemindRateService
         $this->smsApplianceRemindRate->newQuery()->create([
             'appliance_id' => $data['appliance_type_id'],
             'overdue_remind_rate' => $data['overdue_remind_rate'],
-            'remind_rate' => $data['remind_rate']
+            'remind_rate' => $data['remind_rate'],
         ]);
+
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
     }
 }

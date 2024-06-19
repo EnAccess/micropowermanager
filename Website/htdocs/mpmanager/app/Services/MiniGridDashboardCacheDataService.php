@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\Target;
-use DateInterval;
-use DatePeriod;
 use Illuminate\Support\Facades\Cache;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
@@ -37,14 +35,13 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
     public function setData($dateRange = [])
     {
         if (empty($dateRange)) {
-            $startDate = date('Y-01-01');//first day of the year
+            $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
         } else {
             list($startDate, $endDate) = $dateRange;
         }
-
 
         $miniGrids = $this->miniGridService->getAll();
 
@@ -89,7 +86,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 }
                 unset($targets->subTargets);
             }
-            //get all types of connections
+            // get all types of connections
             $connectionGroups = $this->connectionGroup->select('id', 'name')->get();
             $connections = [];
             $revenues = [];
@@ -106,7 +103,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $connectionGroup->id,
                     $endDate
                 );
-                $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]["registered_connections"];
+                $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]['registered_connections'];
                 $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
 
                 $connectionsData = $this->meterRevenueService->getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
@@ -136,7 +133,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $endDate
                 )->toArray();
                 foreach ($tariffRevenue as $revenue) {
-                    $totalRevenue = (int)$revenue['total'];
+                    $totalRevenue = (int) $revenue['total'];
                     $date = $this->reformatPeriod($revenue['result_date']);
                     $response[$date][$connectionType->name] = [
                         'revenue' => $totalRevenue,
@@ -145,9 +142,9 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             }
             $begin = date_create('2018-08-01');
             $end = date_create();
-            $end->add(new DateInterval('P1D')); //
-            $i = new DateInterval('P1W');
-            $period = new DatePeriod($begin, $i, $end);
+            $end->add(new \DateInterval('P1D'));
+            $i = new \DateInterval('P1W');
+            $period = new \DatePeriod($begin, $i, $end);
 
             $openedTicketsWithCategories = $this->ticket->ticketsOpenedWithCategories($miniGridId);
             $closedTicketsWithCategories = $this->ticket->ticketsClosedWithCategories($miniGridId);
@@ -162,14 +159,14 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 }
             }
             foreach ($closedTicketsWithCategories as $closedTicketsWithCategory) {
-                $date = $this->reformatPeriod($closedTicketsWithCategory["period"]);
-                $result[$date][$closedTicketsWithCategory["label_name"]]["closed"]
-                    = $closedTicketsWithCategory["closed_tickets"];
+                $date = $this->reformatPeriod($closedTicketsWithCategory['period']);
+                $result[$date][$closedTicketsWithCategory['label_name']]['closed']
+                    = $closedTicketsWithCategory['closed_tickets'];
             }
             foreach ($openedTicketsWithCategories as $openedTicketsWithCategory) {
-                $date = $this->reformatPeriod($openedTicketsWithCategory["period"]);
-                $result[$date][$openedTicketsWithCategory["label_name"]]["opened"]
-                    = $openedTicketsWithCategory["new_tickets"];
+                $date = $this->reformatPeriod($openedTicketsWithCategory['period']);
+                $result[$date][$openedTicketsWithCategory['label_name']]['opened']
+                    = $openedTicketsWithCategory['new_tickets'];
             }
             $miniGrids[$index]->period = $response;
             $miniGrids[$index]->tickets = $result;

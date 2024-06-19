@@ -26,7 +26,7 @@ abstract class AbstractSharedCommand extends Command
             $companyId = $this->option('company-id');
         }
         if ($companyId) {
-            $this->runForCompany($databaseProxyManagerService, (int)$companyId, $input, $output);
+            $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
         } else {
             $this->runForAllShards($databaseProxyManagerService, $input, $output);
         }
@@ -62,7 +62,7 @@ abstract class AbstractSharedCommand extends Command
         InputInterface $input,
         OutputInterface $output
     ): void {
-        $this->info("Running " . $this->name . " for company ID : " . $companyId);
+        $this->info('Running '.$this->name.' for company ID : '.$companyId);
         $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
             parent::execute($input, $output);
         });

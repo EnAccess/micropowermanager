@@ -9,19 +9,19 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
- * Class AirtelTransaction
+ * Class AirtelTransaction.
  *
- * @package  App
- * @property int $id
+ * @property int    $id
  * @property string $interface_id
  * @property string $business_number
  * @property string $trans_id
- * @property int $status
+ * @property int    $status
  * @property string $tr_id
  */
 class AirtelTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
     public const RELATION_NAME = 'airtel_transaction';
+
     /**
      * @return MorphOne
      */

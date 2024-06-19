@@ -56,7 +56,7 @@
                                 <md-field
                                     :class="{
                                         'md-invalid': errors.has(
-                                            $tc('customer-add-form.name'),
+                                            'customer-add-form.name',
                                         ),
                                     }"
                                 >
@@ -85,7 +85,7 @@
                                 <md-field
                                     :class="{
                                         'md-invalid': errors.has(
-                                            $tc('customer-add-form.surname'),
+                                            'customer-add-form.surname',
                                         ),
                                     }"
                                 >
@@ -163,7 +163,7 @@
                                 <md-field
                                     :class="{
                                         'md-invalid': errors.has(
-                                            $tc('customer-add-form.email'),
+                                            'customer-add-form.email',
                                         ),
                                     }"
                                 >

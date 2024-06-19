@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -39,8 +38,9 @@ class TokenProcessor extends AbstractJob
     {
         try {
             $api = resolve($this->transactionContainer->manufacturer->api_name);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->handleApiException($e);
+
             return;
         }
 
@@ -54,10 +54,10 @@ class TokenProcessor extends AbstractJob
         }
     }
 
-    private function handleApiException(Exception $e): void
+    private function handleApiException(\Exception $e): void
     {
         Log::critical(
-            'No Api is registered for ' . $this->transactionContainer->manufacturer->name,
+            'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
         );
         event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
@@ -79,23 +79,25 @@ class TokenProcessor extends AbstractJob
     {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->handleTokenGenerationFailure($e);
+
             return;
         }
 
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(Exception $e): void
+    private function handleTokenGenerationFailure(\Exception $e): void
     {
         if (self::MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
+
             return;
         }
         Log::critical(
-            $this->transactionContainer->manufacturer->name . ' Token listener failed after  ' .
-            $this->counter . ' times ',
+            $this->transactionContainer->manufacturer->name.' Token listener failed after  '.
+            $this->counter.' times ',
             ['message' => $e->getMessage()]
         );
 
@@ -103,13 +105,13 @@ class TokenProcessor extends AbstractJob
 
         event('transaction.failed', [
             $this->transactionContainer->transaction,
-            'Manufacturer Api did not succeed after 3 times with the following error: ' . $e->getMessage()
+            'Manufacturer Api did not succeed after 3 times with the following error: '.$e->getMessage(),
         ]);
     }
 
     private function retryTokenGeneration(): void
     {
-        $this->counter++;
+        ++$this->counter;
         self::dispatch(
             $this->transactionContainer,
             false,

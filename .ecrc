@@ -1,7 +1,11 @@
 {
-    "Exclude": [
-        "Website/htdocs/mpmanager/packages/inensus/",
-        "Website/htdocs/mpmanager/database/dummyData/dummy_data.sql",
-        "composer.phar"
-    ]
+  "Exclude": [
+    "Website/htdocs/mpmanager/packages/inensus/",
+    "Website/htdocs/mpmanager/database/dummyData/dummy_data.sql",
+    "Website/htdocs/mpmanager/bootstrap/cache/",
+    "composer.phar",
+    "vendor",
+    "node_modules",
+    "debugbar"
+  ]
 }

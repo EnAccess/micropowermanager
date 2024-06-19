@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\MailSettings;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class MailSettingsService
 {
@@ -22,7 +21,7 @@ class MailSettingsService
     public function create($request)
     {
         $mailSettings = $this->mailSettings->newQuery()->create(
-            [   'mail_host' => $request->get('mail_host'),
+            ['mail_host' => $request->get('mail_host'),
                 'mail_port' => $request->get('mail_port'),
                 'mail_encryption' => $request->get('mail_encryption'),
                 'mail_username' => $request->get('mail_username'),
@@ -36,7 +35,7 @@ class MailSettingsService
     public function update($request, $mailSettings)
     {
         $mailSettings->update(
-            [   'mail_host' => $request->get('mail_host'),
+            ['mail_host' => $request->get('mail_host'),
                 'mail_port' => $request->get('mail_port'),
                 'mail_encryption' => $request->get('mail_encryption'),
                 'mail_username' => $request->get('mail_username'),

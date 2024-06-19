@@ -27,11 +27,11 @@ class OutstandingDebtsExportService extends AbstractExportService
         $this->setActivatedSheet('Sheet1');
 
         foreach ($this->exportingData as $key => $value) {
-            $this->worksheet->setCellValue('A' . ($key + 2), $value[0]);
-            $this->worksheet->setCellValue('B' . ($key + 2), $value[1]);
-            $this->worksheet->setCellValue('C' . ($key + 2), $value[2]);
-            $this->worksheet->setCellValue('D' . ($key + 2), $value[3]);
-            $this->worksheet->setCellValue('E' . ($key + 2), $value[4]);
+            $this->worksheet->setCellValue('A'.($key + 2), $value[0]);
+            $this->worksheet->setCellValue('B'.($key + 2), $value[1]);
+            $this->worksheet->setCellValue('C'.($key + 2), $value[2]);
+            $this->worksheet->setCellValue('D'.($key + 2), $value[3]);
+            $this->worksheet->setCellValue('E'.($key + 2), $value[4]);
         }
 
         foreach ($this->worksheet->getColumnIterator() as $column) {
@@ -43,11 +43,11 @@ class OutstandingDebtsExportService extends AbstractExportService
     {
         $this->exportingData = $this->outstandingDebtsData->map(function ($applianceRate) {
             return [
-                $applianceRate->assetPerson->person->name . ' ' . $applianceRate->assetPerson->person->surname,
+                $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
                 $applianceRate->assetPerson->asset->name,
                 $applianceRate->assetPerson->device_serial,
                 $applianceRate->due_date,
-                $applianceRate->remaining
+                $applianceRate->remaining,
             ];
         });
     }
@@ -72,6 +72,7 @@ class OutstandingDebtsExportService extends AbstractExportService
         $this->setOutstandingDebtsData($data);
         $this->setExportingData();
         $this->writeOutstandingDebtsData();
+
         return $this->saveSpreadSheet();
     }
 
@@ -84,8 +85,8 @@ class OutstandingDebtsExportService extends AbstractExportService
             ->each(function (User $user) use ($path, $reportDate) {
                 $this->mailHelper->sendPlain(
                     $user->email,
-                    'Outstanding debts report - ' . $reportDate->format('d-m-Y'),
-                    'Please find attached the outstanding debts report. This report is generated on ' . CarbonImmutable::now()->format('d-m-Y') . '.',
+                    'Outstanding debts report - '.$reportDate->format('d-m-Y'),
+                    'Please find attached the outstanding debts report. This report is generated on '.CarbonImmutable::now()->format('d-m-Y').'.',
                     $path
                 );
             });

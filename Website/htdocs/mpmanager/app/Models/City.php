@@ -8,18 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * Class City
+ * Class City.
  *
- * @package  App
- * @property integer $id
+ * @property int    $id
  * @property string $name
- * @property int $country_id
- * @property int $cluster_id
- * @property int $mini_grid_id
+ * @property int    $country_id
+ * @property int    $cluster_id
+ * @property int    $mini_grid_id
  */
 class City extends BaseModel
 {
     public const RELATION_NAME = 'city';
+
     public function targets(): HasMany
     {
         return $this->hasMany(Target::class);
@@ -52,7 +52,7 @@ class City extends BaseModel
 
     public function setName(string $name): void
     {
-        $this->name =  $name;
+        $this->name = $name;
     }
 
     public function setCountryId(int $countryId): void

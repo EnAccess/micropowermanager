@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 31.07.18
- * Time: 19:53
+ * Time: 19:53.
  */
 
 namespace App\Observers;
@@ -21,9 +21,8 @@ class AgentObserver
 
     public function updated(Agent $agent): void
     {
-        Log::debug($agent->id . 'updated');
+        Log::debug($agent->id.'updated');
     }
-
 
     public function deleted(Agent $agent): void
     {

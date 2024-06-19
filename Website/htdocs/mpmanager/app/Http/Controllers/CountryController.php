@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Country;
 use App\Http\Requests\CountryRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Country;
 use Illuminate\Support\Facades\Config;
 
 class CountryController extends Controller
@@ -25,6 +25,6 @@ class CountryController extends Controller
 
     public function store(CountryRequest $request): ApiResource
     {
-        return ApiResource::make(Country::query()->create(request()->only(['country_name', 'country_code',])));
+        return ApiResource::make(Country::query()->create(request()->only(['country_name', 'country_code'])));
     }
 }

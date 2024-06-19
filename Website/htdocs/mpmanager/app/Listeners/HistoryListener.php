@@ -21,22 +21,19 @@ class HistoryListener
      */
     public function __construct(History $historyModel)
     {
-
         $this->historyModel = $historyModel;
     }
 
     /**
-     * Saves a new event in to the histories table
+     * Saves a new event in to the histories table.
      *
      * @param mixed       $data    is an object which should be stored on the histories table
      * @param string      $content the stringified message about the entry
      * @param string      $type
-     * @param null|string $field
+     * @param string|null $field
      */
-
     public function save($data, string $content, string $type, ?string $field): void
     {
-
         $this->historyModel->target()->associate($data);
         $this->historyModel->content = $content;
         $this->historyModel->action = $type;

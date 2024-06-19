@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\PowerConverter;
-use App\Http\Requests\StoreEnergyRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Energy;
 use Carbon\Carbon;
@@ -40,6 +38,7 @@ class EnergyController extends Controller
                 Carbon::createFromTimestamp($endDate)->format('Y-m-d H:i:s')
             );
         }
+
         return new ApiResource($energyReadings->get());
     }
 }

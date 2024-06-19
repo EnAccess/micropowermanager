@@ -2,22 +2,15 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\MaintenanceUsers;
-use App\Models\MiniGrid;
 use App\Models\Restriction;
 use App\Services\MaintenanceUserService;
 use App\Services\MiniGridService;
 use App\Services\RestrictionService;
-use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 /**
- * Class RestrictionMiddleware
- *
- * @package App\Http\Middleware
- *
- * Checks if an incoming request is still in the allowed limits that are defined in the restrictions table
+ * Class RestrictionMiddleware.
  */
 class RestrictionMiddleware
 {
@@ -31,12 +24,13 @@ class RestrictionMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request  $request
      * @param \Closure $next
-     * @param  $type
+     * @param          $type
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next, $target)
+    public function handle($request, \Closure $next, $target)
     {
         try {
             $restriction = $this->restrictionService->getRestrictionForTarget($target);
@@ -74,6 +68,7 @@ class RestrictionMiddleware
                 return false;
             }
         }
+
         // everything is still in limits
         return true;
     }

@@ -35,6 +35,7 @@ class TokenService implements IBaseService
         if ($limit) {
             return $this->token->newQuery()->paginate($limit);
         }
+
         return $this->token->newQuery()->get();
     }
 }

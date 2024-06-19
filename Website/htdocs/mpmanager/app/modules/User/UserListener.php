@@ -29,7 +29,6 @@ class UserListener
         }
     }
 
-
     public function handleUserCreatedEvent(UserCreatedEvent $event): void
     {
         if ($event->shouldSyncUser) {
@@ -38,7 +37,7 @@ class UserListener
             $databaseProxyData = [
                 'email' => $event->user->getEmail(),
                 'fk_company_id' => $event->user->getCompanyId(),
-                'fk_company_database_id' => $companyDatabase->getId()
+                'fk_company_database_id' => $companyDatabase->getId(),
             ];
 
             $this->databaseProxyService->create($databaseProxyData);

@@ -14,14 +14,14 @@ class PdfService
         $this->pdf = $pdf;
     }
 
-
     public function generatePdfFromView(string $view, $dataToInject): string
     {
         $this->pdf->loadView($view, ['data' => $dataToInject]);
 
-        $filePath = Storage::path('non-paying') . time() . '.pdf';
+        $filePath = Storage::path('non-paying').time().'.pdf';
 
         $this->pdf->save($filePath);
+
         return $filePath;
     }
 }

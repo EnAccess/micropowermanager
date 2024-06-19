@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\City;
-use App\Services\SessionService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CityRequest extends FormRequest
@@ -32,7 +31,7 @@ class CityRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'mini_grid_id' => 'required'
+            'mini_grid_id' => 'required',
         ];
     }
 

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Services\ClustersDashboardCacheDataService;
-use Illuminate\Console\Command;
 
 class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
 {

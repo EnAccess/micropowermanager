@@ -15,9 +15,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Class MeterParameter
+ * Class MeterParameter.
  *
- * @package  App
  * @property string owner_type
  * @property int owner_id
  * @property int meter_id
@@ -43,7 +42,6 @@ class MeterParameter extends BaseModel
     {
         return $this->belongsTo(MeterTariff::class);
     }
-
 
     public function tariffAccessRate(): ?AccessRate
     {
@@ -75,7 +73,7 @@ class MeterParameter extends BaseModel
         return explode(',', $this->geo()->first()->points ?? '0.0,0.0');
     }
 
-    //the address where the meter is placed
+    // the address where the meter is placed
     public function address(): MorphOne
     {
         return $this->morphOne(Address::class, 'owner');
@@ -85,7 +83,6 @@ class MeterParameter extends BaseModel
     {
         return $this->belongsTo(ConnectionGroup::class);
     }
-
 
     public function socialTariffPiggyBank(): HasOne
     {

@@ -7,13 +7,12 @@ use App\Exceptions\SpreadSheetNotCreatedException;
 use App\Exceptions\SpreadSheetNotSavedException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Webpatser\Uuid\Uuid;
-use DateTimeZone;
 
 abstract class AbstractExportService
 {
@@ -38,10 +37,11 @@ abstract class AbstractExportService
             $this->spreadsheet =
                 $this->reader->load($path);
             $this->reader->setIncludeCharts(true);
+
             return $this->spreadsheet;
         } catch (\Exception $e) {
             Log::critical('An error occurred while creating the spreadsheet', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
             throw new SpreadSheetNotCreatedException($e->getMessage());
         }
@@ -77,7 +77,7 @@ abstract class AbstractExportService
 
         // Check if the array keys exist before accessing them
         $whole = isset($parts[0]) ? number_format($parts[0], 0, '', $separator) : '';
-        $decimal = isset($parts[1]) ? substr($parts[1] . '00', 0, 2) : '';
+        $decimal = isset($parts[1]) ? substr($parts[1].'00', 0, 2) : '';
 
         // Combine the whole number and decimal parts
         return $decimal ? "$whole.$decimal" : $whole;
@@ -89,7 +89,7 @@ abstract class AbstractExportService
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
         // Set the desired timezone
-        $dateTimeUtc->setTimezone(new DateTimeZone($this->timeZone));
+        $dateTimeUtc->setTimezone(new \DateTimeZone($this->timeZone));
 
         // Format the date and time as a string
         return $dateTimeUtc->format('Y-m-d H:i:s');
@@ -106,7 +106,7 @@ abstract class AbstractExportService
             $this->worksheet = $this->spreadsheet->setActiveSheetIndexByName($sheetName);
         } catch (\Exception $e) {
             Log::critical('An error occurred while setting the active sheet survey on the spreadsheet.', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
             throw new ActiveSheetNotCreatedException($e->getMessage());
         }
@@ -114,13 +114,13 @@ abstract class AbstractExportService
 
     public function saveSpreadSheet(): string
     {
-
         try {
-            $uuid = (string)Uuid::generate(4);
-            $fileName = storage_path('appliance') . "/" . $this->getPrefix() . '-' . $uuid . ".xlsx";
+            $uuid = (string) Uuid::generate(4);
+            $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
             $this->setRecentlyCreatedSpreadSheetId($uuid);
-            $writer = IOFactory::createWriter($this->spreadsheet, "Xlsx");
+            $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
             $writer->save($fileName);
+
             return $fileName;
         } catch (\Exception $e) {
             throw new SpreadSheetNotSavedException($e->getMessage());

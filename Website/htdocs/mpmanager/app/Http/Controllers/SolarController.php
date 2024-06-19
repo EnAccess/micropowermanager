@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SolarCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\ISolarService;
 
@@ -21,12 +20,13 @@ class SolarController extends Controller
     public function index(): ApiResource
     {
         $solarReadings = $this->solarService->list();
+
         return new ApiResource($solarReadings);
     }
 
     public function listByMiniGrid($miniGridId): ApiResource
     {
-        echo "miniGridId " . $miniGridId;
+        echo 'miniGridId '.$miniGridId;
         $solarReadings = $this->solarService->lisByMiniGrid($miniGridId);
 
         return new ApiResource($solarReadings);

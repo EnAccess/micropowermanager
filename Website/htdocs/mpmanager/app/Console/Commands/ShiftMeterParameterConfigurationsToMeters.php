@@ -3,20 +3,20 @@
 namespace App\Console\Commands;
 
 use App\Models\Meter\MeterToken;
+use App\Services\AddressesService;
 use App\Services\CityGeographicalInformationService;
 use App\Services\CityService;
+use App\Services\GeographicalInformationService;
 use App\Services\ManufacturerService;
 use App\Services\MenuItemsService;
-use App\Services\MiniGridService;
-use App\Services\TokenService;
-use MPM\Meter\MeterDeviceService;
-use App\Services\AddressesService;
-use App\Services\GeographicalInformationService;
 use App\Services\MeterParameterService;
 use App\Services\MeterService;
+use App\Services\MiniGridService;
+use App\Services\TokenService;
 use Illuminate\Support\Facades\DB;
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
+use MPM\Meter\MeterDeviceService;
 
 class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
 {
@@ -67,7 +67,7 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         try {
             DB::connection('shard')->beginTransaction();
             $cities = $this->cityService->getAll();
-            $cities->each(fn($city) => $this->createGeoRecordForCity($city));
+            $cities->each(fn ($city) => $this->createGeoRecordForCity($city));
             $this->info('Geo records are created for cities.');
             $this->addSolarHomeSystemsToNavBar();
             $this->info('Solar Home Systems are added to the navigation bar.');
@@ -77,7 +77,7 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
             $this->info('Meter tokens are moved to tokens.');
             $meterParameters = $this->meterParameterService->getAll();
             $this->info('Meter parameter values are being shifted to meters, devices and addresses.');
-            $meterParameters->each(fn($meterParameter) => $this->setMeterDevices($meterParameter));
+            $meterParameters->each(fn ($meterParameter) => $this->setMeterDevices($meterParameter));
             DB::connection('shard')->commit();
         } catch (\Exception $e) {
             $message = $e->getMessage();
@@ -120,13 +120,14 @@ class ShiftMeterParameterConfigurationsToMeters extends AbstractSharedCommand
         if ($city->location == null) {
             $miniGridLocation = $this->miniGridService->getByIdWithLocation($city->mini_grid_id)->location;
             $cityGeo = $this->geographicalInformationService->make([
-                'points' => $miniGridLocation->points
+                'points' => $miniGridLocation->points,
             ]);
             $this->cityGeographicalInformationService->setAssigned($cityGeo);
             $this->cityGeographicalInformationService->setAssignee($city);
             $this->cityGeographicalInformationService->assign();
             $this->geographicalInformationService->save($cityGeo);
         }
+
         return $city;
     }
 

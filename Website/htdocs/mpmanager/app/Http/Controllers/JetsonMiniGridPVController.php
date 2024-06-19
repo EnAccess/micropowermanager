@@ -23,9 +23,8 @@ class JetsonMiniGridPVController extends Controller
         return ApiResource::make($this->miniGridPVService->getById($miniGridId, $startDate, $endDate));
     }
 
-
     /**
-     * Create
+     * Create.
      *
      * @param PVRequest $request
      * @param Response  $response
@@ -37,7 +36,7 @@ class JetsonMiniGridPVController extends Controller
      *
      * @return Response|null
      */
-    public function store(PVRequest $request, Response $response): Response | ApiResource
+    public function store(PVRequest $request, Response $response): Response|ApiResource
     {
         $pv = $request->input('pv');
 
@@ -46,15 +45,15 @@ class JetsonMiniGridPVController extends Controller
                 [
                     'data' => [
                         'message' => 'daily , total are required',
-                        'status_code' => 422
-                    ]
+                        'status_code' => 422,
+                    ],
                 ]
             );
         }
 
         $dailyGeneratedEnergy = $this->formatEnergyData($pv['daily']['energy']);
         $totalGeneratedEnergy = $this->formatEnergyData($pv['total']['energy']);
-        $pvData =  [
+        $pvData = [
             'mini_grid_id' => $request->input('mini_grid_id'),
             'node_id' => $request->input('node_id'),
             'device_id' => $request->input('device_id'),
@@ -64,7 +63,7 @@ class JetsonMiniGridPVController extends Controller
             'total' => $totalGeneratedEnergy,
             'total_unit' => $pv['total']['unit'],
             'new_generated_energy' => 0,
-            'new_generated_energy_unit' => 'Wh'
+            'new_generated_energy_unit' => 'Wh',
         ];
 
         return ApiResource::make($this->miniGridPVService->create($pvData));
@@ -72,8 +71,9 @@ class JetsonMiniGridPVController extends Controller
 
     private function formatEnergyData($val): float
     {
-        $val = (double)(str_replace('.', '', $val));
-        $val = (double)(str_replace(',', '.', $val));
+        $val = (float) str_replace('.', '', $val);
+        $val = (float) str_replace(',', '.', $val);
+
         return $val;
     }
 }

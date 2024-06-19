@@ -15,17 +15,17 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
 class AppliancePersonService extends CreatorService
 {
-    private $newTarifName = null;
+    private $newTarifName;
     private ?float $price = null;
-    private $minimumAmount = null;
-    private $meterParameterId = null;
-    private $personId = null;
-    private $downPayment = null;
-    private $applianceId = null;
-    private $totalPaid = null;
-    private $secondPaymentAmount = null;
-    private $createdAt = null;
-    private $lastPaymentDate = null;
+    private $minimumAmount;
+    private $meterParameterId;
+    private $personId;
+    private $downPayment;
+    private $applianceId;
+    private $totalPaid;
+    private $secondPaymentAmount;
+    private $createdAt;
+    private $lastPaymentDate;
 
     public function __construct(AssetPerson $appliancePerson)
     {
@@ -43,7 +43,7 @@ class AppliancePersonService extends CreatorService
             'paid' => 'paid',
             'minimum_payment_amount' => 'minimum_payment_amount',
             'created_at' => 'created_at',
-            'last_payment_date' => 'last_payment_date'
+            'last_payment_date' => 'last_payment_date',
         ];
 
         $appliancePersonData = [
@@ -58,10 +58,10 @@ class AppliancePersonService extends CreatorService
             ),
             'first_payment_date' => $csvData[$appliancePersonConfig['created_at']],
             'creator_id' => $creatorId,
-            'creator_type' => 'admin'
+            'creator_type' => 'admin',
         ];
 
-        $this->newTarifName = $csvData['appliance_name'] . '-' . $csvData['serial_number'];
+        $this->newTarifName = $csvData['appliance_name'].'-'.$csvData['serial_number'];
         $this->price = floor((intval($csvData[$appliancePersonConfig['minimum_payment_amount']]) / 7) * 4);
         $this->minimumAmount = $csvData[$appliancePersonConfig['minimum_payment_amount']];
         $this->meterParameterId = $csvData['meter_parameter_id'];
@@ -71,6 +71,7 @@ class AppliancePersonService extends CreatorService
         $this->totalPaid = $csvData[$appliancePersonConfig['paid']];
         $this->createdAt = $csvData[$appliancePersonConfig['created_at']];
         $this->lastPaymentDate = $csvData[$appliancePersonConfig['last_payment_date']];
+
         return $this->createRelatedDataIfDoesNotExists($appliancePersonData);
     }
 
@@ -81,8 +82,9 @@ class AppliancePersonService extends CreatorService
 
         while ($rawCost > 0) {
             $rawCost = $rawCost - $minimumPaymentAmount;
-            $rateCount++;
+            ++$rateCount;
         }
+
         return $rateCount;
     }
 
@@ -124,7 +126,7 @@ class AppliancePersonService extends CreatorService
                 'user_id' => $creatorId,
                 'status' => 1,
                 'created_at' => $this->createdAt,
-                'updated_at' => $this->createdAt
+                'updated_at' => $this->createdAt,
             ]
         );
         $transaction = Transaction::query()->make(
@@ -134,7 +136,7 @@ class AppliancePersonService extends CreatorService
                 'message' => $meter === null ? '-' : $meter->serial_number,
                 'type' => 'deferred_payment',
                 'created_at' => $this->createdAt,
-                'updated_at' => $this->createdAt
+                'updated_at' => $this->createdAt,
             ]
         );
         $transaction->originalTransaction()->associate($cashTransaction);
@@ -147,7 +149,7 @@ class AppliancePersonService extends CreatorService
                 'asset' => $appliancePerson->asset,
                 'assetType' => $type,
                 'assetPerson' => $appliancePerson,
-                'transaction' => $transaction
+                'transaction' => $transaction,
             ]
         );
         event('appliance.sold', $soldApplianceDataContainer);
@@ -157,9 +159,9 @@ class AppliancePersonService extends CreatorService
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
-                    'action' => $this->downPayment . ' ' . $currency .
-                        ' of payment is made as down payment. (Migrated payment from Angaza)'
-                ]
+                    'action' => $this->downPayment.' '.$currency.
+                        ' of payment is made as down payment. (Migrated payment from Angaza)',
+                ],
             ]
         );
         $this->secondPaymentAmount = $this->totalPaid - $this->downPayment;
@@ -170,7 +172,7 @@ class AppliancePersonService extends CreatorService
                     'user_id' => $creatorId,
                     'status' => 1,
                     'created_at' => $this->lastPaymentDate,
-                    'updated_at' => $this->lastPaymentDate
+                    'updated_at' => $this->lastPaymentDate,
                 ]
             );
             $secondTransaction = Transaction::query()->make(
@@ -180,7 +182,7 @@ class AppliancePersonService extends CreatorService
                     'message' => $meter === null ? '-' : $meter->serial_number,
                     'type' => 'deferred_payment',
                     'created_at' => $this->lastPaymentDate,
-                    'updated_at' => $this->lastPaymentDate
+                    'updated_at' => $this->lastPaymentDate,
                 ]
             );
             $secondTransaction->originalTransaction()->associate($secondCashTransaction);
@@ -192,9 +194,9 @@ class AppliancePersonService extends CreatorService
                     'logData' => [
                         'user_id' => $creatorId,
                         'affected' => $appliancePerson,
-                        'action' => $this->secondPaymentAmount . ' ' . $currency .
-                            ' of payment is made. (Migrated payment from Angaza)'
-                    ]
+                        'action' => $this->secondPaymentAmount.' '.$currency.
+                            ' of payment is made. (Migrated payment from Angaza)',
+                    ],
                 ]
             );
             $appliancePerson->rates->map(function ($rate) use ($person, $secondTransaction) {
@@ -211,6 +213,7 @@ class AppliancePersonService extends CreatorService
                 }
             });
         }
+
         return $appliancePerson;
     }
 
@@ -221,6 +224,7 @@ class AppliancePersonService extends CreatorService
         $applianceRate->remaining -= $amount;
         $applianceRate->update();
         $applianceRate->save();
+
         return $applianceRate;
     }
 

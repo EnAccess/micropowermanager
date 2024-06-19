@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Resources\ApiResource;
 use App\Models\Energy;
 use App\Models\MiniGrid;
 use Carbon\Carbon;
@@ -35,6 +34,6 @@ class MiniGridEnergyService
             );
         }
 
-        return  $energyReadings->get();
+        return $energyReadings->get();
     }
 }

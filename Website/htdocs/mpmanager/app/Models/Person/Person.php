@@ -11,12 +11,9 @@ use App\Models\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
 use App\Models\Device;
-use App\Models\Meter\MeterParameter;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -28,18 +25,17 @@ use Illuminate\Support\Facades\DB;
 use Inensus\Ticket\Models\Ticket;
 
 /**
- * Class Person
+ * Class Person.
  *
- * @package  App
- * @property int $id
+ * @property int    $id
  * @property string $title
  * @property string $education
  * @property string $name
  * @property string $surname
- * @property mixed $birth_date
- * @property string $sex TODO: replace with gender
- * @property int $nationality
- * @property int $is_customer
+ * @property mixed  $birth_date
+ * @property string $sex         TODO: replace with gender
+ * @property int    $nationality
+ * @property int    $is_customer
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
@@ -50,13 +46,12 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
     protected $guarded = [];
 
     protected $casts = [
-        'additional_json' => 'array'
+        'additional_json' => 'array',
     ];
 
     protected $dispatchesEvents = [
         'deleting' => PersonDeleting::class,
     ];
-
 
     public function tickets(): MorphMany
     {
@@ -80,7 +75,6 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
     {
         return $this->belongsTo(Country::class, 'nationality', 'id');
     }
-
 
     public function devices(): HasMany
     {
@@ -107,12 +101,12 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 
     public function agent(): HasOne
     {
-        return $this->hasOne(Agent::Class);
+        return $this->hasOne(Agent::class);
     }
 
     public function agentSoldAppliance(): HasOne
     {
-        return $this->hasOne(AgentSoldAppliance::Class);
+        return $this->hasOne(AgentSoldAppliance::class);
     }
 
     public function __toString()

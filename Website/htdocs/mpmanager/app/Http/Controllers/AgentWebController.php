@@ -42,7 +42,6 @@ class AgentWebController extends Controller
 
     public function store(CreateAgentRequest $request): ApiResource
     {
-
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $personData = $this->personService->createPersonDataFromRequest($request);
         $country = $this->countryService->getByCode($request->get('nationality'));
@@ -53,7 +52,7 @@ class AgentWebController extends Controller
             'agent_commission_id' => $request['agent_commission_id'],
             'device_id' => '-',
             'fire_base_token' => '-',
-            'connection' => ' ' // TODO:  solve this.  //auth('api')->user()->company->database->database_name
+            'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
         $companyId = auth('api')->payload()->get('companyId');
         $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
@@ -63,6 +62,7 @@ class AgentWebController extends Controller
             'fk_company_database_id' => $companyDatabase->getId(),
         ];
         $this->databaseProxyService->create($databaseProxyData);
+
         return ApiResource::make($this->agentService->create(
             $agentData,
             $addressData,
@@ -110,8 +110,8 @@ class AgentWebController extends Controller
                 [
                     'data' => [
                         'message' => $responseMessage,
-                        'status_code' => 400
-                    ]
+                        'status_code' => 400,
+                    ],
                 ]
             );
         }
@@ -120,8 +120,8 @@ class AgentWebController extends Controller
             [
                 'data' => [
                     'message' => $responseMessage,
-                    'status_code' => 200
-                ]
+                    'status_code' => 200,
+                ],
             ]
         );
     }

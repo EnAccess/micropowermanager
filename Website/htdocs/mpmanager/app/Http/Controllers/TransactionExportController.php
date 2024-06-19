@@ -49,6 +49,6 @@ class TransactionExportController
         $this->transactionExportService->writeTransactionData();
         $path = $this->transactionExportService->saveSpreadSheet();
 
-        return response()->download($path, 'transactions' . $fromDate . '-' . $toDate . '.xlsx');
+        return response()->download($path, 'transactions'.$fromDate.'-'.$toDate.'.xlsx');
     }
 }

@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\ClusterRevenueService;
-use App\Services\ClusterService;
-use App\Services\ConnectionTypeService;
-use App\Services\MeterRevenueService;
 use Illuminate\Http\Request;
 
 class ClusterMiniGridRevenueController extends Controller

@@ -32,6 +32,7 @@ class MeterParameterService
         event('accessRatePayment.initialize', $meterParameter);
         // changes in_use parameter of the meter
         event('meterparameter.saved', $meterParameter->meter_id);
+
         return $meterParameter;
     }
 

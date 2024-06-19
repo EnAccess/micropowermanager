@@ -5,7 +5,6 @@ namespace MPM\Device;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Services\IBaseService;
 
 class ClusterDeviceService
 {
@@ -16,16 +15,15 @@ class ClusterDeviceService
     public function getCountByClusterId($clusterId): int
     {
         return $this->device->newQuery()
-            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id', $clusterId)))
+            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
             ->count();
     }
-
 
     public function getByClusterId($clusterId)
     {
         return $this->device->newQuery()
             ->with('device')
-            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id', $clusterId)))
+            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
             ->get();
     }
 
@@ -36,7 +34,7 @@ class ClusterDeviceService
                 'device',
                 Meter::class
             )
-            ->whereHas('address', fn($q) => $q->whereHas('city', fn($q) => $q->where('cluster_id', $clusterId)))
+            ->whereHas('address', fn ($q) => $q->whereHas('city', fn ($q) => $q->where('cluster_id', $clusterId)))
             ->get();
     }
 }

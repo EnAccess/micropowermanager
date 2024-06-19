@@ -16,8 +16,7 @@ class SmsApplianceRemindRateRequest extends FormRequest
         return [
             'appliance_type_id' => 'required',
             'overdue_remind_rate' => 'required',
-            'remind_rate' => 'required'
-
+            'remind_rate' => 'required',
         ];
     }
 }

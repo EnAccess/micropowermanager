@@ -18,6 +18,7 @@ class TestApiResolver implements ApiResolverInterface
         if (!is_numeric($companyId)) {
             throw new ValidationException('the field which is used to identify the company is not provided');
         }
-        return (int)$companyId;
+
+        return (int) $companyId;
     }
 }

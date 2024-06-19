@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Services\UserService;
-use Illuminate\Console\Command;
 
 class AdminPasswordResetter extends AbstractSharedCommand
 {
@@ -20,7 +19,7 @@ class AdminPasswordResetter extends AbstractSharedCommand
         $admin = $this->userService->resetAdminPassword();
         $this->alert('
         Please use following credentials to login:
-        Email = ' . $admin['email'] . '
-        Password = ' . $admin['password']);
+        Email = '.$admin['email'].'
+        Password = '.$admin['password']);
     }
 }

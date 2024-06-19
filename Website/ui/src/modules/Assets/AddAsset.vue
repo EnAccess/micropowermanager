@@ -43,7 +43,7 @@
                                         <span class="md-error">
                                             {{
                                                 errors.first(
-                                                    $tc($tc('words.appliance')),
+                                                    $tc('words.appliance'),
                                                 )
                                             }}
                                         </span>

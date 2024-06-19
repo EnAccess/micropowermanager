@@ -9,6 +9,7 @@ class MiniGridGeographicalInformationService implements IAssignationService
 {
     private MiniGrid $miniGrid;
     private GeographicalInformation $geographicInformation;
+
     public function setAssigned($assigned)
     {
         $this->geographicInformation = $assigned;
@@ -22,6 +23,7 @@ class MiniGridGeographicalInformationService implements IAssignationService
     public function assign()
     {
         $this->geographicInformation->owner()->associate($this->miniGrid);
+
         return $this->geographicInformation;
     }
 }

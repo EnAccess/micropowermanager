@@ -9,8 +9,6 @@ use App\Services\ClusterPopulationService;
 use App\Services\ClusterRevenueService;
 use App\Services\ClusterService;
 use App\Services\ClusterTransactionService;
-use App\Services\MeterRevenueService;
-use App\Services\MeterService;
 use App\Services\PeriodService;
 use Illuminate\Http\Request;
 

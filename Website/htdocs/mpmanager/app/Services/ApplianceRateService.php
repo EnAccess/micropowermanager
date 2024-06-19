@@ -21,6 +21,7 @@ class ApplianceRateService implements IBaseService
     {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
+
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
@@ -33,18 +34,19 @@ class ApplianceRateService implements IBaseService
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $applianceRate->assetPerson,
-                    'action' => 'Appliance rate ' . date(
+                    'action' => 'Appliance rate '.date(
                         'd-m-Y',
                         strtotime($applianceRate->due_date)
-                    ) . ' cost updated. From '
-                        . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
-                ]
+                    ).' cost updated. From '
+                        .$cost.' '.$currency.' to '.$newCost.' '.$currency,
+                ],
             ]
         );
         $applianceRate->rate_cost = $newCost;
         $applianceRate->remaining = $newCost;
         $applianceRate->update();
         $applianceRate->save();
+
         return $applianceRate->refresh();
     }
 
@@ -59,12 +61,12 @@ class ApplianceRateService implements IBaseService
                 'logData' => [
                     'user_id' => $creatorId,
                     'affected' => $appliancePerson,
-                    'action' => 'Appliance rate ' . date(
+                    'action' => 'Appliance rate '.date(
                         'd-m-Y',
                         strtotime($applianceRate->due_date)
-                    ) . ' deleted. From '
-                        . $cost . ' ' . $currency . ' to ' . $newCost . ' ' . $currency
-                ]
+                    ).' deleted. From '
+                        .$cost.' '.$currency.' to '.$newCost.' '.$currency,
+                ],
             ]
         );
     }
@@ -101,7 +103,7 @@ class ApplianceRateService implements IBaseService
                     'rate_cost' => $assetPerson->down_payment,
                     'remaining' => 0,
                     'due_date' => Carbon::parse(date('Y-m-d'))->toIso8601ZuluString(),
-                    'remind' => 0
+                    'remind' => 0,
                 ]
             );
             $assetPerson->total_cost -= $assetPerson->down_payment;
@@ -109,14 +111,14 @@ class ApplianceRateService implements IBaseService
         foreach (range(1, $assetPerson->rate_count) as $rate) {
             if ($assetPerson->rate_count === 0) {
                 $rateCost = 0;
-            } elseif ((int)$rate === (int)$assetPerson->rate_count) {
-                //last rate
+            } elseif ((int) $rate === (int) $assetPerson->rate_count) {
+                // last rate
                 $rateCost = $assetPerson->total_cost
                     - (($rate - 1) * floor($assetPerson->total_cost / $assetPerson->rate_count));
             } else {
                 $rateCost = floor($assetPerson->total_cost / $assetPerson->rate_count);
             }
-            $rateDate = date('Y-m-d', strtotime('+' . $rate . " $installment", strtotime($baseTime)));
+            $rateDate = date('Y-m-d', strtotime('+'.$rate." $installment", strtotime($baseTime)));
 
             $this->applianceRate->newQuery()->create(
                 [
@@ -124,7 +126,7 @@ class ApplianceRateService implements IBaseService
                     'rate_cost' => $rateCost,
                     'remaining' => $rateCost,
                     'due_date' => $rateDate,
-                    'remind' => 0
+                    'remind' => 0,
                 ]
             );
         }
@@ -144,7 +146,6 @@ class ApplianceRateService implements IBaseService
     {
         // TODO: Implement getAll() method.
     }
-
 
     public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate
     {

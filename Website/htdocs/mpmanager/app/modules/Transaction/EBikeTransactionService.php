@@ -4,7 +4,6 @@ namespace MPM\Transaction;
 
 use App\Models\EBike;
 use App\Models\Transaction\Transaction;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EBikeTransactionService
 {
@@ -13,37 +12,36 @@ class EBikeTransactionService
     }
 
     public function search(
-        string $serialNumber = null,
-        int $tariffId = null,
-        string $transactionProvider = null,
-        int $status = null,
-        string $fromDate = null,
-        string $toDate = null,
-        int $limit = null,
+        ?string $serialNumber = null,
+        ?int $tariffId = null,
+        ?string $transactionProvider = null,
+        ?int $status = null,
+        ?string $fromDate = null,
+        ?string $toDate = null,
+        ?int $limit = null,
         bool $whereApplied = false
     ) {
-
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
-            fn($q) => $q->whereHasMorph('device', EBike::class)
+            fn ($q) => $q->whereHasMorph('device', EBike::class)
         );
 
         if ($serialNumber) {
-            $query->where('message', 'LIKE', '%' . request('serial_number') . '%');
+            $query->where('message', 'LIKE', '%'.request('serial_number').'%');
         }
 
         if ($transactionProvider) {
-            $query->with($transactionProvider)->where(fn($q) => $q->whereHas(
+            $query->with($transactionProvider)->where(fn ($q) => $q->whereHas(
                 $transactionProvider,
-                fn($q) => $q->whereNotNull('id')
+                fn ($q) => $q->whereNotNull('id')
             ));
         }
 
         if ($status) {
             if ($transactionProvider && $transactionProvider !== '-1') {
-                $query->where(fn($q) => $q->whereHas($transactionProvider, fn($q) => $q->where('status', $status)));
+                $query->where(fn ($q) => $q->whereHas($transactionProvider, fn ($q) => $q->where('status', $status)));
             } else {
-                $query->whereHasMorph('originalTransaction', '*', fn($q) => $q->where('status', $status))->get();
+                $query->whereHasMorph('originalTransaction', '*', fn ($q) => $q->where('status', $status))->get();
             }
         }
 

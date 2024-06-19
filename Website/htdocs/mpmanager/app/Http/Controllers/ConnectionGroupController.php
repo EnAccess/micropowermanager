@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateConnectionGroupRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\ConnectionGroup;
 use App\Services\ConnectionGroupService;
 use Illuminate\Http\Request;
 
@@ -19,12 +18,12 @@ class ConnectionGroupController
     {
         $limit = $request->input('per_page');
 
-        return  ApiResource::make($this->connectionGroupService->getAll($limit));
+        return ApiResource::make($this->connectionGroupService->getAll($limit));
     }
 
     public function show($connectionGroupId, Request $request): ApiResource
     {
-        return  ApiResource::make($this->connectionGroupService->getById($connectionGroupId));
+        return ApiResource::make($this->connectionGroupService->getById($connectionGroupId));
     }
 
     public function store(CreateConnectionGroupRequest $request): ApiResource
@@ -39,6 +38,6 @@ class ConnectionGroupController
         $connectionGroup = $this->connectionGroupService->getById($connectionGroupId);
         $connectionGroupData = $request->all();
 
-        return   ApiResource::make($this->connectionGroupService->update($connectionGroup, $connectionGroupData));
+        return ApiResource::make($this->connectionGroupService->update($connectionGroup, $connectionGroupData));
     }
 }

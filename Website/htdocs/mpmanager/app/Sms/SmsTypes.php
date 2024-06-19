@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 28.06.18
- * Time: 11:47
+ * Time: 11:47.
  */
 
 namespace App\Sms;

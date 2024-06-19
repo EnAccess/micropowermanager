@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Meter\MeterTariff;
-use App\Models\TimeOfUsage;
 use App\Services\MeterTariffService;
 use App\Services\TimeOfUsageService;
-use Illuminate\Http\Request;
 
 class TimeOfUsageController extends Controller
 {

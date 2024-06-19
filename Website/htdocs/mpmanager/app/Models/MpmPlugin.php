@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property null|string $tail_tag
- * @property null|string $installation_command
+ * @property string|null $tail_tag
+ * @property string|null $installation_command
  */
 class MpmPlugin extends MasterModel
 {
@@ -32,7 +32,7 @@ class MpmPlugin extends MasterModel
 
     protected $table = 'mpm_plugins';
 
-    //has many used
+    // has many used
     public function plugins()
     {
         return $this->hasMany(Plugins::class);

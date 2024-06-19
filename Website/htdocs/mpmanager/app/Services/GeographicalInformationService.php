@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\GeographicalInformation;
-use App\Models\Meter\MeterParameter;
 
 class GeographicalInformationService implements IBaseService, IAssociative
 {
@@ -28,7 +27,6 @@ class GeographicalInformationService implements IBaseService, IAssociative
         return $this->geographicalInformation->newQuery()->find($id);
     }
 
-
     public function delete($model)
     {
         $model->delete();
@@ -52,9 +50,10 @@ class GeographicalInformationService implements IBaseService, IAssociative
     public function make($geographicalInformationData)
     {
         return $this->geographicalInformation->newQuery()->make([
-            'points' => $geographicalInformationData['points']
+            'points' => $geographicalInformationData['points'],
         ]);
     }
+
     public function save($geographicalInformation)
     {
         return $geographicalInformation->save();

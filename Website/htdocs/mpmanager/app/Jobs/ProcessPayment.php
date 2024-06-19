@@ -2,11 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
-use App\PaymentHandler\AccessRate;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;

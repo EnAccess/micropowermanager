@@ -17,6 +17,6 @@ class AgentFirebaseController extends Controller
     {
         $agent = $this->agentService->getByAuthenticatedUser();
 
-        return  ApiResource::make($this->agentService->setFirebaseToken($agent, $request->input('fire_base_token')));
+        return ApiResource::make($this->agentService->setFirebaseToken($agent, $request->input('fire_base_token')));
     }
 }

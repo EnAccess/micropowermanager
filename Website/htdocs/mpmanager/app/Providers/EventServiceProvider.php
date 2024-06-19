@@ -10,9 +10,9 @@ use App\Listeners\PaymentListener;
 use App\Listeners\PaymentPeriodListener;
 use App\Listeners\SmsListener;
 use App\Listeners\SolarDataListener;
+use App\Listeners\SoldApplianceListener;
 use App\Listeners\TokenListener;
 use App\Listeners\TransactionListener;
-use App\Listeners\SoldApplianceListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use MPM\User\UserEventSubscriber;
 
@@ -24,7 +24,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\ClusterEvent' => ['App\Listeners\ClusterGeoListener',],
+        'App\Events\ClusterEvent' => ['App\Listeners\ClusterGeoListener'],
     ];
 
     protected $subscribe = [
@@ -39,9 +39,8 @@ class EventServiceProvider extends ServiceProvider
         SolarDataListener::class,
         SmsListener::class,
         SoldApplianceListener::class,
-        UserEventSubscriber::class
+        UserEventSubscriber::class,
     ];
-
 
     /**
      * Register any events for your application.
@@ -51,7 +50,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

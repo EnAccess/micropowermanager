@@ -3,9 +3,7 @@
 namespace App\Models;
 
 /**
- * Class Energy
- *
- * @package App\Models
+ * Class Energy.
  *
  * @property int $meter_id
  * @property int mini_grid_id

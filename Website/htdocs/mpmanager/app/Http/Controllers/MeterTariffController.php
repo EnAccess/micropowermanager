@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Meter\MeterTariff;
-use App\Services\AccessRateService;
 use App\Services\MeterTariffService;
-use App\Services\SocialTariffService;
-use App\Services\TimeOfUsageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,10 +19,11 @@ class MeterTariffController extends Controller
     /**
      * List
      * a list of all tariffs.
-     * The list is paginated and each page contains 15 results
+     * The list is paginated and each page contains 15 results.
      *
      * @responseFile responses/tariffs/tariffs.list.json
-     * @return       ApiResource
+     *
+     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -35,12 +33,15 @@ class MeterTariffController extends Controller
     }
 
     /**
-     * Detail
+     * Detail.
      *
      * @urlParam     id int required
+     *
      * @responseFile responses/tariffs/tariff.detail.json
+     *
      * @param MeterTariff $tariff
-     * @return       ApiResource
+     *
+     * @return ApiResource
      */
     public function show(Request $request, $meterTariffId): ApiResource
     {
@@ -48,13 +49,15 @@ class MeterTariffController extends Controller
     }
 
     /**
-     * Create
+     * Create.
      *
      * @bodyParam name string required
      * @bodyParam factor int. The factor between two different sub tariffs. Like day/night sub-tariffs.
      * @bodyParam currency string
      * @bodyParam price int required.
+     *
      * @param TariffCreateRequest $request
+     *
      * @return ApiResource
      */
     public function store(TariffCreateRequest $request): JsonResponse
@@ -77,7 +80,7 @@ class MeterTariffController extends Controller
             'currency' => $request->input('currency'),
             'price' => $request->input('price'),
             'total_price' => $request->input('price'),
-            'minimum_purchase_amount' => $request->input('minimum_purchase_amount')
+            'minimum_purchase_amount' => $request->input('minimum_purchase_amount'),
         ];
 
         $meterTariff = $this->meterTariffService->update($meterTariff, $meterTariffData);

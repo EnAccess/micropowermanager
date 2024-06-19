@@ -18,6 +18,6 @@ class ViberMessagingApiResolver implements ApiResolverInterface
 
         $companyId = $segments[3];
 
-        return (int)$companyId;
+        return (int) $companyId;
     }
 }

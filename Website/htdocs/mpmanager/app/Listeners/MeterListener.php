@@ -2,14 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Models\Meter\Meter;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
 class MeterListener
 {
     /**
-     * Sets the in_use to true
+     * Sets the in_use to true.
      *
      * @param int $meter_id
      *

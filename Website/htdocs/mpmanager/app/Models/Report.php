@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
- * Class Report
+ * Class Report.
  *
- * @package App\Models
- *
- * @property int $id
+ * @property int    $id
  * @property string $name
  * @property string $date
  * @property string $path

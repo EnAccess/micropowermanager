@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Services\PluginsService;
-use Illuminate\Console\Command;
 
 class AddPlugin extends AbstractSharedCommand
 {

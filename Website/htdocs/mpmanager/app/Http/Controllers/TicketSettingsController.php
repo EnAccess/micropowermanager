@@ -21,13 +21,13 @@ class TicketSettingsController extends Controller
     {
         $ticketSettings = $this->ticketSettings::query()->updateOrCreate(
             [
-                'id' => $request->input('id')
+                'id' => $request->input('id'),
             ],
             [
                 'name' => $request->input('name'),
                 'api_token' => $request->input('api_token'),
                 'api_url' => $request->input('api_url'),
-                'api_key' => $request->input('api_key')
+                'api_key' => $request->input('api_key'),
             ]
         );
 

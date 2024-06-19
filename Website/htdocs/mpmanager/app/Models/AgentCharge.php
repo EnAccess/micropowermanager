@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class AgentCharge extends BaseModel
@@ -19,6 +17,7 @@ class AgentCharge extends BaseModel
     {
         $this->belongsTo(User::class);
     }
+
     public function history(): MorphOne
     {
         return $this->morphOne(AgentBalanceHistory::class, 'trigger');

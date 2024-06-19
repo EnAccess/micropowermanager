@@ -4,20 +4,10 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 2019-03-14
- * Time: 11:50
+ * Time: 11:50.
  */
 
 namespace App\Services;
-
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
-use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\ThirdPartyTransaction;
-use App\Models\Transaction\Transaction;
-use App\Models\Transaction\VodacomTransaction;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 
 class RevenueService
 {
@@ -33,14 +23,11 @@ class RevenueService
                                 $subTarget->new_connections,
                             'revenue' => $formattedTarget[$subTarget->connectionType->name]['revenue'] +
                                 $subTarget->revenue,
-                            'connected_power' => $formattedTarget[$subTarget->connectionType->name]
-                                ['connected_power'] +
+                            'connected_power' => $formattedTarget[$subTarget->connectionType->name]['connected_power'] +
                                 $subTarget->connected_power,
-                            'energy_per_month' => $formattedTarget[$subTarget->connectionType->name]
-                                ['energy_per_month'] +
+                            'energy_per_month' => $formattedTarget[$subTarget->connectionType->name]['energy_per_month'] +
                                 $subTarget->energy_per_month,
-                            'average_revenue_per_month' => $formattedTarget[$subTarget->connectionType->name]
-                                ['average_revenue_per_month'] +
+                            'average_revenue_per_month' => $formattedTarget[$subTarget->connectionType->name]['average_revenue_per_month'] +
                                 $subTarget->average_revenue_per_month,
                         ];
                     } else {

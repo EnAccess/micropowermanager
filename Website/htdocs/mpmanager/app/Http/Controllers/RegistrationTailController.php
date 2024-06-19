@@ -6,14 +6,12 @@ use App\Http\Resources\ApiResource;
 use App\Models\RegistrationTail;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class RegistrationTailController extends Controller
 {
     public function __construct(private RegistrationTailService $registrationTailService)
     {
     }
-
 
     public function index(): ApiResource
     {

@@ -26,7 +26,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
     public function setData($dateRange = [])
     {
         if (empty($dateRange)) {
-            $startDate = date('Y-01-01');//first day of the year
+            $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
             $dateRange[0] = $startDate;
             $dateRange[1] = $endDate;
@@ -34,14 +34,11 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
             list($startDate, $endDate) = $dateRange;
         }
 
-
         $monthlyPeriods = $this->periodService->generatePeriodicList($startDate, $endDate, 'monthly', [
-            'revenue'
-            => 0
+            'revenue' => 0,
         ]);
         $weeklyPeriods = $this->periodService->generatePeriodicList($startDate, $endDate, 'weekly', [
-            'revenue'
-            => 0
+            'revenue' => 0,
         ]);
         $clusters = $this->clusterMiniGridService->getClustersWithMiniGrids();
         $connectionTypes = $this->connectionTypeService->getAll();

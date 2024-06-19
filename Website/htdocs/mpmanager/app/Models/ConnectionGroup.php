@@ -3,13 +3,10 @@
 namespace App\Models;
 
 use App\Models\Meter\MeterParameter;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class ConnectionGroup
- *
- * @package App\Models
+ * Class ConnectionGroup.
  */
 class ConnectionGroup extends BaseModel
 {

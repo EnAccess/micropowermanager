@@ -6,9 +6,7 @@ use App\Helpers\PowerConverter;
 use App\Models\PV;
 
 /**
- * Class PVCreated
- *
- * @package App\Observers
+ * Class PVCreated.
  */
 class PVObserver
 {
@@ -27,7 +25,7 @@ class PVObserver
      */
     public function created()
     {
-        //get last 2 rows to calculate the difference between them
+        // get last 2 rows to calculate the difference between them
         $p = $this->pv->latest()->take(2)->get();
 
         if (count($p) === 1) {

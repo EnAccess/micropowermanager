@@ -4,18 +4,17 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 25.05.18
- * Time: 14:43
+ * Time: 14:43.
  */
 
 namespace App\Sms;
 
 use App\Lib\ISmsProvider;
 use App\Models\Sms;
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Query;
-use Psr\Http\Message\StreamInterface;
 use Illuminate\Support\Facades\Log;
+use Psr\Http\Message\StreamInterface;
 
 class Bongo implements ISmsProvider
 {
@@ -39,8 +38,6 @@ class Bongo implements ISmsProvider
     /**
      * @var Sms
      */
-
-
     public function __construct()
     {
     }
@@ -48,16 +45,18 @@ class Bongo implements ISmsProvider
     public $defer = true;
 
     /**
-     * @param  string $number
-     * @param  string $body
+     * @param string $number
+     * @param string $body
+     *
      * @return StreamInterface
-     * @throws Exception
+     *
+     * @throws \Exception
      */
     public function sendGetSms(string $number, string $body)
     {
         $httpClient = new Client();
         if ($number[0] !== '+') {
-            $number = '+' . $number;
+            $number = '+'.$number;
         }
 
         $request = $httpClient->get(
@@ -65,57 +64,58 @@ class Bongo implements ISmsProvider
             [
                 'query' => Query::build(
                     [
-                    'sendername' => config()->get('services.sms.bongo.sender'),
-                    'username' => config()->get('services.sms.bongo.username'),
-                    'password' => config()->get('services.sms.bongo.password'),
-                    'apikey' => config()->get('services.sms.bongo.key'),
-                    'destnum' => $number,
-                    'message' => $body,
-                    'senddate' => '',
+                        'sendername' => config()->get('services.sms.bongo.sender'),
+                        'username' => config()->get('services.sms.bongo.username'),
+                        'password' => config()->get('services.sms.bongo.password'),
+                        'apikey' => config()->get('services.sms.bongo.key'),
+                        'destnum' => $number,
+                        'message' => $body,
+                        'senddate' => '',
                     ]
                 ),
             ]
         );
-        $response = (string)$request->getBody();
-        if ((int)$response < 0) {
-            throw  new Exception($this->errorCodes[$response]);
+        $response = (string) $request->getBody();
+        if ((int) $response < 0) {
+            throw new \Exception($this->errorCodes[$response]);
         }
+
         return $request->getBody();
     }
 
-
     /**
-     * @param  string $number
-     * @param  string $body
-     * @param  string $callback
+     * @param string $number
+     * @param string $body
+     * @param string $callback
+     *
      * @return mixed|StreamInterface
+     *
      * @throws \Exception
      */
     public function sendSms(string $number, string $body, $callback)
     {
         $httpClient = new Client();
         if ($number[0] !== '+') {
-            $number = '+' . $number;
+            $number = '+'.$number;
         }
 
-        $apikey = "c4a12fa8-ed6f-11df-a1f1-00181236674f";
+        $apikey = 'c4a12fa8-ed6f-11df-a1f1-00181236674f';
         $messageXML =
-            "<Broadcast>
+            '<Broadcast>
                 <Authentication>
-                    <Sendername>" . config()->get('services.sms.bongo.sender') . "</Sendername>
-                    <Username>" . config()->get('services.sms.bongo.username') . "</Username>
-                    <Password>" . config()->get('services.sms.bongo.password') . "</Password>
-                    <Apikey>" . config()->get('services.sms.bongo.key') . "</Apikey>
+                    <Sendername>'.config()->get('services.sms.bongo.sender').'</Sendername>
+                    <Username>'.config()->get('services.sms.bongo.username').'</Username>
+                    <Password>'.config()->get('services.sms.bongo.password').'</Password>
+                    <Apikey>'.config()->get('services.sms.bongo.key').'</Apikey>
                 </Authentication>
                 <Message>
-                    <Content>" . $body . " </Content>
+                    <Content>'.$body.' </Content>
                     <Receivers>
-                        <Receiver>" . $number . "</Receiver>
+                        <Receiver>'.$number."</Receiver>
                     </Receivers>
                     <Callbackurl>'.$callback.'</Callbackurl>
                 </Message>
             </Broadcast>";
-
 
         Log::critical('SMS CONTENT', [$messageXML]);
 
@@ -131,12 +131,13 @@ class Bongo implements ISmsProvider
                 'headers' => $headers,
             ]
         );
-        $response = (string)$request->getBody();
+        $response = (string) $request->getBody();
 
         Log::critical('SMS', [$response, $request->getStatusCode()]);
-        if ((int)$response < 0) {
+        if ((int) $response < 0) {
             throw new \Exception($this->errorCodes[$response]);
         }
+
         return $request->getBody();
     }
 }
