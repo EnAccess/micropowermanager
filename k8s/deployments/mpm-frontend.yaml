@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-frontend
+  template:
+    metadata:
+      labels:
+        app: mpm-frontend
+    spec:
+      containers:
+      - name: mpm-frontend
+        image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-ui
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8081
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8081
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 20
+
