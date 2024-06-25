@@ -34,11 +34,16 @@ export class Paginator {
     }
 
     loadPage(page, param = {}) {
-        param['page'] = page
-        param['per_page'] = this.perPage
+        // take a local, shallow copy of params to prevent
+        // unintended route changes
+        const localParam = { ...param }
+
+        localParam['page'] = page
+        localParam['per_page'] = this.perPage
+
         return axios
             .get(this.url, {
-                params: param,
+                params: localParam,
             })
             .then((response) => {
                 let data = response.data
