@@ -21,6 +21,7 @@
                     :key="index"
                     :md-expand="menu.sub_menu_items.length !== 0"
                     :to="route(menu.url_slug)"
+                    :exact-path="true"
                 >
                     <md-list-item :md-expand="menu.sub_menu_items.length !== 0">
                         <!-- add icon if icon is defined -->
@@ -49,6 +50,7 @@
                                 v-for="sub in menu.sub_menu_items"
                                 :to="route(sub.url_slug)"
                                 :key="sub.url_slug"
+                                :exact-path="true"
                                 class="sub-menu"
                             >
                                 <md-list-item>
@@ -144,10 +146,16 @@ export default {
             }
         },
         route(routeUrl) {
+            // In the backend/database these are sometimes stored as (for example)
+            // /meters/page/1
+            // but we actually need to convert that to query params
             if (routeUrl !== '') {
                 if (routeUrl.includes('/page/1')) {
                     routeUrl = routeUrl.split('/page/1')[0]
-                    return { path: routeUrl, query: { page: 1, per_page: 15 } }
+                    return {
+                        path: routeUrl,
+                        query: { page: 1, per_page: 15 },
+                    }
                 } else {
                     return { path: routeUrl }
                 }
