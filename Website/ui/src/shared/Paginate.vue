@@ -127,36 +127,57 @@ export default {
     data() {
         return {
             loading: false,
-            currentFrom: 0,
-            currentTo: 0,
-            total: 0,
-            currentPage: 0,
+            // currentPage: 0,
             totalPages: 0,
             paginator: this.paginatorReference,
-            term: {},
             threeDots: false,
-            perPage: 15,
+            perPage: 16,
             goPage: null,
         }
     },
     mounted() {
-        //load the first page
-        let pageNumber = this.$route.query.page
-        this.term = this.$route.query
-        this.loadPage(pageNumber)
-        EventBus.$on('loadPage', this.eventLoadPage)
+        // load the first page
+        // let pageNumber = this.$route.query.page
+        // let pageNumber = 1
+
+        console.log('route_name', this.route_name)
+        console.log('Initial query:', this.$route.query)
+        console.log('Initial Page number:', this.initialPage)
+        // this.term = this.$route.query
+        // this.term = { ...this.$route.query }
+        console.log('Initial Loading state:', this.loading)
+        this.loadPage(this.initialPage)
+        // EventBus.$on('loadPage', this.eventLoadPage)
+    },
+    computed: {
+        initialPage() {
+            return parseInt(this.$route.query.page) || 1
+        },
+        currentPage() {
+            return parseInt(this.$route.query.page) || this.initialPage
+        },
+        term() {
+            return { ...this.$route.query }
+        },
     },
     destroyed() {
         this.paginator = null
     },
+    beforeDestroy() {
+        EventBus.$off('loadPage', this.eventLoadPage)
+    },
     watch: {
-        $route() {
+        $route(to, from) {
+            console.log(`Route changed from ${from.fullPath} to ${to.fullPath}`)
             this.loadPage(this.currentPage)
         },
+    },
+
     },
     methods: {
         changePage(pageNumber) {
             if (this.goPage !== pageNumber) this.goPage = pageNumber
+
             if (!isNaN(pageNumber)) {
                 if (pageNumber > this.paginator.totalPage) {
                     this.alertNotify(
@@ -166,15 +187,22 @@ export default {
                     return
                 }
                 this.currentPage = pageNumber
+                let localTerm = JSON.parse(JSON.stringify(this.term))
+                let localPaginator = JSON.parse(JSON.stringify(this.paginator))
+
+                // Merge query parameters
+                let updatedQuery = {
+                    ...localTerm,
+                    page: pageNumber,
+                    per_page: localPaginator.perPage,
+                }
+
                 this.$router
-                    .push({
-                        query: Object.assign({}, this.term, {
-                            page: pageNumber,
-                            per_page: this.paginator.perPage,
-                        }),
-                    })
+                    // .push({ query: { page: 5, per_page: 15 } })
+                    .push({ query: updatedQuery })
                     .catch((error) => {
                         if (error.name !== 'NavigationDuplicated') {
+                            console.error('Routing error:', error)
                             throw error
                         }
                     })
@@ -183,11 +211,12 @@ export default {
             }
         },
         eventLoadPage(paginator, term = {}) {
-            this.term = term
-            this.paginator = paginator
+            // this.term = { ...term }
+            // this.paginator = { ...paginator }
             this.loadPage(1)
         },
         defaultItemsPerPage(data) {
+            // ????
             this.paginator.perPage = data.target.value
             this.loadPage(this.paginator.currentPage)
         },
