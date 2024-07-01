@@ -59,6 +59,10 @@ class UserDefaultDatabaseConnectionMiddleware
             return $next($request);
         }
 
+        if (strpos($request->path(), 'horizon') === 0) {
+            return $next($request);
+        }
+
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
