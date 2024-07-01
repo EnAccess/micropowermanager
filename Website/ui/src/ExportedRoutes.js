@@ -649,6 +649,16 @@ export const exportedRoutes = [
                 },
             },
             {
+                path: 'commission-types',
+                redirect: '/commissions',
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Commission Types',
+                    },
+                },
+            },
+            {
                 path: ':id',
                 component: require('./pages/Agent/_id.vue').default,
                 meta: {
@@ -661,23 +671,11 @@ export const exportedRoutes = [
                     },
                 },
             },
-            {
-                // FIXME: This doesn't really work...
-                path: 'commission-types',
-                redirect: '/commissions',
-                meta: {
-                    sidebar: {
-                        enabled: true,
-                        name: 'Commission Types',
-                    },
-                },
-            },
         ],
     },
     {
-        // FIXME: This should be part of agents menu and endpoint
+        // FIXME: This should probably be part of agents menu and endpoint
         path: '/commissions',
-        name: 'foo',
         component: require('./pages/Agent/Commission/index.vue').default,
         meta: {
             layout: 'default',
