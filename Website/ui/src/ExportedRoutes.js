@@ -96,10 +96,33 @@ export const exportedRoutes = [
     {
         path: '/dashboards',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Dashboards',
+                icon: 'home',
+            },
+        },
         children: [
+            {
+                path: 'clusters',
+                redirect: '/',
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Clusters',
+                    },
+                },
+            },
             {
                 path: 'mini-grid',
                 component: ChildRouteWrapper,
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Mini-Grid',
+                    },
+                },
                 children: [
                     {
                         path: '',
@@ -112,6 +135,10 @@ export const exportedRoutes = [
                                 level: 'base',
                                 name: 'Mini-Grids',
                                 link: '/dashboards/mini-grid',
+                            },
+                            sidebar: {
+                                enabled: true,
+                                name: 'Mini-Grid',
                             },
                         },
                     },
@@ -194,11 +221,23 @@ export const exportedRoutes = [
         component: require('./pages/Report/index.vue').default,
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Reports',
+                icon: 'text_snippet',
+            },
         },
     },
     {
         path: '/people',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Customers',
+                icon: 'supervisor_account',
+            },
+        },
         children: [
             {
                 path: '',
@@ -230,6 +269,13 @@ export const exportedRoutes = [
     {
         path: '/transactions',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Transactions',
+                icon: 'account_balance',
+            },
+        },
         children: [
             {
                 path: '',
@@ -270,12 +316,23 @@ export const exportedRoutes = [
     {
         path: '/tickets',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Tickets',
+                icon: 'confirmation_number',
+            },
+        },
         children: [
             {
                 path: '',
                 component: require('./pages/Ticket/index.vue').default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'List',
+                    },
                 },
             },
             {
@@ -292,6 +349,10 @@ export const exportedRoutes = [
                     .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Categories',
+                    },
                 },
             },
         ],
@@ -299,6 +360,13 @@ export const exportedRoutes = [
     {
         path: '/tariffs',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Tariffs',
+                icon: 'widgets',
+            },
+        },
         children: [
             {
                 path: '',
@@ -330,10 +398,23 @@ export const exportedRoutes = [
     {
         path: '/meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Meters',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: '',
                 component: ChildRouteWrapper,
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'List',
+                    },
+                },
                 children: [
                     {
                         path: '',
@@ -367,6 +448,10 @@ export const exportedRoutes = [
                 component: require('./pages/MeterType/index.vue').default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Types',
+                    },
                 },
             },
         ],
@@ -376,11 +461,24 @@ export const exportedRoutes = [
         component: require('./pages/SolarHomeSystem/index.vue').default,
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Solar Home Systems',
+                icon: 'solar_power',
+            },
         },
     },
     {
         path: '/targets',
         component: ChildRouteWrapper,
+        meta: {
+            layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Targets',
+                icon: 'gps_fixed',
+            },
+        },
         children: [
             {
                 path: '',
@@ -402,6 +500,7 @@ export const exportedRoutes = [
     },
     {
         // FIXME: Where is shown in the sidebar?
+        // Looks like it's only used in SparkMeter (?)
         path: '/connection-types',
         component: ChildRouteWrapper,
         children: [
@@ -452,6 +551,8 @@ export const exportedRoutes = [
         ],
     },
     {
+        // FIXME: Where is shown in the sidebar?
+        // Looks like it's only used in SparkMeter (?)
         path: '/connection-groups',
         component: require('./pages/Connection/Group/index.vue').default,
         name: 'connection-groups',
@@ -464,6 +565,13 @@ export const exportedRoutes = [
         // Should we add a redirect here?
         path: '/sms',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Messages',
+                icon: 'sms',
+            },
+        },
         children: [
             //
             {
@@ -472,6 +580,10 @@ export const exportedRoutes = [
                 name: 'sms-list',
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Message List',
+                    },
                 },
             },
             {
@@ -480,6 +592,10 @@ export const exportedRoutes = [
                 name: 'new-sms',
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'New Message',
+                    },
                 },
             },
         ],
@@ -490,6 +606,11 @@ export const exportedRoutes = [
         name: 'maintenance',
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Maintenance',
+                icon: 'home_repair_service',
+            },
         },
     },
     {
@@ -498,17 +619,33 @@ export const exportedRoutes = [
         name: 'asset',
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Appliances',
+                icon: 'devices_other',
+            },
         },
     },
     {
         path: '/agents',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Agents',
+                icon: 'support_agent',
+            },
+        },
         children: [
             {
                 path: '',
                 component: require('./pages/Agent/index.vue').default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'List',
+                    },
                 },
             },
             {
@@ -524,11 +661,23 @@ export const exportedRoutes = [
                     },
                 },
             },
+            {
+                // FIXME: This doesn't really work...
+                path: 'commission-types',
+                redirect: '/commissions',
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Commission Types',
+                    },
+                },
+            },
         ],
     },
     {
         // FIXME: This should be part of agents menu and endpoint
         path: '/commissions',
+        name: 'foo',
         component: require('./pages/Agent/Commission/index.vue').default,
         meta: {
             layout: 'default',
@@ -556,6 +705,13 @@ export const exportedRoutes = [
     {
         path: '/calin-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Calin Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'calin-overview',
@@ -564,6 +720,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -571,6 +731,13 @@ export const exportedRoutes = [
     {
         path: '/calin-smart-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'CalinSmart Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'calin-smart-overview',
@@ -579,6 +746,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -586,6 +757,13 @@ export const exportedRoutes = [
     {
         path: '/kelin-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Kelin Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'kelin-overview',
@@ -594,6 +772,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
             {
@@ -603,6 +785,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Customers',
+                    },
                 },
             },
             {
@@ -612,11 +798,21 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Settings',
+                    },
                 },
             },
             {
                 path: 'kelin-meter',
                 component: ChildRouteWrapper,
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Meters',
+                    },
+                },
                 children: [
                     {
                         path: '',
@@ -661,6 +857,13 @@ export const exportedRoutes = [
     {
         path: '/spark-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Spark Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'sm-site',
@@ -669,6 +872,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Sites',
+                    },
                 },
             },
             {
@@ -678,6 +885,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Meter Models',
+                    },
                 },
             },
             {
@@ -687,11 +898,21 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Customers',
+                    },
                 },
             },
             {
                 path: 'sm-tariff',
                 component: ChildRouteWrapper,
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Tariffs',
+                    },
+                },
                 children: [
                     {
                         path: '',
@@ -720,6 +941,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
             {
@@ -729,6 +954,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Sales Accounts',
+                    },
                 },
             },
             {
@@ -738,6 +967,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Settings',
+                    },
                 },
             },
         ],
@@ -745,6 +978,13 @@ export const exportedRoutes = [
     {
         path: '/steama-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'SteamaCo Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'steama-overview',
@@ -753,6 +993,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
             {
@@ -762,6 +1006,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Sites',
+                    },
                 },
             },
             {
@@ -771,6 +1019,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Customers',
+                    },
                 },
             },
             {
@@ -789,6 +1041,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Meters',
+                    },
                 },
             },
             {
@@ -798,6 +1054,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Agents',
+                    },
                 },
             },
             {
@@ -807,6 +1067,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Settings',
+                    },
                 },
             },
         ],
@@ -814,6 +1078,13 @@ export const exportedRoutes = [
     {
         path: '/stron-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Stron Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'stron-overview',
@@ -822,16 +1093,27 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
     },
     {
-        path: '/bulk-registration',
+        path: '/bulk-registration/bulk-registration',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Bulk Registration',
+                icon: 'upload_file',
+            },
+        },
         children: [
             {
-                path: 'bulk-registration',
+                path: '',
                 component: require('./plugins/bulk-registration/js/modules/Csv')
                     .default,
                 meta: {
@@ -843,6 +1125,13 @@ export const exportedRoutes = [
     {
         path: '/viber-messaging',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Viber Messaging',
+                icon: 'message',
+            },
+        },
         children: [
             {
                 path: 'viber-overview',
@@ -851,6 +1140,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -858,6 +1151,13 @@ export const exportedRoutes = [
     {
         path: '/wave-money',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'WaveMoney',
+                icon: 'money',
+            },
+        },
         children: [
             {
                 path: 'wave-money-overview',
@@ -866,6 +1166,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
             {
@@ -891,6 +1195,13 @@ export const exportedRoutes = [
     {
         path: '/micro-star-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'MicroStar Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'micro-star-overview',
@@ -899,6 +1210,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -906,6 +1221,13 @@ export const exportedRoutes = [
     {
         path: '/swifta-payment',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'Swifta',
+                icon: 'money',
+            },
+        },
         children: [
             {
                 path: 'swifta-payment-overview',
@@ -914,6 +1236,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -921,6 +1247,13 @@ export const exportedRoutes = [
     {
         path: '/sun-king-shs',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'SunKing SHS',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'sun-king-overview',
@@ -929,6 +1262,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -936,6 +1273,13 @@ export const exportedRoutes = [
     {
         path: '/gome-long-meters',
         component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled: true,
+                name: 'GomeLong Meter',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'gome-long-overview',
@@ -944,6 +1288,10 @@ export const exportedRoutes = [
                         .default,
                 meta: {
                     layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
                 },
             },
         ],
@@ -955,6 +1303,11 @@ export const exportedRoutes = [
                 .default,
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Wavecom Payment Provider',
+                icon: 'upload_file',
+            },
         },
     },
     {
@@ -962,33 +1315,64 @@ export const exportedRoutes = [
         component: require('./pages/EBikes/index.vue').default,
         meta: {
             layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'E-Bikes',
+                icon: 'electric_bike',
+            },
         },
     },
     {
         path: '/daly-bms',
         component: ChildRouteWrapper,
-        meta: { layout: 'default' },
+        meta: {
+            layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Daly BMS',
+                icon: 'charging_station',
+            },
+        },
         children: [
             {
                 path: 'daly-bms-overview',
                 component:
                     require('./plugins/daly-bms/js/modules/Overview/Overview')
                         .default,
-                meta: { layout: 'default' },
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
             },
         ],
     },
     {
         path: '/angaza-shs',
         component: ChildRouteWrapper,
-        meta: { layout: 'default' },
+        meta: {
+            layout: 'default',
+            sidebar: {
+                enabled: true,
+                name: 'Angaza SHS',
+                icon: 'bolt',
+            },
+        },
         children: [
             {
                 path: 'angaza-overview',
                 component:
                     require('./plugins/angaza-shs/js/modules/Overview/Overview')
                         .default,
-                meta: { layout: 'default' },
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
             },
         ],
     },
