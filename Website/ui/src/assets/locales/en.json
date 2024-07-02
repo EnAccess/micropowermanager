@@ -1,6 +1,7 @@
 {
     "menu": {
         "Agents": "Agents",
+        "Angaza SHS": "Angaza SHS",
         "Appliances": "Appliances",
         "Asset Types": "Asset Types",
         "Bulk Registration": "Bulk Registration",
@@ -10,8 +11,10 @@
         "Connection": "Connection",
         "Connection Types": "Connection Types",
         "Customers": "Customers",
+        "Daly Bms": "Daly BMS",
         "Dashboard": "Dashboard",
         "E-Bikes": "E-Bikes",
+        "GomeLong Meter": "GomeLong Meter",
         "Kelin Meter": "Kelin Meter",
         "Locations": "Locations",
         "Maintenance": "Maintenance",
@@ -26,6 +29,8 @@
         "Spark Meter": "Spark Meter",
         "Steamaco Meter": "Steamaco Meter",
         "Stron Meter": "Stron Meter",
+        "SunKing SHS": "SunKing SHS",
+        "Swifta": "Swifta",
         "Targets": "Targets",
         "Tariffs": "Tariffs",
         "Tickets": "Tickets",
