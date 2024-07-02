@@ -11,6 +11,7 @@
         "Connection Types": "Types de Connexion",
         "Customers": "Clients",
         "Dashboard": "Tableau de bord",
+        "E-Bikes": "E-Bikes",
         "Kelin Meter": "Kelin Meter",
         "Locations": "Sites",
         "Maintenance": "Maintenance",
@@ -32,7 +33,6 @@
         "Viber Messaging": "Viber Messaging",
         "Wave Money": "Wave Money",
         "Wavecom Payment Provider": "Wavecom Payment Provider",
-        "E-Bikes": "E-Bikes",
         "subMenu": {
             "Agents": "Agents",
             "Categories": "Catégories",
