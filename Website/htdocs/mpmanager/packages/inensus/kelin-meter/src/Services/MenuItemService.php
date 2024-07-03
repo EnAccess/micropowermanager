@@ -14,6 +14,37 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
+            'route_data' => json_encode([
+                [
+                    'path' => '/kelin-meters/kelin-overview',
+                    'component' => 'plugins/kelin-meter/js/modules/Overview/Overview.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/kelin-meters/kelin-customer',
+                    'component' => 'plugins/kelin-meter/js/modules/Customer/List.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/kelin-meters/kelin-meter',
+                    'component' => 'plugins/kelin-meter/js/modules/Meter/List.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/kelin-meters/kelin-setting',
+                    'component' => 'plugins/kelin-meter/js/modules/Setting/Setting.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ]
+            ])
+
         ];
         $subMenuItems= array();
 

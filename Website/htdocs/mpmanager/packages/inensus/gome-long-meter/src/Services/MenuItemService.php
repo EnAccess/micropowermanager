@@ -14,6 +14,15 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
+            'route_data' => json_encode([
+                'path' => '/gome-long-meters/gome-long-overview',
+                'component' => 'plugins/gome-long-meter/js/modules/Overview/Overview.vue',
+
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
+
         ];
         $subMenuItems = array();
 

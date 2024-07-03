@@ -14,6 +14,14 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'money',
             'usage_type' => 'general',
+            'route_data' => json_encode([
+                'path' => '/wave-money/wave-money-overview',
+                'component' => "plugins/wave-money-payment-provider/js/modules/Overview/Overview.vue",
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
+
         ];
         $subMenuItems= array();
 

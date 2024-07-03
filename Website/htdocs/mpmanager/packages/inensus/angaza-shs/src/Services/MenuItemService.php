@@ -14,6 +14,14 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'shs',
+            'route_data' => json_encode([
+                'path' => '/angaza-shs/angaza-overview',
+                'component' => 'plugins/angaza-shs/js/modules/Overview/Overview.vue',
+                'meta' => [
+                    'layout' => 'default'
+                ]
+            ])
+
         ];
         $subMenuItems = array();
 

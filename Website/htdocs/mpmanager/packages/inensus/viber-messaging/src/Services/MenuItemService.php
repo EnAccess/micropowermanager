@@ -14,17 +14,23 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'message',
             'usage_type' => 'general',
+            'route_data' => json_encode([
+                'path' => '/viber-messaging/viber-overview',
+                'component' => "plugins/viber-messaging/js/modules/Overview/Overview.vue",
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
         ];
-        $subMenuItems= array();
+        $subMenuItems = array();
 
-        $subMenuItem1=[
+        $subMenuItem1 = [
             'name' => 'Overview',
             'url_slug' => '/viber-messaging/viber-overview',
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
 
     }
 }

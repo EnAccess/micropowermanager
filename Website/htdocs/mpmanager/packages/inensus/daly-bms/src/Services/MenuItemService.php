@@ -14,6 +14,15 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'charging_station',
             'usage_type' => 'e-bike',
+            'route_data' => json_encode([
+                'path' => '/daly-bms/daly-bms-overview',
+                'component' => 'plugins/daly-bms/js/modules/Overview/Overview.vue',
+
+                'meta' => [
+                    'layout' => 'default'
+                ]
+            ])
+
         ];
         $subMenuItems = array();
 

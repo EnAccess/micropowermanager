@@ -10,11 +10,19 @@ class MenuItemService
     public function createMenuItems()
     {
         $menuItem = [
-            'name' =>'Bulk Registration',
-            'url_slug' =>'/bulk-registration/bulk-registration',
-            'md_icon' =>'upload_file',
-            'usage_type' =>'general',
+            'name' => 'Bulk Registration',
+            'url_slug' => '/bulk-registration/bulk-registration',
+            'md_icon' => 'upload_file',
+            'usage_type' => 'general',
+            [
+                'path' => '/bulk-registration/bulk-registration',
+                'component' => 'plugins/bulk-registration/js/modules/Csv.vue',
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ]
+
         ];
-        return ['menuItem'=>$menuItem,'subMenuItems'=>[]];
+        return ['menuItem' => $menuItem, 'subMenuItems' => []];
     }
 }

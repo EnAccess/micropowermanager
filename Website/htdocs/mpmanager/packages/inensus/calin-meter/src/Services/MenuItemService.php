@@ -16,6 +16,15 @@ class MenuItemService
             'url_slug' =>'',
             'md_icon' =>'bolt',
             'usage_type' =>'mini-grid',
+            'route_data' => json_encode([
+                'path' => '/calin-meters/calin-overview',
+                'component' => 'plugins/calin-meter/js/modules/Overview/Overview.vue',
+
+                'meta' => [
+                    'layout' => 'default'
+                ]
+            ])
+
         ];
         $subMenuItems= array();
 

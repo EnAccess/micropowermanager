@@ -15,7 +15,52 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
+            'route_data' => json_encode([
+                [
+                    'path' => '/steama-meters/steama-overview',
+                    'component' => 'plugins/steama-meter/js/modules/Overview/Overview.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/steama-meters/steama-site',
+                    'component' => 'plugins/steama-meter/js/modules/Site/SiteList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/steama-meters/steama-customer',
+                    'component' => 'plugins/steama-meter/js/modules/Customer/CustomerList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/steama-meters/steama-meter',
+                    'component' => 'plugins/steama-meter/js/modules/Meter/MeterList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/steama-meters/steama-agent',
+                    'component' => 'plugins/steama-meter/js/modules/Agent/AgentList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/steama-meters/steama-setting',
+                    'component' => 'plugins/steama-meter/js/modules/Setting/Setting.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ]
+            ])
         ];
+
         $subMenuItems = array();
 
         $subMenuItem1 = [

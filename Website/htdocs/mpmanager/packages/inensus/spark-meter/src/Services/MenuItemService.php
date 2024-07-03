@@ -14,7 +14,59 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
+            'route_data' => json_encode([
+                [
+                    'path' => '/spark-meters/sm-overview',
+                    'component' => 'plugins/spark-meter/js/modules/Overview/Overview.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-site',
+                    'component' => 'plugins/spark-meter/js/modules/Site/SiteList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-meter-model',
+                    'component' => 'plugins/spark-meter/js/modules/MeterModel/MeterModelList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-customer',
+                    'component' => 'plugins/spark-meter/js/modules/Customer/CustomerList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-tariff',
+                    'component' => 'plugins/spark-meter/js/modules/Tariff/TariffList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-sales-account',
+                    'component' => 'plugins/spark-meter/js/modules/SalesAccount/SalesAccountList.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ],
+                [
+                    'path' => '/spark-meters/sm-setting',
+                    'component' => 'plugins/spark-meter/js/modules/Setting/Setting.vue',
+                    'meta' => [
+                        'layout' => 'default'
+                    ]
+                ]
+            ])
         ];
+
         $subMenuItems = array();
 
         $subMenuItem1 = [

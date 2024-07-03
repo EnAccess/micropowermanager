@@ -13,6 +13,14 @@ class MenuItemService
             'url_slug' =>'/wavecom/transactions',
             'md_icon' =>'upload_file',
             'usage_type' =>'general',
+            'route_data' => json_encode([
+                'path' => '/wavecom/transactions',
+                'component' => "plugins/wavecom-payment-provider/js/modules/Component.vue",
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
+
         ];
         return ['menuItem'=>$menuItem,'subMenuItems'=>[]];
     }

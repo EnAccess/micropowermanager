@@ -12,6 +12,14 @@ class MenuItemService
             'url_slug' => '',
             'md_icon' => 'money',
             'usage_type' => 'general',
+            'route_data' => json_encode([
+                'path' => '/swifta-payment/swifta-payment-overview',
+                'component' => 'plugins/swifta-payment-provider/js/modules/Overview/Overview.vue',
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
+
         ];
         $subMenuItems= array();
 

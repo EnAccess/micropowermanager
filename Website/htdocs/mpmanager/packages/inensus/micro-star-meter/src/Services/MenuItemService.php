@@ -14,6 +14,14 @@ class MenuItemService
             'url_slug' =>'',
             'md_icon' =>'bolt',
             'usage_type' =>'mini-grid',
+            'route_data' => json_encode([
+                'path' => '/micro-star-meters/micro-star-overview',
+                'component' => 'plugins/micro-star-meter/js/modules/Overview/Overview.vue',
+                'meta' => [
+                    'layout' => 'default',
+                ],
+            ])
+
         ];
         $subMenuItems= array();
 

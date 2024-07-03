@@ -97,7 +97,9 @@ class MenuItemsService implements IBaseService
 
     public function update($model, $data)
     {
-        throw new \Exception('not implemented');
+        $model->update($data);
+
+        return $model;
     }
 
     public function delete($model)
