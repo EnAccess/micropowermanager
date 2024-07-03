@@ -1,12 +1,12 @@
-<template>
+,<template>
     <div class="sidebar" :data-color="sidebarItemColor" :style="sidebarStyle">
         <div class="logo">
             <div class="brand-column">
-                <img class="logo" alt="logo" :src="imgLogo" />
+                <img class="logo" alt="logo" :src="imgLogo"/>
 
                 <div class="company-header">
                     {{ $store.getters['settings/getMainSettings'].companyName }}
-                    <br />
+                    <br/>
                     <small>Powered by MPM</small>
                 </div>
             </div>
@@ -77,15 +77,16 @@
     </div>
 </template>
 <script>
-import { translateItem } from '@/Helpers/TranslateItem'
-import { EventBus } from '@/shared/eventbus'
+import {translateItem} from '@/Helpers/TranslateItem'
+import {EventBus} from '@/shared/eventbus'
 import PasswordProtection from '@/shared/PasswordProtection'
+import router from '@/routes'
 
 export default {
     name: 'SideBar',
     mixins: [PasswordProtection],
 
-    data() {
+    data () {
         return {
             show_extender: false,
             admin: null,
@@ -111,41 +112,72 @@ export default {
             type: String,
             default: 'green',
         },
-
         autoClose: {
             type: Boolean,
             default: true,
         },
     },
-    provide() {
+    provide () {
         return {
             autoClose: this.autoClose,
         }
     },
-
-    mounted() {
-        this.setSidebar()
+    mounted () {
+        this.setSidebarAndDynamicRoutes()
         EventBus.$on('setSidebar', async () => {
             await this.$store.dispatch('settings/setSidebar')
-            this.menus = this.$store.getters['settings/getSidebar']
         })
+
     },
     methods: {
-        async setSidebar() {
-            if (!this.menus.length) {
-                await this.$store.dispatch('settings/setSidebar')
+        async setSidebarAndDynamicRoutes () {
+            await this.$store.dispatch('settings/setSidebar');
+            const sidebarData = this.$store.getters['settings/getSidebar'];
+            this.menus = [...this.menus, ...sidebarData];
 
-                this.menus = this.$store.getters['settings/getSidebar']
+            for (let i = 0; i < this.menus.length; i++) {
+                const menuItem = this.menus[i];
+
+                if (menuItem.route_data !== null) {
+                    const routeData = JSON.parse(menuItem.route_data);
+
+                    if (Array.isArray(routeData)) {
+                        await Promise.all(routeData.map(async (route) => {
+                            if (!this.routeExists(route.path)) {
+                                const component = await this.importComponent(route.component);
+                                this.$router.addRoute({
+                                    ...route,
+                                    component
+                                });
+                            }
+                        }));
+                    } else {
+                        if (!this.routeExists(routeData.path)) {
+                            const component = await this.importComponent(routeData.component);
+                            this.$router.addRoute({
+                                ...routeData,
+                                component
+                            });
+                        }
+                    }
+                }
             }
         },
-        translateMenuItem(name) {
-            if (this.$tc('menu.' + name).search('menu') !== -1) {
-                return name
-            } else {
-                return this.$tc('menu.' + name)
+
+        async importComponent (componentPath) {
+            try {
+                return (await import(`@/${componentPath}`)).default;
+            } catch (error) {
+                console.error('Error importing component:', error);
+                throw error;
             }
         },
-        route(routeUrl) {
+
+        routeExists (path) {
+            return this.$router.getRoutes().some(route => route.path === path);
+        },
+
+        route (routeUrl) {
             // In the backend/database these are sometimes stored as (for example)
             // /meters/page/1
             // but we actually need to convert that to query params
@@ -154,19 +186,19 @@ export default {
                     routeUrl = routeUrl.split('/page/1')[0]
                     return {
                         path: routeUrl,
-                        query: { page: 1, per_page: 15 },
+                        query: {page: 1, per_page: 15},
                     }
                 } else {
-                    return { path: routeUrl }
+                    return {path: routeUrl}
                 }
             }
         },
     },
     computed: {
-        adminName() {
+        adminName () {
             return this.$store.getters['auth/getAuthenticateUser'].name
         },
-        sidebarStyle() {
+        sidebarStyle () {
             return {
                 background: '#2b2b2b !important',
             }
