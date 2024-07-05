@@ -41,7 +41,6 @@
     "date-fns": "^1.29.0",
     "eslint-plugin-vue": "^9.1.1",
     "html2canvas": "^1.0.0-rc.7",
-    "imagemin": "^6.1.0",
     "img-loader": "^3.0.2",
     "jest-jasmine2": "^26.6.3",
     "jspdf": "^2.3.1",
