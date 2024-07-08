@@ -67,7 +67,6 @@
     "vue-tel-input": "^5.11.0",
     "vue-template-compiler": "^2.5.17",
     "vue2-google-maps": "^0.10.7",
-    "vuejs-datepicker": "^1.6.2",
     "vuelidate": "^0.7.5",
     "vuex": "^3.5.1",
     "vuex-persist": "^2.3.0"
