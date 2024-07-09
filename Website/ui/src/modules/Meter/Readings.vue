@@ -1,64 +1,76 @@
 <template>
-    <div>
-        <widget :title="$tc('phrases.meterReadings')" :id="'meter-readings'">
-            <div role="menu" slot="tabbar">
+    <widget
+        :title="$tc('phrases.meterReadings')"
+        :id="'meter-readings'"
+        button
+        button-text="Set Period"
+        button-color="red"
+        @widgetAction="toggleDateSelection"
+        button-icon="calendar_today"
+    >
+        <div v-if="dates.show_selector" class="period-selector">
+            <p>{{ $tc('phrases.selectPeriod') }}</p>
+            <div class="md-layout md-gutter">
+                <div class="md-layout-item md-size-100">
+                    <md-datepicker
+                        v-model="dates.dateOne"
+                        md-immediately
+                        v-validate="'required'"
+                    >
+                        <label>{{ $tc('phrases.fromDate') }}</label>
+                    </md-datepicker>
+                    <span class="md-error">
+                        {{ errors.first($tc('phrases.fromDate')) }}
+                    </span>
+                </div>
+                <div class="md-layout-item md-size-100">
+                    <md-datepicker
+                        v-model="dates.dateTwo"
+                        md-immediately
+                        v-validate="'required'"
+                    >
+                        <label>{{ $tc('phrases.toDate') }}</label>
+                    </md-datepicker>
+                    <span class="md-error">
+                        {{ errors.first($tc('phrases.toDate')) }}
+                    </span>
+                </div>
+            </div>
+            <div style="margin-top: 5px">
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
                 <button
-                    class="md-button dropdown-toggle btn-xs"
-                    aria-expanded="false"
-                    id="datepicker-button-trigger"
-                    style="color: white"
+                    style="width: 100%"
+                    v-if="!loading"
+                    class="btn btn-primary"
+                    @click="getConsumptions"
                 >
-                    Period
-                    <md-icon>calendar_today</md-icon>
+                    {{ $tc('words.send') }}
                 </button>
             </div>
+        </div>
 
-            <md-card>
-                <md-card-content>
-                    <div v-if="chartData.length > 0">
-                        <GChart
-                            type="LineChart"
-                            :data="chartData"
-                            :options="chartOptions"
-                        ></GChart>
-                    </div>
+        <md-card>
+            <md-card-content>
+                <div v-if="chartData.length > 0">
+                    <GChart
+                        type="LineChart"
+                        :data="chartData"
+                        :options="chartOptions"
+                    ></GChart>
+                </div>
 
-                    <div
-                        v-if="chartData.length === 0 && loading === false"
-                        class="text-center"
-                    >
-                        <h2>
-                            {{ $tc('phrases.noData') }} {{ dates.dateOne }} -
-                            {{ dates.dateTwo }}
-                        </h2>
-                    </div>
-                </md-card-content>
-            </md-card>
-        </widget>
-
-        <airbnb-style-datepicker
-            :trigger-element-id="'datepicker-button-trigger'"
-            :mode="'range'"
-            :date-one="dates.dateOne"
-            :date-two="dates.dateTwo"
-            :min-date="'2018-01-01'"
-            :endDate="dates.today"
-            :fullscreen-mobile="true"
-            :months-to-show="2"
-            :offset-y="500"
-            v-on:date-one-selected="
-                (val) => {
-                    dates.dateOne = val
-                }
-            "
-            v-on:date-two-selected="
-                (val) => {
-                    dates.dateTwo = val
-                }
-            "
-            @apply="getConsumptions"
-        ></airbnb-style-datepicker>
-    </div>
+                <div
+                    v-if="chartData.length === 0 && loading === false"
+                    class="text-center"
+                >
+                    <h2>
+                        {{ $tc('phrases.noData') }} {{ dates.dateOne }} -
+                        {{ dates.dateTwo }}
+                    </h2>
+                </div>
+            </md-card-content>
+        </md-card>
+    </widget>
 </template>
 
 <script>
@@ -91,6 +103,7 @@ export default {
                 dateOne: null,
                 today: null,
                 difference: 0,
+                show_selector: false,
             },
             loading: true,
             consumptions: null,
@@ -108,6 +121,9 @@ export default {
         this.getConsumptions()
     },
     methods: {
+        toggleDateSelection() {
+            this.dates.show_selector = !this.dates.show_selector
+        },
         getConsumptions() {
             this.loading = true
             this.chartData = []
@@ -133,4 +149,18 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+.period-selector {
+    /* Commented out as it was hidden under other element */
+    /* position: absolute; */
+    position: relative;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    margin-right: 1rem;
+    margin-top: 2rem;
+}
+</style>
