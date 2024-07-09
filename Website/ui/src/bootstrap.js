@@ -171,6 +171,7 @@ Vue.component('default-layout', Default)
 /**
  * VueTelInput
  */
+// FIXME: It's only used once. Should this really be a global import?
 import VueTelInput from 'vue-tel-input'
 import 'vue-tel-input/dist/vue-tel-input.css'
 
