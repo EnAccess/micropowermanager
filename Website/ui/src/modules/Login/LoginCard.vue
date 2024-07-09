@@ -82,14 +82,12 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
 import { AuthenticationService } from '@/services/AuthenticationService'
 
 import { config } from '@/config'
 
 export default {
     name: 'login-card',
-    mixins: [validationMixin],
     data: () => ({
         authError: false,
         form: {
@@ -106,10 +104,6 @@ export default {
         this.$store.commit('registrationTail/SET_IS_WIZARD_SHOWN', false)
     },
     methods: {
-        clearForm() {
-            this.$v.$reset()
-            ;(this.form.password = null), (this.form.email = null)
-        },
         async authenticate() {
             this.sending = true
             try {
