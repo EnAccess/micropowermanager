@@ -135,13 +135,6 @@ Vue.use(VueGoogleMaps, {
 })
 
 /**
- * VueHtml2Canvas
- */
-import VueHtml2Canvas from 'vue-html2canvas'
-
-Vue.use(VueHtml2Canvas)
-
-/**
  * VueMaterial
  */
 import VueMaterial from 'vue-material'
