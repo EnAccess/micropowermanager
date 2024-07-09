@@ -124,17 +124,6 @@ window.onclick = function (e) {
 }
 
 /**
- * VueGoogleMaps
- */
-import * as VueGoogleMaps from 'vue2-google-maps'
-
-Vue.use(VueGoogleMaps, {
-    load: {
-        key: 'AIzaSyCiSUjcyWMpV8dAMjIQ-VUaLZZ9NEFIELo',
-    },
-})
-
-/**
  * VueMaterial
  */
 import VueMaterial from 'vue-material'
