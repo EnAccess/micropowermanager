@@ -41,8 +41,8 @@
                         <md-datepicker
                             name="ticketDueDate"
                             md-immediately
-                            id="ticketDueDate"
                             v-model="newTicket.dueDate"
+                            :md-close-on-blur="false"
                         >
                             <label for="ticketDueDate">
                                 {{ $tc('phrases.dueDate') }}

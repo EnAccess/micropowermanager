@@ -160,10 +160,11 @@
                             >
                                 <div>
                                     <md-datepicker
-                                        v-model="maintenanceData.dueDate"
                                         :name="$tc('words.date')"
-                                        v-validate="'required'"
                                         md-immediately
+                                        v-model="maintenanceData.dueDate"
+                                        v-validate="'required'"
+                                        :md-close-on-blur="false"
                                     >
                                         <label>
                                             {{ $tc('phrases.dueDate') }}

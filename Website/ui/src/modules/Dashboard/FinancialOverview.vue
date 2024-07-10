@@ -13,9 +13,10 @@
             <div class="md-layout md-gutter">
                 <div class="md-layout-item md-size-100">
                     <md-datepicker
-                        v-model="period.from"
                         md-immediately
+                        v-model="period.from"
                         v-validate="'required'"
+                        :md-close-on-blur="false"
                     >
                         <label>{{ $tc('phrases.fromDate') }}</label>
                     </md-datepicker>
@@ -25,9 +26,10 @@
                 </div>
                 <div class="md-layout-item md-size-100">
                     <md-datepicker
-                        v-model="period.to"
                         md-immediately
+                        v-model="period.to"
                         v-validate="'required'"
+                        :md-close-on-blur="false"
                     >
                         <label>{{ $tc('phrases.toDate') }}</label>
                     </md-datepicker>

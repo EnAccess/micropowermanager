@@ -112,9 +112,10 @@
                                 class="md-layout-item md-size-50 md-small-size-100"
                             >
                                 <md-datepicker
-                                    md-immediately
                                     name="birthDate"
+                                    md-immediately
                                     v-model="personService.person.birthDate"
+                                    :md-close-on-blur="false"
                                 >
                                     <label for="birth-date">
                                         {{ $tc('words.birthday') }} :
