@@ -1,4 +1,5 @@
 import { resources } from '@/resources'
+import { baseUrl } from '@/repositories/Client/AxiosClient'
 
 export class Consumptions {
     constructor(meterId) {
@@ -8,15 +9,18 @@ export class Consumptions {
 
     getData(start, end) {
         this.data = []
+        let url =
+            resources.meters.consumptions +
+            this.meterId +
+            '/consumptions/' +
+            start +
+            '/' +
+            end
+        // Make sure we are calling the backend
+        url = url.startsWith('http') ? url : `${baseUrl}${url}`
+
         return axios
-            .get(
-                resources.meters.consumptions +
-                    this.meterId +
-                    '/consumptions/' +
-                    start +
-                    '/' +
-                    end,
-            )
+            .get(url)
             .then((response) => {
                 for (let c in response.data.data) {
                     let item = response.data.data[c]
@@ -26,6 +30,9 @@ export class Consumptions {
                         item.credit_on_meter,
                     ])
                 }
+            })
+            .catch((error) => {
+                console.error('API request failed:', error)
             })
     }
 }
