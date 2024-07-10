@@ -305,7 +305,7 @@
         "selectColor": "Select Color",
         "selectDevice": "Select a Device to bind with this appliance",
         "selectMiniGrid": "Select Mini-Grid | MiniGrid Data-logger is active",
-        "selectPeriod": "Select a period for income data",
+        "selectPeriod": "Select a period for data",
         "sellAsset": "Sell Asset | New asset sold successfully. | Are you sure to sell the asset for {cost} ? ",
         "sentDate": "Sent Date",
         "serialNumber": "Serial Number",
