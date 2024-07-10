@@ -118,9 +118,10 @@
                                 </span>
                             </md-field>
                             <md-datepicker
-                                md-immediately
                                 name="birthDate"
+                                md-immediately
                                 v-model="personService.person.birthDate"
+                                :md-close-on-blur="false"
                             >
                                 <label for="birth-date">
                                     {{ $tc('words.birthday') }} :

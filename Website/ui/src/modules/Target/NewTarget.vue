@@ -85,10 +85,10 @@
                                 ),
                             }"
                             :name="$tc('phrases.validUntil')"
-                            v-validate.initial="'required'"
-                            :md-model-type="String"
                             md-immediately
                             v-model="targetValidUntil"
+                            v-validate.initial="'required'"
+                            :md-close-on-blur="false"
                         >
                             <label>{{ $tc('phrases.validUntil') }}</label>
                             <span class="md-error">
