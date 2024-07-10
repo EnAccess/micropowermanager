@@ -63,10 +63,12 @@
                     v-if="chartData.length === 0 && loading === false"
                     class="text-center"
                 >
-                    <h2>
-                        {{ $tc('phrases.noData') }} {{ dates.dateOne }} -
-                        {{ dates.dateTwo }}
-                    </h2>
+                    <md-card-content class="no-data-placeholder">
+                        <h2>
+                            {{ $tc('phrases.noData') }} {{ dates.dateOne }} -
+                            {{ dates.dateTwo }}
+                        </h2>
+                    </md-card-content>
                 </div>
             </md-card-content>
         </md-card>
@@ -149,11 +151,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.no-data-placeholder {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
 .period-selector {
-    /* Commented out as it was hidden under other element */
-    /* position: absolute; */
-    position: relative;
+    position: absolute;
     top: 0;
     right: 0;
     z-index: 9999;
