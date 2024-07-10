@@ -145,6 +145,7 @@ export default {
                     this.chartData = this.chartData.concat(
                         this.consumptions.data,
                     )
+                    this.dates.show_selector = false
                 })
         },
     },
