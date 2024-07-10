@@ -160,7 +160,12 @@
                             >
                                 <div>
                                     <md-datepicker
-                                        :name="$tc('words.date')"
+                                        :class="{
+                                            'md-invalid': errors.has(
+                                                $tc('phrases.dueDate'),
+                                            ),
+                                        }"
+                                        :name="$tc('phrases.dueDate')"
                                         md-immediately
                                         v-model="maintenanceData.dueDate"
                                         v-validate="'required'"
@@ -169,10 +174,14 @@
                                         <label>
                                             {{ $tc('phrases.dueDate') }}
                                         </label>
+                                        <span class="md-error">
+                                            {{
+                                                errors.first(
+                                                    $tc('phrases.dueDate'),
+                                                )
+                                            }}
+                                        </span>
                                     </md-datepicker>
-                                    <span class="md-error">
-                                        {{ errors.first($tc('words.date')) }}
-                                    </span>
                                 </div>
                             </div>
                             <div class="md-layout-item md-size-100">
