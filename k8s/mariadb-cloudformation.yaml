@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS CloudFormation template to create a MariaDB instance."
+
+Resources:
+  MyDBSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Allow access to my MariaDB instance"
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: "0.0.0.0/0"  
+
+  MyDBInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceClass: "db.t3.small"  
+      Engine: "mariadb"
+      DBInstanceIdentifier: "my-mariadb-instance"
+      MasterUsername: "admin"
+      MasterUserPassword: "password123"  
+      AllocatedStorage: 20
+      VPCSecurityGroups:
+        - Ref: MyDBSecurityGroup  
+      PubliclyAccessible: true
+      BackupRetentionPeriod: 7
