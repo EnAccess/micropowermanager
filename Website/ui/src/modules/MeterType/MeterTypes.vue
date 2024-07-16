@@ -21,9 +21,9 @@
                             >
                                 <label>{{ $tc('phrases.maxCurrent') }}</label>
                                 <md-input
-                                    v-model="meterType.max_current"
                                     id="max_current"
                                     :name="$tc('phrases.maxCurrent')"
+                                    v-model="meterType.max_current"
                                     v-validate="'required|numeric'"
                                 ></md-input>
                                 <span class="md-error">
@@ -46,9 +46,9 @@
                             >
                                 <label>{{ $tc('words.phase') }}</label>
                                 <md-input
-                                    v-model="meterType.phase"
                                     id="phase"
                                     :name="$tc('words.phase')"
+                                    v-model="meterType.phase"
                                     v-validate="'required|numeric'"
                                 ></md-input>
                                 <span class="md-error">
@@ -59,23 +59,23 @@
                         <div class="md-layout-item md-size-10 md-small-size-50">
                             <span class="md-subheader">
                                 <md-checkbox
-                                    v-model="online"
+                                    v-model="meterType.online"
                                     class="md-primary"
                                 >
                                     {{ $tc('words.online') }}
                                 </md-checkbox>
                             </span>
                         </div>
-                        <div class="md-layout-item md-size-10 md-small-size-50">
-                            <md-button
-                                class="md-primary md-dense md-raised"
-                                @click="saveMeterType"
-                            >
-                                {{ $tc('words.save') }}
-                            </md-button>
-                        </div>
                     </div>
                 </md-card-content>
+                <md-card-actions>
+                    <md-button
+                        class="md-primary md-dense md-raised"
+                        @click="saveMeterType"
+                    >
+                        {{ $tc('words.save') }}
+                    </md-button>
+                </md-card-actions>
             </md-card>
         </widget>
         <widget
@@ -113,7 +113,7 @@
                         </md-icon>
                         <span>
                             {{
-                                connectivity[index] === 'Online'
+                                type.online === 1
                                     ? $tc('words.online')
                                     : $tc('words.offline')
                             }}
@@ -140,9 +140,8 @@ export default {
             meterType: {
                 max_current: null,
                 phase: null,
-                online: 0,
+                online: null,
             },
-            online: false,
             meterTypesList: null,
         }
     },
@@ -151,14 +150,18 @@ export default {
     },
     methods: {
         showNewType() {
-            this.toggleNewType = !this.toggleNewType
+            // https://github.com/logaretm/vee-validate/issues/1828#issuecomment-631808596
+            this.$validator.pause()
+            this.$nextTick(() => {
+                this.toggleNewType = !this.toggleNewType
+                this.$validator.resume()
+            })
         },
         async saveMeterType() {
             let validation = await this.$validator.validateAll()
             if (!validation) {
                 return
             }
-            this.meterType.online = this.online ? 0 : 1
             try {
                 this.meterTypesList =
                     await this.meterTypeService.createMeterType(this.meterType)
@@ -170,8 +173,7 @@ export default {
                 )
                 this.meterType.max_current = null
                 this.meterType.phase = null
-                this.meterType.online = 0
-                this.online = false
+                this.meterType.online = null
                 this.alertNotify('success', this.$tc('phrases.newMeterType', 2))
             } catch (e) {
                 this.alertNotify('error', e.message)
@@ -196,13 +198,6 @@ export default {
                 type: type,
                 title: type + ' !',
                 text: message,
-            })
-        },
-    },
-    computed: {
-        connectivity: function () {
-            return this.meterTypesList.map(function (type) {
-                return type.online === 1 ? 'Online' : 'Offline'
             })
         },
     },
