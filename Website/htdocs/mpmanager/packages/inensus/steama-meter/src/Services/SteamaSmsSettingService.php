@@ -2,7 +2,6 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use Carbon\CarbonInterval;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSmsSetting;
 
@@ -24,7 +23,7 @@ class SteamaSmsSettingService
             $smsSetting = $this->setting->newQuery()->make();
             $smsTransaction = $this->smsSetting->newQuery()->create([
                 'state' => 'Transactions',
-                'not_send_elder_than_mins' => 30
+                'not_send_elder_than_mins' => 30,
             ]);
             $smsSetting->setting()->associate($smsTransaction);
             $smsSetting->save();
@@ -34,7 +33,7 @@ class SteamaSmsSettingService
             $balanceSetting = $this->setting->newQuery()->make();
             $smsLowBalanceWarning = $this->smsSetting->newQuery()->create([
                 'state' => 'Low Balance Warning',
-                'not_send_elder_than_mins' => 60
+                'not_send_elder_than_mins' => 60,
             ]);
             $balanceSetting->setting()->associate($smsLowBalanceWarning);
             $balanceSetting->save();
@@ -43,16 +42,16 @@ class SteamaSmsSettingService
 
     public function updateSmsSettings($smsSettings)
     {
-
         foreach ($smsSettings as $key => $setting) {
             $smsSetting = $this->smsSetting->newQuery()->find($setting['id']);
             if ($smsSetting) {
                 $smsSetting->update([
                     'not_send_elder_than_mins' => $setting['not_send_elder_than_mins'],
-                    'enabled' => $setting['enabled']
+                    'enabled' => $setting['enabled'],
                 ]);
             }
         }
+
         return $this->smsSetting->newQuery()->get();
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Inensus\SteamaMeter\Models;
+
 use App\Models\BaseModel;
 
 class SteamaSmsSetting extends BaseModel

@@ -23,10 +23,10 @@ use Tests\TestCase;
 
 class EnergyTransactionProcessorTest extends TestCase
 {
+    use RefreshDatabase;
+    use WithFaker;
 
-    use RefreshDatabase, WithFaker;
-
-    public function test_with_valid_data()
+    public function testWithValidData()
     {
         Queue::fake();
         PersonFactory::new()->create();
@@ -83,5 +83,4 @@ class EnergyTransactionProcessorTest extends TestCase
         $eTP->handle();
         $this->assertCount(1, SocialTariffPiggyBank::all());
     }
-
 }

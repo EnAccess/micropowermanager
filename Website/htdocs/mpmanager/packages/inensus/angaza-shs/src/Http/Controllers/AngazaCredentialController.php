@@ -7,10 +7,8 @@ use Inensus\AngazaSHS\Http\Requests\AngazaCredentialRequest;
 use Inensus\AngazaSHS\Http\Resources\AngazaResource;
 use Inensus\AngazaSHS\Services\AngazaCredentialService;
 
-
 class AngazaCredentialController extends Controller
 {
-
     public function __construct(private AngazaCredentialService $credentialService)
     {
     }
@@ -25,7 +23,7 @@ class AngazaCredentialController extends Controller
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
             'client_id',
-            'client_secret'
+            'client_secret',
         ]);
         $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
 

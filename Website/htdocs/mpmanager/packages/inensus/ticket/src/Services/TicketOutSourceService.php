@@ -2,13 +2,11 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\BaseService;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketOutsource;
 
-class TicketOutSourceService  implements IBaseService
+class TicketOutSourceService implements IBaseService
 {
-
     public function __construct(private TicketOutsource $ticketOutsource)
     {
     }
@@ -20,7 +18,7 @@ class TicketOutSourceService  implements IBaseService
 
     public function create($ticketOutsourceData)
     {
-       return $this->ticketOutsource->newQuery()->create($ticketOutsourceData);
+        return $this->ticketOutsource->newQuery()->create($ticketOutsourceData);
     }
 
     public function update($model, $data)

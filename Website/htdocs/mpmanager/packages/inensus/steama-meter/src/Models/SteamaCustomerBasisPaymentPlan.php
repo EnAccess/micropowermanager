@@ -20,7 +20,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     }
 
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -28,8 +28,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaFlatRatePaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -37,8 +38,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaHybridPaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -46,8 +48,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaSubscriptionPaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -57,7 +60,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     }
 
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -65,8 +68,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaAssetRatesPaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -74,8 +78,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaPerKwhPaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */
@@ -83,8 +88,9 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
     {
         return BelongsToMorph::build($this, SteamaTariffOverridePaymentPlan::class, 'paymentPlan');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsTo
      */

@@ -3,15 +3,12 @@
 namespace Inensus\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Jobs\SmsProcessor;
 use App\Models\Sms;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
@@ -20,11 +17,10 @@ use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 use Inensus\StemaMeter\Exceptions\CronJobException;
 
-
 class SteamaSmsNotifier extends AbstractSharedCommand
 {
-    const MPM_PLUGIN_ID = 2;
     use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = '';
@@ -53,11 +49,10 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         $this->smsService = $smsService;
     }
 
-
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
     {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
-            ->each(function ($steamaTransaction) use ($transactionMin, $smsNotifiedCustomers, $customers) {
+            ->each(function ($steamaTransaction) use ($smsNotifiedCustomers, $customers) {
                 $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                     'notify_id',
                     $steamaTransaction->id
@@ -74,9 +69,9 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 }
 
                 if (
-                    !$notifyCustomer->mpmPerson->addresses ||
-                    $notifyCustomer->mpmPerson->addresses[0]->phone === null ||
-                    $notifyCustomer->mpmPerson->addresses[0]->phone === ""
+                    !$notifyCustomer->mpmPerson->addresses
+                    || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                    || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
                     return true;
                 }
@@ -88,6 +83,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                     $notifyCustomer->customer_id,
                     $steamaTransaction->id
                 );
+
                 return true;
             });
     }
@@ -95,8 +91,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
     private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin)
     {
         $customers->each(function ($customer) use (
-            $smsNotifiedCustomers,
-            $lowBalanceMin
+            $smsNotifiedCustomers
         ) {
             $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
                 'customer_id',
@@ -109,8 +104,8 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null ||
-                $customer->mpmPerson->addresses[0]->phone === ""
+                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
             }
@@ -119,6 +114,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 SteamaSmsConfig::class);
 
             $this->steamaSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
+
             return true;
         });
     }
@@ -133,7 +129,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         $this->info('#############################');
         $this->info('# Steamaco Meter Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('smsNotifier command started at ' . $startedAt);
+        $this->info('smsNotifier command started at '.$startedAt);
         try {
             $smsSettings = $this->smsSettingsService->getSmsSettings();
             $transactionMin = $smsSettings->where('state', 'Transactions')
@@ -149,11 +145,11 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 Carbon::now()->subMinutes($lowBalanceMin)
             )->get(), $smsNotifiedCustomers, $lowBalanceMin);
         } catch (CronJobException $e) {
-            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
+            $this->warn('dataSync command is failed. message => '.$e->getMessage());
         }
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('Took '.$totalTime.' seconds.');
         $this->info('#############################');
     }
 }

@@ -11,13 +11,11 @@ class InstallPackage extends Command
     protected $signature = 'viber-messaging:install';
     protected $description = 'Install ViberMessaging Package';
 
-
     public function __construct(
         private MenuItemService $menuItemService,
         private ViberCredentialService $credentialService
     ) {
         parent::__construct();
-
     }
 
     public function handle(): void
@@ -33,7 +31,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -48,16 +46,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "ViberMessaging",
-            'composer_name' => "inensus/viber-messaging",
-            'description' => "Viber Messaging integration package for MicroPowerManager",
+            'name' => 'ViberMessaging',
+            'composer_name' => 'inensus/viber-messaging',
+            'description' => 'Viber Messaging integration package for MicroPowerManager',
         ]);
     }
 

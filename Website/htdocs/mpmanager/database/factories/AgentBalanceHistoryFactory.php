@@ -28,8 +28,8 @@ class AgentBalanceHistoryFactory extends Factory
                 'agent_transaction',
                 'agent_commission',
                 'agent_appliance',
-                'agent_receipt'
-            ])
+                'agent_receipt',
+            ]),
         ];
     }
 }

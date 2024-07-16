@@ -2,16 +2,11 @@
 
 namespace Inensus\CalinMeter\Services;
 
-
-
 use Inensus\CalinMeter\Models\CalinCredential;
-
 
 class CalinCredentialService
 {
-
     private $credential;
-
 
     public function __construct(
         CalinCredential $credentialModel
@@ -21,7 +16,6 @@ class CalinCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -43,6 +37,7 @@ class CalinCredentialService
             'user_id' => $data['user_id'],
             'api_key' => $data['api_key'],
         ]);
+
         return $credential->fresh();
     }
 }

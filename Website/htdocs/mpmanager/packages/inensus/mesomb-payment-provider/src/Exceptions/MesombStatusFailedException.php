@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Inensus\MesombPaymentProvider\Exceptions;
 
-
-class MesombStatusFailedException extends  \Exception
+class MesombStatusFailedException extends \Exception
 {
-
 }

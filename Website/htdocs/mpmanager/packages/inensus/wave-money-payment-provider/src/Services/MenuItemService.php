@@ -2,10 +2,9 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'WaveMoney';
+    public const MENU_ITEM = 'WaveMoney';
 
     public function createMenuItems()
     {
@@ -15,16 +14,14 @@ class MenuItemService
             'md_icon' => 'money',
             'usage_type' => 'general',
         ];
-        $subMenuItems= array();
+        $subMenuItems = [];
 
-        $subMenuItem1=[
+        $subMenuItem1 = [
             'name' => 'Overview',
             'url_slug' => '/wave-money/wave-money-overview',
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

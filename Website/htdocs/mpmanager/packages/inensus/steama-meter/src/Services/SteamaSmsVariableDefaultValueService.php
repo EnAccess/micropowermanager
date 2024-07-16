@@ -36,11 +36,11 @@ class SteamaSmsVariableDefaultValueService
             [
                 'variable' => 'account_balance',
                 'value' => '900',
-            ]
+            ],
         ];
         collect($smsVariableDefaultValues)->each(function ($variable) {
             $this->smsVariableDefaultValue->newQuery()
-                ->firstOrCreate(['variable'=>$variable['variable']],
+                ->firstOrCreate(['variable' => $variable['variable']],
                     $variable);
         });
     }

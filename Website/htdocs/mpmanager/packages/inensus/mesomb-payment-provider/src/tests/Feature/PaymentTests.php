@@ -19,35 +19,36 @@ use Tests\TestCase;
 
 class PaymentTests extends TestCase
 {
-    use RefreshDatabase, CreatesApplication;
+    use RefreshDatabase;
+    use CreatesApplication;
 
-    public function test_only_successes_payments_can_be_processed()
+    public function testOnlySuccessesPaymentsCanBeProcessed()
     {
         $data = [
             'status' => 'FAILED',
             'type' => 'Payment',
             'amount' => 10.0,
             'b_party' => '237400001021',
-            'message' => 'The payment has failed!'
+            'message' => 'The payment has failed!',
         ];
         $response = $this->post('/api/mesomb', $data)->assertStatus(400);
         $response->assertJson([
             'errors' => [
                 'code' => 400,
                 'title' => 'Mesomp Status Failed.',
-                'detail' => $data['message']
-            ]
+                'detail' => $data['message'],
+            ],
         ]);
     }
 
-    public function test_only_one_phone_number_is_valid_for_one_customer()
+    public function testOnlyOnePhoneNumberIsValidForOneCustomer()
     {
         $data = [
             'status' => 'SUCCESS',
             'type' => 'Payment',
             'amount' => 10.0,
             'b_party' => '237400001019',
-            'message' => 'The payment has been successfully done!'
+            'message' => 'The payment has been successfully done!',
         ];
         $response = $this->post('/api/mesomb', $data)->assertStatus(422);
 
@@ -55,23 +56,22 @@ class PaymentTests extends TestCase
             'errors' => [
                 'code' => 422,
                 'title' => 'Mesomp Payment Failed.',
-                'detail' => 'Each payer must have if and only if registered phone number. Registered phone count with ' . $data['b_party'] . 'is ' . 0,
-            ]
+                'detail' => 'Each payer must have if and only if registered phone number. Registered phone count with '.$data['b_party'].'is '. 0,
+            ],
         ]);
     }
 
-    public function test_only_one_connecting_meter_is_valid_for_one_number()
+    public function testOnlyOneConnectingMeterIsValidForOneNumber()
     {
-
-        //create person
+        // create person
         factory(Person::class)->create();
-        //associate meter with a person
+        // associate meter with a person
         $p = Person::query()->first();
-        //associate address with a person
+        // associate address with a person
         $address = Address::query()->make([
             'phone' => '+237400001019',
             'is_primary' => 1,
-            'owner_type' => 'person'
+            'owner_type' => 'person',
         ]);
         $address->owner()->associate($p);
         $address->save();
@@ -80,7 +80,7 @@ class PaymentTests extends TestCase
             'type' => 'Payment',
             'amount' => 10.0,
             'b_party' => '237400001019',
-            'message' => 'The payment has been successfully done!'
+            'message' => 'The payment has been successfully done!',
         ];
 
         $response = $this->post('/api/mesomb', $data)->assertStatus(422);
@@ -88,28 +88,28 @@ class PaymentTests extends TestCase
             'errors' => [
                 'code' => 422,
                 'title' => 'Mesomp Payment Failed.',
-                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is ' . Meter::query()->get()->count(),
-            ]
+                'detail' => 'Each payer must have if and only if connected meter with one phone number. Registered meter count is '.Meter::query()->get()->count(),
+            ],
         ]);
     }
 
-    public function test_valid_transaction_starts_transaction_processing()
+    public function testValidTransactionStartsTransactionProcessing()
     {
         Queue::fake();
         $this->withoutExceptionHandling();
         $this->initializeData();
 
         $data = [
-            "pk" => "ae58a073-2b76-4774-995b-3743d6793d53",
-            "status" => "SUCCESS",
-            "type" => "PAYMENT",
-            "amount" => 10,
-            "fees" => 0,
-            "b_party" => "237400001019",
-            "message" => "The payment has been successfully done!",
-            "service" => "MTN",
-            "ts" => "2021-05-25 07:11:25.974488+00:00",
-            "direction" => -1
+            'pk' => 'ae58a073-2b76-4774-995b-3743d6793d53',
+            'status' => 'SUCCESS',
+            'type' => 'PAYMENT',
+            'amount' => 10,
+            'fees' => 0,
+            'b_party' => '237400001019',
+            'message' => 'The payment has been successfully done!',
+            'service' => 'MTN',
+            'ts' => '2021-05-25 07:11:25.974488+00:00',
+            'direction' => -1,
         ];
         $response = $this->post('/api/mesomb', $data);
         $mesombTransactions = MesombTransaction::query()->get();
@@ -126,8 +126,8 @@ class PaymentTests extends TestCase
                     'fees' => $mesombTransaction->fees,
                     'b_party' => $mesombTransaction->b_party,
                     'message' => $mesombTransaction->message,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertEquals(1, $transactions->count());
         $this->assertEquals(1, $mesombTransactions->count());
@@ -137,12 +137,12 @@ class PaymentTests extends TestCase
 
     private function initializeData()
     {
-        //create person
+        // create person
         factory(Person::class)->create();
-        //create meter-tariff
+        // create meter-tariff
         factory(MeterTariff::class)->create();
 
-        //create meter-type
+        // create meter-type
         MeterType::query()->create([
             'online' => 0,
             'phase' => 1,
@@ -150,15 +150,15 @@ class PaymentTests extends TestCase
         ]);
         $meterParameter = MeterParameter::query()->make([
             'connection_type_id' => 1,
-            'connection_group_id' => 1
+            'connection_group_id' => 1,
         ]);
-        //create calin manufacturer
+        // create calin manufacturer
         Manufacturer::query()->create([
             'name' => 'Spark Meters',
             'website' => 'https://www.sparkmeter.io/',
             'api_name' => 'SparkMeterApi',
         ]);
-        //create meter
+        // create meter
         $meter = Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
@@ -166,23 +166,21 @@ class PaymentTests extends TestCase
             'manufacturer_id' => 1,
         ]);
 
-        //associate meter with a person
+        // associate meter with a person
         $p = Person::query()->first();
         $meterParameter->meter()->associate($meter);
 
         $meterParameter->owner()->associate($p);
 
-
         $meterParameter->tariff()->associate(MeterTariff::query()->first());
         $meterParameter->save();
-        //associate address with a person
+        // associate address with a person
         $address = Address::query()->make([
             'phone' => '237400001019',
             'is_primary' => 1,
-            'owner_type' => 'person'
+            'owner_type' => 'person',
         ]);
         $address->owner()->associate($p);
         $address->save();
     }
-
 }

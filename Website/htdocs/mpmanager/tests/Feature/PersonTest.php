@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Address\Address;
 use App\Models\MaintenanceUsers;
 use App\Models\Person\Person;
 use Database\Factories\AddressFactory;
@@ -14,7 +13,6 @@ use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -22,10 +20,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PersonTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-
-    public function test_user_gets_customer_list()
+    public function testUserGetsCustomerList()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -46,7 +44,7 @@ class PersonTest extends TestCase
         $this->assertEquals(2, count($response['data']));
     }
 
-    public function test_user_gets_all_registered_person_list()
+    public function testUserGetsAllRegisteredPersonList()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -59,7 +57,7 @@ class PersonTest extends TestCase
         $this->assertEquals(2, count($response['data']));
     }
 
-    public function test_user_get_person_by_id()
+    public function testUserGetPersonById()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -71,7 +69,7 @@ class PersonTest extends TestCase
         $this->assertEquals($response['data']['name'], $person->name);
     }
 
-    public function test_user_can_create_new_person_as_a_customer()
+    public function testUserCanCreateNewPersonAsACustomer()
     {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
@@ -80,7 +78,7 @@ class PersonTest extends TestCase
         $companyDatabase = CompanyDatabaseFactory::new()->create();
         $postData = [
             'email' => $this->faker->email,
-            'phone' => "254231232132",
+            'phone' => '254231232132',
             'street' => $this->faker->streetName,
             'city_id' => 1,
             'is_primary' => 1,
@@ -91,7 +89,7 @@ class PersonTest extends TestCase
             'birth_date' => '1990-01-01',
             'sex' => 'male',
             'customer_type' => 'customer',
-            'is_customer' => 1
+            'is_customer' => 1,
         ];
         $response = $this->actingAs($user)->post('/api/people/', $postData);
         $response->assertStatus(201);
@@ -99,10 +97,9 @@ class PersonTest extends TestCase
         $personAddress = $lastCreatedPerson->addresses()->first();
         $this->assertEquals($lastCreatedPerson->id, $response['data']['id']);
         $this->assertEquals($personAddress->street, $postData['street']);
-
     }
 
-    public function test_user_can_create_new_person_as_a_maintenance_user()
+    public function testUserCanCreateNewPersonAsAMaintenanceUser()
     {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
@@ -112,7 +109,7 @@ class PersonTest extends TestCase
         $name = $this->faker->firstName;
         $postData = [
             'email' => $this->faker->email,
-            'phone' => "254231232132",
+            'phone' => '254231232132',
             'street' => $this->faker->streetName,
             'city_id' => 1,
             'mini_grid_id' => 1,
@@ -123,8 +120,7 @@ class PersonTest extends TestCase
             'surname' => $this->faker->lastName,
             'birth_date' => '1990-01-01',
             'sex' => 'male',
-            'customer_type' => 'maintenance'
-
+            'customer_type' => 'maintenance',
         ];
         $response = $this->actingAs($user)->post('/api/people/', $postData);
         $response->assertStatus(201);
@@ -134,12 +130,10 @@ class PersonTest extends TestCase
         $this->assertEquals(0, $lastCreatedPerson->is_customer);
         $this->assertEquals($personAddress->phone, $postData['phone']);
         $this->assertEquals($maintenanceUser->person->name, $postData['name']);
-
     }
 
-    public function test_user_can_update_a_person()
+    public function testUserCanUpdateAPerson()
     {
-
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -158,21 +152,20 @@ class PersonTest extends TestCase
         $this->assertEquals($updatedPerson->birth_date, $person->birth_date);
         $this->assertEquals($updatedPerson->name, 'updated name');
         $this->assertEquals($updatedPerson->surname, 'updated surname');
-
     }
 
-    public function test_user_can_search_a_person_by_name()
+    public function testUserCanSearchAPersonByName()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
         $companyDatabase = CompanyDatabaseFactory::new()->create();
         $person = PersonFactory::new()->create();
-        $response = $this->actingAs($user)->get('/api/people/search?q=' . $person->name);
+        $response = $this->actingAs($user)->get('/api/people/search?q='.$person->name);
         $this->assertEquals($response['data'][0]['id'], $person->id);
     }
 
-    public function test_user_can_search_a_person_by_phone_number()
+    public function testUserCanSearchAPersonByPhoneNumber()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -182,12 +175,12 @@ class PersonTest extends TestCase
         $address = AddressFactory::new()->create([
             'phone' => '254231232132',
         ]);
-        $response = $this->actingAs($user)->get('/api/people/search?q=' . $address->phone);
+        $response = $this->actingAs($user)->get('/api/people/search?q='.$address->phone);
         $responseData = $response['data'][0];
         $this->assertEquals($responseData['addresses'][0]['phone'], $address->phone);
     }
 
-    public function test_user_can_get_persons_transactions()
+    public function testUserCanGetPersonsTransactions()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -213,7 +206,7 @@ class PersonTest extends TestCase
         $this->assertEquals($transaction->amount, $response['data'][0]['amount']);
     }
 
-    public function test_user_can_delete_a_person()
+    public function testUserCanDeleteAPerson()
     {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();

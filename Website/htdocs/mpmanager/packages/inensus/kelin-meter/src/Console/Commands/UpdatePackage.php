@@ -1,16 +1,14 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Console\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Console\Command;
 use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\MenuItemService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
-
 
 class UpdatePackage extends Command
 {
@@ -52,7 +50,6 @@ class UpdatePackage extends Command
         $this->call('routes:generate');
         $this->createMenuItems();
         $this->info('Package updated successfully..');
-
     }
 
     private function removeOldVersionOfPackage()
@@ -69,15 +66,15 @@ class UpdatePackage extends Command
 
     private function deleteMigration(Filesystem $filesystem)
     {
-        $migrationFile = $filesystem->glob(database_path() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . '*_create_kelin_tables.php')[0];
+        $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_kelin_tables.php')[0];
         $migration = DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->first();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
         if (!$migration) {
             return false;
         }
-        return DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->delete();
 
+        return DB::table('migrations')
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
     private function publishMigrationsAgain()
@@ -85,7 +82,7 @@ class UpdatePackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -100,7 +97,7 @@ class UpdatePackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
-            '--tag' => "vue-components",
+            '--tag' => 'vue-components',
             '--force' => true,
         ]);
     }

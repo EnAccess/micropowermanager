@@ -30,9 +30,10 @@ class SteamaSmsBodyService
             $smsBodies->filter(function ($body) use ($smsBody) {
                 return $body['id'] === $smsBody['id'];
             })->first()->update([
-                'body' => $smsBody['body']
+                'body' => $smsBody['body'],
             ]);
         });
+
         return $smsBodies;
     }
 
@@ -48,42 +49,42 @@ class SteamaSmsBodyService
                 'reference' => 'SteamaSmsLowBalanceHeader',
                 'place_holder' => 'Dear [name] [surname],',
                 'variables' => 'name,surname',
-                'title' => 'Sms Header'
+                'title' => 'Sms Header',
             ],
             [
                 'reference' => 'SteamaSmsLowBalanceBody',
                 'place_holder' => 'your credit balance has reduced under [low_balance_warning],'
-                    . 'your currently balance is [account_balance]',
+                    .'your currently balance is [account_balance]',
                 'variables' => 'low_balance_warning,account_balance',
-                'title' => 'Low Balance Limit Notify'
+                'title' => 'Low Balance Limit Notify',
             ],
             [
                 'reference' => 'SteamaSmsBalanceFeedbackHeader',
                 'place_holder' => 'Dear [name] [surname],',
                 'variables' => 'name,surname',
-                'title' => 'Sms Header'
+                'title' => 'Sms Header',
             ],
             [
                 'reference' => 'SteamaSmsBalanceFeedbackBody',
                 'place_holder' => 'your currently balance is [account_balance]',
                 'variables' => 'account_balance',
-                'title' => 'Balance Feedback'
+                'title' => 'Balance Feedback',
             ],
             [
                 'reference' => 'SteamaSmsBalanceFeedbackFooter',
                 'place_holder' => 'Your Company etc.',
                 'variables' => '',
-                'title' => 'Sms Footer'
+                'title' => 'Sms Footer',
             ],
             [
                 'reference' => 'SteamaSmsLowBalanceFooter',
                 'place_holder' => 'Your Company etc.',
                 'variables' => '',
-                'title' => 'Sms Footer'
-            ]
+                'title' => 'Sms Footer',
+            ],
         ];
         collect($smsBodies)->each(function ($smsBody) {
-             $this->smsBody->newQuery()->firstOrCreate(['reference' => $smsBody['reference']],$smsBody);
+            $this->smsBody->newQuery()->firstOrCreate(['reference' => $smsBody['reference']], $smsBody);
         });
     }
 }

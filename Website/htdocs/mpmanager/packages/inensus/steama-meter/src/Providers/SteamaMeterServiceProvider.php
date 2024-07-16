@@ -2,11 +2,10 @@
 
 namespace Inensus\SteamaMeter\Providers;
 
-
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\SteamaMeter\Console\Commands\InstallPackage;
 use Inensus\SteamaMeter\Console\Commands\ReadHourlyMeterReadings;
@@ -39,7 +38,7 @@ class SteamaMeterServiceProvider extends ServiceProvider
                 SteamaMeterDataSynchronizer::class,
                 SteamaSmsNotifier::class,
                 UpdatePackage::class,
-                ReadHourlyMeterReadings::class
+                ReadHourlyMeterReadings::class,
             ]);
         }
         $this->app->booted(function ($app) {
@@ -47,8 +46,8 @@ class SteamaMeterServiceProvider extends ServiceProvider
                 ->appendOutputTo(storage_path('logs/cron.log'));
             $app->make(Schedule::class)->command('steama-meter:smsNotifier')->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));
-             $app->make(Schedule::class)->command('steama-meter:hourlyReadings')->hourlyAt(1)->withoutOverlapping(50)
-                ->appendOutputTo(storage_path('logs/cron.log'));
+            $app->make(Schedule::class)->command('steama-meter:hourlyReadings')->hourlyAt(1)->withoutOverlapping(50)
+               ->appendOutputTo(storage_path('logs/cron.log'));
         });
         Relation::morphMap(
             [
@@ -62,14 +61,13 @@ class SteamaMeterServiceProvider extends ServiceProvider
                 'steama_transaction' => SteamaTransaction::class,
                 'steama_sync_setting' => SteamaSyncSetting::class,
                 'steama_sms_setting' => SteamaSmsSetting::class,
-
             ]
         );
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/steama-meter.php', 'steama');
+        $this->mergeConfigFrom(__DIR__.'/../../config/steama-meter.php', 'steama');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('SteamaMeterApi', SteamaMeterApi::class);
@@ -78,39 +76,39 @@ class SteamaMeterServiceProvider extends ServiceProvider
     public function publishConfigFiles()
     {
         $this->publishes([
-            __DIR__ . '/../../config/steama-meter.php' => config_path('steama-meter.php'),
+            __DIR__.'/../../config/steama-meter.php' => config_path('steama-meter.php'),
         ]);
     }
 
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__ . '/../resources/assets' => resource_path('assets/js/plugins/steama-meter'),
+            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/steama-meter'),
         ], 'vue-components');
     }
 
     public function publishMigrations($filesystem)
     {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_steama_tables.php.stub'
-            => $this->getMigrationFileName($filesystem),
+            __DIR__.'/../../database/migrations/create_steama_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
     protected function getMigrationFileName(Filesystem $filesystem): string
     {
         $timestamp = date('Y_m_d_His');
-        return Collection::make($this->app->databasePath() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)
+
+        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path . '*_create_steama_tables.php'))) {
-                    $file = $filesystem->glob($path . '*_create_steama_tables.php')[0];
+                if (count($filesystem->glob($path.'*_create_steama_tables.php'))) {
+                    $file = $filesystem->glob($path.'*_create_steama_tables.php')[0];
 
                     file_put_contents($file,
-                        file_get_contents(__DIR__ . '/../../database/migrations/create_steama_tables.php.stub'));
-
+                        file_get_contents(__DIR__.'/../../database/migrations/create_steama_tables.php.stub'));
                 }
-                return $filesystem->glob($path . '*_create_steama_tables.php');
-            })->push($this->app->databasePath() . "/migrations/{$timestamp}_create_steama_tables.php")
+
+                return $filesystem->glob($path.'*_create_steama_tables.php');
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_steama_tables.php")
             ->first();
     }
 }

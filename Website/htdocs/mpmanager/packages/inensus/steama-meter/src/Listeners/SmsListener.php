@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SteamaMeter\Listeners;
-
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
@@ -11,7 +9,6 @@ use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
-
 
 class SmsListener
 {
@@ -34,7 +31,6 @@ class SmsListener
 
     public function onSmsStored($sender, $message)
     {
-
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
         if (!$steamaCustomer) {
             return;
@@ -46,6 +42,7 @@ class SmsListener
             $this->smsService->sendSms($steamaCustomer,
                 SteamaSmsTypes::BALANCE_FEEDBACK,
                 SteamaSmsConfig::class);
+
             return;
         }
     }

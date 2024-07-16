@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,14 +14,13 @@ return new class extends Migration
     {
         Schema::connection('shard')->create('sms_bodies', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('reference',50)->unique();
+            $table->string('reference', 50)->unique();
             $table->string('title')->nullable();
             $table->string('body')->nullable();
             $table->string('place_holder');
             $table->string('variables');
             $table->timestamps();
         });
-
     }
 
     /**

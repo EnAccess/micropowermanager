@@ -4,22 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Agent;
 use App\Models\Person\Person;
-use Database\Factories\CityFactory;
-use Database\Factories\CompanyDatabaseFactory;
-use Database\Factories\CompanyFactory;
-use Database\Factories\PersonFactory;
-use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use function Symfony\Component\Translation\t;
 
 class AgentTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_agent_list()
+    public function testUserGetsAgentList()
     {
         $this->createTestData();
         $agentCount = 4;
@@ -29,7 +21,7 @@ class AgentTest extends TestCase
         $this->assertEquals(count($response['data']), $agentCount);
     }
 
-    public function test_user_gets_agent_by_id()
+    public function testUserGetsAgentById()
     {
         $this->createTestData();
         $agentCount = 4;
@@ -39,9 +31,8 @@ class AgentTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->agents[0]->id);
     }
 
-    public function test_user_creates_new_agent()
+    public function testUserCreatesNewAgent()
     {
-
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -68,7 +59,7 @@ class AgentTest extends TestCase
         $this->assertEquals($personAddress->phone, $postData['phone']);
     }
 
-    public function test_user_can_update_an_agent()
+    public function testUserCanUpdateAnAgent()
     {
         $this->createTestData();
         $this->createCluster();
@@ -84,7 +75,7 @@ class AgentTest extends TestCase
             'birthday' => $this->faker->date(),
             'phone' => $this->faker->phoneNumber,
             'gender' => 'male',
-            'commissionTypeId' => 1
+            'commissionTypeId' => 1,
         ];
 
         $response = $this->actingAs($this->user)->put(sprintf('/api/agents/%s', $this->agents[0]->id), $putData);
@@ -92,12 +83,10 @@ class AgentTest extends TestCase
         $this->assertEquals($putData['name'], $response['data']['name']);
         $this->assertEquals($putData['phone'], $response['data']['person']['addresses'][0]['phone']);
         $this->assertEquals($putData['gender'], $response['data']['person']['sex']);
-
     }
 
-    public function test_user_can_resets_agents_password()
+    public function testUserCanResetsAgentsPassword()
     {
-
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -111,12 +100,10 @@ class AgentTest extends TestCase
 
         $response = $this->actingAs($this->user)->post('/api/agents/reset-password', $putData);
         $response->assertStatus(200);
-
     }
 
-    public function test_user_can_search_an_agent_by_name()
+    public function testUserCanSearchAnAgentByName()
     {
-
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -124,12 +111,12 @@ class AgentTest extends TestCase
         $this->createAgentCommission();
         $this->createAgent();
 
-        $response = $this->actingAs($this->user)->get('/api/agents/search?q=' . $this->agents[0]->name);
+        $response = $this->actingAs($this->user)->get('/api/agents/search?q='.$this->agents[0]->name);
         $responseData = $response['data'][0];
         $this->assertEquals($responseData['name'], $this->agents[0]->name);
     }
 
-    public function test_user_can_delete_an_agent()
+    public function testUserCanDeleteAnAgent()
     {
         $this->createTestData();
         $this->createCluster();
@@ -141,7 +128,6 @@ class AgentTest extends TestCase
         $agentsCount = Agent::query()->get()->count();
         $this->assertEquals(0, $agentsCount);
     }
-
 
     public function actingAs($user, $driver = null)
     {

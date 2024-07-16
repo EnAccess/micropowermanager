@@ -20,6 +20,7 @@ class SmMeterModelController extends Controller implements IBaseController
     public function index(Request $request): SparkResource
     {
         $meterModels = $this->meterModelService->getSmMeterModels($request);
+
         return new SparkResource($meterModels);
     }
 

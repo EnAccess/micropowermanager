@@ -7,7 +7,6 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
@@ -61,34 +60,33 @@ class SiteService implements ISynchronizeService
         foreach ($sites as $site) {
             if ($site->thundercloud_token) {
                 $data = [
-                    'thundercloud_token' => $site->thundercloud_token
+                    'thundercloud_token' => $site->thundercloud_token,
                 ];
                 $this->update($site->id, $data);
             }
         }
+
         return $sites;
     }
 
     public function getSmSitesCount()
     {
-
         return count($this->site->newQuery()->get());
     }
 
     public function creteRelatedMiniGrid($site)
     {
-
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
-            'cluster_id' => $cluster->id
+            'cluster_id' => $cluster->id,
         ]);
 
-        $cityName = explode('-', $site['name'])[1] . ' Village';
+        $cityName = explode('-', $site['name'])[1].' Village';
         $this->city->newQuery()->create([
             'name' => $cityName,
             'mini_grid_id' => $miniGrid->id,
-            'cluster_id' => $miniGrid->cluster_id
+            'cluster_id' => $miniGrid->cluster_id,
         ]);
 
         return $miniGrid;
@@ -106,9 +104,9 @@ class SiteService implements ISynchronizeService
         $points = explode(',', config('spark.geoLocation'));
         $latitude = strval(doubleval($points[0]) + (mt_rand(10, 10000) / 10000));
         $longitude = strval(doubleval($points[1]) + (mt_rand(10, 10000) / 10000));
-        $points = $latitude . ',' . $longitude;
+        $points = $latitude.','.$longitude;
         $geographicalInformation->update([
-            'points' => $points
+            'points' => $points,
         ]);
     }
 
@@ -121,10 +119,9 @@ class SiteService implements ISynchronizeService
 
     public function update($siteId, $data)
     {
-
         $site = $this->site->newQuery()->find($siteId);
         $site->update([
-            'thundercloud_token' => $data['thundercloud_token']
+            'thundercloud_token' => $data['thundercloud_token'],
         ]);
 
         try {
@@ -133,16 +130,16 @@ class SiteService implements ISynchronizeService
 
             $system = $result['grids'][0];
 
-
             $site->is_authenticated = true;
             $site->is_online = Carbon::parse($system['last_sync_date'])
                     ->toDateTimeString() > Carbon::now()->utc()
                     ->subMinutes(15)->toDateTimeString();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $site->is_authenticated = false;
             $site->is_online = false;
         }
         $site->update();
+
         return $site->fresh();
     }
 
@@ -169,7 +166,7 @@ class SiteService implements ISynchronizeService
                 $this->site->newQuery()->create([
                     'site_id' => $site['id'],
                     'mpm_mini_grid_id' => $miniGrid->id,
-                    'thundercloud_url' => $site['thundercloud_url'] . 'api/v0',
+                    'thundercloud_url' => $site['thundercloud_url'].'api/v0',
                     'hash' => $site['hash'],
                 ]);
                 $this->updateGeographicalInformation($miniGrid->id);
@@ -186,17 +183,18 @@ class SiteService implements ISynchronizeService
                 $this->updateGeographicalInformation($miniGrid->id);
                 $site['registeredSparkSite']->update([
                     'site_id' => $site['id'],
-                    'thundercloud_url' => $site['thundercloud_url'] . 'api/v0',
+                    'thundercloud_url' => $site['thundercloud_url'].'api/v0',
                     'mpm_mini_grid_id' => $miniGrid->id,
                     'hash' => $site['hash'],
                 ]);
             });
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, true);
+
             return $this->site->newQuery()->with('mpmMiniGrid')->paginate(config('spark.paginate'));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw  new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -206,7 +204,7 @@ class SiteService implements ISynchronizeService
         $sites = [];
         try {
             foreach ($organizations as $organization) {
-                $url = $this->rootUrl . '/' . $organization->organization_id . '/sites';
+                $url = $this->rootUrl.'/'.$organization->organization_id.'/sites';
                 $result = $this->sparkMeterApiRequests->getFromKoios($url);
                 $organizationSites = $result['sites'];
                 foreach ($organizationSites as $site) {
@@ -218,7 +216,7 @@ class SiteService implements ISynchronizeService
             if ($returnData) {
                 return ['result' => false];
             }
-            throw  new SparkAPIResponseException($e->getMessage());
+            throw new SparkAPIResponseException($e->getMessage());
         }
         $sitesCollection = collect($sites);
         $sparkSites = $this->site->newQuery()->get();
@@ -238,12 +236,14 @@ class SiteService implements ISynchronizeService
             $site['hash'] = $siteHash;
             $site['relatedMiniGrid'] = $relatedMiniGrid;
             $site['registeredSparkSite'] = $registeredSparkSite;
+
             return $site;
         });
         $siteSyncStatus = $sitesCollection->whereNotIn('syncStatus', 1)->count();
         if ($siteSyncStatus) {
             return $returnData ? ['data' => $sitesCollection, 'result' => false] : ['result' => false];
         }
+
         return $returnData ? ['data' => $sitesCollection, 'result' => true] : ['result' => true];
     }
 
@@ -252,7 +252,7 @@ class SiteService implements ISynchronizeService
         return $this->smTableEncryption->makeHash([
             $model['name'],
             $model['display_name'],
-            $model['thundercloud_url']
+            $model['thundercloud_url'],
         ]);
     }
 

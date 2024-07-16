@@ -1,16 +1,14 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     public function up()
     {
-        if (!Schema:: hasTable('calin_api_credentials')) {
-            Schema::connection('shard')->create('calin_api_credentials', static function (Blueprint
-            $table) {
+        if (!Schema::hasTable('calin_api_credentials')) {
+            Schema::connection('shard')->create('calin_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('http://api.calinhost.com/api');
                 $table->string('user_id')->nullable();
@@ -18,7 +16,7 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
-        if (!Schema:: hasTable('calin_transactions')) {
+        if (!Schema::hasTable('calin_transactions')) {
             Schema::connection('shard')->create('calin_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
@@ -30,6 +28,5 @@ return new class extends Migration
     {
         Schema::connection('shard')->dropIfExists('calin_api_credentials');
         Schema::connection('shard')->dropIfExists('calin_transactions');
-
     }
 };

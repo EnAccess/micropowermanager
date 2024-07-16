@@ -7,9 +7,9 @@ use Inensus\ViberMessaging\Models\ViberMessage;
 
 class ViberMessageService implements IBaseService
 {
-   public function __construct(private ViberMessage $viberMessage)
-   {
-   }
+    public function __construct(private ViberMessage $viberMessage)
+    {
+    }
 
     public function getById($id)
     {

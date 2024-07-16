@@ -4,8 +4,6 @@ namespace Inensus\ViberMessaging\Http\Controllers;
 
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
-use App\Services\CompanyService;
-use App\Services\DatabaseProxyService;
 use App\Services\SmsResendInformationKeyService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
@@ -14,10 +12,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
-use Inensus\ViberMessaging\Services\WebhookService;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
-use Viber\Bot;
 use Viber\Api\Sender;
+use Viber\Bot;
 
 class WebhookController extends Controller
 {
@@ -38,7 +34,7 @@ class WebhookController extends Controller
 
     public function index(string $slug)
     {
-        Log::info("Webhook called");
+        Log::info('Webhook called');
 
         $credential = $this->credentialService->getCredentials();
         $apiKey = $credential->api_token;
@@ -47,8 +43,8 @@ class WebhookController extends Controller
         $botSender = $this->botSender;
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
-            ->onConversation(function ($event) use ($bot, $botSender) {
-                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText("Can I help you?");
+            ->onConversation(function ($event) {
+                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText('Can I help you?');
             })
             ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
@@ -82,20 +78,18 @@ class WebhookController extends Controller
                 $person = $meter->meterParameter->owner;
 
                 if ($person) {
-
                     $data = [
                         'person_id' => $person->id,
                         'viber_id' => $event->getSender()->getId(),
-                        'registered_meter_serial_number' => $meterSerialNumber
+                        'registered_meter_serial_number' => $meterSerialNumber,
                     ];
                     $this->viberContactService->create($data);
                     $this->answerToCustomer($bot, $botSender, $event, $this->setSuccessMessage());
                 } else {
-                    Log::info("Someone who is not a customer tried to register with viber");
+                    Log::info('Someone who is not a customer tried to register with viber');
                 }
             })
             ->onText("|$resendInformationKey.*|si", function ($event) use ($bot, $botSender, $resendInformationKey) {
-
                 if (!$resendInformationKey) {
                     return;
                 }
@@ -104,6 +98,7 @@ class WebhookController extends Controller
 
                 if (!$meterSerial) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNotRegisteredMessage());
+
                     return;
                 }
                 $transaction = Transaction::with('paymentHistories')
@@ -111,25 +106,27 @@ class WebhookController extends Controller
 
                 if (!$transaction) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNoTransactionMessage($meterSerial));
+
                     return;
                 }
                 try {
                     $this->smsService->sendSms($transaction, SmsTypes::RESEND_INFORMATION, SmsConfigs::class);
                 } catch (\Exception $ex) {
-                    Log::error("Resend transaction information message not send to customer", ['error' => $ex->getMessage()]);
+                    Log::error('Resend transaction information message not send to customer', ['error' => $ex->getMessage()]);
+
                     return;
                 }
             })
             ->run();
 
-        Log::info("Webhook is working incoming data :", request()->all());
+        Log::info('Webhook is working incoming data :', request()->all());
 
         return response()->json(['success' => 'success'], 200);
     }
 
     private function setWrongFormatMessage(): string
     {
-        return "Please enter your meter serial number after register+";
+        return 'Please enter your meter serial number after register+';
     }
 
     private function setMeterNotFoundMessage(): string
@@ -139,17 +136,19 @@ class WebhookController extends Controller
 
     private function setSuccessMessage(): string
     {
-        return "You have successfully registered with MicroPowerManager.";
+        return 'You have successfully registered with MicroPowerManager.';
     }
 
     private function setAlreadyRegisteredMessage($meterSerialNumber)
     {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
+
     private function setNoTransactionMessage($meterSerial)
     {
         return "No transaction found for meter serial: $meterSerial";
     }
+
     private function answerToCustomer($bot, $botSender, $event, $message)
     {
         $bot->getClient()->sendMessage(

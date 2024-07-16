@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 use App\Models\Manufacturer;
 use Inensus\BulkRegistration\Exceptions\ManufacturerNotSupportedException;
@@ -16,7 +14,7 @@ class ManufacturerService extends CreatorService
         'Stron Meter',
         'GomeLong Meter',
         'MicroStar Meter',
-        "SunKing SHS",
+        'SunKing SHS',
     ];
 
     public function __construct(Manufacturer $manufacturer)
@@ -28,21 +26,20 @@ class ManufacturerService extends CreatorService
     {
         $manufacturerConfig = config('bulk-registration.csv_fields.manufacturer');
 
-
         if (!in_array($csvData[$manufacturerConfig['name']], $this->manufacturers)) {
-
-            $message = 'Manufacturer ' . $csvData[$manufacturerConfig['name']] .
-                ' is not supported. Supported manufacturers are ' . implode(', ', $this->manufacturers);
-            throw  new ManufacturerNotSupportedException($message);
+            $message = 'Manufacturer '.$csvData[$manufacturerConfig['name']].
+                ' is not supported. Supported manufacturers are '.implode(', ', $this->manufacturers);
+            throw new ManufacturerNotSupportedException($message);
         }
         if (strlen(preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']])) > 0) {
-
             $manufacturerData = [
-                'name' => $csvData[$manufacturerConfig['name']] . 's',
-                'api_name' => preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]) . 'Api'
+                'name' => $csvData[$manufacturerConfig['name']].'s',
+                'api_name' => preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]).'Api',
             ];
+
             return $this->createRelatedDataIfDoesNotExists($manufacturerData);
         }
+
         return false;
     }
 }

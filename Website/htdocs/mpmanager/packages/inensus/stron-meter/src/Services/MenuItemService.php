@@ -2,21 +2,19 @@
 
 namespace Inensus\StronMeter\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'Stron Meter';
+    public const MENU_ITEM = 'Stron Meter';
 
     public function createMenuItems()
     {
-
         $menuItem = [
             'name' => 'Stron Meter',
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -24,6 +22,6 @@ class MenuItemService
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem' => $menuItem,'subMenuItems' => $subMenuItems];
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

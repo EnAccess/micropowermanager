@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class AgentCommissionFactory extends Factory
 {
     protected $model = AgentCommission::class;
+
     /**
      * Define the model's default state.
      *
@@ -16,10 +17,10 @@ class AgentCommissionFactory extends Factory
     public function definition()
     {
         return [
-            'name'=>'test commission',
-            'energy_commission'=>0.05,
-            'appliance_commission'=>0.05,
-            'risk_balance' => -10000
+            'name' => 'test commission',
+            'energy_commission' => 0.05,
+            'appliance_commission' => 0.05,
+            'risk_balance' => -10000,
         ];
     }
 }

@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 use App\Models\Meter\MeterType;
 
 class MeterTypeService
 {
-
     private $meterType;
 
     public function __construct(MeterType $meterType)

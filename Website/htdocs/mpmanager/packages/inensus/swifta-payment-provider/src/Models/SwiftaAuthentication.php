@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SwiftaPaymentProvider\Models;
-
 
 use App\Models\BaseModel;
 

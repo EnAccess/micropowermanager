@@ -7,10 +7,8 @@ use Inensus\DalyBms\Http\Requests\DalyBmsCredentialRequest;
 use Inensus\DalyBms\Http\Resources\DalyBmsResource;
 use Inensus\DalyBms\Services\DalyBmsCredentialService;
 
-
 class DalyBmsCredentialController extends Controller
 {
-
     public function __construct(
         private DalyBmsCredentialService $credentialService
     ) {
@@ -26,7 +24,7 @@ class DalyBmsCredentialController extends Controller
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
             'user_name',
-            'password'
+            'password',
         ]);
         $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
 

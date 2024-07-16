@@ -1,15 +1,13 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     public function up()
     {
-
-        if (!Schema:: hasTable('mesomb_transactions')) {
+        if (!Schema::hasTable('mesomb_transactions')) {
             Schema::connection('shard')->create('mesomb_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('pk');
@@ -26,8 +24,6 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
-
-
     }
 
     public function down()

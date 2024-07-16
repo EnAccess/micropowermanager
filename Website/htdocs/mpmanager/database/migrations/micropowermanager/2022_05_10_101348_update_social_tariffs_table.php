@@ -1,13 +1,12 @@
 <?php
 
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\Type;
 
-return  new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -19,8 +18,8 @@ return  new class extends Migration
             Type::addType('double', FloatType::class);
         }
         Schema::connection('shard')->table('social_tariffs', function (Blueprint $table) {
-            $table->double('price',15,6)->change();
-            $table->double('initial_energy_budget',15,6)->change();
+            $table->double('price', 15, 6)->change();
+            $table->double('initial_energy_budget', 15, 6)->change();
         });
     }
 
@@ -32,7 +31,6 @@ return  new class extends Migration
     public function down()
     {
         Schema::connection('shard')->table('social_tariffs', function (Blueprint $table) {
-            //
         });
     }
 };

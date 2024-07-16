@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 21.06.18
- * Time: 16:25
+ * Time: 16:25.
  */
 
 namespace Inensus\Ticket\Jobs;
@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Log;
 
 class OutputJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * @var integert
      */
@@ -31,11 +34,11 @@ class OutputJob implements ShouldQueue
     public function __construct(string $queue_name, int $val)
     {
         $this->queue_name = $queue_name;
-        $this->val  =$val;
+        $this->val = $val;
     }
 
     public function handle(): void
     {
-        Log::critical('redis', ['abc'=>'def', 'Val' => $this->val, 'queue' => $this->queue_name]);
+        Log::critical('redis', ['abc' => 'def', 'Val' => $this->val, 'queue' => $this->queue_name]);
     }
 }

@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class SmSiteRequest extends FormRequest
 {
@@ -20,16 +19,13 @@ class SmSiteRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     *
      * @return array
      */
     public function rules()
     {
         return [
-
             'thundercloud_url' => 'required',
-            'thundercloud_token' => 'required'
-
+            'thundercloud_token' => 'required',
         ];
     }
 }

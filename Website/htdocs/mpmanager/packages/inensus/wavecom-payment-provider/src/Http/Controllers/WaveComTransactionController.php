@@ -21,11 +21,10 @@ class WaveComTransactionController extends Controller
         $result = $this->transactionService->createTransactionsFromFile($file);
 
         $response['result'] = 'success';
-        if(\count($result)> 0) {
+        if (\count($result) > 0) {
             $response['reason'] = $result;
         }
 
         return ApiResource::make($response);
-
     }
 }

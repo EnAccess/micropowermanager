@@ -6,13 +6,13 @@ use App\Models\BaseModel;
 
 class SunKingCredential extends BaseModel
 {
-
     protected $table = 'sun_king_api_credentials';
 
     public function getClientSecret()
     {
         return $this->client_secret;
     }
+
     public function getClientId()
     {
         return $this->client_id;

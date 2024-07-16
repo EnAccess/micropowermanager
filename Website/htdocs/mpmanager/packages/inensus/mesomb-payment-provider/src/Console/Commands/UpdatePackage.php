@@ -1,13 +1,10 @@
 <?php
 
-
 namespace Inensus\MesombPaymentProvider\Console\Commands;
 
-
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Filesystem\Filesystem;
-
+use Illuminate\Support\Facades\DB;
 
 class UpdatePackage extends Command
 {
@@ -15,8 +12,10 @@ class UpdatePackage extends Command
     protected $description = 'Update the Mesomb Payment Provider Integration Package';
 
     private $fileSystem;
+
     /**
      * Create a new command instance.
+     *
      * @param Filesystem $filesystem
      */
     public function __construct(
@@ -54,14 +53,14 @@ class UpdatePackage extends Command
 
     private function deleteMigration(Filesystem $filesystem)
     {
-        $migrationFile = $filesystem->glob(database_path() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . '*_create_mesomb_payment_provider_tables.php')[0];
+        $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_mesomb_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->first();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
         if (!$migration) {
             return;
         }
         DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->delete();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
     private function publishMigrationsAgain()
@@ -69,7 +68,7 @@ class UpdatePackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\MesombPaymentProvider\Providers\MesombServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -78,5 +77,4 @@ class UpdatePackage extends Command
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
-
 }

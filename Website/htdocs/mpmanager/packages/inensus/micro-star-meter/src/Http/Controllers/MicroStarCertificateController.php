@@ -20,6 +20,7 @@ class MicroStarCertificateController extends Controller
     public function store(ImportCertificateRequest $request)
     {
         $credentials = $this->credentialService->getCredentials();
+
         return MicroStarResource::make($this->certificateService->upload($request, $credentials));
     }
 
@@ -27,6 +28,7 @@ class MicroStarCertificateController extends Controller
     {
         $credentials = $this->credentialService->getCredentials();
         $certificateName = $this->certificateService->getUploadedCertificate($credentials);
+
         return response()->json(['certificate_name' => $certificateName]);
     }
 }

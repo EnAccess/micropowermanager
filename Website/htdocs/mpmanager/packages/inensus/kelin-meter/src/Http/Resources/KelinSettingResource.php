@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Http\Resources;
-
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,9 +17,9 @@ class KelinSettingResource extends JsonResource
                     'actionName' => $this->setting->action_name,
                     'syncInValueStr' => $this->setting->sync_in_value_str,
                     'syncInValueNum' => $this->setting->sync_in_value_num,
-                    'maxAttempts' => $this->setting->max_attempts
-                ]
-            ]
+                    'maxAttempts' => $this->setting->max_attempts,
+                ],
+            ],
         ];
     }
 }

@@ -24,7 +24,6 @@ class CalinSmartMeterApi implements IManufacturerAPI
         private CalinSmartTransaction $calinSmartTransaction,
         private CalinSmartCredential $credentials,
         private CalinSmartMeterApiRequests $calinSmartMeterApiRequests,
-
     ) {
         $this->api = $httpClient;
     }
@@ -33,18 +32,18 @@ class CalinSmartMeterApi implements IManufacturerAPI
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
 
-        Log::critical('ENERGY TO BE CHARGED float ' . (float)$transactionContainer->chargedEnergy .
+        Log::critical('ENERGY TO BE CHARGED float '.(float) $transactionContainer->chargedEnergy.
             ' Manufacturer => Calin Smart');
 
-        $energy = (float)$transactionContainer->chargedEnergy;
+        $energy = (float) $transactionContainer->chargedEnergy;
         try {
             $credentials = $this->credentials->newQuery()->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
         }
-        $url = $credentials->api_url . $this->rootUrl;
+        $url = $credentials->api_url.$this->rootUrl;
         $tokenParams = [
             'company_name' => $credentials->company_name,
             'user_name' => $credentials->user_name,
@@ -52,10 +51,10 @@ class CalinSmartMeterApi implements IManufacturerAPI
             'password_vend' => $credentials->password_vend,
             'meter_number' => $meter->serial_number,
             'is_vend_by_unit' => true,
-            'amount' => $energy
+            'amount' => $energy,
         ];
         if (config('app.env') === 'demo' || config('app.env') === 'development') {
-            //debug token for development
+            // debug token for development
             $token = '48725997619297311927';
         } else {
             $token = $this->calinSmartMeterApiRequests->post($url, $tokenParams);
@@ -63,11 +62,12 @@ class CalinSmartMeterApi implements IManufacturerAPI
         $manufacturerTransaction = $this->calinSmartTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'calin_smart_transaction'
+            'manufacturer_transaction_type' => 'calin_smart_transaction',
         ]);
+
         return [
             'token' => $token,
-            'load' => $energy
+            'load' => $energy,
         ];
     }
 
@@ -75,6 +75,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
      * @param Meter $meter
      *
      * @throws GuzzleException
+     *
      * @psalm-return array{result_code: mixed}
      */
     public function clearDevice(Device $device)
@@ -86,16 +87,16 @@ class CalinSmartMeterApi implements IManufacturerAPI
         } catch (ModelNotFoundException $e) {
             throw new CalinSmartCreadentialsNotFoundException($e->getMessage());
         }
-        $url = $credentials->api_url . $root;
+        $url = $credentials->api_url.$root;
         $tokenParams = [
             'company_name' => $credentials->company_name,
             'user_name' => $credentials->password,
             'password' => $credentials->password_vend,
             'meter_number' => $meter->serial_number,
         ];
+
         return [
-            'result_code' => $this->calinSmartMeterApiRequests->post($url, $tokenParams)
+            'result_code' => $this->calinSmartMeterApiRequests->post($url, $tokenParams),
         ];
     }
-
 }

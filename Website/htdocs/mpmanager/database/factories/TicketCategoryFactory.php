@@ -8,6 +8,7 @@ use Inensus\Ticket\Models\TicketCategory;
 class TicketCategoryFactory extends Factory
 {
     protected $model = TicketCategory::class;
+
     /**
      * Define the model's default state.
      *
@@ -16,8 +17,8 @@ class TicketCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'label_name'=>$this->faker->word,
-            'label_color'=>$this->faker->colorName,
+            'label_name' => $this->faker->word,
+            'label_color' => $this->faker->colorName,
         ];
     }
 }

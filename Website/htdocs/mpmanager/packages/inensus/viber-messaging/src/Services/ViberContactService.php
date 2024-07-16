@@ -4,12 +4,10 @@ namespace Inensus\ViberMessaging\Services;
 
 use App\Models\Person\Person;
 use App\Services\IBaseService;
-use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Models\ViberContact;
 
 class ViberContactService implements IBaseService
 {
-
     public function __construct(private ViberContact $viberContact, private Person $person)
     {
     }
@@ -48,24 +46,21 @@ class ViberContactService implements IBaseService
 
     public function getByReceiverPhoneNumber($receiver)
     {
-
         return $this->viberContact->newQuery()
             ->whereHas('mpmPerson', function ($q) use ($receiver) {
                 $q->whereHas('addresses', static function ($q) use ($receiver) {
                     $q->where('phone', $receiver)->orWhere('phone', ltrim($receiver, '+'));
                 });
             })->first();
-
     }
-
 
     public function getByRegisteredMeterSerialNumber($meterSerialNumber)
     {
         return $this->viberContact->newQuery()->where('registered_meter_serial_number', $meterSerialNumber)->first();
     }
+
     public function getByViberId($viberId)
     {
         return $this->viberContact->newQuery()->where('viber_id', $viberId)->first();
     }
-
 }

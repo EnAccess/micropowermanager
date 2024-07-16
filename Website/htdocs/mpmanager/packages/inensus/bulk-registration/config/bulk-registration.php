@@ -1,13 +1,13 @@
 <?php
+
 return [
     'csv_fields' => [
-
         'person' => [
             'name' => 'First Name',
             'm-name' => 'Middle Name',
             'surname' => 'Surname',
             'sex' => 'Gender',
-            'birth_date' => 'Date of birth'
+            'birth_date' => 'Date of birth',
         ],
 
         'cluster' => [
@@ -16,44 +16,44 @@ return [
 
         'mini_grid' => [
             'cluster_id' => 'cluster_id',
-            'name' => 'Mini Grid Name'
+            'name' => 'Mini Grid Name',
         ],
 
         'city' => [
             'cluster_id' => 'cluster_id',
             'mini_grid_id' => 'mini_grid_id',
-            'name' => 'Village Name'
+            'name' => 'Village Name',
         ],
 
         'address' => [
             'person_id' => 'person_id',
             'city_id' => 'city_id',
             'phone' => 'Phone number',
-            'alternative_phone' => 'Alternate phone number'
+            'alternative_phone' => 'Alternate phone number',
         ],
 
         'tariff' => [
             'name' => 'Tariff Name',
             'currency' => 'Currency',
             'price' => 'Tariff Price',
-            'total_price' => 'Tariff Price'
+            'total_price' => 'Tariff Price',
         ],
 
         'connection_type' => [
-            'name' => 'Connection Type'
+            'name' => 'Connection Type',
         ],
 
         'connection_group' => [
-            'name' => 'Connection Group'
+            'name' => 'Connection Group',
         ],
 
         'appliance_type' => [
             'name' => 'What appliance would you like to purchase?',
-            'price' => 0
+            'price' => 0,
         ],
 
         'manufacturer' => [
-            'name' => 'Meter Manufacturer Name'
+            'name' => 'Meter Manufacturer Name',
         ],
 
         'meter' => [
@@ -68,7 +68,7 @@ return [
             'meter_id' => 'meter_id',
             'connection_type_id' => 'connection_type_id',
             'connection_group_id' => 'connection_group_id',
-            'tariff_id' => 'tariff_id'
+            'tariff_id' => 'tariff_id',
         ],
 
         'geographical_information' => [
@@ -77,36 +77,35 @@ return [
             'points' => 'points',
             'household_latitude' => '_GPS location of household_latitude',
             'household_longitude' => '_GPS location of household_longitude',
-            'household' => 'GPS location of household'
+            'household' => 'GPS location of household',
         ],
 
         'person_docs' => [
             'customer_picture' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Customer Picture',
-                'location' => null
+                'location' => null,
             ],
             'signed_contract' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of signed contract',
-                'location' => null
+                'location' => null,
             ],
             'customer_id' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of customer ID',
-                'location' => null
+                'location' => null,
             ],
             'payment receipt' => [
-                'person_id'=>'person_id',
+                'person_id' => 'person_id',
                 'name' => 'name',
                 'type' => 'Take picture of customer payment reciept',
-                'location' => null
+                'location' => null,
             ],
-        ]
-
+        ],
     ],
     'appliance_types' => ['TV - 24', 'Option 5', 'Fridge', 'Freezer', 'Fan'],
 
@@ -130,5 +129,5 @@ return [
         'MeterParameterService' => 'Inensus\BulkRegistration\Services\MeterParameterService',
         'MeterService' => 'Inensus\BulkRegistration\Services\MeterService',
         'ManufacturerService' => 'Inensus\BulkRegistration\Services\ManufacturerService',
-    ]
+    ],
 ];

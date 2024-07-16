@@ -6,7 +6,6 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingTransaction;
@@ -14,8 +13,8 @@ use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
 class SunKingSHSApi implements IManufacturerAPI
 {
-    const API_CALL_TOKEN_GENERATION = '/token';
-    const COMMAND_ADD_CREDIT = 'add_credit';
+    public const API_CALL_TOKEN_GENERATION = '/token';
+    public const COMMAND_ADD_CREDIT = 'add_credit';
 
     public function __construct(
         private SunKingCredentialService $credentialService,
@@ -28,21 +27,21 @@ class SunKingSHSApi implements IManufacturerAPI
     {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
-        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); //This is for 1 day of energy
+        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
         $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / ($minimumPurchaseAmountPerDay));
+        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / $minimumPurchaseAmountPerDay);
 
-        Log::debug('ENERGY TO BE CHARGED as Day ' . $transactionContainer->chargedEnergy .
+        Log::debug('ENERGY TO BE CHARGED as Day '.$transactionContainer->chargedEnergy.
             ' Manufacturer => SunKingSHSApi');
 
         $device = $transactionContainer->device;
         $energy = $transactionContainer->chargedEnergy;
 
         $params = [
-            "device" => $device->device_serial,
-            "command" => self::COMMAND_ADD_CREDIT,
-            "payload" => $energy,
-            "time_unit" => "day"
+            'device' => $device->device_serial,
+            'command' => self::COMMAND_ADD_CREDIT,
+            'payload' => $energy,
+            'time_unit' => 'day',
         ];
         $credentials = $this->credentialService->getCredentials();
 
@@ -61,27 +60,26 @@ class SunKingSHSApi implements IManufacturerAPI
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
-            event(
-                'new.log',
-                [
-                    'logData' => [
-                        'user_id' => -1,
-                        'affected' => $transactionContainer->appliancePerson,
-                        'action' => 'Token: ' . $response['token'] . ' created for ' . $energy .
-                            ' days usage.'
-                    ]
-                ]
-            );
+        event(
+            'new.log',
+            [
+                'logData' => [
+                    'user_id' => -1,
+                    'affected' => $transactionContainer->appliancePerson,
+                    'action' => 'Token: '.$response['token'].' created for '.$energy.
+                        ' days usage.',
+                ],
+            ]
+        );
+
         return [
             'token' => $response['token'],
-            'load' => $energy
+            'load' => $energy,
         ];
     }
 
-
     public function clearDevice(Device $device)
     {
-        throw  new ApiCallDoesNotSupportedException('This api call does not supported');
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
-
 }

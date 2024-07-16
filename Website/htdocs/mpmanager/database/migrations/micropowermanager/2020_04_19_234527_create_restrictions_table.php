@@ -1,12 +1,11 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->integer('limit');
             $table->timestamps();
         });
-    //   $this->addDefault();
+        //   $this->addDefault();
     }
 
     /**
@@ -36,7 +35,7 @@ return new class extends Migration
 
     public function addDefault()
     {
-        $timeStamp = \Carbon\Carbon::now();
+        $timeStamp = Carbon\Carbon::now();
 
         DB::table('restrictions')->insert([
             'target' => 'enable-data-stream',
@@ -52,6 +51,5 @@ return new class extends Migration
             'created_at' => $timeStamp,
             'updated_at' => $timeStamp,
         ]);
-
     }
 };

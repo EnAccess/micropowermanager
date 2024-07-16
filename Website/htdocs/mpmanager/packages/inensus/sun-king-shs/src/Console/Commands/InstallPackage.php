@@ -1,11 +1,11 @@
 <?php
+
 namespace Inensus\SunKingSHS\Console\Commands;
 
-use App\Models\Meter\MeterTariff;
 use Illuminate\Console\Command;
-use Inensus\SunKingSHS\Services\SunKingCredentialService;
 use Inensus\SunKingSHS\Services\ManufacturerService;
 use Inensus\SunKingSHS\Services\MenuItemService;
+use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
 class InstallPackage extends Command
 {
@@ -34,7 +34,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -49,16 +49,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "SunKingSHS",
-            'composer_name' => "inensus/sun-king-shs",
-            'description' => "SunKingSHS integration package for MicroPowerManager",
+            'name' => 'SunKingSHS',
+            'composer_name' => 'inensus/sun-king-shs',
+            'description' => 'SunKingSHS integration package for MicroPowerManager',
         ]);
     }
 

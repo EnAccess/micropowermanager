@@ -24,7 +24,6 @@ use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -32,12 +31,26 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MiniGridRevenueTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $clusterIds = [], $miniGridIds = [], $soldEnergy;
+    private $user;
+    private $company;
+    private $city;
+    private $connectionType;
+    private $manufacturer;
+    private $meterType;
+    private $meter;
+    private $meterParameter;
+    private $meterTariff;
+    private $person;
+    private $token;
+    private $transaction;
+    private $clusterIds = [];
+    private $miniGridIds = [];
+    private $soldEnergy;
 
-    public function test_user_gets_sold_energy_of_a_mini_grid_with_default_period()
+    public function testUserGetsSoldEnergyOfAMiniGridWithDefaultPeriod()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -50,7 +63,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($soldEnergy, round($this->soldEnergy, 3));
     }
 
-    public function test_user_gets_sold_energy_of_a_mini_grid_with_period()
+    public function testUserGetsSoldEnergyOfAMiniGridWithPeriod()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -59,7 +72,7 @@ class MiniGridRevenueTest extends TestCase
         $miniGrid = MiniGrid::query()->first();
         $postData = [
             'startDate' => date('Y-m-d', strtotime('-2 month')),
-            'endDate' => date('Y-m-d', strtotime('+1 day'))
+            'endDate' => date('Y-m-d', strtotime('+1 day')),
         ];
         $response = $this->actingAs($this->user)->post(sprintf('/api/mini-grids/%s/energy', $miniGrid->id), $postData);
         $response->assertStatus(200);
@@ -67,7 +80,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($soldEnergy, round($this->soldEnergy, 3));
     }
 
-    public function test_user_gets_transaction_revenues_of_a_mini_grid_with_default_period()
+    public function testUserGetsTransactionRevenuesOfAMiniGridWithDefaultPeriod()
     {
         $this->withExceptionHandling();
         $clusterCount = 1;
@@ -81,7 +94,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($revenue, $this->getTotalTransactionAmount());
     }
 
-    public function test_user_gets_transaction_revenues_of_a_mini_grid_with_period()
+    public function testUserGetsTransactionRevenuesOfAMiniGridWithPeriod()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -90,7 +103,7 @@ class MiniGridRevenueTest extends TestCase
         $miniGrid = MiniGrid::query()->first();
         $postData = [
             'startDate' => date('Y-m-d', strtotime('-2 month')),
-            'endDate' => date('Y-m-d', strtotime('+1 day'))
+            'endDate' => date('Y-m-d', strtotime('+1 day')),
         ];
         $response =
             $this->actingAs($this->user)->post(sprintf('/api/mini-grids/%s/transactions', $miniGrid->id), $postData);
@@ -102,13 +115,14 @@ class MiniGridRevenueTest extends TestCase
     protected function getTotalTransactionAmount()
     {
         $clusterIds = $this->clusterIds;
+
         return Transaction::query()
             ->whereHas(
                 'meter',
                 function ($q) use ($clusterIds) {
                     $q->whereHas(
                         'meterParameter',
-                        function ($q) use ($clusterIds,) {
+                        function ($q) use ($clusterIds) {
                             $q->whereHas(
                                 'address',
                                 function ($q) use ($clusterIds) {
@@ -166,8 +180,7 @@ class MiniGridRevenueTest extends TestCase
                 'mini_grid_id' => $miniGrid->id,
                 'cluster_id' => $cluster->id,
             ]);
-            $clusterCount--;
-
+            --$clusterCount;
 
             while ($meterCount > 0) {
                 $meter = MeterFactory::new()->create([
@@ -193,7 +206,6 @@ class MiniGridRevenueTest extends TestCase
                 $meterAddress = Address::query()->make([
                     'city_id' => $meterAddressData['city_id'],
                     'geo_id' => $meterAddressData['geo_id'],
-
                 ]);
                 $meterAddress->owner()->associate($meterParameter)->save();
                 $geographicalInformation->owner()->associate($meterParameter)->save();
@@ -214,8 +226,7 @@ class MiniGridRevenueTest extends TestCase
                 ]);
                 $personAddress->owner()->associate($person);
                 $personAddress->save();
-                $meterCount--;
-
+                --$meterCount;
 
                 while ($transactionCount > 0) {
                     $vodacomTransaction =
@@ -254,7 +265,7 @@ class MiniGridRevenueTest extends TestCase
                         'payer_type' => 'person',
                         'payer_id' => $person->id,
                     ]);
-                    $transactionCount--;
+                    --$transactionCount;
                 }
             }
         }
@@ -271,8 +282,8 @@ class MiniGridRevenueTest extends TestCase
 
     protected function generateUniqueNumber(): int
     {
-        return ($this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
+        return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
-            $this->faker->unique()->randomNumber());
+            $this->faker->unique()->randomNumber();
     }
 }

@@ -5,22 +5,17 @@ namespace Tests\Feature;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Meter\MeterTariff;
 use App\Models\SocialTariff;
-use App\Models\TariffPricingComponent;
 use App\Models\TimeOfUsage;
 use App\Services\TariffPricingComponentService;
-use Database\Factories\MeterTariffFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Queue;
-use function Symfony\Component\Translation\t;
 
 class MeterTariffTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_meter_tariff_list()
+    public function testUserGetsMeterTariffList()
     {
         $this->createTestData();
         $meterTariffCount = 5;
@@ -30,7 +25,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->meterTariffs));
     }
 
-    public function test_user_gets_meter_tariff_by_id()
+    public function testUserGetsMeterTariffById()
     {
         $this->createTestData();
         $this->createMeterTariff();
@@ -39,7 +34,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->meterTariffs[0]->id);
     }
 
-    public function test_user_updates_a_meter_tariff()
+    public function testUserUpdatesAMeterTariff()
     {
         Queue::fake();
         $this->createTestData();
@@ -53,7 +48,7 @@ class MeterTariffTest extends TestCase
                 [
                     'name' => 'Cost-1',
                     'price' => 10000,
-                ]
+                ],
             ],
             'social_tariff' => [
                 'daily_allowance' => 10,
@@ -63,15 +58,15 @@ class MeterTariffTest extends TestCase
             ],
             'time_of_usage' => [
                 [
-                    'start' => "05:00",
-                    'end' => "07:00",
+                    'start' => '05:00',
+                    'end' => '07:00',
                     'value' => 20,
                     'cost' => 2,
-                ]
+                ],
             ],
             'access_rate' => [
                 'access_rate_period' => 30,
-                'access_rate_amount' => 100
+                'access_rate_amount' => 100,
             ],
         ];
         $response = $this->actingAs($this->user)->put(sprintf('/api/tariffs/%s',
@@ -83,14 +78,14 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($this->meterTariffs[0]->id, AccessRate::query()->first()->tariff_id);
     }
 
-    public function test_user_creates_basic_tariff(): void
+    public function testUserCreatesBasicTariff(): void
     {
         $this->createTestData();
         $tariffData = [
             'name' => 'Tariff',
             'price' => 10000,
             'currency' => 'TRY',
-            'factor' => 1
+            'factor' => 1,
         ];
         $response = $this->actingAs($this->user)->post('/api/tariffs', $tariffData);
         $response->assertStatus(201);
@@ -98,7 +93,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(10000, MeterTariff::first()->total_price);
     }
 
-    public function test_user_creates_tariff_with_price_components(): void
+    public function testUserCreatesTariffWithPriceComponents(): void
     {
         Queue::fake();
         $this->createTestData();
@@ -111,7 +106,7 @@ class MeterTariffTest extends TestCase
                 [
                     'name' => 'Cost-1',
                     'price' => 10000,
-                ]
+                ],
             ],
         ];
         $response = $this->actingAs($this->user)->post('/api/tariffs', $tariffData);
@@ -119,7 +114,7 @@ class MeterTariffTest extends TestCase
         $this->assertCount(1, MeterTariff::all());
     }
 
-    public function test_user_creates_tariff_with_social_inputs(): void
+    public function testUserCreatesTariffWithSocialInputs(): void
     {
         $this->createTestData();
         $tariffData = [
@@ -140,7 +135,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, SocialTariff::query()->first()->tariff_id);
     }
 
-    public function test_user_creates_tariff_with_time_of_usages(): void
+    public function testUserCreatesTariffWithTimeOfUsages(): void
     {
         $this->createTestData();
         $tariffData = [
@@ -150,17 +145,17 @@ class MeterTariffTest extends TestCase
             'factor' => 1,
             'time_of_usage' => [
                 [
-                    'start' => "02:00",
-                    'end' => "04:00",
+                    'start' => '02:00',
+                    'end' => '04:00',
                     'value' => 10,
                     'cost' => 1,
                 ],
                 [
-                    'start' => "05:00",
-                    'end' => "07:00",
+                    'start' => '05:00',
+                    'end' => '07:00',
                     'value' => 20,
                     'cost' => 2,
-                ]
+                ],
             ],
         ];
         $response = $this->actingAs($this->user)->post('/api/tariffs', $tariffData);
@@ -169,7 +164,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, TimeOfUsage::query()->first()->tariff_id);
     }
 
-    public function test_user_creates_tariff_with_access_rate(): void
+    public function testUserCreatesTariffWithAccessRate(): void
     {
         $this->createTestData();
         $tariffData = [
@@ -177,9 +172,9 @@ class MeterTariffTest extends TestCase
             'price' => 10,
             'currency' => '$',
             'factor' => 1,
-            "access_rate" => [
-                "access_rate_period" => 30,
-                "access_rate_amount" => 100
+            'access_rate' => [
+                'access_rate_period' => 30,
+                'access_rate_amount' => 100,
             ],
         ];
         $response = $this->actingAs($this->user)->post('/api/tariffs', $tariffData);
@@ -188,7 +183,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, AccessRate::query()->first()->tariff_id);
     }
 
-    public function test_user_gets_meter_list_for_a_tariff(): void
+    public function testUserGetsMeterListForATariff(): void
     {
         $this->createTestData();
         $this->createMeterManufacturer();
@@ -206,26 +201,24 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($response['data']['count'], $meterCount);
     }
 
-    public function test_component_price_changes_total_price(): void
+    public function testComponentPriceChangesTotalPrice(): void
     {
         $this->createTestData();
         $this->createMeterTariff();
         $tariff = $this->meterTariff;
         $tariffPrice = $tariff->total_price;
         $tariffPricingComponentService = app()->make(TariffPricingComponentService::class);
-        $componentsData =[
+        $componentsData = [
             [
                 'name' => 'Some component',
                 'price' => 100000,
             ], [
                 'name' => 'Some other component',
-                'price' => 100000
+                'price' => 100000,
             ]];
         $updatedTariff = $tariff->fresh();
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
-
     }
-
 
     public function actingAs($user, $driver = null)
     {

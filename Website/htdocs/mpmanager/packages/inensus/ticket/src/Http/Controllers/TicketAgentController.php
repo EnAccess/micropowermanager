@@ -4,12 +4,10 @@ namespace Inensus\Ticket\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
-use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Services\TicketService;
 
 class TicketAgentController extends Controller
 {
-
     public function __construct(private TicketService $ticketService)
     {
     }

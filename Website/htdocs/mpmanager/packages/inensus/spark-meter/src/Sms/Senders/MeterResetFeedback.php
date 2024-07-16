@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Sms\Senders;
-
 
 use App\Exceptions\MissingSmsReferencesException;
 use App\Sms\Senders\SmsSender;
@@ -18,7 +16,7 @@ class MeterResetFeedback extends SmsSender
     protected $references = [
         'header' => 'SparkSmsMeterResetFeedbackHeader',
         'body' => 'SparkSmsMeterResetFeedbackBody',
-        'footer' => 'SparkSmsMeterResetFeedbackFooter'
+        'footer' => 'SparkSmsMeterResetFeedbackFooter',
     ];
 
     public function prepareBody()
@@ -30,6 +28,7 @@ class MeterResetFeedback extends SmsSender
                 $exception = new MissingSmsReferencesException('SparkSmsMeterResetFeedback SMS body 
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
             $smsObject = new SparkSmsMeterResetFeedbackBody($this->data);
@@ -37,6 +36,7 @@ class MeterResetFeedback extends SmsSender
                 $this->body .= $smsObject->parseSms($smsBody->body);
             } catch (\Exception $exception) {
                 Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
         } else {
@@ -46,6 +46,7 @@ class MeterResetFeedback extends SmsSender
                 $exception = new MissingSmsReferencesException('SparkSmsMeterResetFailedFeedback SMS body 
                 record not found in database');
                 Log::error('SMS Body preparing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
             $smsObject = new SparkSmsMeterResetFailedFeedbackBody($this->data);
@@ -53,6 +54,7 @@ class MeterResetFeedback extends SmsSender
                 $this->body .= $smsObject->parseSms($smsBody->body);
             } catch (\Exception $exception) {
                 Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
+
                 return;
             }
         }

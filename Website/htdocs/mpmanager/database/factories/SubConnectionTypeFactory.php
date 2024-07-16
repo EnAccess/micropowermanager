@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class SubConnectionTypeFactory extends Factory
 {
     protected $model = SubConnectionType::class;
+
     /**
      * Define the model's default state.
      *

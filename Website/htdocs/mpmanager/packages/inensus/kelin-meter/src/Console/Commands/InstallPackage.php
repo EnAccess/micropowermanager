@@ -8,7 +8,6 @@ use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\MenuItemService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
-
 class InstallPackage extends Command
 {
     protected $signature = 'kelin-meter:install';
@@ -46,7 +45,7 @@ class InstallPackage extends Command
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
-            '--tag' => "configurations",
+            '--tag' => 'configurations',
         ]);
     }
 
@@ -55,7 +54,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -70,16 +69,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "KelinMeters",
-            'composer_name' => "inensus/kelin-meter",
-            'description' => "KelinMeters integration package for MicroPowerManager",
+            'name' => 'KelinMeters',
+            'composer_name' => 'inensus/kelin-meter',
+            'description' => 'KelinMeters integration package for MicroPowerManager',
         ]);
     }
 }

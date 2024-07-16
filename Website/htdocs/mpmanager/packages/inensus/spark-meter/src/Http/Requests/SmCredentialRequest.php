@@ -20,16 +20,13 @@ class SmCredentialRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     *
      * @return array
      */
     public function rules()
     {
         return [
-
-            'api_key' => ['required',Rule::unique('shard.sm_api_credentials')->ignore($this->id)],
+            'api_key' => ['required', Rule::unique('shard.sm_api_credentials')->ignore($this->id)],
             'api_secret' => 'required',
-
         ];
     }
 }

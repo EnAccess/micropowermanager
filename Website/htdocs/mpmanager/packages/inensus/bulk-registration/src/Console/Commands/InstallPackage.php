@@ -13,11 +13,12 @@ class InstallPackage extends Command
 
     private $menuItemService;
     private $meterTypeService;
-    public function __construct(MenuItemService $menuItemService,MeterTypeService $meterTypeService)
+
+    public function __construct(MenuItemService $menuItemService, MeterTypeService $meterTypeService)
     {
         parent::__construct();
         $this->menuItemService = $menuItemService;
-        $this->meterTypeService=$meterTypeService;
+        $this->meterTypeService = $meterTypeService;
     }
 
     public function handle(): void
@@ -34,15 +35,16 @@ class InstallPackage extends Command
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => "configurations",
+            '--tag' => 'configurations',
         ]);
     }
+
     private function publishMigrations()
     {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => "migrations",
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -58,19 +60,18 @@ class InstallPackage extends Command
 
         $this->call('vendor:publish', [
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
-            '--tag' => "vue-components",
-            '--force' => true
+            '--tag' => 'vue-components',
+            '--force' => true,
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "BulkRegistration",
-            'composer_name' => "inensus/bulk-registration",
-            'description' => "BulkRegistration integration package for MicroPowerManager",
+            'name' => 'BulkRegistration',
+            'composer_name' => 'inensus/bulk-registration',
+            'description' => 'BulkRegistration integration package for MicroPowerManager',
         ]);
-
     }
 
     private function createMenuItems()

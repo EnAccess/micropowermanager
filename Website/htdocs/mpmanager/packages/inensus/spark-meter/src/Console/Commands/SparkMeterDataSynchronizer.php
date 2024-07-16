@@ -3,17 +3,14 @@
 namespace Inensus\SparkMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Jobs\SmsProcessor;
 use App\Models\Address\Address;
-use App\Models\User;
-use App\Models\Person\Person;
 use App\Models\Cluster;
+use App\Models\Person\Person;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Inensus\SparkMeter\Exceptions\CronJobException;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\MeterModelService;
@@ -25,29 +22,27 @@ use Inensus\SparkMeter\Services\TransactionService;
 
 class SparkMeterDataSynchronizer extends AbstractSharedCommand
 {
-    const MPM_PLUGIN_ID = 2;
     use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Spark Meter.';
 
     public function __construct(
-        private  SiteService $smSiteService,
-        private   MeterModelService $smMeterModelService,
-        private   TariffService $smTariffService,
-        private   SmSyncSettingService $smSyncSettingService,
-        private   TransactionService $smTransactionService,
-        private   CustomerService $smCustomerService,
-        private   SmSyncActionService $smSyncActionService,
-        private   Address $address,
-        private   Cluster $cluster
+        private SiteService $smSiteService,
+        private MeterModelService $smMeterModelService,
+        private TariffService $smTariffService,
+        private SmSyncSettingService $smSyncSettingService,
+        private TransactionService $smTransactionService,
+        private CustomerService $smCustomerService,
+        private SmSyncActionService $smSyncActionService,
+        private Address $address,
+        private Cluster $cluster
     ) {
         parent::__construct();
-
     }
 
-
-  public  function handle(): void
+    public function handle(): void
     {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
@@ -57,7 +52,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
         $this->info('#############################');
         $this->info('# Spark Meter Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('dataSync command started at ' . $startedAt);
+        $this->info('dataSync command started at '.$startedAt);
 
         $syncActions = $this->smSyncActionService->getActionsNeedsToSync();
         try {
@@ -84,12 +79,12 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
                         return true;
                     }
                     $data = [
-                        'message' => '~ Spark-Meter Package ~ ' . $syncSetting->action_name .
+                        'message' => '~ Spark-Meter Package ~ '.$syncSetting->action_name.
                             ' synchronization has failed by unrealizable reason that occurred
                              on Spark Meter API. '
-                            . $syncSetting->action_name . ' synchronization is going to be retried at ' .
+                            .$syncSetting->action_name.' synchronization is going to be retried at '.
                             $nextSync,
-                        'phone' => $adminAddress->phone
+                        'phone' => $adminAddress->phone,
                     ];
 
                     $smsService = app()->make(SmsService::class);
@@ -113,14 +108,15 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
                             break;
                     }
                 }
+
                 return true;
             });
         } catch (CronJobException $e) {
-            $this->warn('dataSync command is failed. message => ' . $e->getMessage());
+            $this->warn('dataSync command is failed. message => '.$e->getMessage());
         }
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('Took '.$totalTime.' seconds.');
         $this->info('#############################');
     }
 }

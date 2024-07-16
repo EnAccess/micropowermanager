@@ -14,7 +14,7 @@ class ProtectedPagesSeeder extends Seeder
      */
     public function run()
     {
-        DB::connection('micro_power_manager')->table('protected_pages')->insert(array(
+        DB::connection('micro_power_manager')->table('protected_pages')->insert([
             ['name' => '/locations/add-cluster'],
             ['name' => '/locations/add-mini-grid'],
             ['name' => '/locations/add-village'],
@@ -45,6 +45,6 @@ class ProtectedPagesSeeder extends Seeder
             ['name' => '/calin-smart-meters/calin-smart-overview'],
             ['name' => '/micro-star-meters/micro-star-overview'],
             ['name' => '/gome-long-meters/gome-long-overview'],
-        ));
+        ]);
     }
 }

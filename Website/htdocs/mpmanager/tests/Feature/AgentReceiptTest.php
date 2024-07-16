@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\AgentBalanceHistory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -12,7 +10,7 @@ class AgentReceiptTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_agents_receipts()
+    public function testUserGetsAgentsReceipts()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -28,7 +26,7 @@ class AgentReceiptTest extends TestCase
         $this->assertEquals($response['data'][0]['agent']['balance'], $agentBalance);
     }
 
-    public function test_user_gets_all_receipts()
+    public function testUserGetsAllReceipts()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -40,21 +38,20 @@ class AgentReceiptTest extends TestCase
         $this->assertEquals(count($response['data']), 1);
     }
 
-    public function test_user_creates_new_receipt()
+    public function testUserCreatesNewReceipt()
     {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
         $this->createAgentTransaction();
         $postData = [
-            'agent_id' =>  $this->agents[0]->id,
-            'amount' => 50
+            'agent_id' => $this->agents[0]->id,
+            'amount' => 50,
         ];
-        $response = $this->actingAs($this->user)->post('/api/agents/receipt',$postData);
+        $response = $this->actingAs($this->user)->post('/api/agents/receipt', $postData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['agent_id'], $postData['agent_id']);
         $this->assertEquals($response['data']['amount'], $postData['amount']);
-
     }
 
     public function actingAs($user, $driver = null)

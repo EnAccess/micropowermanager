@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\GomeLongMeter\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -10,7 +11,6 @@ class InstallPackage extends Command
 {
     protected $signature = 'gome-long-meter:install';
     protected $description = 'Install GomeLongMeter Package';
-
 
     public function __construct(
         private MenuItemService $menuItemService,
@@ -29,7 +29,6 @@ class InstallPackage extends Command
 
         $this->info('Package installed successfully..');
     }
-
 
     private function createMenuItems()
     {

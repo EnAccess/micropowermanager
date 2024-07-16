@@ -7,7 +7,6 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 
-
 class PersonObserver
 {
     private $customerService;
@@ -37,9 +36,8 @@ class PersonObserver
                 ->with([
                     'addresses' => function ($q) {
                         return $q->where('is_primary', 1);
-                    }
+                    },
                 ])->where('id', $personId)->first();
-
 
             /*      $customerData = [
                       'id' => $smCustomer->customer_id,
@@ -52,16 +50,16 @@ class PersonObserver
                       'address' => $customer->addresses[0]->street
                   ];*/
 
-            //$this->customerService->updateSparkCustomerInfo($customerData, $siteId);
+            // $this->customerService->updateSparkCustomerInfo($customerData, $siteId);
 
             $kelinCustomerHash = $this->apiHelpers->makeHash([
                 $kelinCustomer->customer_no,
                 $kelinCustomer->address,
                 $customer->addresses[0]->phone,
-                $person->name . ' ' . $person->surname
+                $person->name.' '.$person->surname,
             ]);
             $kelinCustomer->update([
-                'hash' => $kelinCustomerHash
+                'hash' => $kelinCustomerHash,
             ]);
         }
     }

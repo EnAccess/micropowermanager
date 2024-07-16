@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class() extends Migration {
     public function up()
     {
-
-        if (!Schema:: hasTable('wave_money_transactions')) {
+        if (!Schema::hasTable('wave_money_transactions')) {
             Schema::connection('shard')->create('wave_money_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('status')->default(-2);
@@ -16,14 +15,14 @@ return new class extends Migration {
                 $table->text('order_id');
                 $table->text('reference_id');
                 $table->text('currency');
-                $table->integer("customer_id");
-                $table->integer("meter_serial")->nullable();
-                $table->string("external_transaction_id")->nullable();
-                $table->integer("attempts")->default(0);
+                $table->integer('customer_id');
+                $table->integer('meter_serial')->nullable();
+                $table->string('external_transaction_id')->nullable();
+                $table->integer('attempts')->default(0);
                 $table->timestamps();
             });
         }
-        if (!Schema:: hasTable('wave_money_credentials')) {
+        if (!Schema::hasTable('wave_money_credentials')) {
             Schema::connection('shard')->create('wave_money_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('merchant_id')->nullable();

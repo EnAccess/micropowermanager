@@ -5,7 +5,6 @@ namespace Inensus\CalinMeter\Helpers;
 use App\Models\Manufacturer;
 use Inensus\CalinMeter\Exceptions\CalinApiResponseException;
 
-
 class ApiHelpers
 {
     private $manufacturer;
@@ -22,16 +21,17 @@ class ApiHelpers
             $this->manufacturer->newQuery()->create([
                 'name' => 'Calin Meters',
                 'website' => 'http://www.calinmeter.com/',
-                'api_name' => 'CalinMeterApi'
+                'api_name' => 'CalinMeterApi',
             ]);
         }
     }
 
     public function checkApiResult($result)
     {
-        if ((int)$result['result_code'] !== 0) {
+        if ((int) $result['result_code'] !== 0) {
             throw new CalinApiResponseException($result['reason']);
         }
+
         return $result['result'];
     }
 

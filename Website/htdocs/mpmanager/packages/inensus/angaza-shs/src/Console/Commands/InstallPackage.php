@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\AngazaSHS\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -18,6 +19,7 @@ class InstallPackage extends Command
     ) {
         parent::__construct();
     }
+
     public function handle(): void
     {
         $this->info('Installing AngazaSHS Integration Package\n');
@@ -25,5 +27,4 @@ class InstallPackage extends Command
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
-
 }

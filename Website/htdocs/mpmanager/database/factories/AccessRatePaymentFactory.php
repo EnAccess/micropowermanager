@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AccessRatePaymentFactory extends Factory
 {
-
     protected $model = AccessRatePayment::class;
 
     /**
@@ -19,8 +18,8 @@ class AccessRatePaymentFactory extends Factory
     public function definition()
     {
         return [
-            'debt'=> 0,
-            'due_date'=> Carbon::now()->addDays(7),
+            'debt' => 0,
+            'due_date' => Carbon::now()->addDays(7),
         ];
     }
 }

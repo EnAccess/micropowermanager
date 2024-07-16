@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Models;
-
 
 use App\Models\BaseModel;
 use App\Models\Person\Person;
@@ -10,7 +8,6 @@ use App\Models\Person\Person;
 class KelinCustomer extends BaseModel
 {
     protected $table = 'kelin_customers';
-
 
     public function mpmPerson()
     {

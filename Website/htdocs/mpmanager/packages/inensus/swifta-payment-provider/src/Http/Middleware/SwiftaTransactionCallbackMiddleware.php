@@ -1,16 +1,10 @@
 <?php
 
-
 namespace Inensus\SwiftaPaymentProvider\Http\Middleware;
 
 use App\Jobs\ProcessPayment;
-use App\Models\Transaction\Transaction;
-use Closure;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Inensus\SwiftaPaymentProvider\Http\Exceptions\TransactionAmountDifferentException;
-use Inensus\SwiftaPaymentProvider\Http\Exceptions\TransactionNotExistsException;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaTransactionCallbackMiddleware
@@ -19,9 +13,8 @@ class SwiftaTransactionCallbackMiddleware
     {
     }
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, \Closure $next)
     {
-
         try {
             $transactionId = $request->input('transaction_id');
             $amount = $request->input('amount');
@@ -34,17 +27,15 @@ class SwiftaTransactionCallbackMiddleware
             ProcessPayment::dispatch($transaction->id)
                 ->allOnConnection('redis')
                 ->onQueue(config('services.queues.payment'));
-
         } catch (\Exception $exception) {
-
             $response = collect([
                 'success' => 0,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
             ]);
+
             return new Response($response, 400);
         }
 
         return $next($request);
     }
-
 }

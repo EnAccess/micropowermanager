@@ -11,8 +11,6 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class GeographicalInformationObserver
 {
-
-
     private $stmMeterService;
     private $stmMeter;
     private $person;

@@ -12,6 +12,7 @@ class SmTariff extends BaseModel
     {
         return $this->belongsTo(MeterTariff::class, 'mpm_tariff_id');
     }
+
     public function site()
     {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');

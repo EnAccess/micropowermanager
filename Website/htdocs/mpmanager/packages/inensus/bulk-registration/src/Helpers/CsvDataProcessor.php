@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Helpers;
 
 use App\Models\Address\Address;
@@ -9,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class CsvDataProcessor
 {
-    const CONNECTION_GROUP =1 ;
+    public const CONNECTION_GROUP = 1;
     private $geographicalLocationFinder;
     private $reflections;
     private $recentlyCreatedRecords;
@@ -61,7 +60,6 @@ class CsvDataProcessor
                 $row['connection_type_id'] = $connectionType->id;
                 $this->checkRecordWasRecentlyCreated($connectionType, 'connection_type');
 
-
                 $row['connection_group_id'] = self::CONNECTION_GROUP;
 
                 $manufacturer = $this->createRecordFromCsv($row, $this->reflections['ManufacturerService']);
@@ -73,7 +71,7 @@ class CsvDataProcessor
                         $row['meter_id'] = $meter->id;
                         $this->checkRecordWasRecentlyCreated($meter, 'meter');
                         $meterParameter = $this->createRecordFromCsv($row, $this->reflections['MeterParameterService']);
-                        //initializes a new Access Rate Payment for the next Period
+                        // initializes a new Access Rate Payment for the next Period
                         event('accessRatePayment.initialize', $meterParameter);
                         $geographicalInformationService =
                             app()->make($this->reflections['GeographicalInformationService']);
@@ -95,21 +93,22 @@ class CsvDataProcessor
                 DB::connection('shard')->rollBack();
                 throw $exception;
             }
-
         });
+
         return $this->recentlyCreatedRecords;
     }
 
     private function createRecordFromCsv($row, $serviceName)
     {
         $service = app()->make($serviceName);
+
         return $service->resolveCsvDataFromComingRow($row);
     }
 
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            $this->recentlyCreatedRecords[$type]++;
+            ++$this->recentlyCreatedRecords[$type];
         }
     }
 }
