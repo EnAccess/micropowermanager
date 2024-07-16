@@ -11,6 +11,7 @@ class SteamaUserTypeService
     private $connectionType;
     private $userType;
     private $subConnectionType;
+
     public function __construct(
         ConnectionType $connectionTypeModel,
         SteamaUserType $userTypeModel,
@@ -23,7 +24,6 @@ class SteamaUserTypeService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createUserTypes($tariff)
     {
@@ -31,14 +31,14 @@ class SteamaUserTypeService
             'NA' => 'Not Specified',
             'RES' => 'Residential',
             'BUS' => 'Business',
-            'INS' => 'Institution'
+            'INS' => 'Institution',
         ];
         foreach ($connectionTypes as $key => $value) {
             $connectionType = $this->connectionType->newQuery()->where('name', $value)->first();
 
             if (!$connectionType) {
                 $connectionType = $this->connectionType->newQuery()->create([
-                    'name' => $value
+                    'name' => $value,
                 ]);
             }
 
@@ -47,7 +47,7 @@ class SteamaUserTypeService
                 $this->userType->newQuery()->create([
                     'mpm_connection_type_id' => $connectionType->id,
                     'name' => $value,
-                    'syntax' => $key
+                    'syntax' => $key,
                 ]);
             }
 
@@ -56,7 +56,7 @@ class SteamaUserTypeService
                 $this->subConnectionType->newQuery()->create([
                     'name' => $value,
                     'connection_type_id' => $connectionType->id,
-                    'tariff_id' => $tariff->id
+                    'tariff_id' => $tariff->id,
                 ]);
             }
         }

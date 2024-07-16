@@ -7,12 +7,11 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use Illuminate\Support\Facades\Log;
+use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaSite;
-use Exception;
 use Inensus\SteamaMeter\Models\SyncStatus;
-use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
 class SteamaSiteService implements ISynchronizeService
 {
@@ -26,6 +25,7 @@ class SteamaSiteService implements ISynchronizeService
     private $city;
     private $steamaSyncSettingService;
     private $steamaSyncActionService;
+
     public function __construct(
         SteamaSite $steamaSiteModel,
         SteamaMeterApiClient $steamaApi,
@@ -51,6 +51,7 @@ class SteamaSiteService implements ISynchronizeService
     public function getSites($request)
     {
         $perPage = $request->input('per_page') ?? 15;
+
         return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate($perPage);
     }
 
@@ -61,7 +62,6 @@ class SteamaSiteService implements ISynchronizeService
 
     public function sync()
     {
-
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Sites');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -81,7 +81,7 @@ class SteamaSiteService implements ISynchronizeService
             $syncCheck['data']->filter(function ($value) {
                 return $value['syncStatus'] === SyncStatus::MODIFIED;
             })->each(function ($site) {
-                $miniGrid = is_null($site['relatedMiniGrid'])  ?
+                $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid($site, $site['relatedMiniGrid']);
                 $this->updateGeographicalInformation($miniGrid->id, $site);
                 $site['registeredStmSite']->update([
@@ -91,24 +91,25 @@ class SteamaSiteService implements ISynchronizeService
                 ]);
             });
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
+
             return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate(config('steama.paginate'));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama sites sync failed.', ['Error :' => $e->getMessage()]);
-            throw  new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
     public function syncCheck($returnData = false)
     {
         try {
-            $url = $this->rootUrl . '?page=1&page_size=100';
+            $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
 
             $sites = $result['results'];
 
             while ($result['next']) {
-                $url = $this->rootUrl . '?' . explode('?', $result['next'])[1];
+                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                 $result = $this->steamaApi->get($url);
                 foreach ($result['results'] as $site) {
                     array_push($sites, $site);
@@ -118,7 +119,7 @@ class SteamaSiteService implements ISynchronizeService
             if ($returnData) {
                 return ['result' => false];
             }
-            throw  new SteamaApiResponseException($e->getMessage());
+            throw new SteamaApiResponseException($e->getMessage());
         }
         $sitesCollection = collect($sites);
         $stmSites = $this->site->newQuery()->get();
@@ -129,7 +130,7 @@ class SteamaSiteService implements ISynchronizeService
             $relatedMiniGrid = null;
             $siteHash = $this->steamaSiteHasher($site);
             if ($registeredStmSite) {
-                $site['syncStatus'] =  $siteHash === $registeredStmSite->hash ?
+                $site['syncStatus'] = $siteHash === $registeredStmSite->hash ?
                     SyncStatus::SYNCED : SyncStatus::MODIFIED;
                 $relatedMiniGrid = $miniGrids->find($registeredStmSite->mpm_mini_grid_id);
             } else {
@@ -138,6 +139,7 @@ class SteamaSiteService implements ISynchronizeService
             $site['hash'] = $siteHash;
             $site['relatedMiniGrid'] = $relatedMiniGrid;
             $site['registeredStmSite'] = $registeredStmSite;
+
             return $site;
         });
 
@@ -145,6 +147,7 @@ class SteamaSiteService implements ISynchronizeService
         if ($siteSyncStatus) {
             return $returnData ? ['data' => $sitesCollection, 'result' => false] : ['result' => false];
         }
+
         return $returnData ? ['data' => $sitesCollection, 'result' => true] : ['result' => true];
     }
 
@@ -153,13 +156,14 @@ class SteamaSiteService implements ISynchronizeService
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
-            'cluster_id' => $cluster->id
+            'cluster_id' => $cluster->id,
         ]);
         $this->city->newQuery()->create([
-            'name' => $miniGrid->name . ' Village',
+            'name' => $miniGrid->name.' Village',
             'mini_grid_id' => $miniGrid->id,
-            'cluster_id' => $miniGrid->cluster->id
+            'cluster_id' => $miniGrid->cluster->id,
         ]);
+
         return $miniGrid;
     }
 
@@ -168,6 +172,7 @@ class SteamaSiteService implements ISynchronizeService
         $miniGrid->update([
             'name' => $site['name'],
         ]);
+
         return $miniGrid->fresh();
     }
 
@@ -181,9 +186,9 @@ class SteamaSiteService implements ISynchronizeService
             }
         )->first();
         $points = $site['latitude'] === null ?
-            config('steama.geoLocation') : $site['latitude'] . ',' . $site['longitude'];
+            config('steama.geoLocation') : $site['latitude'].','.$site['longitude'];
         $geographicalInformation->update([
-            'points' => $points
+            'points' => $points,
         ]);
     }
 
@@ -198,7 +203,7 @@ class SteamaSiteService implements ISynchronizeService
             $steamaSite['name'],
             $steamaSite['latitude'],
             $steamaSite['longitude'],
-            $steamaSite['num_meters']
+            $steamaSite['num_meters'],
         ]);
     }
 }

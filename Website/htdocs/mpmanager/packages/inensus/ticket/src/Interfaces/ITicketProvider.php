@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 17.08.18
- * Time: 11:12
+ * Time: 11:12.
  */
 
 namespace Inensus\Ticket\Interfaces;
@@ -12,7 +12,7 @@ interface ITicketProvider
 {
     // initializes the ticketing system
     public function initialize();
-    
+
     // a list of all tickets
     public function getTicketList(bool $includeClosed);
 
@@ -39,5 +39,4 @@ interface ITicketProvider
 
     // closes a ticket
     public function closeTicket($ticketIdentifier);
-
 }

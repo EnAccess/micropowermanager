@@ -3,9 +3,6 @@
 namespace Tests\Unit\Transaction;
 
 use App\Misc\TransactionDataContainer;
-use App\Models\ConnectionGroup;
-use App\Models\ConnectionType;
-use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\PaymentHandler\AccessRate;
@@ -19,7 +16,6 @@ use Database\Factories\MeterTypeFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
@@ -27,7 +23,8 @@ use Tests\TestCase;
 
 class AccessRateTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     private function initApplication(): void
     {
@@ -61,7 +58,6 @@ class AccessRateTest extends TestCase
         $accessRatePayment->save();
     }
 
-
     /**
      * @throws \Exception
      */
@@ -72,7 +68,6 @@ class AccessRateTest extends TestCase
         $transactionContainer = TransactionDataContainer::initialize($transaction);
         $transactionData = AccessRate::payAccessRate($transactionContainer);
         $this->assertEquals(0, $transactionData->accessRateDebt);
-
     }
 
     public function testWithCoverAccessRate(): void
@@ -112,13 +107,13 @@ class AccessRateTest extends TestCase
 
         $transactionContainer = TransactionDataContainer::initialize($transaction);
 
-        //with 100 access rate
+        // with 100 access rate
         $accessRatePayment = $transactionContainer->meter->accessRatePayment()->first();
         $accessRatePayment->debt = 1000;
         $accessRatePayment->save();
         $transactionData = AccessRate::payAccessRate($transactionContainer);
         $accessRateDebt = $transactionData->accessRateDebt;
-        //get access rate payment again
+        // get access rate payment again
         $accessRatePayment = $transactionContainer->meter->accessRatePayment()->first();
 
         $this->assertEquals(1000, $accessRateDebt);
@@ -131,8 +126,7 @@ class AccessRateTest extends TestCase
         $transaction = TransactionFactory::new()->make();
         $transaction->amount = $amount;
         $vodacomTransaction->transaction()->save($transaction);
+
         return $transaction;
     }
-
-
 }

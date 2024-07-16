@@ -9,7 +9,6 @@ class PaymentHistoryFactory extends Factory
 {
     protected $model = PaymentHistory::class;
 
-
     /**
      * Define the model's default state.
      *
@@ -23,10 +22,10 @@ class PaymentHistoryFactory extends Factory
             'amount' => $this->faker->randomFloat(2, 0, 100),
             'payment_service' => $this->faker->randomElement(['vodacom_transaction', 'airtel_transaction', 'agent_transaction']),
             'sender' => $this->faker->phoneNumber,
-            'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment','access rate']),
-            'paid_for_type' =>$this->faker->randomElement(['appliance', 'token', 'loan_rate','access_rate']),
+            'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
+            'paid_for_type' => $this->faker->randomElement(['appliance', 'token', 'loan_rate', 'access_rate']),
             'paid_for_id' => 1,
-            'payer_type' =>'person',
+            'payer_type' => 'person',
             'payer_id' => 1,
         ];
     }

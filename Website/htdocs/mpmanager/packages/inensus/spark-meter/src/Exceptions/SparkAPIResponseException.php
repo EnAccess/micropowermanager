@@ -2,9 +2,6 @@
 
 namespace Inensus\SparkMeter\Exceptions;
 
-use Exception;
-
-class SparkAPIResponseException extends Exception
+class SparkAPIResponseException extends \Exception
 {
-
 }

@@ -18,8 +18,7 @@ class WebhookService
             $result = $client->setWebhook($webhookUrl);
             $credential->has_webhook_created = true;
             $credential->save();
-            Log::info("Webhook created successfully");
-
+            Log::info('Webhook created successfully');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             throw new WebhookNotCreatedException($e->getMessage());

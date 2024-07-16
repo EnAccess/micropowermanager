@@ -9,6 +9,6 @@ class LowBalanceLimitNotifier extends SmsSender
     protected $references = [
         'header' => 'SteamaSmsLowBalanceHeader',
         'body' => 'SteamaSmsLowBalanceBody',
-        'footer' => 'SteamaSmsLowBalanceFooter'
+        'footer' => 'SteamaSmsLowBalanceFooter',
     ];
 }

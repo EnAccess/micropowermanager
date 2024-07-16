@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Battery;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BatteryFactory extends Factory
 {
     protected $model = Battery::class;
+
     /**
      * Define the model's default state.
      *
@@ -19,14 +19,14 @@ class BatteryFactory extends Factory
         return [
             'mini_grid_id' => 1,
             'node_id' => 1,
-            'device_id' => "test-case",
+            'device_id' => 'test-case',
             'read_out' => $this->faker->dateTime(),
             'battery_count' => 2,
             'soc_average' => $this->faker->numberBetween(40, 100),
             'soc_unit' => '%',
             'soc_min' => $this->faker->numberBetween(40, 100),
             'soc_max' => $this->faker->numberBetween(40, 100),
-            'soh_average' =>$this->faker->numberBetween(80, 100),
+            'soh_average' => $this->faker->numberBetween(80, 100),
             'soh_unit' => '%',
             'soh_min' => 100,
             'soh_max' => 100,
@@ -43,7 +43,6 @@ class BatteryFactory extends Factory
             'temperature_max' => 26,
             'temperature_average' => 26,
             'temperature_unit' => '°C',
-
         ];
     }
 }

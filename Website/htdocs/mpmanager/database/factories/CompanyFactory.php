@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class CompanyFactory extends Factory
 {
     protected $model = Company::class;
+
     /**
      * Define the model's default state.
      *
@@ -28,7 +29,7 @@ class CompanyFactory extends Factory
     public function createWithEmail(string $email): Model
     {
         $base = $this->definition();
-        $base['email']  = $email;
+        $base['email'] = $email;
 
         return $this->create($base);
     }

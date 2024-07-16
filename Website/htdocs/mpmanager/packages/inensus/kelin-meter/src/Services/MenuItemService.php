@@ -2,10 +2,9 @@
 
 namespace Inensus\KelinMeter\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'Kelin Meter';
+    public const MENU_ITEM = 'Kelin Meter';
 
     public function createMenuItems()
     {
@@ -15,7 +14,7 @@ class MenuItemService
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems= array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -40,8 +39,7 @@ class MenuItemService
             'url_slug' => '/kelin-meters/kelin-setting',
         ];
         array_push($subMenuItems, $subMenuItem4);
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
 
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

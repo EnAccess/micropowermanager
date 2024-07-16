@@ -2,7 +2,6 @@
 
 namespace Inensus\MicroStarMeter\Exceptions;
 
-
 class MicroStarApiResponseException extends \Exception
 {
     public function __construct(string $responseMessage)

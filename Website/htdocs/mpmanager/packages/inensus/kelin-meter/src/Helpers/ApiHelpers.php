@@ -3,11 +3,9 @@
 namespace Inensus\KelinMeter\Helpers;
 
 use App\Models\Manufacturer;
-use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiAuthenticationException;
 use Inensus\KelinMeter\Exceptions\KelinApiEmtyDataException;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
-
 
 class ApiHelpers
 {
@@ -23,7 +21,7 @@ class ApiHelpers
         $this->manufacturer->newQuery()->firstOrCreate(['api_name' => 'KelinMeterApi'], [
             'name' => 'Kelin Meters',
             'website' => '-',
-            'api_name' => 'KelinMeterApi'
+            'api_name' => 'KelinMeterApi',
         ]);
     }
 
@@ -41,12 +39,12 @@ class ApiHelpers
         if (empty($result['data'])) {
             throw new KelinApiEmtyDataException('Data field of response is empty.');
         }
+
         return $result;
     }
 
     public function makeHash($data)
     {
-
-        return md5(implode('',$data));
+        return md5(implode('', $data));
     }
 }

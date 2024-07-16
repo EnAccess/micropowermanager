@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
 use Inensus\AngazaSHS\Models\AngazaCredential;
 
-
 class ApiRequests
 {
     public function __construct(
@@ -17,9 +16,9 @@ class ApiRequests
 
     public function get(AngazaCredential $credentials, array $params, string $slug)
     {
-        $url = $credentials->getApiUrl() . $slug;
+        $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
-            $url .= $key . '=' . $value . '&';
+            $url .= $key.'='.$value.'&';
         }
 
         try {
@@ -27,15 +26,14 @@ class ApiRequests
                 [
                     'headers' => [
                         'Accept' => 'application/json',
-                        'Authorization' => $this->getBasicAuthHeader($credentials)
+                        'Authorization' => $this->getBasicAuthHeader($credentials),
                     ],
                 ]);
 
-            return json_decode((string)$request->getBody(), true);
-
+            return json_decode((string) $request->getBody(), true);
         } catch (\Exception $e) {
             Log::critical('Angaza API request failed', [
-                'message :' => $e->getMessage()
+                'message :' => $e->getMessage(),
             ]);
             throw new AngazaApiResponseException($e->getMessage());
         }
@@ -43,7 +41,7 @@ class ApiRequests
 
     public function put(AngazaCredential $credentials, array $params, string $slug)
     {
-        $url = $credentials->getApiUrl() . $slug;
+        $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->put(
                 $url,
@@ -51,20 +49,19 @@ class ApiRequests
                     'headers' => [
                         'Content-Type' => 'application/json',
                         'Authorization' => $this->getBasicAuthHeader($credentials),
-
                     ],
                     'body' => json_encode($params),
                 ]
             );
-            return (json_decode((string)$request->getBody(), true));
-        } catch (\Exception $e) {
 
+            return json_decode((string) $request->getBody(), true);
+        } catch (\Exception $e) {
             Log::critical(
                 'Angaza API Transaction Failed',
                 [
                     'URL :' => $url,
                     'Body :' => json_encode($params),
-                    'message :' => $e->getMessage()
+                    'message :' => $e->getMessage(),
                 ]);
             throw new AngazaApiResponseException($e->getMessage());
         }
@@ -74,9 +71,9 @@ class ApiRequests
     {
         $username = $credentials->getClientId();
         $password = $credentials->getClientSecret();
-        $credentials = $username . ":" . $password;
+        $credentials = $username.':'.$password;
         $base64EncodedCredentials = base64_encode($credentials);
 
-        return "Basic " . $base64EncodedCredentials;
+        return 'Basic '.$base64EncodedCredentials;
     }
 }

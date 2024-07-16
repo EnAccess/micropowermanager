@@ -3,14 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-//Routes for City resource
+// Routes for City resource
 require 'resources/Cities.php';
-//Routes for Country resource
+// Routes for Country resource
 require 'resources/Countries.php';
-//Routes for meter resource
+// Routes for meter resource
 require 'resources/Meters.php';
-//Routes for Addresses resource
+// Routes for Addresses resource
 require 'resources/Addresses.php';
 // Transaction routes
 require 'api_paths/transactions.php';
@@ -21,14 +20,12 @@ require 'resources/AgentWeb.php';
 // Routes for CustomerRegistrationApp resource
 require 'resources/CustomerRegistrationApp.php';
 
-//JWT authentication
+// JWT authentication
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
-
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('me', 'AuthController@me');
-
 });
 // user
 Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static function () {
@@ -73,7 +70,6 @@ Route::group(['prefix' => 'assets', 'middleware' => 'jwt.verify'], function () {
     Route::group(['prefix' => 'payment'], static function () {
         Route::post('/{appliance_person}', 'AppliancePaymentController@store');
     });
-
 });
 // Batteries
 Route::group(['prefix' => 'batteries'], static function () {
@@ -112,12 +108,10 @@ Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], sta
     Route::post('/', 'ConnectionTypeController@store');
     Route::get('/{connectionTypeId?}', 'ConnectionTypeController@show');
     Route::put('/{connectionTypeId}', 'ConnectionTypeController@update');
-
 });
 // Energies
 Route::group(['prefix' => 'energies', 'middleware' => 'jwt.verify'], static function () {
     Route::post('/', 'EnergyController@store');
-
 });
 // Generation-Assets
 Route::group(['prefix' => 'generation-assets', 'middleware' => 'jwt.verify'], static function () {
@@ -141,7 +135,7 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
     Route::post('/', 'MiniGridController@store');
     Route::get('/{miniGridId}', 'MiniGridController@show');
     Route::put('/{miniGridId}', 'MiniGridController@update')->middleware('restriction:enable-data-stream');
-//
+
     Route::post('/{miniGridId}/transactions', 'MiniGridRevenueController@show');
     Route::post('/{miniGridId}/energy', 'MiniGridRevenueController@show');
     Route::get('/{miniGridId}/batteries', 'MiniGridBatteryController@show');
@@ -149,10 +143,9 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
 
     Route::group(['prefix' => '{miniGridId}'], static function () {
         Route::group(['prefix' => 'devices'], static function () {
-            Route::get('/', "MiniGridDeviceController@index");
+            Route::get('/', 'MiniGridDeviceController@index');
         });
     });
-
 });
 // these routes are for the forecast-tool in jetson nano.
 Route::group(['prefix' => 'jetson'], static function () {
@@ -168,7 +161,7 @@ Route::group(['prefix' => 'jetson'], static function () {
 
         Route::post('/{miniGridId}/battery/{slug}', 'JetsonMiniGridBatteryController@store');
         Route::post('/{miniGridId}/generation-assets/{slug}', 'JetsonMiniGridFrequencyController@store');
-        Route::post('/{miniGridId}/pv/{slug}', 'JetsonMiniGridPVController@store')->middleware('data.controller');;
+        Route::post('/{miniGridId}/pv/{slug}', 'JetsonMiniGridPVController@store')->middleware('data.controller');
         Route::post('/{miniGridId}/solar/{slug}', 'JetsonMiniGridSolarController@store');
         Route::post('/{miniGridId}/energy/{slug}', 'JetsonMiniGridEnergyController@store');
     });
@@ -200,7 +193,6 @@ Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static functi
     Route::put('/{personId}/addresses', 'PersonAddressesController@update');
 });
 
-
 // PV
 Route::group(['prefix' => 'pv'], static function () {
     Route::get('/{miniGridId}', ['middleware' => 'jwt.verify', 'uses' => 'PVController@show']);
@@ -217,7 +209,7 @@ Route::group(['prefix' => 'ticket-settings'], static function () {
     Route::put('/{ticketSettings}', ['uses' => 'TicketSettingsController@update', 'middleware' => 'jwt.verify']);
 });
 
-//Settings
+// Settings
 Route::group(['prefix' => 'settings'], static function () {
     Route::get('/main', 'MainSettingsController@index');
     Route::put('/main/{mainSettings}', ['uses' => 'MainSettingsController@update', 'middleware' => 'jwt.verify']);
@@ -228,7 +220,7 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::get('/country-list', 'CountryListController@index');
     Route::get('/languages-list', 'LanguageController@index');
 });
-//Sms
+// Sms
 Route::group(['prefix' => 'sms-body'], static function () {
     Route::get('/', 'SmsBodyController@index');
     Route::put('/', 'SmsBodyController@update');
@@ -274,7 +266,6 @@ Route::group(['prefix' => 'sms', 'middleware' => 'jwt.verify'], static function 
     Route::post('/storeandsend', 'SmsController@storeAndSend');
     Route::post('/', 'SmsController@store');
     Route::post('/bulk', 'SmsController@storeBulk');
-
 });
 Route::group(['prefix' => 'sms-android-callback'], static function () {
     Route::get('/{uuid}/delivered/{slug}', 'SmsController@updateForDelivered');
@@ -288,7 +279,6 @@ Route::group(['prefix' => 'sub-connection-types', 'middleware' => 'jwt.verify'],
     Route::post('/', 'SubConnectionTypeController@store');
     Route::get('/{id}', 'SubConnectionTypeController@show');
     Route::put('/{subConnectionTypeId}', 'SubConnectionTypeController@update');
-
 });
 // Targets
 Route::group(['prefix' => 'targets', 'middleware' => 'jwt.verify'], static function () {
@@ -336,7 +326,6 @@ Route::group(['prefix' => 'sidebar'], static function () {
 Route::group(['prefix' => 'registration-tails'], static function () {
     Route::get('/', 'RegistrationTailController@index');
     Route::put('/{registrationTail}', 'RegistrationTailController@update');
-
 });
 Route::group(['prefix' => 'plugins'], static function () {
     Route::get('/', 'PluginController@index');
@@ -357,7 +346,7 @@ Route::group(['prefix' => 'devices'], static function () {
     Route::get('/', 'DeviceController@index');
 });
 Route::group(['prefix' => 'device-addresses'], function () {
-    Route::post('/', "DeviceAddressController@update");
+    Route::post('/', 'DeviceAddressController@update');
 });
 Route::group(['prefix' => 'airtel-volt-terra'], static function () {
     Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');

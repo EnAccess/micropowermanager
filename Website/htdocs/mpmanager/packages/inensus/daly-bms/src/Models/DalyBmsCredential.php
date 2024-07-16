@@ -6,9 +6,7 @@ use App\Models\BaseModel;
 
 class DalyBmsCredential extends BaseModel
 {
-
     protected $table = 'daly_bms_api_credentials';
-
 
     public function getUserName()
     {

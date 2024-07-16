@@ -16,24 +16,25 @@ class ApiHelpers
 
     public function registerStronMeterManufacturer()
     {
-        $api =  $this->manufacturer->newQuery()->where('api_name', 'StronMeterApi')->first();
+        $api = $this->manufacturer->newQuery()->where('api_name', 'StronMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Stron Meters',
                 'website' => 'http://www.stronsmart.com/',
-                'api_name' => 'StronMeterApi'
+                'api_name' => 'StronMeterApi',
             ]);
         }
     }
 
     public function checkApiResult($result)
     {
-        if (is_array($result) && array_key_exists("Message", $result)) {
+        if (is_array($result) && array_key_exists('Message', $result)) {
             throw new StronApiResponseException($result['Message']);
         }
-        if ($result === "false") {
+        if ($result === 'false') {
             throw new StronApiResponseException('Returned false.');
         }
+
         return $result;
     }
 

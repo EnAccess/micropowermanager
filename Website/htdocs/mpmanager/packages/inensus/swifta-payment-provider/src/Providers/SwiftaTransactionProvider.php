@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SwiftaPaymentProvider\Providers;
-
 
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
@@ -25,7 +23,6 @@ class SwiftaTransactionProvider implements ITransactionProvider
         private SwiftaTransactionService $swiftaTransactionService,
         private TransactionConflicts $transactionConflicts,
     ) {
-
     }
 
     public function validateRequest($request)
@@ -40,7 +37,7 @@ class SwiftaTransactionProvider implements ITransactionProvider
             // We need to make sure that the payment is fully processable from our end .
             $this->swiftaTransactionService->imitateTransactionForValidation($swiftaTransactionData);
         } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
 
         $this->setValidData($swiftaTransactionData);
@@ -56,21 +53,20 @@ class SwiftaTransactionProvider implements ITransactionProvider
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $updateData = [
-                'status' => SwiftaTransaction::STATUS_SUCCESS
+                'status' => SwiftaTransaction::STATUS_SUCCESS,
             ];
             $this->swiftaTransactionService->update($swiftaTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::error('swifta transaction is been cancelled');
-
         }
     }
 
     public function addConflict(?string $message): void
     {
         $conflict = $this->transactionConflicts->newQuery()->make([
-            'state' => $message
+            'state' => $message,
         ]);
         $conflict->transaction()->associate($this->swiftaTransaction);
         $conflict->save();
@@ -109,7 +105,7 @@ class SwiftaTransactionProvider implements ITransactionProvider
 
     public function getAmount(): int
     {
-      return   $this->getTransaction()->amount;
+        return $this->getTransaction()->amount;
     }
 
     public function getSender(): string
@@ -121,6 +117,4 @@ class SwiftaTransactionProvider implements ITransactionProvider
     {
         // TODO: Implement getSender() method.
     }
-
-
 }

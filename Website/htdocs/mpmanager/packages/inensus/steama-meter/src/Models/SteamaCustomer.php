@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Person\Person;
-use Illuminate\Database\Eloquent\Model;
 
 class SteamaCustomer extends BaseModel
 {
@@ -13,10 +12,12 @@ class SteamaCustomer extends BaseModel
     {
         return $this->belongsTo(Person::class, 'mpm_customer_id');
     }
+
     public function site()
     {
         return $this->belongsTo(SteamaSite::class, 'site_id', 'site_id');
     }
+
     public function userType()
     {
         return $this->belongsTo(SteamaUserType::class, 'user_type_id');
@@ -24,7 +25,6 @@ class SteamaCustomer extends BaseModel
 
     public function paymentPlans()
     {
-
         return $this->hasOne(SteamaCustomerBasisPaymentPlan::class);
     }
 

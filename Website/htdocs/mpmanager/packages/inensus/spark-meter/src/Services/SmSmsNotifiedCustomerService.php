@@ -6,7 +6,6 @@ use Inensus\SparkMeter\Models\SmSmsNotifiedCustomer;
 
 class SmSmsNotifiedCustomerService
 {
-
     private $smSmsNotifiedCustomer;
 
     public function __construct(
@@ -25,7 +24,7 @@ class SmSmsNotifiedCustomerService
         return $this->smSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'transaction',
-            'notify_id' => $transactionId
+            'notify_id' => $transactionId,
         ]);
     }
 
@@ -34,7 +33,6 @@ class SmSmsNotifiedCustomerService
         return $this->smSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'low_balance',
-
         ]);
     }
 
@@ -51,6 +49,7 @@ class SmSmsNotifiedCustomerService
         if ($notifiedCustomer) {
             $notifiedCustomer->delete();
         }
+
         return true;
     }
 }

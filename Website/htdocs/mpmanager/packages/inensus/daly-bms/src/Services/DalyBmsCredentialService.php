@@ -4,7 +4,6 @@ namespace Inensus\DalyBms\Services;
 
 use Inensus\DalyBms\Models\DalyBmsCredential;
 
-
 class DalyBmsCredentialService
 {
     public function __construct(
@@ -14,7 +13,6 @@ class DalyBmsCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {

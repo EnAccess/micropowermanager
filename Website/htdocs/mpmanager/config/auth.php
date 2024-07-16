@@ -22,7 +22,6 @@ return [
         ],
     ],
 
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
@@ -32,10 +31,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Agent::class,
         ],
-
-
     ],
-
 
     'passwords' => [
         'users' => [
@@ -50,5 +46,4 @@ return [
             'expire' => 360,
         ],
     ],
-
 ];

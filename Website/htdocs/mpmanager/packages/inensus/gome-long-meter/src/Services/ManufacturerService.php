@@ -1,6 +1,7 @@
 <?php
 
 namespace Inensus\GomeLongMeter\Services;
+
 use App\Models\Manufacturer;
 
 class ManufacturerService
@@ -16,7 +17,7 @@ class ManufacturerService
             $this->manufacturer->newQuery()->create([
                 'name' => 'GomeLong Meters',
                 'website' => 'https://www.gomelongmeter.com/',
-                'api_name' => 'GomeLongMeterApi'
+                'api_name' => 'GomeLongMeterApi',
             ]);
         }
     }

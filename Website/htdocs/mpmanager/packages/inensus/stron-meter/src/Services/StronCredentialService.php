@@ -23,7 +23,6 @@ class StronCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -32,7 +31,7 @@ class StronCredentialService
             'password' => null,
             'is_authenticated' => 0,
             'api_url' => 'http://www.saitecapi.stronpower.com/api',
-            'api_token' => null
+            'api_token' => null,
         ]);
     }
 
@@ -49,7 +48,6 @@ class StronCredentialService
             'username' => $data['username'],
             'password' => $data['password'],
             'company_name' => $data['company_name'],
-
         ]);
         $postParams = [
             'Username' => $data['username'],
@@ -62,7 +60,7 @@ class StronCredentialService
 
             $credential->update([
                 'api_token' => $result,
-                'is_authenticated' => true
+                'is_authenticated' => true,
             ]);
         } catch (GuzzleException $gException) {
             if ($gException->getResponse()->getStatusCode() === 400) {
@@ -81,6 +79,7 @@ class StronCredentialService
             $credential->api_token = null;
         }
         $credential->save();
+
         return $credential->fresh();
     }
 }

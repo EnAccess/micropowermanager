@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 use App\Models\GeographicalInformation;
 use App\Models\Meter\MeterParameter;
 use App\Models\MiniGrid;
 use Inensus\BulkRegistration\Helpers\GeographicalLocationFinder;
-
 
 class GeographicalInformationService
 {
@@ -47,12 +44,13 @@ class GeographicalInformationService
                     $q->where('id', $miniGridId);
                 }
             )->first();
-        if ($geographicalInformation->points !== "") {
+        if ($geographicalInformation->points !== '') {
             return false;
         }
         $geographicalLocationFinder = app()->make(GeographicalLocationFinder::class);
         $geographicalCoordinatesResult = $geographicalLocationFinder->getCoordinatesGivenAddress($geographicalInformation->owner->name);
-        $geographicalInformation->points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
+        $geographicalInformation->points = $geographicalCoordinatesResult['lat'].','.$geographicalCoordinatesResult['lng'];
+
         return $geographicalInformation->save();
     }
 
@@ -74,7 +72,8 @@ class GeographicalInformationService
             return false;
         }
 
-        $geographicalInformationData['points'] = $csvData[$this->geographicalInformationConfig['household_latitude']] . ',' . $csvData[$this->geographicalInformationConfig['household_longitude']];
+        $geographicalInformationData['points'] = $csvData[$this->geographicalInformationConfig['household_latitude']].','.$csvData[$this->geographicalInformationConfig['household_longitude']];
+
         return $geographicalInformationData;
     }
 }

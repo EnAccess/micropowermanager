@@ -4,7 +4,6 @@ namespace Inensus\SparkMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -22,15 +21,13 @@ class SparkMeterApi implements IManufacturerAPI
 
     public function __construct(
         Client $httpClient,
-        private  SparkMeterApiRequests $sparkMeterApiRequests,
+        private SparkMeterApiRequests $sparkMeterApiRequests,
         private TariffService $tariffService,
         private SmCustomer $smCustomer,
         private SmTransaction $smTransaction,
         private SmTariff $smTariff
     ) {
-
         $this->api = $httpClient;
-
     }
 
     public function chargeDevice($transactionContainer): array
@@ -44,15 +41,15 @@ class SparkMeterApi implements IManufacturerAPI
             $tariff->id
         )->first();
         $tariff = $this->tariffService->singleSync($smTariff);
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
-        Log::critical('ENERGY TO BE CHARGED float ' .
-            (float)$transactionContainer->chargedEnergy .
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        Log::critical('ENERGY TO BE CHARGED float '.
+            (float) $transactionContainer->chargedEnergy.
             ' Manufacturer => Spark');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
+                'energy' => (float) $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -61,7 +58,7 @@ class SparkMeterApi implements IManufacturerAPI
             try {
                 $smCustomer = $this->smCustomer->newQuery()->with('site')->where(
                     'mpm_customer_id',
-                     $owner->id
+                    $owner->id
                 )->firstOrFail();
             } catch (ModelNotFoundException $e) {
                 Log::critical('No Customer found for transaction data.', ['message' => $e->getMessage()]);
@@ -73,21 +70,20 @@ class SparkMeterApi implements IManufacturerAPI
                 'amount' => strval($amount),
                 'source' => 'cash',
                 'external_id' => strval($externalId),
-
             ];
 
             try {
                 $request = $this->api->post(
-                    $smCustomer->site->thundercloud_url . '/transaction/',
+                    $smCustomer->site->thundercloud_url.'/transaction/',
                     [
                         'body' => json_encode($postParams),
                         'headers' => [
                             'Content-Type' => 'application/json;charset=utf-8',
-                            'Authentication-Token' => $smCustomer->site->thundercloud_token
+                            'Authentication-Token' => $smCustomer->site->thundercloud_token,
                         ],
                     ]
                 );
-                $result = json_decode((string)$request->getBody(), true);
+                $result = json_decode((string) $request->getBody(), true);
             } catch (SparkAPIResponseException $e) {
                 Log::critical(
                     'Spark API Transaction Failed',
@@ -111,26 +107,26 @@ class SparkMeterApi implements IManufacturerAPI
                     'external_id' => intval($transactionInformation['external_id']),
                 ];
 
-
                 $manufacturerTransaction = $this->smTransaction->newQuery()->create([
                     'transaction_id' => $transactionResult['transaction_id'],
                     'site_id' => $transactionResult['site_id'],
                     'customer_id' => $transactionResult['customer_id'],
                     'status' => $transactionResult['status'],
-                    'external_id' => $transactionResult['external_id']
+                    'external_id' => $transactionResult['external_id'],
                 ]);
 
                 $transactionContainer->transaction->originalTransaction()->first()->update([
                     'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                    'manufacturer_transaction_type' => 'sm_transaction'
+                    'manufacturer_transaction_type' => 'sm_transaction',
                 ]);
             }
-            $token = $smCustomer->site->site_id . '-' .
-                $transactionInformation['source'] . '-' .
+            $token = $smCustomer->site->site_id.'-'.
+                $transactionInformation['source'].'-'.
                 $smCustomer->customer_id;
+
             return [
                 'token' => $token,
-                'load' => $transactionContainer->chargedEnergy
+                'load' => $transactionContainer->chargedEnergy,
             ];
         }
     }
@@ -139,5 +135,4 @@ class SparkMeterApi implements IManufacturerAPI
     {
         // TODO: Implement clearDevice() method.
     }
-
 }

@@ -38,7 +38,6 @@ class InstallPackage extends Command
     private $steamaSmsFeedbackWordService;
     private $packageInstallationService;
 
-
     public function __construct(
         MenuItemService $menuItemService,
         SteamaAgentService $agentService,
@@ -76,25 +75,25 @@ class InstallPackage extends Command
     {
         $this->info('Installing Steamaco Meter Integration Package\n');
 
-        //$this->publishMigrations();
-        //$this->createDatabaseTables();
+        // $this->publishMigrations();
+        // $this->createDatabaseTables();
         $this->packageInstallationService->createDefaultSettingRecords();
-        //$this->publishVueFiles();
+        // $this->publishVueFiles();
         $this->apiHelpers->registerSparkMeterManufacturer();
         $this->credentialService->createCredentials();
-        //$this->createPluginRecord();
+        // $this->createPluginRecord();
         $tariff = $this->tariffService->createTariff();
         $this->userTypeService->createUserTypes($tariff);
         $this->paymentPlanService->createPaymentPlans();
         $this->agentService->createSteamaAgentCommission();
-        //$this->call('routes:generate');
-        //$this->createMenuItems();
-        //$this->call('sidebar:generate');
-        //$this->info('Package installed successfully..');
+        // $this->call('routes:generate');
+        // $this->createMenuItems();
+        // $this->call('sidebar:generate');
+        // $this->info('Package installed successfully..');
         if (!$this->siteService->checkLocationAvailability()) {
             $this->warn('------------------------------');
-            $this->warn("Steamaco Meter package needs least one registered Cluster.");
-            $this->warn("If you have no Cluster, please navigate to #Locations# section and register your locations.");
+            $this->warn('Steamaco Meter package needs least one registered Cluster.');
+            $this->warn('If you have no Cluster, please navigate to #Locations# section and register your locations.');
         }
     }
 
@@ -103,7 +102,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -118,7 +117,7 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
-            '--tag' => "vue-components",
+            '--tag' => 'vue-components',
             '--force' => true,
         ]);
     }
@@ -126,9 +125,9 @@ class InstallPackage extends Command
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "SteamaMeter",
-            'composer_name' => "inensus/steama-meter",
-            'description' => "SteamaMeter integration package for MicroPowerManager",
+            'name' => 'SteamaMeter',
+            'composer_name' => 'inensus/steama-meter',
+            'description' => 'SteamaMeter integration package for MicroPowerManager',
         ]);
     }
 
@@ -143,4 +142,3 @@ class InstallPackage extends Command
         }
     }
 }
-

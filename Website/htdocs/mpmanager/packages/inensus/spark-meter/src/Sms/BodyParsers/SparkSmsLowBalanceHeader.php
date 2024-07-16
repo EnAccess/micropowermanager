@@ -25,6 +25,7 @@ class SparkSmsLowBalanceHeader extends SmsBodyParser
                 $variable = $this->sparkCustomer->mpmPerson->surname;
                 break;
         }
+
         return $variable;
     }
 }

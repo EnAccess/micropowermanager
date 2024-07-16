@@ -25,6 +25,7 @@ class SteamaSmsLowBalanceHeader extends SmsBodyParser
                 $variable = $this->steamaCustomer->mpmPerson->surname;
                 break;
         }
+
         return $variable;
     }
 }

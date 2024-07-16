@@ -22,21 +22,32 @@ use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Cache;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Cache;
 
 class ClusterDashboardCacheTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $clusterIds = [];
+    private $user;
+    private $company;
+    private $city;
+    private $connectionType;
+    private $manufacturer;
+    private $meterType;
+    private $meter;
+    private $meterParameter;
+    private $meterTariff;
+    private $person;
+    private $token;
+    private $transaction;
+    private $clusterIds = [];
 
-    public function test_user_updates_cluster_data_in_cache()
+    public function testUserUpdatesClusterDataInCache()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -45,10 +56,9 @@ class ClusterDashboardCacheTest extends TestCase
         $response = $this->actingAs($this->user)->put('/api/dashboard/clusters');
         $response->assertStatus(200);
         $this->assertEquals(count(Cache::get('ClustersList')), count($this->clusterIds));
-
     }
 
-    public function test_user_gets_cluster_data_from_cache_by_id()
+    public function testUserGetsClusterDataFromCacheById()
     {
         $clusterCount = 2;
         $meterCount = 2;
@@ -88,8 +98,7 @@ class ClusterDashboardCacheTest extends TestCase
                 'mini_grid_id' => $miniGrid->id,
                 'cluster_id' => $cluster->id,
             ]);
-            $clusterCount--;
-
+            --$clusterCount;
 
             while ($meterCount > 0) {
                 $meter = MeterFactory::new()->create([
@@ -115,7 +124,6 @@ class ClusterDashboardCacheTest extends TestCase
                 $meterAddress = Address::query()->make([
                     'city_id' => $meterAddressData['city_id'],
                     'geo_id' => $meterAddressData['geo_id'],
-
                 ]);
                 $meterAddress->owner()->associate($meterParameter)->save();
                 $geographicalInformation->owner()->associate($meterParameter)->save();
@@ -136,8 +144,7 @@ class ClusterDashboardCacheTest extends TestCase
                 ]);
                 $personAddress->owner()->associate($person);
                 $personAddress->save();
-                $meterCount--;
-
+                --$meterCount;
 
                 while ($transactionCount > 0) {
                     $vodacomTransaction =
@@ -175,7 +182,7 @@ class ClusterDashboardCacheTest extends TestCase
                         'payer_type' => 'person',
                         'payer_id' => $person->id,
                     ]);
-                    $transactionCount--;
+                    --$transactionCount;
                 }
             }
         }
@@ -192,7 +199,7 @@ class ClusterDashboardCacheTest extends TestCase
 
     protected function generateUniqueNumber(): int
     {
-        return ($this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
-            $this->faker->unique()->randomNumber());
+        return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
+            $this->faker->unique()->randomNumber();
     }
 }

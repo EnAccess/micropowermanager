@@ -2,22 +2,17 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Log;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 
 class WaveMoneyCredentialService
 {
-
     public function __construct(
         private WaveMoneyCredential $credential
     ) {
-
     }
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -35,7 +30,6 @@ class WaveMoneyCredentialService
     {
         return $this->credential->newQuery()->first();
     }
-
 
     public function updateCredentials($data)
     {

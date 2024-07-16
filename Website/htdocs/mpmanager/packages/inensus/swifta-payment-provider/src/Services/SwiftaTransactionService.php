@@ -2,26 +2,19 @@
 
 namespace Inensus\SwiftaPaymentProvider\Services;
 
-
-use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
-use App\Models\AssetPerson;
-use App\Models\AssetRate;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
-use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use App\Models\Transaction\TransactionConflicts;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\IBaseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Illuminate\Support\Facades\Log;
-use App\Models\Transaction\TransactionConflicts;
+use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
-
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -52,14 +45,14 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
     {
         $this->swiftaTransaction->newQuery()->where('status', SwiftaTransaction::STATUS_REQUESTED)->get()->each(function ($transaction) {
             $transaction->update([
-                'status' => SwiftaTransaction::STATUS_FAILED
+                'status' => SwiftaTransaction::STATUS_FAILED,
             ]);
-            $message = "The transaction that stayed as Unprocessed more than 24 hours, updated to canceled.";
+            $message = 'The transaction that stayed as Unprocessed more than 24 hours, updated to canceled.';
             $conflict = new TransactionConflicts();
             $conflict->state = $message;
             $conflict->transaction()->associate($transaction);
             $conflict->save();
-            Log::debug($message . " Transaction Id : {$transaction->id}");
+            Log::debug($message." Transaction Id : {$transaction->id}");
         });
     }
 
@@ -71,17 +64,15 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
     public function getTransactionById($transactionId)
     {
         try {
-
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
-            throw  new \Exception('transaction_id validation field.');
+            throw new \Exception('transaction_id validation field.');
         }
-
     }
 
     public function checkAmountIsSame($amount, $transaction)
     {
-        if ($amount != (int)$transaction->amount) {
+        if ($amount != (int) $transaction->amount) {
             throw new \Exception('amount validation field.');
         }
     }
@@ -90,7 +81,6 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
     {
         return $this->swiftaTransaction->newQuery()->find($id);
     }
-
 
     public function update($swiftaTransaction, $swiftaTransactionData)
     {
@@ -121,4 +111,3 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         return $this->swiftaTransaction->newQuery()->get();
     }
 }
-

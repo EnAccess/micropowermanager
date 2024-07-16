@@ -1,6 +1,7 @@
 <?php
 
 namespace Inensus\WaveMoneyPaymentProvider\Models;
+
 use App\Models\BaseModel;
 
 /**
@@ -10,7 +11,6 @@ use App\Models\BaseModel;
  * @property string payment_url
  * @property string result_url
  * @property string merchant_name
- *
  */
 class WaveMoneyCredential extends BaseModel
 {
@@ -45,6 +45,4 @@ class WaveMoneyCredential extends BaseModel
     {
         return $this->result_url;
     }
-
-
 }

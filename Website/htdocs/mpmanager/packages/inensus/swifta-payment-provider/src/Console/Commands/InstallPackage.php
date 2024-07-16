@@ -9,8 +9,6 @@ use App\Services\DatabaseProxyService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-
-use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Inensus\SwiftaPaymentProvider\Services\MenuItemService;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -19,7 +17,6 @@ class InstallPackage extends Command
 {
     protected $signature = 'swifta-payment-provider:install';
     protected $description = 'Install SwiftaPaymentProvider Package';
-
 
     public function __construct(
         private User $user,
@@ -30,7 +27,6 @@ class InstallPackage extends Command
         private MenuItemService $menuItemService
     ) {
         parent::__construct();
-
     }
 
     public function handle(): void
@@ -47,7 +43,7 @@ class InstallPackage extends Command
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => "configurations",
+            '--tag' => 'configurations',
         ]);
     }
 
@@ -56,7 +52,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -69,9 +65,9 @@ class InstallPackage extends Command
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "SwiftaPaymentProvider",
-            'composer_name' => "inensus/swifta-payment-provider",
-            'description' => "SwiftaPaymentProvider integration package for MicroPowerManager",
+            'name' => 'SwiftaPaymentProvider',
+            'composer_name' => 'inensus/swifta-payment-provider',
+            'description' => 'SwiftaPaymentProvider integration package for MicroPowerManager',
         ]);
     }
 
@@ -83,8 +79,8 @@ class InstallPackage extends Command
         $user = $this->user->newQuery()->firstOrCreate([
             'name' => 'swifta-user',
             'password' => $password,
-            'email' => $company->getName() . '-swifta-user-' . Carbon::now()->timestamp,
-            'company_id' => $companyId
+            'email' => $company->getName().'-swifta-user-'.Carbon::now()->timestamp,
+            'company_id' => $companyId,
         ]);
         $companyDatabase = $this->companyDatabaseService->getById($companyId);
         $databaseProxyData = [
@@ -99,8 +95,9 @@ class InstallPackage extends Command
         $expirationTime = $payload['exp'];
         $this->authentication->newQuery()->create([
             'token' => $token,
-            'expire_date' => $expirationTime
+            'expire_date' => $expirationTime,
         ]);
+
         return $token;
     }
 
@@ -108,13 +105,14 @@ class InstallPackage extends Command
     {
         $length = random_int(1, 10);
         $number = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $number .= random_int(0, 9);
         }
         $number = ltrim($number, '0');
         if ($number === '') {
             return '0';
         }
+
         return $number;
     }
 

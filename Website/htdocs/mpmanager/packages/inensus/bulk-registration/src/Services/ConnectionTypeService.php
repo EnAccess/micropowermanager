@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 use App\Models\ConnectionType;
 
 class ConnectionTypeService extends CreatorService
 {
-
     public function __construct(ConnectionType $connectionType)
     {
         parent::__construct($connectionType);
@@ -18,8 +15,9 @@ class ConnectionTypeService extends CreatorService
     {
         $connectionTypeConfig = config('bulk-registration.csv_fields.connection_type');
         $connectionTypeData = [
-            'name' => $csvData[$connectionTypeConfig['name']]
+            'name' => $csvData[$connectionTypeConfig['name']],
         ];
+
         return $this->createRelatedDataIfDoesNotExists($connectionTypeData);
     }
 }

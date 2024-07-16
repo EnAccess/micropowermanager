@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Mailer
@@ -45,10 +44,10 @@ return [
             'auth_mode' => null,
         ],
         'strato' => [
-            'host' => 'smtp.strato.de', //your host to send through
+            'host' => 'smtp.strato.de', // your host to send through
             'smtp_auth' => true, // enable SMTP authentication
-            'username' => 'mpm@jumeme.com',// SMTP username
-            'password' => 'V6UHSTIHM3508SAUJ6TV', //SMTP username
+            'username' => 'mpm@jumeme.com', // SMTP username
+            'password' => 'V6UHSTIHM3508SAUJ6TV', // SMTP username
             'smtp_secure' => 'tls',
             'port' => '587',
             'default_sender' => 'MPM@micropowermanager.com',
@@ -116,5 +115,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
 ];

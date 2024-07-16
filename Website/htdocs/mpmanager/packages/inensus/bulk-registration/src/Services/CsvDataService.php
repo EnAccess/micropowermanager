@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
 
-
-use Inensus\BulkRegistration\Exceptions\ClusterNotFoundException;
 use Inensus\BulkRegistration\Exceptions\MissingDataException;
 use Inensus\BulkRegistration\Helpers\CsvDataProcessor;
 use Inensus\BulkRegistration\Helpers\CsvFileParser;
@@ -21,12 +18,10 @@ class CsvDataService
         $this->csvData = $csvData;
         $this->csvDataProcessor = $csvDataProcessor;
         $this->csvFileParser = $csvFileParser;
-
     }
 
     public function create($request)
     {
-
         $path = $request->file('csv');
         $parsedCsvData = $this->csvFileParser->parseCsvFromFilePath($path);
         $message = '';
@@ -40,10 +35,11 @@ class CsvDataService
         $csvData = $this->csvData->newQuery()->create([
             'csv_filename' => $request->file('csv')->getClientOriginalName(),
             'user_id' => auth()->user()->id,
-            'csv_data' => json_encode(array_values($parsedCsvData), true)
+            'csv_data' => json_encode(array_values($parsedCsvData), true),
         ]);
         $csvData['recently_created_records'] = $recentlyCreatedRecords;
         $csvData['alert'] = $message;
+
         return $csvData;
     }
 }

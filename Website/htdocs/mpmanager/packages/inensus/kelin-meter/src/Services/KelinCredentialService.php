@@ -3,13 +3,10 @@
 namespace Inensus\KelinMeter\Services;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCredential;
-
 
 class KelinCredentialService
 {
@@ -27,7 +24,6 @@ class KelinCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -36,7 +32,7 @@ class KelinCredentialService
             'password' => null,
             'is_authenticated' => 0,
             'api_url' => config('kelin-meter.root_url'),
-            'authentication_token' => null
+            'authentication_token' => null,
         ]);
     }
 
@@ -47,7 +43,6 @@ class KelinCredentialService
 
     public function updateCredentials($data)
     {
-
         $credential = $this->getCredentials();
         $credential->update([
             'username' => $data['username'],
@@ -57,18 +52,16 @@ class KelinCredentialService
         try {
             $queryParams = [
                 'userName' => $data['username'],
-                'passWord' => $data['password']
+                'passWord' => $data['password'],
             ];
             $result = $this->kelinApi->token($this->rootUrl, $queryParams);
             $credential->update([
                 'authentication_token' => $result['data']['token'],
-                'is_authenticated' => true
+                'is_authenticated' => true,
             ]);
-
         } catch (KelinApiResponseException $exception) {
             $credential->is_authenticated = false;
             $credential->authentication_token = null;
-
         } catch (GuzzleException $exception) {
             Log::critical(
                 'Unknown exception while authenticating KelinMeter',
@@ -78,6 +71,7 @@ class KelinCredentialService
             $credential->authentication_token = null;
         }
         $credential->save();
+
         return $credential->fresh();
     }
 
@@ -86,20 +80,20 @@ class KelinCredentialService
         $credential = $this->getCredentials();
         if (!$credential->username && !$credential->password) {
             Log::debug('KelinMeter credentials is not registered yet.');
+
             return;
         }
         try {
             $queryParams = [
                 'userName' => $credential->username,
-                'passWord' => $credential->password
+                'passWord' => $credential->password,
             ];
 
             $result = $this->kelinApi->token($this->rootUrl, $queryParams);
             $credential->update([
                 'authentication_token' => $result['data']['token'],
-                'is_authenticated' => true
+                'is_authenticated' => true,
             ]);
-
         } catch (KelinApiResponseException $exception) {
             $credential->is_authenticated = false;
             $credential->authentication_token = null;
@@ -112,7 +106,6 @@ class KelinCredentialService
                 'Unknown exception while  refreshing access token KelinMeter',
                 ['reason' => $exception->getMessage()]
             );
-
         }
     }
 }

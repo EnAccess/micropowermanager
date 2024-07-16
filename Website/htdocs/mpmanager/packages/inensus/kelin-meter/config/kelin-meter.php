@@ -6,5 +6,5 @@ return [
         'key' => '',
         'country' => '',
     ],
-    'paginate'=>15
+    'paginate' => 15,
 ];

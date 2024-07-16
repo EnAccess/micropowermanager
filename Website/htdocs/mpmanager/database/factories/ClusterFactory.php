@@ -19,7 +19,7 @@ class ClusterFactory extends Factory
         return [
             'name' => $this->faker->company,
             'manager_id' => $this->faker->numberBetween(1, 10),
-            'geo_data' => "{}"
+            'geo_data' => '{}',
         ];
     }
 }

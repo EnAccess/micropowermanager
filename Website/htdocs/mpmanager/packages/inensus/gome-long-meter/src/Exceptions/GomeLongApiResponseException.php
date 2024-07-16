@@ -9,4 +9,3 @@ class GomeLongApiResponseException extends \Exception
         parent::__construct($message);
     }
 }
-

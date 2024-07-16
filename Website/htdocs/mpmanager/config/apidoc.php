@@ -96,7 +96,6 @@ return [
              * A route must fulfill ALL conditions to pass.
              */
             'match' => [
-
                 /*
                  * Match only routes whose domains match this pattern (use * as a wildcard to match any characters).
                  */
@@ -109,15 +108,15 @@ return [
                  * Match only routes whose paths match this pattern (use * as a wildcard to match any characters).
                  */
                 'prefixes' => [
-                    'api/*'
+                    'api/*',
                     // 'api/people',
                     // 'api/people/*',
-                    //'api/meters',
-                    //'api/meters/*',
-                    //'api/tariffs',
-                    //'api/tariffs/*'
-                    //'api/transactions',
-                    //'api/transactions/*'
+                    // 'api/meters',
+                    // 'api/meters/*',
+                    // 'api/tariffs',
+                    // 'api/tariffs/*'
+                    // 'api/transactions',
+                    // 'api/transactions/*'
                     // 'users/*',
                 ],
 

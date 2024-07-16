@@ -2,11 +2,10 @@
 
 namespace Inensus\SparkMeter\Services;
 
-
-
 class MenuItemService
 {
-    const MENU_ITEM = 'Spark Meter';
+    public const MENU_ITEM = 'Spark Meter';
+
     public function createMenuItems()
     {
         $menuItem = [
@@ -15,7 +14,7 @@ class MenuItemService
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -56,6 +55,7 @@ class MenuItemService
             'url_slug' => '/spark-meters/sm-setting',
         ];
         array_push($subMenuItems, $subMenuItem7);
+
         return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

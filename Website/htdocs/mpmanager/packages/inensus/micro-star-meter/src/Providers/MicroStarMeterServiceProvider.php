@@ -2,16 +2,12 @@
 
 namespace Inensus\MicroStarMeter\Providers;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\MicroStarMeter\Console\Commands\InstallPackage;
 use Inensus\MicroStarMeter\Console\Commands\UpdatePackage;
 use Inensus\MicroStarMeter\Modules\Api\MicroStarMeterApi;
-use Inensus\MicroStarMeter\Providers\EventServiceProvider;
-use Inensus\MicroStarMeter\Providers\RouteServiceProvider;
-use Inensus\MicroStarMeter\Providers\ObserverServiceProvider;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class MicroStarMeterServiceProvider extends ServiceProvider
 {
@@ -28,7 +24,7 @@ class MicroStarMeterServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/micro-star-meter.php', 'micro-star-meter');
+        $this->mergeConfigFrom(__DIR__.'/../../config/micro-star-meter.php', 'micro-star-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('MicroStarMeterApi', MicroStarMeterApi::class);
@@ -37,38 +33,38 @@ class MicroStarMeterServiceProvider extends ServiceProvider
     public function publishConfigFiles()
     {
         $this->publishes([
-            __DIR__ . '/../../config/micro-star-meter.php' => config_path('micro-star-meter.php'),
+            __DIR__.'/../../config/micro-star-meter.php' => config_path('micro-star-meter.php'),
         ]);
     }
 
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__ . '/../resources/assets' => resource_path('assets/js/plugins/micro-star-meter'),
+            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/micro-star-meter'),
         ], 'vue-components');
     }
 
     public function publishMigrations($filesystem)
     {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_micro_star_tables.php.stub'
-            => $this->getMigrationFileName($filesystem),
+            __DIR__.'/../../database/migrations/create_micro_star_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
-
 
     protected function getMigrationFileName(Filesystem $filesystem): string
     {
         $timestamp = date('Y_m_d_His');
-        return Collection::make($this->app->databasePath() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)
+
+        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path . '*_create_micro_star_tables.php'))) {
-                    $file = $filesystem->glob($path . '*_create_micro_star_tables.php')[0];
+                if (count($filesystem->glob($path.'*_create_micro_star_tables.php'))) {
+                    $file = $filesystem->glob($path.'*_create_micro_star_tables.php')[0];
                     file_put_contents($file,
-                        file_get_contents(__DIR__ . '/../../database/migrations/create_micro_star_tables.php.stub'));
+                        file_get_contents(__DIR__.'/../../database/migrations/create_micro_star_tables.php.stub'));
                 }
-                return $filesystem->glob($path . '*_create_micro_star_tables.php');
-            })->push($this->app->databasePath() . "/migrations/{$timestamp}_create_micro_star_tables.php")
+
+                return $filesystem->glob($path.'*_create_micro_star_tables.php');
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_micro_star_tables.php")
             ->first();
     }
 }

@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Meter\Meter;
-use Illuminate\Database\Eloquent\Model;
 
 class SteamaMeter extends BaseModel
 {

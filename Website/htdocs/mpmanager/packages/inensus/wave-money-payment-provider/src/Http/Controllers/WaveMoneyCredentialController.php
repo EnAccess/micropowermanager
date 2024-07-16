@@ -12,13 +12,11 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class WaveMoneyCredentialController extends Controller
 {
-
     public function __construct(
         private WaveMoneyCredentialService $credentialService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
         private CompanyService $companyService
     ) {
-
     }
 
     public function show(): WaveMoneyResource
@@ -35,9 +33,9 @@ class WaveMoneyCredentialController extends Controller
         $secretKey = $request->input('secret_key');
         $id = $request->input('id');
         $merchantName = explode('_1', $company->name)[0];
-        $callbackUrl = URL::to('/') . "/api/wave-money/wave-money-transaction/callback/$companyId";
-        $paymentUrl = str_replace("api.","",URL::to('/'))  . "/#/wave-money/payment/$merchantName/$companyId";
-        $resultUrl = str_replace("api.","",URL::to('/')) . "/#/wave-money/result/$merchantName/$companyId";
+        $callbackUrl = URL::to('/')."/api/wave-money/wave-money-transaction/callback/$companyId";
+        $paymentUrl = str_replace('api.', '', URL::to('/'))."/#/wave-money/payment/$merchantName/$companyId";
+        $resultUrl = str_replace('api.', '', URL::to('/'))."/#/wave-money/result/$merchantName/$companyId";
 
         $credentials = $this->credentialService->updateCredentials([
             'id' => $id,

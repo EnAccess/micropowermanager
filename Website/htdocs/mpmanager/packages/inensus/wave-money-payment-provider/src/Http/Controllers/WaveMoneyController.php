@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Controllers;
@@ -14,7 +13,6 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionSer
 
 class WaveMoneyController extends Controller
 {
-
     public function __construct(
         private WaveMoneyTransactionService $transactionService,
         private WaveMoneyApiService $apiService
@@ -35,7 +33,7 @@ class WaveMoneyController extends Controller
 
         $this->transactionService->update($transaction, [
             'status' => $status,
-            'attempts' => $transaction->attempts + 1
+            'attempts' => $transaction->attempts + 1,
         ]);
     }
 }

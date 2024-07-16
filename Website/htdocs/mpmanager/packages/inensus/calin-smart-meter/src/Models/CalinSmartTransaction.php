@@ -7,11 +7,10 @@ use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ISubTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
-use MPM\Transaction\Provider\VodacomTransactionProvider;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-
+use MPM\Transaction\Provider\VodacomTransactionProvider;
 
 class CalinSmartTransaction extends BaseModel implements ISubTransaction
 {
@@ -46,6 +45,7 @@ class CalinSmartTransaction extends BaseModel implements ISubTransaction
     {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
+
     public function waveMoneyTransaction()
     {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');

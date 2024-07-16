@@ -8,11 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class TransactionListener
 {
-
     public function onTransactionFailed(Transaction $transaction, $message = null): void
     {
         $transactionProvider = resolve('SwiftaPaymentProvider');
-        $transactionProvider->conflict($message,$transaction);
+        $transactionProvider->conflict($message, $transaction);
         if (config('app.debug')) {
             Log::debug('Transaction failed');
         }
@@ -23,7 +22,6 @@ class TransactionListener
     {
         $transactionProvider = resolve('SwiftaPaymentProvider');
         $transactionProvider->sendResult(true, $transaction);
-
     }
 
     public function subscribe(Dispatcher $events)

@@ -14,6 +14,7 @@ class SteamaSmsLowBalanceBody extends SmsBodyParser
     {
         $this->steamaCustomer = $steamaCustomer;
     }
+
     protected function getVariableValue($variable)
     {
         switch ($variable) {
@@ -24,6 +25,7 @@ class SteamaSmsLowBalanceBody extends SmsBodyParser
                 $variable = $this->steamaCustomer->account_balance;
                 break;
         }
+
         return $variable;
     }
 }

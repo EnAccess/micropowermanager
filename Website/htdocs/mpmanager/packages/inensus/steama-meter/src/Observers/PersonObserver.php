@@ -11,13 +11,13 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class PersonObserver
 {
-
     private $apiHelpers;
     private $stmCustomerService;
     private $stmMeterService;
     private $stmCustomer;
     private $person;
     private $steamaApi;
+
     public function __construct(
         ApiHelpers $apiHelpers,
         SteamaMeterService $stmMeterService,
@@ -46,14 +46,14 @@ class PersonObserver
                 'meters.meter',
                 'addresses' => function ($q) {
                     return $q->where('is_primary', 1);
-                }
+                },
             ])->where('id', $personId)->first();
 
             $customerData = [
-                "id" => $stmCustomer->customer_id,
-                "first_name" => $person->name,
-                "last_name" => $person->surname,
-                "telephone" => $customer->addresses[0]->phone,
+                'id' => $stmCustomer->customer_id,
+                'first_name' => $person->name,
+                'last_name' => $person->surname,
+                'telephone' => $customer->addresses[0]->phone,
             ];
             $this->stmCustomerService->updateSteamaCustomerInfo($stmCustomer, $customerData);
         }

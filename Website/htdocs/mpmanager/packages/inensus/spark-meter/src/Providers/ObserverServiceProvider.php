@@ -12,7 +12,6 @@ use Inensus\SparkMeter\Observers\PersonObserver;
 
 class ObserverServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any events for your application.
      *

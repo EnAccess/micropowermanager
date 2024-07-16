@@ -14,7 +14,5 @@ class ObserverServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-
     }
 }

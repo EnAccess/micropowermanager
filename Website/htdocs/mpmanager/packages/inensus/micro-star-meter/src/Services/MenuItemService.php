@@ -2,20 +2,19 @@
 
 namespace Inensus\MicroStarMeter\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'MicroStar Meter';
+    public const MENU_ITEM = 'MicroStar Meter';
 
     public function createMenuItems()
     {
         $menuItem = [
-            'name' =>'MicroStar Meter',
-            'url_slug' =>'',
-            'md_icon' =>'bolt',
-            'usage_type' =>'mini-grid',
+            'name' => 'MicroStar Meter',
+            'url_slug' => '',
+            'md_icon' => 'bolt',
+            'usage_type' => 'mini-grid',
         ];
-        $subMenuItems= array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -23,7 +22,6 @@ class MenuItemService
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

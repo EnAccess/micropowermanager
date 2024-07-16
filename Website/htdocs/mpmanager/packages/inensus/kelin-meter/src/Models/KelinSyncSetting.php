@@ -12,9 +12,9 @@ class KelinSyncSetting extends BaseModel
     {
         return $this->hasOne(KelinSyncAction::class);
     }
+
     public function setting()
     {
         return $this->morphOne(KelinSetting::class, 'setting');
     }
-
 }

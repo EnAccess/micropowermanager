@@ -1,35 +1,29 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Console\Commands;
-
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Inensus\KelinMeter\Services\DailyConsumptionService;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
-
 class ReadDailyMeterConsumptions extends AbstractSharedCommand
 {
-    const MPM_PLUGIN_ID = 5;
     use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 5;
 
     protected $signature = 'kelin-meter:read-daily-consumptions';
     protected $description = 'Reads daily meter consumptions.';
 
     public function __construct(
-        private  DailyConsumptionService $dailyConsumptionService,
-        private  KelinCredentialService $credentialService
+        private DailyConsumptionService $dailyConsumptionService,
+        private KelinCredentialService $credentialService
     ) {
         parent::__construct();
-
     }
 
-
-   public function handle(): void
+    public function handle(): void
     {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
@@ -40,7 +34,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand
         $this->info('#############################');
         $this->info('# Kelin Meter Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('read-daily-consumptions command started at ' . $startedAt);
+        $this->info('read-daily-consumptions command started at '.$startedAt);
 
         if ($credentials->is_authenticated == 1) {
             $this->dailyConsumptionService->getDailyDataFromAPI();
@@ -49,7 +43,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand
         }
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('Took '.$totalTime.' seconds.');
         $this->info('#############################');
     }
 }

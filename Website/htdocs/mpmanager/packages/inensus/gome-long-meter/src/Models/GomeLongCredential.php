@@ -15,7 +15,7 @@ class GomeLongCredential extends BaseModel
 
     public function getUserPassword()
     {
-            return $this->user_password;
+        return $this->user_password;
     }
 
     public function getApiUrl()

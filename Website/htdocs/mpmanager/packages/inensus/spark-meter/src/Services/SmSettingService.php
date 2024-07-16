@@ -3,8 +3,6 @@
 namespace Inensus\SparkMeter\Services;
 
 use Inensus\SparkMeter\Models\SmSetting;
-use Inensus\SparkMeter\Models\SmSmsSetting;
-use Inensus\SparkMeter\Models\SmSyncSetting;
 
 class SmSettingService
 {
@@ -17,7 +15,6 @@ class SmSettingService
 
     public function getSettings()
     {
-
-        return $this->smSetting->newQuery()->with(['settingSms','settingSync'])->whereHasMorph('setting', '*')->get();
+        return $this->smSetting->newQuery()->with(['settingSms', 'settingSync'])->whereHasMorph('setting', '*')->get();
     }
 }

@@ -3,25 +3,22 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 06.09.18
- * Time: 11:14
+ * Time: 11:14.
  */
 
 namespace Inensus\Ticket\Services;
-
 
 use App\Models\User;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketUser;
 
-
-class TicketUserService  implements IBaseService
+class TicketUserService implements IBaseService
 {
     public function __construct(
         private TicketUser $ticketUser,
         private User $user,
     ) {
     }
-
 
     public function getAll($limit = null, $outsource = null)
     {
@@ -35,7 +32,7 @@ class TicketUserService  implements IBaseService
             return $ticketUsers->paginate($limit);
         }
 
-         return $ticketUsers->get();
+        return $ticketUsers->get();
     }
 
     public function getById($externId)
@@ -61,7 +58,7 @@ class TicketUserService  implements IBaseService
     public function findByPhone(string $phone): TicketUser
     {
         /** @var TicketUser $result */
-        $result =  $this->ticketUser->newQuery()->where('phone', '=', $phone)
+        $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
 
         return $result;
@@ -74,7 +71,7 @@ class TicketUserService  implements IBaseService
             $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())
                 ->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
-            $result =$this->ticketUser->newQuery()->create([
+            $result = $this->ticketUser->newQuery()->create([
                 'user_id' => $user->getId(),
                 'phone' => null,
                 'user_name' => $user->getName(),
@@ -83,5 +80,4 @@ class TicketUserService  implements IBaseService
 
         return $result;
     }
-
 }

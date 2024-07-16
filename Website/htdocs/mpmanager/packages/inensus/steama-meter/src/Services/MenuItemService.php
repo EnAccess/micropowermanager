@@ -2,11 +2,9 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use App\Models\MenuItems;
-
 class MenuItemService
 {
-    const MENU_ITEM = 'Steamaco Meter';
+    public const MENU_ITEM = 'Steamaco Meter';
 
     public function createMenuItems()
     {
@@ -16,7 +14,7 @@ class MenuItemService
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',

@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -11,7 +9,7 @@ class MeterTypeTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_meter_type_list()
+    public function testUserGetsMeterTypeList()
     {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
@@ -26,7 +24,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->meterTypes));
     }
 
-    public function test_user_gets_meter_type_by_id()
+    public function testUserGetsMeterTypeById()
     {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
@@ -42,7 +40,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $this->meterTypes[0]->phase);
     }
 
-    public function test_user_creates_new_meter_type()
+    public function testUserCreatesNewMeterType()
     {
         $connectionTypeCount = 0;
         $subConnectionTypeCount = 0;
@@ -63,9 +61,8 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $meterTypeData['phase']);
     }
 
-    public function test_user_updates_a_meter_type()
+    public function testUserUpdatesAMeterType()
     {
-
         $meterTypeCount = 1;
         $meterTariffCount = 1;
         $this->createTestData();
@@ -82,13 +79,13 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $meterTypeData['phase']);
     }
 
-    public function test_user_gets_meter_types_with_meter_relation_by_meter_type_id()
+    public function testUserGetsMeterTypesWithMeterRelationByMeterTypeId()
     {
         $connectionTypeCount = 2;
         $this->createTestData();
         $this->createMeterTariff();
         $this->createConnectionGroup();
-        $this->createConnectionType($connectionTypeCount );
+        $this->createConnectionType($connectionTypeCount);
         $this->createMeterType();
         $this->createMeterManufacturer();
         $this->createPerson();
@@ -98,7 +95,6 @@ class MeterTypeTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']['meters']), 1);
     }
-
 
     public function actingAs($user, $driver = null)
     {

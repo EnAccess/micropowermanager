@@ -6,7 +6,6 @@ use App\Models\Manufacturer;
 
 class InsertSparkMeterApi
 {
-
     private $manufacturer;
 
     public function __construct(
@@ -22,7 +21,7 @@ class InsertSparkMeterApi
             $this->manufacturer->newQuery()->create([
                 'name' => 'Spark Meters',
                 'website' => 'https://www.sparkmeter.io/',
-                'api_name' => 'SparkMeterApi'
+                'api_name' => 'SparkMeterApi',
             ]);
         }
     }

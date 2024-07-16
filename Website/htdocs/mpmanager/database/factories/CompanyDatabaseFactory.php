@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class CompanyDatabaseFactory extends Factory
 {
     protected $model = CompanyDatabase::class;
+
     /**
      * Define the model's default state.
      *
@@ -16,8 +17,8 @@ class CompanyDatabaseFactory extends Factory
     public function definition()
     {
         return [
-            'company_id'=>1,
-            'database_name'=>'test_company_db',
+            'company_id' => 1,
+            'database_name' => 'test_company_db',
         ];
     }
 }

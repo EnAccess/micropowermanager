@@ -4,10 +4,8 @@ namespace Inensus\AngazaSHS\Services;
 
 use App\Models\Manufacturer;
 
-
 class ManufacturerService
 {
-
     public function __construct(private Manufacturer $manufacturer)
     {
     }
@@ -18,9 +16,9 @@ class ManufacturerService
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Angaza SHS',
-                'type'=>'shs',
+                'type' => 'shs',
                 'website' => 'https://devices.angaza.com/',
-                'api_name' => 'AngazaSHSApi'
+                'api_name' => 'AngazaSHSApi',
             ]);
         }
     }

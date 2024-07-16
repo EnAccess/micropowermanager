@@ -4,10 +4,10 @@ namespace Inensus\SteamaMeter\Http\Clients;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Inensus\SteamaMeter\Helpers\ApiHelpers;
-use Inensus\SteamaMeter\Models\SteamaCredential;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
+use Inensus\SteamaMeter\Helpers\ApiHelpers;
+use Inensus\SteamaMeter\Models\SteamaCredential;
 
 class SteamaMeterApiClient
 {
@@ -34,18 +34,19 @@ class SteamaMeterApiClient
         }
         try {
             $request = $this->client->get(
-                $credential->api_url . $url,
+                $credential->api_url.$url,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authorization' => 'Token ' . $credential->authentication_token
+                        'Authorization' => 'Token '.$credential->authentication_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function token($url, $postParams)
@@ -57,7 +58,7 @@ class SteamaMeterApiClient
         }
         try {
             $request = $this->client->post(
-                $credential->api_url . $url,
+                $credential->api_url.$url,
                 [
                     'body' => json_encode($postParams),
                     'headers' => [
@@ -68,7 +69,8 @@ class SteamaMeterApiClient
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function post($url, $postParams)
@@ -80,19 +82,20 @@ class SteamaMeterApiClient
         }
         try {
             $request = $this->client->post(
-                $credential->api_url . $url,
+                $credential->api_url.$url,
                 [
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authorization' => 'Token ' . $credential->authentication_token
+                        'Authorization' => 'Token '.$credential->authentication_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function put($url, $putParams)
@@ -105,19 +108,20 @@ class SteamaMeterApiClient
 
         try {
             $request = $this->client->put(
-                $credential->api_url . $url,
+                $credential->api_url.$url,
                 [
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authorization' => 'Token ' . $credential->authentication_token
+                        'Authorization' => 'Token '.$credential->authentication_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function patch($url, $putParams)
@@ -129,19 +133,20 @@ class SteamaMeterApiClient
         }
         try {
             $request = $this->client->patch(
-                $credential->api_url . $url,
+                $credential->api_url.$url,
                 [
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authorization' => 'Token ' . $credential->authentication_token
+                        'Authorization' => 'Token '.$credential->authentication_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function getByParams($url, $params)
@@ -151,9 +156,9 @@ class SteamaMeterApiClient
         } catch (\Exception $e) {
             throw new ModelNotFoundException($e->getMessage());
         }
-        $apiUrl = $credential->api_url . $url . '?';
+        $apiUrl = $credential->api_url.$url.'?';
         foreach ($params as $key => $value) {
-            $apiUrl .= $key . "=" . $value . "&";
+            $apiUrl .= $key.'='.$value.'&';
         }
         $apiUrl = substr($apiUrl, 0, -1);
 
@@ -163,14 +168,15 @@ class SteamaMeterApiClient
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authorization' => 'Token ' . $credential->authentication_token
+                        'Authorization' => 'Token '.$credential->authentication_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SteamaApiResponseException($exception->getMessage());
         }
-        return json_decode((string)$request->getBody(), true);
+
+        return json_decode((string) $request->getBody(), true);
     }
 
     public function getCredentials()

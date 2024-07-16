@@ -23,6 +23,6 @@ class ImportCertificateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ['cert' => "required"];
+        return ['cert' => 'required'];
     }
 }

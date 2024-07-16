@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class AppliancePersonFactory extends Factory
 {
     protected $model = AssetPerson::class;
+
     /**
      * Define the model's default state.
      *

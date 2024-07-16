@@ -7,10 +7,8 @@ use Inensus\SunKingSHS\Http\Requests\SunKingCredentialRequest;
 use Inensus\SunKingSHS\Http\Resources\SunKingResource;
 use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
-
 class SunKingCredentialController extends Controller
 {
-
     public function __construct(private SunKingCredentialService $credentialService)
     {
     }
@@ -25,7 +23,7 @@ class SunKingCredentialController extends Controller
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
             'client_id',
-            'client_secret'
+            'client_secret',
         ]);
         $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
 

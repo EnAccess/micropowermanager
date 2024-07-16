@@ -4,7 +4,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 20.08.18
- * Time: 14:58
+ * Time: 14:58.
  */
 
 namespace Inensus\SparkMeter\Models;
@@ -21,6 +21,7 @@ class BaseModel extends Model
         parent::__construct($attributes);
         $this->setConnection('shard');
     }
+
     public function resolveChildRouteBinding($childType, $value, $field)
     {
         // TODO: Implement resolveChildRouteBinding() method.

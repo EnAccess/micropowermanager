@@ -9,6 +9,7 @@ use Inensus\Ticket\Http\Controllers\Controller;
 class SmSmsVariableDefaultValueController extends Controller
 {
     private $smsVariableDefaultSValueService;
+
     public function __construct(SmSmsVariableDefaultValueService $smsVariableDefaultSValueService)
     {
         $this->smsVariableDefaultSValueService = $smsVariableDefaultSValueService;

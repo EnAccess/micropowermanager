@@ -13,6 +13,7 @@ class SmSyncSettingService
     private $syncSetting;
     private $setting;
     private $syncActionService;
+
     public function __construct(SmSyncSetting $syncSetting, SmSetting $setting, SmSyncActionService $syncActionService)
     {
         $this->syncSetting = $syncSetting;
@@ -39,11 +40,10 @@ class SmSyncSettingService
             $siteSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncSite->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
 
         $syncMeterMotel = $this->syncSetting->newQuery()->where('action_name', 'MeterModels')->first();
         if (!$syncMeterMotel) {
@@ -58,11 +58,10 @@ class SmSyncSettingService
             $meterModelSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncMeterMotel->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
 
         $syncTariff = $this->syncSetting->newQuery()->where('action_name', 'Tariffs')->first();
         if (!$syncTariff) {
@@ -77,7 +76,7 @@ class SmSyncSettingService
             $tariffSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncTariff->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -95,7 +94,7 @@ class SmSyncSettingService
             $customerSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncCustomer->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -113,7 +112,7 @@ class SmSyncSettingService
             $transactionSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncTransaction->id,
-                'next_sync' => $now->add($fiveMinInterval)
+                'next_sync' => $now->add($fiveMinInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -131,7 +130,7 @@ class SmSyncSettingService
             $salesAccountSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncSalesAccount->id,
-                'next_sync' => $now->add($fiveMinInterval)
+                'next_sync' => $now->add($fiveMinInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -141,11 +140,11 @@ class SmSyncSettingService
     {
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
-            $intervalStr = $setting['sync_in_value_num'] . $setting['sync_in_value_str'];
+            $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
             $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
 
             if ($syncSetting) {
-                $date =  Carbon::now();
+                $date = Carbon::now();
                 $interval = CarbonInterval::make($intervalStr);
 
                 $syncSetting->update([
@@ -155,10 +154,11 @@ class SmSyncSettingService
                 ]);
 
                 $syncSettingAction->update([
-                    'next_sync' => $date->add($interval)
+                    'next_sync' => $date->add($interval),
                 ]);
             }
         }
+
         return $this->syncSetting->newQuery()->get();
     }
 
@@ -172,7 +172,7 @@ class SmSyncSettingService
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (ModelNotFoundException $exception) {
-            throw  new ModelNotFoundException($exception->getMessage());
+            throw new ModelNotFoundException($exception->getMessage());
         }
     }
 }

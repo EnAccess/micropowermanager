@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -120,7 +119,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -151,7 +149,6 @@ return [
          * Package Service Providers...
          */
 
-
         /*
          * Application Service Providers...
          */
@@ -162,30 +159,28 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-
         App\Providers\VodacomServiceProvider::class,
-        App\Providers\ServicesProvider::class, //for helper services
-        \App\Providers\ServicesServiceProvider::class, // repositories
+        App\Providers\ServicesProvider::class, // for helper services
+        App\Providers\ServicesServiceProvider::class, // repositories
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        \Inensus\Ticket\Providers\TicketServiceProvider::class,
-        \Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
-        \Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
-        \Inensus\KelinMeter\Providers\KelinMeterServiceProvider::class,
-        \Inensus\CalinMeter\Providers\CalinMeterServiceProvider::class,
-        \Inensus\StronMeter\Providers\StronMeterServiceProvider::class,
-        \Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider::class,
-        \Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider::class,
-        \Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
-        \Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider::class,
-        \Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
-        \Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
-        \Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
-        \Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider::class,
-        \Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
-        \Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
-        \Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider::class,
-        \Inensus\DalyBms\Providers\DalyBmsServiceProvider::class
-
+        Inensus\Ticket\Providers\TicketServiceProvider::class,
+        Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
+        Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
+        Inensus\KelinMeter\Providers\KelinMeterServiceProvider::class,
+        Inensus\CalinMeter\Providers\CalinMeterServiceProvider::class,
+        Inensus\StronMeter\Providers\StronMeterServiceProvider::class,
+        Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider::class,
+        Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider::class,
+        Inensus\MesombPaymentProvider\Providers\MesombServiceProvider::class,
+        Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider::class,
+        Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider::class,
+        Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider::class,
+        Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider::class,
+        Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider::class,
+        Inensus\GomeLongMeter\Providers\GomeLongMeterServiceProvider::class,
+        Inensus\WavecomPaymentProvider\Providers\WavecomPaymentProviderServiceProvider::class,
+        Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider::class,
+        Inensus\DalyBms\Providers\DalyBmsServiceProvider::class,
     ],
 
     /*
@@ -200,7 +195,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -236,7 +230,5 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
-
     ],
-
 ];

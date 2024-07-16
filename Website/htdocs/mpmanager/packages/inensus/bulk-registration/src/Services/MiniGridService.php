@@ -1,17 +1,12 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
 
-
 use App\Models\MiniGrid;
-use Illuminate\Support\Facades\Log;
-use Inensus\BulkRegistration\Exceptions\ClusterNotFoundException;
 use Inensus\BulkRegistration\Exceptions\MiniGridNotFoundException;
 
 class MiniGridService extends CreatorService
 {
-
     public function __construct(MiniGrid $miniGrid)
     {
         parent::__construct($miniGrid);
@@ -28,16 +23,16 @@ class MiniGridService extends CreatorService
         $registeredMiniGrid = MiniGrid::query()->where('name', $csvData[$miniGridConfig['name']])->first();
 
         if (!$registeredMiniGrid) {
-
-            $message = 'There is no registered Mini Grid for ' . $csvData[$miniGridConfig['name']] .
+            $message = 'There is no registered Mini Grid for '.$csvData[$miniGridConfig['name']].
                 '. Please add the Mini Grid first.';
-            throw  new MiniGridNotFoundException($message);
+            throw new MiniGridNotFoundException($message);
         }
 
         $miniGridData = [
             'cluster_id' => $csvData[$miniGridConfig['cluster_id']],
-            'name' => $csvData[$miniGridConfig['name']]
+            'name' => $csvData[$miniGridConfig['name']],
         ];
+
         return $this->createRelatedDataIfDoesNotExists($miniGridData);
     }
 }

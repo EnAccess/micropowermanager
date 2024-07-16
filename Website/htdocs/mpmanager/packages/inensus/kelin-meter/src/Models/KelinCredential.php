@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\KelinMeter\Models;
 
 use App\Models\BaseModel;

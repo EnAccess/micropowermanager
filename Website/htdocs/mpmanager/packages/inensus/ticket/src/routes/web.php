@@ -2,12 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-
-
-
 Route::group(['prefix' => 'api'], function () {
-
-
     Route::group(['prefix' => 'ticket'], function () {
         Route::get('/', 'TicketController@index');
         Route::post('/', 'TicketCustomerController@store');
@@ -33,4 +28,3 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/export/outsource', 'TicketExportController@outsource');
     Route::get('/export/download/{id}/book-keeping', 'TicketExportController@download');
 });
-

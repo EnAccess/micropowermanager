@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Sms\BodyParsers;
 
 use App\Sms\BodyParsers\SmsBodyParser;
@@ -9,6 +8,7 @@ class SparkSmsMeterResetFailedFeedbackBody extends SmsBodyParser
 {
     protected $variables = ['meter_serial'];
     protected $data;
+
     public function __construct($data)
     {
         $this->data = $data;
@@ -21,6 +21,7 @@ class SparkSmsMeterResetFailedFeedbackBody extends SmsBodyParser
                 $variable = $this->data['meter'];
                 break;
         }
+
         return $variable;
     }
 }

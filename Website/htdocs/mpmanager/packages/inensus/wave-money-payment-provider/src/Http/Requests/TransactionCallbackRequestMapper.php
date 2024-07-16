@@ -30,7 +30,6 @@ class TransactionCallbackRequestMapper
     private const BODY_PARAM_ADDITIONAL_FIELD_4 = 'additionalField4';
     private const BODY_PARAM_ADDITIONAL_FIELD_5 = 'additionalField5';
 
-
     public function getMappedObject(Request $request): TransactionCallbackData
     {
         return new TransactionCallbackData(
@@ -42,7 +41,7 @@ class TransactionCallbackRequestMapper
             $request->input(self::BODY_PARAM_BACKEND_RESULT_URL),
             $request->input(self::BODY_PARAM_INITIATOR_MSISDN),
             floatval($request->input(self::BODY_PARAM_AMOUNT)),
-            (int)$request->input(self::BODY_PARAM_TIME_TO_LIVE_SECONDS),
+            (int) $request->input(self::BODY_PARAM_TIME_TO_LIVE_SECONDS),
             $request->input(self::BODY_PARAM_PAYMENT_DESCRIPTION),
             $request->input(self::BODY_PARAM_CURRENCY),
             $request->input(self::BODY_PARAM_HASH_VALUE),
@@ -54,7 +53,6 @@ class TransactionCallbackRequestMapper
             $request->input(self::BODY_PARAM_ADDITIONAL_FIELD_3),
             $request->input(self::BODY_PARAM_ADDITIONAL_FIELD_4),
             $request->input(self::BODY_PARAM_ADDITIONAL_FIELD_5),
-
         );
     }
 }

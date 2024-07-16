@@ -42,7 +42,7 @@ Route::group(['prefix' => 'steama-meters'], function () {
         Route::get('/', 'SteamaSettingController@index');
         Route::group(['prefix' => 'sms-setting'], function () {
             Route::put('/', 'SteamaSmsSettingController@update');
-            //Sms
+            // Sms
             Route::group(['prefix' => 'sms-body'], static function () {
                 Route::get('/', 'SteamaSmsBodyController@index');
                 Route::put('/', 'SteamaSmsBodyController@update');

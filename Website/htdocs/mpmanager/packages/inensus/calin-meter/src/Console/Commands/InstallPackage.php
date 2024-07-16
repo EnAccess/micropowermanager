@@ -4,8 +4,8 @@ namespace Inensus\CalinMeter\Console\Commands;
 
 use Illuminate\Console\Command;
 use Inensus\CalinMeter\Helpers\ApiHelpers;
-use Inensus\CalinMeter\Services\MenuItemService;
 use Inensus\CalinMeter\Services\CalinCredentialService;
+use Inensus\CalinMeter\Services\MenuItemService;
 
 class InstallPackage extends Command
 {
@@ -15,6 +15,7 @@ class InstallPackage extends Command
     private $menuItemService;
     private $apiHelpers;
     private $credentialService;
+
     public function __construct(
         MenuItemService $menuItemService,
         ApiHelpers $apiHelpers,
@@ -33,12 +34,13 @@ class InstallPackage extends Command
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
+
     private function publishMigrations()
     {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
-            '--provider' => "qq",
-            '--tag' => "migrations"
+            '--provider' => 'qq',
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -53,16 +55,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\CalinMeter\Providers\CalinMeterServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "CalinMeter",
-            'composer_name' => "inensus/calin-meter",
-            'description' => "CalinMeter integration package for MicroPowerManager",
+            'name' => 'CalinMeter',
+            'composer_name' => 'inensus/calin-meter',
+            'description' => 'CalinMeter integration package for MicroPowerManager',
         ]);
     }
 
