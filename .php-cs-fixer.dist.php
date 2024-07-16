@@ -10,6 +10,9 @@
 
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
+    ->exclude([
+        'bootstrap/cache',
+    ])
 ;
 
 return (new PhpCsFixer\Config())
