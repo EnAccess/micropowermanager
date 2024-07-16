@@ -100,10 +100,8 @@
       "@php artisan key:generate --ansi"
     ],
     "lint": "find . -name \\*.php -not -path './lib/composer/*' -not -path './vendor/*' -not -path './build/.phan/*' -exec php -l \"{}\" \\;",
-    "php-cs-fixer-fix": "php-cs-fixer fix --diff app/",
-    "php-cs-fixer-check": "php-cs-fixer check --diff app/",
-    "php-cs-fixer-fix-all": "php-cs-fixer fix --diff",
-    "php-cs-fixer-check-all": "php-cs-fixer check --diff",
+    "php-cs-fixer-fix": "php-cs-fixer fix --diff",
+    "php-cs-fixer-check": "php-cs-fixer check --diff",
     "analyze": "phpstan analyse --memory-limit=2G --no-progress --level=max --configuration=phpstan.neon --autoload-file=vendor/autoload.php --error-format=table app/ packages/ tests/",
     "psalm-check": "psalm app/"
   }

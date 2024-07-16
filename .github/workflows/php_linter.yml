@@ -32,12 +32,8 @@ jobs:
           composer install --no-interaction --prefer-dist
         working-directory: ./Website/htdocs/mpmanager
 
-      - name: Run PHP-CS-Fixer (src)
+      - name: Run PHP-CS-Fixer
         run: composer run php-cs-fixer-check
-        working-directory: ./Website/htdocs/mpmanager
-
-      - name: Run PHP-CS-Fixer (all)
-        run: composer run php-cs-fixer-check-all
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHPStan
