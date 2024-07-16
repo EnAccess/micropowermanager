@@ -32,9 +32,15 @@ jobs:
           composer install --no-interaction --prefer-dist
         working-directory: ./Website/htdocs/mpmanager
 
-      - name: Run PHP-CS-Fixer
+      - name: Run PHP-CS-Fixer (src)
         run: composer run php-cs-fixer-check
         working-directory: ./Website/htdocs/mpmanager
+
+        # Temporary check for Code Style in entire code base
+      - name: Run PHP-CS-Fixer (all)
+        run: composer run php-cs-fixer-check-all
+        working-directory: ./Website/htdocs/mpmanager
+        continue-on-error: true
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --error-format=table  app/Http app/Services app/Models/ app/Events app/Listeners app/Misc app/modules --memory-limit=2G  --level=1
