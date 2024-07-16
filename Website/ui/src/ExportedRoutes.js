@@ -32,7 +32,7 @@ import TariffList from './pages/Tariff/index.vue'
 import TariffDetail from './pages/Tariff/_id.vue'
 import MeterList from './pages/Meter/index.vue'
 import MeterDetail from './pages/Meter/_id.vue'
-// import MeterTypeList from './pages/MeterType/index.vue'
+import MeterTypeList from './pages/MeterType/index.vue'
 import SolarHomeSystem from './pages/SolarHomeSystem/index.vue'
 import TargetList from './pages/Target/index.vue'
 import TargetNew from './pages/Target/New/index.vue'
@@ -481,6 +481,17 @@ export const exportedRoutes = [
         },
         children: [
             {
+                path: 'types',
+                component: MeterTypeList,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Types',
+                    },
+                },
+            },
+            {
                 path: '',
                 component: ChildRouteWrapper,
                 meta: {
@@ -516,18 +527,6 @@ export const exportedRoutes = [
                         },
                     },
                 ],
-            },
-            {
-                path: 'types',
-                // FIXME: https://github.com/EnAccess/micropowermanager/issues/144
-                component: require('./pages/MeterType/index.vue').default,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Types',
-                    },
-                },
             },
         ],
     },
