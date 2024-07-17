@@ -357,7 +357,7 @@ import { AvailablityChecker } from '@/classes/target/AvailablityChecker'
 import { ConnectionTypes } from '@/classes/connection/ConnectionTypes'
 import { NumberOfCustomers } from '@/classes/connection/NumberOfCustomers'
 import { currency } from '@/mixins/currency'
-import { Targets } from '@/classes/target/Targets'
+import { Targets } from '@/services/TargetService'
 import { baseUrl } from '@/repositories/Client/AxiosClient'
 
 export default {
