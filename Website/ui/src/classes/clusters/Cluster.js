@@ -1,4 +1,4 @@
-import { City } from '../Cities/city'
+import { City } from '@/services/CityService'
 
 export class Cluster {
     constructor() {}
