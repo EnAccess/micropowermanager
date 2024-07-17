@@ -1,6 +1,6 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 
 export class ConnectionGroupService {

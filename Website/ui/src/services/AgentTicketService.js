@@ -1,5 +1,5 @@
 import { TicketTrelloService } from './TicketTrelloService'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 
 export class AgentTicketService {

@@ -90,7 +90,7 @@
 
 <script>
 import { resources } from '@/resources'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { EventBus } from '@/shared/eventbus'
 import Widget from '@/shared/widget'
 import { People } from '@/services/PersonService'
