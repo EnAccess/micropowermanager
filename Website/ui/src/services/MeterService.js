@@ -1,7 +1,7 @@
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { Manufacturers } from '@/services/ManufacturerService'
 import { EventBus } from '@/shared/eventbus'
 

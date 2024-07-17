@@ -1,4 +1,4 @@
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import Repository from '../repositories/RepositoryFactory'
 export class AgentReceiptService {

@@ -4,7 +4,7 @@ import moment from 'moment'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 import { resources } from '@/resources'
 
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { EventBus } from '@/shared/eventbus'
 export class Person {
     constructor() {

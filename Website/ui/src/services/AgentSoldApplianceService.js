@@ -1,5 +1,5 @@
 import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 
 export class AgentSoldApplianceService {
     constructor(agentId) {

@@ -1,5 +1,5 @@
 import RepositoryFactory from '@/repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import {
     convertObjectKeysToCamelCase,
     convertObjectKeysToSnakeCase,
