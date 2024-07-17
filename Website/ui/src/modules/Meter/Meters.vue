@@ -53,7 +53,7 @@
 <script>
 import Widget from '@/shared/widget'
 import { Meters } from '@/classes/Meters'
-import { Manufacturers } from '@/classes/Manufacturer'
+import { Manufacturers } from '@/services/ManufacturerService'
 import { EventBus } from '@/shared/eventbus'
 import { timing } from '@/mixins/timing'
 

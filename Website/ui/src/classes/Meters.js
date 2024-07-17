@@ -1,6 +1,6 @@
 import { resources } from '@/resources'
 import { Paginator } from './paginator'
-import { Manufacturers } from './Manufacturer'
+import { Manufacturers } from '@/services/ManufacturerService'
 import { EventBus } from '@/shared/eventbus'
 
 export class Meter {
