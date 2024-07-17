@@ -88,8 +88,9 @@
 <script>
 import Widget from '../../shared/widget'
 import moment from 'moment'
-import { Consumptions } from '@/classes/meter/Consumptions'
+import { Consumptions } from '@/services/MeterConsumptionService'
 import { currency } from '@/mixins/currency'
+
 export default {
     name: 'Readings.vue',
     components: { Widget },
