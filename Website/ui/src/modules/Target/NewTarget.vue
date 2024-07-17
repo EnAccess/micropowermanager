@@ -353,8 +353,10 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { ConnectionTypes } from '@/services/ConnectionTypeService'
-import { NumberOfCustomers } from '@/classes/connection/NumberOfCustomers'
+import {
+    ConnectionTypes,
+    NumberOfCustomers,
+} from '@/services/ConnectionTypeService'
 import { currency } from '@/mixins/currency'
 import { Targets } from '@/services/TargetService'
 import { baseUrl } from '@/repositories/Client/AxiosClient'
