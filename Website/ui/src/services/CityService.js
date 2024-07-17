@@ -2,7 +2,30 @@ import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
-import { Cluster } from '@/classes/clusters/Cluster'
+// FIXME: Why is this here? It seems redundant, wrong and circular:
+// Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
+class Cluster {
+    constructor() {}
+
+    fromJson(jsonData) {
+        this.id = jsonData.id
+        this.name = jsonData.name
+        this.manager = jsonData.manager
+        if ('cities' in jsonData) {
+            this.cities = this.fetchCities()
+        }
+    }
+
+    fetchCities(cities) {
+        let result = []
+        for (let i in cities) {
+            let cityData = cities[i]
+            let city = new City()
+            city.fromJson(cityData)
+            result.push(city)
+        }
+    }
+}
 
 export class Country {
     constructor() {}
