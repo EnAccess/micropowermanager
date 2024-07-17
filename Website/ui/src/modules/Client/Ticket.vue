@@ -130,7 +130,7 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { Ticket, UserTickets } from '@/classes/person/ticket'
+import { Ticket, UserTickets } from '@/services/TicketService'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 import { Paginator } from '@/classes/paginator'
