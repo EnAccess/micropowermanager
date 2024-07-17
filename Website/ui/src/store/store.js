@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Person } from '@/classes/person'
+import { Person } from '@/services/PersonService'
 import * as auth from '@/store/modules/authentication'
 import * as settings from '@/store/modules/settings'
 import * as resolution from '@/store/modules/resolution'
