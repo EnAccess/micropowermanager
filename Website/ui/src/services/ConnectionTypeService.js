@@ -3,7 +3,7 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/classes/paginator'
 import { resources } from '@/resources'
 
-import Client, { baseUrl } from '../../repositories/Client/AxiosClient'
+import Client, { baseUrl } from '@/repositories/Client/AxiosClient'
 
 export class ConnectionsType {
     constructor() {
