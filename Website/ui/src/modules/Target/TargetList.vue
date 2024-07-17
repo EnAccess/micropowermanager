@@ -78,7 +78,7 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { Targets } from '@/classes/target/Targets'
+import { Targets } from '@/services/TargetService'
 import { EventBus } from '@/shared/eventbus'
 
 export default {
