@@ -1,4 +1,4 @@
-import { City } from '../Cities/city'
+import { City } from '@/services/CityService'
 import { SubTarget } from './SubTarget'
 
 export class Target {
