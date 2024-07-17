@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { Transactions } from '@/classes/meter/transactions'
+import { Transactions } from '@/services/TransactionService'
 import { MeterDetailService } from '@/services/MeterDetailService'
 import MeterBasic from '@/modules/Meter/Basic'
 import MeterDetails from '@/modules/Meter/Details'
