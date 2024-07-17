@@ -4,6 +4,22 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 
+export class Transactions {
+    constructor(meterId) {
+        this.tokens = []
+        this.paginator = new Paginator(
+            resources.meters.transactions + meterId + '/transactions',
+        )
+    }
+
+    updateList(data) {
+        this.tokens = []
+        for (let t in data) {
+            this.tokens.push(data[t])
+        }
+    }
+}
+
 export class TransactionService {
     constructor() {
         this.repository = Repository.get('transaction')
