@@ -2,8 +2,17 @@ import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
-import { Country } from '@/classes/Country'
 import { Cluster } from '@/classes/clusters/Cluster'
+
+export class Country {
+    constructor() {}
+
+    fromJson(jsonData) {
+        this.id = jsonData.id
+        this.name = jsonData.county_name
+        this.countryCode = jsonData.country_code
+    }
+}
 
 export class City {
     constructor() {}
