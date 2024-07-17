@@ -353,12 +353,12 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { AvailablityChecker } from '@/classes/target/AvailablityChecker'
 import { ConnectionTypes } from '@/classes/connection/ConnectionTypes'
 import { NumberOfCustomers } from '@/classes/connection/NumberOfCustomers'
 import { currency } from '@/mixins/currency'
 import { Targets } from '@/services/TargetService'
 import { baseUrl } from '@/repositories/Client/AxiosClient'
+import { resources } from '@/resources'
 
 export default {
     name: 'NewTarget',
@@ -418,7 +418,6 @@ export default {
             targetDestinations: [], // mini-grid or cluster list
             targetAssignType: null, // determines if the target is whether for a mini-grip or for a cluster.
             targetAssignId: null, //the id of the mini-grid or cluster
-            slotChecker: new AvailablityChecker(),
             connectionTypes: new ConnectionTypes(),
             numberOfCustomers: new NumberOfCustomers(),
             targets: new Targets(),
