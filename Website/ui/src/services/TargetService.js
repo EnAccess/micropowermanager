@@ -3,7 +3,7 @@ import { resources } from '@/resources'
 import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { City } from '@/services/CityService'
-import { ConnectionsType } from '@/classes/connection/ConnectionsType'
+import { ConnectionsType } from '@/services/ConnectionTypeService'
 
 export class SubTarget {
     constructor() {

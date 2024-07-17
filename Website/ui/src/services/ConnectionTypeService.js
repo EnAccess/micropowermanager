@@ -3,6 +3,83 @@ import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/classes/paginator'
 import { resources } from '@/resources'
 
+import Client, { baseUrl } from '../../repositories/Client/AxiosClient'
+
+export class ConnectionsType {
+    constructor() {
+        this.id = null
+        this.name = null
+        this.target = {
+            newConnection: 0,
+            totalRevenue: 0,
+            connectedPower: 0,
+            energyPerMonth: 0,
+            averageRevenuePerMonth: 0,
+        }
+    }
+
+    fromJson(jsonData) {
+        if (jsonData) {
+            this.id = jsonData.id
+            this.name = jsonData.name
+        }
+
+        return this
+    }
+
+    store() {
+        return Client.post(baseUrl + resources.connections.store, {
+            name: this.name,
+        })
+    }
+}
+
+export class ConnectionTypes {
+    constructor() {
+        this.list = []
+        this.connection = new ConnectionsType()
+        this.paginator = new Paginator(resources.connections.list)
+    }
+
+    reSetConnection() {
+        this.connection = new ConnectionsType()
+    }
+
+    getConnectionTypes() {
+        Client.get(baseUrl + resources.connections.list + '?paginate=1').then(
+            (response) => {
+                this.fromJson(response.data.data)
+                return this.list
+            },
+        )
+    }
+
+    getSubConnectionTypes() {
+        Client.get(
+            baseUrl + resources.connections.sublist + '?paginate=1',
+        ).then((response) => {
+            this.fromJson(response.data.data)
+            return this.list
+        })
+    }
+
+    fromJson(jsonData) {
+        for (let c in jsonData) {
+            this.reSetConnection()
+            this.list.push(this.connection.fromJson(jsonData[c]))
+        }
+    }
+
+    async updateList(data) {
+        this.list = []
+
+        for (let c in data) {
+            let connectionType = new ConnectionsType()
+            this.list.push(connectionType.fromJson(data[c]))
+        }
+    }
+}
+
 export class ConnectionTypeService {
     constructor() {
         this.repository = RepositoryFactory.get('connectionTypes')

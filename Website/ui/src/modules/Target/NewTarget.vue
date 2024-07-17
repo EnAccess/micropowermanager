@@ -353,7 +353,7 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { ConnectionTypes } from '@/classes/connection/ConnectionTypes'
+import { ConnectionTypes } from '@/services/ConnectionTypeService'
 import { NumberOfCustomers } from '@/classes/connection/NumberOfCustomers'
 import { currency } from '@/mixins/currency'
 import { Targets } from '@/services/TargetService'
