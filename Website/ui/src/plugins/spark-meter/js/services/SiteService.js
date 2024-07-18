@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import SiteRepository from '../repositories/SiteRepository'
 
 export class SiteService {

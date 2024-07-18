@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import SmFeedbackWordRepository from '../repositories/SmFeedbackWordRepository'
 
 export class SmFeedbackWordService {
