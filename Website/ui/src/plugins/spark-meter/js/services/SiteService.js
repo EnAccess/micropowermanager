@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import SiteRepository from '../repositories/SiteRepository'
 
 export class SiteService {
     constructor() {
-        this.repository = Repository.get('site')
+        this.repository = SiteRepository
         this.list = []
         this.isSync = false
         this.count = 0

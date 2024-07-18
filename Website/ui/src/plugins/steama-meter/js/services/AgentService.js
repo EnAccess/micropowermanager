@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import AgentRepository from '../repositories/AgentRepository'
 
 export class AgentService {
     constructor() {
-        this.repository = Repository.get('agent')
+        this.repository = AgentRepository
         this.list = []
         this.isSync = false
         this.count = 0

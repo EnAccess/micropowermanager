@@ -1,5 +1,5 @@
-import WaveComRepository from '@/plugins/wavecom-payment-provider/js/repositories/WaveComRepository'
 import { ErrorHandler } from '@/plugins/bulk-registration/js/Helpers/ErrorHander'
+import WaveComRepository from '@/plugins/wavecom-payment-provider/js/repositories/WaveComRepository'
 
 export class WaveComService {
     constructor() {
