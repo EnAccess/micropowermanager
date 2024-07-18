@@ -1,5 +1,5 @@
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import { EventBus } from '../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import CustomerRepository from '../repositories/CustomerRepository'
 
 export class CustomerService {
