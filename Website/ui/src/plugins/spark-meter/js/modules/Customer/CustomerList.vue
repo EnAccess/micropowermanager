@@ -95,17 +95,17 @@
             </md-table>
         </widget>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
-        <redirection
+        <redirection-modal
             :redirection-url="redirectionUrl"
             :dialog-active="redirectDialogActive"
-            :message="redirectionMessage"
+            :imperative-item="'valid API Credentials'"
         />
     </div>
 </template>
 
 <script>
 import Widget from '../Shared/Widget'
-import Redirection from '../Shared/Redirection'
+import RedirectionModal from '@/shared/RedirectionModal'
 import { CustomerService } from '../../services/CustomerService'
 import { EventBus } from '@/shared/eventbus'
 import { TariffService } from '../../services/TariffService'
@@ -115,7 +115,7 @@ import { SiteService } from '../../services/SiteService'
 
 export default {
     name: 'CustomerList',
-    components: { Widget, Redirection },
+    components: { Widget, RedirectionModal },
     data() {
         return {
             credentialService: new CredentialService(),
@@ -132,7 +132,6 @@ export default {
             redirectDialogActive: false,
             buttonText: 'Get Updates From Spark Meter',
             label: 'Customer Records Not Up to Date.',
-            redirectionMessage: 'API credentials not authenticated.',
             editLowBalanceLimit: null,
             resetKey: 0,
         }

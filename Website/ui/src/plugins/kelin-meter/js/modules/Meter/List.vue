@@ -91,15 +91,16 @@
             </md-table>
         </widget>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
-        <redirection
+        <redirection-modal
             :redirection-url="redirectionUrl"
             :dialog-active="redirectDialogActive"
+            :imperative-item="'valid API Credentials'"
         />
     </div>
 </template>
 
 <script>
-import Redirection from '../Shared/Redirection'
+import RedirectionModal from '@/shared/RedirectionModal'
 
 import { EventBus } from '@/shared/eventbus'
 import { CredentialService } from '../../services/CredentialService'
@@ -109,7 +110,7 @@ import { MeterService } from '../../services/MeterService'
 
 export default {
     name: 'MeterList',
-    components: { Redirection, Widget },
+    components: { RedirectionModal, Widget },
     data() {
         return {
             credentialService: new CredentialService(),
