@@ -1,9 +1,9 @@
 import { ErrorHandler } from '../Helpers/ErrorHander'
-import RepositoryFactory from '../repositories/RepositoryFactory'
+import CertRepository from '../repositories/CertRepository'
 
 export class CertService {
     constructor() {
-        this.repository = RepositoryFactory.get('cert')
+        this.repository = CertRepository
     }
 
     async upload(cert) {

@@ -1,9 +1,9 @@
 import { ErrorHandler } from '../Helpers/ErrorHander'
-import Repository from '../repositories/RepositoryFactory'
+import FeedbackWordRepository from '../repositories/FeedbackWordRepository'
 
 export class FeedbackWordService {
     constructor() {
-        this.repository = Repository.get('feedBackWord')
+        this.repository = FeedbackWordRepository
         this.feedbackWords = {
             id: null,
             meterReset: null,

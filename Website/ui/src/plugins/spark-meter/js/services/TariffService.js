@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import TariffRepository from '../repositories/TariffRepository'
 
 export class TariffService {
     constructor() {
-        this.repository = Repository.get('tariff')
+        this.repository = TariffRepository
         this.list = []
         this.isSync = false
         this.tariff = {

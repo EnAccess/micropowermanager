@@ -1,9 +1,9 @@
 import { ErrorHandler } from '../Helpers/ErrorHander'
-import Repository from '../repositories/RepositoryFactory'
+import SmFeedbackWordRepository from '../repositories/SmFeedbackWordRepository'
 
 export class SmFeedbackWordService {
     constructor() {
-        this.repository = Repository.get('feedBackWord')
+        this.repository = SmFeedbackWordRepository
         this.feedbackWords = {
             id: null,
             meterReset: null,

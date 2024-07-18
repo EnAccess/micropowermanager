@@ -1,8 +1,8 @@
-import Repository from '../repositories/RepositoryFactory'
+import MinutelyConsumptionRepository from '../repositories/MinutelyConsumptionRepository'
 
 export class MinutelyConsumptionService {
     constructor(meterAddress) {
-        this.repository = Repository.get('minutely')
+        this.repository = MinutelyConsumptionRepository
         this.list = []
         this.pagingUrl = `/api/kelin-meters/kelin-meter/minutely-consumptions/${meterAddress}`
         this.routeName = `/kelin-meters/kelin-meter/minutely-consumptions/${meterAddress}`

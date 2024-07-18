@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 import { EventBus } from '../eventbus'
+import CustomerRepository from '../repositories/CustomerRepository'
 
 export class CustomerService {
     constructor() {
-        this.repository = Repository.get('customer')
+        this.repository = CustomerRepository
         this.list = []
         this.isSync = false
         this.count = 0
