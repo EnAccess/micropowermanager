@@ -180,7 +180,7 @@ export default {
                 dueDate: null,
                 label: null,
                 assignedPerson: null,
-                owner_id: this.$store.getters.person.id, //current person id
+                owner_id: this.personId,
                 owner_type: 'person',
                 creator:
                     this.$store.getters['auth/authenticationService']
@@ -250,7 +250,7 @@ export default {
             this.newTicket.dueDate = day + '.' + month + '.' + year
         },
         getTickets(pageNumber = 1) {
-            let personId = this.$store.getters.person.id
+            let personId = this.personId
             this.loaded = false
 
             if (this.paginator === null)
