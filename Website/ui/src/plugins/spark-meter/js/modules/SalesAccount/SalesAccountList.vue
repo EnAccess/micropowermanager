@@ -72,7 +72,7 @@ import { SalesAccountService } from '../../services/SalesAccountService'
 import { CredentialService } from '../../services/CredentialService'
 import Widget from '../Shared/Widget'
 import Redirection from '../Shared/Redirection'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'SalesAccountList',

@@ -165,7 +165,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
-import { EventBus } from '@/plugins/steama-meter/js/eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',

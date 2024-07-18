@@ -186,7 +186,7 @@
 <script>
 import Widget from '../../Shared/Widget'
 import { CredentialService } from '../../../services/CredentialService'
-import { EventBus } from '../../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import Redirection from '../../Shared/Redirection'
 import { DailyConsumptionService } from '../../../services/DailyConsumptionService'
 

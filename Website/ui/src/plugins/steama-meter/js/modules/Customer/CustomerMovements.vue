@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import Widget from '../Shared/Widget'
 import { SteamaTransactionsService } from '../../services/SteamaTransactionsService'
 import { CustomerService } from '../../services/CustomerService'

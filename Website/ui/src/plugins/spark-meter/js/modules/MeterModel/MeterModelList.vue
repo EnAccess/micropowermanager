@@ -61,7 +61,7 @@
 import Widget from '../Shared/Widget'
 import Redirection from '../Shared/Redirection'
 import { MeterModelService } from '../../services/MeterModelService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 import { CredentialService } from '../../services/CredentialService'
 import { SiteService } from '../../services/SiteService'
