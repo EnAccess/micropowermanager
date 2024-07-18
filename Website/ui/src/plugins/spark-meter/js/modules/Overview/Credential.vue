@@ -93,7 +93,7 @@
                                         class="authorize-div"
                                     >
                                         <img
-                                            src="../../../icons/authorized.png"
+                                            src="@/assets/images/authorized.png"
                                         />
                                         <label
                                             style="
@@ -112,7 +112,7 @@
                                         class="authorize-div"
                                     >
                                         <img
-                                            src="../../../icons/unauthorized.png"
+                                            src="@/assets/images/unauthorized.png"
                                         />
                                         <label
                                             style="
