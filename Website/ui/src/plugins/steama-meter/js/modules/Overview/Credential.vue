@@ -135,7 +135,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',

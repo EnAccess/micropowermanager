@@ -187,7 +187,7 @@
 
 <script>
 import { PaginateService } from '../../services/PaginateService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Paginator',

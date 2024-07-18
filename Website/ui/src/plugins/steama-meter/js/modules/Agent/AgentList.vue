@@ -62,7 +62,7 @@
 <script>
 import Widget from '../Shared/Widget'
 import Redirection from '../Shared/Redirection'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import { CredentialService } from '../../services/CredentialService'
 import { AgentService } from '../../services/AgentService'
 

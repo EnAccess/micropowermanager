@@ -137,7 +137,7 @@
 <script>
 import Redirection from '../Shared/Redirection'
 import { SiteService } from '../../services/SiteService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import { CredentialService } from '../../services/CredentialService'
 import Widget from '../Shared/Widget'
 import { CustomerService } from '../../services/CustomerService'

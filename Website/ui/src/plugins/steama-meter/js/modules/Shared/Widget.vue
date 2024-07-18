@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import Paginator from './Paginator'
 
 const debounce = require('debounce')

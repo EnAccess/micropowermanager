@@ -107,7 +107,7 @@
 import Widget from '../Shared/Widget'
 import Redirection from '../Shared/Redirection'
 import { CustomerService } from '../../services/CustomerService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import { TariffService } from '../../services/TariffService'
 import { MeterModelService } from '../../services/MeterModelService'
 import { CredentialService } from '../../services/CredentialService'
