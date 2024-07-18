@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import TariffRepository from '../repositories/TariffRepository'
 
 export class TariffService {

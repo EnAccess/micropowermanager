@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '../eventbus'
 import CustomerRepository from '../repositories/CustomerRepository'
 
