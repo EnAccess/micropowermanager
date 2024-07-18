@@ -1,10 +1,10 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import DeviceAddressRepository from '@/repositories/DeviceAddressRepository'
 
 export class DeviceAddressService {
     constructor() {
-        this.repository = new Repository.get('deviceAddress')
+        this.repository = DeviceAddressRepository
     }
     async updateDeviceAddresses(devices) {
         try {

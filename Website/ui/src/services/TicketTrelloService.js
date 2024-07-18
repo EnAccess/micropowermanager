@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TicketTrelloRepository from '@/repositories/TicketTrelloRepository'
 
 export class TicketTrelloService {
     constructor() {
-        this.repository = Repository.get('ticketTrello')
+        this.repository = TicketTrelloRepository
         this.ticket = {
             created: null,
             id: null,

@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TicketUserRepository from '@/repositories/TicketUserRepository'
 
 export class TicketUserService {
     constructor() {
-        this.repository = Repository.get('ticketUser')
+        this.repository = TicketUserRepository
         this.list = []
         this.newUser = {
             name: '',

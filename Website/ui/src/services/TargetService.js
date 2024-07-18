@@ -1,9 +1,9 @@
 import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { City } from '@/services/CityService'
 import { ConnectionsType } from '@/services/ConnectionTypeService'
+import TargetRepository from '@/repositories/TargetRepository'
 
 export class SubTarget {
     constructor() {
@@ -58,7 +58,7 @@ export class Targets {
     constructor() {
         this.list = []
         this.paginator = new Paginator(resources.target.list)
-        this.repository = RepositoryFactory.get('target')
+        this.repository = TargetRepository
     }
 
     targetAtIndex(index) {

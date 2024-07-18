@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TicketSettingsRepository from '@/repositories/TicketSettingsRepository'
 
 export class TicketSettingsService {
     constructor() {
-        this.repository = RepositoryFactory.get('ticketSettings')
+        this.repository = TicketSettingsRepository
         this.ticketSettings = {
             name: null,
             api_token: null,

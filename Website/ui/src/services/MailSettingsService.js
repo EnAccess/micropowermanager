@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MailSettingsRepository from '@/repositories/MailSettingsRepository'
 
 export class MailSettingsService {
     constructor() {
-        this.repository = RepositoryFactory.get('mailSettings')
+        this.repository = MailSettingsRepository
         this.mailSettings = {
             mailHost: null,
             mailPort: null,

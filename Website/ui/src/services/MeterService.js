@@ -1,9 +1,10 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 import { Paginator } from '@/Helpers/Paginator'
 import { Manufacturers } from '@/services/ManufacturerService'
 import { EventBus } from '@/shared/eventbus'
+
+import MeterRepository from '@/repositories/MeterRepository'
 
 export class Meter {
     constructor() {}
@@ -66,7 +67,7 @@ export class Meters {
 
 export class MeterService {
     constructor() {
-        this.repository = RepositoryFactory.get('meter')
+        this.repository = MeterRepository
         this.meters = []
         this.selectedMeter = null
         this.meter = {

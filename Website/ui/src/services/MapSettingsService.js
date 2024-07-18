@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MapSettingsRepository from '@/repositories/MapSettingsRepository'
 
 export class MapSettingsService {
     constructor() {
-        this.repository = RepositoryFactory.get('mapSettings')
+        this.repository = MapSettingsRepository
         this.mapSettings = {
             zoom: null,
             latitude: null,

@@ -1,10 +1,10 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
+import UserRepository from '@/repositories/UserRepository'
 
 export class UserService {
     constructor() {
-        this.repository = RepositoryFactory.get('user')
+        this.repository = UserRepository
         this.paginator = new Paginator(resources.user.list)
         this.users = []
         this.selectedUser = null

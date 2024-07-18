@@ -1,4 +1,3 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import moment from 'moment'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
@@ -6,6 +5,9 @@ import { resources } from '@/resources'
 
 import { Paginator } from '@/Helpers/Paginator'
 import { EventBus } from '@/shared/eventbus'
+
+import PersonRepository from '@/repositories/PersonRepository'
+
 export class Person {
     constructor() {
         this.id = null
@@ -128,7 +130,7 @@ export class People {
 
 export class PersonService {
     constructor() {
-        this.repository = new Repository.get('person')
+        this.repository = PersonRepository
         this.person = {
             id: null,
             title: null,

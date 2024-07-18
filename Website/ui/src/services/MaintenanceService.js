@@ -1,10 +1,11 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import moment from 'moment'
 
+import MaintenanceRepository from '@/repositories/MaintenanceRepository'
+
 export class MaintenanceService {
     constructor() {
-        this.repository = Repository.get('maintenance')
+        this.repository = MaintenanceRepository
         this.employees = []
         this.maintenanceData = {
             creator: null,

@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MiniGridDeviceRepository from '@/repositories/MiniGridDeviceRepository'
 
 export class MiniGridDeviceService {
     constructor() {
-        this.repository = new Repository.get('miniGridDevice')
+        this.repository = MiniGridDeviceRepository
         this.list = []
     }
 

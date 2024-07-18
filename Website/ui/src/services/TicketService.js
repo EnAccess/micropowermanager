@@ -1,8 +1,8 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 import { TicketTrelloService } from './TicketTrelloService'
+import TicketRepository from '@/repositories/TicketRepository'
 
 export class Ticket {
     constructor() {
@@ -96,7 +96,7 @@ export class UserTickets {
 
 export class TicketService {
     constructor() {
-        this.repository = Repository.get('ticket')
+        this.repository = TicketRepository
         this.trelloService = new TicketTrelloService()
         this.ticket = this.trelloService.ticket
         this.categories = []

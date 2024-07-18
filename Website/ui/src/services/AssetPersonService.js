@@ -1,15 +1,16 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import {
     convertObjectKeysToCamelCase,
     convertObjectKeysToSnakeCase,
 } from '@/Helpers/Utils'
 
+import AssetPersonRepository from '@/repositories/AssetPersonRepository'
+
 export class AssetPersonService {
     constructor() {
         this.list = []
         this.assetPerson = {}
-        this.repository = Repository.get('assetPerson')
+        this.repository = AssetPersonRepository
     }
     fromJson(data) {
         return {
