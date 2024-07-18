@@ -1,9 +1,10 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 
 import Client, { baseUrl } from '@/repositories/Client/AxiosClient'
+
+import ConnectionTypeRepository from '@/repositories/ConnectionTypeRepository'
 
 export class ConnectionsType {
     constructor() {
@@ -82,7 +83,7 @@ export class ConnectionTypes {
 
 export class ConnectionTypeService {
     constructor() {
-        this.repository = RepositoryFactory.get('connectionTypes')
+        this.repository = ConnectionTypeRepository
         this.connectionTypes = []
         this.target = {
             newConnection: 0,

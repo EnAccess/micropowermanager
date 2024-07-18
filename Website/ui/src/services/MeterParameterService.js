@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MeterParameterRepository from '@/repositories/MeterParameterRepository'
 
 export class MeterParameterService {
     constructor() {
-        this.repository = new Repository.get('meterParameter')
+        this.repository = MeterParameterRepository
     }
 
     async update(meterId, params) {

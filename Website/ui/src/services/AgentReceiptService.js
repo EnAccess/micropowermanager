@@ -1,9 +1,10 @@
 import { Paginator } from '@/Helpers/Paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import Repository from '../repositories/RepositoryFactory'
+
+import AgentReceiptRepository from '@/repositories/AgentReceiptRepository'
 export class AgentReceiptService {
     constructor(agentId) {
-        this.repository = Repository.get('agentReceipt')
+        this.repository = AgentReceiptRepository
         this.list = []
         this.receipt = {
             id: null,

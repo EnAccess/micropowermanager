@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import ProtectedPageRepository from '@/repositories/ProtectedPageRepository'
 
 export class ProtectedPageService {
     constructor() {
-        this.repository = Repository.get('protectedPage')
+        this.repository = ProtectedPageRepository
     }
 
     async getProtectedPages() {

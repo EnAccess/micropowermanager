@@ -1,6 +1,7 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+
+import CityRepository from '@/repositories/CityRepository'
 
 // FIXME: Why is this here? It seems redundant, wrong and circular:
 // Cluster.fromJson() -> Cluster.fetchCities() -> City.fromJson() -> City.fetchCluster() -> Cluster.fromJson()
@@ -88,7 +89,7 @@ export class CityService {
             mini_grid_id: 0,
         }
         this.list = []
-        this.repository = Repository.get('city')
+        this.repository = CityRepository
     }
 
     async getCities() {

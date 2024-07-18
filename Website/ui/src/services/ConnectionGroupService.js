@@ -1,11 +1,12 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 
+import ConnectionGroupsRepository from '@/repositories/ConnectionGroupsRepository'
+
 export class ConnectionGroupService {
     constructor() {
-        this.repository = RepositoryFactory.get('connectionGroups')
+        this.repository = ConnectionGroupsRepository
         this.connectionGroups = []
         this.target = {
             newConnection: 0,

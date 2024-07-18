@@ -1,4 +1,3 @@
-import RepositoryFactory from '@/repositories/RepositoryFactory'
 import { Paginator } from '@/Helpers/Paginator'
 import {
     convertObjectKeysToCamelCase,
@@ -6,10 +5,11 @@ import {
 } from '@/Helpers/Utils'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '@/shared/eventbus'
+import SolarHomeSystemRepository from '@/repositories/SolarHomeSystemRepository'
 
 export class SolarHomeSystemService {
     constructor() {
-        this.repository = RepositoryFactory.get('solarHomeSystem')
+        this.repository = SolarHomeSystemRepository
         this.paginator = new Paginator(this.repository.resource)
         this.list = []
         this.shs = {

@@ -1,14 +1,17 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
 
+import ConnectionTypeRepository from '@/repositories/ConnectionTypeRepository'
+import ConnectionGroupsRepository from '@/repositories/ConnectionGroupsRepository'
+import SmsRepository from '@/repositories/SmsRepository'
+
 export class SmsService {
     constructor() {
-        this.repository = Repository.get('sms')
-        this.connectionGroupRepository = Repository.get('connectionGroups')
-        this.connectionTypeRepository = Repository.get('connectionTypes')
+        this.repository = SmsRepository
+        this.connectionGroupRepository = ConnectionGroupsRepository
+        this.connectionTypeRepository = ConnectionTypeRepository
 
         this.sms = {
             id: null,

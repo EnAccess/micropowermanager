@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '@/shared/eventbus'
+import GenerationAssetsRepository from '@/repositories/GenerationAssetsRepository'
 
 export class GenerationAssetsService {
     constructor() {
-        this.repository = Repository.get('generationAssets')
+        this.repository = GenerationAssetsRepository
         this.list = []
         this.subscriber = null
         this.chartData = []

@@ -1,11 +1,12 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
+import ClusterRepository from '@/repositories/ClusterRepository'
+
 export class ClusterService {
     constructor() {
-        this.repository = RepositoryFactory.get('cluster')
+        this.repository = ClusterRepository
         this.clusters = []
         this.financialData = []
         this.clusterTrends = []

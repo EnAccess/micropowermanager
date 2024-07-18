@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SmsVariableDefaultValueRepository from '@/repositories/SmsVariableDefaultValueRepository'
 
 export class SmsVariableDefaultValueService {
     constructor() {
-        this.repository = RepositoryFactory.get('smsVariableDefaultValue')
+        this.repository = SmsVariableDefaultValueRepository
         this.list = []
         this.shownMessage = 'Your message will seem like..'
     }

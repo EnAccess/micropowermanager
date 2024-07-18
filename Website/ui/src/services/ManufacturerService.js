@@ -1,8 +1,7 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-
 import { resources } from '@/resources'
 import { baseUrl } from '@/repositories/Client/AxiosClient'
+import ManufacturerRepository from '@/repositories/ManufacturerRepository'
 
 export class Manufacturer {
     constructor(id = 0, name = '') {
@@ -47,7 +46,7 @@ export class Manufacturers {
 
 export class ManufacturerService {
     constructor() {
-        this.repository = Repository.get('manufacturer')
+        this.repository = ManufacturerRepository
         this.list = []
     }
 

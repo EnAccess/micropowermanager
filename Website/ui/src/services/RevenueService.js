@@ -1,10 +1,11 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
 
+import RevenueRepository from '@/repositories/RevenueRepository'
+
 export class RevenueService {
     constructor() {
-        this.repository = Repository.get('revenue')
+        this.repository = RevenueRepository
         this.revenueTrends = null
         this.ticketsData = {}
         this.trendChartData = {

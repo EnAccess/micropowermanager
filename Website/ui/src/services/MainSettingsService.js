@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MainSettingsRepository from '@/repositories/MainSettingsRepository'
 
 export class MainSettingsService {
     constructor() {
-        this.repository = RepositoryFactory.get('mainSettings')
+        this.repository = MainSettingsRepository
         this.mainSettings = {
             siteTitle: null,
             companyName: null,

@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import UsageTypeRepository from '@/repositories/UsageTypeRepository'
 
 export class UsageTypeListService {
     constructor() {
-        this.repository = Repository.get('usageType')
+        this.repository = UsageTypeRepository
         this.list = []
     }
 

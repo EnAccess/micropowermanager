@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import AgentCommissionRepository from '@/repositories/AgentCommissionRepository'
 
 export class AgentCommissionService {
     constructor() {
-        this.repository = Repository.get('commission')
+        this.repository = AgentCommissionRepository
         this.list = []
         this.agentCommission = {
             id: null,

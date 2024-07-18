@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MiniGridDashboardCacheDataRepository from '@/repositories/MiniGridDashboardCacheDataRepository'
 
 export class MiniGridDashboardCacheDataService {
     constructor() {
-        this.repository = RepositoryFactory.get('miniGridDashboardCacheData')
+        this.repository = MiniGridDashboardCacheDataRepository
     }
 
     async list() {

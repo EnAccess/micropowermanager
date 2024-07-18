@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { Paginator } from '@/Helpers/Paginator'
+import UserTransactionsRepository from '@/repositories/UserTransactionsRepository'
 
 export class UserTransactionsService {
     constructor(personId) {
-        this.repository = Repository.get('userTransactions')
+        this.repository = UserTransactionsRepository
         this.list = []
         this.personId = personId
         this.paginator = new Paginator(

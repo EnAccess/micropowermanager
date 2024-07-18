@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import RestrictionRepository from '@/repositories/RestrictionRepository'
 
 export class RestrictionService {
     constructor() {
-        this.repository = RepositoryFactory.get('restriction')
+        this.repository = RestrictionRepository
     }
 
     async sendPurchaseCode(purchaseCode, email) {

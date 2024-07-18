@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import AppliancePaymentRepository from '@/repositories/AppliancePaymentRepository'
+
 export class AppliancePaymentService {
     constructor() {
-        this.repository = Repository.get('appliancePayment')
+        this.repository = AppliancePaymentRepository
     }
 
     async getPaymentForAppliance(applianceId, payment) {

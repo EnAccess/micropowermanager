@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TicketCommentRepository from '@/repositories/TicketCommentRepository'
 
 export class TicketCommentService {
     constructor() {
-        this.repository = Repository.get('ticketComment')
+        this.repository = TicketCommentRepository
     }
 
     async createComment(comment, cardId, name, username) {

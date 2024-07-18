@@ -1,10 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
-
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TransactionProvidersRepository from '@/repositories/TransactionProvidersRepository'
 
 export class TransactionProviderService {
     constructor() {
-        this.repository = Repository.get('transactionProviders')
+        this.repository = TransactionProvidersRepository
         this.list = []
         this.transactionProvider = {
             name: null,

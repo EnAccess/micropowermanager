@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MeterTypeRepository from '@/repositories/MeterTypeRepository'
 
 export class MeterTypeService {
     constructor() {
-        this.repository = Repository.get('meterType')
+        this.repository = MeterTypeRepository
         this.meterTypesList = []
     }
 

@@ -1,7 +1,7 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import store from '../store/store'
 import { resources } from '@/resources'
+import BatchRevenueRepository from '@/repositories/BatchRevenueRepository'
 
 export class BatchRevenue {
     constructor() {
@@ -29,7 +29,7 @@ export class BatchRevenue {
 export class BatchRevenueService {
     constructor() {
         this.revenueList = null
-        this.repository = RepositoryFactory.get('batchRevenue')
+        this.repository = BatchRevenueRepository
         this.batchRevenues = {}
         this.comparedRevenues = {}
     }

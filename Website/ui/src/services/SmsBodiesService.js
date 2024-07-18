@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SmsBodiesRepository from '@/repositories/SmsBodiesRepository'
 
 export class SmsBodiesService {
     constructor() {
-        this.repository = RepositoryFactory.get('smsBodies')
+        this.repository = SmsBodiesRepository
         this.reminderList = []
         this.confirmationList = []
         this.resendInformationList = []

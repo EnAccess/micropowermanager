@@ -1,8 +1,8 @@
-import Repository from '../repositories/RepositoryFactory'
 import { Paginator } from '@/Helpers/Paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
+import TransactionRepository from '@/repositories/TransactionRepository'
 
 export class Transactions {
     constructor(meterId) {
@@ -22,7 +22,7 @@ export class Transactions {
 
 export class TransactionService {
     constructor() {
-        this.repository = Repository.get('transaction')
+        this.repository = TransactionRepository
         this.list = []
         this.transaction = {
             id: null,
