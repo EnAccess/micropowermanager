@@ -17,7 +17,7 @@ spec:
           image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-be:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 80
           env:
             - name: APP_NAME
               value: "MicroPowerManager"
@@ -36,27 +36,27 @@ spec:
             - name: DB_CONNECTION
               value: "micro_power_manager"
             - name: DB_HOST
-              value: "maria-db-service"  
+              value: "mpmrds.cli8wgsymz96.eu-central-1.rds.amazonaws.com"  
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
-              value: "micro_power_manager"
+              value: "mpmrds"
             - name: DB_USERNAME
-              value: "root"
+              value: "admin"
             - name: DB_PASSWORD
-              value: "mpm_123"  
+              value: "masterpassword123"  
             - name: TEST_DB_CONNECTION
               value: "test_company_db"
             - name: TEST_DB_HOST
-              value: "maria-db-service"  
+              value: "mpmrds.cli8wgsymz96.eu-central-1.rds.amazonaws.com"  
             - name: TEST_DB_PORT
               value: "3306"
             - name: TEST_DB_DATABASE
               value: "test_company_db"
             - name: TEST_DB_USERNAME
-              value: "root"
+              value: "admin"
             - name: TEST_DB_PASSWORD
-              value: "mpm_123"  
+              value: "masterpassword123"  
             - name: BROADCAST_DRIVER
               value: "pusher"
             - name: CACHE_DRIVER
@@ -70,7 +70,7 @@ spec:
             - name: QUEUE_DRIVER
               value: "database"
             - name: REDIS_HOST
-              value: "redis-db-service"  
+              value: "rediscluster-gesjf1.serverless.euc1.cache.amazonaws.com:6379"  
             - name: REDIS_PORT
               value: "6379"
             - name: HORIZON_PREFIX
