@@ -33,7 +33,6 @@
 <script>
 import { MpmPluginService } from '@/services/MpmPluginService'
 import { PluginService } from '@/services/PluginService'
-import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'PluginSettings',
@@ -55,6 +54,9 @@ export default {
             required: true,
         },
     },
+    async created() {
+        await this.$store.dispatch('settings/fetchPlugins')
+    },
     computed: {
         enrichedPlugins: function () {
             return this.plugins.map((plugin) => ({
@@ -72,7 +74,7 @@ export default {
             this.progressing = true
             try {
                 await this.pluginService.updatePlugin(plugin)
-                EventBus.$emit('setSidebar')
+                await this.$store.dispatch('settings/fetchPlugins')
                 this.alertNotify('success', 'Plugin updated successfully')
             } catch (e) {
                 this.switching = false
