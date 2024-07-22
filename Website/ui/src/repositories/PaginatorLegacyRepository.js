@@ -1,4 +1,5 @@
-import Client from '../../../../repositories/Client/AxiosClient'
+import Client from '@/repositories/Client/AxiosClient'
+
 export default {
     get(url, params) {
         return Client.get(`${url}`, { params: params })

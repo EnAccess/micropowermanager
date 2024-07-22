@@ -108,7 +108,7 @@
 
 <script>
 import { EventBus } from '@/shared/eventbus'
-import Paginator from './Paginator'
+import Paginator from '@/shared/PaginatorLegacy'
 
 const debounce = require('debounce')
 export default {

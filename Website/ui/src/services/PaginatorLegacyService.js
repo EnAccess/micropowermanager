@@ -1,9 +1,9 @@
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import PaginatorRepository from '../repositories/PaginatorRepository'
+import PaginatorLegacyRepository from '@/repositories/PaginatorLegacyRepository'
 
-export class PaginateService {
+export class PaginatorLegacyService {
     constructor(url) {
-        this.repository = PaginatorRepository
+        this.repository = PaginatorLegacyRepository
         this.paginator = {
             url: url,
             method: 'GET',
@@ -32,11 +32,19 @@ export class PaginateService {
     }
 
     fromJson(data) {
-        this.paginator.from = data.meta.from
-        this.paginator.to = data.meta.to
-        this.paginator.totalPage = data.meta.last_page
-        this.paginator.currentPage = data.meta.current_page
-        this.paginator.totalEntries = data.meta.total
+        // A different version of the service used to access the data
+        // via the `meta` key.
+        // Not sure what is correct here
+        // this.paginator.from = data.meta.from
+        // this.paginator.to = data.meta.to
+        // this.paginator.totalPage = data.meta.last_page
+        // this.paginator.currentPage = data.meta.current_page
+        // this.paginator.totalEntries = data.meta.total
+        this.paginator.from = data.from
+        this.paginator.to = data.to
+        this.paginator.totalPage = data.last_page
+        this.paginator.currentPage = data.current_page
+        this.paginator.totalEntries = data.total
         this.paginator.data = data.data
         return this.paginator
     }
