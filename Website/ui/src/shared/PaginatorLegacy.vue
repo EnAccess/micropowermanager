@@ -186,9 +186,16 @@
 </template>
 
 <script>
-import { PaginateService } from '../../services/PaginateService'
+import { PaginatorLegacyService } from '@/services/PaginatorLegacyService'
 import { EventBus } from '@/shared/eventbus'
 
+/**
+ * Legacy Paginator component
+ *
+ * DEPRECATED: Used in some older plugins and components.
+ * New components should use to more flexible Paginate component
+ * for pagination.
+ */
 export default {
     name: 'Paginator',
     props: {
@@ -210,7 +217,7 @@ export default {
     },
     data() {
         return {
-            paginateService: new PaginateService(this.url),
+            paginateService: new PaginatorLegacyService(this.url),
             loading: false,
             term: {},
             threeDots: false,
@@ -224,7 +231,7 @@ export default {
     methods: {
         eventLoadPage(paginatorUrl, term = {}) {
             this.term = term
-            this.paginateService = new PaginateService(paginatorUrl)
+            this.paginateService = new PaginatorLegacyService(paginatorUrl)
             this.loadPage(1)
         },
         defaultItemsPerPage(data) {
@@ -434,6 +441,7 @@ export default {
     -moz-box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.05);
     -webkit-box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.05);
 }
+
 .previous-disabled {
     pointer-events: none;
 }
