@@ -21,7 +21,7 @@ class SteamaBitharvesterService
         $bitHarvesters = $result['results'];
 
         return array_values(array_filter($bitHarvesters, function ($obj) use ($siteId) {
-            return $obj["site"] === $siteId;
-        }))[0] ;
+            return $obj['site'] === $siteId;
+        }))[0];
     }
 }

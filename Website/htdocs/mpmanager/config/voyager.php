@@ -12,14 +12,14 @@ return [
 
     'user' => [
         'add_default_role_on_register' => true,
-        'default_role'                 => 'user',
+        'default_role' => 'user',
         // Set `namespace` to `null` to use `config('auth.providers.users.model')` value
         // Set `namespace` to a class to override auth user model.
         // However make sure the appointed class must ready to use before installing voyager.
         // Otherwise `php artisan voyager:install` will fail with class not found error.
-        'namespace'                    => null,
-        'default_avatar'               => 'users/default.png',
-        'redirect'                     => '/admin',
+        'namespace' => null,
+        'default_avatar' => 'users/default.png',
+        'redirect' => '/admin',
     ],
 
     /*
@@ -47,7 +47,7 @@ return [
     */
 
     'models' => [
-        //'namespace' => 'App\\',
+        // 'namespace' => 'App\\',
     ],
 
     /*
@@ -131,7 +131,7 @@ return [
          */
         'locales' => [
             'en',
-            //'pt',
+            // 'pt',
         ],
     ],
 
@@ -148,25 +148,23 @@ return [
         // Add custom list items to navbar's dropdown
         'navbar_items' => [
             'Profile' => [
-                'route'      => 'voyager.profile',
-                'classes'    => 'class-full-of-rum',
+                'route' => 'voyager.profile',
+                'classes' => 'class-full-of-rum',
                 'icon_class' => 'voyager-person',
             ],
             'Home' => [
-                'route'        => '/',
-                'icon_class'   => 'voyager-home',
+                'route' => '/',
+                'icon_class' => 'voyager-home',
                 'target_blank' => true,
             ],
             'Logout' => [
-                'route'      => 'voyager.logout',
+                'route' => 'voyager.logout',
                 'icon_class' => 'voyager-power',
             ],
         ],
 
         'widgets' => [
-
         ],
-
     ],
 
     /*
@@ -207,20 +205,19 @@ return [
 
     // Here you can specify additional assets you would like to be included in the master.blade
     'additional_css' => [
-        //'css/custom.css',
+        // 'css/custom.css',
     ],
 
     'additional_js' => [
-        //'js/custom.js',
+        // 'js/custom.js',
     ],
 
     'googlemaps' => [
-        'key'    => env('GOOGLE_MAPS_KEY', ''),
+        'key' => env('GOOGLE_MAPS_KEY', ''),
         'center' => [
             'lat' => env('GOOGLE_MAPS_DEFAULT_CENTER_LAT', '32.715738'),
             'lng' => env('GOOGLE_MAPS_DEFAULT_CENTER_LNG', '-117.161084'),
         ],
         'zoom' => env('GOOGLE_MAPS_DEFAULT_ZOOM', 11),
     ],
-
 ];

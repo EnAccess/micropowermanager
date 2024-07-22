@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
+import ReportsRepository from '@/repositories/ReportsRepository'
+
 export class ReportsService {
     constructor() {
-        this.repository = Repository.get('reports')
+        this.repository = ReportsRepository
         this.report = {
             id: null,
             name: null,

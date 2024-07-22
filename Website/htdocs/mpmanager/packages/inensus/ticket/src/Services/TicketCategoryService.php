@@ -2,13 +2,11 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\BaseService;
 use App\Services\IBaseService;
 use Inensus\Ticket\Models\TicketCategory;
 
-class TicketCategoryService  implements IBaseService
+class TicketCategoryService implements IBaseService
 {
-
     public function __construct(private TicketCategory $ticketCategory)
     {
     }
@@ -33,16 +31,16 @@ class TicketCategoryService  implements IBaseService
         // TODO: Implement delete() method.
     }
 
-    public function getAll($limit = null,$outsource = null)
+    public function getAll($limit = null, $outsource = null)
     {
         $ticketCategories = $this->ticketCategory->newQuery();
 
-        if ($outsource){
+        if ($outsource) {
             $ticketCategories->where('out_source', 1)->get();
         }
 
         if ($limit) {
-           return $ticketCategories->paginate($limit);
+            return $ticketCategories->paginate($limit);
         }
 
         return $ticketCategories->get();

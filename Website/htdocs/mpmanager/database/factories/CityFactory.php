@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CityFactory extends Factory
 {
-
     protected $model = City::class;
+
     /**
      * Define the model's default state.
      *

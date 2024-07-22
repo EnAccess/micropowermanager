@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import MeterModelRepository from '../repositories/MeterModelRepository'
 
 export class MeterModelService {
     constructor() {
-        this.repository = Repository.get('meterModel')
+        this.repository = MeterModelRepository
         this.list = []
         this.isSync = false
         this.count = 0

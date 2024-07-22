@@ -200,7 +200,7 @@ export default {
         }
     },
     mounted() {
-        console.log('mounted', this.ticketList)
+        console.log('Mounted this ticket list:', this.ticketList)
     },
     methods: {
         getTimeAgo(date) {

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Listeners;
-
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
@@ -41,25 +39,26 @@ class SmsListener
         $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();
         $meter = $sparkCustomer->mpmPerson->meters[0]->meter;
         $meterReset = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_reset));
-        if ($meterReset!==false) {
+        if ($meterReset !== false) {
             try {
                 $this->customerService->resetMeter($sparkCustomer);
                 $this->smsService->sendSms($meter,
                     SparkSmsTypes::METER_RESET_FEEDBACK,
                     SparkSmsConfig::class);
+
                 return;
             } catch (SparkAPIResponseException $exception) {
-
-                $this->smsService->sendSms(['meter' => $meter['serial_number'],'phone' => $sender],
+                $this->smsService->sendSms(['meter' => $meter['serial_number'], 'phone' => $sender],
                     SparkSmsTypes::METER_RESET_FEEDBACK,
                     SparkSmsConfig::class);
             }
         }
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
-        if ($meterBalance!==false) {
+        if ($meterBalance !== false) {
             $this->smsService->sendSms($sparkCustomer,
                 SparkSmsTypes::BALANCE_FEEDBACK,
                 SparkSmsConfig::class);
+
             return;
         }
     }

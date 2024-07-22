@@ -19,7 +19,7 @@ $loggly = [
     ],
 ];
 
-if (in_array(config('app.env'),[  'development', 'local'])) {
+if (in_array(config('app.env'), ['development', 'local'])) {
     $slack = [
         'level' => 'critical',
         'driver' => 'errorlog',
@@ -32,8 +32,8 @@ if (in_array(config('app.env'),[  'development', 'local'])) {
         'path' => storage_path('logs/critical.log'),
     ];
 }
-return [
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -63,7 +63,6 @@ return [
     */
 
     'channels' => [
-
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single', 'slack', 'loggly'],
@@ -99,8 +98,7 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
-            //'path' => storage_path('logs/critical.log'),
+            // 'path' => storage_path('logs/critical.log'),
         ],
     ],
-
 ];

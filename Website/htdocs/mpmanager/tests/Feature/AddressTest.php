@@ -2,33 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Models\City;
-use App\Models\Company;
-use App\Models\CompanyDatabase;
 use Database\Factories\AddressFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\App;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AddressTest extends TestCase
 {
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-
-    use RefreshMultipleDatabases, WithFaker;
-
-
-    public function test_user_defines_an_address_to_customer_for_own_company()
+    public function testUserDefinesAnAddressToCustomerForOwnCompany()
     {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
@@ -50,10 +40,9 @@ class AddressTest extends TestCase
         $this->assertEquals(1, $person->addresses()->count());
         $this->assertEquals($city->id, $person->addresses()->first()->city_id);
         $this->assertEquals(1, $person->addresses()->first()->is_primary);
-
     }
 
-    public function test_user_updates_and_address_of_customer_for_own_company()
+    public function testUserUpdatesAndAddressOfCustomerForOwnCompany()
     {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
@@ -78,7 +67,6 @@ class AddressTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals($streetName, $person->addresses()->first()->street);
         $this->assertEquals(0, $person->addresses()->first()->is_primary);
-
     }
 
     public function actingAs($user, $driver = null)

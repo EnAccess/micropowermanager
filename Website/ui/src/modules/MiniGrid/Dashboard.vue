@@ -62,39 +62,53 @@
                                 <div class="md-layout md-gutter">
                                     <div class="md-layout-item md-size-100">
                                         <md-datepicker
-                                            v-model="period.from"
+                                            :class="{
+                                                'md-invalid': errors.has(
+                                                    $tc('phrases.fromDate'),
+                                                ),
+                                            }"
+                                            :name="$tc('phrases.fromDate')"
                                             md-immediately
+                                            v-model="period.from"
                                             v-validate="'required'"
+                                            :md-close-on-blur="false"
                                         >
                                             <label>
                                                 {{ $tc('phrases.fromDate') }}
                                             </label>
+                                            <span class="md-error">
+                                                {{
+                                                    errors.first(
+                                                        $tc('phrases.fromDate'),
+                                                    )
+                                                }}
+                                            </span>
                                         </md-datepicker>
-                                        <span class="md-error">
-                                            {{
-                                                errors.first(
-                                                    $tc('phrases.fromDate'),
-                                                )
-                                            }}
-                                        </span>
                                     </div>
                                     <div class="md-layout-item md-size-100">
                                         <md-datepicker
-                                            v-model="period.to"
+                                            :class="{
+                                                'md-invalid': errors.has(
+                                                    $tc('phrases.toDate'),
+                                                ),
+                                            }"
+                                            :name="$tc('phrases.toDate')"
                                             md-immediately
+                                            v-model="period.to"
                                             v-validate="'required'"
+                                            :md-close-on-blur="false"
                                         >
                                             <label>
                                                 {{ $tc('phrases.toDate') }}
                                             </label>
+                                            <span class="md-error">
+                                                {{
+                                                    errors.first(
+                                                        $tc('phrases.toDate'),
+                                                    )
+                                                }}
+                                            </span>
                                         </md-datepicker>
-                                        <span class="md-error">
-                                            {{
-                                                errors.first(
-                                                    $tc('phrases.toDate'),
-                                                )
-                                            }}
-                                        </span>
                                     </div>
                                 </div>
                                 <div style="margin-top: 5px">

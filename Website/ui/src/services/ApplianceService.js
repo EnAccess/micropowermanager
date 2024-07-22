@@ -1,11 +1,11 @@
-import Repository from '@/repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import ApplianceRepository from '@/repositories/ApplianceRepository'
 
 export class ApplianceService {
     constructor() {
-        this.repository = Repository.get('appliance')
+        this.repository = ApplianceRepository
         this.list = []
         this.appliance = {
             id: null,

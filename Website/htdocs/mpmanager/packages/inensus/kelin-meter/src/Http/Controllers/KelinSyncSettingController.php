@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Http\Controllers;
-
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -20,7 +18,6 @@ class KelinSyncSettingController extends Controller
 
     public function update(Request $request): KelinResource
     {
-
-        return  new KelinResource($this->syncSettingService->updateSyncSettings($request->all()));
+        return new KelinResource($this->syncSettingService->updateSyncSettings($request->all()));
     }
 }

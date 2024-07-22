@@ -1,9 +1,14 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
+
+import AgentAssignedApplianceRepository from '@/repositories/AgentAssignedApplianceRepository'
+// FIXME:
+// - What's the difference between AgentAssignedAppliance and AgentSoldAppliance?
+// - Why is the Agent**Sold**ApplianceService using Agent**Assigned**ApplianceRepository
+// import AgentSoldApplianceRepository from '@/repositories/AgentSoldApplianceRepository'
 
 export class AgentSoldApplianceService {
     constructor(agentId) {
-        this.repository = Repository.get('assignedAppliance')
+        this.repository = AgentAssignedApplianceRepository
         this.list = []
         this.soldAppliance = {
             id: null,

@@ -2,10 +2,9 @@
 
 namespace Inensus\SunKingSHS\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'SunKing SHS';
+    public const MENU_ITEM = 'SunKing SHS';
 
     public function createMenuItems()
     {
@@ -15,7 +14,7 @@ class MenuItemService
             'md_icon' => 'bolt',
             'usage_type' => 'shs',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -24,6 +23,5 @@ class MenuItemService
         array_push($subMenuItems, $subMenuItem1);
 
         return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
-
     }
 }

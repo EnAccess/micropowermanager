@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import StatusRepository from '../repositories/StatusRepository'
 
 export class StatusService {
     constructor() {
-        this.repository = Repository.get('status')
+        this.repository = StatusRepository
         this.status = {}
     }
 

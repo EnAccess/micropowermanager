@@ -75,58 +75,92 @@
                             class="md-layout-item md-size-100"
                             v-if="tab === 'person'"
                         >
-                            <multiselect
-                                v-model="smsService.receiverList"
-                                id="customer"
-                                name="customer"
-                                track-by="phone"
-                                label="display"
-                                placeholder="Type to search"
-                                open-direction="bottom"
-                                :options="smsService.resultList"
-                                @tag="addNumberToReceivers"
-                                :taggable="false"
-                                :multiple="true"
-                                :searchable="true"
-                                :loading="isLoading"
-                                :internal-search="false"
-                                :clear-on-select="false"
-                                :close-on-select="false"
-                                :options-limit="300"
-                                :limit="10"
-                                :max-height="600"
-                                :show-no-results="true"
-                                :hide-selected="true"
-                                @search-change="searchForPerson"
+                            <md-chips
+                                v-model="receiverListStringified"
+                                :md-limit="-1"
                             >
-                                <template
-                                    slot="tag"
-                                    slot-scope="{ option, remove }"
-                                >
-                                    <span class="custom__tag">
-                                        <span>{{ option.display }}</span>
-                                        <span
-                                            class="custom__remove"
-                                            @click="remove(option)"
+                                <label>Receiver List:</label>
+                                <template slot="md-chip" slot-scope="{ chip }">
+                                    {{ splitCustomerString(chip).display }} (+{{
+                                        splitCustomerString(chip).phone
+                                    }})
+                                </template>
+                            </md-chips>
+
+                            <div
+                                class="md-layout md-gutter md-alignment-center-left"
+                            >
+                                <div class="md-layout-item">
+                                    <md-autocomplete
+                                        v-model="addReceiver"
+                                        :md-options="resultListStringified"
+                                        :class="{
+                                            'md-invalid':
+                                                duplicateError ||
+                                                validReceiverError,
+                                        }"
+                                        @md-changed="getCustomers"
+                                        @md-opened="getCustomers"
+                                    >
+                                        <label>
+                                            Add a receiver to list (type to
+                                            start searching)
+                                        </label>
+
+                                        <template
+                                            slot="md-autocomplete-item"
+                                            slot-scope="{ item, term }"
                                         >
-                                            ❌
+                                            <md-highlight-text :md-term="term">
+                                                {{
+                                                    splitCustomerString(item)
+                                                        .display
+                                                }}
+                                                (+{{
+                                                    splitCustomerString(item)
+                                                        .phone
+                                                }})
+                                            </md-highlight-text>
+                                        </template>
+
+                                        <template
+                                            slot="md-autocomplete-empty"
+                                            slot-scope="{ term }"
+                                        >
+                                            <div v-if="term === ''">
+                                                Please enter a search term.
+                                            </div>
+                                            <div v-else>
+                                                No customer matching "{{
+                                                    term
+                                                }}" were found.
+                                            </div>
+                                        </template>
+
+                                        <span
+                                            v-if="duplicateError"
+                                            class="md-error"
+                                        >
+                                            The customer is already in the list.
                                         </span>
-                                    </span>
-                                </template>
-                                <template slot="clear" slot-scope="props">
-                                    <div
-                                        class="multiselect__clear"
-                                        v-if="receivers.length"
-                                        @mousedown.prevent.stop="
-                                            clearAll(props.search)
-                                        "
-                                    ></div>
-                                </template>
-                                <span slot="noResult">
-                                    No contact found. Consider changing the
-                                    search term.
-                                </span>
-                            </multiselect>
+                                        <span
+                                            v-else-if="validReceiverError"
+                                            class="md-error"
+                                        >
+                                            Not a valid customer. Please select
+                                            from the list.
+                                        </span>
+                                    </md-autocomplete>
+                                </div>
+                                <div class="md-layout-item">
+                                    <md-button
+                                        class="md-icon-button md-dense md-raised md-primary"
+                                        @click="addReceiverToList"
+                                    >
+                                        <md-icon>add</md-icon>
+                                    </md-button>
+                                </div>
+                            </div>
                         </div>
                         <div
                             class="md-layout-item md-size-100"
@@ -196,11 +230,10 @@ import { MiniGridService } from '@/services/MiniGridService'
 import { SmsService } from '@/services/SmsService'
 
 const debounce = require('debounce')
-import Multiselect from 'vue-multiselect'
 
 export default {
     name: 'NewSms',
-    components: { Widget, Multiselect },
+    components: { Widget },
     props: {
         show: {
             type: Boolean,
@@ -222,7 +255,25 @@ export default {
             miniGrid: 0,
             isLoading: false,
             senderId: this.$store.getters['auth/getAuthenticateUser'].id,
+            addReceiver: '',
+            duplicateError: false,
+            validReceiverError: false,
         }
+    },
+    computed: {
+        // Autocomplete and chips only works with string, so we use a stringified
+        // list as a dirty workaround here.
+        // See: https://github.com/vuematerial/vue-material/issues/2047
+        resultListStringified() {
+            return this.smsService.resultList.map(
+                (item) => `${item.id}|${item.display}|${item.phone}`,
+            )
+        },
+        receiverListStringified() {
+            return this.smsService.receiverList.map(
+                (item) => `${item.id}|${item.display}|${item.phone}`,
+            )
+        },
     },
     methods: {
         async getMiniGrids() {
@@ -239,28 +290,31 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        searchForPerson: debounce(async function (input) {
-            if (input.length < 3) {
+        getCustomers: debounce(async function (input) {
+            if (!input || input.trim().length < 1) {
+                return
+            }
+            // In case the user selected from suggestions,
+            // we don't want to run a search again
+            if (this.resultListStringified.includes(input)) {
                 return
             }
             await this.smsService.searchPerson(input)
         }, 500),
-        clearAll() {
-            this.smsService.receiverList = []
-            this.smsService.resultList = []
-        },
-        addNumberToReceivers(phone) {
-            this.smsService.receiverList.push({
-                id: -1,
-                display: phone,
-                phone: phone,
-            })
-        },
         searchForConnectionGroup() {
             try {
                 this.smsService.connectionGroupList()
             } catch (e) {
                 this.alertNotify('error', e.message)
+            }
+        },
+        splitCustomerString(input) {
+            let parts = input.split('|')
+
+            return {
+                id: parts[0],
+                display: parts[1],
+                phone: parts[2],
             }
         },
         async sendConfirm() {
@@ -299,6 +353,27 @@ export default {
                 this.$validator.reset()
             })
         },
+        async addReceiverToList() {
+            this.duplicateError = false
+            this.validReceiverError = false
+            if (this.addReceiver) {
+                if (!this.receiverListStringified.includes(this.addReceiver)) {
+                    // We check the list of "last" suggestions. If the entry
+                    // is still in there it's safe to assume the entry was selected
+                    // fromt the list.
+                    if (this.resultListStringified.includes(this.addReceiver)) {
+                        this.smsService.receiverList.push(
+                            this.splitCustomerString(this.addReceiver),
+                        )
+                        this.addReceiver = ''
+                    } else {
+                        this.validReceiverError = true
+                    }
+                } else {
+                    this.duplicateError = true
+                }
+            }
+        },
 
         alertNotify(type, message) {
             this.$notify({
@@ -321,17 +396,8 @@ export default {
     },
 }
 </script>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <style scoped>
-.multiselect {
-    border: 1px solid gray;
-    border-radius: 5px;
-}
-
-.multiselect .input :focus {
-    border: 1px solid #2196f3 !important;
-}
-
 .comment-box {
     border-bottom: 1px dotted #ccc;
     padding: 5px;

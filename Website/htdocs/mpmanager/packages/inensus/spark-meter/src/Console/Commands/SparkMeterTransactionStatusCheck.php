@@ -5,9 +5,8 @@ namespace Inensus\SparkMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\MpmPlugin;
 use App\Traits\ScheduledPluginCommand;
-use Illuminate\Console\Command;
-use Inensus\SparkMeter\Services\TransactionService;
 use Inensus\SparkMeter\Models\SmTransaction;
+use Inensus\SparkMeter\Services\TransactionService;
 
 class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
 {
@@ -16,17 +15,14 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
     protected $signature = 'spark-meter:transactionStatusCheck';
     protected $description = 'Checks status of Spark Meter transactions';
 
-
     public function __construct(
-        private  TransactionService $transactionService,
-        private  SmTransaction $smTransaction
+        private TransactionService $transactionService,
+        private SmTransaction $smTransaction
     ) {
         parent::__construct();
-
     }
 
-
-   public function handle(): void
+    public function handle(): void
     {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;

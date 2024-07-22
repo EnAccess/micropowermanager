@@ -1,9 +1,10 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import ClustersDashboardCacheDataRepository from '@/repositories/ClustersDashboardCacheDataRepository'
 
 export class ClustersDashboardCacheDataService {
     constructor() {
-        this.repository = RepositoryFactory.get('clustersDashboardCacheData')
+        this.repository = ClustersDashboardCacheDataRepository
     }
 
     async list() {

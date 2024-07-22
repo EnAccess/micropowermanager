@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { EventBus } from '@/shared/eventbus'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import AuthenticationRepository from '@/repositories/AuthenticationRepository'
 
 export class AuthenticationService {
     constructor() {
-        this.repository = Repository.get('authentication')
+        this.repository = AuthenticationRepository
         this.authenticateUser = {
             name: null,
             id: null,

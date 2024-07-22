@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import AssetRateRepository from '@/repositories/AssetRateRepository'
 
 export class AssetRateService {
     constructor() {
-        this.repository = Repository.get('assetRate')
+        this.repository = AssetRateRepository
     }
 
     async editAssetRate(rate, adminId, personId) {

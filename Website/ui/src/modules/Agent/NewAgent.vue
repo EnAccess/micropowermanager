@@ -170,9 +170,9 @@
                                 >
                                     <md-datepicker
                                         name="birthDate"
-                                        id="birthDate"
                                         md-immediately
                                         v-model="agentService.agent.birthday"
+                                        :md-close-on-blur="false"
                                     >
                                         <label for="birth-date">
                                             {{ $tc('words.birthday') }} :

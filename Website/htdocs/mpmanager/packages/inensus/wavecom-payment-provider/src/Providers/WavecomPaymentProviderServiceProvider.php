@@ -2,7 +2,6 @@
 
 namespace Inensus\WavecomPaymentProvider\Providers;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -31,7 +30,7 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/wavecom-payment-provider.php', 'wavecom-payment-provider');
+        $this->mergeConfigFrom(__DIR__.'/../../config/wavecom-payment-provider.php', 'wavecom-payment-provider');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('WaveComPaymentProvider', WaveComTransactionProvider::class);
@@ -41,7 +40,7 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__ . '/../../config/wavecom-payment-provider.php' => config_path(
+                __DIR__.'/../../config/wavecom-payment-provider.php' => config_path(
                     'wavecom-payment-provider.php'
                 ),
             ]
@@ -52,7 +51,7 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__ . '/../resources/assets' => resource_path(
+                __DIR__.'/../resources/assets' => resource_path(
                     'assets/js/plugins/wavecom-payment-provider'
                 ),
             ],
@@ -60,28 +59,28 @@ class WavecomPaymentProviderServiceProvider extends ServiceProvider
         );
     }
 
-
     public function publishMigrations($filesystem)
     {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_wavecom_tables.php.stub'
-            => $this->getMigrationFileName($filesystem),
+            __DIR__.'/../../database/migrations/create_wavecom_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
     protected function getMigrationFileName(Filesystem $filesystem): string
     {
         $timestamp = date('Y_m_d_His');
-        return Collection::make($this->app->databasePath() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)
-            ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path . '*_wavecom_tables.php'))) {
-                    $file = $filesystem->glob($path . '*_wavecom_tables.php')[0];
 
-                    file_put_contents($file, file_get_contents(__DIR__ .
+        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+            ->flatMap(function ($path) use ($filesystem) {
+                if (count($filesystem->glob($path.'*_wavecom_tables.php'))) {
+                    $file = $filesystem->glob($path.'*_wavecom_tables.php')[0];
+
+                    file_put_contents($file, file_get_contents(__DIR__.
                         '/../../database/migrations/create_wavecom_tables.php'));
                 }
-                return $filesystem->glob($path . '*_wavecom_tables.php');
-            })->push($this->app->databasePath() .
+
+                return $filesystem->glob($path.'*_wavecom_tables.php');
+            })->push($this->app->databasePath().
                 "/migrations/{$timestamp}_create_wavecom_tables.php")
             ->first();
     }

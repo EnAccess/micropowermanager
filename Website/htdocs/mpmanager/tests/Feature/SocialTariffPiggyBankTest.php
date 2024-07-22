@@ -19,12 +19,12 @@ use Tests\TestCase;
 
 class SocialTariffPiggyBankTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     /** @test */
-    public function test_add_piggy_bank_balance()
+    public function testAddPiggyBankBalance()
     {
-
         MeterTariffFactory::new()->create();
         MeterTariff::first()->socialTariff()->create([
             'tariff_id' => 1,
@@ -48,7 +48,7 @@ class SocialTariffPiggyBankTest extends TestCase
         $socialTariff = SocialTariff::first();
         $socialBank = SocialTariffPiggyBank::first();
         $savings = $socialBank->savings;
-        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; $i++) {
+        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; ++$i) {
             $job->handle();
             if ($i % ($socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance)) {
                 $this->assertEquals($savings + ($socialTariff->daily_allowance * $i), $socialBank->fresh()->savings);
@@ -62,9 +62,9 @@ class SocialTariffPiggyBankTest extends TestCase
     public function changeTariffAndResetSavings()
     {
         Queue::fake();
-        //create tariff
+        // create tariff
         MeterTariffFactory::new()->times(2)->create();
-        //add social tariff
+        // add social tariff
         MeterTariff::first()->socialTariff()->create([
             'tariff_id' => 1,
             'daily_allowance' => 10,
@@ -73,9 +73,9 @@ class SocialTariffPiggyBankTest extends TestCase
             'maximum_stacked_energy' => 70,
         ]);
 
-        //create meter
+        // create meter
         MeterFactory::new()->create();
-        //create customer
+        // create customer
         PersonFactory::new()->create();
         // attach meter to customer with tariff
         Person::first()->meters()->create([
@@ -84,22 +84,20 @@ class SocialTariffPiggyBankTest extends TestCase
             'connection_type_id' => 1,
             'connection_group_id' => 1,
         ]);
-        $this->assertCount(0, \App\Models\SocialTariffPiggyBank::all());
+        $this->assertCount(0, SocialTariffPiggyBank::all());
         $updatePiggyBankJob = new UpdatePiggyBankEntry(Person::first()->meters()->first());
         $updatePiggyBankJob->handle();
 
-        $this->assertCount(0, \App\Models\SocialTariffPiggyBank::all());
+        $this->assertCount(0, SocialTariffPiggyBank::all());
 
         Queue::assertPushed(CreatePiggyBankEntry::class);
-
 
         $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
         $createPiggyBankJob->handle();
 
-        $this->assertCount(0, \App\Models\SocialTariffPiggyBank::all());
+        $this->assertCount(0, SocialTariffPiggyBank::all());
 
-
-        //update tariff
+        // update tariff
 
         $meterParameters = Person::first()->meters()->first();
         $meterParameters->update(['tariff_id' => 1]);
@@ -107,13 +105,13 @@ class SocialTariffPiggyBankTest extends TestCase
         $updatePiggyBankJob = new UpdatePiggyBankEntry(Person::first()->meters()->first());
         $updatePiggyBankJob->handle();
 
-        $this->assertCount(0, \App\Models\SocialTariffPiggyBank::all());
+        $this->assertCount(0, SocialTariffPiggyBank::all());
 
         Queue::assertPushed(CreatePiggyBankEntry::class);
 
         $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
         $createPiggyBankJob->handle();
 
-        $this->assertCount(1, \App\Models\SocialTariffPiggyBank::all());
+        $this->assertCount(1, SocialTariffPiggyBank::all());
     }
 }

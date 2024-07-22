@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
+
+import AgentTransactionRepository from '@/repositories/AgentTransactionRepository'
 
 export class AgentTransactionService {
     constructor(agentId) {
-        this.repository = Repository.get('agentTransactions')
+        this.repository = AgentTransactionRepository
         this.list = []
         this.agentId = null
         this.transaction = {

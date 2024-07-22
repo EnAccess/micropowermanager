@@ -34,18 +34,19 @@ class CalinSmartMeterApiRequests
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Content-Length:' . strlen(json_encode($postParams)),
+                        'Content-Length:'.strlen(json_encode($postParams)),
                     ],
                 ]
             );
-            return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+
+            return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
         } catch (GuzzleException $gException) {
             Log::critical(
                 'Calin Smart API Transaction Failed',
                 [
                     'URL :' => $url,
                     'Body :' => json_encode($postParams),
-                    'message :' => $gException->getMessage()
+                    'message :' => $gException->getMessage(),
                 ]
             );
             throw new CalinSmartApiResponseException($gException->getMessage());

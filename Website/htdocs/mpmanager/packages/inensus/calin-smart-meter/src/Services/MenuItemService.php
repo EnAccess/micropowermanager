@@ -2,21 +2,19 @@
 
 namespace Inensus\CalinSmartMeter\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'CalinSmart Meter';
+    public const MENU_ITEM = 'CalinSmart Meter';
 
     public function createMenuItems()
     {
-
         $menuItem = [
             'name' => 'CalinSmart Meter',
             'url_slug' => '',
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -24,6 +22,6 @@ class MenuItemService
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem' => $menuItem,'subMenuItems' => $subMenuItems];
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

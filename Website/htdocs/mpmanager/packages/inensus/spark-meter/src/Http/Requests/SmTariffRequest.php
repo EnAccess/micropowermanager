@@ -21,14 +21,14 @@ class SmTariffRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     *
      * @return array
      */
     public function rules()
     {
         $meterTariff = SmTariff::with('mpmTariff')->where('tariff_id', $this->id)->firstOrFail();
+
         return [
-            'name' => ['required',Rule::unique('shard.meter_tariffs')->ignore($meterTariff->mpmTariff->id)],
+            'name' => ['required', Rule::unique('shard.meter_tariffs')->ignore($meterTariff->mpmTariff->id)],
             'flatPrice' => 'required',
             'flatLoadLimit' => 'required',
             'planEnabled' => 'required',
@@ -37,7 +37,6 @@ class SmTariffRequest extends FormRequest
             'tous.*.start' => 'required_with:tous',
             'tous.*.end' => 'required_with:tous',
             'tous.*.value' => 'required_with:tous',
-
         ];
     }
 }

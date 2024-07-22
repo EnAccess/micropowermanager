@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SmsResendInformationKeyRepository from '@/repositories/SmsResendInformationKeyRepository'
 
 export class SmsResendInformationKeyService {
     constructor() {
-        this.repository = RepositoryFactory.get('smsResendInformationKeys')
+        this.repository = SmsResendInformationKeyRepository
         this.smsResendInformationKey = {
             id: null,
             key: null,

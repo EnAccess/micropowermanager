@@ -1,71 +1,96 @@
 <template>
-    <div>
-        <widget :title="$tc('phrases.meterReadings')" :id="'meter-readings'">
-            <div role="menu" slot="tabbar">
+    <widget
+        :title="$tc('phrases.meterReadings')"
+        :id="'meter-readings'"
+        button
+        button-text="Set Period"
+        button-color="red"
+        @widgetAction="toggleDateSelection"
+        button-icon="calendar_today"
+    >
+        <div v-if="dates.show_selector" class="period-selector">
+            <p>{{ $tc('phrases.selectPeriod') }}</p>
+            <div class="md-layout md-gutter">
+                <div class="md-layout-item md-size-100">
+                    <md-datepicker
+                        :class="{
+                            'md-invalid': errors.has($tc('phrases.fromDate')),
+                        }"
+                        :name="$tc('phrases.fromDate')"
+                        md-immediately
+                        v-model="dates.dateOne"
+                        v-validate="'required'"
+                        :md-close-on-blur="false"
+                    >
+                        <label>{{ $tc('phrases.fromDate') }}</label>
+                        <span class="md-error">
+                            {{ errors.first($tc('phrases.fromDate')) }}
+                        </span>
+                    </md-datepicker>
+                </div>
+                <div class="md-layout-item md-size-100">
+                    <md-datepicker
+                        :class="{
+                            'md-invalid': errors.has($tc('phrases.toDate')),
+                        }"
+                        :name="$tc('phrases.toDate')"
+                        md-immediately
+                        v-model="dates.dateTwo"
+                        v-validate="'required'"
+                        :md-close-on-blur="false"
+                    >
+                        <label>{{ $tc('phrases.toDate') }}</label>
+                        <span class="md-error">
+                            {{ errors.first($tc('phrases.toDate')) }}
+                        </span>
+                    </md-datepicker>
+                </div>
+            </div>
+            <div style="margin-top: 5px">
+                <md-progress-bar md-mode="indeterminate" v-if="loading" />
                 <button
-                    class="md-button dropdown-toggle btn-xs"
-                    aria-expanded="false"
-                    id="datepicker-button-trigger"
-                    style="color: white"
+                    style="width: 100%"
+                    v-if="!loading"
+                    class="btn btn-primary"
+                    @click="getConsumptions"
                 >
-                    Period
-                    <md-icon>calendar_today</md-icon>
+                    {{ $tc('words.send') }}
                 </button>
             </div>
+        </div>
 
-            <md-card>
-                <md-card-content>
-                    <div v-if="chartData.length > 0">
-                        <GChart
-                            type="LineChart"
-                            :data="chartData"
-                            :options="chartOptions"
-                        ></GChart>
-                    </div>
+        <md-card>
+            <md-card-content>
+                <div v-if="chartData.length > 0">
+                    <GChart
+                        type="LineChart"
+                        :data="chartData"
+                        :options="chartOptions"
+                    ></GChart>
+                </div>
 
-                    <div
-                        v-if="chartData.length === 0 && loading === false"
-                        class="text-center"
-                    >
+                <div
+                    v-if="chartData.length === 0 && loading === false"
+                    class="text-center"
+                >
+                    <md-card-content class="no-data-placeholder">
                         <h2>
                             {{ $tc('phrases.noData') }} {{ dates.dateOne }} -
                             {{ dates.dateTwo }}
                         </h2>
-                    </div>
-                </md-card-content>
-            </md-card>
-        </widget>
-
-        <airbnb-style-datepicker
-            :trigger-element-id="'datepicker-button-trigger'"
-            :mode="'range'"
-            :date-one="dates.dateOne"
-            :date-two="dates.dateTwo"
-            :min-date="'2018-01-01'"
-            :endDate="dates.today"
-            :fullscreen-mobile="true"
-            :months-to-show="2"
-            :offset-y="500"
-            v-on:date-one-selected="
-                (val) => {
-                    dates.dateOne = val
-                }
-            "
-            v-on:date-two-selected="
-                (val) => {
-                    dates.dateTwo = val
-                }
-            "
-            @apply="getConsumptions"
-        ></airbnb-style-datepicker>
-    </div>
+                    </md-card-content>
+                </div>
+            </md-card-content>
+        </md-card>
+    </widget>
 </template>
 
 <script>
 import Widget from '../../shared/widget'
 import moment from 'moment'
-import { Consumptions } from '@/classes/meter/Consumptions'
+import { Consumptions } from '@/services/MeterConsumptionService'
 import { currency } from '@/mixins/currency'
+
 export default {
     name: 'Readings.vue',
     components: { Widget },
@@ -91,6 +116,7 @@ export default {
                 dateOne: null,
                 today: null,
                 difference: 0,
+                show_selector: false,
             },
             loading: true,
             consumptions: null,
@@ -108,6 +134,9 @@ export default {
         this.getConsumptions()
     },
     methods: {
+        toggleDateSelection() {
+            this.dates.show_selector = !this.dates.show_selector
+        },
         getConsumptions() {
             this.loading = true
             this.chartData = []
@@ -127,10 +156,28 @@ export default {
                     this.chartData = this.chartData.concat(
                         this.consumptions.data,
                     )
+                    this.dates.show_selector = false
                 })
         },
     },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.no-data-placeholder {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.period-selector {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ccc;
+    margin-right: 1rem;
+    margin-top: 2rem;
+}
+</style>

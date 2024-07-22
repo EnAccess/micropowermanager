@@ -1,7 +1,8 @@
-import Repository from '../repositories/RepositoryFactory'
+import OutstandingDebtsExportRepository from '@/repositories/OutstandingDebtsExportRepository'
+
 export class OutstandingDebtsExportService {
     constructor() {
-        this.repository = Repository.get('outstandingDebtsExportRepository')
+        this.repository = OutstandingDebtsExportRepository
     }
     exportOutstandingDebts(email) {
         return this.repository.download(email)

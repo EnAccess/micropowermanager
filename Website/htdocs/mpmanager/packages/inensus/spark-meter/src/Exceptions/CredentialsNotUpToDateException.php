@@ -2,9 +2,6 @@
 
 namespace Inensus\SparkMeter\Exceptions;
 
-use Exception;
-
-class CredentialsNotUpToDateException extends Exception
+class CredentialsNotUpToDateException extends \Exception
 {
-
 }

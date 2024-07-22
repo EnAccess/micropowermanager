@@ -2,9 +2,7 @@
 
 namespace Inensus\MicroStarMeter\Modules\Api\Utils;
 
-use App\Models\Manufacturer;
 use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
-
 
 class ResponseResolver
 {
@@ -14,7 +12,6 @@ class ResponseResolver
     public function checkResponse($result)
     {
         if (isset($result['errorCode'])) {
-
             if ($result['errorCode'] == 1000) {
                 return $result;
             }
@@ -23,6 +20,7 @@ class ResponseResolver
 
             throw new MicroStarApiResponseException($responseMessage);
         }
+
         return $result;
     }
 
@@ -68,7 +66,7 @@ class ResponseResolver
             case 2015:
                 return 'Lockout After 10 continuous rejections of token inputs, P2000 will lock out for one day (24 hours). During this period, any token entry will be rejected. After one day customers can input tokens again.';
 
-                default:
+            default:
                 return 'Unknown Error';
         }
     }

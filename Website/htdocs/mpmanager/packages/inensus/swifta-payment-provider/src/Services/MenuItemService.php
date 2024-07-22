@@ -4,7 +4,8 @@ namespace Inensus\SwiftaPaymentProvider\Services;
 
 class MenuItemService
 {
-    const MENU_ITEM = 'Swifta';
+    public const MENU_ITEM = 'Swifta';
+
     public function createMenuItems()
     {
         $menuItem = [
@@ -13,16 +14,14 @@ class MenuItemService
             'md_icon' => 'money',
             'usage_type' => 'general',
         ];
-        $subMenuItems= array();
+        $subMenuItems = [];
 
-        $subMenuItem1=[
+        $subMenuItem1 = [
             'name' => 'Overview',
             'url_slug' => '/swifta-payment/swifta-payment-overview',
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

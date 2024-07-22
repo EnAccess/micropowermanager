@@ -1,10 +1,11 @@
-import Repository from '../repositories/RepositoryFactory'
 import { EventBus } from '@/shared/eventbus'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 
+import AssetTypeRepository from '@/repositories/AssetTypeRepository'
+
 export class AssetTypeService {
     constructor() {
-        this.repository = Repository.get('assetType')
+        this.repository = AssetTypeRepository
         this.list = []
         this.assetType = {
             id: null,

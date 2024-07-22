@@ -20,7 +20,7 @@ class TicketUserFactory extends Factory
             'user_name' => $this->faker->name,
             'user_tag' => $this->faker->word,
             'out_source' => 0,
-            'extern_id' => $this->faker->word
+            'extern_id' => $this->faker->word,
         ];
     }
 }

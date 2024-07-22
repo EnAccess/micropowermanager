@@ -2,9 +2,6 @@
 
 namespace Inensus\SparkMeter\Exceptions;
 
-use Exception;
-
-class NoOnlineSiteRecordException extends Exception
+class NoOnlineSiteRecordException extends \Exception
 {
-
 }

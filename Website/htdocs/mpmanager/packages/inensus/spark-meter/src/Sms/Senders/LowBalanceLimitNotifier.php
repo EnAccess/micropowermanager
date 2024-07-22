@@ -9,6 +9,6 @@ class LowBalanceLimitNotifier extends SmsSender
     protected $references = [
         'header' => 'SparkSmsLowBalanceHeader',
         'body' => 'SparkSmsLowBalanceBody',
-        'footer' => 'SparkSmsLowBalanceFooter'
+        'footer' => 'SparkSmsLowBalanceFooter',
     ];
 }

@@ -4,10 +4,8 @@ namespace Inensus\DalyBms\Services;
 
 use App\Models\Manufacturer;
 
-
 class ManufacturerService
 {
-
     public function __construct(private Manufacturer $manufacturer)
     {
     }
@@ -18,9 +16,9 @@ class ManufacturerService
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'DalyBms',
-                'type'=>'e-bike',
+                'type' => 'e-bike',
                 'website' => 'https://www.databms.com/',
-                'api_name' => 'DalyBmsApi'
+                'api_name' => 'DalyBmsApi',
             ]);
         }
     }

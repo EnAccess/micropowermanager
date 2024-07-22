@@ -4,12 +4,11 @@ namespace Database\Factories;
 
 use App\Models\MainSettings as MainSettingsAlias;
 use Carbon\Carbon;
-use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MainSettingsFactory extends Factory {
-
-    protected $model=MainSettingsAlias::class;
+class MainSettingsFactory extends Factory
+{
+    protected $model = MainSettingsAlias::class;
 
     public function definition(): array
     {

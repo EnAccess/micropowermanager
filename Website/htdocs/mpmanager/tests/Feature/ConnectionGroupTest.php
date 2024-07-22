@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\ConnectionGroup;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -15,11 +13,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ConnectionGroupTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    private $user, $company, $companyDatabase, $person, $connectonGroupIds = [];
+    private $user;
+    private $company;
+    private $companyDatabase;
+    private $person;
+    private $connectonGroupIds = [];
 
-    public function test_user_gets_connection_group_list()
+    public function testUserGetsConnectionGroupList()
     {
         $connectionGroupCount = 5;
         $this->createTestData($connectionGroupCount);
@@ -28,34 +31,34 @@ class ConnectionGroupTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->connectonGroupIds));
     }
 
-    public function test_user_gets_connection_group_by_id()
+    public function testUserGetsConnectionGroupById()
     {
         $connectionGroupCount = 5;
         $this->createTestData($connectionGroupCount);
         $response = $this->actingAs($this->user)->get(sprintf('/api/connection-groups/%s', $this->connectonGroupIds[0]));
         $response->assertStatus(200);
-        $this->assertEquals($response['data']['id'],$this->connectonGroupIds[0]);
+        $this->assertEquals($response['data']['id'], $this->connectonGroupIds[0]);
     }
 
-    public function test_user_creates_new_connection_group()
+    public function testUserCreatesNewConnectionGroup()
     {
         $connectionGroupCount = 0;
         $this->createTestData($connectionGroupCount);
         $connectionGroupData = ['name' => 'Test Connection Group'];
-        $response = $this->actingAs($this->user)->post('/api/connection-groups',$connectionGroupData);
+        $response = $this->actingAs($this->user)->post('/api/connection-groups', $connectionGroupData);
         $response->assertStatus(201);
-        $this->assertEquals($response['data']['name'],$connectionGroupData['name']);
+        $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }
 
-    public function test_user_updates_a_connection_group()
+    public function testUserUpdatesAConnectionGroup()
     {
         $connectionGroupCount = 1;
         $this->createTestData($connectionGroupCount);
         $connectionGroupData = ['name' => 'Updated Connection Group'];
         $response = $this->actingAs($this->user)->put(sprintf('/api/connection-groups/%s',
-            $this->connectonGroupIds[0]),$connectionGroupData);
+            $this->connectonGroupIds[0]), $connectionGroupData);
         $response->assertStatus(200);
-        $this->assertEquals($response['data']['name'],$connectionGroupData['name']);
+        $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }
 
     public function actingAs($user, $driver = null)
@@ -76,7 +79,7 @@ class ConnectionGroupTest extends TestCase
         while ($connectionGroupCount > 0) {
             $connectionGroup = ConnectionGroupFactory::new()->create();
             array_push($this->connectonGroupIds, $connectionGroup->id);
-            $connectionGroupCount--;
+            --$connectionGroupCount;
         }
     }
 }

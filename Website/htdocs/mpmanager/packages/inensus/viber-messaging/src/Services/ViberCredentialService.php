@@ -2,25 +2,19 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Models\ViberCredential;
 
 class ViberCredentialService
 {
-
     public function __construct(
         private ViberCredential $credential,
         private WebhookService $webhookService,
         private AccountService $accountService
-
     ) {
-
     }
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -56,7 +50,7 @@ class ViberCredentialService
 
         if (!$credential->deep_link) {
             $uri = $this->accountService->getAccountInfo($credential);
-            $credential->deep_link = "viber://pa?chatURI=$uri&text=register+change_this_with_your_meter_serial_number" ;
+            $credential->deep_link = "viber://pa?chatURI=$uri&text=register+change_this_with_your_meter_serial_number";
             $credential->save();
         }
 

@@ -509,28 +509,45 @@
                     <div
                         class="md-layout-item md-size-100 md-small-size-100"
                         v-if="isDeviceSelectionRequired"
-                        style="padding: 1rem"
                     >
-                        <multiselect
-                            v-model="selectedDevice"
-                            label="serial"
-                            :placeholder="$tc('phrases.selectDevice')"
-                            :options="deviceSelectionList"
-                            :loading="loading"
-                            :show-no-results="true"
+                        <md-field
+                            :class="{
+                                'md-invalid': errors.has(
+                                    $tc('phrases.selectDevice'),
+                                ),
+                            }"
                         >
-                            <!-- eslint-disable-next-line vue/no-unused-vars -->
-                            <template slot="clear" slot-scope="props">
-                                <div
-                                    class="multiselect__clear"
-                                    v-if="deviceSelectionList.length"
-                                ></div>
-                            </template>
-                            <span slot="noResult">
-                                No available device found. Consider changing the
-                                search term.
+                            <label>
+                                {{ $tc('phrases.selectDevice') }}
+                            </label>
+                            <md-select
+                                :name="$tc('phrases.selectDevice')"
+                                v-model="selectedDeviceSerial"
+                                v-validate="'required'"
+                            >
+                                <template v-if="!deviceSelectionList.length">
+                                    <md-option disabled>
+                                        <md-tooltip md-direction="top">
+                                            Consider changing the search term or
+                                            create a suitable device first.
+                                        </md-tooltip>
+                                        No available device found.
+                                    </md-option>
+                                </template>
+                                <template v-else>
+                                    <md-option
+                                        v-for="device in deviceSelectionList"
+                                        :key="device.id"
+                                        :value="device.serial"
+                                    >
+                                        {{ device.serial }}
+                                    </md-option>
+                                </template>
+                            </md-select>
+                            <span class="md-error">
+                                {{ errors.first($tc('phrases.selectDevice')) }}
                             </span>
-                        </multiselect>
+                        </md-field>
                     </div>
                     <div
                         v-if="applianceService.appliance.rate"
@@ -612,7 +629,6 @@ import { currency, notify } from '@/mixins'
 import { ApplianceService } from '@/services/ApplianceService'
 import { AssetPersonService } from '@/services/AssetPersonService'
 import { DeviceService } from '@/services/DeviceService'
-import Multiselect from 'vue-multiselect'
 import { getGeoDataFromAddress } from '@/repositories/Client/OpenCageData'
 import { mapGetters } from 'vuex'
 import Loader from '@/shared/Loader.vue'
@@ -624,7 +640,6 @@ export default {
     mixins: [currency, notify],
     components: {
         Loader,
-        Multiselect,
     },
     props: {
         showSellApplianceModal: {
@@ -644,7 +659,7 @@ export default {
             deviceSelectionList: [],
             isDeviceSelectionRequired: false,
             minimumPayableAmount: 0,
-            selectedDevice: null,
+            selectedDeviceSerial: null,
             showRates: false,
             loading: false,
             tabName: 'count-based',
@@ -672,7 +687,7 @@ export default {
             )
             const isDeviceBindingRequired =
                 this.isDeviceBindingRequired(appliance)
-            if (isDeviceBindingRequired && !this.selectedDevice) {
+            if (isDeviceBindingRequired && !this.selectedDeviceSerial) {
                 this.alertNotify('error', 'Please select a device')
                 return
             }
@@ -700,9 +715,7 @@ export default {
                             ...this.applianceService.appliance,
                             points: points,
                             userId: this.user.id,
-                            deviceSerial: this.selectedDevice
-                                ? this.selectedDevice.serial
-                                : null,
+                            deviceSerial: this.selectedDeviceSerial,
                             address: this.person.addresses.find(
                                 (x) => x.id === this.selectedAddressId,
                             ),
@@ -861,3 +874,5 @@ export default {
     },
 }
 </script>
+
+<style scoped></style>

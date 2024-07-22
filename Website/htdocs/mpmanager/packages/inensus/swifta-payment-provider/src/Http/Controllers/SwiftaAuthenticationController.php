@@ -16,5 +16,4 @@ class SwiftaAuthenticationController extends Controller
     {
         return ApiResource::make($this->swiftaAuthenticationService->getSwiftaAuthentication());
     }
-
 }

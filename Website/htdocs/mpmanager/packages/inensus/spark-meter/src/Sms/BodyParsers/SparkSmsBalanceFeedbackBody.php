@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Sms\BodyParsers;
-
 
 use App\Sms\BodyParsers\SmsBodyParser;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -16,6 +14,7 @@ class SparkSmsBalanceFeedbackBody extends SmsBodyParser
     {
         $this->sparkCustomer = $sparkCustomer;
     }
+
     protected function getVariableValue($variable)
     {
         switch ($variable) {
@@ -23,6 +22,7 @@ class SparkSmsBalanceFeedbackBody extends SmsBodyParser
                 $variable = $this->sparkCustomer->credit_balance;
                 break;
         }
+
         return $variable;
     }
 }

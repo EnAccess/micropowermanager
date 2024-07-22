@@ -1,4 +1,3 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import store from '@/store/store'
 import meterIcon from '@/assets/icons/meter.png'
@@ -7,6 +6,8 @@ import miniGridIcon2 from '@/assets/icons/miniGrid2.png'
 import miniGridIcon from '@/assets/icons/miniGrid.png'
 import villageMarkerIcon from '@/assets/icons/village.png'
 import eBikeIcon from '@/assets/icons/ebike.png'
+
+import MappingRepository from '@/repositories/MappingRepository'
 
 export const MARKER_TYPE = {
     METER: 'METER',
@@ -32,7 +33,7 @@ export const ICON_OPTIONS = {
 
 export class MappingService {
     constructor() {
-        this.repository = RepositoryFactory.get('map')
+        this.repository = MappingRepository
         this.center = [
             store.getters['settings/getMapSettings'].latitude,
             store.getters['settings/getMapSettings'].longitude,

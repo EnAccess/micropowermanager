@@ -1,22 +1,14 @@
 <?php
 
-
 namespace Inensus\Ticket\Services;
 
-
-use App\Exceptions\TrelloAPIException;
 use App\Models\Agent;
-
 use App\Services\IAssociative;
-use App\Services\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\Ticket;
-use function Symfony\Component\Translation\t;
 
 class TicketService implements IAssociative
 {
-
     public function __construct(private Ticket $ticket)
     {
     }
@@ -50,6 +42,7 @@ class TicketService implements IAssociative
         $ticket = $this->getById($ticketId);
         $ticketData = ['status' => 1];
         $this->update($ticket, $ticketData);
+
         return $ticket->fresh();
     }
 
@@ -61,7 +54,6 @@ class TicketService implements IAssociative
 
         return $tickets;
     }
-
 
     public function getById($ticketId)
     {
@@ -115,10 +107,9 @@ class TicketService implements IAssociative
         if ($limit) {
             $tickets = $query->paginate($limit);
         } else {
-
             $tickets = $query->paginate();
         }
-        //get ticket details from trello
+        // get ticket details from trello
         $ticketData = $this->getBatch($tickets);
         $tickets->setCollection(Collection::make($ticketData));
 

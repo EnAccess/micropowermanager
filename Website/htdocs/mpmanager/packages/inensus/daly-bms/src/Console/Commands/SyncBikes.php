@@ -11,9 +11,9 @@ use MPM\EBike\EBikeService;
 
 class SyncBikes extends AbstractSharedCommand
 {
-    const MPM_PLUGIN_ID = 16;
-    const MANUFACTURER_NAME = 'DalyBms';
     use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 16;
+    public const MANUFACTURER_NAME = 'DalyBms';
 
     protected $signature = 'daly-bms:sync-bikes';
     protected $description = 'Sync bikes from Daly BMS.';
@@ -36,9 +36,9 @@ class SyncBikes extends AbstractSharedCommand
         $this->info('#############################');
         $this->info('# Daly BMS Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('sync-bikes command started at ' . $startedAt);
+        $this->info('sync-bikes command started at '.$startedAt);
 
-        try{
+        try {
             $serialNumbers =
                 $this->eBikeService->getAll()->where('manufacturer.name', self::MANUFACTURER_NAME)->pluck('serial_number')
                     ->toArray();
@@ -47,12 +47,12 @@ class SyncBikes extends AbstractSharedCommand
                 $this->updateBike($device);
             }
         } catch (\Exception $e) {
-            $this->warn('sync-bikes command is failed. message => ' . $e->getMessage());
+            $this->warn('sync-bikes command is failed. message => '.$e->getMessage());
         }
 
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('Took '.$totalTime.' seconds.');
         $this->info('#############################');
     }
 
@@ -76,7 +76,7 @@ class SyncBikes extends AbstractSharedCommand
 
         $address = $this->deviceAddressService->getAddressByDevice($eBike->device);
         $geoData = [
-            'points' => $updatingData['lat'] . ',' . $updatingData['lng'],
+            'points' => $updatingData['lat'].','.$updatingData['lng'],
         ];
 
         $address->geo->points = $geoData['points'];

@@ -4,7 +4,6 @@ namespace Inensus\SunKingSHS\Services;
 
 use Inensus\SunKingSHS\Models\SunKingCredential;
 
-
 class SunKingCredentialService
 {
     public function __construct(
@@ -14,7 +13,6 @@ class SunKingCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {

@@ -18,7 +18,6 @@ class SteamaTariffService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createTariff()
     {
@@ -28,14 +27,13 @@ class SteamaTariffService
                 'name' => 'Steama External Tariff',
                 'price' => 0,
                 'total_price' => 0,
-                'currency' => config('steama.currency')
+                'currency' => config('steama.currency'),
             ]);
             $this->tariff->newQuery()->create([
-                'mpm_tariff_id' => $meterTariff->id
+                'mpm_tariff_id' => $meterTariff->id,
             ]);
         }
 
-
-         return $meterTariff;
+        return $meterTariff;
     }
 }

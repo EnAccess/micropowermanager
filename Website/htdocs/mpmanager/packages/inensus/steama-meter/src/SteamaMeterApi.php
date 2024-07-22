@@ -5,15 +5,14 @@ namespace Inensus\SteamaMeter;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
+use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
 use Inensus\SteamaMeter\Services\SteamaCredentialService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
-use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
-use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
 class SteamaMeterApi implements IManufacturerAPI
 {
@@ -41,25 +40,25 @@ class SteamaMeterApi implements IManufacturerAPI
         $customerId = $stmCustomer->customer_id;
         $stmCustomer = $this->customerService->syncTransactionCustomer($stmCustomer->id);
         $customerEnergyPrice = $stmCustomer->energy_price;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($customerEnergyPrice);
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / $customerEnergyPrice;
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'load' => (float)$transactionContainer->chargedEnergy,
+                'load' => (float) $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
             $postParams = [
                 'amount' => $amount,
-                'category' => 'PAY'
+                'category' => 'PAY',
             ];
             try {
                 $credential = $this->credentialService->getCredentials();
             } catch (ModelNotFoundException $e) {
                 throw new ModelNotFoundException($e->getMessage());
             }
-            $url = $credential->api_url . '/customers/' . strval($customerId) . '/transactions/';
+            $url = $credential->api_url.'/customers/'.strval($customerId).'/transactions/';
             try {
                 $request = $this->api->post(
                     $url,
@@ -67,11 +66,11 @@ class SteamaMeterApi implements IManufacturerAPI
                         'body' => json_encode($postParams),
                         'headers' => [
                             'Content-Type' => 'application/json;charset=utf-8',
-                            'Authorization' => 'Token ' . $credential->authentication_token
+                            'Authorization' => 'Token '.$credential->authentication_token,
                         ],
                     ]
                 );
-                $transactionResult = json_decode((string)$request->getBody(), true);
+                $transactionResult = json_decode((string) $request->getBody(), true);
 
                 $manufacturerTransaction = $this->steamaTransaction->newQuery()->create([
                     'transaction_id' => $transactionResult['id'],
@@ -81,14 +80,13 @@ class SteamaMeterApi implements IManufacturerAPI
                     'category' => $transactionResult['category'],
                     'provider' => $transactionResult['provider'] ?? 'AP',
                     'timestamp' => $transactionResult['timestamp'],
-                    'synchronization_status' => $transactionResult['synchronization_status']
+                    'synchronization_status' => $transactionResult['synchronization_status'],
                 ]);
 
                 $transactionContainer->transaction->originalTransaction()->first()->update([
                     'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                    'manufacturer_transaction_type' => 'steama_transaction'
+                    'manufacturer_transaction_type' => 'steama_transaction',
                 ]);
-
             } catch (SteamaApiResponseException $e) {
                 Log::critical(
                     'Steama API Transaction Failed',
@@ -97,13 +95,14 @@ class SteamaMeterApi implements IManufacturerAPI
                 throw new SteamaApiResponseException($e->getMessage());
             }
 
-            $token = $transactionResult['site_id'] . '-' .
-                $transactionResult['category'] . '-' .
-                $transactionResult['provider'] . '-' .
+            $token = $transactionResult['site_id'].'-'.
+                $transactionResult['category'].'-'.
+                $transactionResult['provider'].'-'.
                 $transactionResult['customer_id'];
+
             return [
                 'token' => $token,
-                'load' => $transactionContainer->chargedEnergy
+                'load' => $transactionContainer->chargedEnergy,
             ];
         }
     }
@@ -111,5 +110,4 @@ class SteamaMeterApi implements IManufacturerAPI
     public function clearDevice(Device $device)
     {
     }
-
 }

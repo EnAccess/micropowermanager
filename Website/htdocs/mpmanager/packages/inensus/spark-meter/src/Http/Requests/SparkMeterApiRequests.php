@@ -2,7 +2,6 @@
 
 namespace Inensus\SparkMeter\Http\Requests;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
@@ -12,12 +11,12 @@ use Inensus\SparkMeter\Models\SmSite;
 
 class SparkMeterApiRequests
 {
-
     private $client;
     private $resultStatusChecker;
     private $credential;
     private $site;
     private $smCredentail;
+
     public function __construct(
         Client $httpClient,
         ResultStatusChecker $resultStatusChecker,
@@ -37,18 +36,19 @@ class SparkMeterApiRequests
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->get(
-                $smSite->thundercloud_url . $url,
+                $smSite->thundercloud_url.$url,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smSite->thundercloud_token
+                        'Authentication-Token' => $smSite->thundercloud_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function post($url, $postParams, $siteId)
@@ -56,19 +56,20 @@ class SparkMeterApiRequests
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->post(
-                $smSite->thundercloud_url . $url,
+                $smSite->thundercloud_url.$url,
                 [
                     'body' => $postParams ? json_encode($postParams) : null,
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smSite->thundercloud_token
+                        'Authentication-Token' => $smSite->thundercloud_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
+
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function put($url, $putParams, $siteId)
@@ -76,29 +77,29 @@ class SparkMeterApiRequests
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->put(
-                $smSite->thundercloud_url . $url,
+                $smSite->thundercloud_url.$url,
                 [
                     'body' => json_encode($putParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smSite->thundercloud_token
+                        'Authentication-Token' => $smSite->thundercloud_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
 
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function getByParams($url, $params, $siteId)
     {
         try {
             $smSite = $this->getThunderCloudInformation($siteId);
-            $apiUrl = $smSite->thundercloud_url . $url . '?';
+            $apiUrl = $smSite->thundercloud_url.$url.'?';
             foreach ($params as $key => $value) {
-                $apiUrl .= $key . "=" . $value . "&";
+                $apiUrl .= $key.'='.$value.'&';
             }
             $apiUrl = substr($apiUrl, 0, -1);
 
@@ -107,14 +108,15 @@ class SparkMeterApiRequests
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smSite->thundercloud_token
+                        'Authentication-Token' => $smSite->thundercloud_token,
                     ],
                 ]
             );
-            return json_decode((string)$request->getBody(), true);
-        } catch (Exception $e) {
+
+            return json_decode((string) $request->getBody(), true);
+        } catch (\Exception $e) {
             return [
-                'status' => 'failure'
+                'status' => 'failure',
             ];
         }
     }
@@ -122,44 +124,43 @@ class SparkMeterApiRequests
     public function getInfo($url, $id, $siteId)
     {
         $smSite = $this->getThunderCloudInformation($siteId);
-        $apiUrl = $smSite->thundercloud_url . $url . $id;
+        $apiUrl = $smSite->thundercloud_url.$url.$id;
         try {
             $request = $this->client->get(
                 $apiUrl,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smSite->thundercloud_token
+                        'Authentication-Token' => $smSite->thundercloud_token,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
 
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
-
 
     public function getFromKoios($url)
     {
         $smCredential = $this->getCredentials();
         try {
             $request = $this->client->get(
-                $smCredential->api_url . $url,
+                $smCredential->api_url.$url,
                 [
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
                         'X-API-KEY' => $smCredential->api_key,
-                        'X-API-SECRET' => $smCredential->api_secret
+                        'X-API-SECRET' => $smCredential->api_secret,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
 
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function postToKoios($url, $postParams)
@@ -167,21 +168,21 @@ class SparkMeterApiRequests
         $smCredential = $this->getCredentials();
         try {
             $request = $this->client->post(
-                $smCredential->api_url . $url,
+                $smCredential->api_url.$url,
                 [
                     'body' => json_encode($postParams),
                     'headers' => [
                         'Content-Type' => 'application/json;charset=utf-8',
                         'X-API-KEY' => $smCredential->api_key,
-                        'X-API-SECRET' => $smCredential->api_secret
+                        'X-API-SECRET' => $smCredential->api_secret,
                     ],
                 ]
             );
         } catch (GuzzleException $exception) {
             throw new SparkAPIResponseException($exception->getMessage());
         }
-        return $this->resultStatusChecker->checkApiResult(json_decode((string)$request->getBody(), true));
 
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     private function getCredentials()

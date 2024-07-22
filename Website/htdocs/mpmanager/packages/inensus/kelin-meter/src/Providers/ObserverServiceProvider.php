@@ -17,6 +17,5 @@ class ObserverServiceProvider extends ServiceProvider
     {
         parent::boot();
         Person::observe(PersonObserver::class);
-
     }
 }

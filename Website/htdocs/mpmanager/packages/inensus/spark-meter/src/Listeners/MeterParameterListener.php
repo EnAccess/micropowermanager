@@ -7,11 +7,11 @@ use App\Models\Meter\MeterParameter;
 use App\Models\MiniGrid;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
+use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Models\SmSite;
+use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\TariffService;
-use Inensus\SparkMeter\Models\SmCustomer;
-use Inensus\SparkMeter\Models\SmTariff;
 
 class MeterParameterListener
 {
@@ -45,7 +45,8 @@ class MeterParameterListener
     }
 
     /**
-     * Sets the in_use to true
+     * Sets the in_use to true.
+     *
      * @param int $meter_id
      */
     public function onParameterSaved(int $meter_id)
@@ -55,14 +56,13 @@ class MeterParameterListener
             'tariff.tou',
             'meter.manufacturer',
             'geo',
-            'owner.addresses' =>
-                static function ($q) {
-                    $q->where('is_primary', 1);
-                }
+            'owner.addresses' => static function ($q) {
+                $q->where('is_primary', 1);
+            },
         ])->whereHas('meter', function ($q) use ($meter_id) {
             $q->where('id', $meter_id);
         })->first();
-        if ($meterInfo->meter->manufacturer->name === "Spark Meters") {
+        if ($meterInfo->meter->manufacturer->name === 'Spark Meters') {
             $tariffId = $meterInfo->tariff->id;
             $city = $this->city->newQuery()->find($meterInfo->address->city_id);
             $miniGridId = $city->mini_grid_id;

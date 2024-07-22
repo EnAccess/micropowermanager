@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Sms\BodyParsers;
 
-
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Sms\BodyParsers\SmsBodyParser;
 
@@ -20,16 +17,14 @@ class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser
 
     protected function getVariableValue($variable)
     {
-
         if (!is_array($this->data)) {
-
             $person = $this->data->meterParameter->whereHasMorph('owner', [Person::class])->first()->owner()->first();
         } else {
             try {
                 $person = Person::query()->with([
                     'meters.meter' => function ($q) {
                         return $q->where('serial_number', $this->data['meter'])->first();
-                    }
+                    },
                 ])->firstOrFail();
             } catch (\Exception $e) {
                 return '';
@@ -43,8 +38,8 @@ class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser
             case 'surname':
                 $variable = $person->surname;
                 break;
-
         }
+
         return $variable;
     }
 }

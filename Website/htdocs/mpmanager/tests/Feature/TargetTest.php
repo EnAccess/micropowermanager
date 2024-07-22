@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -11,9 +9,8 @@ class TargetTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_target_list()
+    public function testUserGetsTargetList()
     {
-
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -26,7 +23,7 @@ class TargetTest extends TestCase
         $this->assertEquals(count($response['data']), $targetCount);
     }
 
-    public function test_user_gets_target_by_id()
+    public function testUserGetsTargetById()
     {
         $this->createTestData();
         $this->createCluster();
@@ -40,7 +37,7 @@ class TargetTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->targets[0]->id);
     }
 
-    public function test_user_creates_new_target()
+    public function testUserCreatesNewTarget()
     {
         $this->withExceptionHandling();
         $this->createTestData();
@@ -52,20 +49,19 @@ class TargetTest extends TestCase
             'data' => [
                 [
                     'id' => 1,
-                    'name' => "default connection group",
+                    'name' => 'default connection group',
                     'target' => [
                         'newConnection' => 0,
                         'totalRevenue' => 0,
                         'connectedPower' => 0,
                         'energyPerMonth' => 0,
-                        'averageRevenuePerMonth' => 0
-                    ]
-                ]
+                        'averageRevenuePerMonth' => 0,
+                    ],
+                ],
             ],
             'period' => '2022-05-12',
             'targetType' => 'cluster',
             'targetId' => 1,
-
         ];
         $response = $this->actingAs($this->user)->post('/api/targets', $targetData);
         $response->assertStatus(201);

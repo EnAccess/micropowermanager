@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SmsAndroidSettingRepository from '@/repositories/SmsAndroidSettingRepository'
 
 export class SmsAndroidSettingService {
     constructor() {
-        this.repository = RepositoryFactory.get('smsAndroidSetting')
+        this.repository = SmsAndroidSettingRepository
         this.list = []
         this.smsAndroidSetting = {
             id: null,

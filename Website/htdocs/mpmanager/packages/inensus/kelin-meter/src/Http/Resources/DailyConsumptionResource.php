@@ -2,7 +2,6 @@
 
 namespace Inensus\KelinMeter\Http\Resources;
 
-
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DailyConsumptionResource extends JsonResource
@@ -25,7 +24,7 @@ class DailyConsumptionResource extends JsonResource
                     'totalValueOfPositiveActiveValleyPower' => $this->total_positive_active_valley_power,
                     'totalValueOfPositiveActiveSpikePower' => $this->total_positive_active_spike_power,
                     'totalValueOfPositiveReactivePowerCumulativeFlowIndication' => $this->total_positive_reactive_power_cumulative_flow_indication,
-                    'totalValueOfPositiveReactivePeakPower' =>$this->total_positive_reactive_peak_power,
+                    'totalValueOfPositiveReactivePeakPower' => $this->total_positive_reactive_peak_power,
                     'totalValueOfPositiveReactiveFlatPower' => $this->total_positive_reactive_flat_power,
                     'totalValueOfPositiveReactiveValleyPower' => $this->total_positive_reactive_valley_power,
                     'totalValueOfPositiveReactiveSpikePower' => $this->total_positive_reactive_spike_power,
@@ -35,12 +34,12 @@ class DailyConsumptionResource extends JsonResource
                     'positiveActiveDailyPowerInPeak' => $this->positive_active_daily_power_in_peak,
                     'positiveActiveDailyPowerInFlat' => $this->positive_active_daily_power_in_flat,
                     'positiveActiveDailyPowerInValley' => $this->positive_active_daily_power_in_valley,
-                    'positiveActiveDailyPowerInSpike' =>$this->positive_active_daily_power_in_spike,
+                    'positiveActiveDailyPowerInSpike' => $this->positive_active_daily_power_in_spike,
                     'positiveReactiveTotalDailyPower' => $this->positive_reactive_total_daily_power,
                     'revertedActiveTotalDailyPower' => $this->reverted_active_total_daily_power,
                     'revertedReactiveTotalDailyPower' => $this->reverted_reactive_total_daily_power,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

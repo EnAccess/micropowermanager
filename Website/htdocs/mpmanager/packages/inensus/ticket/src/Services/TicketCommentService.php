@@ -3,24 +3,19 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 26.09.18
- * Time: 16:19
+ * Time: 16:19.
  */
 
 namespace Inensus\Ticket\Services;
 
-
-use App\Exceptions\TrelloAPIException;
 use App\Models\Person\Person;
-use App\Services\IBaseService;
-use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Models\TicketComment;
 
 class TicketCommentService
 {
-
-    public function __construct(private Person            $person,
-                                private TicketComment     $ticketComment,
-                                private TicketUserService $ticketUserService)
+    public function __construct(private Person $person,
+        private TicketComment $ticketComment,
+        private TicketUserService $ticketUserService)
     {
     }
 
@@ -45,7 +40,7 @@ class TicketCommentService
             'addresses',
             'tickets' => static function ($q) {
                 $q->where('status', 0)->latest()->limit(1);
-            }
+            },
         ])
             ->whereHas(
                 'addresses',
@@ -56,12 +51,9 @@ class TicketCommentService
             ->where('is_customer', 0)
             ->first();
 
-
         if ($person && !$person->tickets->isEmpty()) {
             $ticketUser = $this->ticketUserService->findByPhone($sender);
-            $this->createComment($person->tickets[0]->ticket_id, 'Sms Comment' . $message, $ticketUser->getId());
+            $this->createComment($person->tickets[0]->ticket_id, 'Sms Comment'.$message, $ticketUser->getId());
         }
     }
-
-
 }

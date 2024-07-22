@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use Inensus\SparkMeter\Helpers\InsertSparkMeterApi;
 use Inensus\SparkMeter\Services\CredentialService;
 use Inensus\SparkMeter\Services\CustomerService;
-use Inensus\SparkMeter\Services\MeterModelService;
 use Inensus\SparkMeter\Services\MenuItemService;
+use Inensus\SparkMeter\Services\MeterModelService;
 use Inensus\SparkMeter\Services\PackageInstallationService;
 use Inensus\SparkMeter\Services\SiteService;
 use Inensus\SparkMeter\Services\SmSmsBodyService;
@@ -37,18 +37,18 @@ class InstallSparkMeterPackage extends Command
     /**
      * Create a new command instance.
      *
-     * @param InsertSparkMeterApi $insertSparkMeterApi
-     * @param MeterModelService $meterModelService
-     * @param CredentialService $credentialService
-     * @param MenuItemService $menuItemService
-     * @param CustomerService $customerService
-     * @param SiteService $siteService
-     * @param SmSmsSettingService $smsSettingService
-     * @param SmSyncSettingService $syncSettingService
-     * @param SmSmsBodyService $smsBodyService
+     * @param InsertSparkMeterApi              $insertSparkMeterApi
+     * @param MeterModelService                $meterModelService
+     * @param CredentialService                $credentialService
+     * @param MenuItemService                  $menuItemService
+     * @param CustomerService                  $customerService
+     * @param SiteService                      $siteService
+     * @param SmSmsSettingService              $smsSettingService
+     * @param SmSyncSettingService             $syncSettingService
+     * @param SmSmsBodyService                 $smsBodyService
      * @param SmSmsVariableDefaultValueService $defaultValueService
-     * @param SmSmsFeedbackWordService $smSmsFeedbackWordService
-     * @param PackageInstallationService $packageInstallationService
+     * @param SmSmsFeedbackWordService         $smSmsFeedbackWordService
+     * @param PackageInstallationService       $packageInstallationService
      */
     public function __construct(
         InsertSparkMeterApi $insertSparkMeterApi,
@@ -89,44 +89,52 @@ class InstallSparkMeterPackage extends Command
         $connections = $this->customerService->checkConnectionAvailability();
         if (!$this->siteService->checkLocationAvailability()) {
             $this->warn('------------------------------');
-            $this->warn("Spark Meter package needs least one registered Cluster.");
-            $this->warn("If you have no Cluster, please navigate to #Locations# section and register your locations.");
+            $this->warn('Spark Meter package needs least one registered Cluster.');
+            $this->warn('If you have no Cluster, please navigate to #Locations# section and register your locations.');
         }
         if (!$connections['type'] || !$connections['group']) {
             $this->warn('------------------------------');
-            $this->warn("Spark Meter package needs least one Connection Group and one Connection Type.");
-            $this->warn("Before you get Customers from Spark Meter please check them in #Connection# section.");
+            $this->warn('Spark Meter package needs least one Connection Group and one Connection Type.');
+            $this->warn('Before you get Customers from Spark Meter please check them in #Connection# section.');
         }
     }
-    private function publishMigrations(){
+
+    private function publishMigrations()
+    {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
+
     private function createDatabaseTables()
     {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
-    private function publishVueFiles(){
 
+    private function publishVueFiles()
+    {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
-            '--tag' => "vue-components",
+            '--tag' => 'vue-components',
             '--force' => true,
         ]);
     }
-    private function createPluginRecord(){
+
+    private function createPluginRecord()
+    {
         $this->call('plugin:add', [
-            'name' => "SparkMeter",
-            'composer_name' => "inensus/spark-meter",
-            'description' => "Spark meters integration package for MicroPowerManager",
+            'name' => 'SparkMeter',
+            'composer_name' => 'inensus/spark-meter',
+            'description' => 'Spark meters integration package for MicroPowerManager',
         ]);
     }
-    private function createMenuItems(){
+
+    private function createMenuItems()
+    {
         $menuItems = $this->menuItemService->createMenuItems();
         if (array_key_exists('menuItem', $menuItems)) {
             $this->call('menu-items:generate', [

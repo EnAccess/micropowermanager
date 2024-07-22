@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -12,7 +9,7 @@ class SubConnectionTypeTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_sub_connection_type_list()
+    public function testUserGetsSubConnectionTypeList()
     {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
@@ -25,7 +22,7 @@ class SubConnectionTypeTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->subConnectionTypes));
     }
 
-    public function test_user_gets_sub_connection_types_by_connection_type_id()
+    public function testUserGetsSubConnectionTypesByConnectionTypeId()
     {
         $connectionTypeCount = 2;
         $subConnectionTypeCount = 1;
@@ -39,7 +36,7 @@ class SubConnectionTypeTest extends TestCase
         $this->assertEquals($response['data'][0]['connection_type_id'], $this->connectonTypes[0]->id);
     }
 
-    public function test_user_creates_new_sub_connection_type()
+    public function testUserCreatesNewSubConnectionType()
     {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 0;
@@ -50,14 +47,14 @@ class SubConnectionTypeTest extends TestCase
         $subConnectionTypeData = [
             'name' => 'Test SubConnection Type',
             'connection_type_id' => $this->connectonTypes[0]->id,
-            'tariff_id' => $this->meterTariff->id
+            'tariff_id' => $this->meterTariff->id,
         ];
         $response = $this->actingAs($this->user)->post('/api/sub-connection-types', $subConnectionTypeData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $subConnectionTypeData['name']);
     }
 
-    public function test_user_updates_a_sub_connection_type()
+    public function testUserUpdatesASubConnectionType()
     {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;

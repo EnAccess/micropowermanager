@@ -36,13 +36,11 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
             // We need to make sure that the payment is fully processable from our end .
             $this->waveMoneyTransactionService->imitateTransactionForValidation($waveMoneyTransactionData);
-
         } catch (\Exception $exception) {
-            throw  new \Exception($exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
 
         $this->setValidData($waveMoneyTransactionData);
-
     }
 
     public function saveTransaction()
@@ -55,19 +53,18 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         if ($requestType) {
             $waveMoneyTransaction = $transaction->originalTransaction()->first();
             $updateData = [
-                'status' => WaveMoneyTransaction::STATUS_SUCCESS
+                'status' => WaveMoneyTransaction::STATUS_SUCCESS,
             ];
             $this->waveMoneyTransactionService->update($waveMoneyTransaction, $updateData);
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($transaction,  SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+            $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
             Log::critical('WaveMoney transaction is been cancelled from MicroPowerManager.',
                 [
                     'transaction_id' => $transaction->id,
-                    'original_transaction_id' => $transaction->originalTransaction()->first()->id
+                    'original_transaction_id' => $transaction->originalTransaction()->first()->id,
                 ]);
         }
-
     }
 
     public function confirm(): void
@@ -82,7 +79,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
 
     public function getAmount(): int
     {
-       return $this->getTransaction()->amount;
+        return $this->getTransaction()->amount;
     }
 
     public function getSender(): string
@@ -104,11 +101,10 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
     public function addConflict(?string $message): void
     {
         $conflict = $this->transactionConflicts->newQuery()->make([
-            'state' => $message
+            'state' => $message,
         ]);
         $conflict->transaction()->associate($this->waveMoneytransaction);
         $conflict->save();
-
     }
 
     public function getTransaction(): Transaction
@@ -130,5 +126,4 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
     {
         return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
     }
-
 }

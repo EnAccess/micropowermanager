@@ -41,8 +41,8 @@
                         <md-datepicker
                             name="ticketDueDate"
                             md-immediately
-                            id="ticketDueDate"
                             v-model="newTicket.dueDate"
+                            :md-close-on-blur="false"
                         >
                             <label for="ticketDueDate">
                                 {{ $tc('phrases.dueDate') }}
@@ -130,10 +130,10 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { Ticket, UserTickets } from '@/classes/person/ticket'
+import { Ticket, UserTickets } from '@/services/TicketService'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import moment from 'moment'
 import { TicketUserService } from '@/services/TicketUserService'
 import { TicketLabelService } from '@/services/TicketLabelService'
@@ -180,7 +180,7 @@ export default {
                 dueDate: null,
                 label: null,
                 assignedPerson: null,
-                owner_id: this.$store.getters.person.id, //current person id
+                owner_id: this.personId,
                 owner_type: 'person',
                 creator:
                     this.$store.getters['auth/authenticationService']
@@ -250,7 +250,7 @@ export default {
             this.newTicket.dueDate = day + '.' + month + '.' + year
         },
         getTickets(pageNumber = 1) {
-            let personId = this.$store.getters.person.id
+            let personId = this.personId
             this.loaded = false
 
             if (this.paginator === null)

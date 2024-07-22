@@ -45,6 +45,7 @@ class StronTransaction extends BaseModel implements ISubTransaction
     {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
+
     public function waveMoneyTransaction()
     {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');

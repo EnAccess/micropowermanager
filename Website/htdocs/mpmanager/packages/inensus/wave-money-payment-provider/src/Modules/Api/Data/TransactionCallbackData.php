@@ -14,30 +14,28 @@ class TransactionCallbackData
     public const STATUS_SUCCESS = 1;
     public const STATUS_FAILURE = -1;
 
-
     public function __construct(
-        private string  $status,
-        private string  $merchantId,
-        private string  $orderId,
-        private string  $merchantReferenceId,
-        private string  $frontendResultUrl,
-        private string  $backEndResultUrl,
+        private string $status,
+        private string $merchantId,
+        private string $orderId,
+        private string $merchantReferenceId,
+        private string $frontendResultUrl,
+        private string $backEndResultUrl,
         private ?string $initiatorMsisdn,
-        private float     $amount,
-        private int     $timeToLiveSeconds,
-        private string  $paymentDescription,
-        private string  $currency,
-        private string  $hash,
+        private float $amount,
+        private int $timeToLiveSeconds,
+        private string $paymentDescription,
+        private string $currency,
+        private string $hash,
         private ?string $transactionId,
-        private string|int  $paymentRequestId,
-        private string  $requestTime,
+        private string|int $paymentRequestId,
+        private string $requestTime,
         private ?string $additional1,
         private ?string $additional2,
         private ?string $additional3,
         private ?string $additional4,
         private ?string $additional5,
-    )
-    {
+    ) {
     }
 
     public function getStatus(): string
@@ -128,11 +126,10 @@ class TransactionCallbackData
 
     public function mapTransactionStatus(string $status): int
     {
-        if($status === self::STATUS_PAYMENT_CONFIRMED) {
+        if ($status === self::STATUS_PAYMENT_CONFIRMED) {
             return self::STATUS_SUCCESS;
         }
+
         return self::STATUS_FAILURE;
     }
-
-
 }

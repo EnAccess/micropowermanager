@@ -1,9 +1,9 @@
 import { ErrorHandler } from '../Helpers/ErrorHander'
-import RepositoryFactory from '../repositories/RepositoryFactory'
+import CsvUploadRepository from '../repositories/CsvUploadRepository'
 
 export class CsvUploadService {
     constructor() {
-        this.repository = RepositoryFactory.get('csv')
+        this.repository = CsvUploadRepository
         this.recentlyCreatedRecords = {
             cluster: 0,
             miniGrid: 0,

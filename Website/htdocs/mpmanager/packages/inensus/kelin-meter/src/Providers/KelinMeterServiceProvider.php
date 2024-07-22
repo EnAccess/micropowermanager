@@ -10,13 +10,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\KelinMeter\Console\Commands\AccessTokenRefresher;
+use Inensus\KelinMeter\Console\Commands\DataSynchronizer;
 use Inensus\KelinMeter\Console\Commands\InstallPackage;
 use Inensus\KelinMeter\Console\Commands\ReadDailyMeterConsumptions;
 use Inensus\KelinMeter\Console\Commands\ReadMinutelyMeterConsumptions;
 use Inensus\KelinMeter\Console\Commands\UpdatePackage;
-use Inensus\KelinMeter\Console\Commands\DataSynchronizer;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
-
 use Inensus\KelinMeter\KelinMeterApi;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter;
@@ -25,7 +24,6 @@ use Inensus\KelinMeter\Models\KelinTransaction;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 use Inensus\KelinMeter\Services\KelinMeterService;
-
 
 class KelinMeterServiceProvider extends ServiceProvider
 {
@@ -42,7 +40,7 @@ class KelinMeterServiceProvider extends ServiceProvider
                 ReadMinutelyMeterConsumptions::class,
                 AccessTokenRefresher::class,
                 UpdatePackage::class,
-                DataSynchronizer::class
+                DataSynchronizer::class,
             ]);
         }
         $this->app->booted(function ($app) {
@@ -58,14 +56,14 @@ class KelinMeterServiceProvider extends ServiceProvider
         Relation::morphMap(
             [
                 'kelin_sync_setting' => KelinSyncSetting::class,
-                'kelin_transaction' => KelinTransaction::class
+                'kelin_transaction' => KelinTransaction::class,
             ]
         );
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/kelin-meter.php', 'kelin-meter');
+        $this->mergeConfigFrom(__DIR__.'/../../config/kelin-meter.php', 'kelin-meter');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('KelinMeterApi', function ($app) {
@@ -86,14 +84,14 @@ class KelinMeterServiceProvider extends ServiceProvider
     public function publishConfigFiles()
     {
         $this->publishes([
-            __DIR__ . '/../../config/kelin-meter.php' => config_path('kelin-meter.php'),
+            __DIR__.'/../../config/kelin-meter.php' => config_path('kelin-meter.php'),
         ], 'configurations');
     }
 
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__ . '/../resources/assets' => resource_path('assets/js/plugins/kelin-meter'
+            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/kelin-meter'
             ),
         ], 'vue-components');
     }
@@ -101,25 +99,25 @@ class KelinMeterServiceProvider extends ServiceProvider
     public function publishMigrations($filesystem)
     {
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_kelin_tables.php.stub'
-            => $this->getMigrationFileName($filesystem),
+            __DIR__.'/../../database/migrations/create_kelin_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
     protected function getMigrationFileName(Filesystem $filesystem): string
     {
         $timestamp = date('Y_m_d_His');
-        return Collection::make($this->app->databasePath() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)
+
+        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path . '*_create_kelin_tables.php'))) {
-                    $file = $filesystem->glob($path . '*_create_kelin_tables.php')[0];
+                if (count($filesystem->glob($path.'*_create_kelin_tables.php'))) {
+                    $file = $filesystem->glob($path.'*_create_kelin_tables.php')[0];
 
                     file_put_contents($file,
-                        file_get_contents(__DIR__ . '/../../database/migrations/create_kelin_tables.php.stub'));
+                        file_get_contents(__DIR__.'/../../database/migrations/create_kelin_tables.php.stub'));
                 }
-                return $filesystem->glob($path . '*_create_kelin_tables.php');
-            })->push($this->app->databasePath() . "/migrations/{$timestamp}_create_kelin_tables.php")
+
+                return $filesystem->glob($path.'*_create_kelin_tables.php');
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_kelin_tables.php")
             ->first();
     }
-
 }

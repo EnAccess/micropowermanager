@@ -9,19 +9,17 @@ use Inensus\BulkRegistration\Models\CsvData;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 class ImportCsv extends TestCase
 {
-
     use RefreshDatabase;
 
     /** @test */
-    public function is_user_sent_csv()
+    public function isUserSentCsv()
     {
         $this->withoutExceptionHandling();
         $user = factory(User::class)->create();
 
-        $uploadedFile = new UploadedFile (__DIR__ . '/../../resources/test-files/test.csv', 'test.csv', null, null, true);
+        $uploadedFile = new UploadedFile(__DIR__.'/test-files/test.csv', 'test.csv', null, null, true);
         $csv_data_file = [
             'csv' => $uploadedFile,
         ];
@@ -36,9 +34,9 @@ class ImportCsv extends TestCase
                 'attributes' => [
                     'created_person_id' => $user->id,
                     'csv_filename' => 'test.csv',
-                    'recently_created_records'=>$jsonResponse['data']['attributes']['recently_created_records']
-                ]
-            ]
+                    'recently_created_records' => $jsonResponse['data']['attributes']['recently_created_records'],
+                ],
+            ],
         ]);
     }
 

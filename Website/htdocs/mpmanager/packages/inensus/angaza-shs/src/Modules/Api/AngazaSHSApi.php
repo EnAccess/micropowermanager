@@ -14,7 +14,7 @@ use Inensus\AngazaSHS\Services\AngazaCredentialService;
 
 class AngazaSHSApi implements IManufacturerAPI
 {
-    const API_CALL_UNIT_CREDIT = '/unit_credit';
+    public const API_CALL_UNIT_CREDIT = '/unit_credit';
 
     public function __construct(
         private AngazaCredentialService $credentialService,
@@ -28,33 +28,32 @@ class AngazaSHSApi implements IManufacturerAPI
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
         $minimumPurchaseAmountPerDay =
-            ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); //This is for 1 day of energy
+            ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
         $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / ($minimumPurchaseAmountPerDay));
+        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / $minimumPurchaseAmountPerDay);
 
-        Log::debug('ENERGY TO BE CHARGED as Day ' . $transactionContainer->chargedEnergy .
+        Log::debug('ENERGY TO BE CHARGED as Day '.$transactionContainer->chargedEnergy.
             ' Manufacturer => AngazaSHSApi');
 
         $device = $transactionContainer->device;
         $energy = $transactionContainer->chargedEnergy;
 
         $params = [
-            "unit_number" => $device->device_serial,
-            "state" => [
-                "desired" => [
-                    "credit_until_dt" => Carbon::now()->addDays($energy)->toIso8601String()
-                ]
-            ]
+            'unit_number' => $device->device_serial,
+            'state' => [
+                'desired' => [
+                    'credit_until_dt' => Carbon::now()->addDays($energy)->toIso8601String(),
+                ],
+            ],
         ];
         $credentials = $this->credentialService->getCredentials();
 
         try {
             $response = $this->apiRequests->put($credentials, $params, self::API_CALL_UNIT_CREDIT);
 
-            if(isset($response['context'])){
+            if (isset($response['context'])) {
                 throw new AngazaApiResponseException($response['context']['reason']);
             }
-
         } catch (AngazaApiResponseException $e) {
             throw $e;
         }
@@ -72,25 +71,27 @@ class AngazaSHSApi implements IManufacturerAPI
                 'logData' => [
                     'user_id' => -1,
                     'affected' => $transactionContainer->appliancePerson,
-                    'action' => 'Token: ' . $token . ' created for ' . $energy .
-                        ' days usage.'
-                ]
+                    'action' => 'Token: '.$token.' created for '.$energy.
+                        ' days usage.',
+                ],
             ]
         );
+
         return [
             'token' => $token,
-            'load' => $energy
+            'load' => $energy,
         ];
     }
 
     /**
      * @param Meter $meters
+     *
      * @return void
+     *
      * @throws ApiCallDoesNotSupportedException
      */
     public function clearMeter(Meter $meters)
     {
-        throw  new ApiCallDoesNotSupportedException('This api call does not supported');
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
-
 }

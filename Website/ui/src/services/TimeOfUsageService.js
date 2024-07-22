@@ -1,8 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TimeOfUsageRepository from '@/repositories/TimeOfUsageRepository'
+
 export class TimeOfUsageService {
     constructor() {
-        this.repository = Repository.get('timeOfUsage')
+        this.repository = TimeOfUsageRepository
         this.tou = {
             id: null,
             tariffId: null,

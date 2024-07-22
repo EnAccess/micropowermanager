@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('mail_host');
             $table->integer('mail_port');
-            $table->char('mail_encryption',10);
+            $table->char('mail_encryption', 10);
             $table->string('mail_username');
             $table->string('mail_password');
             $table->timestamps();

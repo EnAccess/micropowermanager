@@ -25,19 +25,18 @@
             <div class="md-layout-item md-size-100 md-small-size-100">
                 <meter-transactions :transactions="transactions" />
             </div>
+            <div class="md-layout-item md-size-100 md-small-size-100">
+                <meter-readings
+                    v-if="showMeterReadings"
+                    :meter="meterDetailService.meter"
+                />
+            </div>
         </div>
-
-        <div style="margin-top: 1rem"></div>
-
-        <meter-readings
-            v-if="showMeterReadings"
-            :meter="meterDetailService.meter"
-        />
     </div>
 </template>
 
 <script>
-import { Transactions } from '@/classes/meter/transactions'
+import { Transactions } from '@/services/TransactionService'
 import { MeterDetailService } from '@/services/MeterDetailService'
 import MeterBasic from '@/modules/Meter/Basic'
 import MeterDetails from '@/modules/Meter/Details'

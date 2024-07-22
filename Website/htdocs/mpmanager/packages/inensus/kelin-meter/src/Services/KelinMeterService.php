@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Services;
-
 
 use App\Models\Address\Address;
 use App\Models\City;
@@ -23,7 +21,6 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\SyncStatus;
-
 
 class KelinMeterService implements ISynchronizeService
 {
@@ -79,9 +76,10 @@ class KelinMeterService implements ISynchronizeService
     public function getMeters($request)
     {
         $perPage = $request->input('per_page') ?? 15;
+
         return $this->kelinMeter->newQuery()->with([
             'mpmMeter',
-            'kelinCustomer.mpmPerson'
+            'kelinCustomer.mpmPerson',
         ])->paginate($perPage);
     }
 
@@ -101,7 +99,7 @@ class KelinMeterService implements ISynchronizeService
                     'customer_no' => $meter['consNo'],
                     'rtuId' => $meter['rtuId'],
                     'mpm_meter_id' => $createdMeter->id,
-                    'hash' => $meter['hash']
+                    'hash' => $meter['hash'],
                 ]);
             });
             $syncCheck['data']->filter(function ($value) {
@@ -114,7 +112,7 @@ class KelinMeterService implements ISynchronizeService
                     'meter_address' => $meter['meterAddr'],
                     'customer_no' => $meter['consNo'],
                     'mpm_meter_id' => $updatedMeter->id,
-                    'hash' => $meter['hash']
+                    'hash' => $meter['hash'],
                 ]);
             });
             $syncCheck['data']->filter(function ($value) {
@@ -127,18 +125,19 @@ class KelinMeterService implements ISynchronizeService
                     'meter_address' => $meter['meterAddr'],
                     'customer_no' => $meter['consNo'],
                     'mpm_meter_id' => $relatedMeter->id,
-                    'hash' => $meter['hash']
+                    'hash' => $meter['hash'],
                 ]);
             });
             $this->syncActionService->updateSyncAction($syncAction, $synSetting, true);
+
             return $this->kelinMeter->newQuery()->with([
                 'mpmMeter',
-                'kelinCustomer.mpmPerson'
+                'kelinCustomer.mpmPerson',
             ])->paginate(config('kelin-meter.paginate'));
         } catch (\Exception $e) {
             $this->syncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Kelin meters sync failed.', ['Error :' => $e->getMessage()]);
-            throw  new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -148,7 +147,6 @@ class KelinMeterService implements ISynchronizeService
             $url = $this->rootUrl;
             $result = $this->kelinApiClient->get($url);
             $meters = $result['data'];
-
         } catch (KelinApiResponseException $exception) {
             if ($returnData) {
                 return ['result' => false];
@@ -176,6 +174,7 @@ class KelinMeterService implements ISynchronizeService
                 }
                 $meter['relatedMeter'] = $earlyRegisteredMeter;
                 $meter['registeredKelinMeter'] = null;
+
                 return $meter;
             } else {
                 $relatedMeter = null;
@@ -189,6 +188,7 @@ class KelinMeterService implements ISynchronizeService
                 $meter['hash'] = $meterHash;
                 $meter['relatedMeter'] = $relatedMeter;
                 $meter['registeredKelinMeter'] = $registeredStmMeter;
+
                 return $meter;
             }
         });
@@ -196,6 +196,7 @@ class KelinMeterService implements ISynchronizeService
         if ($meterSyncStatus) {
             return $returnData ? ['data' => $metersCollection, 'result' => false] : ['result' => false];
         }
+
         return $returnData ? ['data' => $metersCollection, 'result' => true] : ['result' => true];
     }
 
@@ -210,7 +211,7 @@ class KelinMeterService implements ISynchronizeService
             $kelinMeter['pt'],
             $kelinMeter['rtuId'],
             $kelinMeter['ct'],
-            $kelinMeter['useFlag']
+            $kelinMeter['useFlag'],
         ]);
     }
 
@@ -245,22 +246,22 @@ class KelinMeterService implements ISynchronizeService
             $meter->save();
 
             if ($kelinCustomer) {
-                //$geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
+                // $geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
                 // $geoLocation->points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
 
-                $points = $kelinCustomer->address!=null?$kelinCustomer->address:',';
-                $p = $points==null?',': $kelinCustomer->address;
-                $geoLocation->points =$p;
+                $points = $kelinCustomer->address != null ? $kelinCustomer->address : ',';
+                $p = $points == null ? ',' : $kelinCustomer->address;
+                $geoLocation->points = $p;
                 $connectionType = $this->connectionType->newQuery()->first();
                 if (!$connectionType) {
                     $connectionType = $this->connectionType->newQuery()->create([
-                        'name' => 'default'
+                        'name' => 'default',
                     ]);
                 }
                 $connectionGroup = $this->connectionGroup->newQuery()->first();
                 if (!$connectionGroup) {
                     $connectionGroup = $this->connectionGroup->newQuery()->create([
-                        'name' => 'default'
+                        'name' => 'default',
                     ]);
                 }
                 $meterParameter->connection_type_id = $connectionType->id;
@@ -270,7 +271,7 @@ class KelinMeterService implements ISynchronizeService
                 $tariff = $this->meterTariff->newQuery()->firstOrCreate(['id' => 1], [
                     'name' => 'Automatically Created Tariff',
                     'price' => 0,
-                    'currency' => MainSettings::query()->first() ? MainSettings::query()->first()->currency : ''
+                    'currency' => MainSettings::query()->first() ? MainSettings::query()->first()->currency : '',
                 ]);
                 $meterParameter->tariff()->associate($tariff);
                 $meterParameter->save();
@@ -288,14 +289,14 @@ class KelinMeterService implements ISynchronizeService
                 $address->owner()->associate($meterParameter);
                 $address->geo()->associate($meterParameter->geo);
                 $address->save();
-
             }
             DB::connection('shard')->commit();
+
             return $meter;
         } catch (\Exception $e) {
             DB::connection('shard')->rollBack();
             Log::critical('Error while synchronizing kelin meters', ['message' => $e->getMessage()]);
-            throw  new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -306,18 +307,19 @@ class KelinMeterService implements ISynchronizeService
             $kelinMeter['consNo']
         )->first();
         if ($kelinCustomer) {
-            //commented out because of address definition type changed on kelin side
+            // commented out because of address definition type changed on kelin side
             //   $geographicalCoordinatesResult = $this->geographicalLocationFinder->getCoordinatesGivenAddress($kelinCustomer->address);
             //   $points = $geographicalCoordinatesResult['lat'] . ',' . $geographicalCoordinatesResult['lng'];
-            $points = $kelinCustomer->address??',';
+            $points = $kelinCustomer->address ?? ',';
             $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
             $meterParameter->owner()->associate($kelinCustomer->mpmPerson);
-            $p = $points==null?"":$points;
+            $p = $points == null ? '' : $points;
             $meterParameter->geo()->update([
-                'points' => $p
+                'points' => $p,
             ]);
             $meterParameter->save();
         }
+
         return $meter;
     }
 
@@ -327,39 +329,39 @@ class KelinMeterService implements ISynchronizeService
         if (!$meter) {
             return $meter;
         }
-        return $this->meter->newQuery()->find($meter['id']);
 
+        return $this->meter->newQuery()->find($meter['id']);
     }
 
     private function getEarlyRegisteredMetersWithChangeSerialNumbersAsSimilarAsKalinMeterData()
     {
         $this->earlyRegisteredMeters = $this->meter->newQuery()->get()->map(function ($q) {
             $string = substr($q->serial_number, 0, -2);
-            $array = explode("-", $string);
+            $array = explode('-', $string);
             $serial = implode($array);
+
             return [
                 'meter_serial' => $serial,
-                'id' => $q->id
+                'id' => $q->id,
             ];
         });
     }
 
     private function generateMeterSerialNumberInFormat($meterAddress)
     {
-
         $length = strlen($meterAddress);
         $newSerial = $meterAddress[0];
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             if ($i != 0) {
                 if ($i % 4 == 0) {
-                    $newSerial .= '-' . $meterAddress[$i];
+                    $newSerial .= '-'.$meterAddress[$i];
                 } else {
                     $newSerial .= $meterAddress[$i];
                 }
             }
         }
-        $newSerial .= '-' . rand(0, 9);
+        $newSerial .= '-'.rand(0, 9);
+
         return $newSerial;
     }
 }
-

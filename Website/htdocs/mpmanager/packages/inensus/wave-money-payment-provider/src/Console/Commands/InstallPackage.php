@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -10,12 +11,10 @@ class InstallPackage extends Command
     protected $signature = 'wave-money-payment-provider:install';
     protected $description = 'Install WaveMoneyPaymentProvider Package';
 
-
     public function __construct(private MenuItemService $menuItemService, private WaveMoneyCredentialService $credentialService)
     {
         parent::__construct();
     }
-
 
     public function handle(): void
     {
@@ -30,7 +29,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -45,16 +44,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "ViberMessaging",
-            'composer_name' => "inensus/wave-money-payment-provider",
-            'description' => "WaveMoney integration package for MicroPowerManager",
+            'name' => 'ViberMessaging',
+            'composer_name' => 'inensus/wave-money-payment-provider',
+            'description' => 'WaveMoney integration package for MicroPowerManager',
         ]);
     }
 

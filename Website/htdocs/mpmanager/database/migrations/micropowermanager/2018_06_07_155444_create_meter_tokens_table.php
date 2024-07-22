@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->integer('transaction_id')->unique();
             $table->integer('meter_id');
             $table->string('token');
-            $table->double('energy');//the number of kwH's
+            $table->double('energy'); // the number of kwH's
             $table->timestamps();
         });
     }

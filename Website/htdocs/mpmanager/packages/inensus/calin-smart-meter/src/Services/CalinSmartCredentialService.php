@@ -6,9 +6,7 @@ use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
 class CalinSmartCredentialService
 {
-
     private $credential;
-
 
     public function __construct(
         CalinSmartCredential $credentialModel
@@ -18,7 +16,6 @@ class CalinSmartCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -39,11 +36,12 @@ class CalinSmartCredentialService
     {
         $credential = $this->credential->newQuery()->find($data['id']);
         $credential->update([
-            'company_name' =>  $data['company_name'],
+            'company_name' => $data['company_name'],
             'user_name' => $data['user_name'],
             'password' => $data['password'],
             'password_vend' => $data['password_vend'],
         ]);
+
         return $credential->fresh();
     }
 }

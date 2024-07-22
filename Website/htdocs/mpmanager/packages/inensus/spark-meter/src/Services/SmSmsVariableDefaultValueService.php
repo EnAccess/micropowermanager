@@ -40,7 +40,7 @@ class SmSmsVariableDefaultValueService
             [
                 'variable' => 'meter_serial',
                 'value' => 'SM-12321-232-1',
-            ]
+            ],
         ];
         collect($smsVariableDefaultValues)->each(function ($variable) {
             $this->smsVariableDefaultValue->newQuery()->firstOrCreate(['variable' => $variable['variable']],

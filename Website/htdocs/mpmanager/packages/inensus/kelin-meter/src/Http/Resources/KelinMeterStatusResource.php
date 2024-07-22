@@ -1,22 +1,18 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Http\Resources;
-
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class KelinMeterStatusResource  extends JsonResource
+class KelinMeterStatusResource extends JsonResource
 {
-
     public function toArray($request)
     {
-
         return [
-            'data'=>[
-                'type'=>'meter-status',
-                'attributes'=>[
-                    'positiveActiveValue' =>$this->bdZy,
+            'data' => [
+                'type' => 'meter-status',
+                'attributes' => [
+                    'positiveActiveValue' => $this->bdZy,
                     'positiveReactiveValue' => $this->bdZw,
                     'invertedActiveValue' => $this->bdFy,
                     'invertedReactiveValue' => $this->bdFw,
@@ -31,8 +27,8 @@ class KelinMeterStatusResource  extends JsonResource
                     'openTerminalCount' => $this->openTerminalCount,
                     'owner' => $this->owner,
                     'meterAddress' => $this->meterAddress,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

@@ -11,12 +11,10 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ViberCredentialController extends Controller
 {
-
     public function __construct(
         private ViberCredentialService $credentialService,
         private DatabaseProxyManagerService $databaseProxyManagerService
     ) {
-
     }
 
     public function show(): ViberResource
@@ -30,7 +28,7 @@ class ViberCredentialController extends Controller
         $companyId = $databaseProxy->getCompanyId();
         $apiToken = $request->input('api_token');
         $id = $request->input('id');
-        $webhookUrl = URL::to('/') . "/api/viber-messaging/webhook/$companyId";
+        $webhookUrl = URL::to('/')."/api/viber-messaging/webhook/$companyId";
 
         $credentials = $this->credentialService->updateCredentials([
             'id' => $id,

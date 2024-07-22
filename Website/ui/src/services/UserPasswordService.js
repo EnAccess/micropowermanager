@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import UserPasswordRepository from '@/repositories/UserPasswordRepository'
 
 export class UserPasswordService {
     constructor() {
-        this.repository = RepositoryFactory.get('userPassword')
+        this.repository = UserPasswordRepository
         this.user = {
             id: null,
             password: '',

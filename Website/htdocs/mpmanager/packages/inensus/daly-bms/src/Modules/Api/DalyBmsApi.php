@@ -5,21 +5,22 @@ namespace Inensus\DalyBms\Modules\Api;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
-use Inensus\DalyBms\Services\DalyBmsCredentialService;
 use Inensus\DalyBms\Models\DalyBmsTransaction;
+use Inensus\DalyBms\Services\DalyBmsCredentialService;
 use MPM\EBike\EBikeService;
-use App\Models\Device;
+
 class DalyBmsApi implements IManufacturerAPI
 {
-    //works with query params
-    const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
-    //works with query params
-    const COMMAND_DEVICE_DETAIL = '/Monitor/ShowMonitorTips?';
-    //works with body params
-    const COMMAND_SWITCH = '/Monitor/Send';
+    // works with query params
+    public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
+    // works with query params
+    public const COMMAND_DEVICE_DETAIL = '/Monitor/ShowMonitorTips?';
+    // works with body params
+    public const COMMAND_SWITCH = '/Monitor/Send';
 
     public function __construct(
         private DalyBmsCredentialService $credentialService,
@@ -32,7 +33,7 @@ class DalyBmsApi implements IManufacturerAPI
     public function getDevices(array $deviceSerials)
     {
         $params = [
-            "codes" => $deviceSerials,
+            'codes' => $deviceSerials,
         ];
 
         $credentials = $this->credentialService->getCredentials();
@@ -41,7 +42,7 @@ class DalyBmsApi implements IManufacturerAPI
             if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
-            };
+            }
 
             return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_DEVICES_LIST);
         } catch (DalyBmsApiResponseException $e) {
@@ -54,16 +55,16 @@ class DalyBmsApi implements IManufacturerAPI
     public function getDevice(string $code)
     {
         $params = [
-            "Code" => $code,
+            'Code' => $code,
         ];
 
         $credentials = $this->credentialService->getCredentials();
         try {
-
             if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
-            };
+            }
+
             return $this->apiRequests->postWithQueryParams($credentials, $params, self::COMMAND_DEVICE_DETAIL);
         } catch (DalyBmsApiResponseException $e) {
             $this->credentialService->updateCredentials($credentials,
@@ -75,12 +76,12 @@ class DalyBmsApi implements IManufacturerAPI
     public function switchDevice(string $code, bool $isOn)
     {
         $params = [
-            "cmdKey" => "8500_004",
-            "data" => [
-                "CmdKey" => "8500_004",
-                "Code" => $code,
-                "ACC" => $isOn ? 1 : 0,
-            ]
+            'cmdKey' => '8500_004',
+            'data' => [
+                'CmdKey' => '8500_004',
+                'Code' => $code,
+                'ACC' => $isOn ? 1 : 0,
+            ],
         ];
 
         $credentials = $this->credentialService->getCredentials();
@@ -88,7 +89,8 @@ class DalyBmsApi implements IManufacturerAPI
             if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
-            };
+            }
+
             return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_SWITCH);
         } catch (DalyBmsApiResponseException $e) {
             throw $e;
@@ -100,17 +102,17 @@ class DalyBmsApi implements IManufacturerAPI
         $transactionId = $transactionContainer->transaction->id;
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
-        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); //This is for 1 day of energy
+        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
         $transactionContainer->chargedEnergy = 0; // will represent the day count
-        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / ($minimumPurchaseAmountPerDay));
+        $transactionContainer->chargedEnergy += ceil($transactionContainer->rawAmount / $minimumPurchaseAmountPerDay);
 
-        Log::debug('ENERGY TO BE CHARGED as Day ' . $transactionContainer->chargedEnergy .
+        Log::debug('ENERGY TO BE CHARGED as Day '.$transactionContainer->chargedEnergy.
             ' Manufacturer => DalyBmsApi');
 
         $device = $transactionContainer->device;
         $energy = $transactionContainer->chargedEnergy;
         $deviceSerial = $device->device_serial;
-        $this->switchDevice($deviceSerial,true);
+        $this->switchDevice($deviceSerial, true);
         $manufacturerTransaction = $this->dalyBmsTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
@@ -119,12 +121,12 @@ class DalyBmsApi implements IManufacturerAPI
         $eBike = $this->eBikeService->getBySerialNumber($deviceSerial);
         $status = $eBike->status;
         $updatingData = [
-            'status' => str_replace("ACCOFF", "ACCON", $status)
+            'status' => str_replace('ACCOFF', 'ACCON', $status),
         ];
         $this->eBikeService->update(
             $eBike,
             $updatingData);
-        $creator =  User::query()->firstOrCreate([
+        $creator = User::query()->firstOrCreate([
             'name' => 'System',
         ]);
         event(
@@ -133,20 +135,19 @@ class DalyBmsApi implements IManufacturerAPI
                 'logData' => [
                     'user_id' => $creator->id,
                     'affected' => $eBike,
-                    'action' => "Bike ($deviceSerial) is unlocked with transaction id: $transactionId"
-                ]
+                    'action' => "Bike ($deviceSerial) is unlocked with transaction id: $transactionId",
+                ],
             ]
         );
 
         return [
             'token' => '-',
-            'load' => $energy
+            'load' => $energy,
         ];
     }
 
     public function clearDevice(Device $device)
     {
-        throw  new ApiCallDoesNotSupportedException('This api call does not supported');
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
-
 }

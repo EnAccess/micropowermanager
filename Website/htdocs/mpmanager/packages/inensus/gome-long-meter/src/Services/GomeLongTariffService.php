@@ -10,11 +10,11 @@ use Inensus\GomeLongMeter\Modules\Api\ApiRequests;
 
 class GomeLongTariffService
 {
-    const API_CALL_TARIFF_LIST = '/UTSearch';
-    const API_CALL_TARIFF_CREATE = '/UTAdd';
-    const API_CALL_TARIFF_UPDATE = '/UTUpdate';
-    const API_CALL_TARIFF_DELETE = '/UTdelete';
-    const ELECTRICITY_TARIFF_TYPE = 1;
+    public const API_CALL_TARIFF_LIST = '/UTSearch';
+    public const API_CALL_TARIFF_CREATE = '/UTAdd';
+    public const API_CALL_TARIFF_UPDATE = '/UTUpdate';
+    public const API_CALL_TARIFF_DELETE = '/UTdelete';
+    public const ELECTRICITY_TARIFF_TYPE = 1;
 
     public function __construct(
         private ApiRequests $apiRequests,
@@ -32,7 +32,6 @@ class GomeLongTariffService
 
     public function createGomeLongTariff($tariff)
     {
-
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
         if (!$gomeLongTariff) {
@@ -57,7 +56,6 @@ class GomeLongTariffService
         }
     }
 
-
     public function updateGomeLongTariff($tariff)
     {
         try {
@@ -69,22 +67,22 @@ class GomeLongTariffService
 
             $tariffId = $gomeLongTariff->getTariffId();
             $credentials = $this->credentialService->getCredentials();
-            $params = array(
+            $params = [
                 'U' => $credentials->getUserId(),
                 'K' => $credentials->getUserPassword(),
                 'ID' => $tariffId,
                 'VAT' => $this->mainSettings->newQuery()->first()->vat_energy,
                 'Name' => $tariff->name,
                 'Price' => $tariff->total_price,
-            );
-            return $this->apiRequests->post($credentials, $params, self::API_CALL_TARIFF_UPDATE);
+            ];
 
+            return $this->apiRequests->post($credentials, $params, self::API_CALL_TARIFF_UPDATE);
         } catch (\Exception $e) {
             Log::critical(
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw  new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -99,18 +97,19 @@ class GomeLongTariffService
 
             $tariffId = $gomeLongTariff->getTariffId();
             $credentials = $this->credentialService->getCredentials();
-            $params = array(
+            $params = [
                 'U' => $credentials->getUserId(),
                 'K' => $credentials->getUserPassword(),
                 'ID' => $tariffId,
-            );
+            ];
+
             return $this->apiRequests->post($credentials, $params, self::API_CALL_TARIFF_DELETE);
         } catch (\Exception $e) {
             Log::critical(
                 'updating tariff info from GomeLong Meter API failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw  new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -131,7 +130,6 @@ class GomeLongTariffService
             $gomeLongTariffs = $this->apiRequests->post($credentials, $params, self::API_CALL_TARIFF_LIST);
 
             foreach ($gomeLongTariffs as $gomeLongTariff) {
-
                 if ($gomeLongTariff['FMeterType'] !== self::ELECTRICITY_TARIFF_TYPE) {
                     continue;
                 }
@@ -141,12 +139,10 @@ class GomeLongTariffService
                     ->where('tariff_id', $gomeLongTariff['FID'])->first();
 
                 if ($registeredGomeLongTariff) {
-
                     $meterTariff = $registeredGomeLongTariff->mpmTariff;
 
-                    if ($meterTariff->name !== $gomeLongTariff['FName'] ||
-                        $meterTariff->total_price !== $gomeLongTariff['FPrice']) {
-
+                    if ($meterTariff->name !== $gomeLongTariff['FName']
+                        || $meterTariff->total_price !== $gomeLongTariff['FPrice']) {
                         $meterTariff->update([
                             'name' => $gomeLongTariff['FName'],
                             'price' => $gomeLongTariff['FPrice'],
@@ -154,11 +150,9 @@ class GomeLongTariffService
                         ]);
                     }
                     $registeredGomeLongTariff->update([
-                        'vat' => $gomeLongTariff['FVAT']
+                        'vat' => $gomeLongTariff['FVAT'],
                     ]);
-
                 } else {
-
                     $IncidentModel = new MeterTariff();
                     $IncidentModel->unsetEventDispatcher();
                     $meterTariff = $IncidentModel->create([
@@ -170,9 +164,8 @@ class GomeLongTariffService
                     $this->gomeLongTariff->newQuery()->create([
                         'tariff_id' => $gomeLongTariff['FID'],
                         'mpm_tariff_id' => $meterTariff->id,
-                        'vat' => $gomeLongTariff['FVAT']
+                        'vat' => $gomeLongTariff['FVAT'],
                     ]);
-
                 }
             }
 
@@ -182,7 +175,7 @@ class GomeLongTariffService
                 'syncing tariff info from gomelong api failed.',
                 ['Error :' => $e->getMessage()]
             );
-            throw  new \Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 }

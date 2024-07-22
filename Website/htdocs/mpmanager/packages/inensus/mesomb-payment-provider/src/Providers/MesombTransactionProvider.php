@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\MesombPaymentProvider\Providers;
-
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;
@@ -43,7 +41,7 @@ class MesombTransactionProvider implements ITransactionProvider
     {
         $requestData = $request->all();
         if ($requestData['status'] === 'FAILED') {
-            throw new MesombStatusFailedException($requestData['status'] . ' Sender: ' . $requestData['b_party']);
+            throw new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']);
         }
 
         $senderAddress = $this->checkPhoneIsExists($requestData);
@@ -65,15 +63,14 @@ class MesombTransactionProvider implements ITransactionProvider
 
     public function sendResult(bool $requestType, Transaction $transaction)
     {
-        $this->mesombTransaction=$transaction->originalTransaction()->first();
+        $this->mesombTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $this->mesombTransaction->status = 1;
             $this->mesombTransaction->save();
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-
         } else {
-            Log::critical('mesomb transaction is been cancelled',);
+            Log::critical('mesomb transaction is been cancelled');
             $this->mesombTransaction->status = -1;
             $this->mesombTransaction->save();
         }
@@ -82,29 +79,28 @@ class MesombTransactionProvider implements ITransactionProvider
     public function confirm(): void
     {
         echo $xmlResponse =
-            '<?xml version="1.0" encoding="UTF-8"?>' .
-            '<Response>' .
-            '<TYPE>MESOMB PAYMENT</TYPE>' .
-            '<TXNPK>' . $this->mesombTransaction->pk . '</TXNPK>' . // the PK from original request
-            '<TXNSTATUS>$this->mesombTransaction->status</TXNSTATUS>' .
-            '<Sender>' . $this->mesombTransaction->b_party . '</Sender>' .
-            '<MESSAGE>' . $this->mesombTransaction->message . '</MESSAGE>' .
-            '<TransID>' . $this->mesombTransaction->id . '</TransID>' .
-            '<Amount>' . $this->mesombTransaction->amount . '</Amount>' .
+            '<?xml version="1.0" encoding="UTF-8"?>'.
+            '<Response>'.
+            '<TYPE>MESOMB PAYMENT</TYPE>'.
+            '<TXNPK>'.$this->mesombTransaction->pk.'</TXNPK>'. // the PK from original request
+            '<TXNSTATUS>$this->mesombTransaction->status</TXNSTATUS>'.
+            '<Sender>'.$this->mesombTransaction->b_party.'</Sender>'.
+            '<MESSAGE>'.$this->mesombTransaction->message.'</MESSAGE>'.
+            '<TransID>'.$this->mesombTransaction->id.'</TransID>'.
+            '<Amount>'.$this->mesombTransaction->amount.'</Amount>'.
             '</Response>';
     }
 
     private function checkPhoneIsExists($requestData): Model
     {
-
         $personAddresses = $this->address->newQuery()
             ->where('phone', $requestData['b_party'])
-            ->orWhere('phone', '+' . $requestData['b_party'])->get();
+            ->orWhere('phone', '+'.$requestData['b_party'])->get();
         $phoneNumbersCount = $personAddresses->count();
         if ($phoneNumbersCount > 1 || $phoneNumbersCount == 0) {
-            throw new MesombPaymentPhoneNumberNotFoundException(
-                'Each payer must have if and only if registered phone number. Registered phone count with ' . $requestData['b_party'] . 'is ' . $phoneNumbersCount);
+            throw new MesombPaymentPhoneNumberNotFoundException('Each payer must have if and only if registered phone number. Registered phone count with '.$requestData['b_party'].'is '.$phoneNumbersCount);
         }
+
         return $personAddresses->first();
     }
 
@@ -115,13 +111,11 @@ class MesombTransactionProvider implements ITransactionProvider
             ->first()->owner()->first()->meters();
         $senderMetersCount = $senderMeters->count();
         if ($senderMetersCount > 1 || $senderMetersCount == 0) {
-            throw  new MesombPayerMustHaveOnlyOneConnectedMeterException(
-                'Each payer must have if and only if connected meter with one phone number. Registered meter count is ' . $senderMetersCount);
+            throw new MesombPayerMustHaveOnlyOneConnectedMeterException('Each payer must have if and only if connected meter with one phone number. Registered meter count is '.$senderMetersCount);
         }
 
         $this->validData['meter'] = $senderMeters->first()->meter()->first()->serial_number;
     }
-
 
     public function init($transaction): void
     {

@@ -1,10 +1,7 @@
 <?php
 
-
 namespace Tests\Feature;
 
-
-use App\Jobs\SmsProcessor;
 use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Manufacturer;
@@ -16,7 +13,6 @@ use App\Models\Person\Person;
 use App\Models\SmsAndroidSetting;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
-use App\Services\SmsAndroidSettingService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -31,10 +27,10 @@ use Tests\TestCase;
 
 class TokenProcessorTest extends TestCase
 {
+    use RefreshDatabase;
+    use WithFaker;
 
-    use RefreshDatabase, WithFaker;
-
-    public function test_with_valid_transaction()
+    public function testWithValidTransaction()
     {
         Queue::fake();
         PersonFactory::new()->create();
@@ -62,7 +58,7 @@ class TokenProcessorTest extends TestCase
             'ur' => 'https://fcm.googleapis.com/fcm/send',
             'token' => 'test',
             'key' => 'test',
-            'callback' => 'https://your-domain/api/sms/%s/confirm'
+            'callback' => 'https://your-domain/api/sms/%s/confirm',
         ]);
 
         $p = Person::first();
@@ -89,6 +85,5 @@ class TokenProcessorTest extends TestCase
         $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         $this->assertCount(1, MeterToken::all());
         $this->assertCount(1, PaymentHistory::all());
-
     }
 }

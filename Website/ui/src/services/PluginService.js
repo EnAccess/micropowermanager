@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import PluginRepository from '@/repositories/PluginRepository'
 
 export class PluginService {
     constructor() {
-        this.repository = Repository.get('plugin')
+        this.repository = PluginRepository
         this.list = []
     }
 

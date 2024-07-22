@@ -24,7 +24,7 @@ class SteamaSmsNotifiedCustomerService
         return $this->steamaSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'transaction',
-            'notify_id' => $transactionId
+            'notify_id' => $transactionId,
         ]);
     }
 
@@ -33,7 +33,6 @@ class SteamaSmsNotifiedCustomerService
         return $this->steamaSmsNotifiedCustomer->newQuery()->create([
             'customer_id' => $customerId,
             'notify_type' => 'low_balance',
-
         ]);
     }
 
@@ -48,8 +47,9 @@ class SteamaSmsNotifiedCustomerService
             $customer['customer_id']
         )->first();
         if ($notifiedCustomer) {
-             $notifiedCustomer->delete();
+            $notifiedCustomer->delete();
         }
+
         return true;
     }
 }

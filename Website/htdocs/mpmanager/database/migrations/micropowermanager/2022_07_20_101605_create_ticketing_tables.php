@@ -1,19 +1,17 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Created by PhpStorm.
  * User: kemal
  * Date: 23.08.18
- * Time: 10:39
+ * Time: 10:39.
  */
 class CreateTicketingTables extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -54,7 +52,7 @@ class CreateTicketingTables extends Migration
             $table->timestamps();
         });
 
-        Schema::connection('shard')->create($tableNames['outsource_reports'], static function(Blueprint $table){
+        Schema::connection('shard')->create($tableNames['outsource_reports'], static function (Blueprint $table) {
             $table->increments('id');
             $table->string('date');
             $table->string('path');
@@ -74,7 +72,6 @@ class CreateTicketingTables extends Migration
             $table->text('comment');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -89,7 +86,5 @@ class CreateTicketingTables extends Migration
         Schema::connection('shard')->drop($tableNames['user']);
         Schema::connection('shard')->drop($tableNames['ticket_categories']);
         Schema::connection('shard')->drop($tableNames['ticket_outsource']);
-
     }
-
 }

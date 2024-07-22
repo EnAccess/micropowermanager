@@ -42,7 +42,7 @@ class SmTariffController extends Controller implements IBaseController
             'plan_enabled' => $request->input('planEnabled'),
             'plan_duration' => $request->input('planDuration'),
             'plan_price' => $request->input('planPrice'),
-            'planFixedFee' => $request->input('planFixedFee')
+            'planFixedFee' => $request->input('planFixedFee'),
         ];
 
         return new SparkResource($this->tariffService->updateSparkTariffInfo($tariffData));
@@ -57,8 +57,9 @@ class SmTariffController extends Controller implements IBaseController
     {
         return new SparkResource($this->tariffService->syncCheck());
     }
+
     public function count()
     {
-        return  $this->tariffService->getSmTariffsCount() ;
+        return $this->tariffService->getSmTariffsCount();
     }
 }

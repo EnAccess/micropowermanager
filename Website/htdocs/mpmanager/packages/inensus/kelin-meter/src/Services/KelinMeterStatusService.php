@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Services;
-
 
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +9,6 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 
 class KelinMeterStatusService
 {
-
     private $rootUrl = '/getMeterStatus';
     private $kelinApiClient;
 
@@ -20,19 +17,18 @@ class KelinMeterStatusService
         $this->kelinApiClient = $kelinApiClient;
     }
 
-
     public function getStatusOfMeter($meter)
     {
         try {
             $queryParams = [
                 'meterType' => 1,
-                'meterAddr' => $meter->meter_address
+                'meterAddr' => $meter->meter_address,
             ];
             $result = $this->kelinApiClient->get($this->rootUrl, $queryParams);
             $result['data']['meterAddress'] = $meter->meter_address;
-            $result['data']['owner'] = $meter->kelinCustomer->mpmPerson->name . ' ' . $meter->kelinCustomer->mpmPerson->surname;
-            return (object)collect($result['data'])->all();
+            $result['data']['owner'] = $meter->kelinCustomer->mpmPerson->name.' '.$meter->kelinCustomer->mpmPerson->surname;
 
+            return (object) collect($result['data'])->all();
         } catch (KelinApiResponseException $exception) {
             throw new KelinApiResponseException($exception->getMessage());
         } catch (GuzzleException $exception) {
@@ -51,9 +47,10 @@ class KelinMeterStatusService
             $queryParams = [
                 'meterType' => 1,
                 'meterAddr' => $meterAddress,
-                'cmd' => $status
+                'cmd' => $status,
             ];
-            return  $this->kelinApiClient->get($rootUrl, $queryParams);
+
+            return $this->kelinApiClient->get($rootUrl, $queryParams);
         } catch (KelinApiResponseException $exception) {
             throw new KelinApiResponseException($exception->getMessage());
         } catch (GuzzleException $exception) {

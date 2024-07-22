@@ -10,14 +10,17 @@ use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
 class CalinSmartCredentialController extends Controller
 {
     private $credentialService;
+
     public function __construct(CalinSmartCredentialService $credentialService)
     {
         $this->credentialService = $credentialService;
     }
+
     public function show(): CalinSmartResource
     {
         return new CalinSmartResource($this->credentialService->getCredentials());
     }
+
     public function update(CalinSmartCredentialRequest $request): CalinSmartResource
     {
         $credentials = $this->credentialService->updateCredentials($request->only([
@@ -27,6 +30,7 @@ class CalinSmartCredentialController extends Controller
             'password',
             'password_vend',
         ]));
+
         return new CalinSmartResource($credentials);
     }
 }

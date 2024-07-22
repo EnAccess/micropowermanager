@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'spark-meters'], function () {
-
     Route::group(['prefix' => 'sm-site'], function () {
         Route::get('/', 'SmSiteController@index');
         Route::get('/sync', 'SmSiteController@sync');
@@ -64,6 +63,5 @@ Route::group(['prefix' => 'spark-meters'], function () {
             Route::get('/', 'SmSmsFeedbackController@index');
             Route::put('/{smsFeedbackWord}', 'SmSmsFeedbackController@update');
         });
-
     });
 });

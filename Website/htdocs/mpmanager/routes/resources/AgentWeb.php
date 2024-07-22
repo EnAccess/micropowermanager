@@ -1,11 +1,11 @@
 <?php
+
 // Web panel routes for agent
 use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => ['api', 'jwt.verify'],
-    'prefix' => 'agents'
-
+    'prefix' => 'agents',
 ], static function ($router) {
     Route::get('/', 'AgentWebController@index');
     Route::get('/{agentId}', 'AgentWebController@show')->where('agentId', '[0-9]+');
@@ -23,7 +23,6 @@ Route::group([
         Route::get('/{agentId}', 'AgentSoldApplianceWebController@index');
     });
     Route::group(['prefix' => 'commissions'], function () {
-
         Route::get('/', 'AgentCommissionWebController@index');
         Route::post('/', 'AgentCommissionWebController@store');
         Route::delete('/{agentCommissionId}', 'AgentCommissionWebController@destroy');
@@ -36,7 +35,6 @@ Route::group([
     });
     Route::group(['prefix' => 'transactions'], function () {
         Route::get('/{agentId}', 'AgentTransactionWebController@index')->where('agentId', '[0-9]+');
-
     });
     Route::group(['prefix' => 'balance'], function () {
         Route::group(['prefix' => 'history'], function () {
@@ -46,5 +44,4 @@ Route::group([
     Route::group(['prefix' => 'charge'], function () {
         Route::post('/', 'AgentChargeWebController@store');
     });
-
 });

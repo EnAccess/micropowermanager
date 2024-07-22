@@ -2,13 +2,10 @@
 
 namespace Inensus\KelinMeter\Services;
 
-
-
 use Inensus\KelinMeter\Models\KelinSetting;
 
 class KelinSettingService
 {
-
     private $kelinSetting;
 
     public function __construct(KelinSetting $kelinSetting)
@@ -18,7 +15,6 @@ class KelinSettingService
 
     public function getSettings()
     {
-
-        return   $this->kelinSetting->newQuery()->with(['setting'])->get();
+        return $this->kelinSetting->newQuery()->with(['setting'])->get();
     }
 }

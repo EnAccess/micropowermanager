@@ -1,11 +1,11 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
 import { SyncSettingService } from './SyncSettingService'
 import { SmsSettingService } from './SmsSettingService'
+import SettingRepository from '../repositories/SettingRepository'
 
 export class SettingService {
     constructor() {
-        this.repository = Repository.get('setting')
+        this.repository = SettingRepository
         this.syncSettingsService = new SyncSettingService()
         this.smsSettingsService = new SmsSettingService()
         this.list = []

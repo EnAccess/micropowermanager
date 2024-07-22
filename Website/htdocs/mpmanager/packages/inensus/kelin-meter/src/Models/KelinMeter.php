@@ -1,19 +1,13 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Models;
-
-
-
 
 use App\Models\BaseModel;
 use App\Models\Meter\Meter;
 
 class KelinMeter extends BaseModel
 {
-
-    protected $table='kelin_meters';
-
+    protected $table = 'kelin_meters';
 
     public function mpmMeter()
     {
@@ -22,6 +16,6 @@ class KelinMeter extends BaseModel
 
     public function kelinCustomer()
     {
-        return $this->belongsTo(KelinCustomer::class,  'customer_no','customer_no');
+        return $this->belongsTo(KelinCustomer::class, 'customer_no', 'customer_no');
     }
 }

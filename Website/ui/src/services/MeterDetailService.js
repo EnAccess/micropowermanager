@@ -1,10 +1,10 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
+import MeterDetailRepository from '@/repositories/MeterDetailRepository'
 
 export class MeterDetailService {
     constructor() {
-        this.repository = new RepositoryFactory.get('meterDetail')
+        this.repository = MeterDetailRepository
         this.meter = {
             id: null,
             serialNumber: null,

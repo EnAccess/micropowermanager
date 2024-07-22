@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Services;
-
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -14,13 +12,15 @@ class DailyConsumptionService
     private $rootUrl = '/getDayData';
     private $kelinApi;
     private $kelinMeterDailyData;
+
     public function __construct(
         KelinMeterApiClient $kelinApi,
         KelinMeterDailyData $kelinMeterDailyData
     ) {
         $this->kelinApi = $kelinApi;
-        $this->kelinMeterDailyData= $kelinMeterDailyData;
+        $this->kelinMeterDailyData = $kelinMeterDailyData;
     }
+
     public function getDailyDataFromAPI()
     {
         $startDay = Carbon::now()->subDays(1)->format('Ymd');
@@ -32,11 +32,11 @@ class DailyConsumptionService
                 'startYmd' => $startDay,
                 'endYmd' => $endDay,
                 'pageNo' => $pageNo,
-                'pageSize' => 500
+                'pageSize' => 500,
             ];
             try {
                 $result = $this->kelinApi->get($this->rootUrl, $queryParams);
-                collect($result['data']['dayData'])->each(function ($data){
+                collect($result['data']['dayData'])->each(function ($data) {
                     KelinMeterDailyData::query()->create([
                         'id_of_terminal' => $data['rtuId'],
                         'id_of_measurement_point' => $data['mpId'],
@@ -65,16 +65,16 @@ class DailyConsumptionService
                         'reverted_reactive_total_daily_power' => $data['dlFw'],
                     ]);
                 });
-                $pageNo++;
-            }catch (\Exception $exception){
-                Log::error('Failed on daily data request .',['message'=>$exception->getMessage()]);
+                ++$pageNo;
+            } catch (\Exception $exception) {
+                Log::error('Failed on daily data request .', ['message' => $exception->getMessage()]);
                 $result['dataCount'] = 0;
             }
         } while ($result['dataCount'] > 0);
     }
 
-    public function getDailyData($meterAddress,$perPage)
+    public function getDailyData($meterAddress, $perPage)
     {
-       return $this->kelinMeterDailyData->newQuery()->where('address_of_meter',$meterAddress)->orderByDesc('id')->paginate($perPage);
+        return $this->kelinMeterDailyData->newQuery()->where('address_of_meter', $meterAddress)->orderByDesc('id')->paginate($perPage);
     }
 }

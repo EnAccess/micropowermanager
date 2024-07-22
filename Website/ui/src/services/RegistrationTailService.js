@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import RegistrationTailRepository from '@/repositories/RegistrationTailRepository'
 
 export class RegistrationTailService {
     constructor() {
-        this.repository = new Repository.get('registrationTail')
+        this.repository = RegistrationTailRepository
         this.registrationTail = {}
     }
 

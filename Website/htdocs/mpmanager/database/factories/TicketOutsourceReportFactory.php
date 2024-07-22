@@ -8,6 +8,7 @@ use Inensus\Ticket\Models\TicketOutsourceReport;
 class TicketOutsourceReportFactory extends Factory
 {
     protected $model = TicketOutsourceReport::class;
+
     /**
      * Define the model's default state.
      *

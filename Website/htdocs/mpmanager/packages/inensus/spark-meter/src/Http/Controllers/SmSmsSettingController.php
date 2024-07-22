@@ -9,6 +9,7 @@ use Inensus\SparkMeter\Services\SmSmsSettingService;
 class SmSmsSettingController
 {
     private $smsSettingService;
+
     public function __construct(SmSmsSettingService $smsSettingService)
     {
         $this->smsSettingService = $smsSettingService;
@@ -16,7 +17,6 @@ class SmSmsSettingController
 
     public function update(Request $request): SparkResource
     {
-
-        return  new SparkResource($this->smsSettingService->updateSmsSettings($request->all()));
+        return new SparkResource($this->smsSettingService->updateSmsSettings($request->all()));
     }
 }

@@ -8,6 +8,7 @@ use Inensus\Ticket\Models\TicketBoard;
 class TicketBoardFactory extends Factory
 {
     protected $model = TicketBoard::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,9 +18,9 @@ class TicketBoardFactory extends Factory
     {
         // includes existing board id in trello for testing
         return [
-            'board_id'=> '6291424c4e11631cfad78a37',
-            'web_hook_id'=> strval($this->faker->uuid),
-            'active'=> 1,
+            'board_id' => '6291424c4e11631cfad78a37',
+            'web_hook_id' => strval($this->faker->uuid),
+            'active' => 1,
         ];
     }
 }

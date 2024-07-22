@@ -1,8 +1,8 @@
-import Repository from '../repositories/RepositoryFactory'
+import TransactionExportRepository from '@/repositories/TransactionExportRepository'
 
 export class TransactionExportService {
     constructor() {
-        this.repository = Repository.get('transactionExport')
+        this.repository = TransactionExportRepository
     }
 
     exportTransactions(email, payload) {

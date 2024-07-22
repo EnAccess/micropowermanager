@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    public function up(){
-
-        if (!Schema:: hasTable('stron_api_credentials')) {
+return new class() extends Migration {
+    public function up()
+    {
+        if (!Schema::hasTable('stron_api_credentials')) {
             Schema::connection('shard')->create('stron_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('http://www.saitecapi.stronpower.com/api');
@@ -20,16 +19,17 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
-        if (!Schema:: hasTable('stron_transactions')) {
+        if (!Schema::hasTable('stron_transactions')) {
             Schema::connection('shard')->create('stron_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
         }
     }
-    public function down(){
+
+    public function down()
+    {
         Schema::connection('shard')->dropIfExists('stron_api_credentials');
         Schema::connection('shard')->dropIfExists('stron_transactions');
-
     }
 };

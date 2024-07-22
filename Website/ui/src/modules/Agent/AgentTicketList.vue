@@ -17,7 +17,7 @@
 import Widget from '../../shared/widget'
 import { AgentTicketService } from '@/services/AgentTicketService'
 import { EventBus } from '@/shared/eventbus'
-import { UserTickets } from '@/classes/person/ticket'
+import { UserTickets } from '@/services/TicketService'
 import TicketItem from '../../shared/TicketItem'
 
 export default {

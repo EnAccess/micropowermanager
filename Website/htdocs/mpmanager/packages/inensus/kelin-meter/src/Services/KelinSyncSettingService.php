@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inensus\KelinMeter\Models\KelinSetting;
 use Inensus\KelinMeter\Models\KelinSyncSetting;
 
-
 class KelinSyncSettingService
 {
     private $syncSetting;
     private $setting;
     private $syncActionService;
+
     public function __construct(
         KelinSyncSetting $syncSetting,
         KelinSetting $setting,
@@ -42,11 +42,10 @@ class KelinSyncSettingService
             $customerSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncCustomer->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
         if (!$syncMeter) {
@@ -61,23 +60,21 @@ class KelinSyncSettingService
             $meterSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncMeter->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
     }
 
     public function updateSyncSettings($syncSettings)
     {
-
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
-            $intervalStr = $setting['sync_in_value_num'] . $setting['sync_in_value_str'];
+            $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
             $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
 
             if ($syncSetting) {
-                $date =  Carbon::now();
+                $date = Carbon::now();
                 $interval = CarbonInterval::make($intervalStr);
 
                 $syncSetting->update([
@@ -87,10 +84,11 @@ class KelinSyncSettingService
                 ]);
 
                 $syncSettingAction->update([
-                'next_sync' => $date->add($interval)
+                    'next_sync' => $date->add($interval),
                 ]);
             }
         }
+
         return $this->syncSetting->newQuery()->get();
     }
 
@@ -104,7 +102,7 @@ class KelinSyncSettingService
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {
-            throw  new ModelNotFoundException($exception->getMessage());
+            throw new ModelNotFoundException($exception->getMessage());
         }
     }
 }

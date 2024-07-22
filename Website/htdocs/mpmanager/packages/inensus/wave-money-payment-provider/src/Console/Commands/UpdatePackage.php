@@ -2,9 +2,9 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Console\Command;
 use Inensus\WaveMoneyPaymentProvider\Services\MenuItemService;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 
@@ -24,15 +24,15 @@ class UpdatePackage extends Command
     public function handle(): void
     {
         $this->info('WaveMoney Integration Updating Started\n');
-        //$this->removeOldVersionOfPackage();
-        //$this->installNewVersionOfPackage();
-        //$this->deleteMigration($this->fileSystem);
-        //$this->publishMigrationsAgain();
-        //$this->updateDatabase();
-        //$this->publishVueFilesAgain();
-        //$this->call('routes:generate');
+        // $this->removeOldVersionOfPackage();
+        // $this->installNewVersionOfPackage();
+        // $this->deleteMigration($this->fileSystem);
+        // $this->publishMigrationsAgain();
+        // $this->updateDatabase();
+        // $this->publishVueFilesAgain();
+        // $this->call('routes:generate');
         $this->createMenuItems();
-        //$this->call('sidebar:generate');
+        // $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
 
@@ -50,16 +50,16 @@ class UpdatePackage extends Command
 
     private function deleteMigration(Filesystem $filesystem)
     {
-        $migrationFile = $filesystem->glob(database_path() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR .
+        $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.
             '*_create_wave_money_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->first();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
         if (!$migration) {
             return false;
         }
-        return DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->delete();
 
+        return DB::table('migrations')
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
     private function publishMigrationsAgain()
@@ -67,7 +67,7 @@ class UpdatePackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -82,7 +82,7 @@ class UpdatePackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
