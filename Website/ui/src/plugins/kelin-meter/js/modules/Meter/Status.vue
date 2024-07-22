@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { StatusService } from '../../services/StatusService'
 import { CredentialService } from '../../services/CredentialService'
 import RedirectionModal from '@/shared/RedirectionModal'

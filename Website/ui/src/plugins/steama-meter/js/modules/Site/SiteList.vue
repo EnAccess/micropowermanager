@@ -53,7 +53,7 @@ import RedirectionModal from '@/shared/RedirectionModal'
 import { SiteService } from '../../services/SiteService'
 import { EventBus } from '@/shared/eventbus'
 import { CredentialService } from '../../services/CredentialService'
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 
 export default {
     name: 'SiteList',

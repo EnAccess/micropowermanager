@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import RedirectionModal from '@/shared/RedirectionModal'
 import { MeterModelService } from '../../services/MeterModelService'
 import { EventBus } from '@/shared/eventbus'

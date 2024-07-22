@@ -3,10 +3,10 @@
         <div class="centered-item">
             <img
                 v-if="size !== 'sm'"
-                src="../assets/spinner/spinner.gif"
+                src="@/assets/spinner/spinner.gif"
                 alt=""
             />
-            <img v-else src="../assets/spinner/spinner_sm.gif" alt="" />
+            <img v-else src="@/assets/spinner/spinner_sm.gif" alt="" />
         </div>
     </div>
 </template>

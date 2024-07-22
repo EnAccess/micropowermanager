@@ -145,7 +145,7 @@ export default {
         },
         imgLogo: {
             type: String,
-            default: require('../../assets/images/Logo1.png'),
+            default: require('@/assets/images/Logo1.png'),
         },
         sidebarItemColor: {
             type: String,
