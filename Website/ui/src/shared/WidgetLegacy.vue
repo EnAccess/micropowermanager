@@ -108,6 +108,12 @@ import { EventBus } from '@/shared/eventbus'
 import PaginatorLegacy from '@/shared/PaginatorLegacy'
 
 const debounce = require('debounce')
+/**
+ * Legacy Widget component
+ *
+ * DEPRECATED: Used in some older plugins and components.
+ * New components should use to more flexible Widget component.
+ */
 export default {
     name: 'Widget',
     components: { PaginatorLegacy },
