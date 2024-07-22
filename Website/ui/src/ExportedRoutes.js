@@ -801,7 +801,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 4,
                 name: 'CalinSmart Meter',
                 icon: 'bolt',
             },
@@ -1016,7 +1016,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 2,
                 name: 'SteamaCo Meter',
                 icon: 'bolt',
             },
