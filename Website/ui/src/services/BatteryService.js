@@ -1,5 +1,5 @@
 import { EventBus } from '@/shared/eventbus'
-import Client from '../repositories/Client/AxiosClient'
+import Client from '@/repositories/Client/AxiosClient'
 
 export class Battery {
     constructor() {
