@@ -12,7 +12,6 @@ class InstallPackage extends Command
     protected $signature = 'micro-star-meter:install';
     protected $description = 'Install MicroStarMeter Package';
 
-
     public function __construct(
         private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
@@ -34,7 +33,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -49,16 +48,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\MicroStarMeter\Providers\MicroStarMeterServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "MicroStarMeter",
-            'composer_name' => "inensus/micro-star-meter",
-            'description' => "MicroStarMeter integration package for MicroPowerManager",
+            'name' => 'MicroStarMeter',
+            'composer_name' => 'inensus/micro-star-meter',
+            'description' => 'MicroStarMeter integration package for MicroPowerManager',
         ]);
     }
 

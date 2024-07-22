@@ -1,13 +1,15 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { EventBus } from '@/shared/eventbus'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 
+import AgentRepository from '@/repositories/AgentRepository'
+import PersonRepository from '@/repositories/PersonRepository'
+
 export class AgentService {
     constructor() {
-        this.repository = Repository.get('agent')
-        this.personRepository = Repository.get('person')
+        this.repository = AgentRepository
+        this.personRepository = PersonRepository
         this.list = []
         this.agent = {
             id: null,

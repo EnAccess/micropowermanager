@@ -23,7 +23,6 @@ use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -31,13 +30,24 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ClusterTest extends TestCase
 {
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    use RefreshMultipleDatabases, WithFaker;
+    private $user;
+    private $company;
+    private $city;
+    private $connectionType;
+    private $manufacturer;
+    private $meterType;
+    private $meter;
+    private $meterParameter;
+    private $meterTariff;
+    private $person;
+    private $token;
+    private $transaction;
+    private $clusterIds = [];
 
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $clusterIds = [];
-
-    public function test_user_gets_cluster_list_for_dashboard()
+    public function testUserGetsClusterListForDashboard()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -48,10 +58,9 @@ class ClusterTest extends TestCase
         $this->assertEquals(count($response['data']), $clusterCount);
         $this->assertEquals($response['data'][0]['population'], $meterCount);
         $this->assertEquals($response['data'][0]['clusterData']['meterCount'], $meterCount);
-
     }
 
-    public function test_user_gets_cluster_by_id_for_dashboard()
+    public function testUserGetsClusterByIdForDashboard()
     {
         $this->createTestData();
         $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s', $this->clusterIds[0]));
@@ -60,14 +69,14 @@ class ClusterTest extends TestCase
         $this->assertEquals($response['data']['meterCount'], 1);
     }
 
-    public function test_user_gets_cluster_geo_data_by_id()
+    public function testUserGetsClusterGeoDataById()
     {
         $this->createTestData();
         $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s/geo', $this->clusterIds[0]));
         $response->assertStatus(200);
     }
 
-    public function test_user_adds_new_cluster()
+    public function testUserAddsNewCluster()
     {
         $this->createTestData();
         $clusterData = [
@@ -92,8 +101,8 @@ class ClusterTest extends TestCase
         $this->meterTariff = MeterTariffFactory::new()->create();
         $this->connectionType = ConnectionTypeFactory::new()->create();
         $this->connectionGroup = ConnectionTypeFactory::new()->create();
-        $meterCountClone =  $meterCount;
-        $transactionCountClone =  $transactionCount;
+        $meterCountClone = $meterCount;
+        $transactionCountClone = $transactionCount;
 
         while ($clusterCount > 0) {
             $user = UserFactory::new()->create();
@@ -112,8 +121,7 @@ class ClusterTest extends TestCase
                 'mini_grid_id' => $miniGrid->id,
                 'cluster_id' => $cluster->id,
             ]);
-            $clusterCount--;
-
+            --$clusterCount;
 
             while ($meterCount > 0) {
                 $meter = MeterFactory::new()->create([
@@ -139,7 +147,6 @@ class ClusterTest extends TestCase
                 $meterAddress = Address::query()->make([
                     'city_id' => $meterAddressData['city_id'],
                     'geo_id' => $meterAddressData['geo_id'],
-
                 ]);
                 $meterAddress->owner()->associate($meterParameter)->save();
                 $geographicalInformation->owner()->associate($meterParameter)->save();
@@ -160,8 +167,7 @@ class ClusterTest extends TestCase
                 ]);
                 $personAddress->owner()->associate($person);
                 $personAddress->save();
-                $meterCount--;
-
+                --$meterCount;
 
                 while ($transactionCount > 0) {
                     $vodacomTransaction =
@@ -199,7 +205,7 @@ class ClusterTest extends TestCase
                         'payer_type' => 'person',
                         'payer_id' => $person->id,
                     ]);
-                    $transactionCount--;
+                    --$transactionCount;
                 }
             }
         }
@@ -216,7 +222,7 @@ class ClusterTest extends TestCase
 
     protected function generateUniqueNumber(): int
     {
-        return ($this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
-            $this->faker->unique()->randomNumber());
+        return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
+            $this->faker->unique()->randomNumber();
     }
 }

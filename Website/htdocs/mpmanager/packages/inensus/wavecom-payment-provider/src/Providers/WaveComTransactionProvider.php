@@ -85,8 +85,8 @@ class WaveComTransactionProvider implements ITransactionProvider
     public function addConflict(?string $message): void
     {
         $conflict = $this->transactionConflicts->newQuery()->make([
-                                                                       'state' => $message
-                                                                   ]);
+            'state' => $message,
+        ]);
         $conflict->transaction()->associate($this->waveComTransaction);
         $conflict->save();
     }

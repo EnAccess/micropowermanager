@@ -1,7 +1,8 @@
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import AddressRepository from '@/repositories/AddressRepository'
 
 export class Address {
     fromJson(data) {
@@ -20,7 +21,7 @@ export class Address {
 
 export class Addresses {
     constructor(personId) {
-        this.repository = RepositoryFactory.get('address')
+        this.repository = AddressRepository
         this.list = []
         this.personId = personId
         this.paginator = new Paginator(

@@ -2,9 +2,8 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
-use Illuminate\Http\Request;
 use App\Jobs\ProcessPayment;
-use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\TransactionCallbackRequestMapper;
@@ -18,7 +17,7 @@ class WaveMoneyTransactionCallbackMiddleware
     {
     }
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, \Closure $next)
     {
         $mapper = new TransactionCallbackRequestMapper();
         $callbackData = $mapper->getMappedObject($request);
@@ -38,21 +37,21 @@ class WaveMoneyTransactionCallbackMiddleware
             $request->attributes->add(['waveMoneyTransaction' => $waveMoneyTransaction]);
             $request->attributes->add(['status' => $status]);
 
-            if($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
-                //we process the transaction in the background
+            if ($status === WaveMoneyTransaction::STATUS_COMPLETED_BY_WAVE_MONEY) {
+                // we process the transaction in the background
                 $transaction = $waveMoneyTransaction->transaction()->first();
                 ProcessPayment::dispatch($transaction->id)
                     ->allOnConnection('redis')
                     ->onQueue(config('services.queues.payment'));
             }
-
         } catch (\Exception $exception) {
-            Log::critical('WaveMoney transaction callback called with wrong orderId ' . $callbackData->getOrderId());
+            Log::critical('WaveMoney transaction callback called with wrong orderId '.$callbackData->getOrderId());
 
             $data = collect([
                 'success' => 0,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
             ]);
+
             return new Response($data, 400);
         }
 

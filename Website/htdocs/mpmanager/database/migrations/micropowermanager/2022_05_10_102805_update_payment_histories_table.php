@@ -1,13 +1,12 @@
 <?php
 
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\Type;
 
-return  new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -31,7 +30,6 @@ return  new class extends Migration
     public function down()
     {
         Schema::connection('shard')->table('payment_histories', function (Blueprint $table) {
-            //
         });
     }
 };

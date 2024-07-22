@@ -8,6 +8,7 @@ use Inensus\Ticket\Models\TicketCard;
 class TicketCardFactory extends Factory
 {
     protected $model = TicketCard::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,8 +18,8 @@ class TicketCardFactory extends Factory
     {
         // includes existing list id in trello as card_id for testing
         return [
-            'card_id'=> '62914ca11509c55ab1c1ba56',
-            'status'=> 1,
+            'card_id' => '62914ca11509c55ab1c1ba56',
+            'status' => 1,
         ];
     }
 }

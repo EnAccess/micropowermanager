@@ -125,11 +125,13 @@
 
 <script>
 import Widget from '../../shared/widget'
-import { BatchRevenue } from '@/classes/revenue/batch'
 import moment from 'moment'
 import { currency } from '@/mixins/currency'
 import { EventBus } from '@/shared/eventbus'
-import { BatchRevenueService } from '@/services/BatchRevenueService'
+import {
+    BatchRevenue,
+    BatchRevenueService,
+} from '@/services/BatchRevenueService'
 
 export default {
     name: 'TargetList',

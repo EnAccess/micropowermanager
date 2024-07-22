@@ -9,4 +9,3 @@ class AngazaApiResponseException extends \Exception
         parent::__construct($message);
     }
 }
-

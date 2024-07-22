@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import PaymentRepository from '../repositories/PaymentRepository'
 
 export class PaymentService {
     constructor() {
-        this.repository = Repository.get('payment')
+        this.repository = PaymentRepository
         this.paymentRequest = {
             meterSerial: null,
             amount: null,

@@ -18,5 +18,4 @@ class GomeLongTariff extends BaseModel
     {
         return $this->tariff_id;
     }
-
 }

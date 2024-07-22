@@ -17,6 +17,6 @@ class SmSyncSettingController
 
     public function update(Request $request): SparkResource
     {
-        return  new SparkResource($this->syncSettingService->updateSyncSettings($request->all()));
+        return new SparkResource($this->syncSettingService->updateSyncSettings($request->all()));
     }
 }

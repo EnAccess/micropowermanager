@@ -4,15 +4,16 @@ namespace Inensus\SteamaMeter\Services;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;
-use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 
 class SteamaSyncSettingService
 {
     private $syncSetting;
     private $setting;
     private $syncActionService;
+
     public function __construct(
         SteamaSyncSetting $syncSetting,
         SteamaSetting $setting,
@@ -42,11 +43,10 @@ class SteamaSyncSettingService
             $siteSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncSite->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
         if (!$syncCustomer) {
@@ -61,11 +61,10 @@ class SteamaSyncSettingService
             $customerSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncCustomer->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
-
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
         if (!$syncMeter) {
@@ -80,7 +79,7 @@ class SteamaSyncSettingService
             $meterSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncMeter->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -98,7 +97,7 @@ class SteamaSyncSettingService
             $agentSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncAgent->id,
-                'next_sync' => $now->add($dayInterval)
+                'next_sync' => $now->add($dayInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -116,7 +115,7 @@ class SteamaSyncSettingService
             $transactionSetting->save();
             $syncAction = [
                 'sync_setting_id' => $syncTransaction->id,
-                'next_sync' => $now->add($fiveMinInterval)
+                'next_sync' => $now->add($fiveMinInterval),
             ];
             $this->syncActionService->createSyncAction($syncAction);
         }
@@ -124,14 +123,13 @@ class SteamaSyncSettingService
 
     public function updateSyncSettings($syncSettings)
     {
-
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
-            $intervalStr = $setting['sync_in_value_num'] . $setting['sync_in_value_str'];
+            $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
             $syncSettingAction = $this->syncActionService->getSyncActionBySynSettingId($setting['id']);
 
             if ($syncSetting) {
-                $date =  Carbon::now();
+                $date = Carbon::now();
                 $interval = CarbonInterval::make($intervalStr);
 
                 $syncSetting->update([
@@ -141,10 +139,11 @@ class SteamaSyncSettingService
                 ]);
 
                 $syncSettingAction->update([
-                'next_sync' => $date->add($interval)
+                    'next_sync' => $date->add($interval),
                 ]);
             }
         }
+
         return $this->syncSetting->newQuery()->get();
     }
 
@@ -158,7 +157,7 @@ class SteamaSyncSettingService
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {
-            throw  new ModelNotFoundException($exception->getMessage());
+            throw new ModelNotFoundException($exception->getMessage());
         }
     }
 }

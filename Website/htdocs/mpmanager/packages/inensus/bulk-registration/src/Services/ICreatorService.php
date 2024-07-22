@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 interface ICreatorService
 {

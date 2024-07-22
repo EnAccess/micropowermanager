@@ -10,8 +10,9 @@ class EventServiceProvider extends ServiceProvider
 {
     protected $subscribe = [
         //  MeterParameterListener::class,
-        SmsListener::class
+        SmsListener::class,
     ];
+
     /**
      * Register any events for your application.
      *
@@ -20,7 +21,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

@@ -1,11 +1,11 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
+import SubConnectionTypeRepository from '@/repositories/SubConnectionTypeRepository'
 
 export class SubConnectionTypeService {
     constructor() {
-        this.repository = RepositoryFactory.get('subConnectionTypes')
+        this.repository = SubConnectionTypeRepository
         this.subConnectionTypes = []
         this.target = {
             newConnection: 0,

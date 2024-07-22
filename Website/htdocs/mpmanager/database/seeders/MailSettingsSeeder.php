@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\MailSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -24,8 +23,6 @@ class MailSettingsSeeder extends Seeder
             'mail_password' => '123123',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-
         ]);
-
     }
 }

@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import PaginatorRepository from '../repositories/PaginatorRepository'
 
 export class PaginateService {
     constructor(url) {
-        this.repository = Repository.get('paginate')
+        this.repository = PaginatorRepository
         this.paginator = {
             url: url,
             method: 'GET',

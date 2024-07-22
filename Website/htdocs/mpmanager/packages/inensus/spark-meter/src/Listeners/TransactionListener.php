@@ -4,13 +4,14 @@ namespace Inensus\SparkMeter\Listeners;
 
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Events\Dispatcher;
-use Inensus\SparkMeter\Services\TransactionService;
 use Inensus\SparkMeter\Models\SmTransaction;
+use Inensus\SparkMeter\Services\TransactionService;
 
 class TransactionListener
 {
     private $transactionService;
     private $smTransaction;
+
     public function __construct(
         TransactionService $transactionService,
         SmTransaction $smTransaction
@@ -20,7 +21,8 @@ class TransactionListener
     }
 
     /**
-     * Sets the in_use to true
+     * Sets the in_use to true.
+     *
      * @param Transaction $transaction
      */
     public function onTransactionSuccess(Transaction $transaction)
@@ -30,6 +32,7 @@ class TransactionListener
             $this->transactionService->updateTransactionStatus($smTransaction);
         }
     }
+
     public function subscribe(Dispatcher $events)
     {
         $events->listen(

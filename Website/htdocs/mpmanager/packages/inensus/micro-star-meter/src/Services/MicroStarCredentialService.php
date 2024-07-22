@@ -1,19 +1,18 @@
 <?php
+
 namespace Inensus\MicroStarMeter\Services;
 
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 
 class MicroStarCredentialService
 {
-
     public function __construct(
-       private MicroStarCredential $credential
+        private MicroStarCredential $credential
     ) {
     }
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -32,12 +31,12 @@ class MicroStarCredentialService
 
     public function updateCredentials($data)
     {
-
         $credential = $this->getCredentials();
         $credential->update([
             'certificate_password' => $data['certificate_password'],
             'api_url' => $data['api_url'],
         ]);
+
         return $credential->fresh();
     }
 }

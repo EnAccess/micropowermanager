@@ -1,15 +1,15 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import {
     convertObjectKeysToCamelCase,
     convertObjectKeysToSnakeCase,
 } from '@/Helpers/Utils'
+import DeviceRepository from '@/repositories/DeviceRepository'
 
 export class DeviceService {
     constructor() {
         this.list = []
         this.device = {}
-        this.repository = new Repository.get('device')
+        this.repository = DeviceRepository
     }
 
     async update(Id, device) {

@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import SalesAccountRepository from '../repositories/SalesAccountRepository'
 
 export class SalesAccountService {
     constructor() {
-        this.repository = Repository.get('salesAccount')
+        this.repository = SalesAccountRepository
         this.list = []
         this.isSync = false
         this.count = 0

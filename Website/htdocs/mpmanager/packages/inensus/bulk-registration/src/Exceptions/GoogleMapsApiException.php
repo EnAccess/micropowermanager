@@ -1,6 +1,5 @@
 <?php
 
-
 class GoogleMapsApiException extends Exception
 {
     public function render($request)
@@ -10,9 +9,8 @@ class GoogleMapsApiException extends Exception
                 'code' => 422,
                 'title' => 'Google Maps API Error',
                 'message' => json_decode($this->getMessage()),
-                'meta' =>'',
-            ]
+                'meta' => '',
+            ],
         ], 400);
     }
-
 }

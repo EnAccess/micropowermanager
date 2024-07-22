@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\SmsResendInformationKey;
-use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SmsResendInformationKeyFactory extends Factory
@@ -13,7 +12,7 @@ class SmsResendInformationKeyFactory extends Factory
     public function definition()
     {
         return [
-            'key' => 'Resend'
+            'key' => 'Resend',
         ];
     }
 }

@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\AgentAssignedAppliances;
 use App\Models\Person\Person;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -13,7 +11,7 @@ class AgentAppTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_agent_logs_in()
+    public function testAgentLogsIn()
     {
         $this->createTestData();
         $this->createAgent();
@@ -21,7 +19,7 @@ class AgentAppTest extends TestCase
 
         $response = $this->post('/api/app/login', [
             'email' => $agent->email,
-            'password' => '123456'
+            'password' => '123456',
         ], [
             'device-id' => '123456789',
         ]);
@@ -29,7 +27,7 @@ class AgentAppTest extends TestCase
         $this->assertNotNull($response->json('access_token'));
     }
 
-    public function test_agent_gets_own_data()
+    public function testAgentGetsOwnData()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -40,10 +38,9 @@ class AgentAppTest extends TestCase
         $this->assertEquals($agent->id, $response['id']);
         $this->assertEquals($agent->email, $response['email']);
         $this->assertEquals($agent->name, $response['name']);
-
     }
 
-    public function test_agent_logs_out()
+    public function testAgentLogsOut()
     {
         $this->createTestData();
         $this->createAgent();
@@ -51,34 +48,32 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->post('/api/app/logout');
         $response->assertStatus(200);
         $this->assertEquals($response->json('message'), 'Successfully logged out');
-
     }
 
-    public function test_agent_refreshes_auth_token()
+    public function testAgentRefreshesAuthToken()
     {
         $this->createTestData();
         $this->createAgent();
         $agent = $this->agent;
         $response = $this->actingAs($this->agent)->post('/api/app/refresh');
         $response->assertStatus(200);
-
     }
 
-    public function test_agent_sets_firebase_token()
+    public function testAgentSetsFirebaseToken()
     {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
         $agent = $this->agent;
         $postData = [
-            'fire_base_token' => '123456789'
+            'fire_base_token' => '123456789',
         ];
         $response = $this->actingAs($this->agent)->post('/api/app/agents/firebase', $postData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['fire_base_token'], $postData['fire_base_token']);
     }
 
-    public function test_agent_gets_balance()
+    public function testAgentGetsBalance()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -87,11 +82,9 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->get('/api/app/agents/balance');
         $response->assertStatus(200);
         $this->assertEquals($agent->balance, $response->getContent());
-
-
     }
 
-    public function test_agent_gets_customers()
+    public function testAgentGetsCustomers()
     {
         $this->createTestData();
         $this->createCluster();
@@ -107,10 +100,9 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->get('/api/app/agents/customers');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $personCount);
-
     }
 
-    public function test_agent_searches_in_customers()
+    public function testAgentSearchesInCustomers()
     {
         $this->createTestData();
         $this->createCluster();
@@ -128,10 +120,9 @@ class AgentAppTest extends TestCase
         $response->assertStatus(200);
         $this->assertNotNull($response['data']);
         $this->assertEquals($response['data'][0]['name'], $person->name);
-
     }
 
-    public function test_agent_gets_customers_payment_flow()
+    public function testAgentGetsCustomersPaymentFlow()
     {
         $this->createTestData();
         $this->createCluster();
@@ -153,11 +144,9 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/graph/%s', 'D'));
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
-
-
     }
 
-    public function test_agent_gets_customer_payment_flow_by_customer_id()
+    public function testAgentGetsCustomerPaymentFlowByCustomerId()
     {
         $this->createTestData();
         $this->createCluster();
@@ -181,10 +170,9 @@ class AgentAppTest extends TestCase
             $this->actingAs($this->agent)->get(sprintf('/api/app/agents/customers/%s/graph/%s', $customerId, 'D'));
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
-
     }
 
-    public function test_agent_gets_customers_transactions()
+    public function testAgentGetsCustomersTransactions()
     {
         $this->createTestData();
         $this->createCluster();
@@ -206,10 +194,9 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->get('/api/app/agents/transactions');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $agentTransactionCount);
-
     }
 
-    public function test_agent_gets_customer_transactions_by_customer_id()
+    public function testAgentGetsCustomerTransactionsByCustomerId()
     {
         $this->createTestData();
         $this->createCluster();
@@ -231,10 +218,9 @@ class AgentAppTest extends TestCase
         $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/transactions/%s', $this->person->id));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), $agentTransactionCount);
-
     }
 
-    public function test_agent_gets_sold_appliances()
+    public function testAgentGetsSoldAppliances()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -245,10 +231,9 @@ class AgentAppTest extends TestCase
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
         $this->assertEquals(count($response['data']), 1);
-
     }
 
-    public function test_agent_gets_customer_sold_appliances_by_customer_id()
+    public function testAgentGetsCustomerSoldAppliancesByCustomerId()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -259,10 +244,9 @@ class AgentAppTest extends TestCase
         $response->assertStatus(200);
         $this->assertNotNull($response->getContent());
         $this->assertEquals(count($response['data']), 1);
-
     }
 
-    public function test_agent_sales_appliances()
+    public function testAgentSalesAppliances()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -281,7 +265,7 @@ class AgentAppTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_agent_gets_assigned_appliances()
+    public function testAgentGetsAssignedAppliances()
     {
         $this->createTestData();
         $this->createAgentCommission();
@@ -294,7 +278,7 @@ class AgentAppTest extends TestCase
         $this->assertEquals(count($response['data']), $assignedApplianceCount);
     }
 
-    public function test_agent_gets_application_dashboard_boxes()
+    public function testAgentGetsApplicationDashboardBoxes()
     {
         $this->createTestData();
         $this->createCluster();
@@ -315,15 +299,14 @@ class AgentAppTest extends TestCase
         $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
         $response = $this->actingAs($this->agent)->get('/api/app/agents/dashboard/boxes');
         $response->assertStatus(200);
-        $this->assertEquals(array_key_exists('balance',$response['data']), true);
-        $this->assertEquals(array_key_exists('profit',$response['data']), true);
-        $this->assertEquals(array_key_exists('dept',$response['data']), true);
-        $this->assertEquals(array_key_exists('average',$response['data']), true);
-        $this->assertEquals(array_key_exists('since',$response['data']), true);
-
+        $this->assertEquals(array_key_exists('balance', $response['data']), true);
+        $this->assertEquals(array_key_exists('profit', $response['data']), true);
+        $this->assertEquals(array_key_exists('dept', $response['data']), true);
+        $this->assertEquals(array_key_exists('average', $response['data']), true);
+        $this->assertEquals(array_key_exists('since', $response['data']), true);
     }
 
-    public function test_agent_gets_application_dashboard_graph_values()
+    public function testAgentGetsApplicationDashboardGraphValues()
     {
         $this->createTestData();
         $this->createCluster();
@@ -346,7 +329,7 @@ class AgentAppTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_agent_gets_application_dashboard_weekly_revenues()
+    public function testAgentGetsApplicationDashboardWeeklyRevenues()
     {
         $this->createTestData();
         $this->createCluster();

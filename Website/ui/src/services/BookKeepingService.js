@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { resources } from '@/resources'
+import BookKeepingRepository from '@/repositories/BookKeepingRepository'
 
 export class BookKeepingService {
     constructor() {
-        this.repository = Repository.get('bookKeeping')
+        this.repository = BookKeepingRepository
         this.bookKeeping = {
             id: null,
             date: null,

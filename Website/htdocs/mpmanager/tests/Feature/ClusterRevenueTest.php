@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Address\Address;
-use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -24,7 +23,6 @@ use Database\Factories\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Database\Factories\VodacomTransactionFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -32,13 +30,24 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ClusterRevenueTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    private $user, $company, $city, $connectionType, $manufacturer, $meterType, $meter, $meterParameter,
-        $meterTariff, $person, $token, $transaction, $clusterIds = [];
+    private $user;
+    private $company;
+    private $city;
+    private $connectionType;
+    private $manufacturer;
+    private $meterType;
+    private $meter;
+    private $meterParameter;
+    private $meterTariff;
+    private $person;
+    private $token;
+    private $transaction;
+    private $clusterIds = [];
 
-
-    public function test_user_gets_clusters_revenue_monthly()
+    public function testUserGetsClustersRevenueMonthly()
     {
         $clusterCount = 2;
         $meterCount = 3;
@@ -52,7 +61,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function test_user_gets_clusters_revenue_weekly()
+    public function testUserGetsClustersRevenueWeekly()
     {
         $clusterCount = 1;
         $meterCount = 5;
@@ -66,7 +75,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function test_user_gets_revenue_in_connection_types_analysis_for_cluster()
+    public function testUserGetsRevenueInConnectionTypesAnalysisForCluster()
     {
         $clusterCount = 1;
         $meterCount = 2;
@@ -77,7 +86,7 @@ class ClusterRevenueTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_user_gets_mini_grid_revenue_monthly_for_cluster()
+    public function testUserGetsMiniGridRevenueMonthlyForCluster()
     {
         $clusterCount = 1;
         $meterCount = 1;
@@ -92,7 +101,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function test_user_gets_mini_grid_revenue_weekly_for_cluster()
+    public function testUserGetsMiniGridRevenueWeeklyForCluster()
     {
         $clusterCount = 1;
         $meterCount = 1;
@@ -110,13 +119,14 @@ class ClusterRevenueTest extends TestCase
     protected function getTotalTransactionAmount()
     {
         $clusterIds = $this->clusterIds;
+
         return Transaction::query()
             ->whereHas(
                 'meter',
                 function ($q) use ($clusterIds) {
                     $q->whereHas(
                         'meterParameter',
-                        function ($q) use ($clusterIds,) {
+                        function ($q) use ($clusterIds) {
                             $q->whereHas(
                                 'address',
                                 function ($q) use ($clusterIds) {
@@ -174,8 +184,7 @@ class ClusterRevenueTest extends TestCase
                 'mini_grid_id' => $miniGrid->id,
                 'cluster_id' => $cluster->id,
             ]);
-            $clusterCount--;
-
+            --$clusterCount;
 
             while ($meterCount > 0) {
                 $meter = MeterFactory::new()->create([
@@ -201,7 +210,6 @@ class ClusterRevenueTest extends TestCase
                 $meterAddress = Address::query()->make([
                     'city_id' => $meterAddressData['city_id'],
                     'geo_id' => $meterAddressData['geo_id'],
-
                 ]);
                 $meterAddress->owner()->associate($meterParameter)->save();
                 $geographicalInformation->owner()->associate($meterParameter)->save();
@@ -222,8 +230,7 @@ class ClusterRevenueTest extends TestCase
                 ]);
                 $personAddress->owner()->associate($person);
                 $personAddress->save();
-                $meterCount--;
-
+                --$meterCount;
 
                 while ($transactionCount > 0) {
                     $vodacomTransaction =
@@ -261,7 +268,7 @@ class ClusterRevenueTest extends TestCase
                         'payer_type' => 'person',
                         'payer_id' => $person->id,
                     ]);
-                    $transactionCount--;
+                    --$transactionCount;
                 }
             }
         }
@@ -278,7 +285,7 @@ class ClusterRevenueTest extends TestCase
 
     protected function generateUniqueNumber(): int
     {
-        return ($this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
-            $this->faker->unique()->randomNumber()+$this->faker->unique()->randomNumber() +$this->faker->unique()->randomNumber());
+        return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
+            $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber();
     }
 }

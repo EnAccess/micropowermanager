@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -52,7 +51,6 @@ return [
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
-
         ],
 
         // PHPunit testing test_db connection
@@ -60,8 +58,7 @@ return [
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
-
-        ]
+        ],
     ],
 
     /*
@@ -89,7 +86,6 @@ return [
     */
 
     'redis' => [
-
         'client' => 'predis',
 
         'default' => [
@@ -99,7 +95,5 @@ return [
             'database' => 0,
             'read_write_timeout' => 60,
         ],
-
     ],
-
 ];

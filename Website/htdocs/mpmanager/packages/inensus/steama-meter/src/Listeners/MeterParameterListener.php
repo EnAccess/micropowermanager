@@ -14,7 +14,6 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 
 class MeterParameterListener
 {
-
     private $apiHelpers;
     private $stmCustomerService;
     private $stmMeterService;
@@ -23,6 +22,7 @@ class MeterParameterListener
     private $stmTariff;
     private $stmCustomer;
     private $stmMeter;
+
     public function __construct(
         ApiHelpers $apiHelpers,
         SteamaMeterService $stmMeterService,
@@ -45,13 +45,12 @@ class MeterParameterListener
 
     public function onParameterSaved(int $meterId)
     {
-        $meterInfo = $this->meterParameter->newQuery()->with(['meter.manufacturer','geo','owner.addresses' =>
-            static function ($q) {
-                $q->where('is_primary', 1);
-            }])->whereHas('meter', function ($q) use ($meterId) {
-                $q->where('id', $meterId);
-            })->first();
-        if ($meterInfo->meter->manufacturer->name === "Steama Meters") {
+        $meterInfo = $this->meterParameter->newQuery()->with(['meter.manufacturer', 'geo', 'owner.addresses' => static function ($q) {
+            $q->where('is_primary', 1);
+        }])->whereHas('meter', function ($q) use ($meterId) {
+            $q->where('id', $meterId);
+        })->first();
+        if ($meterInfo->meter->manufacturer->name === 'Steama Meters') {
             $tariffId = $meterInfo->tariff->id;
             $steamaTariff = $this->stmTariff->newQuery()->whereHas('mpmTariff', function ($q) use ($tariffId) {
                 $q->where('mpm_tariff_id', $tariffId);
@@ -69,7 +68,7 @@ class MeterParameterListener
                             $q->where('id', $customerId);
                         })->first();
                     if (!$steamaCustomer) {
-                        $steamaCustomer =  $this->stmCustomerService->createSteamaCustomer($meterInfo);
+                        $steamaCustomer = $this->stmCustomerService->createSteamaCustomer($meterInfo);
                     }
                     $steamaMeter = $this->stmMeter->newQuery()->whereHas('mpmMeter', function ($q) use ($meterId) {
                         $q->where('id', $meterId);

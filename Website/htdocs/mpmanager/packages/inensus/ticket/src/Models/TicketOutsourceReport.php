@@ -1,17 +1,11 @@
 <?php
 
-
 namespace Inensus\Ticket\Models;
 
-
-use Illuminate\Database\Eloquent\Model;
-
 /**
- * Class OutsourceReport
+ * Class OutsourceReport.
  *
- * @package Inensus\Ticket\Models
- *
- * @property int $id
+ * @property int    $id
  * @property string $date
  * @property string $path
  */

@@ -26,7 +26,7 @@ abstract class AbstractApiResource
 
     public function getPaymentUri(): string
     {
-        return config('wave-money-payment-provider.api_uri') . '/payment';
+        return config('wave-money-payment-provider.api_uri').'/payment';
     }
 
     public function getHeaders(): array
@@ -49,9 +49,8 @@ abstract class AbstractApiResource
         return json_decode($this->body, true);
     }
 
-    public function getAuthenticateUri():string
+    public function getAuthenticateUri(): string
     {
-        return config('wave-money-payment-provider.api_uri') . '/authenticate?transaction_id=';
-     }
-
+        return config('wave-money-payment-provider.api_uri').'/authenticate?transaction_id=';
+    }
 }

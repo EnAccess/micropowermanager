@@ -1,10 +1,11 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { convertObjectKeysToSnakeCase } from '@/Helpers/Utils'
 
+import MiniGridRepository from '@/repositories/MiniGridRepository'
+
 export class MiniGridService {
     constructor() {
-        this.repository = Repository.get('miniGrid')
+        this.repository = MiniGridRepository
         this.miniGrids = []
         this.miniGrid = {}
         this.currentTransaction = null

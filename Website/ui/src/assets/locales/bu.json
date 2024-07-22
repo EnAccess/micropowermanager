@@ -1,6 +1,7 @@
 {
     "menu": {
         "Agents": "ေအးဂျင်မ့ ျား ",
+        "Angaza SHS": "Angaza SHS",
         "Appliances": "Appliances",
         "Asset Types": "ပိုင်ဆိုင်မ6အမျ+ိးအစားများ",
         "Bulk Registration": "Bulk Registration",
@@ -10,7 +11,10 @@
         "Connection": "ချတိ ်ဆက်မ6 ",
         "Connection Types": "ချတိ ်ဆက်မ6အမျ+ိးအစားများ",
         "Customers": "သံုးစဲွသူများ",
+        "Daly Bms": "Daly BMS",
         "Dashboard": "အတိခု ျ+ပ်ေဖာ်ြပချက်",
+        "E-Bikes": "E-Bikes",
+        "GomeLong Meter": "GomeLong Meter",
         "Kelin Meter": "Kelin Meter",
         "Locations": "ေနရာများ",
         "Maintenance": "ထိနး်သိမ်းြခင်း ",
@@ -25,6 +29,8 @@
         "Spark Meter": "Spark မီတာ",
         "Steamaco Meter": " မီတာ",
         "Stron Meter": "Stron Meter",
+        "SunKing SHS": "SunKing SHS",
+        "Swifta": "Swifta",
         "Targets": "ပစ်မှတ်များ",
         "Tariffs": "Jှ+နး်ထားများ",
         "Tickets": "ကွနပ်လိနး်များ",

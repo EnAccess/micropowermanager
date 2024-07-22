@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SteamaMeter\Services;
-
 
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
 
@@ -37,7 +35,6 @@ class PackageInstallationService
         SteamaSmsVariableDefaultValueService $defaultValueService,
         SteamaSmsFeedbackWordService $steamaSmsFeedbackWordService
     ) {
-
         $this->apiHelpers = $apiHelpers;
         $this->menuItemService = $menuItemService;
         $this->agentService = $agentService;

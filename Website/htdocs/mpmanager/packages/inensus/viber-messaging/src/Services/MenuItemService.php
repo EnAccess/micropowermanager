@@ -2,10 +2,9 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'Viber Messaging';
+    public const MENU_ITEM = 'Viber Messaging';
 
     public function createMenuItems()
     {
@@ -15,16 +14,14 @@ class MenuItemService
             'md_icon' => 'message',
             'usage_type' => 'general',
         ];
-        $subMenuItems= array();
+        $subMenuItems = [];
 
-        $subMenuItem1=[
+        $subMenuItem1 = [
             'name' => 'Overview',
             'url_slug' => '/viber-messaging/viber-overview',
         ];
         array_push($subMenuItems, $subMenuItem1);
 
-        return ['menuItem'=>$menuItem,'subMenuItems'=>$subMenuItems];
-
-
+        return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
     }
 }

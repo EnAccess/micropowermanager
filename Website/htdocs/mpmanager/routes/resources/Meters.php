@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 /* Meter */
-Route::group(['prefix' => 'meters',], function () {
+Route::group(['prefix' => 'meters'], function () {
     Route::get('/', 'MeterController@index');
     Route::post('/', 'MeterController@store');
     Route::put('/{meter}', 'MeterController@update');
@@ -13,8 +14,8 @@ Route::group(['prefix' => 'meters',], function () {
     Route::put('/', 'MeterGeographicalInformationController@update');
     Route::put('/{serialNumber}/parameters', 'MeterParameterController@update');
     Route::get('/{serialNumber}/transactions', 'MeterPaymentHistoryController@show');
-    Route::get('{serialNumber}/revenue', 'MeterRevenueController@show');
-    Route::get('{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
+    Route::get('/{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
+    Route::get('/{serialNumber}/revenue', 'MeterRevenueController@show');
     Route::get('/{miniGrid}/geoList', 'MeterGeographicalInformationController@index');
 });
 

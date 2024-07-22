@@ -5,11 +5,11 @@ namespace Inensus\SwiftaPaymentProvider\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Inensus\SwiftaPaymentProvider\Listeners\TransactionListener;
 
-class EventServiceProvider  extends ServiceProvider
+class EventServiceProvider extends ServiceProvider
 {
     // commended out because it is not used for cloud
     protected $subscribe = [
-        //TransactionListener::class
+        // TransactionListener::class
     ];
 
     /**
@@ -20,7 +20,5 @@ class EventServiceProvider  extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

@@ -7,7 +7,6 @@ use Ramsey\Uuid\Uuid;
 
 class UserTicketCreateRequest extends FormRequest
 {
-
     public function rules(): array
     {
         return [];
@@ -59,6 +58,4 @@ class UserTicketCreateRequest extends FormRequest
     {
         return $this->input('dueDate');
     }
-
-
 }

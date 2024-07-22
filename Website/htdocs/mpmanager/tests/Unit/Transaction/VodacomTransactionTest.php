@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Unit\Transaction;
 
 use App\Http\Middleware\Transaction;
@@ -10,16 +11,15 @@ use Illuminate\Support\Facades\URL;
 use MPM\Transaction\Provider\VodacomTransactionProvider;
 use Tests\TestCase;
 
-
 class VodacomTransactionTest extends TestCase
 {
+    use RefreshDatabase;
+    use WithFaker;
 
-    use RefreshDatabase, WithFaker;
     /**
-     * @var Response $response
+     * @var Response
      */
-
-    public function test_transaction_sent_from_unknown_ip_address(): void
+    public function testTransactionSentFromUnknownIpAddress(): void
     {
         $request = Request::create(URL::route('vodacomTransaction'), 'POST', [], [], [],
             ['REMOTE_ADDR' => '127.0.0.2']);
@@ -31,7 +31,7 @@ class VodacomTransactionTest extends TestCase
         self::assertEquals(401, $response->status());
     }
 
-    public function test_transaction_sent_from_white_listed_ip_address(): void
+    public function testTransactionSentFromWhiteListedIpAddress(): void
     {
         $request = Request::create(URL::route('vodacomTransaction'), 'POST', [], [], [],
             ['REMOTE_ADDR' => config('services.vodacom.ips')[0]]);
@@ -39,8 +39,7 @@ class VodacomTransactionTest extends TestCase
         $middleWare = new Transaction();
 
         $middleWare->handle($request, function ($x) {
-            $this->assertInstanceOf(VodacomTransactionProvider::class ,$x->attributes->get('transactionProcessor'));
+            $this->assertInstanceOf(VodacomTransactionProvider::class, $x->attributes->get('transactionProcessor'));
         });
-
     }
 }

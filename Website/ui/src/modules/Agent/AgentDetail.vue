@@ -109,6 +109,7 @@
                                         name="birthDate"
                                         md-immediately
                                         v-model="agent.birthday"
+                                        :md-close-on-blur="false"
                                     >
                                         <label for="birth-date">
                                             Birthday :

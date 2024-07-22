@@ -1,15 +1,15 @@
-import RepositoryFactory from '@/repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import {
     convertObjectKeysToCamelCase,
     convertObjectKeysToSnakeCase,
 } from '@/Helpers/Utils'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { EventBus } from '@/shared/eventbus'
+import EBikeRepository from '@/repositories/EBikeRepository'
 
 export class EBikeService {
     constructor() {
-        this.repository = RepositoryFactory.get('eBike')
+        this.repository = EBikeRepository
         this.paginator = new Paginator(this.repository.resource)
         this.list = []
         this.eBike = {

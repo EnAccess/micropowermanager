@@ -15,6 +15,7 @@ class InstallPackage extends Command
     private $menuItemService;
     private $apiHelpers;
     private $credentialService;
+
     public function __construct(
         MenuItemService $menuItemService,
         ApiHelpers $apiHelpers,
@@ -39,7 +40,7 @@ class InstallPackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -54,16 +55,16 @@ class InstallPackage extends Command
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",
-            '--tag' => "vue-components"
+            '--tag' => 'vue-components',
         ]);
     }
 
     private function createPluginRecord()
     {
         $this->call('plugin:add', [
-            'name' => "StronMeter",
-            'composer_name' => "inensus/stron-meter",
-            'description' => "Stron Meter integration package for MicroPowerManager",
+            'name' => 'StronMeter',
+            'composer_name' => 'inensus/stron-meter',
+            'description' => 'Stron Meter integration package for MicroPowerManager',
         ]);
     }
 

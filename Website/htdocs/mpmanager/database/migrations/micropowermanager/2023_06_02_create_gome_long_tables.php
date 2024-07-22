@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     public function up()
     {
-        if (!Schema:: hasTable('gome_long_api_credentials')) {
+        if (!Schema::hasTable('gome_long_api_credentials')) {
             Schema::create('gome_long_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('http://60.205.216.142:8085/api/EKPower');
@@ -18,15 +17,14 @@ return new class extends Migration
             });
         }
 
-
-        if (!Schema:: hasTable('gome_long_transactions')) {
+        if (!Schema::hasTable('gome_long_transactions')) {
             Schema::create('gome_long_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
         }
 
-        if (!Schema:: hasTable('gome_long_tariffs')) {
+        if (!Schema::hasTable('gome_long_tariffs')) {
             Schema::create('gome_long_tariffs', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('tariff_id')->unique();
@@ -35,9 +33,6 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
-
-
-
     }
 
     public function down()
@@ -45,6 +40,5 @@ return new class extends Migration
         Schema::dropIfExists('gome_long_api_credentials');
         Schema::dropIfExists('gome_long_transactions');
         Schema::dropIfExists('gome_long_tariffs');
-
     }
 };

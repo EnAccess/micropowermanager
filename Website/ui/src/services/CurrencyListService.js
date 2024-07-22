@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import CurrencyRepository from '@/repositories/CurrencyRepository'
 
 export class CurrencyListService {
     constructor() {
-        this.repository = RepositoryFactory.get('currencyList')
+        this.repository = CurrencyRepository
         this.currencyList = []
     }
 

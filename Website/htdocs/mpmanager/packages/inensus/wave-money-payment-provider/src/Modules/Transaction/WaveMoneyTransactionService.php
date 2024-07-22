@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Transaction;
@@ -6,7 +7,6 @@ namespace Inensus\WaveMoneyPaymentProvider\Modules\Transaction;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
-use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\IBaseService;
@@ -15,7 +15,6 @@ use Ramsey\Uuid\Uuid;
 
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
-
     private Meter $meter;
     private Address $address;
     private Transaction $transaction;
@@ -56,7 +55,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             'status' => WaveMoneyTransaction::STATUS_REQUESTED,
             'currency' => 'MMK',
             'customer_id' => $this->getCustomerId(),
-            'amount' => $this->getAmount()
+            'amount' => $this->getAmount(),
         ];
     }
 

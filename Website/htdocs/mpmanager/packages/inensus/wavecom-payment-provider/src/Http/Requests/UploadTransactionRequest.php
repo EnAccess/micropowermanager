@@ -17,6 +17,6 @@ class UploadTransactionRequest extends FormRequest
 
     public function rules()
     {
-        return [ self::TRANSACTION_FILE => 'required|mimes:csv,txt'];
+        return [self::TRANSACTION_FILE => 'required|mimes:csv,txt'];
     }
 }

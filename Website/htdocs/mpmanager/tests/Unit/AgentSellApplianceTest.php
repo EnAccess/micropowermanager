@@ -19,7 +19,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AgentSellApplianceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
+
     public function actingAs($user, $driver = null)
     {
         $token = JWTAuth::fromUser($user);
@@ -28,12 +30,13 @@ class AgentSellApplianceTest extends TestCase
 
         return $this;
     }
+
     /**
      * A basic unit test example.
      *
      * @return void
      */
-    public function test_agent_sell_appliance()
+    public function testAgentSellAppliance()
     {
         $this->initData();
         $data = [
@@ -41,7 +44,7 @@ class AgentSellApplianceTest extends TestCase
             'person_id' => 1,
             'first_payment_date' => '2020-12-29T20:53:38Z',
             'down_payment' => 100,
-            'tenure' => 5
+            'tenure' => 5,
         ];
 
         $agent = Agent::query()->latest()->first();
@@ -50,7 +53,7 @@ class AgentSellApplianceTest extends TestCase
 
         AgentSoldAppliance::query()->create([
             'person_id' => 1,
-            'agent_assigned_appliance_id' => 1
+            'agent_assigned_appliance_id' => 1,
         ]);
 
         $paymentHistory = PaymentHistory::query()->latest()->first();
@@ -70,12 +73,12 @@ class AgentSellApplianceTest extends TestCase
             "coordinates":[[[-3.204747603780925,37.937924389032375],
             [-3.4220930701917984,37.93779565098191],
             [-3.2492230959644415,38.24208948955007]]]},
-            "searched":false,"display_name":"test","selected":true,"draw_type":"draw","lat":-3.2920212566457216,"lon":38.039269843188116}'
+            "searched":false,"display_name":"test","selected":true,"draw_type":"draw","lat":-3.2920212566457216,"lon":38.039269843188116}',
         ]);
         MiniGrid::query()->create([
             'cluster_id' => 1,
             'name' => 'Test-Grid',
-            'data_stream' => 0
+            'data_stream' => 0,
         ]);
         Agent::query()->create([
             'person_id' => 1,
@@ -86,14 +89,13 @@ class AgentSellApplianceTest extends TestCase
             'email' => 'a@b.com',
             'fire_base_token' => 'sadadadasd3',
             'password' => '123123',
-
         ]);
 
         AgentCommission::query()->create([
             'name' => 'alper',
             'energy_commission' => 21,
             'appliance_commission' => 3,
-            'risk_balance' => -3
+            'risk_balance' => -3,
         ]);
 
         AssetType::query()->create([
@@ -105,7 +107,7 @@ class AgentSellApplianceTest extends TestCase
             'agent_id' => 1,
             'user_id' => 1,
             'appliance_type_id' => 1,
-            'cost' => 100
+            'cost' => 100,
         ]);
     }
 }

@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import SyncSettingRepository from '../repositories/SyncSettingRepository'
 
 export class SyncSettingService {
     constructor() {
-        this.repository = Repository.get('syncSetting')
+        this.repository = SyncSettingRepository
         this.list = []
         this.syncSetting = {
             id: null,

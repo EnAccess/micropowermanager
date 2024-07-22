@@ -35,18 +35,16 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
                 $transaction->setTransactionId($transactionData['transaction_id']);
                 $transaction->setSender($transactionData['sender']);
                 $transaction->setMessage($transactionData['message']);
-                $transaction->setAmount((int)$transactionData['amount']);
+                $transaction->setAmount((int) $transactionData['amount']);
                 $transaction->setStatus(0);
                 $transaction->save();
             } catch (\Throwable $t) {
                 if ($t instanceof QueryException) {
-                    $skippedTransactions[] = $transactionData['transaction_id'] . ' already imported';
-                }
-                elseif ($t instanceof ValidationException) {
+                    $skippedTransactions[] = $transactionData['transaction_id'].' already imported';
+                } elseif ($t instanceof ValidationException) {
                     $skippedTransactions[] = $t->getMessage();
-                }
-                else {
-                    $skippedTransactions[] = $transactionData['transaction_id'] . ' unkown reason';
+                } else {
+                    $skippedTransactions[] = $transactionData['transaction_id'].' unkown reason';
                 }
                 continue;
             }
@@ -60,7 +58,6 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
             $baseTransaction->save();
 
             TransactionDataContainer::initialize($baseTransaction);
-
 
             ProcessPayment::dispatch($transaction->getId())
                  ->allOnConnection('redis')

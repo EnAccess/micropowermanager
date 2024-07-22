@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Services;
-
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -37,11 +35,11 @@ class MinutelyConsumptionService
                 'endYmd' => $today,
                 'endHms' => $moment,
                 'pageNo' => $pageNo,
-                'pageSize' => 500
+                'pageSize' => 500,
             ];
             try {
                 $result = $this->kelinApi->get($this->rootUrl, $queryParams);
-                collect($result['data']['minData'])->each(function ($data){
+                collect($result['data']['minData'])->each(function ($data) {
                     KelinMeterMinutelyData::query()->create([
                         'id_of_terminal' => $data['rtuId'],
                         'id_of_measurement_point' => $data['mpId'],
@@ -73,7 +71,7 @@ class MinutelyConsumptionService
                         'flow_velocity' => $data['sPEED'],
                     ]);
                 });
-                $pageNo++;
+                ++$pageNo;
             } catch (\Exception $exception) {
                 Log::error('Failed on minutely data request .', ['message' => $exception->getMessage()]);
                 $result['data']['dataCount'] = 0;
@@ -81,8 +79,8 @@ class MinutelyConsumptionService
         } while ($result['data']['dataCount'] > 0);
     }
 
-    public function getDailyData($meterAddress,$perPage)
+    public function getDailyData($meterAddress, $perPage)
     {
-        return $this->kelinMeterMinutelyData->newQuery()->where('address_of_meter',$meterAddress)->orderByDesc('id')->paginate($perPage);
+        return $this->kelinMeterMinutelyData->newQuery()->where('address_of_meter', $meterAddress)->orderByDesc('id')->paginate($perPage);
     }
 }

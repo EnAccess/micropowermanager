@@ -18,7 +18,6 @@ class SteamaSyncSettingController extends Controller
 
     public function update(Request $request): SteamaResource
     {
-
-        return  new SteamaResource($this->syncSettingService->updateSyncSettings($request->all()));
+        return new SteamaResource($this->syncSettingService->updateSyncSettings($request->all()));
     }
 }

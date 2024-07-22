@@ -25,6 +25,7 @@ class SmTransaction extends BaseModel implements ISubTransaction
     {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
     }
+
     public function agentTransaction()
     {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
@@ -54,6 +55,7 @@ class SmTransaction extends BaseModel implements ISubTransaction
     {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
+
     public function waveMoneyTransaction()
     {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');

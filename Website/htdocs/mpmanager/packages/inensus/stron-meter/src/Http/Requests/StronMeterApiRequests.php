@@ -22,6 +22,7 @@ class StronMeterApiRequests
         $this->apiHelpers = $apiHelpers;
         $this->credential = $credentialModel;
     }
+
     public function token($url, $postParams)
     {
         try {
@@ -30,7 +31,7 @@ class StronMeterApiRequests
             throw new ModelNotFoundException($e->getMessage());
         }
         $request = $this->client->post(
-            $credential->api_url . $url,
+            $credential->api_url.$url,
             [
                 'body' => json_encode($postParams),
                 'headers' => [
@@ -39,7 +40,7 @@ class StronMeterApiRequests
             ]
         );
 
-        return $this->apiHelpers->checkApiResult(json_decode((string)$request->getBody(), true));
+        return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
     public function getCredentials()

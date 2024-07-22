@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SwiftaPaymentProvider\Console\Commands;
-
 
 use App\Models\User;
 use Carbon\Carbon;
@@ -27,7 +25,7 @@ class UpdatePackage extends Command
         parent::__construct();
         $this->fileSystem = $filesystem;
         $this->user = $user;
-        $this->authentication=$authentication;
+        $this->authentication = $authentication;
     }
 
     /**
@@ -52,7 +50,7 @@ class UpdatePackage extends Command
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => "configurations",
+            '--tag' => 'configurations',
         ]);
     }
 
@@ -70,14 +68,14 @@ class UpdatePackage extends Command
 
     private function deleteMigration(Filesystem $filesystem)
     {
-        $migrationFile = $filesystem->glob(database_path() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . '*_create_swifta_payment_provider_tables.php')[0];
+        $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_swifta_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->first();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
         if (!$migration) {
             return;
         }
         DB::table('migrations')
-            ->where('migration', substr(explode("/migrations/", $migrationFile)[1], 0, -4))->delete();
+            ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
     private function publishMigrationsAgain()
@@ -85,7 +83,7 @@ class UpdatePackage extends Command
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
-            '--tag' => "migrations"
+            '--tag' => 'migrations',
         ]);
     }
 
@@ -99,21 +97,22 @@ class UpdatePackage extends Command
     {
         $password = $this->generateRandomNumber();
         $user = $this->user->newQuery()->firstOrCreate([
-            'email' => 'swifta-user'
-        ],[
+            'email' => 'swifta-user',
+        ], [
             'name' => 'swifta-user',
             'password' => $password,
-            'email' => 'swifta-user'
+            'email' => 'swifta-user',
         ]);
 
-        $customClaims = ['usr' => 'swifta-token','exp' => Carbon::now()->addYears(1)->timestamp];
+        $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
         $payload = JWTAuth::setToken($token)->getPayload();
         $expirationTime = $payload['exp'];
-        $this->authentication->newQuery()->updateOrCreate(['id'=>1],[
+        $this->authentication->newQuery()->updateOrCreate(['id' => 1], [
             'token' => $token,
-            'expire_date' => $expirationTime
+            'expire_date' => $expirationTime,
         ]);
+
         return $token;
     }
 
@@ -121,13 +120,14 @@ class UpdatePackage extends Command
     {
         $length = random_int(1, 10);
         $number = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $number .= random_int(0, 9);
         }
         $number = ltrim($number, '0');
         if ($number === '') {
             return '0';
         }
+
         return $number;
     }
 }

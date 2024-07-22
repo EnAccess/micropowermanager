@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 28.08.18
- * Time: 13:20
+ * Time: 13:20.
  */
 
 namespace Inensus\Ticket\Http\Controllers;
@@ -17,14 +17,10 @@ use Inensus\Ticket\Services\TicketUserService;
 
 class TicketUserController extends Controller
 {
-
     public function __construct(
-        private TicketUserService  $ticketUserService,
+        private TicketUserService $ticketUserService,
         private UserService $userService,
-
-    )
-    {
-
+    ) {
     }
 
     public function index(Request $request): TicketResource
@@ -37,7 +33,6 @@ class TicketUserController extends Controller
 
     public function storeExternal(TicketingUserExternalRequest $request)
     {
-
         $ticketUserData = [
             'user_name' => $request->getUserName(),
             'phone' => $request->getPhone(),
@@ -46,17 +41,15 @@ class TicketUserController extends Controller
         ];
 
         $this->ticketUserService->create($ticketUserData);
-
     }
 
     public function store(TicketingUserRequest $request): TicketResource
     {
-
         $user = $this->userService->get($request->getUserId());
 
         $ticketUserData = [
             'user_name' => $user->getName(),
-            'phone' =>  null,
+            'phone' => null,
             'out_source' => 0,
             'user_id' => $user->getId(),
         ];
@@ -64,6 +57,4 @@ class TicketUserController extends Controller
 
         return TicketResource::make($ticketUser);
     }
-
-
 }

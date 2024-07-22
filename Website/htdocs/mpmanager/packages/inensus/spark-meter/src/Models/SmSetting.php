@@ -9,13 +9,13 @@ class SmSetting extends BaseModel
 {
     protected $table = 'sm_settings';
 
-    public function setting(): morphTo
+    public function setting(): MorphTo
     {
         return $this->morphTo();
     }
 
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsToMorph
      */
@@ -23,8 +23,9 @@ class SmSetting extends BaseModel
     {
         return BelongsToMorph::build($this, SmSmsSetting::class, 'setting');
     }
+
     /**
-     * A work-around for querying the polymorphic relation with whereHas
+     * A work-around for querying the polymorphic relation with whereHas.
      *
      * @return BelongsToMorph
      */

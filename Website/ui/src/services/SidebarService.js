@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SidebarRepository from '@/repositories/SidebarRepository'
 
 export class SidebarService {
     constructor() {
-        this.repository = Repository.get('sidebar')
+        this.repository = SidebarRepository
         this.sidebar = []
     }
 

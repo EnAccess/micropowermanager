@@ -17,7 +17,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property string status
  * @property string external_transaction_id
  * @property int customer_id
- * @property null|string meter_serial
+ * @property string|null meter_serial
  */
 class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
@@ -58,7 +58,7 @@ class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySu
 
     public function setStatus(int $status)
     {
-        $this->status= $status;
+        $this->status = $status;
     }
 
     public function setExternalTransactionId(string $transactionId)
@@ -78,7 +78,7 @@ class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySu
 
     public function setCustomerId(int $customerId)
     {
-        $this->customer_id  =$customerId;
+        $this->customer_id = $customerId;
     }
 
     public function setMeterSerial(string $meterSerialNumber)
@@ -90,7 +90,6 @@ class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySu
     {
         $this->amount = $amount;
     }
-
 
     public function transaction()
     {

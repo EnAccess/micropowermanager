@@ -35,14 +35,15 @@ class SmSyncActionService
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,
-                'last_sync' => Carbon::now()
+                'last_sync' => Carbon::now(),
             ]);
         }
-        $interval = CarbonInterval::make($syncSetting->sync_in_value_num . $syncSetting->sync_in_value_str);
+        $interval = CarbonInterval::make($syncSetting->sync_in_value_num.$syncSetting->sync_in_value_str);
+
         return $syncAction->update([
             'attempts' => 0,
             'last_sync' => Carbon::now(),
-            'next_sync' => Carbon::now()->add($interval)
+            'next_sync' => Carbon::now()->add($interval),
         ]);
     }
 }

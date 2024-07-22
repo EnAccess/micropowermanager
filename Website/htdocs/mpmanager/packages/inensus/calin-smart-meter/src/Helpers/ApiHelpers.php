@@ -21,16 +21,17 @@ class ApiHelpers
             $this->manufacturer->newQuery()->create([
                 'name' => 'Calin Smart Meters',
                 'website' => 'https://ami.calinhost.com/',
-                'api_name' => 'CalinSmartMeterApi'
+                'api_name' => 'CalinSmartMeterApi',
             ]);
         }
     }
 
     public function checkApiResult($result)
     {
-        if ((int)$result['result_code'] !== 0) {
+        if ((int) $result['result_code'] !== 0) {
             throw new CalinSmartApiResponseException($result['reason']);
         }
+
         return $result['result'];
     }
 }

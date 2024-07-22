@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import CountryRespository from '@/repositories/CountryRespository'
 
 export default class CountryService {
     constructor() {
-        this.repository = Repository.get('country')
+        this.repository = CountryRespository
         this.list = []
     }
 

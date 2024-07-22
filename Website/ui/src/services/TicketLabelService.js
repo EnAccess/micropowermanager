@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import TicketLabelRepository from '@/repositories/TicketLabelRepository'
 
 export class TicketLabelService {
     constructor() {
-        this.repository = Repository.get('ticketLabel')
+        this.repository = TicketLabelRepository
         this.list = []
         this.colors = {
             nocolor: 'null',

@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\ConnectionType;
-use Illuminate\Database\Eloquent\Model;
 
 class SteamaUserType extends BaseModel
 {

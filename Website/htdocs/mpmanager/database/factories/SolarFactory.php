@@ -3,11 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Solar;
-use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SolarFactory extends Factory {
-    protected $model= Solar::class;
+class SolarFactory extends Factory
+{
+    protected $model = Solar::class;
 
     public function definition(): array
     {
@@ -23,7 +23,6 @@ class SolarFactory extends Factory {
             'average' => $this->faker->numberBetween(0, 100),
             'duration' => 300,
             'readings' => $this->faker->numberBetween(200, 300),
-
         ];
     }
 }

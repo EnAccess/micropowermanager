@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -11,9 +9,8 @@ class ManufacturerTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_manufacturer_list()
+    public function testUserGetsManufacturerList()
     {
-
         $this->createTestData();
         $manufacturerCount = 4;
         $this->createMeterManufacturer($manufacturerCount);
@@ -22,16 +19,16 @@ class ManufacturerTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->manufacturers));
     }
 
-    public function test_user_gets_manufacturer_by_id()
+    public function testUserGetsManufacturerById()
     {
         $this->createTestData();
         $this->createMeterManufacturer();
         $response = $this->actingAs($this->user)->get(sprintf('/api/manufacturers/%s', $this->manufacturers[0]->id));
         $response->assertStatus(200);
-        $this->assertEquals($response['data']['id'],$this->manufacturers[0]->id);
+        $this->assertEquals($response['data']['id'], $this->manufacturers[0]->id);
     }
 
-    public function test_user_creates_new_manufacturer()
+    public function testUserCreatesNewManufacturer()
     {
         $this->createTestData();
         $this->createCity();
@@ -43,9 +40,9 @@ class ManufacturerTest extends TestCase
             'city_id' => $this->cities[0]->id,
             'phone' => $this->faker->phoneNumber,
         ];
-        $response = $this->actingAs($this->user)->post('/api/manufacturers',$manufacturerData);
+        $response = $this->actingAs($this->user)->post('/api/manufacturers', $manufacturerData);
         $response->assertStatus(201);
-        $this->assertEquals($response['data']['name'],$manufacturerData['name']);
+        $this->assertEquals($response['data']['name'], $manufacturerData['name']);
     }
 
     public function actingAs($user, $driver = null)

@@ -15,7 +15,6 @@ use Database\Factories\MeterTariffFactory;
 use Database\Factories\MeterTypeFactory;
 use Database\Factories\PersonFactory;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -23,9 +22,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MeterParameterTest extends TestCase
 {
-    use RefreshMultipleDatabases, WithFaker;
+    use RefreshMultipleDatabases;
+    use WithFaker;
 
-    public function test_user_assigns_a_meter_parameter_to_a_meter()
+    public function testUserAssignsAMeterParameterToAMeter()
     {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
@@ -60,7 +60,6 @@ class MeterParameterTest extends TestCase
             ->first();
         $this->assertNotNull($meterAddress);
         $this->assertEquals($geographicalInformation->points, $meterParameterData['geo_points']);
-
     }
 
     public function actingAs($user, $driver = null)

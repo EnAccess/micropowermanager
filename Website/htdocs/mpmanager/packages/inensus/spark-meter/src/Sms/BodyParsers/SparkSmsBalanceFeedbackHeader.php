@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\SparkMeter\Sms\BodyParsers;
-
 
 use App\Sms\BodyParsers\SmsBodyParser;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -27,7 +25,7 @@ class SparkSmsBalanceFeedbackHeader extends SmsBodyParser
                 $variable = $this->sparkCustomer->mpmPerson->surname;
                 break;
         }
+
         return $variable;
     }
-
 }

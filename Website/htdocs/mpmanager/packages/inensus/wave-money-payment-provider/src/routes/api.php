@@ -14,7 +14,7 @@ Route::group(['prefix' => 'wave-money'], function () {
             ['middleware' => WaveMoneyTransactionMiddleware::class, 'uses' => 'WaveMoneyController@startTransaction']);
         Route::post('/callback/{slug}', [
             'middleware' => WaveMoneyTransactionCallbackMiddleware::class,
-            'uses' => 'WaveMoneyController@transactionCallBack'
+            'uses' => 'WaveMoneyController@transactionCallBack',
         ]);
     });
 });

@@ -2,9 +2,7 @@
 
 namespace Inensus\ViberMessaging;
 
-use App\Lib\ISmsProvider;
 use App\Models\Sms;
-use App\Models\SmsAndroidSetting;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\MessageNotSentException;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
@@ -33,9 +31,8 @@ class ViberGateway
     public function sendSms(
         string $body,
         string $viberId,
-        Sms $registeredSms = null
+        ?Sms $registeredSms = null
     ) {
-
         try {
             $this->bot->getClient()->sendMessage(
                 (new \Viber\Api\Message\Text())
@@ -43,18 +40,15 @@ class ViberGateway
                     ->setReceiver($viberId)
                     ->setText($body)
             );
-            Log::info("Message sent to viber id: " . $viberId);
-
+            Log::info('Message sent to viber id: '.$viberId);
         } catch (\Exception $exception) {
-            Log::error("Viber message sending failed", ['message' => $exception->getMessage()]);
+            Log::error('Viber message sending failed', ['message' => $exception->getMessage()]);
 
-            throw  new MessageNotSentException("Viber message sending failed");
+            throw new MessageNotSentException('Viber message sending failed');
         }
-
 
         if ($registeredSms) {
             $this->viberMessageService->create(['sms_id' => $registeredSms->id]);
         }
-
     }
 }

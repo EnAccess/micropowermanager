@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 21.06.18
- * Time: 13:48
+ * Time: 13:48.
  */
 
 namespace Inensus\Ticket\Http\Controllers;
@@ -12,14 +12,12 @@ use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketService;
 
-
 class TicketController extends Controller
 {
-    const FOR_APP = false;
+    public const FOR_APP = false;
 
     public function __construct(private TicketService $ticketService)
     {
-
     }
 
     public function index(Request $request): TicketResource
@@ -49,6 +47,4 @@ class TicketController extends Controller
 
         return TicketResource::make(['data' => $closed]);
     }
-
-
 }

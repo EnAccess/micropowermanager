@@ -4,7 +4,6 @@ namespace Inensus\KelinMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,22 +22,21 @@ class KelinMeterApi implements IManufacturerAPI
         private KelinTransaction $kelinTransaction,
         private KelinMeterApiClient $kelinApi
     ) {
-
     }
 
     public function chargeDevice($transactionContainer): array
     {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
-        $transactionContainer->chargedEnergy += $transactionContainer->amount / ($tariff->total_price);
-        Log::critical('ENERGY TO BE CHARGED float ' .
-            (float)$transactionContainer->chargedEnergy .
+        $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
+        Log::critical('ENERGY TO BE CHARGED float '.
+            (float) $transactionContainer->chargedEnergy.
             ' Manufacturer => Kelin');
 
         if (config('app.debug')) {
             return [
                 'token' => 'debug-token',
-                'energy' => (float)$transactionContainer->chargedEnergy,
+                'energy' => (float) $transactionContainer->chargedEnergy,
             ];
         } else {
             $amount = $transactionContainer->totalAmount;
@@ -96,16 +94,17 @@ class KelinMeterApi implements IManufacturerAPI
 
             $transactionContainer->transaction->originalTransaction()->first()->update([
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                'manufacturer_transaction_type' => 'kelin_transaction'
+                'manufacturer_transaction_type' => 'kelin_transaction',
             ]);
 
             $token = $transactionResult['opType'] === 2 ? sprintf('EnergyToken : %s',
                 $transactionResult['payToken']) :
                 sprintf('OpenToken1 : %s OpenToken2 : %s', $transactionResult['openToken1'],
                     $transactionResult['openToken2']);
+
             return [
                 'token' => $token,
-                'loan' => $transactionContainer->chargedEnergy
+                'loan' => $transactionContainer->chargedEnergy,
             ];
         }
     }
@@ -113,5 +112,4 @@ class KelinMeterApi implements IManufacturerAPI
     public function clearDevice(Device $device)
     {
     }
-
 }

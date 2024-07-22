@@ -1,2 +1,0 @@
-
-window.packageNameEvent = new Vue()

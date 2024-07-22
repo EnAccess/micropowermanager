@@ -24,34 +24,64 @@ import { config } from './config'
 Vue.prototype.appConfig = config
 
 import Vue from 'vue'
+
+/**
+ * Vue Router
+ */
 import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
+
+/**
+ * Vuex
+ */
 import Vuex from 'vuex'
-import moment from 'moment'
-import Notifications from 'vue-notification'
 
 Vue.use(Vuex)
 window.Vue = Vue
 window.Vuex = Vuex
 
+/**
+ * VeeValidate
+ */
+import i18n from './i18n'
+import VeeValidate from 'vee-validate'
+import enMessages from 'vee-validate/dist/locale/en'
+import frMessages from 'vee-validate/dist/locale/fr'
+
+Vue.use(VeeValidate, {
+    i18n,
+    dictionary: {
+        en: enMessages,
+        fr: frMessages,
+        bu: enMessages, // No burmese error messages available
+    },
+})
+
+/**
+ * VueGoogleCharts
+ */
 import VueGoogleCharts from 'vue-google-charts'
 
 Vue.use(VueGoogleCharts)
 
+/**
+ * moment
+ */
+import moment from 'moment'
+
 window.moment = moment
-Vue.use(VueRouter)
+
+/**
+ * Vue Notification
+ */
+import Notifications from 'vue-notification'
 
 Vue.use(Notifications)
 
-// import component and stylesheet
-import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
-import 'vue-airbnb-style-datepicker/dist/vue-airbnb-style-datepicker.min.css'
-
-// see docs for available options
-const datepickerOptions = {}
-
-// make sure we can use it in our components
-Vue.use(AirbnbStyleDatepicker, datepickerOptions)
-
+/**
+ * Reources
+ */
 import { resources } from './resources'
 
 window.resources = resources
@@ -83,35 +113,37 @@ window.onclick = function (e) {
     }
 }
 
-import * as VueGoogleMaps from 'vue2-google-maps'
-
-Vue.use(VueGoogleMaps, {
-    load: {
-        key: 'AIzaSyCiSUjcyWMpV8dAMjIQ-VUaLZZ9NEFIELo',
-    },
-})
-import VueHtml2Canvas from 'vue-html2canvas'
-
-Vue.use(VueHtml2Canvas)
-
+/**
+ * VueMaterial
+ */
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css' // This line here
 Vue.use(VueMaterial)
 
-import SidebarComponent from './modules/Sidebar'
+/**
+ * SidebarComponent
+ */
+import SidebarComponent from '@/modules/Sidebar'
 
 Vue.use(SidebarComponent)
+
+/**
+ * Some SCSS
+ */
 import '../src/assets/sass/mpm.scss'
 
-import VeeValidate from 'vee-validate'
-
-Vue.use(VeeValidate)
-
+/**
+ * Default Layout
+ */
 import Default from './layouts/Default.vue'
 
 Vue.component('default-layout', Default)
 
+/**
+ * VueTelInput
+ */
+// FIXME: It's only used once. Should this really be a global import?
 import VueTelInput from 'vue-tel-input'
 import 'vue-tel-input/dist/vue-tel-input.css'
 

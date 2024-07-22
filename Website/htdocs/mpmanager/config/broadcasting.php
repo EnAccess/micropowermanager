@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Broadcaster
@@ -29,12 +28,11 @@ return [
     */
 
     'connections' => [
-
         'pusher' => [
             'driver' => 'pusher',
-            'key' => "56e4b7fede4ce42e1b84",
-            'secret' => "c1c641487a1a895b84e7",
-            'app_id' => "614318",
+            'key' => '56e4b7fede4ce42e1b84',
+            'secret' => 'c1c641487a1a895b84e7',
+            'app_id' => '614318',
             'options' => [
                 'cluster' => 'eu',
                 'encrypted' => true,
@@ -53,7 +51,5 @@ return [
         'null' => [
             'driver' => 'null',
         ],
-
     ],
-
 ];

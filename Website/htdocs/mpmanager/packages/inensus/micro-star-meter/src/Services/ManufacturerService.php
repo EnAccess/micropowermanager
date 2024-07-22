@@ -4,10 +4,8 @@ namespace Inensus\MicroStarMeter\Services;
 
 use App\Models\Manufacturer;
 
-
 class ManufacturerService
 {
-
     public function __construct(private Manufacturer $manufacturer)
     {
     }
@@ -19,7 +17,7 @@ class ManufacturerService
             $this->manufacturer->newQuery()->create([
                 'name' => 'MicroStar Meters',
                 'website' => 'https://www.microstarelectric.com/',
-                'api_name' => 'MicroStarMeterApi'
+                'api_name' => 'MicroStarMeterApi',
             ]);
         }
     }

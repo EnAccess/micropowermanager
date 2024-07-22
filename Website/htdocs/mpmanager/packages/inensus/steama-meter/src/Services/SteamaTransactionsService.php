@@ -7,15 +7,14 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
-use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
 class SteamaTransactionsService implements ISynchronizeService
 {
-
     private $stemaMeterService;
     private $steamaCustomerService;
     private $steamaCredentialService;
@@ -77,12 +76,12 @@ class SteamaTransactionsService implements ISynchronizeService
             $lastRecordedTransactionId = 0;
 
             if ($lastCreatedTransaction) {
-                $url = $this->rootUrl . '?ordering=timestamp&created_after=' .
-                    Carbon::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString() . '&page=1&page_size=100';
+                $url = $this->rootUrl.'?ordering=timestamp&created_after='.
+                    Carbon::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString().'&page=1&page_size=100';
                 $lastRecordedTransactionId = $lastCreatedTransaction->transaction_id;
             } else {
-                $url = $this->rootUrl . '?ordering=timestamp&created_before=' .
-                    Carbon::now()->toIso8601ZuluString() . '&page=1&page_size=100';
+                $url = $this->rootUrl.'?ordering=timestamp&created_before='.
+                    Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
             }
             $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.meterParameter.owner'])->get();
             try {
@@ -116,7 +115,7 @@ class SteamaTransactionsService implements ISynchronizeService
                             }
                         }
                     });
-                    $url = $this->rootUrl . '?' . explode('?', $result['next'])[1];
+                    $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
                     $result = $this->steamaApi->get($url);
                     $transactions = $result['results'];
                 }
@@ -129,6 +128,7 @@ class SteamaTransactionsService implements ISynchronizeService
             Log::debug('Transaction synchronising cancelled', ['message' => $syncCheck['message']]);
         }
         $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, true);
+
         return $syncCheck['message'];
     }
 
@@ -172,6 +172,7 @@ class SteamaTransactionsService implements ISynchronizeService
     public function getTransactionsByCustomer($customer, $request)
     {
         $perPage = $request->input('per_page') ?? 15;
+
         return $this->steamaTransaction->newQuery()->where('customer_id', $customer)->paginate($perPage);
     }
 
@@ -194,7 +195,7 @@ class SteamaTransactionsService implements ISynchronizeService
             'category' => $transaction['category'],
             'provider' => $transaction['provider'] ?? 'AP',
             'timestamp' => $transaction['timestamp'],
-            'synchronization_status' => $transaction['synchronization_status']
+            'synchronization_status' => $transaction['synchronization_status'],
         ]);
     }
 
@@ -204,17 +205,18 @@ class SteamaTransactionsService implements ISynchronizeService
             'transaction_id' => $transaction['id'],
             'status' => $transaction['reversed_by_id'] !== null ? -1 : 1,
             'description' => $transaction['provider'] === 'AA' ?
-                'Payment recorded by agent : ' . $transaction['agent_id'] . ' ~Steama Meter' : null,
+                'Payment recorded by agent : '.$transaction['agent_id'].' ~Steama Meter' : null,
         ]);
         $thirdPartyTransaction->manufacturerTransaction()->associate($steamaTransaction);
         $thirdPartyTransaction->save();
+
         return $thirdPartyTransaction;
     }
 
     private function createTransaction($transaction, $thirdPartyTransaction, $steamaMeter)
     {
         $transaction = $this->transaction->newQuery()->make([
-            'amount' => (int)$transaction['amount'],
+            'amount' => (int) $transaction['amount'],
             'sender' => $transaction['customer_telephone'],
             'message' => $steamaMeter->mpmMeter->serial_number,
             'type' => 'energy',
@@ -223,6 +225,7 @@ class SteamaTransactionsService implements ISynchronizeService
         ]);
         $transaction->originalTransaction()->associate($thirdPartyTransaction);
         $transaction->save();
+
         return $transaction;
     }
 
@@ -230,22 +233,22 @@ class SteamaTransactionsService implements ISynchronizeService
     {
         $stmCustomer = $steamaMeter->stmCustomer->first();
         $customerEnergyPrice = $stmCustomer->energy_price;
-        $chargedEnergy = $mainTransaction->amount / ($customerEnergyPrice);
+        $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
 
-        $token = $transaction['site_id'] . '-' .
-            $transaction['category'] . '-' .
-            $transaction['provider'] . '-' .
+        $token = $transaction['site_id'].'-'.
+            $transaction['category'].'-'.
+            $transaction['provider'].'-'.
             $transaction['customer_id'];
 
         $token = $this->meterToken->newQuery()->make([
             'token' => $token,
             'energy' => $chargedEnergy,
-
         ]);
 
         $token->transaction()->associate($mainTransaction);
         $token->meter()->associate($mainTransaction->meter);
         $token->save();
+
         return $token;
     }
 
@@ -253,17 +256,16 @@ class SteamaTransactionsService implements ISynchronizeService
     {
         $owner = $steamaMeter->mpmMeter->meterParameter->owner;
 
-       if ($owner){
-           event('payment.successful', [
-               'amount' => $mainTransaction->amount,
-               'paymentService' => $mainTransaction->original_transaction_type,
-               'paymentType' => 'energy',
-               'sender' => $mainTransaction->sender,
-               'paidFor' => $token,
-               'payer' => $owner,
-               'transaction' => $mainTransaction,
-           ]);
-       }
-
+        if ($owner) {
+            event('payment.successful', [
+                'amount' => $mainTransaction->amount,
+                'paymentService' => $mainTransaction->original_transaction_type,
+                'paymentType' => 'energy',
+                'sender' => $mainTransaction->sender,
+                'paidFor' => $token,
+                'payer' => $owner,
+                'transaction' => $mainTransaction,
+            ]);
+        }
     }
 }

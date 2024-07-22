@@ -4,7 +4,6 @@ namespace Inensus\SparkMeter\Services;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
-use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
@@ -28,7 +27,7 @@ class CredentialService
 
     public function getCredentials()
     {
-        return  $this->smCredential->newQuery()->latest()->take(1)->get()->first();
+        return $this->smCredential->newQuery()->latest()->take(1)->get()->first();
     }
 
     public function createSmCredentials()
@@ -36,7 +35,7 @@ class CredentialService
         return $this->smCredential->newQuery()->firstOrCreate(['id' => 1], [
             'api_key' => null,
             'api_secret' => null,
-            'is_authenticated' => 0
+            'is_authenticated' => 0,
         ]);
     }
 
@@ -62,6 +61,7 @@ class CredentialService
             $smCredentials->is_authenticated = null;
         }
         $smCredentials->save();
+
         return $smCredentials->fresh();
     }
 }

@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Inensus\SteamaMeter\Sms\BodyParsers;
-
 
 use App\Sms\BodyParsers\SmsBodyParser;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
-
 
 class SteamaSmsBalanceFeedbackBody extends SmsBodyParser
 {
@@ -17,6 +14,7 @@ class SteamaSmsBalanceFeedbackBody extends SmsBodyParser
     {
         $this->steamaCustomer = $steamaCustomer;
     }
+
     protected function getVariableValue($variable)
     {
         switch ($variable) {
@@ -24,6 +22,7 @@ class SteamaSmsBalanceFeedbackBody extends SmsBodyParser
                 $variable = $this->steamaCustomer->account_balance;
                 break;
         }
+
         return $variable;
     }
 }

@@ -2,15 +2,12 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources;
 
-use App\Models\Company;
-use App\Services\CompanyService;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\RequestMethod;
 
 class StartTransactionResource extends AbstractApiResource
 {
-
     public const RESPONSE_SUCCESS = 'success';
     public const RESPONSE_KEY_MESSAGE = 'transaction_id';
     public const RESPONSE_KEY_TRANSACTION_ID = 'transaction_id';
@@ -19,7 +16,6 @@ class StartTransactionResource extends AbstractApiResource
         private WaveMoneyCredential $waveMoneyCredential,
         private WaveMoneyTransaction $waveMoneyTransaction
     ) {
-
     }
 
     public function getRequestMethod(): string
@@ -42,7 +38,7 @@ class StartTransactionResource extends AbstractApiResource
             'hash' => $this->generatePayloadHash(),
             'merchant_name' => $this->getMerchantName(),
             'items' => json_encode([
-                ['name' => "payment", 'amount' => $this->waveMoneyTransaction->getAmount()],
+                ['name' => 'payment', 'amount' => $this->waveMoneyTransaction->getAmount()],
             ]),
         ];
     }
@@ -54,7 +50,7 @@ class StartTransactionResource extends AbstractApiResource
 
     private function generatePayloadHash(): string
     {
-        return hash_hmac('sha256', implode("", [
+        return hash_hmac('sha256', implode('', [
             self::REQUEST_TIME_TO_LIVE_IN_SECS,
             $this->waveMoneyCredential->getMerchantId(),
             $this->waveMoneyTransaction->getOrderId(),
@@ -79,4 +75,3 @@ class StartTransactionResource extends AbstractApiResource
         return $this->waveMoneyCredential->getMerchantName();
     }
 }
-

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\EnergyTransactionProcessor;
 use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRate;
@@ -12,29 +11,24 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterToken;
 use App\Models\Meter\MeterType;
-use App\Models\PaymentHistory;
 use App\Models\SmsAndroidSetting;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
 use Carbon\Carbon;
-use Database\Factories\MeterTariffFactory;
 use Database\Factories\PersonFactory;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
-
 use Inensus\KelinMeter\Models\KelinCredential;
 use Inensus\KelinMeter\Models\KelinMeter;
-
-use Inensus\KelinMeter\Models\KelinTransaction;
 use Tests\TestCase;
 
 class RechargeMeterTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
-    public function test_token_generation()
+    public function testTokenGeneration()
     {
         Queue::fake();
         $this->initData();
@@ -51,7 +45,6 @@ class RechargeMeterTest extends TestCase
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
         TokenProcessor::dispatchNow($transactionData);
         $this->assertEquals(1, MeterToken::query()->get()->count());
-
     }
 
     private function initData()
@@ -62,7 +55,7 @@ class RechargeMeterTest extends TestCase
             'username' => 'konexa',
             'password' => 123456,
             'authentication_token' => '0C434321FFC0E0EC7FBBA1C6C5A1B09F',
-            'is_authenticated' => 1
+            'is_authenticated' => 1,
         ]);
         $tariff = MeterTariff::query()->create([
             'id' => 1,
@@ -102,7 +95,7 @@ class RechargeMeterTest extends TestCase
             'meter_name' => '012488101080',
             'customer_no' => 'tests',
             'rtuId' => 1,
-            'hash' => 'test'
+            'hash' => 'test',
         ]);
         $p = PersonFactory::new()->create();
         $p->meters()->create([
@@ -126,14 +119,14 @@ class RechargeMeterTest extends TestCase
             'token' => 'test-token',
             'name' => 'test',
             'url' => 'test',
-            'callback' => 'test'
+            'callback' => 'test',
         ]);
         VodacomTransaction::query()->create([
             'conversation_id' => 'a',
             'originator_conversation_id' => 'b',
             'mpesa_receipt' => 'c',
             'transaction_date' => Carbon::now(),
-            'transaction_id' => 1
+            'transaction_id' => 1,
         ]);
     }
 }

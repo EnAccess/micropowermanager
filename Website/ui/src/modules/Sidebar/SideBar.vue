@@ -15,61 +15,102 @@
         <div class="sidebar-wrapper">
             <slot name="content"></slot>
             <md-list class="no-bg p-15" md-expand-single>
-                <component
-                    :is="menu.url_slug !== '' ? 'router-link' : 'div'"
-                    v-for="(menu, index) in menus"
-                    :key="index"
-                    :md-expand="menu.sub_menu_items.length !== 0"
-                    :to="route(menu.url_slug)"
-                >
-                    <md-list-item :md-expand="menu.sub_menu_items.length !== 0">
-                        <!-- add icon if icon is defined -->
-                        <md-icon
-                            v-if="menu.md_icon !== ''"
-                            class="c-white icon-box"
+                <template v-for="menu in routes">
+                    <template v-if="menu.meta?.sidebar?.enabled">
+                        <!-- If the route has no children, then it should be a clickable menu item -->
+                        <router-link
+                            v-if="!hasSubMenu(menu)"
+                            :to="route(menu.path)"
+                            :exact-path="true"
+                            :key="'menu' + menu.path"
                         >
-                            {{ menu.md_icon }}
-                        </md-icon>
-                        <span class="md-list-item-text c-white">
-                            {{ translateItem(menu.name) }}
-                        </span>
-                        <md-icon
-                            v-if="protectedPages.includes(menu.url_slug)"
-                            class="c-white password-protected-lock-icon"
-                        >
-                            lock
-                        </md-icon>
+                            <md-list-item>
+                                <md-icon
+                                    v-if="menu.meta?.sidebar?.icon"
+                                    class="c-white icon-box"
+                                >
+                                    {{ menu.meta.sidebar.icon }}
+                                </md-icon>
+                                <span class="md-list-item-text c-white">
+                                    {{
+                                        $tc(
+                                            'menu.' +
+                                                menu.meta?.sidebar?.name ??
+                                                menu.path,
+                                        )
+                                    }}
+                                </span>
+                                <md-icon
+                                    v-if="protectedPages.includes(menu.path)"
+                                    class="c-white password-protected-lock-icon"
+                                >
+                                    lock
+                                </md-icon>
+                            </md-list-item>
+                        </router-link>
 
-                        <md-list
-                            slot="md-expand"
-                            v-if="menu.sub_menu_items.length !== 0"
-                            class="no-bg"
-                        >
-                            <router-link
-                                v-for="sub in menu.sub_menu_items"
-                                :to="route(sub.url_slug)"
-                                :key="sub.url_slug"
-                                class="sub-menu"
-                            >
-                                <md-list-item>
-                                    <span class="md-list-item-text c-white">
-                                        {{ $tc('menu.subMenu.' + sub.name) }}
-                                    </span>
-                                    <md-icon
-                                        v-if="
-                                            protectedPages.includes(
-                                                sub.url_slug,
+                        <!-- If the route has children, then it should be a nested, expanbable list with sub menues -->
+                        <div v-else :key="'submenu' + menu.path">
+                            <md-list-item md-expand>
+                                <md-icon
+                                    v-if="menu.meta?.sidebar?.icon"
+                                    class="c-white icon-box"
+                                >
+                                    {{ menu.meta.sidebar.icon }}
+                                </md-icon>
+                                <span class="md-list-item-text c-white">
+                                    {{ menu.meta?.sidebar?.name ?? menu.path }}
+                                </span>
+                                <md-list slot="md-expand" class="no-bg">
+                                    <router-link
+                                        v-for="sub in menu.children"
+                                        :key="sub.path"
+                                        :to="
+                                            route(
+                                                subMenuUrl(menu.path, sub.path),
                                             )
                                         "
-                                        class="c-white password-protected-lock-icon"
+                                        class="sub-menu"
+                                        :exact-path="true"
                                     >
-                                        lock
-                                    </md-icon>
-                                </md-list-item>
-                            </router-link>
-                        </md-list>
-                    </md-list-item>
-                </component>
+                                        <template
+                                            v-if="sub.meta?.sidebar?.enabled"
+                                        >
+                                            <md-list-item>
+                                                <span
+                                                    class="md-list-item-text c-white"
+                                                >
+                                                    {{
+                                                        $tc(
+                                                            'menu.subMenu.' +
+                                                                sub.meta
+                                                                    ?.sidebar
+                                                                    ?.name ??
+                                                                sub.path,
+                                                        )
+                                                    }}
+                                                </span>
+                                                <md-icon
+                                                    v-if="
+                                                        protectedPages.includes(
+                                                            subMenuUrl(
+                                                                menu.path,
+                                                                sub.path,
+                                                            ),
+                                                        )
+                                                    "
+                                                    class="c-white password-protected-lock-icon"
+                                                >
+                                                    lock
+                                                </md-icon>
+                                            </md-list-item>
+                                        </template>
+                                    </router-link>
+                                </md-list>
+                            </md-list-item>
+                        </div>
+                    </template>
+                </template>
             </md-list>
         </div>
     </div>
@@ -89,6 +130,7 @@ export default {
             admin: null,
             menus: this.$store.getters['settings/getSidebar'],
             translateItem: translateItem,
+            routes: this.$router.options.routes,
         }
     },
 
@@ -129,6 +171,20 @@ export default {
         })
     },
     methods: {
+        hasSubMenu(menu) {
+            // We show a submenu if the menu has children and at least one of them has sidebar enabled
+            if (menu.children && menu.children.length > 0) {
+                for (let child of menu.children) {
+                    if (child.meta?.sidebar?.enabled) {
+                        return true
+                    }
+                }
+            }
+            return false
+        },
+        subMenuUrl(basePath, subPath) {
+            return `${basePath}/${subPath}`
+        },
         async setSidebar() {
             if (!this.menus.length) {
                 await this.$store.dispatch('settings/setSidebar')
@@ -144,10 +200,16 @@ export default {
             }
         },
         route(routeUrl) {
+            // In the backend/database these are sometimes stored as (for example)
+            // /meters/page/1
+            // but we actually need to convert that to query params
             if (routeUrl !== '') {
                 if (routeUrl.includes('/page/1')) {
                     routeUrl = routeUrl.split('/page/1')[0]
-                    return { path: routeUrl, query: { page: 1, per_page: 15 } }
+                    return {
+                        path: routeUrl,
+                        query: { page: 1, per_page: 15 },
+                    }
                 } else {
                     return { path: routeUrl }
                 }

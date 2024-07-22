@@ -1,9 +1,9 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '../Helpers/ErrorHander'
+import CredentialRepository from '../repositories/CredentialRepository'
 
 export class CredentialService {
     constructor() {
-        this.repository = Repository.get('credential')
+        this.repository = CredentialRepository
         this.credential = {
             id: null,
             apiToken: null,

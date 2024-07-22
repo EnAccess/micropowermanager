@@ -2,9 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Transaction\AgentTransaction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -12,15 +9,15 @@ class AgentTransactionWebTest extends TestCase
 {
     use CreateEnvironments;
 
-    public function test_user_gets_agents_transactions()
+    public function testUserGetsAgentsTransactions()
     {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
-        $agentTransactionCount=1;
-        $amount =100;
+        $agentTransactionCount = 1;
+        $amount = 100;
         $agentId = $this->agents[0]->id;
-        $this->createAgentTransaction($agentTransactionCount,$amount,$agentId);
+        $this->createAgentTransaction($agentTransactionCount, $amount, $agentId);
         $response = $this->actingAs($this->user)->get(sprintf('/api/agents/transactions/%s', $agentId));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), 1);

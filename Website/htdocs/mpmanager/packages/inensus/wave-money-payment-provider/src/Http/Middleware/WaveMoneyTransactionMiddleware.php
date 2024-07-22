@@ -2,16 +2,12 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 
-use Closure;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class WaveMoneyTransactionMiddleware
 {
-
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, \Closure $next)
     {
         $transactionProvider = resolve('WaveMoneyPaymentProvider');
 
@@ -21,8 +17,9 @@ class WaveMoneyTransactionMiddleware
         } catch (\Exception $exception) {
             $data = collect([
                 'success' => 0,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
             ]);
+
             return new Response($data, 400);
         }
 

@@ -107,9 +107,9 @@
                         class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
                     >
                         <md-datepicker
-                            v-model="filterFrom"
                             md-immediately
-                            :md-model-type="String"
+                            v-model="filterFrom"
+                            :md-close-on-blur="false"
                         >
                             <label>{{ $tc('phrases.fromDate') }}</label>
                         </md-datepicker>
@@ -119,9 +119,9 @@
                         class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-xsmall-size-100"
                     >
                         <md-datepicker
-                            v-model="filterTo"
                             md-immediately
-                            :md-model-type="String"
+                            v-model="filterTo"
+                            :md-close-on-blur="false"
                         >
                             <label>{{ $tc('phrases.toDate') }}</label>
                         </md-datepicker>

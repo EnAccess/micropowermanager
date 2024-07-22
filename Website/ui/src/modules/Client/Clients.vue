@@ -90,10 +90,10 @@
 
 <script>
 import { resources } from '@/resources'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { EventBus } from '@/shared/eventbus'
 import Widget from '@/shared/widget'
-import { People } from '@/classes/people'
+import { People } from '@/services/PersonService'
 import { timing } from '@/mixins/timing'
 import i18n from '../../i18n'
 import AddClientModal from '@/modules/Client/AddClientModal.vue'

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class TransactionListener
 {
-
     public function onTransactionFailed(Transaction $transaction, $message = null): void
     {
         $transactionProvider = resolve('MesombPaymentProvider');
@@ -23,7 +22,6 @@ class TransactionListener
     {
         $transactionProvider = resolve('MesombPaymentProvider');
         $transactionProvider->sendResult(true, $transaction);
-
     }
 
     public function subscribe(Dispatcher $events)

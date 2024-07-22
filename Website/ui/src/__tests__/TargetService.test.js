@@ -1,5 +1,5 @@
 jest.mock('../repositories/TargetRepository')
-import { Targets } from '../classes/target/Targets'
+import { Targets } from '@/services/TargetService'
 const targets = new Targets()
 
 describe('TargetsService #store', () => {

@@ -9,4 +9,3 @@ class SunKingApiResponseException extends \Exception
         parent::__construct($message);
     }
 }
-

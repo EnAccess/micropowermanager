@@ -4,10 +4,8 @@ namespace Inensus\SunKingSHS\Services;
 
 use App\Models\Manufacturer;
 
-
 class ManufacturerService
 {
-
     public function __construct(private Manufacturer $manufacturer)
     {
     }
@@ -18,9 +16,9 @@ class ManufacturerService
         if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'SunKing SHS',
-                'type'=>'shs',
+                'type' => 'shs',
                 'website' => 'https://sunking.com/',
-                'api_name' => 'SunKingSHSApi'
+                'api_name' => 'SunKingSHSApi',
             ]);
         }
     }

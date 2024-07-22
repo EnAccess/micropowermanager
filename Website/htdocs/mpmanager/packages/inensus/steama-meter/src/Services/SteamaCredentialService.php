@@ -2,7 +2,6 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
@@ -24,7 +23,6 @@ class SteamaCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {
@@ -33,13 +31,12 @@ class SteamaCredentialService
             'password' => null,
             'is_authenticated' => 0,
             'api_url' => 'https://api.steama.co',
-            'authentication_token' => null
+            'authentication_token' => null,
         ]);
     }
 
     public function getCredentials()
     {
-
         return $this->credential->newQuery()->first();
     }
 
@@ -50,7 +47,6 @@ class SteamaCredentialService
         $credential->update([
             'username' => $data['username'],
             'password' => $data['password'],
-
         ]);
         $postParams = [
             'username' => $data['username'],
@@ -60,7 +56,7 @@ class SteamaCredentialService
             $result = $this->steamaApi->token($this->rootUrl, $postParams);
             $credential->update([
                 'authentication_token' => $result['token'],
-                'is_authenticated' => true
+                'is_authenticated' => true,
             ]);
         } catch (GuzzleException $gException) {
             if ($gException->getResponse()->getStatusCode() === 400) {
@@ -79,6 +75,7 @@ class SteamaCredentialService
             $credential->authentication_token = null;
         }
         $credential->save();
+
         return $credential->fresh();
     }
 }

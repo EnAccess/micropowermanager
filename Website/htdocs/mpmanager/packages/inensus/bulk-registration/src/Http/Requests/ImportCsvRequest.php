@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\BulkRegistration\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,6 +23,6 @@ class ImportCsvRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [ 'csv' => 'required|mimes:csv,txt'];
+        return ['csv' => 'required|mimes:csv,txt'];
     }
 }

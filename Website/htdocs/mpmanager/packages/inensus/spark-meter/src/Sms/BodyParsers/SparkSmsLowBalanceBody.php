@@ -14,6 +14,7 @@ class SparkSmsLowBalanceBody extends SmsBodyParser
     {
         $this->sparkCustomer = $sparkCustomer;
     }
+
     protected function getVariableValue($variable)
     {
         switch ($variable) {
@@ -24,6 +25,7 @@ class SparkSmsLowBalanceBody extends SmsBodyParser
                 $variable = $this->sparkCustomer->credit_balance;
                 break;
         }
+
         return $variable;
     }
 }

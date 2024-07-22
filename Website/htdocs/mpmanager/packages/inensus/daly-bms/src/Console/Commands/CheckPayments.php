@@ -5,22 +5,18 @@ namespace Inensus\DalyBms\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\AssetRate;
 use App\Models\User;
-use App\Services\GeographicalInformationService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
-use MPM\Device\DeviceAddressService;
 use MPM\EBike\EBikeService;
 
 class CheckPayments extends AbstractSharedCommand
 {
-    const MPM_PLUGIN_ID = 16;
-    const E_BIKE = 2;
-    const MANUFACTURER_NAME = 'DalyBms';
     use ScheduledPluginCommand;
+    public const MPM_PLUGIN_ID = 16;
+    public const E_BIKE = 2;
+    public const MANUFACTURER_NAME = 'DalyBms';
 
     protected $signature = 'daly-bms:check-payments';
     protected $description = 'Checks payments for e-bikes.';
@@ -45,29 +41,28 @@ class CheckPayments extends AbstractSharedCommand
         $this->info('#############################');
         $this->info('# Daly BMS Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
-        $this->info('check-payments command started at ' . $startedAt);
+        $this->info('check-payments command started at '.$startedAt);
 
         try {
             $this->assetRate::with([
                 'assetPerson.asset.smsReminderRate',
                 'assetPerson.person.addresses',
-                'assetPerson.asset'
+                'assetPerson.asset',
             ])
                 ->whereHas('assetPerson.asset', function ($q) {
                     $q->where('asset_type_id', self::E_BIKE);
                 })
                 ->whereDate('due_date', '>=', now()->format('Y-m-d'))
                 ->where('remaining', '>', 0)
-                ->where('remind','>',0)
+                ->where('remind', '>', 0)
                 ->each(fn ($installment) => $this->lockTheBike($installment));
-
         } catch (\Exception $e) {
-            $this->warn('check-payments command is failed. message => ' . $e->getMessage());
+            $this->warn('check-payments command is failed. message => '.$e->getMessage());
         }
 
         $timeEnd = microtime(true);
         $totalTime = $timeEnd - $timeStart;
-        $this->info("Took " . $totalTime . " seconds.");
+        $this->info('Took '.$totalTime.' seconds.');
         $this->info('#############################');
     }
 
@@ -75,16 +70,16 @@ class CheckPayments extends AbstractSharedCommand
     {
         $eBike = $this->eBikeService->getBySerialNumber($installment->assetPerson->device_serial);
 
-        if($eBike->manufacturer->name != self::MANUFACTURER_NAME){
+        if ($eBike->manufacturer->name != self::MANUFACTURER_NAME) {
             return false;
         }
-        $this->info('Locking the bike with id: ' . $eBike->serial_number);
+        $this->info('Locking the bike with id: '.$eBike->serial_number);
         $this->dalyBmsApi->switchDevice($eBike->serial_number, false);
 
         $status = $eBike->status;
         $serialNumber = $eBike->serial_number;
         $updatingData = [
-            'status' => str_replace("ACCON", "ACCOFF", $status)
+            'status' => str_replace('ACCON', 'ACCOFF', $status),
         ];
         $this->eBikeService->update(
             $eBike,
@@ -100,10 +95,11 @@ class CheckPayments extends AbstractSharedCommand
                 'logData' => [
                     'user_id' => $creator->id,
                     'affected' => $eBike,
-                    'action' => "Bike ($serialNumber) is locked by system, due to overdue payment."
-                ]
+                    'action' => "Bike ($serialNumber) is locked by system, due to overdue payment.",
+                ],
             ]
         );
+
         return true;
     }
 }

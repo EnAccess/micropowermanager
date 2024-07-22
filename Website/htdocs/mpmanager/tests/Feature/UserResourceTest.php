@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Feature;
-
 
 use App\Models\User;
 use Database\Factories\UserFactory;
@@ -14,8 +12,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserResource extends TestCase
 {
+    use RefreshDatabase;
+    use WithFaker;
 
-    use RefreshDatabase, WithFaker;
     public function actingAs($user, $driver = null)
     {
         $token = JWTAuth::fromUser($user);
@@ -24,14 +23,15 @@ class UserResource extends TestCase
 
         return $this;
     }
+
     /** @test */
     public function listRegisteredUsers(): void
     {
         $user = UserFactory::new()->create();
-        //create random users
+        // create random users
         UserFactory::times(30)->create();
 
-        $response  = $this->actingAs($user)->get('/api/users');
+        $response = $this->actingAs($user)->get('/api/users');
         $response->assertStatus(200);
         $this->assertEquals($response->json()['total'], 31);
     }
@@ -56,7 +56,7 @@ class UserResource extends TestCase
     public function updateUserPassword(): void
     {
         $user = UserFactory::new()->create();
-        //create user
+        // create user
         $this->actingAs($user)->post('/api/users', [
             'name' => 'Test',
             'email' => 'test@test.com',
@@ -65,7 +65,7 @@ class UserResource extends TestCase
 
         $user = User::query()->get()[1];
 
-        $response = $this->actingAs($user)->put('/api/users/password/' . $user->id,
+        $response = $this->actingAs($user)->put('/api/users/password/'.$user->id,
             [
                 'id' => $user->id,
                 'password' => '12345',
@@ -80,7 +80,7 @@ class UserResource extends TestCase
     public function resetUserPassword(): void
     {
         $user = UserFactory::new()->create();
-        //create user
+        // create user
         $this->actingAs($user)->post('/api/users', [
             'name' => 'Test',
             'email' => 'test@test.com',
@@ -89,7 +89,7 @@ class UserResource extends TestCase
         $user = User::query()->get()[1];
         $oldPassword = $user->password;
         $this->post('/api/users/password', ['email' => $user->email]);
-        $userWitNewPassword =  User::query()->get()[1];
+        $userWitNewPassword = User::query()->get()[1];
 
         $this->assertNotEquals($oldPassword, $userWitNewPassword->password);
     }
@@ -100,6 +100,5 @@ class UserResource extends TestCase
         $request = $this->post('/api/users/password', ['email' => 'ako@inensus.com']);
 
         $request->assertStatus(422);
-
     }
 }

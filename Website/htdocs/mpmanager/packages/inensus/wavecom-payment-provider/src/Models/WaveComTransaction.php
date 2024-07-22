@@ -8,22 +8,21 @@ use App\Models\BaseModel;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
-use App\Transaction\ThirdPartyTransactionInterface;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
- * @property  int $id
+ * @property int    $id
  * @property string $transaction_id
  * @property string $sender
  * @property string $message
- * @property int $amount
+ * @property int    $amount
  */
 class WaveComTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
-    protected $table ='wavecom_transactions';
+    protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
     public const STATUS_SUCCESS = 1;
     public const STATUS_CANCELLED = -1;
@@ -47,7 +46,6 @@ class WaveComTransaction extends BaseModel implements IRawTransaction, FullySupp
     {
         return $this->amount;
     }
-
 
     public function setTransactionId(string $transactionId): void
     {
@@ -86,7 +84,7 @@ class WaveComTransaction extends BaseModel implements IRawTransaction, FullySupp
 
     public function getManufacturerTransferType(): ?string
     {
-        //TODO add type API/IMPORT
+        // TODO add type API/IMPORT
         return 'WaveCom';
     }
 

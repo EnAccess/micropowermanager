@@ -1,12 +1,28 @@
-import Repository from '../repositories/RepositoryFactory'
-import { Paginator } from '@/classes/paginator'
+import { Paginator } from '@/Helpers/Paginator'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import { resources } from '@/resources'
 import { EventBus } from '@/shared/eventbus'
+import TransactionRepository from '@/repositories/TransactionRepository'
+
+export class Transactions {
+    constructor(meterId) {
+        this.tokens = []
+        this.paginator = new Paginator(
+            resources.meters.transactions + meterId + '/transactions',
+        )
+    }
+
+    updateList(data) {
+        this.tokens = []
+        for (let t in data) {
+            this.tokens.push(data[t])
+        }
+    }
+}
 
 export class TransactionService {
     constructor() {
-        this.repository = Repository.get('transaction')
+        this.repository = TransactionRepository
         this.list = []
         this.transaction = {
             id: null,

@@ -3,7 +3,6 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Meter\MeterTariff;
-use Illuminate\Database\Eloquent\Model;
 
 class SteamaTariff extends BaseModel
 {

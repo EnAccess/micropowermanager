@@ -1,9 +1,9 @@
-import RepositoryFactory from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import SmsApplianceRemindRateRepository from '@/repositories/SmsApplianceRemindRateRepository'
 
 export class SmsApplianceRemindRateService {
     constructor() {
-        this.repository = RepositoryFactory.get('smsApplianceRemindRates')
+        this.repository = SmsApplianceRemindRateRepository
         this.list = []
         this.smsApplianceRemindRate = {
             id: null,

@@ -17,15 +17,15 @@ use Tests\TestCase;
 
 class CalinApiTest extends TestCase
 {
-
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     /**
      * You need to have a valid registered meter by CALIN
      * for security reasons we can not provide a meter to perfom the test
-     * This test passed on 28.06.2020 with a valid meter
+     * This test passed on 28.06.2020 with a valid meter.
      */
-    public function test_generate_token_for_a_valid_meter(): void
+    public function testGenerateTokenForAValidMeter(): void
     {
         Bus::fake();
         $this->withoutExceptionHandling();
@@ -41,7 +41,7 @@ class CalinApiTest extends TestCase
             'api_name' => 'CalinApi',
         ]);
 
-        //create meter
+        // create meter
         Meter::query()->create([
             'serial_number' => '47000268748',
             'meter_type_id' => 1,
@@ -49,7 +49,7 @@ class CalinApiTest extends TestCase
             'manufacturer_id' => 1,
         ]);
 
-        //associate meter with a person
+        // associate meter with a person
         $p = Person::query()->first();
         $p->meters()->create([
             'tariff_id' => 1,
@@ -62,6 +62,5 @@ class CalinApiTest extends TestCase
         $token = $api->chargeDevice(TransactionDataContainer::initialize($transaction));
         $this->assertArrayHasKey('token', $token);
         $this->assertArrayHasKey('energy', $token);
-
     }
 }

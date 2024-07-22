@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import MpmPluginRepository from '@/repositories/MpmPluginRepository'
 
 export class MpmPluginService {
     constructor() {
-        this.repository = Repository.get('mpmPlugin')
+        this.repository = MpmPluginRepository
         this.list = []
     }
 

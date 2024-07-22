@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,10 +17,8 @@ return new class extends Migration
             $table->unsignedInteger('agent_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('appliance_type_id');
-            $table->decimal('cost', 12,4);
+            $table->decimal('cost', 12, 4);
             $table->timestamps();
-
-
         });
     }
 

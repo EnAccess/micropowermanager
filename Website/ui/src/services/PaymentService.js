@@ -1,10 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
 import i18n from '../i18n'
+import PaymentHistoryRepository from '@/repositories/PaymentHistoryRepository'
 
 export class PaymentService {
     constructor() {
-        this.repository = Repository.get('paymentHistory')
+        this.repository = PaymentHistoryRepository
         this.paymentDetailData = []
         this.chartData = [[i18n.tc('words.month'), i18n.tc('words.sale')]]
         this.flow = []

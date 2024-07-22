@@ -3,12 +3,10 @@
 namespace Inensus\Ticket\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Inensus\Ticket\Models\Ticket;
 
 class TicketComment extends BaseModel
 {
-    protected $table='ticket_comments';
-
+    protected $table = 'ticket_comments';
 
     public function ticket(): BelongsTo
     {
@@ -19,6 +17,4 @@ class TicketComment extends BaseModel
     {
         return $this->belongsTo(TicketUser::class, 'ticket_user_id', 'id');
     }
-
-
 }

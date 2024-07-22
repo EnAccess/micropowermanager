@@ -7,7 +7,6 @@ use Viber\Client;
 
 class AccountService
 {
-
     public function getAccountInfo($credential)
     {
         $apiKey = $credential->api_token;
@@ -15,6 +14,7 @@ class AccountService
         try {
             $client = new Client(['token' => $apiKey]);
             $result = $client->getAccountInfo();
+
             return $result->getData()['uri'];
         } catch (\Exception $e) {
             Log::error($e->getMessage());

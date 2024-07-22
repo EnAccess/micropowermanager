@@ -8,9 +8,9 @@ class SteamaSyncSetting extends BaseModel
 
     public function syncAction()
     {
-
         return $this->hasOne(SteamaSyncAction::class);
     }
+
     public function setting()
     {
         return $this->morphOne(SteamaSetting::class, 'setting');

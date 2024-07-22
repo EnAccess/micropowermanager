@@ -1,9 +1,9 @@
-import Repository from '@/repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+import CompanyRepository from '@/repositories/CompanyRepository'
 
 export class CompanyService {
     constructor() {
-        this.repository = Repository.get('company')
+        this.repository = CompanyRepository
     }
 
     async register(company) {

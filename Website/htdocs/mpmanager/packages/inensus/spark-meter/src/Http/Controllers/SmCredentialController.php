@@ -11,6 +11,7 @@ use Inensus\SparkMeter\Services\CredentialService;
 class SmCredentialController extends Controller
 {
     private $credentialService;
+
     public function __construct(CredentialService $credentialService)
     {
         $this->credentialService = $credentialService;
@@ -26,8 +27,9 @@ class SmCredentialController extends Controller
         $credentials = $this->credentialService->updateCredentials($request->only([
             'id',
             'api_key',
-            'api_secret'
+            'api_secret',
         ]));
+
         return new SparkMeterCredentialResource($credentials);
     }
 }

@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import AgentChargeRepository from '@/repositories/AgentChargeRepository'
 
 export class AgentChargeService {
     constructor() {
-        this.repository = Repository.get('balanceCharge')
+        this.repository = AgentChargeRepository
         this.newBalance = {
             userId: null,
             amount: null,

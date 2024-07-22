@@ -12,7 +12,7 @@ class MeterTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'online' => $this->faker->numberBetween(0,1),
+            'online' => $this->faker->numberBetween(0, 1),
             'phase' => 1,
             'max_current' => 10,
         ];

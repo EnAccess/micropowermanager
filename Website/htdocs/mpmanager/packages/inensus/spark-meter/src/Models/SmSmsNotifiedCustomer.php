@@ -8,7 +8,7 @@ class SmSmsNotifiedCustomer extends BaseModel
 {
     protected $table = 'sm_sms_notified_customers';
 
-    public function notify(): morphTo
+    public function notify(): MorphTo
     {
         return $this->morphTo();
     }

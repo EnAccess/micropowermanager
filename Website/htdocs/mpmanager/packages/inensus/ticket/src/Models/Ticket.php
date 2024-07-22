@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: kemal
  * Date: 20.08.18
- * Time: 15:06
+ * Time: 15:06.
  */
 
 namespace Inensus\Ticket\Models;
@@ -13,12 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
-use PDO;
-
 
 class Ticket extends BaseModel
 {
-
     protected $table = 'tickets';
 
     public const STATUS = [
@@ -74,33 +71,34 @@ class Ticket extends BaseModel
 
     public function ticketsOpenedWithCategories($miniGridId): bool|array
     {
-        $sql = "SELECT ticket_categories.label_name, count(tickets.id) as new_tickets, YEARWEEK(tickets.created_at,3) as period FROM `tickets` " .
-            "LEFT join ticket_categories on tickets.category_id = ticket_categories.id " .
-            "left join addresses on addresses.owner_id = tickets.owner_id " .
-            "where addresses.owner_type='person' " .
-            "and addresses.city_id  in (SELECT id from cities where mini_grid_id  =" . $miniGridId . " ) " .
-            " GROUP by tickets.category_id,YEARWEEK(tickets.updated_at,3)";
+        $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as new_tickets, YEARWEEK(tickets.created_at,3) as period FROM `tickets` '.
+            'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
+            'left join addresses on addresses.owner_id = tickets.owner_id '.
+            "where addresses.owner_type='person' ".
+            'and addresses.city_id  in (SELECT id from cities where mini_grid_id  ='.$miniGridId.' ) '.
+            ' GROUP by tickets.category_id,YEARWEEK(tickets.updated_at,3)';
 
         $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
         $sth->execute();
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
 
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function ticketsClosedWithCategories($miniGridId): bool|array
     {
-        $sql = "SELECT ticket_categories.label_name, count(tickets.id) as closed_tickets, YEARWEEK(tickets.updated_at,3) as period FROM `tickets` " .
-            "LEFT join ticket_categories on tickets.category_id = ticket_categories.id " .
-            "left join addresses on addresses.owner_id = tickets.owner_id " .
-            "where addresses.owner_type='person' " .
-            "and addresses.city_id in (SELECT id from cities where id =  " . $miniGridId . " ) " .
-            "and tickets . status = 1 " .
-            "GROUP by tickets . category_id,YEARWEEK(tickets.updated_at,3)";
+        $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as closed_tickets, YEARWEEK(tickets.updated_at,3) as period FROM `tickets` '.
+            'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
+            'left join addresses on addresses.owner_id = tickets.owner_id '.
+            "where addresses.owner_type='person' ".
+            'and addresses.city_id in (SELECT id from cities where id =  '.$miniGridId.' ) '.
+            'and tickets . status = 1 '.
+            'GROUP by tickets . category_id,YEARWEEK(tickets.updated_at,3)';
         $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
         $sth->execute();
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function comments(): HasMany

@@ -13,7 +13,6 @@ class AngazaCredentialService
 
     /**
      * This function uses one time on installation of the package.
-     *
      */
     public function createCredentials()
     {

@@ -2,10 +2,9 @@
 
 namespace Inensus\GomeLongMeter\Services;
 
-
 class MenuItemService
 {
-    const MENU_ITEM = 'GomeLong Meter';
+    public const MENU_ITEM = 'GomeLong Meter';
 
     public function createMenuItems()
     {
@@ -15,7 +14,7 @@ class MenuItemService
             'md_icon' => 'bolt',
             'usage_type' => 'mini-grid',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -24,7 +23,5 @@ class MenuItemService
         array_push($subMenuItems, $subMenuItem1);
 
         return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
-
-
     }
 }

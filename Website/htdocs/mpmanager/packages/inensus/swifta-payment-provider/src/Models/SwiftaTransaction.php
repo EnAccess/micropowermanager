@@ -1,4 +1,5 @@
 <?php
+
 namespace Inensus\SwiftaPaymentProvider\Models;
 
 use App\Models\BaseModel;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
-class SwiftaTransaction extends BaseModel implements IRawTransaction,FullySupportedTransactionInterface
+class SwiftaTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
 {
     public const RELATION_NAME = 'swifta_transaction';
     public const STATUS_SUCCESS = 1;

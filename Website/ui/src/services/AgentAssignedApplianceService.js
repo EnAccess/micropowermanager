@@ -1,9 +1,10 @@
-import Repository from '../repositories/RepositoryFactory'
 import { ErrorHandler } from '@/Helpers/ErrorHander'
+
+import AgentAssignedApplianceRepository from '@/repositories/AgentAssignedApplianceRepository'
 
 export class AgentAssignedApplianceService {
     constructor() {
-        this.repository = Repository.get('assignedAppliance')
+        this.repository = AgentAssignedApplianceRepository
         this.list = []
         this.assignedAppliance = {
             id: null,

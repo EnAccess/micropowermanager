@@ -7,10 +7,8 @@ use Inensus\GomeLongMeter\Http\Requests\GomeLongCredentialRequest;
 use Inensus\GomeLongMeter\Http\Resources\GomeLongResource;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
 
-
 class GomeLongCredentialController extends Controller
 {
-
     public function __construct(
         private GomeLongCredentialService $credentialService
     ) {
@@ -26,7 +24,7 @@ class GomeLongCredentialController extends Controller
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
             'user_id',
-            'user_password'
+            'user_password',
         ]);
         $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
 

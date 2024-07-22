@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Inensus\KelinMeter\Services;
-
 
 class PackageInstallationService
 {
@@ -13,10 +11,10 @@ class PackageInstallationService
         MenuItemService $menuItemService,
         KelinSyncSettingService $syncSettingService
     ) {
-
         $this->menuItemService = $menuItemService;
         $this->syncSettingService = $syncSettingService;
     }
+
     public function createDefaultSettingRecords()
     {
         $this->syncSettingService->createDefaultSettings();

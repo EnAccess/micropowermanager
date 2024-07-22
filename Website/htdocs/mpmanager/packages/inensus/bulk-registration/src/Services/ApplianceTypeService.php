@@ -1,15 +1,11 @@
 <?php
 
-
 namespace Inensus\BulkRegistration\Services;
-
 
 use App\Models\AssetType;
 
-
 class ApplianceTypeService extends CreatorService
 {
-
     public function __construct(AssetType $assetType)
     {
         parent::__construct($assetType);
@@ -20,8 +16,8 @@ class ApplianceTypeService extends CreatorService
         foreach ($appliances as $appliance) {
             AssetType::query()->firstOrCreate($appliance, $appliance);
         }
-
     }
+
     public function resolveCsvDataFromComingRow($csvData)
     {
         $applianceTypeConfig = config('bulk-registration.csv_fields.appliance_type');
@@ -35,9 +31,10 @@ class ApplianceTypeService extends CreatorService
             if ($applianceIndex >= 0) {
                 return [
                     'name' => $type,
-                    'price' => 0
+                    'price' => 0,
                 ];
             }
+
             return true;
         });
 

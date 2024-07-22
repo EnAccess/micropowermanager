@@ -14,7 +14,7 @@
 use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('tickets.*', function ($user, $id) {
-    return (int)$user->id === (int)$id;
+    return (int) $user->id === (int) $id;
 });
 
 Broadcast::channel('histories', function ($user) {
