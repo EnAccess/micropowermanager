@@ -502,7 +502,7 @@
 </template>
 
 <script>
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { TariffService } from '../../services/TariffService'
 
 export default {

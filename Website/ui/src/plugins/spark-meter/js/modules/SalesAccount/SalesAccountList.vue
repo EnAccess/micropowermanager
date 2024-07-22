@@ -71,7 +71,7 @@
 <script>
 import { SalesAccountService } from '../../services/SalesAccountService'
 import { CredentialService } from '../../services/CredentialService'
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import RedirectionModal from '@/shared/RedirectionModal'
 import { EventBus } from '@/shared/eventbus'
 

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import waveMoneyLogo from '../../assets/icons/WaveMoney.png'
+import waveMoneyLogo from '@/assets/icons/WaveMoney.png'
 export default {
     name: 'WaveMoneyTransactionDetail',
     props: ['ot'],

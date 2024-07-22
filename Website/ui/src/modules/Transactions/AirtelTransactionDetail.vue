@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import airtelLogo from '../../assets/icons/airtel.png'
+import airtelLogo from '@/assets/icons/airtel.png'
 
 export default {
     name: 'AirtelTransactionDetail',

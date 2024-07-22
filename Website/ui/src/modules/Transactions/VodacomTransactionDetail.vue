@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import vodacomLogo from '../../assets/icons/vodacom.png'
+import vodacomLogo from '@/assets/icons/vodacom.png'
 
 export default {
     name: 'VodacomTransactionDetail',

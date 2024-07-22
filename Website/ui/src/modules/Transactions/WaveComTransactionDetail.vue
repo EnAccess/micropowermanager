@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import waveComLogo from '../../assets/icons/WaveComLogo.png'
+import waveComLogo from '@/assets/icons/WaveComLogo.png'
 
 export default {
     name: 'WaveComTransactionDetail',
