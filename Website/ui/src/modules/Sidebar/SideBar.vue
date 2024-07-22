@@ -16,7 +16,14 @@
             <slot name="content"></slot>
             <md-list class="no-bg p-15" md-expand-single>
                 <template v-for="menu in routes">
-                    <template v-if="menu.meta?.sidebar?.enabled">
+                    <template
+                        v-if="
+                            menu.meta?.sidebar?.enabled ||
+                            getEnabledPlugins.includes(
+                                menu.meta?.sidebar?.enabled_by_mpm_plugin_id,
+                            )
+                        "
+                    >
                         <!-- If the route has no children, then it should be a clickable menu item -->
                         <router-link
                             v-if="!hasSubMenu(menu)"
@@ -74,7 +81,13 @@
                                         :exact-path="true"
                                     >
                                         <template
-                                            v-if="sub.meta?.sidebar?.enabled"
+                                            v-if="
+                                                sub.meta?.sidebar?.enabled ||
+                                                getEnabledPlugins.includes(
+                                                    sub.meta?.sidebar
+                                                        ?.enabled_by_mpm_plugin_id,
+                                                )
+                                            "
                                         >
                                             <md-list-item>
                                                 <span
@@ -117,8 +130,8 @@
 </template>
 <script>
 import { translateItem } from '@/Helpers/TranslateItem'
-import { EventBus } from '@/shared/eventbus'
 import PasswordProtection from '@/shared/PasswordProtection'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'SideBar',
@@ -128,7 +141,6 @@ export default {
         return {
             show_extender: false,
             admin: null,
-            menus: this.$store.getters['settings/getSidebar'],
             translateItem: translateItem,
             routes: this.$router.options.routes,
         }
@@ -162,13 +174,8 @@ export default {
             autoClose: this.autoClose,
         }
     },
-
-    mounted() {
-        this.setSidebar()
-        EventBus.$on('setSidebar', async () => {
-            await this.$store.dispatch('settings/setSidebar')
-            this.menus = this.$store.getters['settings/getSidebar']
-        })
+    async created() {
+        await this.$store.dispatch('settings/fetchPlugins')
     },
     methods: {
         hasSubMenu(menu) {
@@ -184,13 +191,6 @@ export default {
         },
         subMenuUrl(basePath, subPath) {
             return `${basePath}/${subPath}`
-        },
-        async setSidebar() {
-            if (!this.menus.length) {
-                await this.$store.dispatch('settings/setSidebar')
-
-                this.menus = this.$store.getters['settings/getSidebar']
-            }
         },
         translateMenuItem(name) {
             if (this.$tc('menu.' + name).search('menu') !== -1) {
@@ -217,6 +217,7 @@ export default {
         },
     },
     computed: {
+        ...mapGetters('settings', ['getEnabledPlugins']),
         adminName() {
             return this.$store.getters['auth/getAuthenticateUser'].name
         },
