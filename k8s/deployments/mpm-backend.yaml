@@ -76,7 +76,7 @@ spec:
             - name: HORIZON_PREFIX
               value: "horizon:"
             - name: JWT_SECRET
-              value: "YOUR-JWT-SECRET"
+              value: "UZOcmpDPHccDerQhh22RpEFip2fNi1IgeXkN6gun0HcMvjI75MlrwI98lyeFNPDV"
             - name: LOG_SLACK_WEBHOOK_URL
               value: "http://slackchannel.com"
             - name: QUEUES
