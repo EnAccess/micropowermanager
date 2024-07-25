@@ -87,9 +87,7 @@
                     >
                         <md-option disabled>Select Language</md-option>
                         <md-option
-                            v-for="(
-                                language, index
-                            ) in languagesService.languagesList"
+                            v-for="(language, index) in languagesList"
                             :key="index"
                             :value="language"
                         >
@@ -170,7 +168,6 @@
 
 <script>
 import { CurrencyListService } from '@/services/CurrencyListService'
-import { LanguagesService } from '@/services/LanguagesService'
 import { CountryListService } from '@/services/CountryListService'
 import { UsageTypeListService } from '@/services/UsageTypeListService'
 import { MainSettingsService } from '@/services/MainSettingsService'
@@ -187,11 +184,10 @@ export default {
         return {
             mainSettingsService: new MainSettingsService(),
             currencyListService: new CurrencyListService(),
-            languagesService: new LanguagesService(),
             countryListService: new CountryListService(),
             usageTypeListService: new UsageTypeListService(),
             currencyList: [],
-            languagesList: [],
+            languagesList: ['en', 'fr', 'bu'],
             countryList: [],
             progress: false,
         }
@@ -205,7 +201,6 @@ export default {
         }
 
         this.getCurrencyList()
-        this.getLanguagesList()
         this.getCountryList()
         this.getUsageTypeList()
     },
@@ -227,13 +222,6 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-        async getLanguagesList() {
-            try {
-                await this.languagesService.list()
-            } catch (e) {
-                this.alertNotify('error', e.message)
-            }
-        },
         async getUsageTypeList() {
             try {
                 await this.usageTypeListService.getUsageTypes()
@@ -241,7 +229,6 @@ export default {
                 this.alertNotify('error', e.message)
             }
         },
-
         async updateMainSettings() {
             this.progress = true
             let validator = await this.$validator.validateAll()
@@ -270,7 +257,6 @@ export default {
             }
             this.progress = false
         },
-
         updateStoreStates(mainSettings) {
             document.title = mainSettings.siteTitle
             this.$i18n.locale = mainSettings.language
