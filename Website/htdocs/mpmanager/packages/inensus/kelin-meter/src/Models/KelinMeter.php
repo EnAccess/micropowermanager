@@ -2,7 +2,7 @@
 
 namespace Inensus\KelinMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 
 class KelinMeter extends BaseModel

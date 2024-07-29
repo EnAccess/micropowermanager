@@ -9,7 +9,7 @@
 
 namespace App\Models\Role;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class RoleDefinition extends BaseModel
 {

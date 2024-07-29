@@ -2,7 +2,7 @@
 
 namespace App\Models\Address;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

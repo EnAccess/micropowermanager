@@ -2,7 +2,7 @@
 
 namespace Inensus\SunKingSHS\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class SunKingCredential extends BaseModel
 {

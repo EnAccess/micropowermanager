@@ -2,7 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Relations\BelongsToMorph;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 

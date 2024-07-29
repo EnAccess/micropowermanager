@@ -2,7 +2,7 @@
 
 namespace App\Models\Transaction;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;

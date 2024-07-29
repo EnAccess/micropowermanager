@@ -2,7 +2,7 @@
 
 namespace Inensus\MicroStarMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class MicroStarCredential extends BaseModel
 {

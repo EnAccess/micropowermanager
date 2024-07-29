@@ -2,7 +2,7 @@
 
 namespace Inensus\BulkRegistration\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class CsvData extends BaseModel
 {

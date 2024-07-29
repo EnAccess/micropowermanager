@@ -2,7 +2,7 @@
 
 namespace Inensus\CalinMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ISubTransaction;

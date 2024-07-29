@@ -2,7 +2,7 @@
 
 namespace Inensus\ViberMessaging\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 
 class ViberContact extends BaseModel
