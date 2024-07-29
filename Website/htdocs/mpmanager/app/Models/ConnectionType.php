@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterParameter;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;

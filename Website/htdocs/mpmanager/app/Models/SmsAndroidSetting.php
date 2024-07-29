@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Exceptions\SmsAndroidSettingNotExistingException;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
