@@ -2,7 +2,7 @@
 
 namespace Inensus\GomeLongMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Meter\MeterTariff;
 
 class GomeLongTariff extends BaseModel

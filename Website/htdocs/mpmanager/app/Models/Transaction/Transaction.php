@@ -4,7 +4,7 @@ namespace App\Models\Transaction;
 
 use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Sms;

@@ -4,7 +4,7 @@ namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;

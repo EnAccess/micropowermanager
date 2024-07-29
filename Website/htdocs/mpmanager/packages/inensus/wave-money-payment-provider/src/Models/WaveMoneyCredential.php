@@ -2,7 +2,7 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 /**
  * @property string merchant_id

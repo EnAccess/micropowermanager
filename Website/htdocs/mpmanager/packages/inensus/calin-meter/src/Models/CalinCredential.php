@@ -2,7 +2,7 @@
 
 namespace Inensus\CalinMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class CalinCredential extends BaseModel
 {

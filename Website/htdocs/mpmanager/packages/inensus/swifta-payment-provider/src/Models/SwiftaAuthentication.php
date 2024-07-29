@@ -2,7 +2,7 @@
 
 namespace Inensus\SwiftaPaymentProvider\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class SwiftaAuthentication extends BaseModel
 {

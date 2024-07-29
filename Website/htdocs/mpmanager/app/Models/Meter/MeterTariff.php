@@ -3,7 +3,7 @@
 namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\CustomerGroup;
 use App\Models\SocialTariff;
 use App\Models\TariffPricingComponent;

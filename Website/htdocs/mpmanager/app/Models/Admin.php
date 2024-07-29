@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class Admin extends BaseModel
 {
