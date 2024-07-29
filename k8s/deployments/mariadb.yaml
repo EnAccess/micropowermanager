@@ -25,10 +25,12 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: mariadb:latest
+          image: mariadb:10.3
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: mpm_123
+              value: wF9zLp2qRxaS2e
+            - name: MYSQL_DATABASE
+              value: micro_power_manager
           ports:
             - name: mariadb
               containerPort: 3306
@@ -39,11 +41,12 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: maria-db-data
+      
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: maria-db-service
+  name: db
 spec:
   ports:
     - name: mariadb

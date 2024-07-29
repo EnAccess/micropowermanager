@@ -25,7 +25,7 @@ spec:
         app: redis-db
     spec:
       containers:
-        - image: redis
+        - image: redis:5
           imagePullPolicy: Always
           name: redis-db
           command: ["redis-server", "--appendonly", "no"] # useful when restoring dump.rdb
