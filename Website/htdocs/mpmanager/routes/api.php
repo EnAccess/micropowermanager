@@ -218,7 +218,6 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::put('/mail/{mailSettings}', ['uses' => 'MailSettingsController@update', 'middleware' => 'jwt.verify']);
     Route::get('/currency-list', 'CurrencyController@index');
     Route::get('/country-list', 'CountryListController@index');
-    Route::get('/languages-list', 'LanguageController@index');
 });
 // Sms
 Route::group(['prefix' => 'sms-body'], static function () {
