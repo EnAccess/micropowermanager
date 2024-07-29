@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Base\MasterModel;
+
 class CompanyJob extends MasterModel
 {
     public const STATUS_PENDING = 0;

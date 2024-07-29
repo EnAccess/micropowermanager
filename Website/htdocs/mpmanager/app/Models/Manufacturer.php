@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Manufacturer extends BaseModel

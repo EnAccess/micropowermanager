@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Base\MasterModel;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

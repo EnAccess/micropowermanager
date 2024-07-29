@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
