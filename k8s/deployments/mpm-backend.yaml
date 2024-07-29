@@ -14,11 +14,11 @@ spec:
     spec:
       containers:
         - name: mpm-backend
-          image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-be:latest
+          image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-be
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-          env:
+          env: 
             - name: APP_NAME
               value: "MicroPowerManager"
             - name: APP_ENV
@@ -36,27 +36,27 @@ spec:
             - name: DB_CONNECTION
               value: "micro_power_manager"
             - name: DB_HOST
-              value: "mpmrds.cli8wgsymz96.eu-central-1.rds.amazonaws.com"  
+              value: "db"  
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
-              value: "mpmrds"
+              value: "micro_power_manager"
             - name: DB_USERNAME
-              value: "admin"
+              value: "root"
             - name: DB_PASSWORD
-              value: "masterpassword123"  
+              value: "wF9zLp2qRxaS2e"  
             - name: TEST_DB_CONNECTION
               value: "test_company_db"
             - name: TEST_DB_HOST
-              value: "mpmrds.cli8wgsymz96.eu-central-1.rds.amazonaws.com"  
+              value: "db"  
             - name: TEST_DB_PORT
               value: "3306"
             - name: TEST_DB_DATABASE
               value: "test_company_db"
             - name: TEST_DB_USERNAME
-              value: "admin"
+              value: "root"
             - name: TEST_DB_PASSWORD
-              value: "masterpassword123"  
+              value: "wF9zLp2qRxaS2e"  
             - name: BROADCAST_DRIVER
               value: "pusher"
             - name: CACHE_DRIVER
@@ -70,13 +70,13 @@ spec:
             - name: QUEUE_DRIVER
               value: "database"
             - name: REDIS_HOST
-              value: "rediscluster-gesjf1.serverless.euc1.cache.amazonaws.com:6379"  
+              value: "redis-db-service"  
             - name: REDIS_PORT
               value: "6379"
             - name: HORIZON_PREFIX
               value: "horizon:"
             - name: JWT_SECRET
-              value: "UZOcmpDPHccDerQhh22RpEFip2fNi1IgeXkN6gun0HcMvjI75MlrwI98lyeFNPDV"
+              value: "wjV7AQC3uEWpmZHQzR3G9mlWxV0O9dTQDFZAeyWIdmm1LF38KrMN1Mzy3gj7czQz"
             - name: LOG_SLACK_WEBHOOK_URL
               value: "http://slackchannel.com"
             - name: QUEUES

@@ -18,16 +18,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        # readinessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8081
-        #   initialDelaySeconds: 5
-        #   periodSeconds: 10
-        # livenessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8081
-        #   initialDelaySeconds: 15
-        #   periodSeconds: 20
+        env:
+          - name: VUE_APP_MPM_BACKEND_URL
+            value: http://a1c6c34afc2de48b3a3383b66e4206c0-1766560540.eu-central-1.elb.amazonaws.com
 
