@@ -13,45 +13,50 @@ const vitepressSidebarOptions = {
 };
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
-  title: "MicroPowerManager",
-  description: "Documentation for the MicroPowerManager",
+export default withMermaid(
+  defineConfig({
+    title: "MicroPowerManager",
+    description: "Documentation for the MicroPowerManager",
 
-  head: [["link", { rel: "icon", type: "image/png", href: "favicon.png" }]],
+    head: [["link", { rel: "icon", type: "image/png", href: "favicon.png" }]],
 
-  // For hosting on Github pages
-  // https://vitepress.dev/guide/deploy#github-pages
-  // base: "/drec-origin/",
-  vite: {
-    publicDir: ".public",
-  },
-  srcExclude: ["README.md"],
-  ignoreDeadLinks: "localhostLinks",
+    // For hosting on Github pages
+    // https://vitepress.dev/guide/deploy#github-pages
+    // base: "/drec-origin/",
+    vite: {
+      publicDir: ".public",
+    },
+    srcExclude: ["README.md"],
+    ignoreDeadLinks: "localhostLinks",
 
-  markdown: {
-    math: true,
-  },
-
-  themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    logo: "/mpmlogo_raw.png",
-    nav: [
-      { text: "Home", link: "/" },
-      { text: "Docs", link: "/get-started" },
-    ],
-    footer: {
-      message: "Built with VitePress ❤️.",
-      copyright: `Copyright © ${new Date().getFullYear()} EnAccess.`,
+    markdown: {
+      math: true,
     },
 
-    sidebar: generateSidebar(vitepressSidebarOptions),
+    themeConfig: {
+      // https://vitepress.dev/reference/default-theme-config
+      logo: "/mpmlogo_raw.png",
+      nav: [
+        { text: "Home", link: "/" },
+        { text: "Docs", link: "/get-started" },
+      ],
+      footer: {
+        message: "Built with VitePress ❤️.",
+        copyright: `Copyright © ${new Date().getFullYear()} EnAccess.`,
+      },
 
-    socialLinks: [
-      { icon: "github", link: "https://github.com/EnAccess/micropowermanager" },
-    ],
+      sidebar: generateSidebar(vitepressSidebarOptions),
 
-    search: {
-      provider: "local",
+      socialLinks: [
+        {
+          icon: "github",
+          link: "https://github.com/EnAccess/micropowermanager",
+        },
+      ],
+
+      search: {
+        provider: "local",
+      },
     },
-  },
-});
+  }),
+);
