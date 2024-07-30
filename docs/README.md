@@ -1,19 +1,34 @@
-# docs
+# MicroPowerManager Documention
 
-The docs are build using [Sphinx](https://github.com/sphinx-doc/sphinx).
-To build the documentation locally, you need a installation of Sphinx,
-for example using [pipx](https://pypa.github.io/pipx/)
+This MicroPowerManager Documention website is built using [VitePress](https://vitepress.dev/), a Vite & Vue Powered Static Site Generator.
 
-```sh
-pipx install sphinx
-pipx inject sphinx recommonmark
-pipx inject sphinx sphinx_rtd_theme
-```
+## Pre-requisites
 
-Then run
+- [NodeJS](https://nodejs.org/en)
+
+## Installation
 
 ```sh
-make html
+cd docs/
+npm install
 ```
 
-the rendered output will appear in `build/html`.
+## Local Development
+
+```sh
+npm run docs:dev
+```
+
+Then open [docs](http://localhost:5173/) in a local web browser.
+This command starts a local development server and opens up a browser window.
+Most changes are reflected live without having to restart the server.
+
+## Deployment
+
+Deployment is done using Github Actions and does not involve manual steps.
+Check out `.github/workflows` folder of the root repository.
+
+## Further Read
+
+- [Markdown Features](https://vitepress.dev/guide/markdown)
+- [Markdown Front Matter](https://vitepress.dev/guide/frontmatter)
