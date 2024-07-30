@@ -1,0 +1,43 @@
+name: Check Docs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prettier:
+    name: Lint prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/iron
+
+      - name: Run Prettier on Docs
+        working-directory: docs
+        run: npx prettier . --check
+
+  check-build:
+    name: Check Docs build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/iron
+
+      - name: Install tooling
+        working-directory: docs
+        run: npm install
+
+      - name: Build docs with VitePress
+        working-directory: docs
+        run: npm run docs:build

@@ -1,5 +1,5 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy GitHub Pages with Sphinx-docs
+# Sample workflow for building and deploying a documentation site to GitHub Pages
+name: Deploy GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -26,21 +26,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      - name: Install Sphinx and plugins
-        run: |
-          pipx install sphinx
-          pipx inject sphinx recommonmark
-          pipx inject sphinx sphinx_rtd_theme
-      - name: Build docs with Sphinx-docs
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/iron
+
+      - name: Install tooling
         working-directory: docs
-        run: make html
+        run: npm install
+
+      - name: Build docs with VitePress
+        working-directory: docs
+        run: npm run docs:build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: docs/build/html/
+          path: docs/.vitepress/dist/
 
   # Deployment job
   deploy:
