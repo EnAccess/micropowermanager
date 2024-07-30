@@ -1,12 +1,12 @@
 <template>
-    <Maintenance />
+  <Maintenance />
 </template>
 
 <script>
-import Maintenance from '@/modules/Maintenance/Maintenance'
+import Maintenance from "@/modules/Maintenance/Maintenance"
 
 export default {
-    name: 'MaintenancePage',
-    components: { Maintenance },
+  name: "MaintenancePage",
+  components: { Maintenance },
 }
 </script>

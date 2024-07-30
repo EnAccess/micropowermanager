@@ -1,35 +1,35 @@
 {
+  "id": 1,
+  "name": "test",
+  "price": "2",
+  "currency": null,
+  "factor": 1,
+  "accessRate": {
     "id": 1,
-    "name": "test",
-    "price": "2",
-    "currency": null,
-    "factor": 1,
-    "accessRate": {
-        "id": 1,
-        "amount": "12",
-        "period": "23"
-    },
-    "socialTariff": {
-        "id": 1,
-        "dailyAllowance": "23",
-        "price": "23",
-        "initialEnergyBudget": "2",
-        "maximumStackedEnergy": "2"
-    },
-    "components": [
-        {
-            "id": -9551523,
-            "name": "test",
-            "price": "2"
-        }
-    ],
-    "tous": [
-        {
-            "id": -7512291,
-            "start": "00:00",
-            "end": "01:00",
-            "value": "23",
-            "cost": 0.0046
-        }
-    ]
+    "amount": "12",
+    "period": "23"
+  },
+  "socialTariff": {
+    "id": 1,
+    "dailyAllowance": "23",
+    "price": "23",
+    "initialEnergyBudget": "2",
+    "maximumStackedEnergy": "2"
+  },
+  "components": [
+    {
+      "id": -9551523,
+      "name": "test",
+      "price": "2"
+    }
+  ],
+  "tous": [
+    {
+      "id": -7512291,
+      "start": "00:00",
+      "end": "01:00",
+      "value": "23",
+      "cost": 0.0046
+    }
+  ]
 }

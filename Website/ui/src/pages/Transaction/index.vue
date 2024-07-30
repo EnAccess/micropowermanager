@@ -1,10 +1,10 @@
 <template>
-    <Transactions />
+  <Transactions />
 </template>
 <script>
-import Transactions from '@/modules/Transactions/Transactions'
+import Transactions from "@/modules/Transactions/Transactions"
 export default {
-    name: 'TransactionsPage',
-    components: { Transactions },
+  name: "TransactionsPage",
+  components: { Transactions },
 }
 </script>

@@ -1,11 +1,11 @@
 <template>
-    <UserManagement />
+  <UserManagement />
 </template>
 
 <script>
-import UserManagement from '@/modules/Profile/UserManagement'
+import UserManagement from "@/modules/Profile/UserManagement"
 export default {
-    name: 'ProfileManagementPage',
-    components: { UserManagement },
+  name: "ProfileManagementPage",
+  components: { UserManagement },
 }
 </script>

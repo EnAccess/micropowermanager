@@ -1,12 +1,12 @@
 <template>
-    <TargetList />
+  <TargetList />
 </template>
 
 <script>
-import TargetList from '@/modules/Target/TargetList'
+import TargetList from "@/modules/Target/TargetList"
 
 export default {
-    name: 'TargetsPage',
-    components: { TargetList },
+  name: "TargetsPage",
+  components: { TargetList },
 }
 </script>

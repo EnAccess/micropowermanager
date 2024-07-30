@@ -272,53 +272,53 @@
 */
 
 .md-menu-content {
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-    border-radius: $border-radius-base !important;
-    overflow: hidden;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  border-radius: $border-radius-base !important;
+  overflow: hidden;
 
-    .md-list .md-list-item a {
-        font-size: 10px;
-    }
+  .md-list .md-list-item a {
+    font-size: 10px;
+  }
 }
 
 .md-list-item a {
-    color: inherit !important;
-    padding-top: 15px;
-    padding-bottom: 15px;
+  color: inherit !important;
+  padding-top: 15px;
+  padding-bottom: 15px;
 
-    font-weight: $font-weight-default;
-    font-size: $mdb-btn-font-size-base;
-    text-transform: uppercase;
-    overflow: visible;
+  font-weight: $font-weight-default;
+  font-size: $mdb-btn-font-size-base;
+  text-transform: uppercase;
+  overflow: visible;
 
-    border-radius: $border-radius-base;
-    position: relative;
-    display: block;
-    padding: 0;
-    text-decoration: none;
+  border-radius: $border-radius-base;
+  position: relative;
+  display: block;
+  padding: 0;
+  text-decoration: none;
 
-    &:hover,
-    &:focus {
-        color: inherit;
-        background-color: transparent;
-    }
+  &:hover,
+  &:focus {
+    color: inherit;
+    background-color: transparent;
+  }
 
-    .material-icons,
+  .material-icons,
+  .fa {
+    font-size: 20px;
+  }
+
+  &.btn:not(.btn-just-icon) {
     .fa {
-        font-size: 20px;
+      position: relative;
+      top: 2px;
+      margin-top: -4px;
+      margin-right: 4px;
     }
-
-    &.btn:not(.btn-just-icon) {
-        .fa {
-            position: relative;
-            top: 2px;
-            margin-top: -4px;
-            margin-right: 4px;
-        }
-    }
+  }
 }
 
 .md-list-item {
-    margin-left: 5px;
-    list-style: none;
+  margin-left: 5px;
+  list-style: none;
 }

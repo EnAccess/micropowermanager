@@ -1,159 +1,159 @@
 {
-    "data": {
-        "data": [
-            {
-                "id": 12,
-                "name": "test",
-                "manager_id": 1,
-                "created_at": "2020-11-11T13:26:25.000000Z",
-                "updated_at": "2020-03-03T23:56:50.000000Z",
-                "meterCount": 67,
-                "revenue": 0,
-                "population": 67
+  "data": {
+    "data": [
+      {
+        "id": 12,
+        "name": "test",
+        "manager_id": 1,
+        "created_at": "2020-11-11T13:26:25.000000Z",
+        "updated_at": "2020-03-03T23:56:50.000000Z",
+        "meterCount": 67,
+        "revenue": 0,
+        "population": 67
+      },
+      {
+        "id": 14,
+        "name": "test",
+        "manager_id": 1,
+        "created_at": "2020-11-11T13:26:30.000000Z",
+        "updated_at": "2020-03-03T23:58:55.000000Z",
+        "meterCount": 126,
+        "revenue": 0,
+        "population": 126
+      },
+      {
+        "id": 15,
+        "name": "test",
+        "manager_id": 25,
+        "created_at": "2021-03-29T11:33:16.000000Z",
+        "updated_at": "2021-03-29T11:33:16.000000Z",
+        "geo": [
+          {
+            "leaflet_id": 316,
+            "type": "manual",
+            "geojson": {
+              "type": "test",
+              "coordinates": [
+                [
+                  [-1.1553744185139059, 36.15194141521097],
+                  [-1.932926590026594, 35.898198717784155],
+                  [-1.8983561543640837, 37.846606198583515],
+                  [-1.0556577358915145, 37.87346953844301]
+                ]
+              ]
             },
-            {
-                "id": 14,
-                "name": "test",
-                "manager_id": 1,
-                "created_at": "2020-11-11T13:26:30.000000Z",
-                "updated_at": "2020-03-03T23:58:55.000000Z",
-                "meterCount": 126,
-                "revenue": 0,
-                "population": 126
+            "searched": false,
+            "display_name": "test",
+            "selected": true,
+            "draw_type": "draw",
+            "lat": -1.5105787246990245,
+            "lon": 36.94255396750541
+          }
+        ],
+        "meterCount": 0,
+        "revenue": 0,
+        "population": 0
+      },
+      {
+        "id": 16,
+        "name": "test",
+        "manager_id": 25,
+        "created_at": "2021-03-29T11:41:36.000000Z",
+        "updated_at": "2021-03-29T11:41:36.000000Z",
+        "geo": [
+          {
+            "leaflet_id": 316,
+            "type": "test",
+            "geojson": {
+              "type": "test",
+              "coordinates": [
+                [
+                  [-1.1553744185139059, 36.15194141521097],
+                  [-1.932926590026594, 35.898198717784155],
+                  [-1.8983561543640837, 37.846606198583515],
+                  [-1.0556577358915145, 37.87346953844301]
+                ]
+              ]
             },
-            {
-                "id": 15,
-                "name": "test",
-                "manager_id": 25,
-                "created_at": "2021-03-29T11:33:16.000000Z",
-                "updated_at": "2021-03-29T11:33:16.000000Z",
-                "geo": [
-                    {
-                        "leaflet_id": 316,
-                        "type": "manual",
-                        "geojson": {
-                            "type": "test",
-                            "coordinates": [
-                                [
-                                    [-1.1553744185139059, 36.15194141521097],
-                                    [-1.932926590026594, 35.898198717784155],
-                                    [-1.8983561543640837, 37.846606198583515],
-                                    [-1.0556577358915145, 37.87346953844301]
-                                ]
-                            ]
-                        },
-                        "searched": false,
-                        "display_name": "test",
-                        "selected": true,
-                        "draw_type": "draw",
-                        "lat": -1.5105787246990245,
-                        "lon": 36.94255396750541
-                    }
-                ],
-                "meterCount": 0,
-                "revenue": 0,
-                "population": 0
+            "searched": false,
+            "display_name": "test",
+            "selected": true,
+            "draw_type": "draw",
+            "lat": -1.5105787246990245,
+            "lon": 36.94255396750541
+          }
+        ],
+        "meterCount": 0,
+        "revenue": 0,
+        "population": 0
+      },
+      {
+        "id": 17,
+        "name": "test",
+        "manager_id": 25,
+        "created_at": "2021-03-29T11:42:13.000000Z",
+        "updated_at": "2021-03-29T11:42:13.000000Z",
+        "geo": [
+          {
+            "leaflet_id": 316,
+            "type": "manual",
+            "geojson": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [-1.1553744185139059, 36.15194141521097],
+                  [-1.932926590026594, 35.898198717784155],
+                  [-1.8983561543640837, 37.846606198583515],
+                  [-1.0556577358915145, 37.87346953844301]
+                ]
+              ]
             },
-            {
-                "id": 16,
-                "name": "test",
-                "manager_id": 25,
-                "created_at": "2021-03-29T11:41:36.000000Z",
-                "updated_at": "2021-03-29T11:41:36.000000Z",
-                "geo": [
-                    {
-                        "leaflet_id": 316,
-                        "type": "test",
-                        "geojson": {
-                            "type": "test",
-                            "coordinates": [
-                                [
-                                    [-1.1553744185139059, 36.15194141521097],
-                                    [-1.932926590026594, 35.898198717784155],
-                                    [-1.8983561543640837, 37.846606198583515],
-                                    [-1.0556577358915145, 37.87346953844301]
-                                ]
-                            ]
-                        },
-                        "searched": false,
-                        "display_name": "test",
-                        "selected": true,
-                        "draw_type": "draw",
-                        "lat": -1.5105787246990245,
-                        "lon": 36.94255396750541
-                    }
-                ],
-                "meterCount": 0,
-                "revenue": 0,
-                "population": 0
+            "searched": false,
+            "display_name": "test",
+            "selected": true,
+            "draw_type": "draw",
+            "lat": -1.5105787246990245,
+            "lon": 36.94255396750541
+          }
+        ],
+        "meterCount": 0,
+        "revenue": 0,
+        "population": 0
+      },
+      {
+        "id": 18,
+        "name": "test",
+        "manager_id": 25,
+        "created_at": "2021-03-29T11:51:39.000000Z",
+        "updated_at": "2021-03-29T11:51:39.000000Z",
+        "geo": [
+          {
+            "leaflet_id": 340,
+            "type": "manual",
+            "geojson": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [27.80225986736375, 41.541074915645936],
+                  [27.071354789865012, 41.438470689441395],
+                  [27.22982873621797, 43.4679402293375],
+                  [28.036569143326055, 43.04851166098818]
+                ]
+              ]
             },
-            {
-                "id": 17,
-                "name": "test",
-                "manager_id": 25,
-                "created_at": "2021-03-29T11:42:13.000000Z",
-                "updated_at": "2021-03-29T11:42:13.000000Z",
-                "geo": [
-                    {
-                        "leaflet_id": 316,
-                        "type": "manual",
-                        "geojson": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [
-                                    [-1.1553744185139059, 36.15194141521097],
-                                    [-1.932926590026594, 35.898198717784155],
-                                    [-1.8983561543640837, 37.846606198583515],
-                                    [-1.0556577358915145, 37.87346953844301]
-                                ]
-                            ]
-                        },
-                        "searched": false,
-                        "display_name": "test",
-                        "selected": true,
-                        "draw_type": "draw",
-                        "lat": -1.5105787246990245,
-                        "lon": 36.94255396750541
-                    }
-                ],
-                "meterCount": 0,
-                "revenue": 0,
-                "population": 0
-            },
-            {
-                "id": 18,
-                "name": "test",
-                "manager_id": 25,
-                "created_at": "2021-03-29T11:51:39.000000Z",
-                "updated_at": "2021-03-29T11:51:39.000000Z",
-                "geo": [
-                    {
-                        "leaflet_id": 340,
-                        "type": "manual",
-                        "geojson": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [
-                                    [27.80225986736375, 41.541074915645936],
-                                    [27.071354789865012, 41.438470689441395],
-                                    [27.22982873621797, 43.4679402293375],
-                                    [28.036569143326055, 43.04851166098818]
-                                ]
-                            ]
-                        },
-                        "searched": false,
-                        "display_name": "has",
-                        "selected": true,
-                        "draw_type": "draw",
-                        "lat": 27.535003134193197,
-                        "lon": 42.37399937385325
-                    }
-                ],
-                "meterCount": 0,
-                "revenue": 0,
-                "population": 0
-            }
-        ]
-    },
-    "status": 200
+            "searched": false,
+            "display_name": "has",
+            "selected": true,
+            "draw_type": "draw",
+            "lat": 27.535003134193197,
+            "lon": 42.37399937385325
+          }
+        ],
+        "meterCount": 0,
+        "revenue": 0,
+        "population": 0
+      }
+    ]
+  },
+  "status": 200
 }

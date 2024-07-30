@@ -1,12 +1,12 @@
 <template>
-    <AddCluster />
+  <AddCluster />
 </template>
 
 <script>
-import AddCluster from '@/modules/Cluster/AddCluster.vue'
+import AddCluster from "@/modules/Cluster/AddCluster.vue"
 
 export default {
-    name: 'NewClusterPage',
-    components: { AddCluster },
+  name: "NewClusterPage",
+  components: { AddCluster },
 }
 </script>
