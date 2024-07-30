@@ -46,6 +46,10 @@ export default {
                                     geoData.clusterId === undefined
                                         ? -1
                                         : geoData.clusterId,
+                                cluster_display_name:
+                                    geoData.display_name === undefined
+                                        ? -1
+                                        : geoData.display_name,
                             },
                             geometry: {
                                 type: geoType,
@@ -75,6 +79,10 @@ export default {
                         }
 
                         editableLayer.addLayer(layer)
+                        layer.bindTooltip(
+                            '<strong>Cluster:</strong> ' +
+                                layer.feature.properties.cluster_display_name,
+                        )
                         const geoDataItem = {
                             leaflet_id: layer._leaflet_id,
                             type: 'manual',
@@ -114,7 +122,15 @@ export default {
                         [markingInfo.lat, markingInfo.lon],
                         { icon: miniGridMarkerIcon },
                     )
-                    miniGridMarker.bindTooltip('Mini Grid: ' + markingInfo.name)
+                    let tooltip =
+                        '<strong>Mini Grid:</strong> ' + markingInfo.name
+                    if (markingInfo.clusterId !== undefined) {
+                        tooltip +=
+                            '<br><strong>Cluster:</strong> ' +
+                            markingInfo.clusterDisplayName
+                    }
+
+                    miniGridMarker.bindTooltip(tooltip)
                     miniGridMarker.addTo(this.map)
                 })
         },
