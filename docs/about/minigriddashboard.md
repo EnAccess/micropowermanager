@@ -1,5 +1,8 @@
-Mini-Grid Dashboard
--------------------
+---
+order: 6
+---
+
+# Mini-Grid Dashboard
 
 Mini-grids are the building blocks of clusters. This dashboard provides
 information about the selected Mini-Grid, such as **revenue per

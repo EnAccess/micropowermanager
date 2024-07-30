@@ -1,5 +1,8 @@
-Cluster Dashboard
------------------
+---
+order: 5
+---
+
+# Cluster Dashboard
 
 The cluster dashboard is built similar to the clusters dashboard. There
 are small informative boxes at the top of the screen. The financial

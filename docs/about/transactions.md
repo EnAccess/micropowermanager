@@ -1,5 +1,8 @@
-Transactions
-------------
+---
+order: 10
+---
+
+# Transactions
 
 The page contains two main sections.
 
@@ -14,9 +17,9 @@ The page contains two main sections.
 2. A basic list with incoming transactions. The list has an advanced
    filtering option instead of a basic search as in other pages.
 
-By clicking on a Transaction, the ``Transaction detail`` page will load.
-The detail page contains the ``Mobile Provider-specific data``,
-``Basic Data``, ``Sent Sms``, and ``Transaction Processing``.
+By clicking on a Transaction, the `Transaction detail` page will load.
+The detail page contains the `Mobile Provider-specific data`,
+`Basic Data`, `Sent Sms`, and `Transaction Processing`.
 
 **Mobile Money Provider-specific data:** The name of the provider and
 the transaction details. This information is required by the mobile

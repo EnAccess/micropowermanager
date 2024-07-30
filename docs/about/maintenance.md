@@ -1,5 +1,8 @@
-Maintenance
------------
+---
+order: 12
+---
+
+# Maintenance
 
 In some cases, it is wiser to use external resources to solve small
 problems. Maintenance is exactly for that there. The maintenance users

@@ -1,11 +1,14 @@
-MPManager
----------
+---
+order: 4
+---
 
-**Note: The pages that contain only a ``List of X`` and a ``Add new X``
-button without any other key feature are not explained below.**
+# MPManager
 
-Clusters Dashboard
-~~~~~~~~~~~~~~~~~~
+**Note: The pages that contain only a \`\`List of X\`\` and a \`\`Add
+new X\`\` button without any other key feature are not explained
+below.**
+
+## Clusters Dashboard
 
 It is basically the whole overview of the business. It shows some quick
 information like total revenue, registered meters and the number of

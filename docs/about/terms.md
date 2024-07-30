@@ -1,30 +1,33 @@
-Terms
------
+---
+order: 1
+---
 
--  **Mini-Grid:** It is an off-grid electricity distribution network
-   that includes small/medium-scale electricity generation.
+# Terms
 
--  **Cluster:** The area that covers the grouped Mini-Grids.
+- **Mini-Grid:** It is an off-grid electricity distribution network
+  that includes small/medium-scale electricity generation.
 
--  **Customer:** It defines individual clients and businesses registered
-   in MPManager.
+- **Cluster:** The area that covers the grouped Mini-Grids.
 
--  **Meter:** A pre-paid energy meter that works with an STS-Token.
+- **Customer:** It defines individual clients and businesses registered
+  in MPManager.
 
--  **Transaction:** Incoming payments from customers.
+- **Meter:** A pre-paid energy meter that works with an STS-Token.
 
--  **Ticket:** It is the place where customer problems, complaints, and
-   demands are collected.
+- **Transaction:** Incoming payments from customers.
 
--  **Tariff:** The combination of energy(kWh) price and the fixed
-   price(access rate).
+- **Ticket:** It is the place where customer problems, complaints, and
+  demands are collected.
 
--  **Target:** It is a goal for a Mini-Grid/ Cluster that the company
-   wants to reach at a given time.
+- **Tariff:** The combination of energy(kWh) price and the fixed
+  price(access rate).
 
--  **Asset Type:** An object, that could be sold to locals to
-   help/improve their productivity or live quality.
+- **Target:** It is a goal for a Mini-Grid/ Cluster that the company
+  wants to reach at a given time.
 
--  **Maintenance:** This is the place where external contractors are
-   assigned to predefined jobs like "connect a new house-hold to the
-   grid", "replacing not working meters, etc.".
+- **Asset Type:** An object, that could be sold to locals to
+  help/improve their productivity or live quality.
+
+- **Maintenance:** This is the place where external contractors are
+  assigned to predefined jobs like "connect a new house-hold to the
+  grid", "replacing not working meters, etc.".
