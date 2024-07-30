@@ -22,7 +22,7 @@ export default withMermaid(
 
     // For hosting on Github pages
     // https://vitepress.dev/guide/deploy#github-pages
-    // base: "/drec-origin/",
+    // base: "/micropowermanager/",
     vite: {
       publicDir: ".public",
     },
@@ -58,5 +58,5 @@ export default withMermaid(
         provider: "local",
       },
     },
-  }),
+  })
 );
