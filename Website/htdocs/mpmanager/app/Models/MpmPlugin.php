@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Base\MasterModel;
+use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property string|null $tail_tag
  * @property string|null $installation_command
  */
-class MpmPlugin extends MasterModel
+class MpmPlugin extends BaseModelCore
 {
     use HasFactory;
 

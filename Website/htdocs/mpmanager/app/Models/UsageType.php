@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Base\MasterModel;
+use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class UsageType extends MasterModel
+class UsageType extends BaseModelCore
 {
     use HasFactory;
 

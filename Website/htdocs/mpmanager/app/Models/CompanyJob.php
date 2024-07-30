@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Base\MasterModel;
+use App\Models\Base\BaseModelCore;
 
-class CompanyJob extends MasterModel
+class CompanyJob extends BaseModelCore
 {
     public const STATUS_PENDING = 0;
     public const STATUS_SUCCESS = 1;

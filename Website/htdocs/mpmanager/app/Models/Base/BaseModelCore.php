@@ -12,9 +12,12 @@ namespace App\Models\Base;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * This model handles models which are shared across the base and customer databases.
+ * Base model for models which are implemented on the MPM core database.
+ *
+ * Only applies to very few common, high-level configuration entities in
+ * the entire MPM-instance like database and plugin configuration.
  */
-class MasterModel extends Model
+class BaseModelCore extends Model
 {
     protected $guarded = ['id'];
     public static $rules = [];
