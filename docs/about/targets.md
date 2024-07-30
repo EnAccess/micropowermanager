@@ -1,5 +1,8 @@
-Targets
--------
+---
+order: 3
+---
+
+# Targets
 
 A target can be assigned to a whole cluster or for a single Mini-Grid.
 The important thing by assigning a target is;
@@ -11,11 +14,9 @@ calculated sum of these targets.
 
 Example: Cluster 1 has following Mini-Grids; MG-1 MG-2 and MG-3
 
-+-------------------+--------+--------+--------+
-| #                 | MG-1   | MG-2   | MG-3   |
-+===================+========+========+========+
-| New Connections   |  100   | 200    | 500    |
-+-------------------+--------+--------+--------+
+| #               | MG-1 | MG-2 | MG-3 |
+| --------------- | ---- | ---- | ---- |
+| New Connections | 100  | 200  | 500  |
 
 The result of the cluster overview page would be 800 for expected new
 connections.

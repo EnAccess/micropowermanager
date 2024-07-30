@@ -1,24 +1,25 @@
-Development
------------
+---
+order: 5
+---
 
-The development environment is served under **http://mpmanager.local**
+# Development
+
+The development environment is served under <http://mpmanager.local>
 To reach the site over the given url; enter the following lines to your
 hosts file.
 
-For Linux/Mac Users
-~~~~~~~~~~~~~~~~~~~
+## For Linux/Mac Users
 
-::
+```sh
+/etc/hosts
+127.0.0.1       mpmanager.local
+127.0.0.1       db.mpmanager.local
+```
 
-    /etc/hosts
-    127.0.0.1       mpmanager.local
-    127.0.0.1       db.mpmanager.local
+## For Windows
 
-For Windows
-~~~~~~~~~~~
-
-::
-
-    c:\windows\system32\drivers\etc\hosts
-    127.0.0.1       mpmanager.local
-    127.0.0.1       db.mpmanager.local
+```sh
+c:\windows\system32\drivers\etc\hosts
+127.0.0.1       mpmanager.local
+127.0.0.1       db.mpmanager.local
+```
