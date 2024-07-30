@@ -1,12 +1,12 @@
 <template>
-    <List />
+  <List />
 </template>
 
 <script>
-import List from '@/modules/Sms/List'
+import List from "@/modules/Sms/List"
 
 export default {
-    name: 'SMSPage',
-    components: { List },
+  name: "SMSPage",
+  components: { List },
 }
 </script>

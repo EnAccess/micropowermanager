@@ -30,13 +30,13 @@ Example Usage (in routes.js):
 -->
 
 <template>
-    <div>
-        <router-view />
-    </div>
+  <div>
+    <router-view />
+  </div>
 </template>
 
 <script>
 export default {
-    // Optional: you can add props, data, methods, etc. here
+  // Optional: you can add props, data, methods, etc. here
 }
 </script>

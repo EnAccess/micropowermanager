@@ -1,6 +1,6 @@
-import { defineConfig } from "vitepress";
-import { generateSidebar } from "vitepress-sidebar";
-import { withMermaid } from "vitepress-plugin-mermaid";
+import { defineConfig } from "vitepress"
+import { generateSidebar } from "vitepress-sidebar"
+import { withMermaid } from "vitepress-plugin-mermaid"
 
 // https://vitepress-sidebar.jooy2.com/getting-started
 const vitepressSidebarOptions = {
@@ -10,7 +10,7 @@ const vitepressSidebarOptions = {
   useFolderTitleFromIndexFile: true,
   useTitleFromFileHeading: true,
   useTitleFromFrontmatter: true,
-};
+}
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid(
@@ -59,4 +59,4 @@ export default withMermaid(
       },
     },
   }),
-);
+)
