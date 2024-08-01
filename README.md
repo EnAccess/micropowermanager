@@ -31,7 +31,12 @@
 
 # MicroPowerManager
 
----
+MicroPowerManager (MPM) is a decentralized utility and customer management tool.
+Manage customers, revenues and assets with this all-in one Open Source platform.
+
+## Documentation
+
+MPM's documentation is hosted on [micropowermanager.io](https://micropowermanager.io/).
 
 ## This project
 
@@ -40,3 +45,15 @@
 - It uses Vue.js 2.6
 - It uses Node 16.10
 - It uses MariaDB 10.3 which is compatible with MySQL 5.7
+
+## Getting Started
+
+Explore MPM's capabilities by
+
+- logging into the [Demo Version](https://demo.micropowermanager.io/)
+- setting up a local installation following this [guide](https://micropowermanager.io/development/development-environment.html)
+
+## Support
+
+- [OSEA Discord](https://discord.osea-community.org/) (`#micropowermanager` channel)
+- [EnAccess](https://enaccess.org/)
