@@ -31,7 +31,8 @@
 
 # MicroPowerManager
 
----
+MicroPowerManager (MPM) is a decentralized utility and customer management tool.
+Manage customers, revenues and assets with this all-in one Open Source platform.
 
 ## Documentation
 
