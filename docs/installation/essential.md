@@ -104,8 +104,10 @@ LOG_SLACK_WEBHOOK_URL="SLACK-WEBHOOK-URL"
 
 ### Configuration for BongoLive
 
-**Important Note: The Bongo API integration on our system is not been
-maintained since early-2019.**
+> [!WARNING]
+> The Bongo API integration on our system is not been
+> maintained since early 2019.
+> Proceed with caution.
 
 Firstly, you have to uncomment these lines in
 `app/Providers/AppServiceProvider.php`. Because the default SMSProvider
@@ -131,8 +133,9 @@ After that, change the following configuration
 
 ### Configuration for SMS-Gateway Application
 
-**Advice: Please read the SMS-Gateway documentation before you
-continue.**
+> [!INFO]
+> Please read the SMS-Gateway documentation before you
+> continue
 
 To lower the costs of the system we are using the following application
 to send and receive SMSes over that application. To be able to use the
@@ -161,14 +164,18 @@ $this->app->singleton('SmsProvider', static function ($app) {
     ],
 ```
 
-**Dont forget to change the \`\`callback\`\` variable to a globaly
-reachable domain**
+> [!NOTE]
+> Dont forget to change the `callback` variable to a globaly
+> reachable domain
 
 ### Change Predefined SMS Text
 
 To change the predefined SMS texts, please edit `app/Sms/SmsTypes.php`
 
 ## Weather Data
+
+> [!WARNING]
+> This sites describes a potentially deprecated feature of MPM
 
 The system shows the weather data on the Mini-Grid level. To be able to
 read out the data from `Open Weather Map` service you have to register
@@ -198,4 +205,7 @@ return [
 ];
 ```
 
-There are currently two supported SMS-Gateways. 1. Bongo Live Tanzania 2. Inhouse SMS-Gateway Application
+There are currently two supported SMS-Gateways.
+
+1. Bongo Live Tanzania
+2. Inhouse SMS-Gateway Application

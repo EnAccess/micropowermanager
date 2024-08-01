@@ -4,6 +4,9 @@ order: 6
 
 # Generate API Documentation
 
+> [!WARNING]
+> This sites describes a potentially deprecated feature of MPM
+
 To generate the API documentation, jump in the `laravel` container and
 type `php artisan apidoc:generate` in the **mpmanager** directory. That
 will create a new **docs** folder under **public** folder. The API
