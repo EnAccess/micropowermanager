@@ -4,6 +4,9 @@ order: 4
 
 # Deploy for Production
 
+> [!WARNING]
+> This sites describes a potentially deprecated feature of MPM
+
 The production mode will automatically install **Let\'s Encrypt SSL
 certificates**. Therefore you need firstly register a domain.
 

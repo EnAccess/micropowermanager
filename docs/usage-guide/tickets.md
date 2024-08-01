@@ -4,7 +4,10 @@ order: 11
 
 # Tickets
 
-MPManager is using [Trello](https://trello.com>)as a ticketing
+> [!WARNING]
+> This sites describes a potentially deprecated feature of MPM
+
+MPManager is using [Trello](https://trello.com>) as a ticketing
 platform. All tickets are basically Trello cards. The database is only
 holding references to the tickets. The ticketing system aims to resolve
 requests and complaints from customers as quickly as possible. It is
