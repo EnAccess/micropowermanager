@@ -36,7 +36,7 @@ Manage customers, revenues and assets with this all-in one Open Source platform.
 
 ## Documentation
 
-ThingsBoard documentation is hosted on [micropowermanager.io](https://micropowermanager.io/).
+MPM's documentation is hosted on [micropowermanager.io](https://micropowermanager.io/).
 
 ## This project
 
