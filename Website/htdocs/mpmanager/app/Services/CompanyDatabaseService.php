@@ -60,14 +60,6 @@ class CompanyDatabaseService implements IBaseService
         ]);
     }
 
-    public function runSeeders(): void
-    {
-        Artisan::call('db:seed', [
-            '--force' => true,
-            '--class' => DatabaseSeeder::class,
-        ]);
-    }
-
     public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null): void
     {
         $rootClass = $plugin['root_class'];
