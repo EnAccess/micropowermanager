@@ -1,7 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration {
@@ -19,6 +21,14 @@ return new class() extends Migration {
             $table->integer('tariff_id');
             $table->timestamps();
         });
+
+        DB::connection('shard')->table('sub_connection_types')->insert([
+            'name' => 'default  sub connection type',
+            'tariff_id' => 1,
+            'connection_type_id' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 
     /**

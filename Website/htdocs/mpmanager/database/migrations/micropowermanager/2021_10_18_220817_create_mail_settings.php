@@ -1,7 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration {
@@ -21,6 +23,16 @@ return new class() extends Migration {
             $table->string('mail_password');
             $table->timestamps();
         });
+
+        DB::connection('shard')->table('mail_settings')->insert([
+            'mail_host' => 'smtp.example.com',
+            'mail_port' => 123,
+            'mail_encryption' => 'tls',
+            'mail_username' => 'example@domain.com',
+            'mail_password' => '123123',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 
     /**
