@@ -6,13 +6,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class DatabaseBackupCommand extends Command
+class BackupFull extends Command
 {
-    protected $signature = 'db:backup';
+    protected $signature = 'backup:full';
+    protected $description = 'Run the backup for core base database and all tenant databases';
 
     public function handle(): void
     {
-        $this->info('Make copy of master db');
+        $this->info('Starting backup for core database');
         config(['database.connections.mysql' => config('database.connections.micro_power_manager')]);
         $this->call('backup:run', [
             '--only-db' => true,
@@ -20,7 +21,7 @@ class DatabaseBackupCommand extends Command
             '--disable-notifications' => true,
             '--db-name' => ['mysql'],
         ]);
-        $this->info('Starting backup for sharding databases');
-        $this->call('shard:db.backup');
+        $this->info('Completed backup for core database');
+        $this->call('backup-tenant:run');
     }
 }
