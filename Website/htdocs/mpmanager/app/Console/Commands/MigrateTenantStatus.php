@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-class MigratorStatus extends AbstractSharedCommand
+class MigrateTenantStatus extends AbstractSharedCommand
 {
-    protected $signature = 'migrator:migrate_status';
-    protected $description = 'Show the status of all migrations on provided company database';
+    protected $signature = 'migrate-tenant:status {--company-id=}';
+    protected $description = 'Show the status of each migrations on provided tenant database(s)';
 
     public function handle()
     {

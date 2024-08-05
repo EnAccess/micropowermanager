@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class MigrationCreator extends Command
+class MakeMigrationTenant extends Command
 {
-    protected $signature = 'migrator:create {migration-name}';
-    protected $description = 'Create new migration file for company databases';
+    protected $signature = 'make:migration-tenant {migration-name}';
+    protected $description = 'Create new migration file for tenant database(s)';
 
     public function handle()
     {
