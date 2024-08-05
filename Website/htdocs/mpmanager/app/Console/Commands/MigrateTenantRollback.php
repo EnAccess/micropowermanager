@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 class MigrateTenantRollback extends AbstractSharedCommand
 {
     protected $signature = 'migrate-tenant:rollback {--company-id=}';
-    protected $description = 'Drop all tables and re-run all migrations on provided tenant database(s)';
+    protected $description = 'Rollback the last database migration on provided tenant database(s)';
 
     public function handle()
     {

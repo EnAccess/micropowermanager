@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 class MigrateTenantRefresh extends AbstractSharedCommand
 {
     protected $signature = 'migrate-tenant:refresh {--company-id=}';
-    protected $description = 'Drop all tables and re-run all migrations on provided tenant database(s)';
+    protected $description = 'Reset and re-run all migrations on provided tenant database(s)';
 
     public function handle()
     {
