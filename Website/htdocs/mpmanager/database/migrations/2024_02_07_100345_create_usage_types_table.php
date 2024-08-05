@@ -12,8 +12,11 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
-            $table->string('tail_tag')->nullable();
+        Schema::create('usage_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('value');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +27,6 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->dropColumn('tail_tag');
-        });
+        Schema::dropIfExists('usage_types');
     }
 };

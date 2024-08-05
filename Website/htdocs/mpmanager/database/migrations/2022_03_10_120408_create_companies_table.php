@@ -12,10 +12,12 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->create('mpm_plugins', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('address');
+            $table->string('phone');
+            $table->integer('country_id')->default(-1);
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('mpm_plugins');
+        Schema::dropIfExists('companies');
     }
 };

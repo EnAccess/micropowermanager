@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class() extends Migration {
     public function up(): void
     {
-        Schema::connection('micro_power_manager')->create('database_proxies', function (Blueprint $table) {
+        Schema::create('database_proxies', function (Blueprint $table) {
             $table->id();
             $table->string('email');
             $table->integer('fk_company_id');

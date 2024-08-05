@@ -2,16 +2,15 @@
 
 namespace App\Console\Commands;
 
-class Migrator extends AbstractSharedCommand
+class MigrateTenant extends AbstractSharedCommand
 {
-    protected $signature = 'migrator:migrate';
-    protected $description = 'Run all migrations on provided company database';
+    protected $signature = 'migrate-tenant {--company-id=}';
+    protected $description = 'Run the database migrations on provided tenant database(s)';
 
     public function handle()
     {
         $this->call('optimize:clear');
         $this->call('migrate', [
-            '--force' => true,
             '--database' => 'shard',
             '--path' => '/database/migrations/micropowermanager',
         ]);

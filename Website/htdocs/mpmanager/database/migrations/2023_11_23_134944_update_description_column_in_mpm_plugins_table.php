@@ -12,13 +12,8 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
-            $table->enum('usage_type', [
-                'mini-grid',
-                'shs',
-                'e-bike',
-                'general',
-            ])->default('general')->after('id');
+        Schema::table('mpm_plugins', function (Blueprint $table) {
+            $table->text('description')->change();
         });
     }
 
@@ -29,7 +24,8 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
+        Schema::connection('micropowermanager')->table('mpm_plugins', function (Blueprint $table) {
+            $table->string('description')->change();
         });
     }
 };

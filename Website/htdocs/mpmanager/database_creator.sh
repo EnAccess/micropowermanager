@@ -205,31 +205,6 @@ function createMysqlDbUser()
 
 }
 
-# create new folder in migrations folder
-function createNewMigrationFolder()
-{
-    if [ ! -d "${SOURCE_PATH}/database/migrations/$DB_NAME" ]; then
-        mkdir -p ${SOURCE_PATH}/database/migrations/$DB_NAME
-        chmod +x ${SOURCE_PATH}/database/migrations/$DB_NAME
-    fi
-}
-
-
-# copy files in micropowermanager folder into new created folder
-function copyMigrationFiles()
-{
-    cp -r ${SOURCE_PATH}/database/migrations/micropowermanager/* ${SOURCE_PATH}/database/migrations/$DB_NAME
-}
-
-# loop through new created folder files and perform sed
-function sedMigrationFiles()
-{
-    for file in ${SOURCE_PATH}/database/migrations/$DB_NAME/*
-    do
-        sed -i 's/micropowermanager/shard/g' $file
-    done
-}
-
 ## run migrator command to migrate database
 function runMigrator()
 {
@@ -266,18 +241,6 @@ function main()
     echo "##### Creator Script Starts ###### " >> ${SOURCE_PATH}/creator.log
     echo "Creating MySQL db and user... " >> ${SOURCE_PATH}/creator.log
     createMysqlDbUser
-    echo "Done! " >> ${SOURCE_PATH}/creator.log
-
-    echo "Creating migration folder.. " >> ${SOURCE_PATH}/creator.log
-    createNewMigrationFolder
-    echo "Done! " >> ${SOURCE_PATH}/creator.log
-
-    echo "Copying migration files.. " >> ${SOURCE_PATH}/creator.log
-    copyMigrationFiles
-    echo "Done! " >> ${SOURCE_PATH}/creator.log
-
-    echo "Modifying migration files.. " >> ${SOURCE_PATH}/creator.log
-    sedMigrationFiles
     echo "Done! " >> ${SOURCE_PATH}/creator.log
 
     echo "################################ " >> ${SOURCE_PATH}/creator.log

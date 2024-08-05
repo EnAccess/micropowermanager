@@ -12,11 +12,8 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->create('company_databases', function (Blueprint $table) {
-            $table->id();
-            $table->integer('company_id')->unsigned();
-            $table->string('database_name');
-            $table->timestamps();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->string('email');
         });
     }
 
@@ -27,6 +24,8 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('company_databases');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropColumn('email');
+        });
     }
 };

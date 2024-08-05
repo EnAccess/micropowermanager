@@ -12,13 +12,9 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->create('companies', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('address');
-            $table->string('phone');
-            $table->integer('country_id')->default(-1);
-            $table->timestamps();
+        Schema::table('company_jobs', function (Blueprint $table) {
+            $table->string('message')->nullable();
+            $table->string('trace')->nullable();
         });
     }
 
@@ -29,6 +25,7 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::table('company_jobs', function (Blueprint $table) {
+        });
     }
 };
