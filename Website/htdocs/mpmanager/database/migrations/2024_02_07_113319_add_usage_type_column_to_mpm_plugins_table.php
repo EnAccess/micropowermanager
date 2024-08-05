@@ -12,7 +12,7 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
+        Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->enum('usage_type', [
                 'mini-grid',
                 'shs',
@@ -29,7 +29,7 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::connection('micro_power_manager')->table('mpm_plugins', function (Blueprint $table) {
+        Schema::table('mpm_plugins', function (Blueprint $table) {
         });
     }
 };

@@ -12,7 +12,7 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->create('mpm_plugins', function (Blueprint $table) {
+        Schema::create('mpm_plugins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('description');

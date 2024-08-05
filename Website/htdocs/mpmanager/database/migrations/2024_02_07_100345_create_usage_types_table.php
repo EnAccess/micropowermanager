@@ -12,7 +12,7 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::connection('micro_power_manager')->create('usage_types', function (Blueprint $table) {
+        Schema::create('usage_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('value');
@@ -27,6 +27,6 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::connection('micro_power_manager')->dropIfExists('usage_types');
+        Schema::dropIfExists('usage_types');
     }
 };
