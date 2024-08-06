@@ -60,6 +60,7 @@ return new class() extends Migration {
     public function down()
     {
         Schema::table('mpm_plugins', function (Blueprint $table) {
+            $table->dropColumn('usage_type');
         });
     }
 };

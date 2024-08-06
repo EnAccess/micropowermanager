@@ -26,6 +26,8 @@ return new class() extends Migration {
     public function down()
     {
         Schema::table('company_jobs', function (Blueprint $table) {
+            $table->dropColumn('message');
+            $table->dropColumn('trace');
         });
     }
 };
