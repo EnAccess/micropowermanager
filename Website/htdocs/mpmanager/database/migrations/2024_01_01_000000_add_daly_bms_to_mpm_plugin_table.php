@@ -24,5 +24,8 @@ return new class() extends Migration {
 
     public function down()
     {
+        DB::table('mpm_plugins')
+        ->where('id', MpmPlugin::DALY_BMS)
+        ->delete();
     }
 };

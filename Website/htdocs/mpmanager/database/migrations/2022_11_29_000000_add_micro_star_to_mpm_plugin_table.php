@@ -23,5 +23,8 @@ return new class() extends Migration {
 
     public function down()
     {
+        DB::table('mpm_plugins')
+        ->where('id', MpmPlugin::MICRO_STAR_METERS)
+        ->delete();
     }
 };
