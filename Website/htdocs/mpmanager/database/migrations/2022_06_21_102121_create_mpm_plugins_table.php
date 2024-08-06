@@ -33,7 +33,7 @@ return new class() extends Migration {
             [
                 'id' => MpmPlugin::STEAMACO_METER,
                 'name' => 'SteamaMeter',
-                'description' => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
+                'description' => substr('This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..', 0, 191),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
