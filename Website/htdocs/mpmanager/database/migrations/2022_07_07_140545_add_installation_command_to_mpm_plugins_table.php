@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\MpmPlugin;
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,10 @@ return new class() extends Migration {
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {
-            DB::table('mpm_plugins')->where('id', $id)->update(['installation_command' => $value]);
+            DB::table('mpm_plugins')->where('id', $id)->update([
+                'installation_command' => $value,
+                'updated_at' => Carbon::now(),
+            ]);
         }
     }
 
