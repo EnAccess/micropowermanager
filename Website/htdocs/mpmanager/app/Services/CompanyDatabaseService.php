@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
