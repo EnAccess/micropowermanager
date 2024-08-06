@@ -52,7 +52,7 @@ When you run the application for the first time, you need to run the following c
 ```bash
 docker exec -it laravel bash
 cd mpmanager
-php artisan migrate --seed --seeder ShardingDatabaseSeeder
+php artisan migrate
 ```
 
 This command will create the central database which is required for MPM to function.
