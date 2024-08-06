@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -57,14 +56,6 @@ class CompanyDatabaseService implements IBaseService
             '--force' => true,
             '--database' => 'shard',
             '--path' => '/database/migrations/micropowermanager',
-        ]);
-    }
-
-    public function runSeeders(): void
-    {
-        Artisan::call('db:seed', [
-            '--force' => true,
-            '--class' => DatabaseSeeder::class,
         ]);
     }
 

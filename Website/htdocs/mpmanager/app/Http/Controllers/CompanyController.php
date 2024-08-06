@@ -54,7 +54,6 @@ class CompanyController extends Controller
             $company->getId(),
             function () use ($adminData, $company, $plugins, $usageType) {
                 $this->companyDatabaseService->doMigrations();
-                $this->companyDatabaseService->runSeeders();
                 $this->userService->create([
                     'name' => $adminData['name'],
                     'password' => $adminData['password'],
