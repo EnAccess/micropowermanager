@@ -4,7 +4,7 @@ namespace MPM\Device;
 
 use App\Models\Address\Address;
 use App\Models\Device;
-use App\Services\IAssignationService;
+use App\Services\Interfaces\IAssignationService;
 
 class DeviceAddressService implements IAssignationService
 {

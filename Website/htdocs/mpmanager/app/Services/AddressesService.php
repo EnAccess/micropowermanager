@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Http\Request;
 
 class AddressesService implements IBaseService, IAssociative

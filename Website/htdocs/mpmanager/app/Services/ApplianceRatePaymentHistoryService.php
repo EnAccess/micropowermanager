@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AssetRate;
 use App\Models\PaymentHistory;
+use App\Services\Interfaces\IAssignationService;
 
 class ApplianceRatePaymentHistoryService implements IAssignationService
 {

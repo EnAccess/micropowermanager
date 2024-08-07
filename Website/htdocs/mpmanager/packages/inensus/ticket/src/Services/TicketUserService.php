@@ -9,7 +9,7 @@
 namespace Inensus\Ticket\Services;
 
 use App\Models\User;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Inensus\Ticket\Models\TicketUser;
 
 class TicketUserService implements IBaseService

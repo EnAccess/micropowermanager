@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MpmPlugin;
+use App\Services\Interfaces\IBaseService;
 
 class MpmPluginService implements IBaseService
 {

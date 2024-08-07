@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Token;
+use App\Services\Interfaces\IBaseService;
 
 class TokenService implements IBaseService
 {

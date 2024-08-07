@@ -3,7 +3,7 @@
 namespace MPM\SolarHomeSystem;
 
 use App\Models\SolarHomeSystem;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 

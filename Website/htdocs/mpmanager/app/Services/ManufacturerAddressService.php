@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
+use App\Services\Interfaces\IAssignationService;
 
 class ManufacturerAddressService implements IAssignationService
 {

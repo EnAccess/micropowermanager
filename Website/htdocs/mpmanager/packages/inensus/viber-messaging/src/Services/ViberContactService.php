@@ -3,7 +3,7 @@
 namespace Inensus\ViberMessaging\Services;
 
 use App\Models\Person\Person;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Inensus\ViberMessaging\Models\ViberContact;
 
 class ViberContactService implements IBaseService

@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Models\TicketSettings;
+use App\Services\Interfaces\ISettingsService;
 
 class TicketSettingsService implements ISettingsService
 {
-    public function __construct(private TicketSettings $ticketSettings)
-    {
+    public function __construct(
+        private TicketSettings $ticketSettings
+    ) {
     }
 
     public function update($ticketSettings, $ticketSettingsData)

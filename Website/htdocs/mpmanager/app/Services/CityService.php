@@ -10,6 +10,7 @@
 namespace App\Services;
 
 use App\Models\City;
+use App\Services\Interfaces\IBaseService;
 
 class CityService implements IBaseService
 {

@@ -9,7 +9,7 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Ramsey\Uuid\Uuid;
 

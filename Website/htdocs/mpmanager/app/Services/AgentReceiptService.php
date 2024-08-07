@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AgentReceipt;
+use App\Services\Interfaces\IBaseService;
 
 class AgentReceiptService implements IBaseService
 {

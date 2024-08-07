@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
+use App\Services\Interfaces\IAssociative;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;

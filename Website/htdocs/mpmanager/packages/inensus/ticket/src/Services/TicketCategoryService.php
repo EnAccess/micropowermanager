@@ -2,7 +2,7 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Inensus\Ticket\Models\TicketCategory;
 
 class TicketCategoryService implements IBaseService

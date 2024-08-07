@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AgentAssignedAppliances;
+use App\Services\Interfaces\IBaseService;
 
 class AgentAssignedApplianceService implements IBaseService
 {

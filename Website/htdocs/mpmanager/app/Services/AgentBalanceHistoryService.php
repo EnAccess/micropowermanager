@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\AgentBalanceHistory;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Support\Facades\DB;
 
 class AgentBalanceHistoryService implements IBaseService, IAssociative

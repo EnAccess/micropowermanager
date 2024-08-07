@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MainSettings;
+use App\Services\Interfaces\IBaseService;
 
 class MainSettingsService implements IBaseService
 {

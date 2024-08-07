@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Agent;
+use App\Services\Interfaces\IAssignationService;
 use Inensus\Ticket\Models\Ticket;
 
 class AgentTicketService implements IAssignationService

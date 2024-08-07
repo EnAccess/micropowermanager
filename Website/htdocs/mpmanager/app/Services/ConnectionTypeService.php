@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ConnectionType;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 

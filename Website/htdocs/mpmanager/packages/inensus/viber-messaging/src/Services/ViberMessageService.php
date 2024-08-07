@@ -2,7 +2,7 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Inensus\ViberMessaging\Models\ViberMessage;
 
 class ViberMessageService implements IBaseService

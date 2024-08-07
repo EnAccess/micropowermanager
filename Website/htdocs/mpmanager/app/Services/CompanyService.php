@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Company;
+use App\Services\Interfaces\IBaseService;
 
 class CompanyService implements IBaseService
 {

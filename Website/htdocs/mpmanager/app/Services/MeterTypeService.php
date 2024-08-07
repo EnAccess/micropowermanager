@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Meter\MeterType;
+use App\Services\Interfaces\IBaseService;
 
 class MeterTypeService implements IBaseService
 {

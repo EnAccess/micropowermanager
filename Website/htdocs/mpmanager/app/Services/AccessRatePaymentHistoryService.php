@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\PaymentHistory;
+use App\Services\Interfaces\IAssignationService;
 
 class AccessRatePaymentHistoryService implements IAssignationService
 {

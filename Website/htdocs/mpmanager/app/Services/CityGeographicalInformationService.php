@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\City;
 use App\Models\GeographicalInformation;
+use App\Services\Interfaces\IAssignationService;
 
 class CityGeographicalInformationService implements IAssignationService
 {

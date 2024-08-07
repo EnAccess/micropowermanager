@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\TariffPricingComponent;
+use App\Services\Interfaces\IBaseService;
 
 class TariffPricingComponentService implements IBaseService
 {

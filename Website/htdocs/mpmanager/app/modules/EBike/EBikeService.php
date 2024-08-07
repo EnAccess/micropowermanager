@@ -3,7 +3,7 @@
 namespace MPM\EBike;
 
 use App\Models\EBike;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EBikeService implements IBaseService

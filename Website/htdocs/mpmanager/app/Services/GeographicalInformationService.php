@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\GeographicalInformation;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 
 class GeographicalInformationService implements IBaseService, IAssociative
 {
@@ -44,7 +46,10 @@ class GeographicalInformationService implements IBaseService, IAssociative
 
     public function update($model, array $data): GeographicalInformation
     {
-        return $model->newQuery()->update($data);
+        $model->update($data);
+        $model->fresh();
+
+        return $model;
     }
 
     public function make($geographicalInformationData)

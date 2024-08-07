@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\ISolarService;
-use App\Services\IUserService;
-use App\Services\IWeatherDataProvider;
+use App\Services\Interfaces\ISolarService;
+use App\Services\Interfaces\IUserService;
+use App\Services\Interfaces\IWeatherDataProvider;
 use App\Services\OpenWeatherMap;
 use App\Services\SolarService;
 use App\Services\UserService;

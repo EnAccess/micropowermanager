@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AgentCommission;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 

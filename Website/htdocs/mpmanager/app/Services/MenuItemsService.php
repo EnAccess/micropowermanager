@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\MenuItems;
 use App\Models\SubMenuItems;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 

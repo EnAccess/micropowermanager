@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MaintenanceUsers;
+use App\Services\Interfaces\IBaseService;
 
 class MaintenanceUserService implements IBaseService
 {

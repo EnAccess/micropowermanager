@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Plugins;
+use App\Services\Interfaces\IBaseService;
 
 class PluginsService implements IBaseService
 {

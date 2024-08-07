@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\RegistrationTail;
+use App\Services\Interfaces\IBaseService;
 
 class RegistrationTailService implements IBaseService
 {

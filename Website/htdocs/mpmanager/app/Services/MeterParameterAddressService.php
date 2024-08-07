@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Meter\MeterParameter;
+use App\Services\Interfaces\IAssignationService;
 
 class MeterParameterAddressService implements IAssignationService
 {

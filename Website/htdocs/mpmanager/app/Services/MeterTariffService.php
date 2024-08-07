@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Meter\MeterTariff;
+use App\Services\Interfaces\IBaseService;
 
 class MeterTariffService implements IBaseService
 {

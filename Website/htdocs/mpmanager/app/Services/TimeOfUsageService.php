@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\TimeOfUsage;
+use App\Services\Interfaces\IBaseService;
 
 class TimeOfUsageService implements IBaseService
 {

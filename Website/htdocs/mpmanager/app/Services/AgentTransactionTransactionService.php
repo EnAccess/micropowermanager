@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
+use App\Services\Interfaces\IAssignationService;
 
 class AgentTransactionTransactionService implements IAssignationService
 {

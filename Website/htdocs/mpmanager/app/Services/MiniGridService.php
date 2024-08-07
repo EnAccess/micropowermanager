@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Cluster;
 use App\Models\MiniGrid;
+use App\Services\Interfaces\IBaseService;
 
 class MiniGridService implements IBaseService
 {

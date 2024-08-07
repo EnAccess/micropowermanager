@@ -4,7 +4,7 @@ namespace MPM\Meter;
 
 use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Services\IAssignationService;
+use App\Services\Interfaces\IAssignationService;
 
 class MeterDeviceService implements IAssignationService
 {

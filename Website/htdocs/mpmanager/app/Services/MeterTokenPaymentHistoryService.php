@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Meter\MeterToken;
 use App\Models\PaymentHistory;
+use App\Services\Interfaces\IAssignationService;
 
 class MeterTokenPaymentHistoryService implements IAssignationService
 {

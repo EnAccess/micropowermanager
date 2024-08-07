@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;
+use App\Services\Interfaces\IAssignationService;
 
 class PersonAddressService implements IAssignationService
 {

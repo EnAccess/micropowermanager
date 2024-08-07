@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Country;
+use App\Services\Interfaces\IBaseService;
 
 class CountryService implements IBaseService
 {

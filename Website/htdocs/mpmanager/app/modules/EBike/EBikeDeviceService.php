@@ -4,7 +4,7 @@ namespace MPM\EBike;
 
 use App\Models\Device;
 use App\Models\EBike;
-use App\Services\IAssignationService;
+use App\Services\Interfaces\IAssignationService;
 
 class EBikeDeviceService implements IAssignationService
 {

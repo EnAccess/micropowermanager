@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SubTarget;
+use App\Services\Interfaces\IBaseService;
 
 class SubTargetService implements IBaseService
 {

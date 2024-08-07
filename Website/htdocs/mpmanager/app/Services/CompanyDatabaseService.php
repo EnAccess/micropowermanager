@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 

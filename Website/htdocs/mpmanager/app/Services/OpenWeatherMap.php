@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\WeatherParametersMissing;
+use App\Services\Interfaces\IWeatherDataProvider;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 

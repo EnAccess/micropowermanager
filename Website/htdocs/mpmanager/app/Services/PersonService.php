@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Country;
 use App\Models\Person\Person;
+use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;

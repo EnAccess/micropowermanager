@@ -3,8 +3,8 @@
 namespace MPM\Device;
 
 use App\Models\Device;
-use App\Services\IAssociative;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 

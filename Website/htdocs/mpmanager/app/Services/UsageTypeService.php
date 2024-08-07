@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\UsageType;
+use App\Services\Interfaces\IBaseService;
 
 class UsageTypeService implements IBaseService
 {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Manufacturer;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Http\Request;
 
 class ManufacturerService implements IBaseService

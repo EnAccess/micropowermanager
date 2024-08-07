@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Meter\Meter;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 

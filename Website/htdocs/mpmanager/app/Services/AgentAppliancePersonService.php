@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Agent;
 use App\Models\AssetPerson;
+use App\Services\Interfaces\IAssignationService;
 
 class AgentAppliancePersonService implements IAssignationService
 {

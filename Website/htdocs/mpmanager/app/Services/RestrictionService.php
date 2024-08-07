@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Restriction;
+use App\Services\Interfaces\IBaseService;
 
 class RestrictionService implements IBaseService
 {

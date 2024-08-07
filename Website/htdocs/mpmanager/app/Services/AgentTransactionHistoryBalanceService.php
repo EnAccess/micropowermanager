@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AgentBalanceHistory;
 use App\Models\Transaction\AgentTransaction;
+use App\Services\Interfaces\IAssignationService;
 
 class AgentTransactionHistoryBalanceService implements IAssignationService
 {

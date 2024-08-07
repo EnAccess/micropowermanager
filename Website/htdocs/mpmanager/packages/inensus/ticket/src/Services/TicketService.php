@@ -3,7 +3,7 @@
 namespace Inensus\Ticket\Services;
 
 use App\Models\Agent;
-use App\Services\IAssociative;
+use App\Services\Interfaces\IAssociative;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\Ticket;
 

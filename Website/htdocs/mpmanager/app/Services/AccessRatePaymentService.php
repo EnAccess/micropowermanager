@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AccessRate\AccessRatePayment;
+use App\Services\Interfaces\IBaseService;
 
 class AccessRatePaymentService implements IBaseService
 {

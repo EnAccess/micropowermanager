@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\DatabaseProxy;
+use App\Services\Interfaces\IBaseService;
 
 class DatabaseProxyService implements IBaseService
 {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SocialTariff;
+use App\Services\Interfaces\IBaseService;
 
 class SocialTariffService implements IBaseService
 {

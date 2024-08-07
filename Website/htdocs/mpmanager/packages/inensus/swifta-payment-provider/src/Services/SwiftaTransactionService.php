@@ -8,7 +8,7 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\AbstractPaymentAggregatorTransactionService;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;

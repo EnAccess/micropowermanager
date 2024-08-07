@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
+use App\Services\Interfaces\IAssignationService;
 
 class MiniGridGeographicalInformationService implements IAssignationService
 {

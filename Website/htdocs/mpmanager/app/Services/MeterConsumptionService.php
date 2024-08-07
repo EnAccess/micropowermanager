@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterConsumption;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 
 class MeterConsumptionService implements IBaseService

@@ -4,7 +4,7 @@ namespace MPM\SolarHomeSystem;
 
 use App\Models\Device;
 use App\Models\SolarHomeSystem;
-use App\Services\IAssignationService;
+use App\Services\Interfaces\IAssignationService;
 
 class SolarHomeSystemDeviceService implements IAssignationService
 {

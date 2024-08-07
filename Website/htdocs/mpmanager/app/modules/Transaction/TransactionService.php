@@ -6,8 +6,8 @@ use App\Models\Asset;
 use App\Models\EBike;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
-use App\Services\IAssociative;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 

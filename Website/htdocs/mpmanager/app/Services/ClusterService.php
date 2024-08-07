@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cluster;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 
 class ClusterService implements IBaseService

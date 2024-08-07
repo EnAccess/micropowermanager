@@ -7,6 +7,8 @@ use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\MainSettings;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
 
 class AppliancePersonService implements IBaseService, IAssociative
 {

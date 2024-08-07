@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Models\ConnectionGroup;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\Interfaces\IBaseService;
 
 class ConnectionGroupService implements IBaseService
 {

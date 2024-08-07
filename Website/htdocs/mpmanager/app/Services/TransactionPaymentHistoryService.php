@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PaymentHistory;
 use App\Models\Transaction\Transaction;
+use App\Services\Interfaces\IAssignationService;
 
 class TransactionPaymentHistoryService implements IAssignationService
 {
