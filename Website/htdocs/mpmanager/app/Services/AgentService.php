@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AgentService implements IBaseService
+// FIXME:
+// class AgentService implements IBaseService
+class AgentService
 {
     public function __construct(
         private Agent $agent,
         private AgentReceipt $agentReceipt,
         private AgentBalanceHistory $agentBalanceHistory,
-        private PeriodService $periodService
+        private PeriodService $periodService,
+        private PersonService $personService
     ) {
     }
 
@@ -94,14 +97,14 @@ class AgentService implements IBaseService
         return $this->agent->newQuery()->find(auth('agent_api')->user()->id);
     }
 
-    public function getById($id)
+    public function getById($id): Agent
     {
         return $this->agent->newQuery()
             ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $id)->firstOrFail();
     }
 
-    public function delete($agent)
+    public function delete($agent): ?bool
     {
         return $agent->delete();
     }
@@ -152,16 +155,16 @@ class AgentService implements IBaseService
      *
      * @return Model|Builder
      */
-    public function update($agent, $agentData, $personService = null)
+    public function update($agent, array $agentData): Agent
     {
-        $person = $personService->getById($agentData['personId']);
+        $person = $this->personService->getById($agentData['personId']);
         $personData = [
             'name' => $agentData['name'],
             'surname' => $agentData['surname'],
             'sex' => $agentData['gender'],
             'birth_date' => $agentData['birthday'],
         ];
-        $person = $personService->update($person, $personData);
+        $person = $this->personService->update($person, $personData);
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->phone = $agentData['phone'];
         $address->update();

@@ -21,14 +21,14 @@ class TicketOutSourceService implements IBaseService
         return $this->ticketOutsource->newQuery()->create($ticketOutsourceData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Model
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

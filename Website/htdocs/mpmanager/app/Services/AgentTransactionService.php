@@ -6,7 +6,9 @@ use App\Models\Device;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 
-class AgentTransactionService implements IBaseService
+// FIXME:
+// class AgentTransactionService implements IBaseService
+class AgentTransactionService
 {
     public function __construct(
         private AgentTransaction $agentTransaction,
@@ -60,18 +62,18 @@ class AgentTransactionService implements IBaseService
             ->latest()->paginate();
     }
 
-    public function create($transactionData)
+    public function create(array $transactionData): AgentTransaction
     {
         return $this->agentTransaction->newQuery()->create($transactionData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AgentTransaction
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

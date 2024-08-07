@@ -10,24 +10,26 @@ class DatabaseProxyService implements IBaseService
     {
     }
 
-    public function getById($id)
+    public function getById($id): DatabaseProxy
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
+
+        return new DatabaseProxy();
     }
 
-    public function create($databaseProxyData)
+    public function create(array $databaseProxyData): DatabaseProxy
     {
         return $this->databaseProxy->newQuery()->create($databaseProxyData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): DatabaseProxy
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

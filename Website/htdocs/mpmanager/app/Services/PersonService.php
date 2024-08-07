@@ -13,8 +13,9 @@ use Illuminate\Http\Request;
 
 class PersonService implements IBaseService
 {
-    public function __construct(private Person $person)
-    {
+    public function __construct(
+        private Person $person
+    ) {
     }
 
     public function getAllRegisteredPeople(): Collection|array
@@ -128,7 +129,7 @@ class PersonService implements IBaseService
         ];
     }
 
-    public function getById($personId): Person
+    public function getById(int $personId): Person
     {
         /** @var Person $model */
         $model = $this->person->newQuery()->find($personId);
@@ -136,12 +137,12 @@ class PersonService implements IBaseService
         return $model;
     }
 
-    public function create($personData)
+    public function create(array $personData): Person
     {
         return $this->person->newQuery()->create($personData);
     }
 
-    public function update($person, $personData)
+    public function update($person, array $personData): Person
     {
         foreach ($personData as $key => $value) {
             $person->$key = $value;
@@ -153,11 +154,9 @@ class PersonService implements IBaseService
         return $person;
     }
 
-    public function delete($person)
+    public function delete($person): ?bool
     {
-        $person->delete();
-
-        return $person;
+        return $person->delete();
     }
 
     public function getAll($limit = null, $customerType = 1)

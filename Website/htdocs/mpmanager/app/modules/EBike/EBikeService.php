@@ -8,8 +8,9 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EBikeService implements IBaseService
 {
-    public function __construct(private EBike $eBike)
-    {
+    public function __construct(
+        private EBike $eBike
+    ) {
     }
 
     public function getAll($limit = null)
@@ -21,12 +22,12 @@ class EBikeService implements IBaseService
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
-    public function getById($id)
+    public function getById(int $id): EBike
     {
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->find($id);
     }
 
-    public function create($data)
+    public function create(array $data): EBike
     {
         return $this->eBike->newQuery()->create($data);
     }
@@ -50,7 +51,7 @@ class EBikeService implements IBaseService
             )->paginate($paginate);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): EBike
     {
         return $model->newQuery()->update($data);
     }
@@ -64,8 +65,8 @@ class EBikeService implements IBaseService
             )->first();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

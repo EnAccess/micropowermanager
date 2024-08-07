@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SubConnectionTypeService implements IBaseService
 {
-    public function __construct(private SubConnectionType $subConnectionType)
-    {
+    public function __construct(
+        private SubConnectionType $subConnectionType
+    ) {
     }
 
     public function getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit = null): LengthAwarePaginator|Collection
@@ -22,17 +23,17 @@ class SubConnectionTypeService implements IBaseService
             ->get();
     }
 
-    public function getById($subConnectionTypeId)
+    public function getById(int $subConnectionTypeId): SubConnectionType
     {
         return $this->subConnectionType->newQuery()->findOrFail($subConnectionTypeId);
     }
 
-    public function create($subConnectionServiceData)
+    public function create(array $subConnectionServiceData): SubConnectionType
     {
         return $this->subConnectionType->newQuery()->create($subConnectionServiceData);
     }
 
-    public function update($subConnectionType, $subConnectionTypeData): Model|Builder
+    public function update($subConnectionType, array $subConnectionTypeData): SubConnectionType
     {
         $subConnectionType->update($subConnectionTypeData);
         $subConnectionType->fresh();
@@ -49,8 +50,8 @@ class SubConnectionTypeService implements IBaseService
         return $this->subConnectionType->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

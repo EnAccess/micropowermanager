@@ -75,7 +75,7 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
     }
 
-    public function create($clusterData)
+    public function create(array $clusterData): Cluster
     {
         return $this->cluster->newQuery()->create($clusterData);
     }
@@ -89,13 +89,15 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Cluster
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
+
+        return new Cluster();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

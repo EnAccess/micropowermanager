@@ -6,8 +6,9 @@ use App\Models\AgentReceipt;
 
 class AgentReceiptService implements IBaseService
 {
-    public function __construct(private AgentReceipt $agentReceipt)
-    {
+    public function __construct(
+        private AgentReceipt $agentReceipt
+    ) {
     }
 
     public function getAll($limit = null, $agentId = null)
@@ -30,24 +31,24 @@ class AgentReceiptService implements IBaseService
         }
     }
 
-    public function create($receiptData)
+    public function create(array $receiptData): AgentReceipt
     {
         return $this->agentReceipt->newQuery()->create($receiptData);
     }
 
-    public function getById($id)
+    public function getById(int $id): AgentReceipt
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AgentReceipt
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getLastReceipt($agentId)

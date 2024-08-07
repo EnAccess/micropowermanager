@@ -129,9 +129,9 @@ class UserService
         return $this->user->newQuery()->find($id);
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

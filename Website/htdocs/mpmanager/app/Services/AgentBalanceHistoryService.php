@@ -30,7 +30,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $query->latest()->get();
     }
 
-    public function create($agentBalanceHistoryData)
+    public function create(array $agentBalanceHistoryData): AgentBalanceHistory
     {
         return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
@@ -176,18 +176,18 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $p;
     }
 
-    public function getById($id)
+    public function getById($id): AgentBalanceHistory
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, $data): AgentBalanceHistory
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

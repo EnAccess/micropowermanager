@@ -6,21 +6,22 @@ use App\Models\Plugins;
 
 class PluginsService implements IBaseService
 {
-    public function __construct(private Plugins $plugin)
-    {
+    public function __construct(
+        private Plugins $plugin
+    ) {
     }
 
-    public function getById($id)
+    public function getById(int $id): Plugins
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($pluginData)
+    public function create(array $pluginData): Plugins
     {
         return $this->plugin->newQuery()->create($pluginData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Plugins
     {
         $model->update($data);
         $model->fresh();
@@ -28,9 +29,9 @@ class PluginsService implements IBaseService
         return $model;
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

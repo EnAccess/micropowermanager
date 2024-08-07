@@ -6,21 +6,22 @@ use App\Models\AccessRate\AccessRate;
 
 class AccessRateService implements IBaseService
 {
-    public function __construct(private AccessRate $accessRate)
-    {
+    public function __construct(
+        private AccessRate $accessRate
+    ) {
     }
 
-    public function getById($accessRateId)
+    public function getById(int $accessRateId): AccessRate
     {
         return $this->accessRate->newQuery()->find($accessRateId);
     }
 
-    public function create($accessRateData)
+    public function create(array $accessRateData): AccessRate
     {
         return $this->accessRate->newQuery()->create($accessRateData);
     }
 
-    public function update($accessRate, $acessRateData)
+    public function update($accessRate, $acessRateData): AccessRate
     {
         $accessRate->update($acessRateData);
         $accessRate->fresh();
@@ -33,9 +34,9 @@ class AccessRateService implements IBaseService
         $this->accessRate->newQuery()->where('tariff_id', $meterTariffId)->delete();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

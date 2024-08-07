@@ -22,14 +22,14 @@ class GeographicalInformationService implements IBaseService, IAssociative
         }
     }
 
-    public function getById($id)
+    public function getById(int $id): GeographicalInformation
     {
         return $this->geographicalInformation->newQuery()->find($id);
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        $model->delete();
+        return $model->delete();
     }
 
     public function getAll($limit = null)
@@ -37,12 +37,12 @@ class GeographicalInformationService implements IBaseService, IAssociative
         return $this->geographicalInformation->newQuery()->get();
     }
 
-    public function create($data)
+    public function create(array $data): GeographicalInformation
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): GeographicalInformation
     {
         return $model->newQuery()->update($data);
     }

@@ -42,17 +42,21 @@ class DeviceService implements IBaseService, IAssociative
         return $device->save();
     }
 
-    public function getById($id)
+    public function getById(int $id): Device
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method getById() not yet implemented.');
+
+        return new Device();
     }
 
-    public function create($data)
+    public function create(array $data): Device
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method create() not yet implemented.');
+
+        return new Device();
     }
 
-    public function update($device, $deviceData)
+    public function update($device, array $deviceData): Device
     {
         $device->update($deviceData);
         $device->fresh();
@@ -60,9 +64,9 @@ class DeviceService implements IBaseService, IAssociative
         return $device;
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null): Collection|LengthAwarePaginator

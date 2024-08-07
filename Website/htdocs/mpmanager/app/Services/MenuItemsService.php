@@ -9,7 +9,9 @@ use Illuminate\Support\Collection;
 
 class MenuItemsService implements IBaseService
 {
-    public function __construct(private MenuItems $menuItems, private SubMenuItems $subMenuItems)
+    public function __construct(
+        private MenuItems $menuItems,
+        private SubMenuItems $subMenuItems)
     {
     }
 
@@ -82,12 +84,12 @@ class MenuItemsService implements IBaseService
         return $this->menuItems->newQuery()->where('name', $name)->first();
     }
 
-    public function getById($id)
+    public function getById(int $id): MenuItems
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($data)
+    public function create($data): MenuItems
     {
         $lastOrder = $this->menuItems->newQuery()->latest()->first();
         $data['menu_order'] = $lastOrder ? $lastOrder->menu_order + 1 : 1;
@@ -95,12 +97,12 @@ class MenuItemsService implements IBaseService
         return $this->menuItems->newQuery()->create($data);
     }
 
-    public function update($model, $data)
+    public function update($model, $data): MenuItems
     {
         throw new \Exception('not implemented');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
         throw new \Exception('not implemented');
     }

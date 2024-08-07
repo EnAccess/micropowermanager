@@ -6,21 +6,22 @@ use App\Models\RegistrationTail;
 
 class RegistrationTailService implements IBaseService
 {
-    public function __construct(private RegistrationTail $registrationTail)
-    {
+    public function __construct(
+        private RegistrationTail $registrationTail
+    ) {
     }
 
-    public function getById($id)
+    public function getById(int $id): RegistrationTail
     {
         return $this->registrationTail->newQuery()->find($id);
     }
 
-    public function create($registrationTailData)
+    public function create(array $registrationTailData): RegistrationTail
     {
         return $this->registrationTail->newQuery()->create($registrationTailData);
     }
 
-    public function update($registrationTail, $registrationTailData)
+    public function update($registrationTail, array $registrationTailData): RegistrationTail
     {
         if (array_key_exists('tail', $registrationTailData)) {
             $registrationTail->update($registrationTailData);
@@ -33,9 +34,9 @@ class RegistrationTailService implements IBaseService
         return $registrationTail;
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

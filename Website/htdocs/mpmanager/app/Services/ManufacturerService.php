@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 
 class ManufacturerService implements IBaseService
 {
-    public function __construct(private Manufacturer $manufacturer)
-    {
+    public function __construct(
+        private Manufacturer $manufacturer
+    ) {
     }
 
     public function createManufacturerDataFromRequest(Request $request): array
@@ -21,12 +22,12 @@ class ManufacturerService implements IBaseService
         ];
     }
 
-    public function getById($manufacturerId)
+    public function getById(int $manufacturerId): Manufacturer
     {
         return $this->manufacturer->newQuery()->with(['address.city.country'])->findOrFail($manufacturerId);
     }
 
-    public function create($manufacturerData)
+    public function create(array $manufacturerData): Manufacturer
     {
         return $this->manufacturer->newQuery()->create($manufacturerData);
     }
@@ -45,13 +46,13 @@ class ManufacturerService implements IBaseService
         return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Manufacturer
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

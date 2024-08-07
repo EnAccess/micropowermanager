@@ -6,8 +6,9 @@ use App\Models\AgentReceiptDetail;
 
 class AgentReceiptDetailService implements IBaseService
 {
-    public function __construct(private AgentReceiptDetail $agentReceiptDetail)
-    {
+    public function __construct(
+        private AgentReceiptDetail $agentReceiptDetail
+    ) {
     }
 
     public function getSummary($agentId)
@@ -21,24 +22,24 @@ class AgentReceiptDetailService implements IBaseService
             )->latest()->firstOrFail()->summary;
     }
 
-    public function getById($id)
+    public function getById(int $id): AgentReceiptDetail
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($agentReceiptDetailData)
+    public function create(array $agentReceiptDetailData): AgentReceiptDetail
     {
         return $this->agentReceiptDetail->create($agentReceiptDetailData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AgentReceiptDetail
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null)

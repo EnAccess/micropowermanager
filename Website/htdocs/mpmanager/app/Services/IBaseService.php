@@ -2,15 +2,32 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @template T of Model
+ */
 interface IBaseService
 {
-    public function getById($id);
+    /**
+     * @return T
+     */
+    public function getById(int $id): Model;
 
-    public function create($data);
+    /**
+     * @return T
+     */
+    public function create(array $data): Model;
 
-    public function update($model, $data);
+    /**
+     * @param T $model
+     */
+    public function update(Model $model, array $data): Model;
 
-    public function delete($model);
+    /**
+     * @param T $model
+     */
+    public function delete(Model $model): ?bool;
 
-    public function getAll($limit = null);
+    public function getAll(?int $limit = null);
 }

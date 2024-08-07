@@ -16,10 +16,10 @@ class Company extends BaseModelCore
     public const COL_ID = 'id';
 
     // has many Users
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
+    // public function users()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
 
     // has one company database
     public function database()

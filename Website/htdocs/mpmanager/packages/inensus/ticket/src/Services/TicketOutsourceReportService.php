@@ -68,13 +68,13 @@ class TicketOutsourceReportService implements IBaseService
         return $this->ticketOutsourceReport->newQuery()->find($outsourceReportId);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Model
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

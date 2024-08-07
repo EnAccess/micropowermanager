@@ -6,7 +6,9 @@ use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
 
-class AgentSoldApplianceService implements IBaseService
+// FIXME:
+// class AgentSoldApplianceService implements IBaseService
+class AgentSoldApplianceService
 {
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
@@ -14,7 +16,7 @@ class AgentSoldApplianceService implements IBaseService
     ) {
     }
 
-    public function create($applianceData)
+    public function create($applianceData): AgentSoldAppliance
     {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
@@ -34,14 +36,14 @@ class AgentSoldApplianceService implements IBaseService
             ->paginate();
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AgentSoldAppliance
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll($limit = null, $agentId = null, $customerId = null, $forApp = false)

@@ -8,8 +8,9 @@ use Illuminate\Database\Query\Builder;
 
 class ConnectionTypeService implements IBaseService
 {
-    public function __construct(private ConnectionType $connectionType)
-    {
+    public function __construct(
+        private ConnectionType $connectionType
+    ) {
     }
 
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder
@@ -18,17 +19,17 @@ class ConnectionTypeService implements IBaseService
             ->firstOrFail();
     }
 
-    public function getById($connectionTypeId)
+    public function getById(int $connectionTypeId): ConnectionType
     {
         return $this->connectionType->newQuery()->findOrFail($connectionTypeId);
     }
 
-    public function create($connectionServiceData)
+    public function create(array $connectionServiceData): ConnectionType
     {
         return $this->connectionType->newQuery()->create($connectionServiceData);
     }
 
-    public function update($connectionType, $connectionTypeData)
+    public function update($connectionType, array $connectionTypeData): ConnectionType
     {
         $connectionType->update($connectionTypeData);
         $connectionType->fresh();
@@ -45,8 +46,8 @@ class ConnectionTypeService implements IBaseService
         return $this->connectionType->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

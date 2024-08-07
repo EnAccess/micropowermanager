@@ -62,8 +62,8 @@ class MiniGridService implements IBaseService
         return $miniGrids->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

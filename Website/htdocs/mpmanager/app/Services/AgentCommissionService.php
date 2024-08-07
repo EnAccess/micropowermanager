@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class AgentCommissionService implements IBaseService
 {
-    public function __construct(private AgentCommission $agentCommission)
-    {
+    public function __construct(
+        private AgentCommission $agentCommission
+    ) {
     }
 
     /**
      * @return Model|Builder
      */
-    public function create($agentCommissiondata)
+    public function create(array $agentCommissiondata): AgentCommission
     {
         return $this->agentCommission->newQuery()->create($agentCommissiondata);
     }
@@ -24,7 +25,7 @@ class AgentCommissionService implements IBaseService
      * @param       $agentCommission
      * @param array $data
      */
-    public function update($agentCommission, $agentCommissiondata)
+    public function update($agentCommission, array $agentCommissiondata): AgentCommission
     {
         $agentCommission->update($agentCommissiondata);
         $agentCommission->fresh();
@@ -32,12 +33,12 @@ class AgentCommissionService implements IBaseService
         return $agentCommission;
     }
 
-    public function delete($agentCommission)
+    public function delete($agentCommission): ?bool
     {
         return $agentCommission->delete();
     }
 
-    public function getById($id)
+    public function getById(int $id): AgentCommission
     {
         return $this->agentCommission->newQuery()->find($id);
     }

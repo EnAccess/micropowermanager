@@ -253,7 +253,7 @@ class TransactionService implements IAssociative, IBaseService
         $transaction->save();
     }
 
-    public function getById($id)
+    public function getById(int $id): Transaction
     {
         return $this->transaction->newQuery()->with([
             'token',
@@ -273,18 +273,18 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->latest()->get();
     }
 
-    public function create($data)
+    public function create(array $data): Transaction
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Transaction
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

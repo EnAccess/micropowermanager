@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 
 class AddressesService implements IBaseService, IAssociative
 {
-    public function __construct(private Address $address)
-    {
+    public function __construct(
+        private Address $address
+    ) {
     }
 
     // fills the object and returns it without saving.
@@ -45,7 +46,7 @@ class AddressesService implements IBaseService, IAssociative
         ];
     }
 
-    public function getById($id)
+    public function getById(int $id): Address
     {
         return $this->address->newQuery()->findOrFail($id);
     }
@@ -59,17 +60,17 @@ class AddressesService implements IBaseService, IAssociative
         return $this->address->newQuery()->get();
     }
 
-    public function create($data)
+    public function create(array $data): Address
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function update($address, $addressData)
+    public function update($address, array $addressData): Address
     {
         $address->update($addressData);
 

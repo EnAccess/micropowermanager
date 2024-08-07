@@ -10,17 +10,17 @@ class MeterTypeService implements IBaseService
     {
     }
 
-    public function create($meterTypeData)
+    public function create(array $meterTypeData): MeterType
     {
         return $this->meterType->newQuery()->create($meterTypeData);
     }
 
-    public function getById($meterTypeId)
+    public function getById(int $meterTypeId): MeterType
     {
         return $this->meterType->newQuery()->findOrFail($meterTypeId);
     }
 
-    public function update($meterType, $meterTypeData)
+    public function update($meterType, array $meterTypeData): MeterType
     {
         $meterType->update($meterTypeData);
         $meterType->fresh();
@@ -37,8 +37,8 @@ class MeterTypeService implements IBaseService
         return $this->meterType->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

@@ -27,12 +27,12 @@ class CityService implements IBaseService
         return $this->city->newQuery()->with($relation)->find($cityId);
     }
 
-    public function getById($cityId)
+    public function getById($cityId): City
     {
         return $this->city->newQuery()->find($cityId);
     }
 
-    public function update($city, $cityData)
+    public function update($city, array $cityData): City
     {
         $city->update([
             'name' => $cityData['name'] ?? $city->name,
@@ -45,7 +45,7 @@ class CityService implements IBaseService
         return $city;
     }
 
-    public function create($data)
+    public function create(array $data): City
     {
         return $this->city->newQuery()->create($data);
     }
@@ -59,7 +59,7 @@ class CityService implements IBaseService
         return $this->city->newQuery()->with('location')->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
         throw new \Exception('not implemented');
     }
