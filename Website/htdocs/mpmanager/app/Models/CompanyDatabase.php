@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id;
@@ -19,9 +19,9 @@ class CompanyDatabase extends BaseModelCore
     public const COL_DATABASE_NAME = 'database_name';
     public const COL_COMPANY_ID = 'company_id';
 
-    public function company(): HasOne
+    public function company(): BelongsTo
     {
-        return $this->HasOne(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase
