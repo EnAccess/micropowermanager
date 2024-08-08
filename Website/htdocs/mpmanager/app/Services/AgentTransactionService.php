@@ -67,9 +67,10 @@ class AgentTransactionService implements IBaseService
             )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()
-            // Not sure why it wants to return a paginate here
+            // Not sure why it want to return a paginate here.
+            // Commenting out for now to return a singleton.
             // ->paginate();
-            ->find(1);
+            ->first();
     }
 
     public function create(array $transactionData): AgentTransaction

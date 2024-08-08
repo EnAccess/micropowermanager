@@ -40,7 +40,7 @@ class AgentSoldApplianceService implements IBaseService
             // Not sure why it want to return a paginate here.
             // Commenting out for now to return a singleton.
             // ->paginate();
-            ->find(1);
+            ->first();
     }
 
     public function update($model, array $data): AgentSoldAppliance
