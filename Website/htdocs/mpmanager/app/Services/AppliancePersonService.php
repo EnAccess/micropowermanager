@@ -14,6 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<AssetPerson>
+ * @implements IAssociative<AssetPerson>
  */
 class AppliancePersonService implements IBaseService, IAssociative
 {
@@ -24,14 +25,14 @@ class AppliancePersonService implements IBaseService, IAssociative
     ) {
     }
 
-    public function make($data)
+    public function make(array $data): AssetPerson
     {
         return $this->assetPerson->newQuery()->make($data);
     }
 
-    public function save($appliancePerson)
+    public function save($appliancePerson): bool
     {
-        $appliancePerson->save();
+        return $appliancePerson->save();
     }
 
     private function checkDownPaymentIsBigger($downPayment, $cost)

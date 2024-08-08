@@ -12,6 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<Address>
+ * @implements IAssociative<Address>
  */
 class AddressesService implements IBaseService, IAssociative
 {
@@ -84,7 +85,7 @@ class AddressesService implements IBaseService, IAssociative
         return $address;
     }
 
-    public function make($addressData)
+    public function make($addressData): Address
     {
         return $this->address->newQuery()->make([
             'email' => $addressData['email'] ?? null,
@@ -96,7 +97,7 @@ class AddressesService implements IBaseService, IAssociative
         ]);
     }
 
-    public function save($address)
+    public function save($address): bool
     {
         return $address->save();
     }

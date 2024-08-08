@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * @implements IBaseService<AgentBalanceHistory>
+ * @implements IAssociative<AgentBalanceHistory>
  */
 class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
@@ -42,14 +43,14 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
 
-    public function make($agentBalanceHistoryData)
+    public function make(array $agentBalanceHistoryData): AgentBalanceHistory
     {
         return $this->agentBalanceHistory->newQuery()->make($agentBalanceHistoryData);
     }
 
-    public function save($agentBalanceHistory)
+    public function save($agentBalanceHistory): bool
     {
-        $agentBalanceHistory->save();
+        return $agentBalanceHistory->save();
     }
 
     public function getLastAgentBalanceHistory($agentId)

@@ -10,6 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<GeographicalInformation>
+ * @implements IAssociative<GeographicalInformation>
  */
 class GeographicalInformationService implements IBaseService, IAssociative
 {
@@ -57,14 +58,14 @@ class GeographicalInformationService implements IBaseService, IAssociative
         return $model;
     }
 
-    public function make($geographicalInformationData)
+    public function make($geographicalInformationData): GeographicalInformation
     {
         return $this->geographicalInformation->newQuery()->make([
             'points' => $geographicalInformationData['points'],
         ]);
     }
 
-    public function save($geographicalInformation)
+    public function save($geographicalInformation): bool
     {
         return $geographicalInformation->save();
     }

@@ -2,11 +2,20 @@
 
 namespace App\Services\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @template TAssigned of Model
+ * @template TAssignee of Model
+ */
 interface IAssignationService
 {
-    public function setAssigned($assigned);
+    /** @param TAssigned $assigned */
+    public function setAssigned($assigned): void;
 
-    public function setAssignee($assignee);
+    /** @param TAssignee $assignee */
+    public function setAssignee($assignee): void;
 
-    public function assign();
+    /** @return TAssigned */
+    public function assign(): Model;
 }
