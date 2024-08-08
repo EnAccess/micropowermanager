@@ -9,10 +9,16 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @implements IBaseService<WaveMoneyTransaction>
+ */
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
     private Meter $meter;
@@ -77,12 +83,12 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             ->get();
     }
 
-    public function getById($id)
+    public function getById(int $id): WaveComTransaction
     {
         return $this->waveMoneyTransaction->newQuery()->find($id);
     }
 
-    public function update($waveMoneyTransaction, $waveMoneyTransactionData)
+    public function update($waveMoneyTransaction, array $waveMoneyTransactionData): WaveMoneyTransaction
     {
         $waveMoneyTransaction->update($waveMoneyTransactionData);
         $waveMoneyTransaction->fresh();
@@ -90,17 +96,17 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $waveMoneyTransaction;
     }
 
-    public function create($waveMoneyTransactionData)
+    public function create($waveMoneyTransactionData): WaveMoneyTransaction
     {
         return $this->waveMoneyTransaction->newQuery()->create($waveMoneyTransactionData);
     }
 
-    public function delete($waveMoneyTransaction)
+    public function delete($waveMoneyTransaction): ?bool
     {
         return $waveMoneyTransaction->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $query = $this->waveMoneyTransaction->newQuery();
 

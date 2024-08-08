@@ -3,26 +3,30 @@
 namespace App\Services;
 
 use App\Models\ConnectionGroup;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class ConnectionGroupService implements IBaseService
+/**
+ * @implements IBaseService<ConnectionGroup>
+ */ class ConnectionGroupService implements IBaseService
 {
-    public function __construct(private ConnectionGroup $connectionGroup)
-    {
+    public function __construct(
+        private ConnectionGroup $connectionGroup
+    ) {
     }
 
-    public function create($connectionGroupData)
+    public function create(array $connectionGroupData): ConnectionGroup
     {
         return $this->connectionGroup->newQuery()->create($connectionGroupData);
     }
 
-    public function getById($connectionGroupId)
+    public function getById(int $connectionGroupId): ConnectionGroup
     {
         return $this->connectionGroup->newQuery()->findOrFail($connectionGroupId);
     }
 
-    public function update($connectionGroup, $connectionGroupData): Model|Builder
+    public function update($connectionGroup, array $connectionGroupData): ConnectionGroup
     {
         $connectionGroup->update($connectionGroupData);
         $connectionGroup->fresh();
@@ -30,7 +34,7 @@ class ConnectionGroupService implements IBaseService
         return $connectionGroup;
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->connectionGroup->newQuery()->paginate($limit);
@@ -39,8 +43,8 @@ class ConnectionGroupService implements IBaseService
         return $this->connectionGroup->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

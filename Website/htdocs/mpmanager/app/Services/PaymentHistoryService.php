@@ -4,14 +4,19 @@ namespace App\Services;
 
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
+use App\Services\Interfaces\IAssociative;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @implements IAssociative<PaymentHistory>
+ */
 class PaymentHistoryService implements IAssociative
 {
-    public function __construct(private PaymentHistory $paymentHistory)
-    {
+    public function __construct(
+        private PaymentHistory $paymentHistory
+    ) {
     }
 
     public function findPayingCustomersInRange(
@@ -41,12 +46,12 @@ class PaymentHistoryService implements IAssociative
             )->latest()->paginate($paginate);
     }
 
-    public function make($paymentHistoryData)
+    public function make(array $paymentHistoryData): PaymentHistory
     {
         return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }
 
-    public function save($paymentHistory)
+    public function save($paymentHistory): bool
     {
         return $paymentHistory->save();
     }

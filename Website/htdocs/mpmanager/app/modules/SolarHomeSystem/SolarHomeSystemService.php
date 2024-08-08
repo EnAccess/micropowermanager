@@ -3,17 +3,24 @@
 namespace MPM\SolarHomeSystem;
 
 use App\Models\SolarHomeSystem;
-use App\Services\IBaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<ASDASDASD>
+ */
+
+/**
+ * @implements IBaseService<ASDASDASD>
+ */
 class SolarHomeSystemService implements IBaseService
 {
     public function __construct(private SolarHomeSystem $solarHomeSystem)
     {
     }
 
-    public function getAll($limit = null): LengthAwarePaginator|Collection
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
@@ -22,7 +29,7 @@ class SolarHomeSystemService implements IBaseService
         return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
-    public function getById($id): SolarHomeSystem
+    public function getById(int $id): SolarHomeSystem
     {
         /** @var SolarHomeSystem|null $result */
         $result = $this->solarHomeSystem->newQuery()
@@ -32,7 +39,7 @@ class SolarHomeSystemService implements IBaseService
         return $result;
     }
 
-    public function create($data): SolarHomeSystem
+    public function create(array $data): SolarHomeSystem
     {
         /** @var SolarHomeSystem $result */
         $result = $this->solarHomeSystem->newQuery()->create($data);
@@ -59,12 +66,12 @@ class SolarHomeSystemService implements IBaseService
             )->paginate($paginate);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): SolarHomeSystem
     {
         throw new \Exception('not implemented');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
         throw new \Exception('not implemented');
     }

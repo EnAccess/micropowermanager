@@ -9,9 +9,14 @@
 namespace Inensus\Ticket\Services;
 
 use App\Models\User;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketUser;
 
+/**
+ * @implements IBaseService<TicketUser>
+ */
 class TicketUserService implements IBaseService
 {
     public function __construct(
@@ -20,7 +25,7 @@ class TicketUserService implements IBaseService
     ) {
     }
 
-    public function getAll($limit = null, $outsource = null)
+    public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator
     {
         $ticketUsers = $this->user::with('relationTicketUser');
 
@@ -35,24 +40,24 @@ class TicketUserService implements IBaseService
         return $ticketUsers->get();
     }
 
-    public function getById($externId)
+    public function getById(int $externId): TicketUser
     {
         return $this->ticketUser->newQuery()->where('extern_id', $externId)->first();
     }
 
-    public function create($ticketUserData)
+    public function create($ticketUserData): TicketUser
     {
         return $this->ticketUser->newQuery()->create($ticketUserData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): TicketUser
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function findByPhone(string $phone): TicketUser

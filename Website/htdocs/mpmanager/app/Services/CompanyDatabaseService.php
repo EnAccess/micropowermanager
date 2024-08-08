@@ -3,24 +3,29 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
+/**
+ * @implements IBaseService<CompanyDatabase>
+ */
 class CompanyDatabaseService implements IBaseService
 {
-    public function __construct(private CompanyDatabase $companyDatabase)
-    {
+    public function __construct(
+        private CompanyDatabase $companyDatabase
+    ) {
     }
 
-    public function getById($id): CompanyDatabase
+    public function getById(int $id): CompanyDatabase
     {
-        /** @var CompanyDatabase $result */
         $result = $this->companyDatabase->newQuery()->find($id);
 
         return $result;
     }
 
-    public function create($data): CompanyDatabase
+    public function create(array $data): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
         $result = $this->companyDatabase->newQuery()->create($data);
@@ -28,19 +33,21 @@ class CompanyDatabaseService implements IBaseService
         return $result;
     }
 
-    public function update($model, $data): void
+    public function update($model, array $data): CompanyDatabase
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
+
+        return new CompanyDatabase();
     }
 
-    public function delete($model): void
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function getAll($limit = null): void
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function createNewDatabaseForCompany(string $databaseName, int $companyId): void

@@ -3,8 +3,13 @@
 namespace App\Services;
 
 use App\Models\Cluster;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Cluster>
+ */
 class ClusterService implements IBaseService
 {
     public function __construct(
@@ -75,12 +80,12 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
     }
 
-    public function create($clusterData)
+    public function create(array $clusterData): Cluster
     {
         return $this->cluster->newQuery()->create($clusterData);
     }
 
-    public function getAll($limit = null): Collection
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit !== null) {
             return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();
@@ -89,13 +94,15 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Cluster
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
+
+        return new Cluster();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

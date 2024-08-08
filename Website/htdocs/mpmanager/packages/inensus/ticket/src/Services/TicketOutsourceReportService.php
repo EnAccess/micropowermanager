@@ -2,12 +2,17 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+/**
+ * @implements IBaseService<TicketOutsourceReport>
+ */
 class TicketOutsourceReportService implements IBaseService
 {
     public function __construct(
@@ -16,7 +21,7 @@ class TicketOutsourceReportService implements IBaseService
     {
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->ticketOutsourceReport->newQuery()->paginate($limit);
@@ -58,23 +63,23 @@ class TicketOutsourceReportService implements IBaseService
         return $fileName;
     }
 
-    public function create($ticketOutsourceReportData)
+    public function create(array $ticketOutsourceReportData): TicketOutsourceReport
     {
         return $this->ticketOutsourceReport->newQuery()->create($ticketOutsourceReportData);
     }
 
-    public function getById($outsourceReportId)
+    public function getById(int $outsourceReportId): TicketOutsourceReport
     {
         return $this->ticketOutsourceReport->newQuery()->find($outsourceReportId);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): TicketOutsourceReport
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

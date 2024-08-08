@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Solar;
+use App\Services\Interfaces\ISolarService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

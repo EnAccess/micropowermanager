@@ -8,11 +8,16 @@ use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\AbstractPaymentAggregatorTransactionService;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 
+/**
+ * @implements IBaseService<SwiftaTransaction>
+ */
 class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
     public function __construct(
@@ -77,12 +82,12 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         }
     }
 
-    public function getById($id)
+    public function getById(?int $id): SwiftaTransaction
     {
         return $this->swiftaTransaction->newQuery()->find($id);
     }
 
-    public function update($swiftaTransaction, $swiftaTransactionData)
+    public function update($swiftaTransaction, $swiftaTransactionData): SwiftaTransaction
     {
         $swiftaTransaction->update($swiftaTransactionData);
         $swiftaTransaction->fresh();
@@ -90,17 +95,17 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         return $swiftaTransaction;
     }
 
-    public function create($swiftaTransactionData)
+    public function create(array $swiftaTransactionData): SwiftaTransaction
     {
         return $this->swiftaTransaction->newQuery()->create($swiftaTransactionData);
     }
 
-    public function delete($swiftaTransaction)
+    public function delete($swiftaTransaction): ?bool
     {
         return $swiftaTransaction->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $query = $this->swiftaTransaction->newQuery();
 
