@@ -10,6 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<Device>
+ * @implements IAssociative<Device>
  */
 class DeviceService implements IBaseService, IAssociative
 {
@@ -20,7 +21,6 @@ class DeviceService implements IBaseService, IAssociative
 
     public function make($deviceData): Device
     {
-        /** @var Device $result */
         $result = $this->device->newQuery()->create([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
@@ -31,7 +31,6 @@ class DeviceService implements IBaseService, IAssociative
 
     public function getBySerialNumber($serialNumber): ?Device
     {
-        /** @var Device|null $result */
         $result = $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
@@ -40,7 +39,7 @@ class DeviceService implements IBaseService, IAssociative
         return $result;
     }
 
-    public function save($device)
+    public function save($device): bool
     {
         return $device->save();
     }
