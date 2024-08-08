@@ -3,11 +3,16 @@
 namespace Inensus\Ticket\Services;
 
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+/**
+ * @implements IBaseService<TicketOutsourceReport>
+ */
 class TicketOutsourceReportService implements IBaseService
 {
     public function __construct(
@@ -58,17 +63,17 @@ class TicketOutsourceReportService implements IBaseService
         return $fileName;
     }
 
-    public function create($ticketOutsourceReportData)
+    public function create(array $ticketOutsourceReportData): TicketOutsourceReport
     {
         return $this->ticketOutsourceReport->newQuery()->create($ticketOutsourceReportData);
     }
 
-    public function getById($outsourceReportId)
+    public function getById(int $outsourceReportId): TicketOutsourceReport
     {
         return $this->ticketOutsourceReport->newQuery()->find($outsourceReportId);
     }
 
-    public function update($model, array $data): Model
+    public function update($model, array $data): TicketOutsourceReport
     {
         throw new \Exception('Method update() not yet implemented.');
     }

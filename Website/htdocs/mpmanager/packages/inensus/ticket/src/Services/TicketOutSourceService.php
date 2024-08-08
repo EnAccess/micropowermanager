@@ -3,25 +3,31 @@
 namespace Inensus\Ticket\Services;
 
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketOutsource;
 
+/**
+ * @implements IBaseService<TicketOutsource>
+ */
 class TicketOutSourceService implements IBaseService
 {
-    public function __construct(private TicketOutsource $ticketOutsource)
-    {
+    public function __construct(
+        private TicketOutsource $ticketOutsource
+    ) {
     }
 
-    public function getById($ticketOutsourceId)
+    public function getById(int $ticketOutsourceId): TicketOutsource
     {
-        $this->ticketOutsource->newQuery()->find($ticketOutsourceId);
+        return $this->ticketOutsource->newQuery()->find($ticketOutsourceId);
     }
 
-    public function create($ticketOutsourceData)
+    public function create(array $ticketOutsourceData): TicketOutsource
     {
         return $this->ticketOutsource->newQuery()->create($ticketOutsourceData);
     }
 
-    public function update($model, array $data): Model
+    public function update($model, array $data): TicketOutsource
     {
         throw new \Exception('Method update() not yet implemented.');
     }

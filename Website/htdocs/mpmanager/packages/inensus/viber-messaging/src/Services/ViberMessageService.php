@@ -3,25 +3,31 @@
 namespace Inensus\ViberMessaging\Services;
 
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\ViberMessaging\Models\ViberMessage;
 
+/**
+ * @implements IBaseService<ViberMessage>
+ */
 class ViberMessageService implements IBaseService
 {
-    public function __construct(private ViberMessage $viberMessage)
-    {
+    public function __construct(
+        private ViberMessage $viberMessage
+    ) {
     }
 
-    public function getById(int $id): Model
+    public function getById(int $id): ViberMessage
     {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($data)
+    public function create(array $data): ViberMessage
     {
         return $this->viberMessage->newQuery()->create($data);
     }
 
-    public function update($model, array $data): Model
+    public function update($model, array $data): ViberMessage
     {
         throw new \Exception('Method update() not yet implemented.');
     }
