@@ -100,7 +100,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         return $swiftaTransaction->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $query = $this->swiftaTransaction->newQuery();
 

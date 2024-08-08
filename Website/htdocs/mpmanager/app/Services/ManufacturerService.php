@@ -4,8 +4,13 @@ namespace App\Services;
 
 use App\Models\Manufacturer;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Manufacturer>
+ */
 class ManufacturerService implements IBaseService
 {
     public function __construct(
@@ -33,7 +38,7 @@ class ManufacturerService implements IBaseService
         return $this->manufacturer->newQuery()->create($manufacturerData);
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->manufacturer->newQuery()->paginate($limit);

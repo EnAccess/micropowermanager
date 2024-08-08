@@ -8,9 +8,12 @@ use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
+/**
+ * @implements IBaseService<Transaction>
+ */
 class TransactionService implements IAssociative, IBaseService
 {
     public const YESTERDAY = 0;
@@ -264,7 +267,7 @@ class TransactionService implements IAssociative, IBaseService
             'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
     }
 
-    public function getAll($limit = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);

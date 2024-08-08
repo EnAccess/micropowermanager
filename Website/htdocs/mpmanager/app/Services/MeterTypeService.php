@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\Meter\MeterType;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<MeterType>
+ */
 class MeterTypeService implements IBaseService
 {
     public function __construct(private MeterType $meterType)
@@ -29,7 +34,7 @@ class MeterTypeService implements IBaseService
         return $meterType;
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->meterType->newQuery()->paginate($limit);

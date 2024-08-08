@@ -4,14 +4,20 @@ namespace App\Services;
 
 use App\Models\UsageType;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<UsageType>
+ */
 class UsageTypeService implements IBaseService
 {
-    public function __construct(private UsageType $usageType)
-    {
+    public function __construct(
+        private UsageType $usageType
+    ) {
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         return $this->usageType->newQuery()->get();
     }

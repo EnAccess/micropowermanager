@@ -9,7 +9,12 @@ use App\Models\AssetType;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AssetPerson>
+ */
 class AppliancePersonService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -184,7 +189,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);

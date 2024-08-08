@@ -4,8 +4,12 @@ namespace MPM\EBike;
 
 use App\Models\EBike;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<EBike>
+ */
 class EBikeService implements IBaseService
 {
     public function __construct(
@@ -13,7 +17,7 @@ class EBikeService implements IBaseService
     ) {
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
@@ -53,7 +57,10 @@ class EBikeService implements IBaseService
 
     public function update($model, array $data): EBike
     {
-        return $model->newQuery()->update($data);
+        $model->newQuery()->update($data);
+        $model->fresh();
+
+        return $model;
     }
 
     public function getBySerialNumber($serialNumber)

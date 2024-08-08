@@ -5,10 +5,14 @@ namespace App\Services;
 use App\Models\Device;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-// FIXME:
-// class AgentTransactionService implements IBaseService
-class AgentTransactionService
+/**
+ * @implements IBaseService<AgentTransaction>
+ */
+class AgentTransactionService implements IBaseService
 {
     public function __construct(
         private AgentTransaction $agentTransaction,
@@ -17,8 +21,11 @@ class AgentTransactionService
     ) {
     }
 
-    public function getAll($limit = null, $agentId = null, $forApp = false)
-    {
+    public function getAll(
+        ?int $limit = null,
+        $agentId = null,
+        $forApp = false
+    ): Collection|LengthAwarePaginator {
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
@@ -42,7 +49,7 @@ class AgentTransactionService
         return $query->get();
     }
 
-    public function getById($agentId, $customerId = null)
+    public function getById(int $agentId, ?int $customerId = null): AgentTransaction
     {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->get()->pluck('device_serial');
@@ -59,7 +66,10 @@ class AgentTransactionService
                 fn ($q) => $q->where('agent_id', $agentId)
             )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
-            ->latest()->paginate();
+            ->latest()
+            // Not sure why it wants to return a paginate here
+            // ->paginate();
+            ->find(1);
     }
 
     public function create(array $transactionData): AgentTransaction

@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\RegistrationTail;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<RegistrationTail>
+ */
 class RegistrationTailService implements IBaseService
 {
     public function __construct(
@@ -40,7 +45,7 @@ class RegistrationTailService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         return $this->registrationTail->newQuery()->get();
     }

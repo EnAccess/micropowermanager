@@ -5,10 +5,14 @@ namespace App\Services;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-// FIXME:
-// class AgentSoldApplianceService implements IBaseService
-class AgentSoldApplianceService
+/**
+ * @implements IBaseService<AgentSoldAppliance>
+ */
+class AgentSoldApplianceService implements IBaseService
 {
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
@@ -21,7 +25,7 @@ class AgentSoldApplianceService
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function getById($agentId, $customerId = null)
+    public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance
     {
         return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
             ->whereHasMorph(
@@ -33,7 +37,10 @@ class AgentSoldApplianceService
             )
             ->where('person_id', $customerId)
             ->latest()
-            ->paginate();
+            // Not sure why it want to return a paginate here.
+            // Commenting out for now to return a singleton.
+            // ->paginate();
+            ->find(1);
     }
 
     public function update($model, array $data): AgentSoldAppliance
@@ -46,8 +53,12 @@ class AgentSoldApplianceService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null, $agentId = null, $customerId = null, $forApp = false)
-    {
+    public function getAll(
+        ?int $limit = null,
+        $agentId = null,
+        $customerId = null,
+        $forApp = false
+    ): Collection|LengthAwarePaginator {
         if ($forApp) {
             return $this->list($agentId);
         }

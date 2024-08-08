@@ -5,7 +5,12 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<GeographicalInformation>
+ */
 class GeographicalInformationService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -34,7 +39,7 @@ class GeographicalInformationService implements IBaseService, IAssociative
         return $model->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         return $this->geographicalInformation->newQuery()->get();
     }

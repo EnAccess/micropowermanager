@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\AccessRate\AccessRatePayment;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AccessRatePayment>
+ */
 class AccessRatePaymentService implements IBaseService
 {
     public function __construct(
@@ -35,7 +40,7 @@ class AccessRatePaymentService implements IBaseService
         return $accessRatePayment->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $query = $this->accessRatePayment->newQuery();
 

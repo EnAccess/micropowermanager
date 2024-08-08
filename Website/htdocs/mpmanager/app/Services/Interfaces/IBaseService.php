@@ -2,32 +2,31 @@
 
 namespace App\Services\Interfaces;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @template T of Model
  */
 interface IBaseService
 {
-    /**
-     * @return T
-     */
-    public function getById(int $id): Model;
+    /** @return T|null */
+    public function getById(int $id): ?Model;
 
-    /**
-     * @return T
-     */
+    /** @return T */
     public function create(array $data): Model;
 
     /**
      * @param T $model
-     */
+     *
+     * @return T
+     * */
     public function update(Model $model, array $data): Model;
 
-    /**
-     * @param T $model
-     */
+    /** @param T $model */
     public function delete(Model $model): ?bool;
 
-    public function getAll(?int $limit = null);
+    /** @return array<array-key, T>|Collection<array-key, T>|LengthAwarePaginator */
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator;
 }

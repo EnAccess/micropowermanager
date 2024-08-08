@@ -39,9 +39,9 @@ class ViberContactService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function getByReceiverPhoneNumber($receiver)

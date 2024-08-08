@@ -100,7 +100,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $waveMoneyTransaction->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $query = $this->waveMoneyTransaction->newQuery();
 

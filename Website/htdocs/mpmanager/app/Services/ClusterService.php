@@ -5,7 +5,11 @@ namespace App\Services;
 use App\Models\Cluster;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Cluster>
+ */
 class ClusterService implements IBaseService
 {
     public function __construct(
@@ -81,7 +85,7 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->create($clusterData);
     }
 
-    public function getAll($limit = null): Collection
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit !== null) {
             return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();

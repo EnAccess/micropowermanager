@@ -4,11 +4,17 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Company>
+ */
 class CompanyService implements IBaseService
 {
-    public function __construct(private Company $company)
-    {
+    public function __construct(
+        private Company $company
+    ) {
     }
 
     public function getByName($name): Company
@@ -23,7 +29,6 @@ class CompanyService implements IBaseService
 
     public function getById($id): Company
     {
-        /** @var Company $result */
         $result = $this->company->newQuery()->findOrFail($id);
 
         return $result;
@@ -31,7 +36,6 @@ class CompanyService implements IBaseService
 
     public function create($data): Company
     {
-        /** @var Company $company */
         $company = $this->company->newQuery()->create($data);
 
         return $company;
@@ -47,8 +51,8 @@ class CompanyService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

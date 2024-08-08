@@ -4,16 +4,23 @@ namespace MPM\SolarHomeSystem;
 
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<ASDASDASD>
+ */
+
+/**
+ * @implements IBaseService<ASDASDASD>
+ */
 class SolarHomeSystemService implements IBaseService
 {
     public function __construct(private SolarHomeSystem $solarHomeSystem)
     {
     }
 
-    public function getAll($limit = null): LengthAwarePaginator|Collection
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);

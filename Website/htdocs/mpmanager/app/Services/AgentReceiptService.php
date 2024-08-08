@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\AgentReceipt;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AgentReceipt>
+ */
 class AgentReceiptService implements IBaseService
 {
     public function __construct(
@@ -12,7 +17,7 @@ class AgentReceiptService implements IBaseService
     ) {
     }
 
-    public function getAll($limit = null, $agentId = null)
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
         $query = $this->agentReceipt->newQuery()
             ->with(['user', 'agent', 'history']);

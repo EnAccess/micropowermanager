@@ -5,9 +5,12 @@ namespace MPM\Device;
 use App\Models\Device;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
+/**
+ * @implements IBaseService<Device>
+ */
 class DeviceService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -69,7 +72,7 @@ class DeviceService implements IBaseService, IAssociative
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->device->newQuery()->with(['person', 'device'])->paginate($limit);

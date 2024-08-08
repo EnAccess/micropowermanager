@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\DatabaseProxy;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<DatabaseProxy>
+ */
 class DatabaseProxyService implements IBaseService
 {
     public function __construct(private DatabaseProxy $databaseProxy)
@@ -33,8 +38,8 @@ class DatabaseProxyService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

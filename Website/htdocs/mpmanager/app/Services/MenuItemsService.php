@@ -5,9 +5,12 @@ namespace App\Services;
 use App\Models\MenuItems;
 use App\Models\SubMenuItems;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
+/**
+ * @implements IBaseService<MenuItems>
+ */
 class MenuItemsService implements IBaseService
 {
     public function __construct(
@@ -16,7 +19,7 @@ class MenuItemsService implements IBaseService
     {
     }
 
-    public function getAll($limit = null): LengthAwarePaginator|Collection
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->menuItems->newQuery()->with('SubMenuItems')->orderBy('menu_order')->paginate($limit);

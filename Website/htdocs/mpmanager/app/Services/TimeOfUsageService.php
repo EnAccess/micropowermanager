@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\TimeOfUsage;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @implements IBaseService<TimeOfUsage>
+ */
 class TimeOfUsageService implements IBaseService
 {
     public function __construct(
@@ -35,8 +39,8 @@ class TimeOfUsageService implements IBaseService
         return $timeOfUsage->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

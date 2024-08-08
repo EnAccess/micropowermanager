@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\Restriction;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @implements IBaseService<Restriction>
+ */
 class RestrictionService implements IBaseService
 {
     public function __construct(
@@ -37,8 +41,8 @@ class RestrictionService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

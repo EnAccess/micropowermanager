@@ -1,21 +1,20 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-13
- * Time: 19:24.
- */
-
 namespace App\Services;
 
 use App\Models\City;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<City>
+ */
 class CityService implements IBaseService
 {
-    public function __construct(private City $city)
-    {
+    public function __construct(
+        private City $city
+    ) {
     }
 
     public function getCityIdsByMiniGridId($miniGridId): array
@@ -51,7 +50,7 @@ class CityService implements IBaseService
         return $this->city->newQuery()->create($data);
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->city->newQuery()->with('location')->paginate($limit);

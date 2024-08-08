@@ -5,8 +5,13 @@ namespace App\Services;
 use App\Models\AgentBalanceHistory;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @implements IBaseService<AgentBalanceHistory>
+ */
 class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -15,7 +20,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
     ) {
     }
 
-    public function getAll($limit = null, $agentId = null)
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
         $query = $this->agentBalanceHistory->newQuery()
             ->whereHasMorph(

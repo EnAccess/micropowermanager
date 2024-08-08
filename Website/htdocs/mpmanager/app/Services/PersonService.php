@@ -6,12 +6,15 @@ use App\Models\Country;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
 use Carbon\Carbon;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Person>
+ */
 class PersonService implements IBaseService
 {
     public function __construct(
@@ -160,7 +163,7 @@ class PersonService implements IBaseService
         return $person->delete();
     }
 
-    public function getAll($limit = null, $customerType = 1)
+    public function getAll(?int $limit = null, $customerType = 1): LengthAwarePaginator
     {
         return $this->person->newQuery()->with([
             'addresses' => function ($q) {

@@ -4,9 +4,12 @@ namespace App\Services;
 
 use App\Models\Meter\Meter;
 use App\Services\Interfaces\IBaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Meter>
+ */
 class MeterService implements IBaseService
 {
     public function __construct(
@@ -97,7 +100,7 @@ class MeterService implements IBaseService
         return $meter->delete();
     }
 
-    public function getAll($limit = null, $inUse = true)
+    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator
     {
         if (isset($inUse)) {
             return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(

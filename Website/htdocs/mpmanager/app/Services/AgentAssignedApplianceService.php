@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\AgentAssignedAppliances;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AgentAssignedAppliances>
+ */
 class AgentAssignedApplianceService implements IBaseService
 {
     public function __construct(
@@ -37,7 +42,7 @@ class AgentAssignedApplianceService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null, $agentId = null)
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
         $query = $this->agentAssignedAppliance->newQuery();
 

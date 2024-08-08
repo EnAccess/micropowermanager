@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\CompanyDatabase;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -12,13 +13,13 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
  */
 class CompanyDatabaseService implements IBaseService
 {
-    public function __construct(private CompanyDatabase $companyDatabase)
-    {
+    public function __construct(
+        private CompanyDatabase $companyDatabase
+    ) {
     }
 
     public function getById(int $id): CompanyDatabase
     {
-        /** @var CompanyDatabase $result */
         $result = $this->companyDatabase->newQuery()->find($id);
 
         return $result;
@@ -44,9 +45,9 @@ class CompanyDatabaseService implements IBaseService
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function getAll($limit = null): void
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function createNewDatabaseForCompany(string $databaseName, int $companyId): void

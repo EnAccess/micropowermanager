@@ -4,7 +4,13 @@ namespace App\Services;
 
 use App\Models\MainSettings;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<MainSettings>
+ */
+// FIXME: Should this not be a ISettingsService?
 class MainSettingsService implements IBaseService
 {
     public function __construct(
@@ -39,7 +45,7 @@ class MainSettingsService implements IBaseService
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         return $this->mainSettings->newQuery()->get();
     }

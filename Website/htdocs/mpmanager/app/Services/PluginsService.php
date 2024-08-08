@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\Plugins;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Plugins>
+ */
 class PluginsService implements IBaseService
 {
     public function __construct(
@@ -35,7 +40,7 @@ class PluginsService implements IBaseService
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->plugin->newQuery()->paginate($limit);

@@ -4,9 +4,14 @@ namespace App\Services;
 
 use App\Models\ConnectionType;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<ConnectionType>
+ */
 class ConnectionTypeService implements IBaseService
 {
     public function __construct(
@@ -38,7 +43,7 @@ class ConnectionTypeService implements IBaseService
         return $connectionType;
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->connectionType->newQuery()->paginate($limit);

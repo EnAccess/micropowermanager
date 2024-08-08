@@ -4,8 +4,12 @@ namespace App\Services;
 
 use App\Models\ConnectionGroup;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class ConnectionGroupService implements IBaseService
+/**
+ * @implements IBaseService<ConnectionGroup>
+ */ class ConnectionGroupService implements IBaseService
 {
     public function __construct(
         private ConnectionGroup $connectionGroup
@@ -30,7 +34,7 @@ class ConnectionGroupService implements IBaseService
         return $connectionGroup;
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->connectionGroup->newQuery()->paginate($limit);

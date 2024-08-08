@@ -16,7 +16,7 @@ class TicketOutsourceReportService implements IBaseService
     {
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->ticketOutsourceReport->newQuery()->paginate($limit);

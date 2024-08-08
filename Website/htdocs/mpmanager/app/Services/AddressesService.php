@@ -6,8 +6,13 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Address>
+ */
 class AddressesService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -53,7 +58,7 @@ class AddressesService implements IBaseService, IAssociative
         return $this->address->newQuery()->findOrFail($id);
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->address->newQuery()->paginate($limit);

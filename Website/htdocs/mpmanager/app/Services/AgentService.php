@@ -6,14 +6,18 @@ use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
+use App\Services\Interfaces\IBaseService;
 use Complex\Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-// FIXME:
-// class AgentService implements IBaseService
-class AgentService
+/**
+ * @implements IBaseService<Agent>
+ */
+class AgentService implements IBaseService
 {
     public function __construct(
         private Agent $agent,
@@ -24,11 +28,6 @@ class AgentService
     ) {
     }
 
-    /**
-     * @param string $email
-     *
-     * @return int|string
-     */
     public function resetPassword(string $email)
     {
         try {
@@ -97,7 +96,7 @@ class AgentService
         return $this->agent->newQuery()->find(auth('agent_api')->user()->id);
     }
 
-    public function getById($id): Agent
+    public function getById(int $id): Agent
     {
         return $this->agent->newQuery()
             ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
@@ -109,7 +108,7 @@ class AgentService
         return $agent->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->agent->newQuery()
@@ -123,7 +122,7 @@ class AgentService
     }
 
     public function create(
-        $agentData,
+        array $agentData,
         $addressData = null,
         $personData = null,
         $country = null,
@@ -131,7 +130,7 @@ class AgentService
         $countryService = null,
         $personService = null,
         $personAddressService = null,
-    ) {
+    ): Agent {
         $person = $personService->create($personData);
 
         if ($country !== null) {
@@ -149,12 +148,6 @@ class AgentService
         return $this->agent->newQuery()->create($agentData);
     }
 
-    /**
-     * @param $agent
-     * @param $data
-     *
-     * @return Model|Builder
-     */
     public function update($agent, array $agentData): Agent
     {
         $person = $this->personService->getById($agentData['personId']);
