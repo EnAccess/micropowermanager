@@ -13,7 +13,6 @@ use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Ramsey\Uuid\Uuid;
 

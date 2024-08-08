@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Country;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<Country>

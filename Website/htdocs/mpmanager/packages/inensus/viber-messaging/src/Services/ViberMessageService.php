@@ -4,7 +4,6 @@ namespace Inensus\ViberMessaging\Services;
 
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\ViberMessaging\Models\ViberMessage;
 
 /**

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\SocialTariff;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<SocialTariff>

@@ -6,7 +6,6 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterConsumption;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IBaseService<MeterConsumption>
