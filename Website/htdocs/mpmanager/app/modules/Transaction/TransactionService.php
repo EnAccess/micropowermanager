@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
+ * @implements IAssociative<Transaction>
  * @implements IBaseService<Transaction>
  */
 class TransactionService implements IAssociative, IBaseService
@@ -246,14 +247,14 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function make($transactionData)
+    public function make(array $transactionData): Transaction
     {
         return $this->transaction->newQuery()->make($transactionData);
     }
 
-    public function save($transaction)
+    public function save($transaction): bool
     {
-        $transaction->save();
+        return $transaction->save();
     }
 
     public function getById(int $id): Transaction
