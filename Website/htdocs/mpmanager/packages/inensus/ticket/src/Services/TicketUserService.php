@@ -10,8 +10,13 @@ namespace Inensus\Ticket\Services;
 
 use App\Models\User;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\Ticket\Models\TicketUser;
 
+/**
+ * @implements IBaseService<TicketUser>
+ */
 class TicketUserService implements IBaseService
 {
     public function __construct(
@@ -20,7 +25,7 @@ class TicketUserService implements IBaseService
     ) {
     }
 
-    public function getAll($limit = null, $outsource = null)
+    public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator
     {
         $ticketUsers = $this->user::with('relationTicketUser');
 
