@@ -4,12 +4,18 @@ namespace Inensus\ViberMessaging\Services;
 
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inensus\ViberMessaging\Models\ViberContact;
 
+/**
+ * @implements IBaseService<ViberContact>
+ */
 class ViberContactService implements IBaseService
 {
-    public function __construct(private ViberContact $viberContact, private Person $person)
-    {
+    public function __construct(
+        private ViberContact $viberContact, private Person $person
+    ) {
     }
 
     public function createContact($personId, $viberId)
@@ -19,17 +25,17 @@ class ViberContactService implements IBaseService
         ]);
     }
 
-    public function getById($id)
+    public function getById(int $id): ViberContact
     {
         return $this->viberContact->newQuery()->find($id);
     }
 
-    public function create($data)
+    public function create(array $data): ViberContact
     {
         return $this->viberContact->newQuery()->create($data);
     }
 
-    public function update($model, array $data): Model
+    public function update($model, array $data): ViberContact
     {
         throw new \Exception('Method update() not yet implemented.');
     }
