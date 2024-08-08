@@ -5,6 +5,8 @@ namespace App\Services\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Interface that defines Assiciative services. What this means, is unclear.
+ *
  * @template T of Model
  */
 interface IAssociative

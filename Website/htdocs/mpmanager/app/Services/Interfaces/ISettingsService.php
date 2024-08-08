@@ -5,6 +5,8 @@ namespace App\Services\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Interface that defines meaningful operations on settings.
+ *
  * @template T of Model
  */
 interface ISettingsService

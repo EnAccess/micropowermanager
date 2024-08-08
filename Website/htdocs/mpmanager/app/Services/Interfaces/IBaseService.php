@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
+ * Interface that defines basic CRUD operations. Use for all services that interact with entities.
+ *
  * @template T of Model
  */
 interface IBaseService

@@ -5,6 +5,8 @@ namespace App\Services\Interfaces;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * Interface that defines a "assigned"-relation. TAssigned "is assigned to" TAssignee.
+ *
  * @template TAssigned of Model
  * @template TAssignee of Model
  */
