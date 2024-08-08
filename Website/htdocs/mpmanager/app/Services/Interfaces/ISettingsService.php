@@ -2,9 +2,20 @@
 
 namespace App\Services\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @template T of Model
+ */
 interface ISettingsService
 {
-    public function get();
+    /** @return T|null */
+    public function get(): ?Model;
 
-    public function update($model, $data);
+    /**
+     * @param T $model
+     *
+     * @return T
+     * */
+    public function update(Model $model, array $data): Model;
 }
