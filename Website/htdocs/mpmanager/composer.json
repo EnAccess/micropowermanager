@@ -12,7 +12,6 @@
     "barryvdh/laravel-dompdf": "^v2.0.0",
     "bogdaan/viber-bot-php": "^0.0.15",
     "doctrine/dbal": "^3.1",
-    "enlightn/enlightn": "^1.22",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^7.3.0",
     "laravel/framework": "^9",
