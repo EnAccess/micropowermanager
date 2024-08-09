@@ -14,11 +14,10 @@ spec:
     spec:
       containers:
       - name: mpm-frontend
-        image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-ui
+        image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-ui:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
           - name: VUE_APP_MPM_BACKEND_URL
-            value: http://a1c6c34afc2de48b3a3383b66e4206c0-1766560540.eu-central-1.elb.amazonaws.com
-
+            value: https://backend-demo.micropowermanager.io

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mpm-backend
-          image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-be
+          image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-be:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -26,7 +26,7 @@ spec:
             - name: APP_KEY
               value: "base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U="
             - name: APP_DEBUG
-              value: "true"
+              value: "false"
             - name: LOG_CHANNEL
               value: "stack"
             - name: LOGGLY_TOKEN

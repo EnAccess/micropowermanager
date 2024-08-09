@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mpm-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:905418087090:certificate/d87036d3-9751-4d10-bb95-886d5b6e4a92
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+spec:
+  ingressClassName: alb  
+  rules:
+    - host: demo.micropowermanager.io
+      http:
+        paths:        
+          - backend:
+              service:
+                name: mpm-frontend-service
+                port:
+                  name: http
+            path: /*
+            pathType: ImplementationSpecific
+
+    - host: backend-demo.micropowermanager.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: mpm-backend-service
+                port:
+                  name: http
+            path: /*
+            pathType: ImplementationSpecific

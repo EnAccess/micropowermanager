@@ -47,6 +47,7 @@ EXPOSE 80
 
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
-RUN chown -R www-data:www-data /app \
-    && a2enmod rewrite
+RUN chown -R www-data:www-data /app
+RUN chmod -R 775 /app/storage
 
+RUN a2enmod rewrite
