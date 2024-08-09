@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mpm-frontend
-        image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-ui:latest
+        image: 905418087090.dkr.ecr.eu-central-1.amazonaws.com/mpm-frontend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
