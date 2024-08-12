@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 08.06.18
- * Time: 16:39.
- */
-
 namespace App\Lib;
 
 use App\Models\SmsAndroidSetting;

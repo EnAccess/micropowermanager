@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 21.06.18
- * Time: 16:25.
- */
 
 namespace Inensus\Ticket\Jobs;
 

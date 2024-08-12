@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 31.07.18
- * Time: 19:53.
- */
-
 namespace App\Observers;
 
 use App\Models\Agent;

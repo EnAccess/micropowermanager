@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-15
- * Time: 14:56.
- */
-
 namespace App\Services;
 
 class PeriodService

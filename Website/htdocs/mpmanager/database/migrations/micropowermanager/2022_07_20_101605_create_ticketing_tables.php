@@ -4,12 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 23.08.18
- * Time: 10:39.
- */
 class CreateTicketingTables extends Migration
 {
     /**

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 30.05.18
- * Time: 11:39.
- */
-
 namespace App\Traits;
 
 use Exception;

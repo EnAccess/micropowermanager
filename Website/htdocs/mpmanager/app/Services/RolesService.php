@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 12.07.18
- * Time: 18:59.
- */
-
 namespace App\Services;
 
 use App\Models\Role\RoleDefinition;
