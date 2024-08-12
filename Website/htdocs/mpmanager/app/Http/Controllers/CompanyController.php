@@ -35,31 +35,49 @@ class CompanyController extends Controller
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {
         $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id', 'protected_page_password']);
-        $company = $this->companyService->create($companyData);
-
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
         $usageType = $request->input('usage_type');
 
-        $companyDatabaseData = [
+        // Create Company and CompanyDatabase
+        $company = $this->companyService->create($companyData);
+
+        $companyDatabase = $this->companyDatabaseService->create([
             'company_id' => $company->getId(),
             'database_name' => str_replace(' ', '', preg_replace('/[^a-z\d_ ]/i', '', $company->getName())).'_'.
                 Carbon::now()->timestamp,
-        ];
-        $companyDatabase = $this->companyDatabaseService->create($companyDatabaseData);
-        $databaseName = $companyDatabase->database_name;
-        $this->companyDatabaseService->createNewDatabaseForCompany($databaseName, $company->getId());
+        ]);
 
-        return $this->databaseProxyManagerService->runForCompany(
+        // Create Admin user and DatabaseProxy
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            function () use ($adminData, $company, $plugins, $usageType) {
-                $this->companyDatabaseService->doMigrations();
-                $this->userService->create([
+            fn () => $this->userService->create(
+                [
                     'name' => $adminData['name'],
                     'password' => $adminData['password'],
                     'email' => $adminData['email'],
                     'company_id' => $company->getId(),
-                ], $company->getId());
+                ],
+                $company->getId()
+            )
+        );
+
+        // Set some meaningful settings by default
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () use ($company, $usageType) {
+                $mainSettings = $this->mainSettingsService->getAll()->first();
+                $this->mainSettingsService->update(
+                    $mainSettings,
+                    ['company_name' => $company->name, 'usage_type' => $usageType]
+                );
+            }
+        );
+
+        // Plugin and Registration Tail magic
+        return $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () use ($company, $plugins) {
                 $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]];
 
                 foreach ($plugins as $plugin) {
@@ -87,8 +105,6 @@ class CompanyController extends Controller
                 }
 
                 $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
-                $mainSettings = $this->mainSettingsService->getAll()->first();
-                $this->mainSettingsService->update($mainSettings, ['company_name' => $company->name, 'usage_type' => $usageType]);
 
                 return response()->json([
                     'message' => 'Congratulations! you have registered to MicroPowerManager successfully. You will be redirected to dashboard  in seconds..',
