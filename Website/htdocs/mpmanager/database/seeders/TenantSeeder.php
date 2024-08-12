@@ -67,7 +67,7 @@ class TenantSeeder extends Seeder
                 $mainSettings = $this->mainSettingsService->getAll()->first();
                 $this->mainSettingsService->update(
                     $mainSettings,
-                    ['company_name' => DUMMY_COMPANY_ADMIN['name']]
+                    ['company_name' => DUMMY_COMPANY_DATA['name']]
                 );
             }
         );
