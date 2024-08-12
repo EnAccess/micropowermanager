@@ -71,22 +71,20 @@ If you want to load sample (dummy) data for testing run:
 ```bash
 docker exec -it laravel bash
 cd mpmanager
-php artisan dummy:create-company-with-dummy-data
-php artisan migrate-tenant
+php artisan db:seed
 ```
 
-This commands will create the first company database with dummy data from a snapshot.
-It will then apply any migrations that have been added to the application after the snapshot has been taken.
+This commands will
+
+- create the first company
+- create it's database and run migrations
+- populate the database entities with dummy data
 
 You can use the following credentials to login to the application:
 
 ```sh
-username: dummy@user.com
+username: dummy_company_admin@example.com
 password: 123123
 ```
 
 The dummy protected page password of this company is 123123.
-
-## Explore the internals
-
-See the follow section to learn more about the MPM code base is structured.
