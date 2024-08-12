@@ -6,6 +6,9 @@ use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Services\Interfaces\IAssignationService;
 
+/**
+ * @implements IAssignationService<Device, Meter>
+ */
 class MeterDeviceService implements IAssignationService
 {
     private Device $device;

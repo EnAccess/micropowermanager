@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-14
- * Time: 11:50.
- */
-
 namespace App\Services;
 
 class RevenueService

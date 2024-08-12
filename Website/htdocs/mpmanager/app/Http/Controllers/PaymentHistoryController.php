@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 31.07.18
- * Time: 10:47.
- */
-
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 13.01.19
- * Time: 22:49.
- */
-
 namespace App\Sms;
 
 use App\Jobs\SmsLoadBalancer;

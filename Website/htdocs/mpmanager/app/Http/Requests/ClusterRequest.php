@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 2019-03-22
- * Time: 16:35.
- */
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;

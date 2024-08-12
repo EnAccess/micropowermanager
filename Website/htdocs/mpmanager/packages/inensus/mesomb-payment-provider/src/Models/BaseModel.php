@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 20.08.18
- * Time: 14:58.
- */
-
 namespace Inensus\MesombPaymentProvider\Models;
 
 use Illuminate\Database\Eloquent\Model;
