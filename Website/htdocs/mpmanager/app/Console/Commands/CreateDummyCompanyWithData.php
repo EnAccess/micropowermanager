@@ -2,9 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Company;
-use App\Models\CompanyDatabase;
-use App\Models\DatabaseProxy;
 use App\Services\CompanyDatabaseService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
