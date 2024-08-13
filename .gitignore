@@ -68,3 +68,4 @@ install-production.sh
 # Sphinx documentation
 docs/_build/
 docs/build/
+k8s/secrets/mpm-secrets.yaml

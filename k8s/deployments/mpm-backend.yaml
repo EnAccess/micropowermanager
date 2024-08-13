@@ -18,25 +18,31 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-          env: 
+          env:
             - name: APP_NAME
               value: "MicroPowerManager"
             - name: APP_ENV
               value: "local"
             - name: APP_KEY
-              value: "base64:qq4VUCgym1gBAIH4GFWHeNNZFBiSpNM2IyLibtf6R1U="
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: APP_KEY
             - name: APP_DEBUG
               value: "false"
             - name: LOG_CHANNEL
               value: "stack"
             - name: LOGGLY_TOKEN
-              value: "40503df3-ffe6-4b1c-a8d6-ca901499fba9"
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: LOGGLY_TOKEN
             - name: LOG_LEVEL
               value: "info"
             - name: DB_CONNECTION
               value: "micro_power_manager"
             - name: DB_HOST
-              value: "db"  
+              value: "db"
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
@@ -44,11 +50,14 @@ spec:
             - name: DB_USERNAME
               value: "root"
             - name: DB_PASSWORD
-              value: "wF9zLp2qRxaS2e"  
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_PASSWORD
             - name: TEST_DB_CONNECTION
               value: "test_company_db"
             - name: TEST_DB_HOST
-              value: "db"  
+              value: "db"
             - name: TEST_DB_PORT
               value: "3306"
             - name: TEST_DB_DATABASE
@@ -56,7 +65,10 @@ spec:
             - name: TEST_DB_USERNAME
               value: "root"
             - name: TEST_DB_PASSWORD
-              value: "wF9zLp2qRxaS2e"  
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: TEST_DB_PASSWORD
             - name: BROADCAST_DRIVER
               value: "pusher"
             - name: CACHE_DRIVER
@@ -70,13 +82,16 @@ spec:
             - name: QUEUE_DRIVER
               value: "database"
             - name: REDIS_HOST
-              value: "redis-db-service"  
+              value: "redis-db-service"
             - name: REDIS_PORT
               value: "6379"
             - name: HORIZON_PREFIX
               value: "horizon:"
             - name: JWT_SECRET
-              value: "wjV7AQC3uEWpmZHQzR3G9mlWxV0O9dTQDFZAeyWIdmm1LF38KrMN1Mzy3gj7czQz"
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: JWT_SECRET
             - name: LOG_SLACK_WEBHOOK_URL
               value: "http://slackchannel.com"
             - name: QUEUES
@@ -98,9 +113,15 @@ spec:
             - name: METER_DATA_URL
               value: "REMOTE-METER-READING-URL"
             - name: METER_DATA_KEY
-              value: "METER-READING-KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: METER_DATA_KEY
             - name: METER_DATA_USER
-              value: "METER-READING-USER"
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: METER_DATA_USER
             - name: TICKETING_CALLBACK
               value: ""
             - name: MAIL_HOST
@@ -110,7 +131,10 @@ spec:
             - name: MAIL_USERNAME
               value: "USERNAME"
             - name: MAIL_PASSWORD
-              value: "PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: MAIL_PASSWORD
             - name: SUNKING_API_URL
               value: "https://dev.assetcontrol.central.glpapps.com/v2"
             - name: WAVEMONEY_API_URL
