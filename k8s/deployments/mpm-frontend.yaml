@@ -21,3 +21,4 @@ spec:
         env:
           - name: VUE_APP_MPM_BACKEND_URL
             value: https://backend-demo.micropowermanager.io
+        
