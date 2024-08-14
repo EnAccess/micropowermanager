@@ -14,6 +14,7 @@ use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -40,6 +41,7 @@ use Inensus\Ticket\Models\Ticket;
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
     use SoftDeletes;
+    use HasFactory;
 
     public const RELATION_NAME = 'person';
 
