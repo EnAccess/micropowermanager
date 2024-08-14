@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,6 +25,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+    use HasFactory;
 
     public const RELATION_NAME = 'admin';
     public const COL_ID = 'id';
