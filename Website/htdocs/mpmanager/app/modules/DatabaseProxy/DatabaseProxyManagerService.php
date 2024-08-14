@@ -36,6 +36,11 @@ class DatabaseProxyManagerService
         return $this->companyDatabase->newQuery();
     }
 
+    public function buildDatabaseConnectionByCompanyId(int $company_id): void
+    {
+        $this->buildDatabaseConnection('DummyCompany_1');
+    }
+
     private function buildDatabaseConnection(string $databaseName): void
     {
         $databaseConnections = config()->get('database.connections');
