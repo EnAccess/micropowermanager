@@ -38,10 +38,13 @@ class CreateDummyCompanyWithData extends Command
     public function handle()
     {
         try {
-            // $this->databaseProxyManagerService->runForCompany(
-            //     $company->getId(),
-            //     fn () => $this->importSqlDump($path, $databaseName)
-            // );
+            $path = __DIR__.'/../../../database/dummyData/'.self::SQL_DUMMY_DATA_FILE_NAME;
+
+            $this->databaseProxyManagerService->runForCompany(
+                // $company->getId(),
+                1,
+                fn () => $this->importSqlDump($path, self::DUMMY_DATABASE_NAME)
+            );
 
             return 0;
         } catch (\Exception $e) {
