@@ -32,8 +32,8 @@ class PersonFactory extends Factory
     {
         $sex = fake()->randomKey(['male', 'female']);
         $gender = $sex === 0
-             ? 'male'
-             : 'female';
+            ? 'male'
+            : 'female';
 
         return [
             'title' => fake()->title($gender),
