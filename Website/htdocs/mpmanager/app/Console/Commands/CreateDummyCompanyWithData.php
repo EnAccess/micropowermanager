@@ -9,7 +9,15 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CreateDummyCompanyWithData extends Command
 {
-    public const SQL_DUMMY_DATA_FILE_NAME = 'dummy_data.sql';
+    public const SQL_DUMMY_DATA_FILE_NAMES = [
+        'dummy_agent_data.sql',
+        'dummy_data.sql',
+        'dummy_device_data.sql',
+        'dummy_plugin_data.sql',
+        'dummy_sms_data.sql',
+        'dummy_ticket_data.sql',
+        'dummy_transaction_data.sql',
+    ];
     public const DUMMY_COMPANY_DATA = [
         'name' => 'Dummy Company',
         'address' => 'Dummy Address',
@@ -38,13 +46,15 @@ class CreateDummyCompanyWithData extends Command
     public function handle()
     {
         try {
-            $path = __DIR__.'/../../../database/dummyData/'.self::SQL_DUMMY_DATA_FILE_NAME;
+            foreach (self::SQL_DUMMY_DATA_FILE_NAMES as $sqlFile) {
+                $path = __DIR__.'/../../../database/dummyData/'.$sqlFile;
 
-            $this->databaseProxyManagerService->runForCompany(
-                // $company->getId(),
-                1,
-                fn () => $this->importSqlDump($path, self::DUMMY_DATABASE_NAME)
-            );
+                $this->databaseProxyManagerService->runForCompany(
+                    // $company->getId(),
+                    1,
+                    fn () => $this->importSqlDump($path, self::DUMMY_DATABASE_NAME)
+                );
+            }
 
             return 0;
         } catch (\Exception $e) {
