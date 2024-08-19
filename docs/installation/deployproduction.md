@@ -11,7 +11,7 @@ The production mode will automatically install **Let\'s Encrypt SSL
 certificates**. Therefore you need firstly register a domain.
 
 When you have your domain, the first thing to do is editing `app.conf`
-and `db.conf`(if you planning to use phpMyAdmin as well) files under
+and `db.conf` files under
 `NginxProxy/conf.p`.
 
 Afer that, paste `chmod +x ./install-production.sh` to make the file
