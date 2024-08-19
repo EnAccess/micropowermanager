@@ -37,6 +37,7 @@ class PersonFactory extends Factory
 
         return [
             'title' => fake()->title($gender),
+            'education' => fake()->jobTitle(),
             'name' => fake()->firstName($gender),
             'surname' => fake()->lastName(),
             'birth_date' => fake()->date(),

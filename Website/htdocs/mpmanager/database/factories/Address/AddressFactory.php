@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Address;
 
 use App\Models\Address\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,13 +17,9 @@ class AddressFactory extends Factory
     public function definition()
     {
         return [
-            'owner_type' => 'person',
-            'owner_id' => 1,
-            'email' => $this->faker->email,
-            'phone' => $this->faker->phoneNumber,
+            'email' => $this->faker->unique()->safeEmail,
+            'phone' => $this->faker->unique()->e164PhoneNumber(),
             'street' => $this->faker->streetAddress,
-            'city_id' => 1,
-            'geo_id' => null,
             'is_primary' => 1,
         ];
     }

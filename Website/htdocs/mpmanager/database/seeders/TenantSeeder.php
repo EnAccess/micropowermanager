@@ -13,7 +13,6 @@ const DUMMY_COMPANY_DATA = [
     'name' => 'Dummy Company',
     'address' => 'Dummy Address',
     'phone' => '+255123456789',
-    // 'phone' => fake()->unique()->e164PhoneNumber(),
     'country_id' => -1,
     'email' => 'dummy_company@example.com',
     'protected_page_password' => '123123',
