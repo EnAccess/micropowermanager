@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\City;
 use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -45,7 +46,7 @@ class ClusterSeeder extends Seeder
             )
             ->create();
 
-        // MiniGrids on Mafia Island
+        // MiniGrids and Villages on Mafia Island
         $miniGridsMafiaIsland = MiniGrid::factory()
             ->count(3)
             ->for($clusters[0])
@@ -60,9 +61,24 @@ class ClusterSeeder extends Seeder
                 ),
                 'location'
             )
+            ->has(
+                City::factory()
+                    ->for($clusters[0])
+                    ->sequence(
+                        ['name' => 'Mafia Village'],
+                        ['name' => 'Jibondo Island Village'],
+                    )
+                    ->has(
+                        GeographicalInformation::factory()->sequence(
+                            ['points' => '-7.873645,39.754433'],
+                            ['points' => '-8.0573,39.7253123'],
+                        ),
+                        'location'
+                    )
+            )
             ->create();
 
-        // MiniGrids on Pemba Island
+        // MiniGrids and Villages on Pemba Island
         $miniGridsPembaIsland = MiniGrid::factory()
             ->count(3)
             ->for($clusters[1])
@@ -78,6 +94,23 @@ class ClusterSeeder extends Seeder
                     ['points' => '-4.947872,39.807572'],
                 ),
                 'location'
+            )
+            ->has(
+                City::factory()
+                    ->for($clusters[1])
+                    ->sequence(
+                        ['name' => 'Konde Village'],
+                        ['name' => 'Wette Village'],
+                        ['name' => 'Tumbe Village'],
+                    )
+                    ->has(
+                        GeographicalInformation::factory()->sequence(
+                            ['points' => '-4.942415,39.745391'],
+                            ['points' => '-5.0590547,39.72373'],
+                            ['points' => '-4.947872,39.807572'],
+                        ),
+                        'location'
+                    )
             )
             ->create();
     }
