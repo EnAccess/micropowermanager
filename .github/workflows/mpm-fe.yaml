@@ -29,4 +29,4 @@ jobs:
         file: ./Website/ui/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/mpm-frontend:latest
+        tags: enaccess/mpm-frontend:latest
