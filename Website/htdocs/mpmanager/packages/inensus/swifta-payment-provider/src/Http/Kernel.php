@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http;
+namespace Inensus\SwiftaPaymentProvider\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Inensus\SwiftaPaymentProvider\Http\Middleware\SwiftaMiddleware;
