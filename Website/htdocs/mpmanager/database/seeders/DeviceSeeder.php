@@ -8,6 +8,7 @@ use App\Models\ConnectionType;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
+use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -98,13 +99,27 @@ class DeviceSeeder extends Seeder
         // TODO: Tariff with Additional Pricing Components
         // TODO: Tariff with Time of Usage
 
+        // Meter Types
+        // TODO: Online Meter Type
+        // TODO: Offline Meter Type
+
         // Actual Meters
 
         // Get available customers
         $persons = Person::all();
 
-        $meters = Meter::factory()
-            ->count(1)
-            ->make();
+        // Assign one meter to each customer
+        foreach ($persons as $person) {
+            $meter = Meter::factory()
+                ->count(1)
+                ->for(ConnectionType::all()->random())
+                ->for(ConnectionGroup::all()->random())
+                ->for(MeterType::all()->random())
+                ->for(Manufacturer::all()->random())
+                ->for(MeterTariff::all()->random(), 'tariff')
+                ->create();
+        }
+        // TODO: Meter Address/GeographicalInformation
+        // TODO: Link the Device
     }
 }
