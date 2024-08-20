@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AccessRate\AccessRate;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -69,7 +71,32 @@ class DeviceSeeder extends Seeder
         ConnectionGroup::create(['name' => 'Bakery']);
         ConnectionGroup::create(['name' => 'Not ordered yet']);
 
-        // Tariff
+        // Tariffs
+        MeterTariff::factory()
+            ->create([
+                'name' => 'Simple Tariff',
+                'price' => '250',
+                'total_price' => '250',
+                'currency' => 'TZS',
+            ]);
+
+        MeterTariff::factory()
+            ->has(
+                AccessRate::factory()
+                    ->state([
+                        'amount' => '1000',
+                        'period' => '30',
+                    ])
+            )
+            ->create([
+                'name' => 'Tariff with monthly Access Rate',
+                'price' => '150',
+                'total_price' => '150',
+                'currency' => 'TZS',
+            ]);
+
+        // TODO: Tariff with Additional Pricing Components
+        // TODO: Tariff with Time of Usage
 
         // Actual Meters
 
