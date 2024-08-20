@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
@@ -43,6 +44,30 @@ class DeviceSeeder extends Seeder
         ConnectionType::create(['name' => 'Business']);
         ConnectionType::create(['name' => 'Institution']);
         ConnectionType::create(['name' => 'Not Specified']);
+
+        ConnectionGroup::create(['name' => 'Household']);
+        ConnectionGroup::create(['name' => 'Community']);
+        ConnectionGroup::create(['name' => 'Cafeterias and Pubs']);
+        ConnectionGroup::create(['name' => 'Hair Dressers']);
+        ConnectionGroup::create(['name' => 'Churches & Mosques']);
+        ConnectionGroup::create(['name' => 'Solar Excess']);
+        ConnectionGroup::create(['name' => 'H.H Cus']);
+        ConnectionGroup::create(['name' => 'FOOD AND BEVERAGES']);
+        ConnectionGroup::create(['name' => 'SHOPS w']);
+        ConnectionGroup::create(['name' => 'SCHOOLS']);
+        ConnectionGroup::create(['name' => 'HEALTH CENTRES & INSTITUTIONS']);
+        ConnectionGroup::create(['name' => 'GUEST HOUSES']);
+        ConnectionGroup::create(['name' => 'ENTERTAINMENT CENTRES']);
+        ConnectionGroup::create(['name' => 'Mobile Charging, OFFICES and Stationery']);
+        ConnectionGroup::create(['name' => 'Small scale HATCHERIES']);
+        ConnectionGroup::create(['name' => 'Laundry']);
+        ConnectionGroup::create(['name' => 'Freezing Units']);
+        ConnectionGroup::create(['name' => 'Wood work']);
+        ConnectionGroup::create(['name' => 'Mills']);
+        ConnectionGroup::create(['name' => 'Welders']);
+        ConnectionGroup::create(['name' => 'Drinking Water Project']);
+        ConnectionGroup::create(['name' => 'Bakery']);
+        ConnectionGroup::create(['name' => 'Not ordered yet']);
 
         // Tariff
 
