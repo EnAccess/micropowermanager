@@ -15,7 +15,7 @@ class MeterFactory extends Factory
             'meter_type_id' => $this->faker->randomNumber(1),
             'in_use' => false,
             'manufacturer_id' => 1,
-            'serial_number' => str_random(36),
+            'serial_number' => $this->faker->unique()->uuid,
         ];
     }
 }
