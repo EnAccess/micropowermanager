@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Console\ShowModelCommand;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 const DUMMY_COMPANY_ID = 1;
