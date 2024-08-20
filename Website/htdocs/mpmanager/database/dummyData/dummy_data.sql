@@ -455,11 +455,6 @@ VALUES
     (7,209,12,'2023-10-25 13:19:03','2023-10-25 13:19:03');
 
 
-INSERT INTO `manufacturers` (`id`, `type`, `name`, `website`, `contact_person`, `api_name`, `created_at`, `updated_at`)
-VALUES
-    (1,'meter','Calin Meters','http://www.calinmeter.com/',NULL,'CalinMeterApi','2023-10-10 11:43:51','2023-10-10 11:43:51');
-
-
 INSERT INTO `sub_connection_types` (`id`, `name`, `connection_type_id`, `tariff_id`, `created_at`, `updated_at`)
 VALUES
     (1,'CU',2,3,NULL,NULL),

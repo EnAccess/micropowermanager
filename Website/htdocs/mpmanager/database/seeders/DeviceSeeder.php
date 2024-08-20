@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address\Address;
-use App\Models\City;
-use App\Models\GeographicalInformation;
+use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
@@ -31,6 +29,10 @@ class DeviceSeeder extends Seeder
         // For now, we just adding some dummy Manufacturers.
         // Later, this should probably be synced with the manufacturers
         // for which we have plugins in the Demo setup.
+        $manufacturers = Manufacturer::factory()
+            ->count(3)
+            ->isMeterManufacturer()
+            ->create();
 
         // Connection Group / Connection Type
 
@@ -44,7 +46,5 @@ class DeviceSeeder extends Seeder
         $meters = Meter::factory()
             ->count(1)
             ->make();
-
-        dd($meters);
     }
 }
