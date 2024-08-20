@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Meter;
 
 use App\Models\Meter\Meter;
 use Illuminate\Database\Eloquent\Factories\Factory;
