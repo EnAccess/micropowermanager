@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ConnectionType;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
@@ -35,6 +36,13 @@ class DeviceSeeder extends Seeder
             ->create();
 
         // Connection Group / Connection Type
+        ConnectionType::create(['name' => 'House Hold']);
+        ConnectionType::create(['name' => 'Commercial Usage']);
+        ConnectionType::create(['name' => 'Productive Usage']);
+        ConnectionType::create(['name' => 'Residential']);
+        ConnectionType::create(['name' => 'Business']);
+        ConnectionType::create(['name' => 'Institution']);
+        ConnectionType::create(['name' => 'Not Specified']);
 
         // Tariff
 

@@ -235,18 +235,6 @@ VALUES
     (24,'default connection group','2021-01-26 12:03:26','2021-01-26 12:03:26');
 
 
-INSERT INTO `connection_types` (`id`, `name`, `created_at`, `updated_at`)
-VALUES
-    (1,'House Hold','2019-01-14 14:49:28','2020-11-07 14:09:03'),
-    (2,'Commercial Usage','2019-01-14 14:49:42','2019-01-14 14:49:42'),
-    (17,'Productive Usage','2019-01-14 14:51:05','2019-01-14 14:51:05'),
-    (18,'default connection type','2021-01-26 12:03:26','2021-01-26 12:03:26'),
-    (20,'Not Specified','2021-01-26 12:22:29','2021-01-26 12:22:29'),
-    (21,'Residential','2021-01-26 12:22:29','2021-01-26 12:22:29'),
-    (22,'Business','2021-01-26 12:22:29','2021-01-26 12:22:29'),
-    (23,'Institution','2021-01-26 12:22:29','2021-01-26 12:22:29');
-
-
 INSERT INTO `geographical_informations` (`id`, `owner_id`, `owner_type`, `points`, `created_at`, `updated_at`)
 VALUES
     (5223,6,'address','-7.9208830119612,39.720696508884','2023-10-24 13:50:27','2023-11-15 13:34:08'),
