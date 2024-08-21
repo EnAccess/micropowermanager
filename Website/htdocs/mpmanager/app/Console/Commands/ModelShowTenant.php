@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Utils\DummyCompany;
 use Illuminate\Console\Command;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
-
-const DUMMY_COMPANY_ID = 1;
 
 class ModelShowTenant extends Command
 {
@@ -32,7 +31,7 @@ class ModelShowTenant extends Command
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DUMMY_COMPANY_ID);
+        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
         parent::__construct();
     }
 

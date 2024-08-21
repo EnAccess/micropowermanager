@@ -6,6 +6,7 @@ use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
 use App\Services\UserService;
+use App\Utils\DummyCompany;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -22,7 +23,6 @@ const DUMMY_COMPANY_ADMIN = [
     'email' => 'dummy_company_admin@example.com',
     'name' => 'Dummy Company Admin',
 ];
-const DUMMY_DATABASE_NAME = 'DummyCompany_1';
 
 class TenantSeeder extends Seeder
 {
@@ -47,7 +47,7 @@ class TenantSeeder extends Seeder
 
         $companyDatabase = $this->companyDatabaseService->create([
             'company_id' => $company->getId(),
-            'database_name' => DUMMY_DATABASE_NAME,
+            'database_name' => DummyCompany::DUMMY_COMPANY_DATABASE_NAME,
         ]);
 
         // Create Admin user and DatabaseProxy
