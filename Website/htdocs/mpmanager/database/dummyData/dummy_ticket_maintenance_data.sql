@@ -163,3 +163,31 @@ VALUES
     (79,'M4w9AH16Hf','admin',1,NULL,'maintenance_user',4,1,'2023-11-23 00:00:00','Dummy Ticket','Dolore et elit, ut tempor sit amet,.',31,'2023-11-20 00:00:00','2023-11-20 00:00:00'),
     (80,'IGP0tmjHyS','admin',1,NULL,'maintenance_user',4,0,'2023-11-19 00:00:00','Dummy Ticket','Sed Lorem dolore ut dolor.',26,'2023-11-16 00:00:00','2023-11-16 00:00:00');
 
+
+INSERT INTO `people` (`id`, `title`, `education`, `name`, `surname`, `birth_date`, `sex`, `nationality`, `is_customer`, `deleted_at`, `created_at`, `updated_at`, `additional_json`)
+    (205,NULL,NULL,'Maintenance','User1',NULL,'male',NULL,0,NULL,'2023-10-25 13:15:13','2023-10-25 13:15:13',NULL),
+    (206,NULL,NULL,'Maintenance','User2',NULL,'male',NULL,0,NULL,'2023-10-25 13:16:23','2023-10-25 13:16:23',NULL),
+    (207,NULL,NULL,'Maintenance','User3',NULL,'male',NULL,0,NULL,'2023-10-25 13:16:59','2023-10-25 13:16:59',NULL),
+    (208,NULL,NULL,'Maintenance','User5',NULL,'male',NULL,0,NULL,'2023-10-25 13:17:49','2023-10-25 13:17:49',NULL),
+    (209,NULL,NULL,'Maintenance','User7',NULL,'male',NULL,0,NULL,'2023-10-25 13:19:03','2023-10-25 13:19:03',NULL);
+
+
+INSERT INTO `addresses` (`id`, `owner_type`, `owner_id`, `email`, `phone`, `street`, `city_id`, `is_primary`, `created_at`, `updated_at`)
+VALUES
+    (398,'person',205,NULL,'+2551233212',NULL,1,1,'2023-10-25 13:15:13','2023-10-25 13:15:13'),
+    (399,'person',206,NULL,'+255123212321',NULL,3,1,'2023-10-25 13:16:23','2023-10-25 13:16:23'),
+    (400,'person',207,NULL,'+255123123232',NULL,2,1,'2023-10-25 13:16:59','2023-10-25 13:16:59'),
+    (401,'person',208,NULL,'+255231223212',NULL,5,1,'2023-10-25 13:17:49','2023-10-25 13:17:49'),
+    (402,'person',209,NULL,'+25512332122',NULL,15,1,'2023-10-25 13:19:03','2023-10-25 13:19:03');
+
+
+INSERT INTO `maintenance_users` (`id`, `person_id`, `mini_grid_id`, `created_at`, `updated_at`)
+VALUES
+    -- Note: 202 is an Agent
+    (4,202,9,'2023-10-25 13:17:22','2023-10-25 13:17:22'),
+    (6,202,11,'2023-10-25 13:18:30','2023-10-25 13:18:30'),
+    (1,205,1,'2023-10-25 13:15:13','2023-10-25 13:15:13'),
+    (2,206,6,'2023-10-25 13:16:23','2023-10-25 13:16:23'),
+    (3,207,7,'2023-10-25 13:16:59','2023-10-25 13:16:59'),
+    (5,208,10,'2023-10-25 13:17:49','2023-10-25 13:17:49'),
+    (7,209,12,'2023-10-25 13:19:03','2023-10-25 13:19:03');
