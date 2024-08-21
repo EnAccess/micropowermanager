@@ -14,6 +14,7 @@ class DeviceFactory extends Factory
     public function definition()
     {
         return [
+            'device_serial' => $this->faker->unique()->uuid,
         ];
     }
 }

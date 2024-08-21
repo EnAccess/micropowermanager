@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\AccessRate\AccessRate;
+use App\Models\Address\Address;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
+use App\Models\Device;
+use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
@@ -128,16 +131,34 @@ class DeviceSeeder extends Seeder
 
         // Assign one meter to each customer
         foreach ($persons as $person) {
+            // Create a Meter
             $meter = Meter::factory()
-                ->count(1)
                 ->for(ConnectionType::all()->random())
                 ->for(ConnectionGroup::all()->random())
                 ->for(MeterType::all()->random())
                 ->for(Manufacturer::all()->random())
                 ->for(MeterTariff::all()->random(), 'tariff')
                 ->create();
+
+            // Assign the Meter to the customer by creating a device
+            $device = Device::factory()
+                ->for($person)
+                ->for($meter, 'device')
+                ->has(
+                    Address::factory()
+                        ->for($person->addresses->first()->city)
+                        ->has(
+                            GeographicalInformation::factory()
+                                ->state(function (array $attributes, Address $address) {
+                                    return ['points' => $address->city->location->points];
+                                })
+                                ->randomizePoints(),
+                            'geo'
+                        )
+                )
+                ->create([
+                    'device_serial' => $meter->serial_number,
+                ]);
         }
-        // TODO: Meter Address/GeographicalInformation
-        // TODO: Link the Device
     }
 }
