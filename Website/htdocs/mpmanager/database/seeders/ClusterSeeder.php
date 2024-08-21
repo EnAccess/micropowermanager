@@ -47,7 +47,7 @@ class ClusterSeeder extends Seeder
 
         // MiniGrids and Villages on Mafia Island
         $miniGridsMafiaIsland = MiniGrid::factory()
-            ->count(3)
+            ->count(2)
             ->for($clusters[0])
             ->sequence(
                 ['name' => 'Mafia'],
@@ -89,8 +89,8 @@ class ClusterSeeder extends Seeder
             ->has(
                 GeographicalInformation::factory()->sequence(
                     ['points' => '-4.942415,39.745391'],
-                    ['points' => '-5.0590547,39.72373'],
-                    ['points' => '-4.947872,39.807572'],
+                    ['points' => '-5.056707,39.728021'],
+                    ['points' => '-4.950556,39.786280'],
                 ),
                 'location'
             )
@@ -105,8 +105,8 @@ class ClusterSeeder extends Seeder
                     ->has(
                         GeographicalInformation::factory()->sequence(
                             ['points' => '-4.942415,39.745391'],
-                            ['points' => '-5.0590547,39.72373'],
-                            ['points' => '-4.947872,39.807572'],
+                            ['points' => '-5.056707, 39.728021'],
+                            ['points' => '-4.950556,39.786280'],
                         ),
                         'location'
                     )
