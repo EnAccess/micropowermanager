@@ -100,8 +100,26 @@ class DeviceSeeder extends Seeder
         // TODO: Tariff with Time of Usage
 
         // Meter Types
-        // TODO: Online Meter Type
-        // TODO: Offline Meter Type
+        $clusters = MeterType::factory()
+        ->count(3)
+        ->sequence(
+            [
+                'online' => 0,
+                'phase' => '1',
+                'max_current' => '5',
+            ],
+            [
+                'online' => 1,
+                'phase' => '1',
+                'max_current' => '60',
+            ],
+            [
+                'online' => 1,
+                'phase' => '2',
+                'max_current' => '60',
+            ],
+        )
+        ->create();
 
         // Actual Meters
 
