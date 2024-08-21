@@ -17,6 +17,9 @@ class Device extends BaseModel
 
     public const RELATION_NAME = 'device';
 
+    // TODO: This name seems unintuive and confusing.
+    // The device table now has a column called `id` and a column called `device_id`
+    // but they are completely different things.
     public function device(): MorphTo
     {
         return $this->morphTo();
