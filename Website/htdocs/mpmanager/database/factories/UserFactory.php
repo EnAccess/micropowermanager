@@ -3,10 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Utils\DummyCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-
-const DUMMY_COMPANY_ID = 1;
 
 class UserFactory extends Factory
 {
@@ -30,7 +29,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'company_id' => DUMMY_COMPANY_ID,
+            'company_id' => DummyCompany::DUMMY_COMPANY_ID,
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make($this->faker->password()),
             'remember_token' => str_random(10),

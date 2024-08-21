@@ -13,17 +13,16 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
+use App\Utils\DummyCompany;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
-
-const DUMMY_COMPANY_ID = 1;
 
 class DeviceSeeder extends Seeder
 {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DUMMY_COMPANY_ID);
+        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
     }
 
     /**

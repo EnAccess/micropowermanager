@@ -7,17 +7,16 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\User;
+use App\Utils\DummyCompany;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
-
-const DUMMY_COMPANY_ID = 1;
 
 class ClusterSeeder extends Seeder
 {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DUMMY_COMPANY_ID);
+        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
     }
 
     /**
