@@ -3,6 +3,7 @@
 namespace App\Models\Meter;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class MeterType extends BaseModel
 {
+    use HasFactory;
+
     public static $rules = [
         'online' => 'required',
         'phase' => 'required',
