@@ -1,0 +1,37 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Update Kubernetes Manifests
+        run: |
+          IMAGE_NAME=enaccess/mpm-backend
+          TAG=
+          sed -i "s|image: .*|image: $IMAGE_NAME:$TAG|" ./k8s/deployments/mpm-backend.yaml
+
+      - name: Apply Kubernetes Configuration
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: |
+          kubectl apply -f ./k8s/deployments/mpm-backend.yaml
+          kubectl apply -f ./k8s/services/mpm-backend.yaml
+
+
+
+
+
+
+
+# add kube secrets to github repo
+# tags: use latest or have a version number
