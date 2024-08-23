@@ -1,9 +1,9 @@
-name: Build and Push MPM Frontend Image
+name: Build, Push, and Release
 
 on:
   push:
     branches:
-      - ft/deployment
+      - ft/versioning
 
 jobs:
   build-and-push:
@@ -30,3 +30,24 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: enaccess/mpm-frontend:latest
+
+  release:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release

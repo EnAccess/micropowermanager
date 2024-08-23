@@ -3,7 +3,7 @@ name: Build and Push MPM Backend Image
 on:
   push:
     branches:
-      - ft/deployment
+      - main
 
 jobs:
   build-and-push:
@@ -21,6 +21,11 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Determine Image Tag
+      id: docker-meta
+      run: |
+        echo "TAG=$("latest")-${{ github.sha }}" >> $GITHUB_ENV
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
