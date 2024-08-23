@@ -45,6 +45,7 @@ jobs:
         node-version: '16'
 
     - name: Install dependencies
+      working-directory: ./Website/ui
       run: npm install
 
     - name: Run semantic-release
