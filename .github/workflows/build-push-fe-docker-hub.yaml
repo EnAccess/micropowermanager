@@ -45,11 +45,11 @@ jobs:
         node-version: '20'  
 
     - name: Install dependencies
-      working-directory: ../../
+      working-directory: ./
       run: npm install
 
     - name: Run semantic-release
-      working-directory: ../../
+      working-directory: ./
       # env:
       #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
