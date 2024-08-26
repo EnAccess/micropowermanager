@@ -50,8 +50,8 @@ jobs:
 
     - name: Run semantic-release
       working-directory: ./
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
 
     - name: Check if release was successful
