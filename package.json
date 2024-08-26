@@ -1,0 +1,24 @@
+{
+  "name": "micropowermanager",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://github.com/EnAccess/micropowermanager-cloud\">     <img       src=\"https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png\"       alt=\"OpenSmartMeter\"       width=\"320\"     >   </a> </p> <p align=\"center\">     <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em> </p> <p align=\"center\">   <img     alt=\"Project Status\"     src=\"https://img.shields.io/badge/Project%20Status-stable-green\"   >   <img     alt=\"GitHub Workflow Status\"     src=\"https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager-cloud/check-generic.yaml\"   >   <a href=\"https://github.com/EnAccess/micropowermanager-cloud/blob/main/LICENSE\" target=\"_blank\">     <img       alt=\"License\"       src=\"https://img.shields.io/github/license/EnAccess/micropowermanager-cloud\"     >   </a> </p>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.1.7",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.1",
+    "semantic-release": "^24.1.0"
+  }
+}
