@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ClusterSeeder::class,
             CustomerSeeder::class,
             DeviceSeeder::class,
+            TicketSeeder::class,
         ]);
     }
 }

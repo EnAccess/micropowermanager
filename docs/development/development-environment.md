@@ -81,6 +81,18 @@ The dummy protected page password of this company is 123123.
 >
 > However, for a better development flow it is generally recommended to load demo data.
 
+## Generating transaction data
+
+To generate dummy transaction data you can run
+
+```sh
+php artisan dummy:create-data 250
+php artisan dummy:create-data --type=ticket 25
+```
+
+This commands will create 250 transactions and 25 tickets within the past 30 days respectively.
+It can be run multiple times to generate more data as required.
+
 ## Reseting the Demo data
 
 If you wish reset the Demo data setup to the default setup run:
