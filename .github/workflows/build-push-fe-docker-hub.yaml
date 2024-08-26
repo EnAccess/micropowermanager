@@ -46,11 +46,9 @@ jobs:
 
 
     - name: Install dependencies
-      working-directory: ./Website/ui
       run: npm install
 
     - name: Run semantic-release
-      working-directory: ./Website/ui
       # env:
       #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
