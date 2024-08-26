@@ -43,7 +43,7 @@ MPM's documentation is hosted on [micropowermanager.io](https://micropowermanage
 - Is written in PHP 8.0
 - It uses Laravel 9.0
 - It uses Vue.js 2.6
-- It uses Node 16.10
+- It uses Node 18.20.4
 - It uses MariaDB 10.3 which is compatible with MySQL 5.7
 
 ## Getting Started
