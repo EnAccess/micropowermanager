@@ -33,7 +33,8 @@ class DummyDataCreator extends AbstractSharedCommand
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
-        AgentTransaction::class,
+        // TODO: Currently doesn't work, we first need to configure demo agents.
+        // AgentTransaction::class,
         VodacomTransaction::class,
         AirtelTransaction::class,
     ];
@@ -282,7 +283,8 @@ class DummyDataCreator extends AbstractSharedCommand
                 ]
             );
 
-            event('transaction.successful', [$transactionData->transaction]);
+            // TODO: This currently doesn't work, it throws error that SMS is not configured.
+            // event('transaction.successful', [$transactionData->transaction]);
         }
     }
 
