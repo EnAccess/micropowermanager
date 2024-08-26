@@ -11,39 +11,32 @@ In a local development environment
 
 ## Pre-requisites
 
-- A docker container runtime (for example [Docker Desktop](https://www.docker.com/products/docker-desktop))
-- [Docker Compose](https://docs.docker.com/compose/)
+- A docker container runtime with [Docker Compose](https://docs.docker.com/compose/) (for example [Docker Desktop](https://www.docker.com/products/docker-desktop))
+- Working installation of [git](https://git-scm.com/)
+- A Text editor (While you can use any text editor you're comfortable with, we recommend [VS Code](https://code.visualstudio.com/) for this project)
 
-### Docker Desktop installation
+This guide requires a Unix-like environment. Supported platforms include:
 
-**Windows and Mac:**
+1. macOS: Any recent version of macOS (13 Ventura or later)
+2. various Linux distributions (Ubuntu, Fedora, Debian)
+3. Windows with [Windows Subsystem for Linux 2 (WSL2)](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop).
+For Windows users:
 
-**Linux:**
+- Please ensure you have WSL2 installed and properly configured before proceeding.
+- Please ensure you are running Docker Desktop in WSL2 mode.
+- When opening the repository in VS Code ensure to open in WSL2 mode (for example by navigating to the source code in WSL2 terminal and running `code .`)
 
-- Docker provides installation instructions for various Linux distributions. You can find them on
-  the [Docker installation page for Linux.](https://docs.docker.com/engine/install/).
+For all users:
 
-### Docker Compose installation
-
-Docker Compose is often included with the Docker Desktop installations for Windows and Mac. For Linux, you might need to
-install it separately.
-
-**Windows and Mac:**
-
-- Included with Docker Desktop.
-
-**Linux:**
-
-- Docker Compose on GitHub <https://github.com/docker/compose/releases>
-- On the GitHub page, you can find instructions for downloading and installing Docker Compose on Linux. Be sure to check
-  for the latest release.
+This document assumes that you have a basic understanding of how to use the command line.
+You should be familiar with common Unix commands such as cd, ls, mkdir, and how to edit text files using a text editor like [VS Code](https://code.visualstudio.com/).
+Before proceeding, ensure you can open a terminal (Terminal app on macOS, terminal emulator on Linux, or WSL2 terminal on Windows) and run basic commands.
 
 ## Installation
 
-1. Clone the repository
-2. Build the docker containers with `docker compose up`
+1. `git`-clone the repository
+2. Build and run the docker containers with `docker compose up`
 
 ## Migration on First run
 
