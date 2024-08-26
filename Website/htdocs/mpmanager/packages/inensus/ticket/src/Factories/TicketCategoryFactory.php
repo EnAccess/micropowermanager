@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Inensus\Ticket\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketCategory;
