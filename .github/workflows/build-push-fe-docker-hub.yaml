@@ -48,8 +48,18 @@ jobs:
       working-directory: ./
       run: npm install
 
+    - name: Check if tag exists
+      id: check_tag
+      run: |
+        git fetch --tags
+        if git rev-parse "v1.0.0" >/dev/null 2>&1; then
+          echo "Tag v1.0.0 already exists"
+          echo "TAG_EXISTS=true" >> $GITHUB_ENV
+        else
+          echo "TAG_EXISTS=false" >> $GITHUB_ENV
+        fi
+
     - name: Run semantic-release
+      if: env.TAG_EXISTS == 'false'
       working-directory: ./
-      # env:
-      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
