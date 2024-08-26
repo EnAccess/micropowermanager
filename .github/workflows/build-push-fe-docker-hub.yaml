@@ -48,18 +48,24 @@ jobs:
       working-directory: ./
       run: npm install
 
-    - name: Check if tag exists
-      id: check_tag
+    - name: Fetch tags
+      run: git fetch --tags
+
+    - name: Determine next version
+      id: determine_version
       run: |
-        git fetch --tags
-        if git rev-parse "v1.0.0" >/dev/null 2>&1; then
-          echo "Tag v1.0.0 already exists"
-          echo "TAG_EXISTS=true" >> $GITHUB_ENV
-        else
-          echo "TAG_EXISTS=false" >> $GITHUB_ENV
-        fi
+        # Get the latest tag
+        LATEST_TAG=$(git describe --tags --abbrev=0)
+        # Calculate next version
+        NEXT_VERSION=$(npx semantic-release --dry-run | grep 'Next version' | awk '{print $NF}')
+        echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
 
     - name: Run semantic-release
-      if: env.TAG_EXISTS == 'false'
       working-directory: ./
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
+
+    - name: Check if release was successful
+      if: success() && env.NEXT_VERSION != ''
+      run: echo "New version created ${{ env.NEXT_VERSION }}"
