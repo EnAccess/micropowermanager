@@ -11,13 +11,13 @@ RUN mkdir -p dist
 
 RUN npm run build
 
-COPY entrypoint.sh /tmp/entrypoint.sh
+COPY entrypoint-dev.sh /tmp/entrypoint-dev.sh
 
-RUN chmod +x /tmp/entrypoint.sh
+RUN chmod +x /tmp/entrypoint-dev.sh
 
 RUN cp -a /app/. /app_backup
 
-ENTRYPOINT [ "/tmp/entrypoint.sh"]
+ENTRYPOINT [ "/tmp/entrypoint-dev.sh"]
 
 EXPOSE 8081
 
