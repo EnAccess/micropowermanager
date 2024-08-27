@@ -25,7 +25,6 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, zip
-          tools: composer:2.6
 
       - name: Install Composer Dependencies
         run: |
@@ -33,15 +32,15 @@ jobs:
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHP-CS-Fixer
-        run: composer run php-cs-fixer-check
+        run: composer php-cs-fixer-check
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHPStan
-        run: composer run phpstan-analyze
+        run: composer phpstan-analyse
         working-directory: ./Website/htdocs/mpmanager
         continue-on-error: true
 
       - name: Run Psalm
-        run: composer run psalm-check
+        run: composer psalm-check
         working-directory: ./Website/htdocs/mpmanager
         continue-on-error: true

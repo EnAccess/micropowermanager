@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http;
+namespace Inensus\MesombPaymentProvider\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Inensus\MesombPaymentProvider\Http\Middleware\MesombTransactionRequest;

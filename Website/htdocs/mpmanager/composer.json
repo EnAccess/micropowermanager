@@ -65,7 +65,6 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/",
       "Inensus\\Ticket\\": "packages/inensus/ticket/src",
       "Inensus\\SparkMeter\\": "packages/inensus/spark-meter/src",
       "Inensus\\SteamaMeter\\": "packages/inensus/steama-meter/src",

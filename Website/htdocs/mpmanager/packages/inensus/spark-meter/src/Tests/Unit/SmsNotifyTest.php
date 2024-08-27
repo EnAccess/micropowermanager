@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\SteamaMeter\Test\Unit;
+namespace Inensus\SparkMeter\Tests\Unit;
 
 use App\Models\Address\Address;
 use App\Models\MainSettings;
@@ -20,17 +20,16 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use Inensus\SteamaMeter\Models\SteamaCustomer;
-use Inensus\SteamaMeter\Models\SteamaMeter;
-use Inensus\SteamaMeter\Models\SteamaSetting;
-use Inensus\SteamaMeter\Models\SteamaSmsBody;
-use Inensus\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
-use Inensus\SteamaMeter\Models\SteamaSmsSetting;
-use Inensus\SteamaMeter\Models\SteamaSyncAction;
-use Inensus\SteamaMeter\Models\SteamaSyncSetting;
-use Inensus\SteamaMeter\Models\SteamaTransaction;
-use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
-use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
+use Inensus\SparkMeter\Models\SmCustomer;
+use Inensus\SparkMeter\Models\SmSetting;
+use Inensus\SparkMeter\Models\SmSmsBody;
+use Inensus\SparkMeter\Models\SmSmsNotifiedCustomer;
+use Inensus\SparkMeter\Models\SmSmsSetting;
+use Inensus\SparkMeter\Models\SmSyncAction;
+use Inensus\SparkMeter\Models\SmSyncSetting;
+use Inensus\SparkMeter\Models\SmTransaction;
+use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
+use Inensus\SparkMeter\Sms\SparkSmsTypes;
 use Tests\TestCase;
 
 class SmsNotifyTest extends TestCase
@@ -42,12 +41,12 @@ class SmsNotifyTest extends TestCase
     {
         Queue::fake();
         $this->initializeData();
-        $lowBalanceMin = SteamaSmsSetting::query()->where(
+        $lowBalanceMin = SmSmsSetting::query()->where(
             'state',
             'Low Balance Warning'
         )->first()->not_send_elder_than_mins;
 
-        $customers = SteamaCustomer::query()->with([
+        $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
             return $q->where('is_primary', 1);
@@ -57,7 +56,7 @@ class SmsNotifyTest extends TestCase
             Carbon::now()->subMinutes($lowBalanceMin)
         )->get();
 
-        $smsNotifiedCustomers = SteamaSmsNotifiedCustomer::query()->get();
+        $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
@@ -80,8 +79,9 @@ class SmsNotifyTest extends TestCase
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SteamaSmsConfig::class);
-            SteamaSmsNotifiedCustomer::query()->create([
+            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
+
+            SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
                 'notify_type' => 'low_balance',
             ]);
@@ -95,35 +95,34 @@ class SmsNotifyTest extends TestCase
     {
         Queue::fake();
         $data = $this->initializeData();
-        $this->initializeSteamaTransaction($data['customer'], $data['meter']);
-        $transactionMin = SteamaSmsSetting::query()->where(
+        $this->initializeSparkTransaction($data['customer']);
+        $transactionMin = SmSmsSetting::query()->where(
             'state',
             'Transactions'
         )->first()->not_send_elder_than_mins;
-        $smsNotifiedCustomers = SteamaSmsNotifiedCustomer::query()->get();
-        $customers = SteamaCustomer::query()->with([
+        $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
+        $customers = SmCustomer::query()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
             return $q->where('is_primary', 1);
         })->get();
-
-        SteamaTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
+        SmTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
             Carbon::now()->subMinutes($transactionMin)
-        )->where('category', 'PAY')->get()->each(function ($steamaTransaction) use (
+        )->where('status', 'processed')->get()->each(function ($sparkTransaction) use (
             $smsNotifiedCustomers,
             $customers
         ) {
             $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                 'notify_id',
-                $steamaTransaction->id
-            )->where('customer_id', $steamaTransaction->customer_id)->first();
+                $sparkTransaction->id
+            )->where('customer_id', $sparkTransaction->customer_id)->first();
             if ($smsNotifiedCustomers) {
                 return true;
             }
-            $notifyCustomer = $customers->filter(function ($customer) use ($steamaTransaction) {
-                return $customer->customer_id == $steamaTransaction->customer_id;
+            $notifyCustomer = $customers->filter(function ($customer) use ($sparkTransaction) {
+                return $customer->customer_id == $sparkTransaction->customer_id;
             })->first();
             if (!$notifyCustomer) {
                 return true;
@@ -136,11 +135,12 @@ class SmsNotifyTest extends TestCase
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($steamaTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
-            SteamaSmsNotifiedCustomer::query()->create([
+            $smsService->sendSms($sparkTransaction->thirdPartyTransaction->transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
+
+            SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $notifyCustomer->customer_id,
                 'notify_type' => 'transaction',
-                'notify_id' => $steamaTransaction->id,
+                'notify_id' => $sparkTransaction->id,
             ]);
 
             return true;
@@ -153,11 +153,11 @@ class SmsNotifyTest extends TestCase
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
-        $syncActions = SteamaSyncAction::query()->where('next_sync', '<=', Carbon::now())
+        $syncActions = SmSyncAction::query()->where('next_sync', '<=', Carbon::now())
             ->orderBy('next_sync')->get();
         $oldNextSync = $syncActions->first()->next_sync;
         $newNextSync = null;
-        SteamaSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions, $newNextSync) {
+        SmSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions) {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
 
             if (!$syncAction) {
@@ -166,7 +166,6 @@ class SmsNotifyTest extends TestCase
             if ($syncAction->attempts >= $syncSetting->max_attempts) {
                 $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
                 $syncAction->next_sync = $nextSync;
-                $newNextSync = $nextSync;
                 $adminAddress = Address::query()->whereHasMorph(
                     'owner',
                     [User::class]
@@ -180,14 +179,12 @@ class SmsNotifyTest extends TestCase
                          It is going to be retried at '.$nextSync,
                     'phone' => $adminAddress->phone,
                 ];
-
                 $smsService = app()->make(SmsService::class);
                 $smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
             }
 
             return true;
         });
-
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
@@ -212,9 +209,9 @@ class SmsNotifyTest extends TestCase
 
         // create calin manufacturer
         Manufacturer::query()->create([
-            'name' => 'CALIN',
-            'website' => 'http://www.calinmeter.com/',
-            'api_name' => 'CalinApi',
+            'name' => 'Spark Meters',
+            'website' => 'https://www.sparkmeter.io/',
+            'api_name' => 'SparkMeterApi',
         ]);
 
         // create meter
@@ -233,63 +230,53 @@ class SmsNotifyTest extends TestCase
             'connection_type_id' => 1,
             'connection_group_id' => 1,
         ]);
-        $steamaMeter = SteamaMeter::query()->create([
-            'meter_id' => 'Test_Meter',
-            'customer_id' => $p->id,
-            'bit_harvester_id' => 1,
-            'mpm_meter_id' => $p->meters[0]->id,
-            'hash' => 'xxxx',
-        ]);
+
         // associate address with a person
         $address = Address::query()->make([
-            'phone' => '+905396398161',
+            'phone' => '+905494322161',
             'is_primary' => 1,
             'owner_type' => 'person',
         ]);
         $address->owner()->associate($p);
         $address->save();
-        SteamaCustomer::query()->create([
+        SmCustomer::query()->create([
             'site_id' => 1,
-            'user_type_id' => 1,
-            'customer_id' => $p->id,
-            'mpm_customer_id' => 1,
-            'energy_price' => 1,
-            'account_balance' => 100,
-            'low_balance_warning' => 150,
+            'customer_id' => 1,
+            'mpm_customer_id' => $p->id,
+            'credit_balance' => 100,
+            'low_balance_limit' => 150,
             'hash' => 'xxxxxxxxx',
         ]);
 
-        return ['customer' => $p, 'meter' => $steamaMeter];
+        return ['customer' => $p];
     }
 
-    private function initializeSteamaTransaction($customer, $steamaMeter)
+    private function initializeSparkTransaction($customer)
     {
-        $steamaTransaction = SteamaTransaction::query()->create([
-            'transaction_id' => '1111',
+        $sparkTransaction = SmTransaction::query()->create([
             'site_id' => 1,
             'customer_id' => $customer->id,
-            'amount' => 1000,
-            'category' => 'PAY',
-            'provider' => 'AP',
-            'timestamp' => Carbon::now(),
-            'synchronization_status' => 'processed',
+            'transaction_id' => '1111',
+            'status' => 'processed',
+            'timestamp' => Carbon::now()->toIso8601ZuluString(),
+            'external_id' => null,
         ]);
 
         $thirdPartyTransaction = ThirdPartyTransaction::query()->make([
-            'transaction_id' => $steamaTransaction->id,
+            'transaction_id' => $sparkTransaction->id,
             'status' => 1,
             'description' => 'description',
         ]);
-        $thirdPartyTransaction->manufacturerTransaction()->associate($steamaTransaction);
+        $thirdPartyTransaction->manufacturerTransaction()->associate($sparkTransaction);
         $thirdPartyTransaction->save();
 
         $transaction = Transaction::query()->make([
-            'amount' => (int) $steamaTransaction->amount,
-            'sender' => '05396398161',
-            'message' => $steamaMeter->mpmMeter->serial_number,
+            'amount' => 1000,
+            'sender' => '905494322161',
+            'message' => $customer->meters[0]->meter->serial_number,
             'type' => 'energy',
-            'created_at' => $steamaTransaction->timestamp,
-            'updated_at' => $steamaTransaction->timestamp,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
         $transaction->originalTransaction()->associate($thirdPartyTransaction);
         $transaction->save();
@@ -299,7 +286,7 @@ class SmsNotifyTest extends TestCase
     {
         $user = factory(User::class)->create();
         $address = Address::query()->make([
-            'phone' => '+905396398161',
+            'phone' => '+905494322161',
             'is_primary' => 1,
             'owner_type' => 'admin',
         ]);
@@ -309,9 +296,9 @@ class SmsNotifyTest extends TestCase
 
     private function addSmsSettings()
     {
-        $smsSetting = SteamaSetting::query()->make();
+        $smsSetting = SmSetting::query()->make();
 
-        $smsTransaction = SteamaSmsSetting::query()->create([
+        $smsTransaction = SmSmsSetting::query()->create([
             'state' => 'Transactions',
             'not_send_elder_than_mins' => 5,
         ]);
@@ -319,8 +306,8 @@ class SmsNotifyTest extends TestCase
         $smsSetting->setting()->associate($smsTransaction);
         $smsSetting->save();
 
-        $balanceSetting = SteamaSetting::query()->make();
-        $smsLowBalanceWarning = SteamaSmsSetting::query()->create([
+        $balanceSetting = SmSetting::query()->make();
+        $smsLowBalanceWarning = SmSmsSetting::query()->create([
             'id' => 2,
             'state' => 'Low Balance Warning',
             'not_send_elder_than_mins' => 5,
@@ -336,8 +323,8 @@ class SmsNotifyTest extends TestCase
     {
         $minInterval = CarbonInterval::make('1minute');
         $now = Carbon::now();
-        $siteSetting = SteamaSetting::query()->make();
-        $syncSite = SteamaSyncSetting::query()->create([
+        $siteSetting = SmSetting::query()->make();
+        $syncSite = SmSyncSetting::query()->create([
             'action_name' => 'Sites',
             'sync_in_value_str' => 'minute',
             'sync_in_value_num' => 1,
@@ -350,7 +337,7 @@ class SmsNotifyTest extends TestCase
             'attempts' => 2,
             'next_sync' => $now->sub($minInterval),
         ];
-        SteamaSyncAction::query()->create($syncAction);
+        SmSyncAction::query()->create($syncAction);
     }
 
     private function addSmsBodies()
@@ -454,27 +441,27 @@ class SmsNotifyTest extends TestCase
         }
         $smsBodies = [
             [
-                'reference' => 'SteamaSmsLowBalanceHeader',
+                'reference' => 'SparkSmsLowBalanceHeader',
                 'place_holder' => 'Dear [name] [surname],',
                 'variables' => 'name,surname',
                 'title' => 'Sms Header',
             ],
             [
-                'reference' => 'SteamaSmsLowBalanceBody',
-                'place_holder' => 'your credit balance has reduced under [low_balance_warning],
-                 your currently balance is [account_balance]',
-                'variables' => 'low_balance_warning,account_balance',
+                'reference' => 'SparkSmsLowBalanceBody',
+                'place_holder' => 'your credit balance has reduced under [low_balance_limit],
+                 your currently balance is [credit_balance]',
+                'variables' => 'low_balance_limit,credit_balance',
                 'title' => 'Low Balance Limit Notify',
             ],
             [
-                'reference' => 'SteamaSmsLowBalanceFooter',
+                'reference' => 'SparkSmsLowBalanceFooter',
                 'place_holder' => 'Your Company etc.',
                 'variables' => '',
                 'title' => 'Sms Footer',
             ],
         ];
         collect($smsBodies)->each(function ($smsBody) {
-            SteamaSmsBody::query()->create([
+            SmSmsBody::query()->create([
                 'reference' => $smsBody['reference'],
                 'place_holder' => $smsBody['place_holder'],
                 'body' => $smsBody['place_holder'],

@@ -1,5 +1,7 @@
 <?php
 
+namespace Inensus\BulkRegistration\Exceptions;
+
 class GoogleMapsApiException extends Exception
 {
     public function render($request)

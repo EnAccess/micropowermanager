@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Inensus\KelinMeter\Tests\Feature;
 
 use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;

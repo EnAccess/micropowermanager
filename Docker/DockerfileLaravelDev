@@ -40,9 +40,9 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
 
 COPY configuration/webserver/sites-enabled/000-default.conf /etc/apache2/sites-enabled
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+COPY entrypoint-dev.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-dev.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint-dev.sh"]
 
 RUN a2enmod ssl
 RUN a2enmod rewrite

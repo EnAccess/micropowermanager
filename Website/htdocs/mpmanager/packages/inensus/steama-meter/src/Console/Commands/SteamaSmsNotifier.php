@@ -9,13 +9,13 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Inensus\SteamaMeter\Exceptions\CronJobException;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsSettingService;
 use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
-use Inensus\StemaMeter\Exceptions\CronJobException;
 
 class SteamaSmsNotifier extends AbstractSharedCommand
 {
