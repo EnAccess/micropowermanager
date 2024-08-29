@@ -1,13 +1,13 @@
 <template>
-    <Meter value="" />
+  <Meter value="" />
 </template>
 
 <script>
-import Meter from '@/modules/Meter/Meter.vue'
+import Meter from "@/modules/Meter/Meter.vue"
 
 export default {
-    name: 'MeterPage',
-    components: { Meter },
+  name: "MeterPage",
+  components: { Meter },
 }
 </script>
 

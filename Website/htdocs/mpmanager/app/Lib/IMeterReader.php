@@ -2,12 +2,6 @@
 
 namespace App\Lib;
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 09.10.18
- * Time: 10:38.
- */
 interface IMeterReader
 {
     /**

@@ -11,8 +11,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class DatabaseProxyManagerService
 {
-    public function __construct(private DatabaseProxy $databaseProxy, private DatabaseManager $databaseManager, private CompanyDatabase $companyDatabase)
-    {
+    public function __construct(
+        private DatabaseProxy $databaseProxy,
+        private DatabaseManager $databaseManager,
+        private CompanyDatabase $companyDatabase
+    ) {
     }
 
     public function findByEmail(string $email): DatabaseProxy
@@ -31,6 +34,11 @@ class DatabaseProxyManagerService
     public function queryAllConnections(): Builder
     {
         return $this->companyDatabase->newQuery();
+    }
+
+    public function buildDatabaseConnectionByCompanyId(int $company_id): void
+    {
+        $this->buildDatabaseConnection('DummyCompany_1');
     }
 
     private function buildDatabaseConnection(string $databaseName): void

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Services\ISolarService;
+use App\Services\Interfaces\ISolarService;
 
 class SolarController extends Controller
 {

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property int $fk_company_id
  */
-class DatabaseProxy extends MasterModel
+class DatabaseProxy extends BaseModelCore
 {
     public const COL_DATABASE_CONNECTION = 'database_connection';
     public const COL_COMPANY_ID = 'fk_company_id';

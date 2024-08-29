@@ -1,12 +1,12 @@
 <template>
-    <AgentCommissionList />
+  <AgentCommissionList />
 </template>
 
 <script>
-import AgentCommissionList from '@/modules/Agent/Commission/AgentCommissionList.vue'
+import AgentCommissionList from "@/modules/Agent/Commission/AgentCommissionList.vue"
 
 export default {
-    name: 'AgentCommissionsPage',
-    components: { AgentCommissionList },
+  name: "AgentCommissionsPage",
+  components: { AgentCommissionList },
 }
 </script>

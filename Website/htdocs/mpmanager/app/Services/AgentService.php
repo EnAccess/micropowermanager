@@ -6,26 +6,26 @@ use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentReceipt;
+use App\Services\Interfaces\IBaseService;
 use Complex\Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Agent>
+ */
 class AgentService implements IBaseService
 {
     public function __construct(
         private Agent $agent,
         private AgentReceipt $agentReceipt,
         private AgentBalanceHistory $agentBalanceHistory,
-        private PeriodService $periodService
+        private PeriodService $periodService,
+        private PersonService $personService
     ) {
     }
 
-    /**
-     * @param string $email
-     *
-     * @return int|string
-     */
     public function resetPassword(string $email)
     {
         try {
@@ -94,19 +94,19 @@ class AgentService implements IBaseService
         return $this->agent->newQuery()->find(auth('agent_api')->user()->id);
     }
 
-    public function getById($id)
+    public function getById(int $id): Agent
     {
         return $this->agent->newQuery()
             ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $id)->firstOrFail();
     }
 
-    public function delete($agent)
+    public function delete($agent): ?bool
     {
         return $agent->delete();
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->agent->newQuery()
@@ -120,7 +120,7 @@ class AgentService implements IBaseService
     }
 
     public function create(
-        $agentData,
+        array $agentData,
         $addressData = null,
         $personData = null,
         $country = null,
@@ -128,7 +128,7 @@ class AgentService implements IBaseService
         $countryService = null,
         $personService = null,
         $personAddressService = null,
-    ) {
+    ): Agent {
         $person = $personService->create($personData);
 
         if ($country !== null) {
@@ -146,22 +146,16 @@ class AgentService implements IBaseService
         return $this->agent->newQuery()->create($agentData);
     }
 
-    /**
-     * @param $agent
-     * @param $data
-     *
-     * @return Model|Builder
-     */
-    public function update($agent, $agentData, $personService = null)
+    public function update($agent, array $agentData): Agent
     {
-        $person = $personService->getById($agentData['personId']);
+        $person = $this->personService->getById($agentData['personId']);
         $personData = [
             'name' => $agentData['name'],
             'surname' => $agentData['surname'],
             'sex' => $agentData['gender'],
             'birth_date' => $agentData['birthday'],
         ];
-        $person = $personService->update($person, $personData);
+        $person = $this->personService->update($person, $personData);
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->phone = $agentData['phone'];
         $address->update();

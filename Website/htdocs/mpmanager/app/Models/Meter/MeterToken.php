@@ -2,7 +2,7 @@
 
 namespace App\Models\Meter;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\PaymentHistory;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Builder;

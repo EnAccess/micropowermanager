@@ -4,11 +4,19 @@ namespace App\Services;
 
 use App\Models\Cluster;
 use App\Models\MiniGrid;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<MiniGrid>
+ */
 class MiniGridService implements IBaseService
 {
-    public function __construct(private MiniGrid $miniGrid, private Cluster $cluster)
-    {
+    public function __construct(
+        private MiniGrid $miniGrid,
+        private Cluster $cluster
+    ) {
     }
 
     public function getByIdWithLocation($miniGridId)
@@ -48,7 +56,7 @@ class MiniGridService implements IBaseService
         return $miniGrid;
     }
 
-    public function getAll($limit = null, $dataStream = null)
+    public function getAll(?int $limit = null, $dataStream = null): Collection|LengthAwarePaginator
     {
         $miniGrids = $this->miniGrid->newQuery()->with(['location']);
         if ($dataStream) {
@@ -62,8 +70,8 @@ class MiniGridService implements IBaseService
         return $miniGrids->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

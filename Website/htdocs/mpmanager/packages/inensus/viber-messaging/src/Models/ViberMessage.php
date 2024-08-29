@@ -2,7 +2,7 @@
 
 namespace Inensus\ViberMessaging\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class ViberMessage extends BaseModel
 {

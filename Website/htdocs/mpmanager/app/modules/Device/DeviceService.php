@@ -3,11 +3,15 @@
 namespace MPM\Device;
 
 use App\Models\Device;
-use App\Services\IAssociative;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
+/**
+ * @implements IBaseService<Device>
+ * @implements IAssociative<Device>
+ */
 class DeviceService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -17,7 +21,6 @@ class DeviceService implements IBaseService, IAssociative
 
     public function make($deviceData): Device
     {
-        /** @var Device $result */
         $result = $this->device->newQuery()->create([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
@@ -28,7 +31,6 @@ class DeviceService implements IBaseService, IAssociative
 
     public function getBySerialNumber($serialNumber): ?Device
     {
-        /** @var Device|null $result */
         $result = $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
@@ -37,22 +39,26 @@ class DeviceService implements IBaseService, IAssociative
         return $result;
     }
 
-    public function save($device)
+    public function save($device): bool
     {
         return $device->save();
     }
 
-    public function getById($id)
+    public function getById(int $id): Device
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method getById() not yet implemented.');
+
+        return new Device();
     }
 
-    public function create($data)
+    public function create(array $data): Device
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method create() not yet implemented.');
+
+        return new Device();
     }
 
-    public function update($device, $deviceData)
+    public function update($device, array $deviceData): Device
     {
         $device->update($deviceData);
         $device->fresh();
@@ -60,12 +66,12 @@ class DeviceService implements IBaseService, IAssociative
         return $device;
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        throw new \Exception('Not implemented');
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->device->newQuery()->with(['person', 'device'])->paginate($limit);

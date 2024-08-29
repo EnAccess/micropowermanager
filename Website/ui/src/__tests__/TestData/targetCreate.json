@@ -1,271 +1,271 @@
 {
-    "period": "2021-03-30T21:00:00.000Z",
-    "targetType": "cluster",
-    "targetId": 14,
-    "data": [
-        {
-            "id": 1,
-            "name": "Household",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 2,
-            "name": "Community",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 3,
-            "name": "Cafeterias and Pubs",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 4,
-            "name": "Hair Dressers ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 5,
-            "name": "Churches & Mosques ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 6,
-            "name": "Solar Excess ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 7,
-            "name": "H.H Cus ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 8,
-            "name": "FOOD AND BEVERAGES ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 9,
-            "name": "SHOPS w",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 10,
-            "name": "SCHOOLS ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 11,
-            "name": "HEALTH CENTRES & INSTITUTIONS ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 12,
-            "name": "GUEST HOUSES ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 13,
-            "name": "ENTERTAINMENT CENTRES ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 14,
-            "name": "Mobile Charging, OFFICES and Stationery ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 15,
-            "name": "Small scale HATCHERIES ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 16,
-            "name": "Laundry ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 17,
-            "name": "Freezing Units ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 18,
-            "name": "Wood work ",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 19,
-            "name": "Mills",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 20,
-            "name": "Welders",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 21,
-            "name": "Drinking Water Project",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 22,
-            "name": "Bakery",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 23,
-            "name": "Not ordered yet",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        },
-        {
-            "id": 24,
-            "name": "default connection group",
-            "target": {
-                "newConnection": 0,
-                "totalRevenue": 0,
-                "connectedPower": 0,
-                "energyPerMonth": 0,
-                "averageRevenuePerMonth": 0
-            }
-        }
-    ]
+  "period": "2021-03-30T21:00:00.000Z",
+  "targetType": "cluster",
+  "targetId": 14,
+  "data": [
+    {
+      "id": 1,
+      "name": "Household",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 2,
+      "name": "Community",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 3,
+      "name": "Cafeterias and Pubs",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 4,
+      "name": "Hair Dressers ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 5,
+      "name": "Churches & Mosques ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 6,
+      "name": "Solar Excess ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 7,
+      "name": "H.H Cus ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 8,
+      "name": "FOOD AND BEVERAGES ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 9,
+      "name": "SHOPS w",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 10,
+      "name": "SCHOOLS ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 11,
+      "name": "HEALTH CENTRES & INSTITUTIONS ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 12,
+      "name": "GUEST HOUSES ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 13,
+      "name": "ENTERTAINMENT CENTRES ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 14,
+      "name": "Mobile Charging, OFFICES and Stationery ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 15,
+      "name": "Small scale HATCHERIES ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 16,
+      "name": "Laundry ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 17,
+      "name": "Freezing Units ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 18,
+      "name": "Wood work ",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 19,
+      "name": "Mills",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 20,
+      "name": "Welders",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 21,
+      "name": "Drinking Water Project",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 22,
+      "name": "Bakery",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 23,
+      "name": "Not ordered yet",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    },
+    {
+      "id": 24,
+      "name": "default connection group",
+      "target": {
+        "newConnection": 0,
+        "totalRevenue": 0,
+        "connectedPower": 0,
+        "energyPerMonth": 0,
+        "averageRevenuePerMonth": 0
+      }
+    }
+  ]
 }

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 02.10.18
- * Time: 10:44.
- */
-
 namespace App\Http\Controllers;
 
 use App\Models\Transaction\Transaction;

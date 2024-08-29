@@ -3,16 +3,21 @@
 namespace MPM\EBike;
 
 use App\Models\EBike;
-use App\Services\IBaseService;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<EBike>
+ */
 class EBikeService implements IBaseService
 {
-    public function __construct(private EBike $eBike)
-    {
+    public function __construct(
+        private EBike $eBike
+    ) {
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
@@ -21,12 +26,12 @@ class EBikeService implements IBaseService
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
-    public function getById($id)
+    public function getById(int $id): EBike
     {
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->find($id);
     }
 
-    public function create($data)
+    public function create(array $data): EBike
     {
         return $this->eBike->newQuery()->create($data);
     }
@@ -50,9 +55,12 @@ class EBikeService implements IBaseService
             )->paginate($paginate);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): EBike
     {
-        return $model->newQuery()->update($data);
+        $model->newQuery()->update($data);
+        $model->fresh();
+
+        return $model;
     }
 
     public function getBySerialNumber($serialNumber)
@@ -64,8 +72,8 @@ class EBikeService implements IBaseService
             )->first();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

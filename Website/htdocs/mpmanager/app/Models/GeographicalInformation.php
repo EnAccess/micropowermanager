@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -11,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class GeographicalInformation extends BaseModel
 {
+    use HasFactory;
+
     protected $table = 'geographical_informations';
 
     public function owner(): MorphTo

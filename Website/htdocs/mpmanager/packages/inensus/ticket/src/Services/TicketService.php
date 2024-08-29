@@ -3,14 +3,18 @@
 namespace Inensus\Ticket\Services;
 
 use App\Models\Agent;
-use App\Services\IAssociative;
+use App\Services\Interfaces\IAssociative;
 use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\Ticket;
 
+/**
+ * @implements IAssociative<Ticket>
+ */
 class TicketService implements IAssociative
 {
-    public function __construct(private Ticket $ticket)
-    {
+    public function __construct(
+        private Ticket $ticket
+    ) {
     }
 
     public function create(
@@ -116,12 +120,12 @@ class TicketService implements IAssociative
         return $tickets;
     }
 
-    public function make($ticketData)
+    public function make(array $ticketData): Ticket
     {
         return $this->ticket->newQuery()->make($ticketData);
     }
 
-    public function save($ticket)
+    public function save($ticket): bool
     {
         return $ticket->save();
     }

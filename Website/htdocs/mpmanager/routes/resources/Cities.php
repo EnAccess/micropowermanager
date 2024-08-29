@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 05.07.18
- * Time: 17:30.
- */
 
 use Illuminate\Support\Facades\Route;
 

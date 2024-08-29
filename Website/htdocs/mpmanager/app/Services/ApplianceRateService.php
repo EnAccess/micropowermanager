@@ -9,7 +9,9 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-class ApplianceRateService implements IBaseService
+// FIXME:
+// class ApplianceRateService implements IBaseService
+class ApplianceRateService
 {
     public function __construct(
         private AssetRate $applianceRate,
@@ -87,9 +89,9 @@ class ApplianceRateService implements IBaseService
             ->get();
     }
 
-    public function getById($id)
+    public function getById(int $id): AssetRate
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
     public function create($assetPerson, $installmentType = 'monthly'): void
@@ -132,19 +134,19 @@ class ApplianceRateService implements IBaseService
         }
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AssetRate
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate

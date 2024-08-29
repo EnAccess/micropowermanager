@@ -1,283 +1,283 @@
 {
+  "data": {
     "data": {
-        "data": {
-            "target": {
-                "targets": {
-                    "Household": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Community": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Cafeterias and Pubs": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Hair Dressers ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Churches & Mosques ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Solar Excess ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "H.H Cus ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "FOOD AND BEVERAGES ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "SHOPS w": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "SCHOOLS ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "HEALTH CENTRES & INSTITUTIONS ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "GUEST HOUSES ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "ENTERTAINMENT CENTRES ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Mobile Charging, OFFICES and Stationery ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Small scale HATCHERIES ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Laundry ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Freezing Units ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Wood work ": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Mills": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Welders": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Drinking Water Project": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Bakery": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "Not ordered yet": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    },
-                    "default connection group": {
-                        "new_connections": "-",
-                        "revenue": "-",
-                        "connected_power": "-",
-                        "energy_per_month": "-",
-                        "average_revenue_per_month": "-"
-                    }
-                }
-            },
-            "total_connections": {
-                "Household": 5,
-                "Community": 1,
-                "Cafeterias and Pubs": 1,
-                "Hair Dressers ": 1,
-                "Churches & Mosques ": 0,
-                "Solar Excess ": 1,
-                "H.H Cus ": 2,
-                "FOOD AND BEVERAGES ": 1,
-                "SHOPS w": 1,
-                "SCHOOLS ": 1,
-                "HEALTH CENTRES & INSTITUTIONS ": 1,
-                "GUEST HOUSES ": 0,
-                "ENTERTAINMENT CENTRES ": 1,
-                "Mobile Charging, OFFICES and Stationery ": 1,
-                "Small scale HATCHERIES ": 1,
-                "Laundry ": 1,
-                "Freezing Units ": 1,
-                "Wood work ": 1,
-                "Mills": 0,
-                "Welders": 1,
-                "Drinking Water Project": 1,
-                "Bakery": 1,
-                "Not ordered yet": 1,
-                "default connection group": 0
-            },
-            "new_connections": {
-                "Household": 0,
-                "Community": 0,
-                "Cafeterias and Pubs": 0,
-                "Hair Dressers ": 0,
-                "Churches & Mosques ": 0,
-                "Solar Excess ": 0,
-                "H.H Cus ": 0,
-                "FOOD AND BEVERAGES ": 0,
-                "SHOPS w": 0,
-                "SCHOOLS ": 0,
-                "HEALTH CENTRES & INSTITUTIONS ": 0,
-                "GUEST HOUSES ": 0,
-                "ENTERTAINMENT CENTRES ": 0,
-                "Mobile Charging, OFFICES and Stationery ": 0,
-                "Small scale HATCHERIES ": 0,
-                "Laundry ": 0,
-                "Freezing Units ": 0,
-                "Wood work ": 0,
-                "Mills": 0,
-                "Welders": 0,
-                "Drinking Water Project": 0,
-                "Bakery": 0,
-                "Not ordered yet": 0,
-                "default connection group": 0
-            },
-            "revenue": {
-                "Household": 0,
-                "Community": 0,
-                "Cafeterias and Pubs": 0,
-                "Hair Dressers ": 0,
-                "Churches & Mosques ": 0,
-                "Solar Excess ": 0,
-                "H.H Cus ": 0,
-                "FOOD AND BEVERAGES ": 0,
-                "SHOPS w": 0,
-                "SCHOOLS ": 0,
-                "HEALTH CENTRES & INSTITUTIONS ": 0,
-                "GUEST HOUSES ": 0,
-                "ENTERTAINMENT CENTRES ": 0,
-                "Mobile Charging, OFFICES and Stationery ": 0,
-                "Small scale HATCHERIES ": 0,
-                "Laundry ": 0,
-                "Freezing Units ": 0,
-                "Wood work ": 0,
-                "Mills": 0,
-                "Welders": 0,
-                "Drinking Water Project": 0,
-                "Bakery": 0,
-                "Not ordered yet": 0,
-                "default connection group": 0
-            },
-            "averages": {
-                "Household": "-",
-                "Community": "-",
-                "Cafeterias and Pubs": "-",
-                "Hair Dressers ": "-",
-                "Churches & Mosques ": "-",
-                "Solar Excess ": "-",
-                "H.H Cus ": "-",
-                "FOOD AND BEVERAGES ": "-",
-                "SHOPS w": "-",
-                "SCHOOLS ": "-",
-                "HEALTH CENTRES & INSTITUTIONS ": "-",
-                "GUEST HOUSES ": "-",
-                "ENTERTAINMENT CENTRES ": "-",
-                "Mobile Charging, OFFICES and Stationery ": "-",
-                "Small scale HATCHERIES ": "-",
-                "Laundry ": "-",
-                "Freezing Units ": "-",
-                "Wood work ": "-",
-                "Mills": "-",
-                "Welders": "-",
-                "Drinking Water Project": "-",
-                "Bakery": "-",
-                "Not ordered yet": "-",
-                "default connection group": "-"
-            }
+      "target": {
+        "targets": {
+          "Household": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Community": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Cafeterias and Pubs": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Hair Dressers ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Churches & Mosques ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Solar Excess ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "H.H Cus ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "FOOD AND BEVERAGES ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "SHOPS w": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "SCHOOLS ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "HEALTH CENTRES & INSTITUTIONS ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "GUEST HOUSES ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "ENTERTAINMENT CENTRES ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Mobile Charging, OFFICES and Stationery ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Small scale HATCHERIES ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Laundry ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Freezing Units ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Wood work ": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Mills": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Welders": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Drinking Water Project": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Bakery": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "Not ordered yet": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          },
+          "default connection group": {
+            "new_connections": "-",
+            "revenue": "-",
+            "connected_power": "-",
+            "energy_per_month": "-",
+            "average_revenue_per_month": "-"
+          }
         }
-    },
-    "status": 200
+      },
+      "total_connections": {
+        "Household": 5,
+        "Community": 1,
+        "Cafeterias and Pubs": 1,
+        "Hair Dressers ": 1,
+        "Churches & Mosques ": 0,
+        "Solar Excess ": 1,
+        "H.H Cus ": 2,
+        "FOOD AND BEVERAGES ": 1,
+        "SHOPS w": 1,
+        "SCHOOLS ": 1,
+        "HEALTH CENTRES & INSTITUTIONS ": 1,
+        "GUEST HOUSES ": 0,
+        "ENTERTAINMENT CENTRES ": 1,
+        "Mobile Charging, OFFICES and Stationery ": 1,
+        "Small scale HATCHERIES ": 1,
+        "Laundry ": 1,
+        "Freezing Units ": 1,
+        "Wood work ": 1,
+        "Mills": 0,
+        "Welders": 1,
+        "Drinking Water Project": 1,
+        "Bakery": 1,
+        "Not ordered yet": 1,
+        "default connection group": 0
+      },
+      "new_connections": {
+        "Household": 0,
+        "Community": 0,
+        "Cafeterias and Pubs": 0,
+        "Hair Dressers ": 0,
+        "Churches & Mosques ": 0,
+        "Solar Excess ": 0,
+        "H.H Cus ": 0,
+        "FOOD AND BEVERAGES ": 0,
+        "SHOPS w": 0,
+        "SCHOOLS ": 0,
+        "HEALTH CENTRES & INSTITUTIONS ": 0,
+        "GUEST HOUSES ": 0,
+        "ENTERTAINMENT CENTRES ": 0,
+        "Mobile Charging, OFFICES and Stationery ": 0,
+        "Small scale HATCHERIES ": 0,
+        "Laundry ": 0,
+        "Freezing Units ": 0,
+        "Wood work ": 0,
+        "Mills": 0,
+        "Welders": 0,
+        "Drinking Water Project": 0,
+        "Bakery": 0,
+        "Not ordered yet": 0,
+        "default connection group": 0
+      },
+      "revenue": {
+        "Household": 0,
+        "Community": 0,
+        "Cafeterias and Pubs": 0,
+        "Hair Dressers ": 0,
+        "Churches & Mosques ": 0,
+        "Solar Excess ": 0,
+        "H.H Cus ": 0,
+        "FOOD AND BEVERAGES ": 0,
+        "SHOPS w": 0,
+        "SCHOOLS ": 0,
+        "HEALTH CENTRES & INSTITUTIONS ": 0,
+        "GUEST HOUSES ": 0,
+        "ENTERTAINMENT CENTRES ": 0,
+        "Mobile Charging, OFFICES and Stationery ": 0,
+        "Small scale HATCHERIES ": 0,
+        "Laundry ": 0,
+        "Freezing Units ": 0,
+        "Wood work ": 0,
+        "Mills": 0,
+        "Welders": 0,
+        "Drinking Water Project": 0,
+        "Bakery": 0,
+        "Not ordered yet": 0,
+        "default connection group": 0
+      },
+      "averages": {
+        "Household": "-",
+        "Community": "-",
+        "Cafeterias and Pubs": "-",
+        "Hair Dressers ": "-",
+        "Churches & Mosques ": "-",
+        "Solar Excess ": "-",
+        "H.H Cus ": "-",
+        "FOOD AND BEVERAGES ": "-",
+        "SHOPS w": "-",
+        "SCHOOLS ": "-",
+        "HEALTH CENTRES & INSTITUTIONS ": "-",
+        "GUEST HOUSES ": "-",
+        "ENTERTAINMENT CENTRES ": "-",
+        "Mobile Charging, OFFICES and Stationery ": "-",
+        "Small scale HATCHERIES ": "-",
+        "Laundry ": "-",
+        "Freezing Units ": "-",
+        "Wood work ": "-",
+        "Mills": "-",
+        "Welders": "-",
+        "Drinking Water Project": "-",
+        "Bakery": "-",
+        "Not ordered yet": "-",
+        "default connection group": "-"
+      }
+    }
+  },
+  "status": 200
 }

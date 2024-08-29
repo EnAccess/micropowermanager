@@ -27,7 +27,7 @@ class MeterTariffMeterParameterService
         return ['count' => $count];
     }
 
-    public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo): array
+    public function changeMetersTariff($meterTariffIdFrom, $meterTariffIdTo)
     {
         return $this->meterParameter->newQuery()->where('tariff_id', $meterTariffIdFrom)
             ->get()

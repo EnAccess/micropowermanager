@@ -1,43 +1,43 @@
 body {
-    letter-spacing: unset;
-    // background: #fdfdfe;
-    color: $black-color;
+  letter-spacing: unset;
+  // background: #fdfdfe;
+  color: $black-color;
 
-    &.inverse {
-        background: #333333;
+  &.inverse {
+    background: #333333;
 
-        &,
-        .form-control {
-            color: $mdb-text-color-light;
-        }
-
-        .modal,
-        .panel-default,
-        .card {
-            &,
-            .form-control {
-                background-color: initial;
-                color: initial;
-            }
-        }
+    &,
+    .form-control {
+      color: $mdb-text-color-light;
     }
+
+    .modal,
+    .panel-default,
+    .card {
+      &,
+      .form-control {
+        background-color: initial;
+        color: initial;
+      }
+    }
+  }
 }
 
 .wrapper {
-    &.wrapper-full-page {
-        height: auto;
-        min-height: 100vh;
-    }
+  &.wrapper-full-page {
+    height: auto;
+    min-height: 100vh;
+  }
 }
 
 blockquote {
-    p {
-        font-style: italic;
-    }
+  p {
+    font-style: italic;
+  }
 }
 
 .life-of-material-dashboard {
-    background: #ffffff;
+  background: #ffffff;
 }
 
 body,
@@ -51,90 +51,90 @@ h6,
 .h2,
 .h3,
 .h4 {
-    font-family: $font-family-sans-serif;
-    font-weight: 300;
-    line-height: 1.5em;
+  font-family: $font-family-sans-serif;
+  font-weight: 300;
+  line-height: 1.5em;
 }
 
 .serif-font {
-    font-family: $font-family-serif;
+  font-family: $font-family-serif;
 }
 
 .page-header {
-    height: 60vh;
-    background-position: center center;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+  height: 60vh;
+  background-position: center center;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 a {
-    color: $link-color;
+  color: $link-color;
 
+  &:hover,
+  &:focus {
+    color: darken($link-color, 5%) !important;
+    text-decoration: none !important;
+  }
+
+  &.text-info {
     &:hover,
     &:focus {
-        color: darken($link-color, 5%) !important;
-        text-decoration: none !important;
+      color: darken($brand-info, 5%);
     }
+  }
 
-    &.text-info {
-        &:hover,
-        &:focus {
-            color: darken($brand-info, 5%);
-        }
-    }
-
-    & .material-icons {
-        vertical-align: middle;
-    }
+  & .material-icons {
+    vertical-align: middle;
+  }
 }
 
-a[data-toggle='collapse'][aria-expanded='true'] .caret {
-    @include rotate-180();
+a[data-toggle="collapse"][aria-expanded="true"] .caret {
+  @include rotate-180();
 }
 
 .sidebar .nav a,
 .caret,
 .sidebar .dropdown .dropdown-menu li a {
-    @include transition($fast-transition-time, $transition-ease-in);
+  @include transition($fast-transition-time, $transition-ease-in);
 }
 
 /*           Animations              */
 .animation-transition-general {
-    @include transition($general-transition-time, $transition-linear);
+  @include transition($general-transition-time, $transition-linear);
 }
 
 .animation-transition-slow {
-    @include transition($slow-transition-time, $transition-linear);
+  @include transition($slow-transition-time, $transition-linear);
 }
 
 .animation-transition-fast {
-    @include transition($fast-transition-time, $transition-ease);
+  @include transition($fast-transition-time, $transition-ease);
 }
 
 legend {
-    border-bottom: 0;
+  border-bottom: 0;
 }
 
 .pull-left {
-    float: left;
+  float: left;
 }
 
 .pull-right {
-    float: right;
+  float: right;
 }
 
 // Prevent highlight on mobile
 * {
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-    -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
 
-    &:focus {
-        outline: 0;
-    }
+  &:focus {
+    outline: 0;
+  }
 }
 
 a:focus,
@@ -143,34 +143,34 @@ button:active,
 button:focus,
 button:hover,
 button::-moz-focus-inner,
-input[type='reset']::-moz-focus-inner,
-input[type='button']::-moz-focus-inner,
-input[type='submit']::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
 select::-moz-focus-inner,
-input[type='file'] > input[type='button']::-moz-focus-inner {
-    outline: 0 !important;
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+  outline: 0 !important;
 }
 
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 
 .text-left {
-    text-align: left;
+  text-align: left;
 }
 
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 .places-buttons {
-    .md-button {
-        width: 30%;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+  .md-button {
+    width: 30%;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 
 .md-theme-default :not(input):not(textarea)::selection {
-    background-color: #c8c8c8 !important;
+  background-color: #c8c8c8 !important;
 }

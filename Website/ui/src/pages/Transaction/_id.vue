@@ -1,11 +1,11 @@
 <template>
-    <Transaction />
+  <Transaction />
 </template>
 
 <script>
-import Transaction from '@/modules/Transactions/Transaction.vue'
+import Transaction from "@/modules/Transactions/Transaction.vue"
 export default {
-    name: 'TransactionPage',
-    components: { Transaction },
+  name: "TransactionPage",
+  components: { Transaction },
 }
 </script>

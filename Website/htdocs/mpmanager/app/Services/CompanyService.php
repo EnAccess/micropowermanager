@@ -3,11 +3,17 @@
 namespace App\Services;
 
 use App\Models\Company;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @implements IBaseService<Company>
+ */
 class CompanyService implements IBaseService
 {
-    public function __construct(private Company $company)
-    {
+    public function __construct(
+        private Company $company
+    ) {
     }
 
     public function getByName($name): Company
@@ -22,7 +28,6 @@ class CompanyService implements IBaseService
 
     public function getById($id): Company
     {
-        /** @var Company $result */
         $result = $this->company->newQuery()->findOrFail($id);
 
         return $result;
@@ -30,24 +35,23 @@ class CompanyService implements IBaseService
 
     public function create($data): Company
     {
-        /** @var Company $company */
         $company = $this->company->newQuery()->create($data);
 
         return $company;
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Company
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

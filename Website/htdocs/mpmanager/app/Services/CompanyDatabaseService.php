@@ -3,69 +3,71 @@
 namespace App\Services;
 
 use App\Models\CompanyDatabase;
-use Database\Seeders\DatabaseSeeder;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
+/**
+ * @implements IBaseService<CompanyDatabase>
+ */
 class CompanyDatabaseService implements IBaseService
 {
-    public function __construct(private CompanyDatabase $companyDatabase)
-    {
+    public function __construct(
+        private CompanyDatabase $companyDatabase,
+        private DatabaseProxyManagerService $databaseProxyManagerService
+    ) {
     }
 
-    public function getById($id): CompanyDatabase
+    public function getById(int $id): CompanyDatabase
     {
-        /** @var CompanyDatabase $result */
         $result = $this->companyDatabase->newQuery()->find($id);
 
         return $result;
     }
 
-    public function create($data): CompanyDatabase
+    public function create(array $data): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
-        $result = $this->companyDatabase->newQuery()->create($data);
+        $company_database = $this->companyDatabase->newQuery()->create($data);
+        $database_name = $company_database->database_name;
+        $company_id = $company_database->company_id;
 
-        return $result;
+        // Do we need to sanitise inputs here?
+        // if (preg_match('/^[a-zA-Z0-9_]+$/', $database_name)) {
+        //     DB::unprepared('CREATE DATABASE IF NOT EXISTS `'.addslashes($database_name).'`');
+        // } else {
+        //     throw new \Exception('Invalid database name');
+        // }
+        DB::unprepared("CREATE DATABASE IF NOT EXISTS $database_name");
+
+        $this->databaseProxyManagerService->runForCompany(
+            $company_id,
+            function () {
+                Artisan::call('migrate', [
+                    '--database' => 'shard',
+                    '--path' => '/database/migrations/micropowermanager',
+                ]);
+            }
+        );
+
+        return $company_database;
     }
 
-    public function update($model, $data): void
+    public function update($model, array $data): CompanyDatabase
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): void
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function getAll($limit = null): void
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
-    }
-
-    public function createNewDatabaseForCompany(string $databaseName, int $companyId): void
-    {
-        $sourcePath = __DIR__.'/../../';
-        shell_exec(__DIR__.'/../../database_creator.sh --database='
-            .$databaseName.' --user=root --path='.$sourcePath.' --company_id='.$companyId);
-    }
-
-    public function doMigrations(): void
-    {
-        Artisan::call('migrate', [
-            '--force' => true,
-            '--database' => 'shard',
-            '--path' => '/database/migrations/micropowermanager',
-        ]);
-    }
-
-    public function runSeeders(): void
-    {
-        Artisan::call('db:seed', [
-            '--force' => true,
-            '--class' => DatabaseSeeder::class,
-        ]);
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 
     public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null): void

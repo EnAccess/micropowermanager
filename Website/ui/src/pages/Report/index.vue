@@ -1,13 +1,13 @@
 <template>
-    <Reports />
+  <Reports />
 </template>
 
 <script>
-import Reports from '@/modules/ExportedReports/Reports'
+import Reports from "@/modules/ExportedReports/Reports"
 
 export default {
-    name: 'ReportsPage',
-    components: { Reports },
+  name: "ReportsPage",
+  components: { Reports },
 }
 </script>
 

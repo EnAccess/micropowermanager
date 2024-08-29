@@ -1,91 +1,91 @@
-import { ErrorHandler } from '@/Helpers/ErrorHander'
-import SmsBodiesRepository from '../repositories/SmsBodiesRepository'
+import { ErrorHandler } from "@/Helpers/ErrorHander"
+import SmsBodiesRepository from "../repositories/SmsBodiesRepository"
 
 export class SmsBodiesService {
-    constructor() {
-        this.repository = SmsBodiesRepository
-        this.lowBalanceNotifierList = []
-        this.balanceFeedbacksList = []
-        this.smsBody = {
-            id: null,
-            reference: null,
-            body: '',
-            placeholder: null,
-            title: null,
-            variables: [],
-            validation: false,
-        }
+  constructor() {
+    this.repository = SmsBodiesRepository
+    this.lowBalanceNotifierList = []
+    this.balanceFeedbacksList = []
+    this.smsBody = {
+      id: null,
+      reference: null,
+      body: "",
+      placeholder: null,
+      title: null,
+      variables: [],
+      validation: false,
     }
+  }
 
-    fromJson(smsBodies) {
-        this.lowBalanceNotifierList = []
-        this.balanceFeedbacksList = []
-        for (let s in smsBodies) {
-            let smsBody = {
-                id: smsBodies[s].id,
-                reference: smsBodies[s].reference,
-                body: smsBodies[s].body ?? '',
-                title: smsBodies[s].title,
-                placeholder: smsBodies[s].place_holder,
-                variables: smsBodies[s].variables.split(','),
-            }
-            smsBody.validation = smsBody.body.length > 0
-            if (smsBody.reference.includes('LowBalance')) {
-                this.lowBalanceNotifierList.push(smsBody)
-            } else {
-                this.balanceFeedbacksList.push(smsBody)
-            }
-        }
+  fromJson(smsBodies) {
+    this.lowBalanceNotifierList = []
+    this.balanceFeedbacksList = []
+    for (let s in smsBodies) {
+      let smsBody = {
+        id: smsBodies[s].id,
+        reference: smsBodies[s].reference,
+        body: smsBodies[s].body ?? "",
+        title: smsBodies[s].title,
+        placeholder: smsBodies[s].place_holder,
+        variables: smsBodies[s].variables.split(","),
+      }
+      smsBody.validation = smsBody.body.length > 0
+      if (smsBody.reference.includes("LowBalance")) {
+        this.lowBalanceNotifierList.push(smsBody)
+      } else {
+        this.balanceFeedbacksList.push(smsBody)
+      }
     }
+  }
 
-    async getSmsBodies() {
-        try {
-            let response = await this.repository.list()
-            if (response.status === 200) {
-                this.fromJson(response.data.data)
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
-        } catch (e) {
-            let erorMessage = e.response.data.message
-            return new ErrorHandler(erorMessage, 'http')
-        }
+  async getSmsBodies() {
+    try {
+      let response = await this.repository.list()
+      if (response.status === 200) {
+        this.fromJson(response.data.data)
+        return response.data.data
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let erorMessage = e.response.data.message
+      return new ErrorHandler(erorMessage, "http")
     }
+  }
 
-    async updateSmsBodies(tabName) {
-        try {
-            let smsBodiesPM = []
-            if (tabName === 'notification-settings') {
-                this.lowBalanceNotifierList.forEach((e) => {
-                    let smsBody = {
-                        id: e.id,
-                        reference: e.reference,
-                        body: e.body,
-                    }
-                    smsBodiesPM.push(smsBody)
-                })
-            } else {
-                this.balanceFeedbacksList.forEach((e) => {
-                    let smsBody = {
-                        id: e.id,
-                        reference: e.reference,
-                        body: e.body,
-                    }
-                    smsBodiesPM.push(smsBody)
-                })
-            }
+  async updateSmsBodies(tabName) {
+    try {
+      let smsBodiesPM = []
+      if (tabName === "notification-settings") {
+        this.lowBalanceNotifierList.forEach((e) => {
+          let smsBody = {
+            id: e.id,
+            reference: e.reference,
+            body: e.body,
+          }
+          smsBodiesPM.push(smsBody)
+        })
+      } else {
+        this.balanceFeedbacksList.forEach((e) => {
+          let smsBody = {
+            id: e.id,
+            reference: e.reference,
+            body: e.body,
+          }
+          smsBodiesPM.push(smsBody)
+        })
+      }
 
-            let response = await this.repository.update(smsBodiesPM)
-            if (response.status === 200) {
-                this.fromJson(response.data.data)
-                return response.data.data
-            } else {
-                return new ErrorHandler(response.error, 'http', response.status)
-            }
-        } catch (e) {
-            let errorMessage = e.response.data.message
-            return new ErrorHandler(errorMessage, 'http')
-        }
+      let response = await this.repository.update(smsBodiesPM)
+      if (response.status === 200) {
+        this.fromJson(response.data.data)
+        return response.data.data
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
     }
+  }
 }

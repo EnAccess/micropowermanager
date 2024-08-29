@@ -3,11 +3,17 @@
 namespace App\Services;
 
 use App\Models\Restriction;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @implements IBaseService<Restriction>
+ */
 class RestrictionService implements IBaseService
 {
-    public function __construct(private Restriction $restriction)
-    {
+    public function __construct(
+        private Restriction $restriction
+    ) {
     }
 
     public function getRestrictionForTarget($target)
@@ -15,28 +21,28 @@ class RestrictionService implements IBaseService
         return $this->restriction->newQuery()->where('target', $target)->firstOrFail();
     }
 
-    public function getById($id)
+    public function getById(int $id): Restriction
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($data)
+    public function create(array $data): Restriction
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Restriction
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

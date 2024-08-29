@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -20,6 +22,8 @@ use MPM\Target\TargetAssignable;
  */
 class MiniGrid extends BaseModel implements TargetAssignable
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];
 

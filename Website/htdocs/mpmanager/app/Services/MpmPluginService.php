@@ -3,11 +3,18 @@
 namespace App\Services;
 
 use App\Models\MpmPlugin;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<MpmPlugin>
+ */
 class MpmPluginService implements IBaseService
 {
-    public function __construct(private MpmPlugin $mpmPlugin)
-    {
+    public function __construct(
+        private MpmPlugin $mpmPlugin
+    ) {
     }
 
     public function getById($id): MpmPlugin
@@ -18,22 +25,22 @@ class MpmPluginService implements IBaseService
         return $result;
     }
 
-    public function create($data)
+    public function create(array $data): MpmPlugin
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): MpmPlugin
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->mpmPlugin->newQuery()

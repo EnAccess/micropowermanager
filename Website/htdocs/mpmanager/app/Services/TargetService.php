@@ -40,7 +40,7 @@ class TargetService
         return $target;
     }
 
-    public function getAll($limit = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(

@@ -6,11 +6,15 @@ use App\Models\Asset;
 use App\Models\EBike;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
-use App\Services\IAssociative;
-use App\Services\IBaseService;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
+/**
+ * @implements IAssociative<Transaction>
+ * @implements IBaseService<Transaction>
+ */
 class TransactionService implements IAssociative, IBaseService
 {
     public const YESTERDAY = 0;
@@ -243,17 +247,17 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function make($transactionData)
+    public function make(array $transactionData): Transaction
     {
         return $this->transaction->newQuery()->make($transactionData);
     }
 
-    public function save($transaction)
+    public function save($transaction): bool
     {
-        $transaction->save();
+        return $transaction->save();
     }
 
-    public function getById($id)
+    public function getById(int $id): Transaction
     {
         return $this->transaction->newQuery()->with([
             'token',
@@ -264,7 +268,7 @@ class TransactionService implements IAssociative, IBaseService
             'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
     }
 
-    public function getAll($limit = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
@@ -273,18 +277,18 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->latest()->get();
     }
 
-    public function create($data)
+    public function create(array $data): Transaction
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Transaction
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

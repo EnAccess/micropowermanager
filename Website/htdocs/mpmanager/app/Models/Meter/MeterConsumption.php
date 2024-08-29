@@ -2,7 +2,7 @@
 
 namespace App\Models\Meter;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**

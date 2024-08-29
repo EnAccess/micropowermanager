@@ -4,12 +4,15 @@ namespace MPM\Device;
 
 use App\Models\Address\Address;
 use App\Models\Device;
-use App\Services\IAssignationService;
+use App\Services\Interfaces\IAssignationService;
 
+/**
+ * @implements IAssignationService<Address, Device>
+ */
 class DeviceAddressService implements IAssignationService
 {
-    private Device $device;
     private Address $address;
+    private Device $device;
 
     public function setAssigned($assigned): void
     {
@@ -30,7 +33,6 @@ class DeviceAddressService implements IAssignationService
 
     public function getAddressByDevice(Device $device): ?Address
     {
-        /** @var Address|null $result */
         $result = Address::query()->with('geo')
             ->where('owner_id', $device->id)
             ->where('owner_type', 'device')

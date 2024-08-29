@@ -2,7 +2,7 @@
 
 namespace Inensus\SteamaMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class SteamaSmsBody extends BaseModel
 {

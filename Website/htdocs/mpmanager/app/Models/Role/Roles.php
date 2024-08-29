@@ -1,15 +1,8 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 13.07.18
- * Time: 13:46.
- */
-
 namespace App\Models\Role;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 

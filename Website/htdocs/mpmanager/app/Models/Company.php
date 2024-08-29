@@ -2,23 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int    $id
  * @property string $name;
  */
-class Company extends MasterModel
+class Company extends BaseModelCore
 {
     use HasFactory;
 
     public const COL_ID = 'id';
 
     // has many Users
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
+    // public function users()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
 
     // has one company database
     public function database()

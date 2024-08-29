@@ -2,7 +2,7 @@
 
 namespace App\Models\AccessRate;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

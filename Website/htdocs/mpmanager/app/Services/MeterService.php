@@ -3,13 +3,18 @@
 namespace App\Services;
 
 use App\Models\Meter\Meter;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Meter>
+ */
 class MeterService implements IBaseService
 {
-    public function __construct(private Meter $meter)
-    {
+    public function __construct(
+        private Meter $meter
+    ) {
     }
 
     public function getBySerialNumber($serialNumber)
@@ -65,7 +70,7 @@ class MeterService implements IBaseService
             ->where('in_use', 1)->get();
     }
 
-    public function create($meterData)
+    public function create(array $meterData): Meter
     {
         return $this->meter->newQuery()->create([
             'serial_number' => $meterData['serial_number'],
@@ -78,7 +83,7 @@ class MeterService implements IBaseService
         ]);
     }
 
-    public function getById($meterId)
+    public function getById(int $meterId): Meter
     {
         return $this->meter->newQuery()->with([
             'tariff',
@@ -90,12 +95,12 @@ class MeterService implements IBaseService
         ])->find($meterId);
     }
 
-    public function delete($meter)
+    public function delete($meter): ?bool
     {
         return $meter->delete();
     }
 
-    public function getAll($limit = null, $inUse = true)
+    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator
     {
         if (isset($inUse)) {
             return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
@@ -107,7 +112,7 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with(['meterType', 'tariff'])->paginate($limit);
     }
 
-    public function update($meter, $meterData)
+    public function update($meter, array $meterData): Meter
     {
         $meter->update($meterData);
         $meter->fresh();

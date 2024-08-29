@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 17.08.18
- * Time: 11:12.
- */
 
 namespace Inensus\Ticket\Interfaces;
 

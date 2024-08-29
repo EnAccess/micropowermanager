@@ -3,14 +3,21 @@
 namespace App\Services;
 
 use App\Models\AgentAssignedAppliances;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AgentAssignedAppliances>
+ */
 class AgentAssignedApplianceService implements IBaseService
 {
-    public function __construct(private AgentAssignedAppliances $agentAssignedAppliance)
-    {
+    public function __construct(
+        private AgentAssignedAppliances $agentAssignedAppliance
+    ) {
     }
 
-    public function create($applianceData)
+    public function create(array $applianceData): AgentAssignedAppliances
     {
         return $this->agentAssignedAppliance->newQuery()->create([
             'agent_id' => $applianceData['agent_id'],
@@ -20,22 +27,22 @@ class AgentAssignedApplianceService implements IBaseService
         ]);
     }
 
-    public function getById($id)
+    public function getById(int $id): AgentAssignedAppliances
     {
         return $this->agentAssignedAppliance->newQuery()->with('applianceType')->find($id);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AgentAssignedAppliances
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null, $agentId = null)
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
         $query = $this->agentAssignedAppliance->newQuery();
 

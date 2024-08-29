@@ -3,8 +3,16 @@
 namespace App\Services;
 
 use App\Models\AgentBalanceHistory;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @implements IBaseService<AgentBalanceHistory>
+ * @implements IAssociative<AgentBalanceHistory>
+ */
 class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -13,7 +21,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
     ) {
     }
 
-    public function getAll($limit = null, $agentId = null)
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
         $query = $this->agentBalanceHistory->newQuery()
             ->whereHasMorph(
@@ -30,19 +38,19 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $query->latest()->get();
     }
 
-    public function create($agentBalanceHistoryData)
+    public function create(array $agentBalanceHistoryData): AgentBalanceHistory
     {
         return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
 
-    public function make($agentBalanceHistoryData)
+    public function make(array $agentBalanceHistoryData): AgentBalanceHistory
     {
         return $this->agentBalanceHistory->newQuery()->make($agentBalanceHistoryData);
     }
 
-    public function save($agentBalanceHistory)
+    public function save($agentBalanceHistory): bool
     {
-        $agentBalanceHistory->save();
+        return $agentBalanceHistory->save();
     }
 
     public function getLastAgentBalanceHistory($agentId)
@@ -176,18 +184,18 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $p;
     }
 
-    public function getById($id)
+    public function getById($id): AgentBalanceHistory
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, $data): AgentBalanceHistory
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

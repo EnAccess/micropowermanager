@@ -1,13 +1,13 @@
 <template>
-    <SolarHomeSystems />
+  <SolarHomeSystems />
 </template>
 
 <script>
-import SolarHomeSystems from '@/modules/SolarHomeSystem/SolarHomeSystems.vue'
+import SolarHomeSystems from "@/modules/SolarHomeSystem/SolarHomeSystems.vue"
 
 export default {
-    name: 'SolarHomeSystemsPage',
-    components: { SolarHomeSystems },
+  name: "SolarHomeSystemsPage",
+  components: { SolarHomeSystems },
 }
 </script>
 

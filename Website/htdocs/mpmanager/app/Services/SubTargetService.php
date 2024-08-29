@@ -3,19 +3,27 @@
 namespace App\Services;
 
 use App\Models\SubTarget;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @implements IBaseService<SubTarget>
+ */
 class SubTargetService implements IBaseService
 {
-    public function __construct(private SubTarget $subTarget)
-    {
+    public function __construct(
+        private SubTarget $subTarget
+    ) {
     }
 
-    public function getById($id)
+    public function getById(int $id): SubTarget
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
+
+        return new SubTarget();
     }
 
-    public function create($subTargetData)
+    public function create(array $subTargetData): SubTarget
     {
         $targetId = $subTargetData['targetId'];
 
@@ -30,20 +38,24 @@ class SubTargetService implements IBaseService
                 'average_revenue_per_month' => $data['target']['averageRevenuePerMonth'],
             ]);
         }
+
+        return $this->subTarget;
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): SubTarget
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
+
+        return new SubTarget();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

@@ -3,34 +3,43 @@
 namespace App\Services;
 
 use App\Models\Token;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Token>
+ */
 class TokenService implements IBaseService
 {
-    public function __construct(private Token $token)
-    {
+    public function __construct(
+        private Token $token
+    ) {
     }
 
-    public function getById($id)
+    public function getById(int $id): Token
     {
         return $this->token->newQuery()->find($id);
     }
 
-    public function create($data)
+    public function create(array $data): Token
     {
         return $this->token->newQuery()->create($data);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): Token
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
+
+        return new Token();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->token->newQuery()->paginate($limit);

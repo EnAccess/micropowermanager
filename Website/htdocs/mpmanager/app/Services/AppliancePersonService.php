@@ -7,7 +7,15 @@ use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\MainSettings;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<AssetPerson>
+ * @implements IAssociative<AssetPerson>
+ */
 class AppliancePersonService implements IBaseService, IAssociative
 {
     public function __construct(
@@ -17,14 +25,14 @@ class AppliancePersonService implements IBaseService, IAssociative
     ) {
     }
 
-    public function make($data)
+    public function make(array $data): AssetPerson
     {
         return $this->assetPerson->newQuery()->make($data);
     }
 
-    public function save($appliancePerson)
+    public function save($appliancePerson): bool
     {
-        $appliancePerson->save();
+        return $appliancePerson->save();
     }
 
     private function checkDownPaymentIsBigger($downPayment, $cost)
@@ -162,27 +170,27 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $this->assetPerson->newQuery()->where('person_id', $customerId);
     }
 
-    public function getById($id)
+    public function getById(int $id): AssetPerson
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($data)
+    public function create(array $data): AssetPerson
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): AssetPerson
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);
