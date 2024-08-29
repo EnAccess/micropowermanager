@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 
 import AuthenticationRepository from '../repositories/AuthenticationRepository'
 

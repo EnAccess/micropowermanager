@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import MeterRepository from '@/repositories/MeterRepository'
 
 export class MeterService {

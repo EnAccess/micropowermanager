@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import SalesAccountRepository from '../repositories/SalesAccountRepository'
 
 export class SalesAccountService {

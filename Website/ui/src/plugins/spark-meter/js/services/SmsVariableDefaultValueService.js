@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import SmsVariableDefaultValueRepository from '../repositories/SmsVariableDefaultValueRepository'
 
 export class SmsVariableDefaultValueService {

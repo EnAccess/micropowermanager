@@ -54,7 +54,7 @@
 
 <script>
 import { AgentService } from '@/services/AgentService'
-import agentLogo from '../../assets/icons/agent-icon.png'
+import agentLogo from '@/assets/icons/agent-icon.png'
 export default {
     name: 'AgentTransactionDetail',
     props: ['ot'],

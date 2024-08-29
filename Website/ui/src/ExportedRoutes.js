@@ -773,145 +773,28 @@ export const exportedRoutes = [
         ],
     },
     {
-        path: '/calin-meters',
-        component: ChildRouteWrapper,
+        path: '/e-bikes',
+        component: EBikeList,
         meta: {
+            layout: 'default',
             sidebar: {
                 enabled: true,
-                name: 'Calin Meter',
-                icon: 'bolt',
+                name: 'E-Bikes',
+                icon: 'electric_bike',
             },
         },
-        children: [
-            {
-                path: 'calin-overview',
-                component: CalinMeterOverview,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Overview',
-                    },
-                },
-            },
-        ],
     },
-    {
-        path: '/calin-smart-meters',
-        component: ChildRouteWrapper,
-        meta: {
-            sidebar: {
-                enabled: true,
-                name: 'CalinSmart Meter',
-                icon: 'bolt',
-            },
-        },
-        children: [
-            {
-                path: 'calin-smart-overview',
-                component: CalinSmartMeterOverview,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Overview',
-                    },
-                },
-            },
-        ],
-    },
-    {
-        path: '/kelin-meters',
-        component: ChildRouteWrapper,
-        meta: {
-            sidebar: {
-                enabled: true,
-                name: 'Kelin Meter',
-                icon: 'bolt',
-            },
-        },
-        children: [
-            {
-                path: 'kelin-overview',
-                component: KelinMeterOverview,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Overview',
-                    },
-                },
-            },
-            {
-                path: 'kelin-customer',
-                component: KelinMeterCustomerList,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Customers',
-                    },
-                },
-            },
-            {
-                path: 'kelin-setting',
-                component: KelinMeterSettings,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Settings',
-                    },
-                },
-            },
-            {
-                path: 'kelin-meter',
-                component: ChildRouteWrapper,
-                meta: {
-                    sidebar: {
-                        enabled: true,
-                        name: 'Meters',
-                    },
-                },
-                children: [
-                    {
-                        path: '',
-                        component: KelinMeterList,
-                        meta: {
-                            layout: 'default',
-                        },
-                    },
-                    {
-                        path: 'status/:meter',
-                        component: KelinMeterStatus,
-                        meta: {
-                            layout: 'default',
-                        },
-                    },
-                    {
-                        path: 'daily-consumptions/:meter',
-                        component: KelinMeterConsumptionDaily,
-                        meta: {
-                            layout: 'default',
-                        },
-                    },
-                    {
-                        path: 'minutely-consumptions/:meter',
-                        component: KelinMeterConsumptionMinutely,
-                        meta: {
-                            layout: 'default',
-                        },
-                    },
-                ],
-            },
-        ],
-    },
+    /**
+     *
+     * PLUGIN ROUTES
+     *
+     */
     {
         path: '/spark-meters',
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 1,
                 name: 'Spark Meter',
                 icon: 'bolt',
             },
@@ -1016,7 +899,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 2,
                 name: 'SteamaCo Meter',
                 icon: 'bolt',
             },
@@ -1098,11 +981,145 @@ export const exportedRoutes = [
         ],
     },
     {
+        path: '/calin-meters',
+        component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled_by_mpm_plugin_id: 3,
+                name: 'Calin Meter',
+                icon: 'bolt',
+            },
+        },
+        children: [
+            {
+                path: 'calin-overview',
+                component: CalinMeterOverview,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
+            },
+        ],
+    },
+    {
+        path: '/calin-smart-meters',
+        component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled_by_mpm_plugin_id: 4,
+                name: 'CalinSmart Meter',
+                icon: 'bolt',
+            },
+        },
+        children: [
+            {
+                path: 'calin-smart-overview',
+                component: CalinSmartMeterOverview,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
+            },
+        ],
+    },
+    {
+        path: '/kelin-meters',
+        component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled_by_mpm_plugin_id: 5,
+                name: 'Kelin Meter',
+                icon: 'bolt',
+            },
+        },
+        children: [
+            {
+                path: 'kelin-overview',
+                component: KelinMeterOverview,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
+            },
+            {
+                path: 'kelin-customer',
+                component: KelinMeterCustomerList,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Customers',
+                    },
+                },
+            },
+            {
+                path: 'kelin-setting',
+                component: KelinMeterSettings,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Settings',
+                    },
+                },
+            },
+            {
+                path: 'kelin-meter',
+                component: ChildRouteWrapper,
+                meta: {
+                    sidebar: {
+                        enabled: true,
+                        name: 'Meters',
+                    },
+                },
+                children: [
+                    {
+                        path: '',
+                        component: KelinMeterList,
+                        meta: {
+                            layout: 'default',
+                        },
+                    },
+                    {
+                        path: 'status/:meter',
+                        component: KelinMeterStatus,
+                        meta: {
+                            layout: 'default',
+                        },
+                    },
+                    {
+                        path: 'daily-consumptions/:meter',
+                        component: KelinMeterConsumptionDaily,
+                        meta: {
+                            layout: 'default',
+                        },
+                    },
+                    {
+                        path: 'minutely-consumptions/:meter',
+                        component: KelinMeterConsumptionMinutely,
+                        meta: {
+                            layout: 'default',
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
         path: '/stron-meters',
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 6,
                 name: 'Stron Meter',
                 icon: 'bolt',
             },
@@ -1122,11 +1139,37 @@ export const exportedRoutes = [
         ],
     },
     {
+        path: '/swifta-payment',
+        component: ChildRouteWrapper,
+        meta: {
+            sidebar: {
+                enabled_by_mpm_plugin_id: 7,
+                name: 'Swifta',
+                icon: 'money',
+            },
+        },
+        children: [
+            {
+                path: 'swifta-payment-overview',
+                component: SwiftaOverview,
+                meta: {
+                    layout: 'default',
+                    sidebar: {
+                        enabled: true,
+                        name: 'Overview',
+                    },
+                },
+            },
+        ],
+    },
+    // FIXME: Where is mpm_plugin_id = 8?
+    // Seems to be a plugin called "MesombPayment"
+    {
         path: '/bulk-registration/bulk-registration',
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 9,
                 name: 'Bulk Registration',
                 icon: 'upload_file',
             },
@@ -1146,7 +1189,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 10,
                 name: 'Viber Messaging',
                 icon: 'message',
             },
@@ -1170,7 +1213,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 11,
                 name: 'WaveMoney',
                 icon: 'money',
             },
@@ -1212,7 +1255,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 12,
                 name: 'MicroStar Meter',
                 icon: 'bolt',
             },
@@ -1231,36 +1274,13 @@ export const exportedRoutes = [
             },
         ],
     },
-    {
-        path: '/swifta-payment',
-        component: ChildRouteWrapper,
-        meta: {
-            sidebar: {
-                enabled: true,
-                name: 'Swifta',
-                icon: 'money',
-            },
-        },
-        children: [
-            {
-                path: 'swifta-payment-overview',
-                component: SwiftaOverview,
-                meta: {
-                    layout: 'default',
-                    sidebar: {
-                        enabled: true,
-                        name: 'Overview',
-                    },
-                },
-            },
-        ],
-    },
+
     {
         path: '/sun-king-shs',
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 13,
                 name: 'SunKing SHS',
                 icon: 'bolt',
             },
@@ -1284,7 +1304,7 @@ export const exportedRoutes = [
         component: ChildRouteWrapper,
         meta: {
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 14,
                 name: 'GomeLong Meter',
                 icon: 'bolt',
             },
@@ -1309,21 +1329,9 @@ export const exportedRoutes = [
         meta: {
             layout: 'default',
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 15,
                 name: 'Wavecom Payment Provider',
                 icon: 'upload_file',
-            },
-        },
-    },
-    {
-        path: '/e-bikes',
-        component: EBikeList,
-        meta: {
-            layout: 'default',
-            sidebar: {
-                enabled: true,
-                name: 'E-Bikes',
-                icon: 'electric_bike',
             },
         },
     },
@@ -1333,7 +1341,7 @@ export const exportedRoutes = [
         meta: {
             layout: 'default',
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 16,
                 name: 'Daly BMS',
                 icon: 'charging_station',
             },
@@ -1358,7 +1366,7 @@ export const exportedRoutes = [
         meta: {
             layout: 'default',
             sidebar: {
-                enabled: true,
+                enabled_by_mpm_plugin_id: 17,
                 name: 'Angaza SHS',
                 icon: 'bolt',
             },

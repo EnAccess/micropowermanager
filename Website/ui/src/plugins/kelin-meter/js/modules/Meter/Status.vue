@@ -155,21 +155,22 @@
                 </div>
             </div>
         </widget>
-        <redirection
+        <redirection-modal
             :redirection-url="redirectionUrl"
             :dialog-active="redirectDialogActive"
+            :imperative-item="'valid API Credentials'"
         />
     </div>
 </template>
 
 <script>
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { StatusService } from '../../services/StatusService'
 import { CredentialService } from '../../services/CredentialService'
-import Redirection from '../Shared/Redirection'
+import RedirectionModal from '@/shared/RedirectionModal'
 
 export default {
-    components: { Widget, Redirection },
+    components: { Widget, RedirectionModal },
     name: 'Status',
     data() {
         return {

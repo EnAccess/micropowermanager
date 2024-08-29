@@ -1,8 +1,8 @@
-import { baseUrl } from './Client/AxiosClient'
+import { baseUrl } from '@/repositories/Client/AxiosClient'
 
 const resource = `${baseUrl}/api/auth`
 
-import Client from './Client/AxiosClient'
+import Client from '@/repositories/Client/AxiosClient'
 
 export default {
     login(user) {

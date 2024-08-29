@@ -1,4 +1,4 @@
-import Client from './Client/AxiosClient'
+import Client from '@/repositories/Client/AxiosClient'
 const resource = {
     openStreetSearch: 'https://nominatim.openstreetmap.org/search.php?q=',
 }

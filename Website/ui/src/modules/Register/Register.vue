@@ -666,14 +666,10 @@ export default {
             )
             try {
                 this.loading = true
-                let response = await this.companyService.register(
-                    this.companyForm,
-                )
+                await this.companyService.register(this.companyForm)
                 this.loading = false
-                await this.$store.dispatch(
-                    'settings/setSidebar',
-                    response.sidebarData,
-                )
+
+                await this.$store.dispatch('settings/fetchPlugins')
                 const email = this.companyForm.user.email
                 const password = this.companyForm.user.password
 

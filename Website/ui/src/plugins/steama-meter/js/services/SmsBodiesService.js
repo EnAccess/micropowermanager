@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import SmsBodiesRepository from '../repositories/SmsBodiesRepository'
 
 export class SmsBodiesService {

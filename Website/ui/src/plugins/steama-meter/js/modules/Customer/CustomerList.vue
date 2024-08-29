@@ -127,24 +127,25 @@
             </md-table>
         </widget>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
-        <redirection
+        <redirection-modal
             :redirection-url="redirectionUrl"
             :dialog-active="redirectDialogActive"
+            :imperative-item="'valid API Credentials'"
         />
     </div>
 </template>
 
 <script>
-import Redirection from '../Shared/Redirection'
+import RedirectionModal from '@/shared/RedirectionModal'
 import { SiteService } from '../../services/SiteService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 import { CredentialService } from '../../services/CredentialService'
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { CustomerService } from '../../services/CustomerService'
 
 export default {
     name: 'CustomerList',
-    components: { Redirection, Widget },
+    components: { RedirectionModal, Widget },
     data() {
         return {
             credentialService: new CredentialService(),

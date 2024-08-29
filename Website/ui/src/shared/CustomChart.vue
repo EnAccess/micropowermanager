@@ -31,7 +31,7 @@
                         <img
                             width="200px"
                             align="center"
-                            src="../assets/spinner/spinner.gif"
+                            src="@/assets/spinner/spinner.gif"
                             alt=""
                         />
                     </div>
