@@ -84,36 +84,39 @@
                     </div>
                     <div v-else class="loading-state">
                         <div>
-                            <img
-                                src="../../../../../assets/spinner/spinner.gif"
-                                alt=""
-                            />
+                            <img src="@/assets/spinner/spinner.gif" alt="" />
                         </div>
                     </div>
                 </div>
             </md-card-content>
         </md-card>
         <md-toolbar class="md-dense" md-elevation="1" v-if="paginator">
-            <paginator
+            <paginator-legacy
                 :route_name="route_name"
                 :show_per_page="show_per_page"
                 :subscriber="subscriber"
                 :url="paging_url"
                 v-if="paginator"
                 :key="resetKey"
-            ></paginator>
+            ></paginator-legacy>
         </md-toolbar>
     </div>
 </template>
 
 <script>
-import { EventBus } from '../../eventbus'
-import Paginator from './Paginator'
+import { EventBus } from '@/shared/eventbus'
+import PaginatorLegacy from '@/shared/PaginatorLegacy'
 
 const debounce = require('debounce')
+/**
+ * Legacy Widget component
+ *
+ * DEPRECATED: Used in some older plugins and components.
+ * New components should use to more flexible Widget component.
+ */
 export default {
     name: 'Widget',
-    components: { Paginator },
+    components: { PaginatorLegacy },
     props: {
         emptyStateDescription: {
             type: String,
@@ -200,7 +203,6 @@ export default {
         },
         checkDataLength(subscriber, dataLength) {
             console.log(subscriber, dataLength)
-
             if (!this.validateSubscriber(subscriber)) {
                 return
             }

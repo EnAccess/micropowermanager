@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar" :data-color="sidebarItemColor" :style="sidebarStyle">
+    <div class="sidebar" :data-color="sidebarItemColor">
         <div class="logo">
             <div class="brand-column">
                 <img class="logo" alt="logo" :src="imgLogo" />
@@ -16,11 +16,18 @@
             <slot name="content"></slot>
             <md-list class="no-bg p-15" md-expand-single>
                 <template v-for="menu in routes">
-                    <template v-if="menu.meta?.sidebar?.enabled">
+                    <template
+                        v-if="
+                            menu.meta?.sidebar?.enabled ||
+                            getEnabledPlugins.includes(
+                                menu.meta?.sidebar?.enabled_by_mpm_plugin_id,
+                            )
+                        "
+                    >
                         <!-- If the route has no children, then it should be a clickable menu item -->
                         <router-link
                             v-if="!hasSubMenu(menu)"
-                            :to="route(menu.path)"
+                            :to="menu.path"
                             :exact-path="true"
                             :key="'menu' + menu.path"
                         >
@@ -65,16 +72,18 @@
                                     <router-link
                                         v-for="sub in menu.children"
                                         :key="sub.path"
-                                        :to="
-                                            route(
-                                                subMenuUrl(menu.path, sub.path),
-                                            )
-                                        "
+                                        :to="subMenuUrl(menu.path, sub.path)"
                                         class="sub-menu"
                                         :exact-path="true"
                                     >
                                         <template
-                                            v-if="sub.meta?.sidebar?.enabled"
+                                            v-if="
+                                                sub.meta?.sidebar?.enabled ||
+                                                getEnabledPlugins.includes(
+                                                    sub.meta?.sidebar
+                                                        ?.enabled_by_mpm_plugin_id,
+                                                )
+                                            "
                                         >
                                             <md-list-item>
                                                 <span
@@ -117,8 +126,8 @@
 </template>
 <script>
 import { translateItem } from '@/Helpers/TranslateItem'
-import { EventBus } from '@/shared/eventbus'
 import PasswordProtection from '@/shared/PasswordProtection'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'SideBar',
@@ -126,9 +135,6 @@ export default {
 
     data() {
         return {
-            show_extender: false,
-            admin: null,
-            menus: this.$store.getters['settings/getSidebar'],
             translateItem: translateItem,
             routes: this.$router.options.routes,
         }
@@ -145,13 +151,12 @@ export default {
         },
         imgLogo: {
             type: String,
-            default: require('../../assets/images/Logo1.png'),
+            default: require('@/assets/images/Logo1.png'),
         },
         sidebarItemColor: {
             type: String,
             default: 'green',
         },
-
         autoClose: {
             type: Boolean,
             default: true,
@@ -162,13 +167,8 @@ export default {
             autoClose: this.autoClose,
         }
     },
-
-    mounted() {
-        this.setSidebar()
-        EventBus.$on('setSidebar', async () => {
-            await this.$store.dispatch('settings/setSidebar')
-            this.menus = this.$store.getters['settings/getSidebar']
-        })
+    async created() {
+        await this.$store.dispatch('settings/fetchPlugins')
     },
     methods: {
         hasSubMenu(menu) {
@@ -185,13 +185,6 @@ export default {
         subMenuUrl(basePath, subPath) {
             return `${basePath}/${subPath}`
         },
-        async setSidebar() {
-            if (!this.menus.length) {
-                await this.$store.dispatch('settings/setSidebar')
-
-                this.menus = this.$store.getters['settings/getSidebar']
-            }
-        },
         translateMenuItem(name) {
             if (this.$tc('menu.' + name).search('menu') !== -1) {
                 return name
@@ -199,27 +192,9 @@ export default {
                 return this.$tc('menu.' + name)
             }
         },
-        route(routeUrl) {
-            // In the backend/database these are sometimes stored as (for example)
-            // /meters/page/1
-            // but we actually need to convert that to query params
-            if (routeUrl !== '') {
-                if (routeUrl.includes('/page/1')) {
-                    routeUrl = routeUrl.split('/page/1')[0]
-                    return {
-                        path: routeUrl,
-                        query: { page: 1, per_page: 15 },
-                    }
-                } else {
-                    return { path: routeUrl }
-                }
-            }
-        },
     },
     computed: {
-        adminName() {
-            return this.$store.getters['auth/getAuthenticateUser'].name
-        },
+        ...mapGetters('settings', ['getEnabledPlugins']),
         sidebarStyle() {
             return {
                 background: '#2b2b2b !important',
@@ -229,6 +204,10 @@ export default {
 }
 </script>
 <style>
+.sidebar {
+    background: #2b2b2b;
+}
+
 .brand-column {
     display: -webkit-box;
     display: -webkit-flex;
@@ -302,12 +281,6 @@ export default {
     color: #f5e8e8 !important;
 }
 
-.sidebar-layout {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
-
 .icon-box {
     margin-right: 10px !important;
     width: 25px !important;
@@ -320,20 +293,6 @@ export default {
 
 .sub-menu {
     width: 100% !important;
-}
-
-.c-gray {
-    color: gray;
-}
-
-.app-style {
-    width: calc(100% / 12 * 2);
-    position: fixed;
-}
-
-.drawer-style {
-    background-color: #2b2b2b !important;
-    height: 100vh;
 }
 
 .p-15 {

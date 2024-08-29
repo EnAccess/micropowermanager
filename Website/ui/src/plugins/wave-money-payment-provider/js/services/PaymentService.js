@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import PaymentRepository from '../repositories/PaymentRepository'
 
 export class PaymentService {

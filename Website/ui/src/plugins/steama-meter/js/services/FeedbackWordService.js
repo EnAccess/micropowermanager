@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../Helpers/ErrorHander'
+import { ErrorHandler } from '@/Helpers/ErrorHander'
 import FeedbackWordRepository from '../repositories/FeedbackWordRepository'
 
 export class FeedbackWordService {

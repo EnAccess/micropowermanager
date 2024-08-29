@@ -454,7 +454,7 @@
 
 <script>
 import { SettingService } from '../../services/SettingService'
-import Widget from '../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { SmsVariableDefaultValueService } from '../../services/SmsVariableDefaultValueService'
 import { SmsBodiesService } from '../../services/SmsBodiesService'
 import SmsBody from './SmsBody'

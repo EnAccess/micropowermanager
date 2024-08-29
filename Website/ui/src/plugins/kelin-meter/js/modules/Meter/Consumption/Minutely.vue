@@ -177,22 +177,23 @@
                 </md-table-row>
             </md-table>
         </widget>
-        <redirection
+        <redirection-modal
             :redirection-url="redirectionUrl"
             :dialog-active="redirectDialogActive"
+            :imperative-item="'valid API Credentials'"
         />
     </div>
 </template>
 
 <script>
-import Widget from '../../Shared/Widget'
+import Widget from '@/shared/WidgetLegacy'
 import { CredentialService } from '../../../services/CredentialService'
-import { EventBus } from '../../../eventbus'
-import Redirection from '../../Shared/Redirection'
+import { EventBus } from '@/shared/eventbus'
+import RedirectionModal from '@/shared/RedirectionModal'
 import { MinutelyConsumptionService } from '../../../services/MinutelyConsumptionService'
 
 export default {
-    components: { Widget, Redirection },
+    components: { Widget, RedirectionModal },
     name: 'Daily',
     data() {
         return {

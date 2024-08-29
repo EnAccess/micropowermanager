@@ -75,7 +75,7 @@ class SteamaSiteService implements ISynchronizeService
                     'mpm_mini_grid_id' => $miniGrid->id,
                     'hash' => $site['hash'],
                 ]);
-                $this->updateGeographicalInformation($miniGrid->id, $site);
+                $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);
             });
 
             $syncCheck['data']->filter(function ($value) {
@@ -83,7 +83,7 @@ class SteamaSiteService implements ISynchronizeService
             })->each(function ($site) {
                 $miniGrid = is_null($site['relatedMiniGrid']) ?
                     $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid($site, $site['relatedMiniGrid']);
-                $this->updateGeographicalInformation($miniGrid->id, $site);
+                $this->createOrUpdateGeographicalInformation($miniGrid->id, $site);
                 $site['registeredStmSite']->update([
                     'site_id' => $site['id'],
                     'mpm_mini_grid_id' => $miniGrid->id,
@@ -176,7 +176,7 @@ class SteamaSiteService implements ISynchronizeService
         return $miniGrid->fresh();
     }
 
-    public function updateGeographicalInformation($miniGridId, $site)
+    public function createOrUpdateGeographicalInformation($miniGridId, $site)
     {
         $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
             'owner',
@@ -187,9 +187,18 @@ class SteamaSiteService implements ISynchronizeService
         )->first();
         $points = $site['latitude'] === null ?
             config('steama.geoLocation') : $site['latitude'].','.$site['longitude'];
-        $geographicalInformation->update([
-            'points' => $points,
-        ]);
+
+        if ($geographicalInformation) {
+            $geographicalInformation->update([
+                'points' => $points,
+            ]);
+        } else {
+            $this->geographicalInformation->create([
+                'owner_type' => 'mini-grid',
+                'owner_id' => $miniGridId,
+                'points' => $points,
+            ]);
+        }
     }
 
     public function checkLocationAvailability()

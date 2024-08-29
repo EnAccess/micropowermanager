@@ -2,19 +2,20 @@ import { TicketSettingsService } from '@/services/TicketSettingsService'
 import { MapSettingsService } from '@/services/MapSettingsService'
 import { MainSettingsService } from '@/services/MainSettingsService'
 import i18n from '../../i18n'
-import { SidebarService } from '@/services/SidebarService'
+import { PluginService } from '@/services/PluginService'
+
+const serviceMap = new MapSettingsService()
+const serviceMain = new MainSettingsService()
+const serviceTicket = new TicketSettingsService()
+const servicePlugin = new PluginService()
 
 export const namespaced = true
 
 export const state = {
-    serviceMap: new MapSettingsService(),
-    serviceMain: new MainSettingsService(),
-    serviceTicket: new TicketSettingsService(),
-    serviceSidebar: new SidebarService(),
     mainSettings: {},
     ticketSettings: {},
     mapSettings: {},
-    sidebar: [],
+    plugins: [],
 }
 export const mutations = {
     FETCH_MAIN_SETTINGS(state, payload) {
@@ -27,8 +28,8 @@ export const mutations = {
     FETCH_TICKET_SETTINGS(state, payload) {
         state.ticketSettings = payload
     },
-    SET_SIDEBAR(state, payload) {
-        state.sidebar = payload
+    FETCH_PLUGINS(state, payload) {
+        state.plugins = payload
     },
 }
 export const actions = {
@@ -39,7 +40,7 @@ export const actions = {
     },
     setMainSettings({ commit }) {
         return new Promise((resolve, reject) => {
-            state.serviceMain
+            serviceMain
                 .list()
                 .then((res) => {
                     commit('FETCH_MAIN_SETTINGS', res)
@@ -52,7 +53,7 @@ export const actions = {
     },
     setMapSettings({ commit }) {
         return new Promise((resolve, reject) => {
-            state.serviceMap
+            serviceMap
                 .list()
                 .then((res) => {
                     commit('FETCH_MAP_SETTINGS', res)
@@ -65,7 +66,7 @@ export const actions = {
     },
     setTicketSettings({ commit }) {
         return new Promise((resolve, reject) => {
-            state.serviceTicket
+            serviceTicket
                 .list()
                 .then((res) => {
                     commit('FETCH_TICKET_SETTINGS', res)
@@ -76,22 +77,18 @@ export const actions = {
                 })
         })
     },
-    setSidebar({ commit }, sidebar = null) {
-        if (sidebar) {
-            commit('SET_SIDEBAR', sidebar)
-        } else {
-            return new Promise((resolve, reject) => {
-                state.serviceSidebar
-                    .list()
-                    .then((res) => {
-                        commit('SET_SIDEBAR', res)
-                        resolve(res)
-                    })
-                    .catch((e) => {
-                        reject(e)
-                    })
-            })
-        }
+    fetchPlugins({ commit }) {
+        return new Promise((resolve, reject) => {
+            servicePlugin
+                .getPlugins()
+                .then((res) => {
+                    commit('FETCH_PLUGINS', res)
+                    resolve(res)
+                })
+                .catch((e) => {
+                    reject(e)
+                })
+        })
     },
 }
 
@@ -105,8 +102,8 @@ export const getters = {
     getTicketSettings: (state) => {
         return state.ticketSettings
     },
-    mainSettingsService: (state) => state.serviceMain,
-    mapSettingsService: (state) => state.serviceMap,
-    ticketSettingsService: (state) => state.serviceTicket,
-    getSidebar: (state) => state.sidebar,
+    getEnabledPlugins: (state) =>
+        state.plugins
+            .filter((item) => item.status === 1)
+            .map((item) => item.mpm_plugin_id),
 }

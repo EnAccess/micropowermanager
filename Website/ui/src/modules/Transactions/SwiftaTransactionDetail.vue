@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import swiftaLogo from '../../assets/icons/Swifta.png'
+import swiftaLogo from '@/assets/icons/Swifta.png'
 
 export default {
     name: 'SwiftaTransactionDetail',

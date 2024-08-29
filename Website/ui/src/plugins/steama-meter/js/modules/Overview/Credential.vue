@@ -88,7 +88,7 @@
                                         class="authorize-div"
                                     >
                                         <img
-                                            src="../../../icons/authorized.png"
+                                            src="@/assets/images/authorized.png"
                                         />
                                         <label
                                             style="
@@ -107,7 +107,7 @@
                                         class="authorize-div"
                                     >
                                         <img
-                                            src="../../../icons/unauthorized.png"
+                                            src="@/assets/images/unauthorized.png"
                                         />
                                         <label
                                             style="
@@ -135,7 +135,7 @@
 
 <script>
 import { CredentialService } from '../../services/CredentialService'
-import { EventBus } from '../../eventbus'
+import { EventBus } from '@/shared/eventbus'
 
 export default {
     name: 'Credential',
