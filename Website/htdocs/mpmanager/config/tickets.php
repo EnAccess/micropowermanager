@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 23.08.18
- * Time: 10:08.
- */
 
 return [
     'table_names' => [

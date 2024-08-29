@@ -7,8 +7,3 @@ Homestead.json
 Homestead.yaml
 /start.sh
 ./creator.log
-
-# ignore all company specific migrations
-/database/migrations/**
-!/database/migrations/base/
-!/database/migrations/micropowermanager/

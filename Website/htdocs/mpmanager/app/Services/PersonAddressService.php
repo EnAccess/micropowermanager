@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Person\Person;
+use App\Services\Interfaces\IAssignationService;
 
+/**
+ * @implements IAssignationService<Address, Person>
+ */
 class PersonAddressService implements IAssignationService
 {
     private Address $address;
@@ -22,17 +26,17 @@ class PersonAddressService implements IAssignationService
         return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
     }
 
-    public function setAssigned($address)
+    public function setAssigned($address): void
     {
         $this->address = $address;
     }
 
-    public function setAssignee($person)
+    public function setAssignee($person): void
     {
         $this->person = $person;
     }
 
-    public function assign()
+    public function assign(): Address
     {
         $this->address->owner()->associate($this->person);
 

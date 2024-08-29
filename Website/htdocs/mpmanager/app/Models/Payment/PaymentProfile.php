@@ -2,7 +2,7 @@
 
 namespace App\Models\Payment;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class PaymentProfile extends BaseModel
 {

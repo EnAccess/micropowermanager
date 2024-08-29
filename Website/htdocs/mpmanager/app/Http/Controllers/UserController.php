@@ -29,7 +29,7 @@ class UserController extends Controller
     public function store(CreateAdminRequest $request)
     {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
-        $companyDatabase = $this->companyDatabaseService->getById($user->getCompanyId());
+        $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
         $databaseProxyData = [
             'email' => $user->getEmail(),
             'fk_company_id' => $user->getCompanyId(),

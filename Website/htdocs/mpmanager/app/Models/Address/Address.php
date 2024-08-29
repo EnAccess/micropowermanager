@@ -2,9 +2,10 @@
 
 namespace App\Models\Address;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\City;
 use App\Models\GeographicalInformation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Address extends BaseModel
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'address';
     protected $hidden = ['owner_id', 'owner_type'];
     public static $rules = [

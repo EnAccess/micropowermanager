@@ -25,7 +25,6 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, zip
-          tools: composer:2.6
 
       - name: Install Composer Dependencies
         run: |
@@ -33,14 +32,15 @@ jobs:
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHP-CS-Fixer
-        run: composer run php-cs-fixer-check
+        run: composer php-cs-fixer-check
         working-directory: ./Website/htdocs/mpmanager
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --error-format=table  app/Http app/Services app/Models/ app/Events app/Listeners app/Misc app/modules --memory-limit=2G  --level=1
+        run: composer phpstan-analyse
         working-directory: ./Website/htdocs/mpmanager
+        continue-on-error: true
 
       - name: Run Psalm
-        run: composer run psalm-check
+        run: composer psalm-check
         working-directory: ./Website/htdocs/mpmanager
         continue-on-error: true

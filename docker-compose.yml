@@ -75,15 +75,6 @@ services:
     ports:
       - 3306:3306
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin:latest
-    ports:
-      - 8080:80
-    depends_on:
-      - maria
-    links:
-      - maria:db
 
 volumes:
   frontend_node_modules:

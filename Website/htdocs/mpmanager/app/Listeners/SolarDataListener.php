@@ -6,7 +6,7 @@ use App\Exceptions\WeatherProviderUnreachable;
 use App\Models\MiniGrid;
 use App\Models\Solar;
 use App\Models\WeatherData;
-use App\Services\IWeatherDataProvider;
+use App\Services\Interfaces\IWeatherDataProvider;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

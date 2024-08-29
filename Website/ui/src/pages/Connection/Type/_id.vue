@@ -1,12 +1,12 @@
 <template>
-    <ConnectionTypeDetail />
+  <ConnectionTypeDetail />
 </template>
 
 <script>
-import ConnectionTypeDetail from '@/modules/ConnectionTypes/ConnectionTypeDetail.vue'
+import ConnectionTypeDetail from "@/modules/ConnectionTypes/ConnectionTypeDetail.vue"
 export default {
-    name: 'ConnectionTypePage',
-    components: { ConnectionTypeDetail },
+  name: "ConnectionTypePage",
+  components: { ConnectionTypeDetail },
 }
 </script>
 

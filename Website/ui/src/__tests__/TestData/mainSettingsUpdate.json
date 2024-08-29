@@ -1,9 +1,9 @@
 {
-    "siteTitle": "Demo Site",
-    "companyName": "Demo Company",
-    "currency": "$",
-    "country": "Germany",
-    "language": "en",
-    "vatEnergy": 1,
-    "vatAppliance": 18
+  "siteTitle": "Demo Site",
+  "companyName": "Demo Company",
+  "currency": "$",
+  "country": "Germany",
+  "language": "en",
+  "vatEnergy": 1,
+  "vatAppliance": 18
 }

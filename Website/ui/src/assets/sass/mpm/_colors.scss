@@ -1,21 +1,21 @@
-@import '~vue-material/dist/theme/engine'; // Import the theme engine
+@import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme(
-    'selection-black',
-    (
-        accent: md-get-palette-color(black, 500),
-    )
+  "selection-black",
+  (
+    accent: md-get-palette-color(black, 500),
+  )
 );
 
 @include md-register-theme(
-    'default',
-    (
-        primary: md-get-palette-color(blue, 500),
-        // The primary color of your application
-    )
+  "default",
+  (
+    primary: md-get-palette-color(blue, 500),
+    // The primary color of your application
+  )
 );
 
-@import '~vue-material/dist/theme/all'; // Apply the theme
+@import "~vue-material/dist/theme/all"; // Apply the theme
 
 $red-50: #ffebee !default;
 $red-100: #ffcdd2 !default;
@@ -295,7 +295,7 @@ $grey-200: #eeeeee !default;
 $grey-300: #e0e0e0 !default;
 $grey-400: #bdbdbd !default;
 $grey-500: #9e9e9e;
-$rgb-grey-500: '158, 158, 158' !default;
+$rgb-grey-500: "158, 158, 158" !default;
 $grey-600: #757575 !default;
 $grey-700: #616161 !default;
 $grey-800: #424242 !default;
@@ -323,6 +323,6 @@ $blue-grey-A700: #455a64 !default;
 $blue-grey: $blue-grey-500 !default;
 
 $black: #000000;
-$rgb-black: '0,0,0' !default;
+$rgb-black: "0,0,0" !default;
 $white: #ffffff;
-$rgb-white: '255,255,255' !default;
+$rgb-white: "255,255,255" !default;

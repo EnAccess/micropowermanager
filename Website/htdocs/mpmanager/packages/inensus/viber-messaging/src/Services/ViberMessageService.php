@@ -2,37 +2,42 @@
 
 namespace Inensus\ViberMessaging\Services;
 
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\ViberMessaging\Models\ViberMessage;
 
+/**
+ * @implements IBaseService<ViberMessage>
+ */
 class ViberMessageService implements IBaseService
 {
-    public function __construct(private ViberMessage $viberMessage)
-    {
+    public function __construct(
+        private ViberMessage $viberMessage
+    ) {
     }
 
-    public function getById($id)
+    public function getById(int $id): ViberMessage
     {
-        // TODO: Implement getById() method.
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($data)
+    public function create(array $data): ViberMessage
     {
         return $this->viberMessage->newQuery()->create($data);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): ViberMessage
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

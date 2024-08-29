@@ -1,4 +1,4 @@
-FROM node:16.10.0
+FROM node:18.20.4
 
 # install simple http server for serving static content
 RUN npm install -g http-server

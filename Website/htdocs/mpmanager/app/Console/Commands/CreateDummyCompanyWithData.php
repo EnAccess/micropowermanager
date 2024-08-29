@@ -2,9 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Company;
-use App\Models\CompanyDatabase;
-use App\Models\DatabaseProxy;
 use App\Services\CompanyDatabaseService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +9,15 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CreateDummyCompanyWithData extends Command
 {
-    public const SQL_DUMMY_DATA_FILE_NAME = 'dummy_data.sql';
+    public const SQL_DUMMY_DATA_FILE_NAMES = [
+        'dummy_agent_data.sql',
+        'dummy_data.sql',
+        'dummy_device_data.sql',
+        'dummy_plugin_data.sql',
+        'dummy_sms_data.sql',
+        'dummy_ticket_data.sql',
+        'dummy_transaction_data.sql',
+    ];
     public const DUMMY_COMPANY_DATA = [
         'name' => 'Dummy Company',
         'address' => 'Dummy Address',
@@ -41,36 +46,15 @@ class CreateDummyCompanyWithData extends Command
     public function handle()
     {
         try {
-            $path = __DIR__.'/../../../database/dummyData/'.self::SQL_DUMMY_DATA_FILE_NAME;
-            $creatorShellPath = __DIR__.'/../../..';
-            if (!file_exists($path)) {
-                $message = 'The specified SQL dump file does not exist.';
-                throw new \Exception($message);
+            foreach (self::SQL_DUMMY_DATA_FILE_NAMES as $sqlFile) {
+                $path = __DIR__.'/../../../database/dummyData/'.$sqlFile;
+
+                $this->databaseProxyManagerService->runForCompany(
+                    // $company->getId(),
+                    1,
+                    fn () => $this->importSqlDump($path, self::DUMMY_DATABASE_NAME)
+                );
             }
-
-            $databaseName = self::DUMMY_DATABASE_NAME;
-            $company = Company::query()->firstOrCreate(self::DUMMY_COMPANY_DATA, self::DUMMY_COMPANY_DATA);
-            $adminData = self::DUMMY_COMPANY_USER;
-
-            $companyDatabaseData = [
-                'company_id' => $company->getId(),
-                'database_name' => $databaseName,
-            ];
-
-            $companyDatabase = CompanyDatabase::query()->firstOrCreate($companyDatabaseData, $companyDatabaseData);
-            DB::unprepared("DROP DATABASE IF EXISTS $databaseName");
-            $this->companyDatabaseService->createNewDatabaseForCompany($databaseName, $company->getId());
-            $databaseProxyData = [
-                'email' => $adminData['email'],
-                'fk_company_id' => $company->getId(),
-                'fk_company_database_id' => $companyDatabase->getId(),
-            ];
-
-            DatabaseProxy::query()->firstOrCreate($databaseProxyData, $databaseProxyData);
-            $this->databaseProxyManagerService->runForCompany(
-                $company->getId(),
-                fn () => $this->importSqlDump($path, $databaseName)
-            );
 
             return 0;
         } catch (\Exception $e) {

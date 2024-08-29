@@ -3,7 +3,7 @@
 namespace App\Models\Transaction;
 
 use App\Models\Agent;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;

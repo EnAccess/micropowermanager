@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 02.10.18
- * Time: 11:04.
- */
 
 use Tests\TestCase;
 

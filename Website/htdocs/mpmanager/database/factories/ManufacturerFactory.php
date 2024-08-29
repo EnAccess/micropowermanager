@@ -3,18 +3,38 @@
 namespace Database\Factories;
 
 use App\Models\Manufacturer;
+use Doctrine\Inflector\InflectorFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ManufacturerFactory extends Factory
 {
     protected $model = Manufacturer::class;
 
+    /**
+     * Indicate that the manufacturer is for meter devices.
+     *
+     * @return Factory
+     */
+    public function isMeterManufacturer()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => 'meter',
+            ];
+        });
+    }
+
     public function definition(): array
     {
+        $inflector = InflectorFactory::create()->build();
+
+        $companyName = $this->faker->company;
+
         return [
-            'name' => $this->faker->company,
+            'name' => $companyName,
             'website' => $this->faker->url,
-            'api_name' => $this->faker->name,
+            'contact_person' => $this->faker->name,
+            'api_name' => $inflector->classify($inflector->urlize($companyName)).'Api',
         ];
     }
 }

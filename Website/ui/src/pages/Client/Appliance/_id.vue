@@ -1,13 +1,13 @@
 <template>
-    <SoldApplianceDetail />
+  <SoldApplianceDetail />
 </template>
 
 <script>
-import SoldApplianceDetail from '@/modules/Client/Appliances/SoldApplianceDetail'
+import SoldApplianceDetail from "@/modules/Client/Appliances/SoldApplianceDetail"
 
 export default {
-    name: 'SoldApplianceDetailPage',
-    components: { SoldApplianceDetail },
+  name: "SoldApplianceDetailPage",
+  components: { SoldApplianceDetail },
 }
 </script>
 

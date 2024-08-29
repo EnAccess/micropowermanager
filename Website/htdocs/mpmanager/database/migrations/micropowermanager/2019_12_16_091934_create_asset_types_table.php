@@ -1,7 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration {
@@ -18,6 +20,26 @@ return new class() extends Migration {
             $table->integer('price')->unsigned();
             $table->timestamps();
         });
+
+        // Insert initial data
+        DB::connection('shard')->table('asset_types')->insert([
+            [
+                'name' => 'Solar Home System',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'E-Bike',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Electronics',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]
+        );
     }
 
     /**

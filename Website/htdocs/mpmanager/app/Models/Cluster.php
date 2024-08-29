@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use MPM\Target\TargetAssignable;
@@ -18,6 +20,8 @@ use MPM\Target\TargetAssignable;
  */
 class Cluster extends BaseModel implements TargetAssignable
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'cluster';
 
     protected $casts = [

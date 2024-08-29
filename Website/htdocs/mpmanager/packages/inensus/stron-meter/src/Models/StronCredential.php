@@ -2,7 +2,7 @@
 
 namespace Inensus\StronMeter\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class StronCredential extends BaseModel
 {

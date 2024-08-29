@@ -4,12 +4,13 @@ namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\AccessRate\AccessRatePayment;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Meter extends BaseModel
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'meter';
     protected $guarded = [];
     public static $rules = [

@@ -1,12 +1,12 @@
 <template>
-    <CategoryManagement />
+  <CategoryManagement />
 </template>
 
 <script>
-import CategoryManagement from '@/modules/Ticket/CategoryManagement'
+import CategoryManagement from "@/modules/Ticket/CategoryManagement"
 
 export default {
-    name: 'TicketCategoryPage',
-    components: { CategoryManagement },
+  name: "TicketCategoryPage",
+  components: { CategoryManagement },
 }
 </script>

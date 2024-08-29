@@ -11,6 +11,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
+use Inensus\SteamaMeter\Exceptions\CronJobException;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
@@ -18,7 +19,6 @@ use Inensus\SteamaMeter\Services\SteamaSiteService;
 use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
 use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Services\StemaSyncActionService;
-use Inensus\StemaMeter\Exceptions\CronJobException;
 
 class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 {

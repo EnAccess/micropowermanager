@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 21.01.19
- * Time: 12:26.
- */
-
 namespace App\Jobs;
 
 use GuzzleHttp\Client;

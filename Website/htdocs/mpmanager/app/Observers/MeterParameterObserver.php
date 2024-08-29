@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 31.07.18
- * Time: 22:03.
- */
-
 namespace App\Observers;
 
 use App\Jobs\CreatePiggyBankEntry;

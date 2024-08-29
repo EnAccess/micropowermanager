@@ -1,11 +1,11 @@
 <template>
-    <Agent />
+  <Agent />
 </template>
 
 <script>
-import Agent from '@/modules/Agent/Agent'
+import Agent from "@/modules/Agent/Agent"
 export default {
-    name: 'AgentPage',
-    components: { Agent },
+  name: "AgentPage",
+  components: { Agent },
 }
 </script>

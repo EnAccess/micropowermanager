@@ -1,13 +1,13 @@
 <template>
-    <EBikes />
+  <EBikes />
 </template>
 
 <script>
-import EBikes from '@/modules/EBikes/EBikes.vue'
+import EBikes from "@/modules/EBikes/EBikes.vue"
 
 export default {
-    name: 'EBikesPage',
-    components: { EBikes },
+  name: "EBikesPage",
+  components: { EBikes },
 }
 </script>
 

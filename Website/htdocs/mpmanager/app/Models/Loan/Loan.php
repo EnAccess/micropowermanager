@@ -2,7 +2,7 @@
 
 namespace App\Models\Loan;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

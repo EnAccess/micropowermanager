@@ -1,13 +1,13 @@
 <template>
-    <NewSms />
+  <NewSms />
 </template>
 
 <script>
-import NewSms from '@/modules/Sms/NewSms'
+import NewSms from "@/modules/Sms/NewSms"
 
 export default {
-    name: 'NewSmsPage',
-    components: { NewSms },
+  name: "NewSmsPage",
+  components: { NewSms },
 }
 </script>
 

@@ -1,7 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration {
@@ -23,6 +25,18 @@ return new class() extends Migration {
             $table->float('vat_appliance', 5);
             $table->timestamps();
         });
+
+        DB::connection('shard')->table('main_settings')->insert([
+            'site_title' => 'MPM - The easiest way to manage your Mini-Grid',
+            'company_name' => 'MicroPowerManager',
+            'currency' => '€',
+            'country' => 'Germany',
+            'vat_energy' => 1,
+            'vat_appliance' => 18,
+            'language' => 'en',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 
     /**

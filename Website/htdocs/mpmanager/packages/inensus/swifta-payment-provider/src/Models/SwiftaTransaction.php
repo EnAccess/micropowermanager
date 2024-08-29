@@ -2,7 +2,7 @@
 
 namespace Inensus\SwiftaPaymentProvider\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;

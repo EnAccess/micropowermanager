@@ -1,7 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration {
@@ -17,6 +19,12 @@ return new class() extends Migration {
             $table->string('key')->default('Resend');
             $table->timestamps();
         });
+
+        DB::connection('shard')->table('sms_resend_information_keys')->insert([
+            'key' => 'Resend',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 
     /**

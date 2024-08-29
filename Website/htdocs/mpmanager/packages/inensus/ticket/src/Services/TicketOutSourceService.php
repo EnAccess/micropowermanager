@@ -2,37 +2,42 @@
 
 namespace Inensus\Ticket\Services;
 
-use App\Services\IBaseService;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\TicketOutsource;
 
+/**
+ * @implements IBaseService<TicketOutsource>
+ */
 class TicketOutSourceService implements IBaseService
 {
-    public function __construct(private TicketOutsource $ticketOutsource)
-    {
+    public function __construct(
+        private TicketOutsource $ticketOutsource
+    ) {
     }
 
-    public function getById($ticketOutsourceId)
+    public function getById(int $ticketOutsourceId): TicketOutsource
     {
-        $this->ticketOutsource->newQuery()->find($ticketOutsourceId);
+        return $this->ticketOutsource->newQuery()->find($ticketOutsourceId);
     }
 
-    public function create($ticketOutsourceData)
+    public function create(array $ticketOutsourceData): TicketOutsource
     {
         return $this->ticketOutsource->newQuery()->create($ticketOutsourceData);
     }
 
-    public function update($model, $data)
+    public function update($model, array $data): TicketOutsource
     {
-        // TODO: Implement update() method.
+        throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection
     {
-        // TODO: Implement getAll() method.
+        throw new \Exception('Method getAll() not yet implemented.');
     }
 }

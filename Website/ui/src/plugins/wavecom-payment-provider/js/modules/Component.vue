@@ -1,286 +1,273 @@
 <template>
-    <div>
-        <widget color="green" :title="title">
-            <div class="md-layout md-gutter">
-                <div
-                    class="md-layout-item md-size-100"
-                    style="
-                        margin: auto;
-                        text-align: center;
-                        padding: 3rem;
-                        font-size: initial;
-                        font-weight: 500;
-                        display: grid;
-                    "
+  <div>
+    <widget color="green" :title="title">
+      <div class="md-layout md-gutter">
+        <div
+          class="md-layout-item md-size-100"
+          style="
+            margin: auto;
+            text-align: center;
+            padding: 3rem;
+            font-size: initial;
+            font-weight: 500;
+            display: grid;
+          "
+        >
+          <span>
+            Here you can import Wave(Senegal) Transactions. The import will
+            ignore all duplicated records.
+          </span>
+          <span style="margin-top: 16px">
+            You can download sample csv file from
+            <a href="/files/wavecomtransaction_template.csv">here</a>
+          </span>
+        </div>
+        <div class="md-layout-item md-size-100">
+          <div
+            :hidden="fileUploaded"
+            style="width: 50%; margin: auto; text-align: center"
+          >
+            <div v-if="!loading">
+              <div class="upload-area" style="width: 100%; cursor: pointer">
+                <input
+                  type="file"
+                  @change="uploadCsv"
+                  accept=".csv"
+                  ref="file-input"
+                />
+                <p>Drag your files here or click in this area.</p>
+                <p v-text="fileName"></p>
+                <p class="csv-p">Only .csv files.</p>
+              </div>
+              <div class="buttons-area" v-if="fileName !== ''">
+                <md-button
+                  role="button"
+                  class="md-raised"
+                  style="float: right"
+                  @click="clear"
                 >
-                    <span>
-                        Here you can import Wave(Senegal) Transactions. The
-                        import will ignore all duplicated records.
-                    </span>
-                    <span style="margin-top: 16px">
-                        You can download sample csv file from
-                        <a href="/files/wavecomtransaction_template.csv">
-                            here
-                        </a>
-                    </span>
-                </div>
-                <div class="md-layout-item md-size-100">
-                    <div
-                        :hidden="fileUploaded"
-                        style="width: 50%; margin: auto; text-align: center"
-                    >
-                        <div v-if="!loading">
-                            <div
-                                class="upload-area"
-                                style="width: 100%; cursor: pointer"
-                            >
-                                <input
-                                    type="file"
-                                    @change="uploadCsv"
-                                    accept=".csv"
-                                    ref="file-input"
-                                />
-                                <p>
-                                    Drag your files here or click in this area.
-                                </p>
-                                <p v-text="fileName"></p>
-                                <p class="csv-p">Only .csv files.</p>
-                            </div>
-                            <div class="buttons-area" v-if="fileName !== ''">
-                                <md-button
-                                    role="button"
-                                    class="md-raised"
-                                    style="float: right"
-                                    @click="clear"
-                                >
-                                    clear
-                                </md-button>
-                                <md-button
-                                    role="button"
-                                    class="md-raised md-primary"
-                                    style="float: right"
-                                    :disabled="loading"
-                                    @click="upload"
-                                >
-                                    Upload File
-                                </md-button>
-                            </div>
-                        </div>
-                        <md-progress-bar md-mode="indeterminate" v-else />
-                    </div>
-                    <div :hidden="!fileUploaded">
-                        <div>
-                            <div style="text-align: left; padding-left: 5rem">
-                                <p style="font-weight: bold">
-                                    Following records created.
-                                </p>
-
-                                <div
-                                    v-if="waveComService.reasons.length > 0"
-                                    class="md-layout-item warning-message-area"
-                                >
-                                    Although file updated successful, the file
-                                    has some conflicting transactions
-                                </div>
-                                <div
-                                    v-for="(
-                                        transaction, i
-                                    ) in waveComService.reasons"
-                                    :key="'wave-' + i"
-                                >
-                                    <span class="uploaded-wrap">
-                                        <label class="uploaded">
-                                            Transaction
-                                        </label>
-                                        <span>{{ transaction }}</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="buttons-area">
-                            <md-button
-                                role="button"
-                                class="md-raised"
-                                @click="$router.push('/transactions')"
-                            >
-                                Done
-                            </md-button>
-                            <md-button
-                                role="button"
-                                class="md-raised md-primary"
-                                @click="uploadNewFile"
-                            >
-                                Upload New File
-                            </md-button>
-                        </div>
-                    </div>
-                </div>
+                  clear
+                </md-button>
+                <md-button
+                  role="button"
+                  class="md-raised md-primary"
+                  style="float: right"
+                  :disabled="loading"
+                  @click="upload"
+                >
+                  Upload File
+                </md-button>
+              </div>
             </div>
-        </widget>
-    </div>
+            <md-progress-bar md-mode="indeterminate" v-else />
+          </div>
+          <div :hidden="!fileUploaded">
+            <div>
+              <div style="text-align: left; padding-left: 5rem">
+                <p style="font-weight: bold">Following records created.</p>
+
+                <div
+                  v-if="waveComService.reasons.length > 0"
+                  class="md-layout-item warning-message-area"
+                >
+                  Although file updated successful, the file has some
+                  conflicting transactions
+                </div>
+                <div
+                  v-for="(transaction, i) in waveComService.reasons"
+                  :key="'wave-' + i"
+                >
+                  <span class="uploaded-wrap">
+                    <label class="uploaded">Transaction</label>
+                    <span>{{ transaction }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="buttons-area">
+              <md-button
+                role="button"
+                class="md-raised"
+                @click="$router.push('/transactions')"
+              >
+                Done
+              </md-button>
+              <md-button
+                role="button"
+                class="md-raised md-primary"
+                @click="uploadNewFile"
+              >
+                Upload New File
+              </md-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </widget>
+  </div>
 </template>
 
 <script>
-import Widget from '@/plugins/bulk-registration/js/modules/Shared/Widget.vue'
-import { WaveComService } from '@/plugins/wavecom-payment-provider/js/services/WaveComService'
+import Widget from "@/plugins/bulk-registration/js/modules/Shared/Widget.vue"
+import { WaveComService } from "@/plugins/wavecom-payment-provider/js/services/WaveComService"
 
 export default {
-    name: 'WaveComTransaction',
-    components: { Widget },
+  name: "WaveComTransaction",
+  components: { Widget },
 
-    data() {
-        return {
-            waveComService: new WaveComService(),
-            csvFile: null,
-            loading: false,
-            title: 'WaveComTransaction Upload',
-            fileName: '',
-            fileUploaded: false,
-            createdRecordCount: 0,
+  data() {
+    return {
+      waveComService: new WaveComService(),
+      csvFile: null,
+      loading: false,
+      title: "WaveComTransaction Upload",
+      fileName: "",
+      fileUploaded: false,
+      createdRecordCount: 0,
+    }
+  },
+  methods: {
+    uploadCsv(event) {
+      event.preventDefault()
+      const fileLocation =
+        event.type === "change" ? "srcElement" : "dataTransfer"
+      if (event[fileLocation].files.length !== 1) {
+        let message = "Only one file is supported"
+        this.alertNotify("warn", message)
+        return
+      }
+
+      this.csvFile = event[fileLocation].files[0]
+      this.fileName = this.$refs["file-input"].value
+    },
+    async upload() {
+      if (!this.csvFile) {
+        this.alertNotify("warn", "No file selected.")
+        return
+      }
+      this.$swal({
+        type: "question",
+        title: this.title,
+        text: "Are you sure to do this action?",
+        showCancelButton: true,
+        confirmButtonText: "I'm sure",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if ("value" in result) {
+          this.save()
         }
+      })
     },
-    methods: {
-        uploadCsv(event) {
-            event.preventDefault()
-            const fileLocation =
-                event.type === 'change' ? 'srcElement' : 'dataTransfer'
-            if (event[fileLocation].files.length !== 1) {
-                let message = 'Only one file is supported'
-                this.alertNotify('warn', message)
-                return
-            }
+    async save() {
+      this.loading = true
+      try {
+        await this.waveComService.upload(this.csvFile)
+        this.alertNotify("success", "Updated Successfully.")
+        this.clear()
+        this.createdRecordCountCheck()
+        this.fileUploaded = true
+      } catch (error) {
+        this.$swal.fire(error.message)
+      }
 
-            this.csvFile = event[fileLocation].files[0]
-            this.fileName = this.$refs['file-input'].value
-        },
-        async upload() {
-            if (!this.csvFile) {
-                this.alertNotify('warn', 'No file selected.')
-                return
-            }
-            this.$swal({
-                type: 'question',
-                title: this.title,
-                text: 'Are you sure to do this action?',
-                showCancelButton: true,
-                confirmButtonText: "I'm sure",
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if ('value' in result) {
-                    this.save()
-                }
-            })
-        },
-        async save() {
-            this.loading = true
-            try {
-                await this.waveComService.upload(this.csvFile)
-                this.alertNotify('success', 'Updated Successfully.')
-                this.clear()
-                this.createdRecordCountCheck()
-                this.fileUploaded = true
-            } catch (error) {
-                this.$swal.fire(error.message)
-            }
-
-            this.loading = false
-        },
-        clear() {
-            this.csvFile = null
-            this.fileName = ''
-        },
-        uploadNewFile() {
-            this.$refs['file-input'].value = null
-            this.fileUploaded = false
-        },
-        createdRecordCountCheck() {
-            //     for (let value of Object.values(this.csvUploadService.recentlyCreatedRecords)) {
-            //         this.createdRecordCount += value
-            //     }
-        },
-        alertNotify(type, message) {
-            this.$notify({
-                group: 'notify',
-                type: type,
-                title: type + ' !',
-                text: message,
-            })
-        },
+      this.loading = false
     },
+    clear() {
+      this.csvFile = null
+      this.fileName = ""
+    },
+    uploadNewFile() {
+      this.$refs["file-input"].value = null
+      this.fileUploaded = false
+    },
+    createdRecordCountCheck() {
+      //     for (let value of Object.values(this.csvUploadService.recentlyCreatedRecords)) {
+      //         this.createdRecordCount += value
+      //     }
+    },
+    alertNotify(type, message) {
+      this.$notify({
+        group: "notify",
+        type: type,
+        title: type + " !",
+        text: message,
+      })
+    },
+  },
 }
 </script>
 
 <style scoped>
 .csv-p {
-    font-size: x-small;
-    font-weight: 500;
-    color: gray;
+  font-size: x-small;
+  font-weight: 500;
+  color: gray;
 }
 
 .upload-area {
-    margin: auto;
-    width: 60%;
-    padding: 10px;
-    min-height: 4rem;
-    border: 1px dashed;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+  min-height: 4rem;
+  border: 1px dashed;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .upload-area p {
-    text-align: center;
-    font-family: Arial;
+  text-align: center;
+  font-family: Arial;
 }
 
 .upload-area input {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    opacity: 0;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
 }
 
 .buttons-area {
-    margin: auto;
-    width: 60%;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
+  margin: auto;
+  width: 60%;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .uploaded {
-    display: inline-block;
-    font-weight: 200;
-    padding: 10px 5px;
-    height: 37px;
-    position: relative;
+  display: inline-block;
+  font-weight: 200;
+  padding: 10px 5px;
+  height: 37px;
+  position: relative;
 }
 
 .uploaded-wrap {
-    display: block;
-    position: relative;
-    /*box-shadow*/
-    -webkit-box-shadow: 0 2px 0 -1px #ebebeb;
-    -moz-box-shadow: 0 2px 0 -1px #ebebeb;
-    box-shadow: 0 2px 0 -1px #ebebeb;
+  display: block;
+  position: relative;
+  /*box-shadow*/
+  -webkit-box-shadow: 0 2px 0 -1px #ebebeb;
+  -moz-box-shadow: 0 2px 0 -1px #ebebeb;
+  box-shadow: 0 2px 0 -1px #ebebeb;
 }
 
 .uploaded-wrap:last-of-type {
-    /*box-shadow*/
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+  /*box-shadow*/
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 .warning-message-area {
-    padding: 20px;
-    margin: 10px;
-    d-webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
-    border-radius: 16px;
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
+  padding: 20px;
+  margin: 10px;
+  d-webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
 }
 </style>

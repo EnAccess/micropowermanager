@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 04.10.18
- * Time: 16:09.
- */
 
 namespace Inensus\Ticket\Http\Controllers;
 

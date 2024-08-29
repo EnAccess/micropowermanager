@@ -4,12 +4,21 @@ namespace App\Services;
 
 use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
+use App\Services\Interfaces\IAssociative;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<Address>
+ * @implements IAssociative<Address>
+ */
 class AddressesService implements IBaseService, IAssociative
 {
-    public function __construct(private Address $address)
-    {
+    public function __construct(
+        private Address $address
+    ) {
     }
 
     // fills the object and returns it without saving.
@@ -45,12 +54,12 @@ class AddressesService implements IBaseService, IAssociative
         ];
     }
 
-    public function getById($id)
+    public function getById(int $id): Address
     {
         return $this->address->newQuery()->findOrFail($id);
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->address->newQuery()->paginate($limit);
@@ -59,24 +68,24 @@ class AddressesService implements IBaseService, IAssociative
         return $this->address->newQuery()->get();
     }
 
-    public function create($data)
+    public function create(array $data): Address
     {
-        // TODO: Implement create() method.
+        throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function update($address, $addressData)
+    public function update($address, array $addressData): Address
     {
         $address->update($addressData);
 
         return $address;
     }
 
-    public function make($addressData)
+    public function make($addressData): Address
     {
         return $this->address->newQuery()->make([
             'email' => $addressData['email'] ?? null,
@@ -88,7 +97,7 @@ class AddressesService implements IBaseService, IAssociative
         ]);
     }
 
-    public function save($address)
+    public function save($address): bool
     {
         return $address->save();
     }

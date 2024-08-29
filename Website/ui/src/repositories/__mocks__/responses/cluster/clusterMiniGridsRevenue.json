@@ -1,76 +1,76 @@
 {
-    "data": {
-        "data": [
-            {
-                "id": 6,
-                "cluster_id": 14,
-                "name": "Konde",
-                "created_at": null,
-                "updated_at": "2021-02-02T20:17:45.000000Z",
-                "data_stream": 1,
-                "period": {
-                    "2021-01": {
-                        "revenue": 76002
-                    },
-                    "2021-02": {
-                        "revenue": 91730
-                    },
-                    "2021-03": {
-                        "revenue": 0
-                    },
-                    "2021-04": {
-                        "revenue": 0
-                    }
-                },
-                "totalRevenue": 167732
-            },
-            {
-                "id": 7,
-                "cluster_id": 14,
-                "name": "Wette",
-                "created_at": null,
-                "updated_at": "2021-02-04T16:58:03.000000Z",
-                "data_stream": 1,
-                "period": {
-                    "2021-01": {
-                        "revenue": 153734
-                    },
-                    "2021-02": {
-                        "revenue": 108908
-                    },
-                    "2021-03": {
-                        "revenue": 0
-                    },
-                    "2021-04": {
-                        "revenue": 0
-                    }
-                },
-                "totalRevenue": 262642
-            },
-            {
-                "id": 9,
-                "cluster_id": 14,
-                "name": "Tumbe",
-                "created_at": null,
-                "updated_at": "2020-11-10T11:39:23.000000Z",
-                "data_stream": 1,
-                "period": {
-                    "2021-01": {
-                        "revenue": 68239
-                    },
-                    "2021-02": {
-                        "revenue": 123819
-                    },
-                    "2021-03": {
-                        "revenue": 0
-                    },
-                    "2021-04": {
-                        "revenue": 0
-                    }
-                },
-                "totalRevenue": 192058
-            }
-        ]
-    },
-    "status": 200
+  "data": {
+    "data": [
+      {
+        "id": 6,
+        "cluster_id": 14,
+        "name": "Konde",
+        "created_at": null,
+        "updated_at": "2021-02-02T20:17:45.000000Z",
+        "data_stream": 1,
+        "period": {
+          "2021-01": {
+            "revenue": 76002
+          },
+          "2021-02": {
+            "revenue": 91730
+          },
+          "2021-03": {
+            "revenue": 0
+          },
+          "2021-04": {
+            "revenue": 0
+          }
+        },
+        "totalRevenue": 167732
+      },
+      {
+        "id": 7,
+        "cluster_id": 14,
+        "name": "Wette",
+        "created_at": null,
+        "updated_at": "2021-02-04T16:58:03.000000Z",
+        "data_stream": 1,
+        "period": {
+          "2021-01": {
+            "revenue": 153734
+          },
+          "2021-02": {
+            "revenue": 108908
+          },
+          "2021-03": {
+            "revenue": 0
+          },
+          "2021-04": {
+            "revenue": 0
+          }
+        },
+        "totalRevenue": 262642
+      },
+      {
+        "id": 9,
+        "cluster_id": 14,
+        "name": "Tumbe",
+        "created_at": null,
+        "updated_at": "2020-11-10T11:39:23.000000Z",
+        "data_stream": 1,
+        "period": {
+          "2021-01": {
+            "revenue": 68239
+          },
+          "2021-02": {
+            "revenue": 123819
+          },
+          "2021-03": {
+            "revenue": 0
+          },
+          "2021-04": {
+            "revenue": 0
+          }
+        },
+        "totalRevenue": 192058
+      }
+    ]
+  },
+  "status": 200
 }

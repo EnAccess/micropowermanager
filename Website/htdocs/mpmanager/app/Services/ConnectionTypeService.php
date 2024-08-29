@@ -3,13 +3,20 @@
 namespace App\Services;
 
 use App\Models\ConnectionType;
+use App\Services\Interfaces\IBaseService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * @implements IBaseService<ConnectionType>
+ */
 class ConnectionTypeService implements IBaseService
 {
-    public function __construct(private ConnectionType $connectionType)
-    {
+    public function __construct(
+        private ConnectionType $connectionType
+    ) {
     }
 
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder
@@ -18,17 +25,17 @@ class ConnectionTypeService implements IBaseService
             ->firstOrFail();
     }
 
-    public function getById($connectionTypeId)
+    public function getById(int $connectionTypeId): ConnectionType
     {
         return $this->connectionType->newQuery()->findOrFail($connectionTypeId);
     }
 
-    public function create($connectionServiceData)
+    public function create(array $connectionServiceData): ConnectionType
     {
         return $this->connectionType->newQuery()->create($connectionServiceData);
     }
 
-    public function update($connectionType, $connectionTypeData)
+    public function update($connectionType, array $connectionTypeData): ConnectionType
     {
         $connectionType->update($connectionTypeData);
         $connectionType->fresh();
@@ -36,7 +43,7 @@ class ConnectionTypeService implements IBaseService
         return $connectionType;
     }
 
-    public function getAll($limit = null)
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         if ($limit) {
             return $this->connectionType->newQuery()->paginate($limit);
@@ -45,8 +52,8 @@ class ConnectionTypeService implements IBaseService
         return $this->connectionType->newQuery()->get();
     }
 
-    public function delete($model)
+    public function delete($model): ?bool
     {
-        // TODO: Implement delete() method.
+        throw new \Exception('Method delete() not yet implemented.');
     }
 }

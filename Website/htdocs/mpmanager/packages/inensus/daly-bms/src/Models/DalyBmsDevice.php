@@ -2,7 +2,7 @@
 
 namespace Inensus\DalyBms\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class DalyBmsDevice extends BaseModel
 {

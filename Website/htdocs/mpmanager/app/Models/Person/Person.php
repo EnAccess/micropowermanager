@@ -7,13 +7,14 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
 use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -40,6 +41,7 @@ use Inensus\Ticket\Models\Ticket;
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
     use SoftDeletes;
+    use HasFactory;
 
     public const RELATION_NAME = 'person';
 

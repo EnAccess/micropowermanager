@@ -1,6 +1,6 @@
 <?php
 
-namespace Inensus\SwiftaPaymentProvider\Http\Exceptions;
+namespace Inensus\SwiftaPaymentProvider\Exceptions;
 
 class CustomerAddressNotFoundException extends \Exception
 {

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 09.10.18
- * Time: 10:50.
- */
-
 namespace App\ManufacturerApi;
 
 use App\Exceptions\Manufacturer\MeterIsNotReadable;

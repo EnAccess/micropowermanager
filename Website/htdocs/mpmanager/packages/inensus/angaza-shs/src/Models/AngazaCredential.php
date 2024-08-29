@@ -2,7 +2,7 @@
 
 namespace Inensus\AngazaSHS\Models;
 
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 
 class AngazaCredential extends BaseModel
 {

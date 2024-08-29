@@ -3,11 +3,12 @@
 namespace App\Models\Meter;
 
 use App\Models\AccessRate\AccessRate;
-use App\Models\BaseModel;
+use App\Models\Base\BaseModel;
 use App\Models\CustomerGroup;
 use App\Models\SocialTariff;
 use App\Models\TariffPricingComponent;
 use App\Models\TimeOfUsage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MeterTariff extends BaseModel
 {
     use SoftDeletes;
+    use HasFactory;
 
     public const RELATION_NAME = 'meter_tariff';
     public const DEFAULT_FACTOR = 1; // for energy usage

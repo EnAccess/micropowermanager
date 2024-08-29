@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 09.10.18
- * Time: 19:08.
- */
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SmsRequest;

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: kemal
- * Date: 25.05.18
- * Time: 14:43.
- */
-
 namespace App\Sms;
 
 use App\Lib\ISmsProvider;
