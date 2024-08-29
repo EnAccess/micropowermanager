@@ -54,6 +54,4 @@ jobs:
       #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx semantic-release
 
-    # - name: Check if release was successful
-    #   if: success() && env.NEXT_VERSION != ''
-    #   run: echo "New version created ${{ env.NEXT_VERSION }}"
+
