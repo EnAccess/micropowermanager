@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Utils\DummyCompany;
 use Illuminate\Console\Command;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
