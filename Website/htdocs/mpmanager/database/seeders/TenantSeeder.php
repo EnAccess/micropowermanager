@@ -42,6 +42,13 @@ class TenantSeeder extends Seeder
      */
     public function run()
     {
+        // Only proceed if database is empty.
+        // In some seeders we rely on the DummyCompany having id=1.
+        $companies = $this->companyService->getAll();
+        if ($companies->isNotEmpty()) {
+            throw new \Exception('There are already companies configured in MicroPowerManager. Demo data should only be loaded into an empty database. If you wish to reset existing setup with only Demo data, run `artisan migrate-tenant:drop-demo-company` and try again.');
+        }
+
         // Create Company and CompanyDatabase
         $company = $this->companyService->create(DUMMY_COMPANY_DATA);
 
