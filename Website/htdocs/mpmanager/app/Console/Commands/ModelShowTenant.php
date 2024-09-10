@@ -21,7 +21,7 @@ class ModelShowTenant extends Command
      *
      * @var string
      */
-    protected $description = 'Show information about an Eloquent model on provided tenant database';
+    protected $description = 'Show information about an Eloquent model on provided tenant database. This command requires demo data to be loaded.';
 
     /**
      * Create a new command instance.

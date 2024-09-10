@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Utils\DummyCompany;
 use Illuminate\Database\Seeder;
 use Inensus\Ticket\Models\TicketCategory;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -12,7 +11,7 @@ class TicketSeeder extends Seeder
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
+        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
     }
 
     /**
