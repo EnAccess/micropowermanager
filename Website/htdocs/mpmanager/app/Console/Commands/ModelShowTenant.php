@@ -29,9 +29,8 @@ class ModelShowTenant extends Command
      * @return void
      */
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
         parent::__construct();
     }
 
@@ -42,6 +41,8 @@ class ModelShowTenant extends Command
      */
     public function handle()
     {
+        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
+
         $this->call('model:show', [
             'model' => $this->argument('model'),
         ]);
