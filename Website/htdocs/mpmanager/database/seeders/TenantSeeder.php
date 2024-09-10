@@ -31,7 +31,7 @@ class TenantSeeder extends Seeder
         private CompanyService $companyService,
         private UserService $userService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-        private MainSettingsService $mainSettingsService
+        private MainSettingsService $mainSettingsService,
     ) {
     }
 
