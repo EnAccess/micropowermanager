@@ -141,6 +141,8 @@ export default {
                 geoData.selected === undefined ? false : geoData.selected,
               clusterId:
                 geoData.clusterId === undefined ? -1 : geoData.clusterId,
+              clusterDisplayName:
+                geoData.display_name === undefined ? -1 : geoData.display_name,
             },
             geometry: {
               type: geoType,
@@ -173,6 +175,12 @@ export default {
 
           nonEditableLayers.addLayer(layer)
           map.addLayer(nonEditableLayers)
+          layer.bindTooltip(
+            "<strong>Cluster:</strong> " +
+              layer.feature.properties.clusterDisplayName,
+            { sticky: true, offset: [10, 10] },
+          )
+
           const geoDataItem = {
             leaflet_id: layer._leaflet_id,
             type: "manual",
@@ -209,7 +217,16 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          miniGridMarker.bindTooltip("Mini Grid: " + markingInfo.name)
+          let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
+          if (markingInfo.clusterId !== undefined) {
+            tooltip +=
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+          }
+          miniGridMarker.bindTooltip(tooltip, {
+            sticky: true,
+            offset: [10, 10],
+          })
+
           miniGridMarker.addTo(this.map)
         })
     },
@@ -229,7 +246,10 @@ export default {
           const deviceMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: deviceMarkerIcon,
           })
-          deviceMarker.bindTooltip(markingInfo.serialNumber)
+          deviceMarker.bindTooltip(
+            "<strong>Device:</strong> " + markingInfo.serialNumber,
+            { sticky: true, offset: [10, 10] },
+          )
 
           if (markingInfo.markerType === MARKER_TYPE.METER) {
             const parent = this
