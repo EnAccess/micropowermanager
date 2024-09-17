@@ -28,7 +28,7 @@ class CompanyController extends Controller
         private DatabaseProxyManagerService $databaseProxyManagerService,
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
-        private MainSettingsService $mainSettingsService
+        private MainSettingsService $mainSettingsService,
     ) {
     }
 
@@ -78,6 +78,7 @@ class CompanyController extends Controller
         return $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () use ($company, $plugins) {
+                // Prompt new users to configure their default settings
                 $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => false]];
 
                 foreach ($plugins as $plugin) {
