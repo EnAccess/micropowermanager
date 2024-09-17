@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\MainSettingsService;
+use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use App\Utils\DummyCompany;
 use Illuminate\Database\Seeder;
@@ -31,6 +32,7 @@ class TenantSeeder extends Seeder
         private CompanyService $companyService,
         private UserService $userService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
+        private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
     ) {
     }
@@ -75,6 +77,18 @@ class TenantSeeder extends Seeder
                     $mainSettings,
                     ['company_name' => DUMMY_COMPANY_DATA['name']]
                 );
+            }
+        );
+
+        // Plugin and Registration Tail magic
+        // TBD: For now, only Registration Tail
+        $this->databaseProxyManagerService->runForCompany(
+            $company->getId(),
+            function () {
+                // Do not prompt demo users to configure their default settings
+                $registrationTail = [['tag' => 'Settings', 'component' => 'Settings', 'adjusted' => true]];
+
+                $this->registrationTailService->create(['tail' => json_encode($registrationTail)]);
             }
         );
     }
