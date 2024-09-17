@@ -18,7 +18,7 @@ class PluginController extends Controller
         private MpmPluginService $mpmPluginService,
         private CompanyDatabaseService $companyDatabaseService,
         private MenuItemsService $menuItemsService,
-        private RegistrationTailService $registrationTailService
+        private RegistrationTailService $registrationTailService,
     ) {
     }
 
@@ -32,21 +32,21 @@ class PluginController extends Controller
         $plugin = $this->pluginsService->getByMpmPluginId($mpmPluginId);
         $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
         $registrationTail = $this->registrationTailService->getFirst();
-        $tail = json_decode($registrationTail->tail, true);
+
         $pluginData = [
             'mpm_plugin_id' => $mpmPluginId,
             'status' => $request->input('checked'),
         ];
 
         if (!$plugin && !$request->input('checked')) {
-            throw new \Exception(['message' => 'Plugin not found']);
+            throw new \Exception('Plugin not found');
         }
 
         if ($request->input('checked')) {
             if (!$plugin) {
                 $createdPlugin = $this->pluginsService->create($pluginData);
                 $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
-                $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
+                $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
                 Artisan::call($mpmPlugin->installation_command);
 
                 return ApiResource::make($createdPlugin);
@@ -59,18 +59,12 @@ class PluginController extends Controller
                 $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
             }
 
-            $this->registrationTailService->resetTail($tail, $mpmPlugin, $registrationTail);
+            $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
         } else {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
             $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin);
-            $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {
-                return $item['tag'] !== $mpmPlugin->tail_tag;
-            });
 
-            $this->registrationTailService->update(
-                $registrationTail,
-                ['tail' => array_values($updatedTail)]
-            );
+            $this->registrationTailService->removeMpmPluginFromRegistrationTail($registrationTail, $mpmPlugin);
         }
 
         return ApiResource::make($updatedPlugin);
