@@ -50,7 +50,7 @@ MPM's documentation is hosted on [micropowermanager.io](https://micropowermanage
 
 Explore MPM's capabilities by
 
-- logging into the [Demo Version](https://demo.micropowermanager.io/)
+- logging into the [Demo Version (comming soon)](https://demo.micropowermanager.io/)
 - setting up a local installation following this [guide](https://micropowermanager.io/development/development-environment.html)
 
 ## Support

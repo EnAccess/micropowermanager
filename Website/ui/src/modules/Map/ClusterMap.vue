@@ -120,6 +120,8 @@ export default {
                 geoData.selected === undefined ? false : geoData.selected,
               clusterId:
                 geoData.clusterId === undefined ? -1 : geoData.clusterId,
+              clusterDisplayName:
+                geoData.display_name === undefined ? -1 : geoData.display_name,
             },
             geometry: {
               type: geoType,
@@ -147,6 +149,12 @@ export default {
             })
           }
           editableLayer.addLayer(layer)
+          layer.bindTooltip(
+            "<strong>Cluster:</strong> " +
+              layer.feature.properties.clusterDisplayName,
+            { sticky: true, offset: [10, 10] },
+          )
+
           const geoDataItem = {
             leaflet_id: layer._leaflet_id,
             type: "manual",
@@ -193,11 +201,21 @@ export default {
           const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
             icon: miniGridMarkerIcon,
           })
-          miniGridMarker.bindTooltip("Mini Grid: " + markingInfo.name)
+          let tooltip = "<strong>Mini Grid:</strong> " + markingInfo.name
+          if (markingInfo.clusterId !== undefined) {
+            tooltip +=
+              "<br><strong>Cluster:</strong> " + markingInfo.clusterDisplayName
+          }
+          miniGridMarker.bindTooltip(tooltip, {
+            sticky: true,
+            offset: [10, 10],
+          })
+
           const parent = this
           miniGridMarker.on("click", function () {
             parent.routeToDetail("/dashboards/mini-grid", markingInfo.id)
           })
+
           if (markingInfo.dataStream > 0) {
             miniGridMarker.addTo(dataLoggerActiveMiniGrids)
           } else {
