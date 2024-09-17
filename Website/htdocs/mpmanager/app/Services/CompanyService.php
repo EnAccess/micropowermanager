@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class CompanyService implements IBaseService
 {
     public function __construct(
-        private Company $company
+        private Company $company,
     ) {
     }
 
@@ -52,6 +52,6 @@ class CompanyService implements IBaseService
 
     public function getAll(?int $limit = null): Collection
     {
-        throw new \Exception('Method getAll() not yet implemented.');
+        return $this->company->newQuery()->get();
     }
 }

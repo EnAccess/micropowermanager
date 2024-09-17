@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Utils\DummyCompany;
 use Illuminate\Console\Command;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
@@ -21,7 +20,7 @@ class ModelShowTenant extends Command
      *
      * @var string
      */
-    protected $description = 'Show information about an Eloquent model on provided tenant database';
+    protected $description = 'Show information about an Eloquent model on provided tenant database. This command requires demo data to be loaded.';
 
     /**
      * Create a new command instance.
@@ -29,9 +28,8 @@ class ModelShowTenant extends Command
      * @return void
      */
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionByCompanyId(DummyCompany::DUMMY_COMPANY_ID);
         parent::__construct();
     }
 
@@ -42,6 +40,8 @@ class ModelShowTenant extends Command
      */
     public function handle()
     {
+        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
+
         $this->call('model:show', [
             'model' => $this->argument('model'),
         ]);

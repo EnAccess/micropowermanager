@@ -6,6 +6,7 @@ namespace MPM\DatabaseProxy;
 
 use App\Models\CompanyDatabase;
 use App\Models\DatabaseProxy;
+use App\Utils\DummyCompany;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -14,7 +15,7 @@ class DatabaseProxyManagerService
     public function __construct(
         private DatabaseProxy $databaseProxy,
         private DatabaseManager $databaseManager,
-        private CompanyDatabase $companyDatabase
+        private CompanyDatabase $companyDatabase,
     ) {
     }
 
@@ -36,9 +37,9 @@ class DatabaseProxyManagerService
         return $this->companyDatabase->newQuery();
     }
 
-    public function buildDatabaseConnectionByCompanyId(int $company_id): void
+    public function buildDatabaseConnectionDummyCompany(): void
     {
-        $this->buildDatabaseConnection('DummyCompany_1');
+        $this->buildDatabaseConnection(DummyCompany::DUMMY_COMPANY_DATABASE_NAME);
     }
 
     private function buildDatabaseConnection(string $databaseName): void
