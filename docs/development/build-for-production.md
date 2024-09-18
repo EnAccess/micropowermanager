@@ -2,17 +2,17 @@
 order: 6
 ---
 
-
 # Building docker image for production
 
-### Backend Prod
+## Backend Prod
 
 From the root directory run
 
-```
+```bash
 docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f Docker/DockerfileLaravelProd .
 ```
 
+## Frontend Prod
 
 ### Frontend Prod
 
@@ -20,5 +20,3 @@ docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f Docker/
 ```
 docker build --platform linux/amd64 -t micropowermanager-ui-prod -f Docker/DockerfileUIProd .
 ```
-
-
