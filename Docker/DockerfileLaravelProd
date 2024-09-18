@@ -1,4 +1,7 @@
-FROM php:8-fpm
+FROM php:8.2-fpm
+
+WORKDIR /app
+COPY ./Website/htdocs/mpmanager /app
 
 RUN apt-get update && \
     apt-get install -y \
@@ -13,26 +16,43 @@ RUN apt-get update && \
     supervisor \
     libzip-dev \
     vim \
-    git
+    git \
+    zsh \
+    unzip  # Add unzip for Composer
 
+# install ohmyzsh
+RUN chsh -s $(which zsh)
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# add php artisan alias
+RUN echo 'alias "cmd=php artisan"'  >> ~/.zshrc
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
 
-# install php extentions
+# install php extensions
 RUN docker-php-ext-install gd mysqli zip pdo pdo_mysql soap ftp opcache bcmath pcntl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg\
 && docker-php-ext-configure pcntl --enable-pcntl
 
+# Download composer.phar
+RUN curl -sS https://getcomposer.org/composer.phar -o /usr/local/bin/composer.phar
+
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_connephpct_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    echo xdebug.remote_connect_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
-EXPOSE 9000
-COPY ./owner-changer.sh /owner-changer.sh
-RUN chmod +x /owner-changer.sh
-ENTRYPOINT ["/owner-changer.sh"]
-CMD ["www-data"]
+# Run the composer install
+RUN php /usr/local/bin/composer.phar install
+
+EXPOSE 80
+
+COPY ./Docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+RUN chown -R www-data:www-data /app
+RUN chmod -R 775 /app/storage
+
+RUN a2enmod rewrite
