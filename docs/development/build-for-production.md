@@ -19,5 +19,5 @@ cd Website/ui
 ```
 
 ```bash
-docker build --platform linux/amd64 -t micropowermanager-frontend-prod -f Dockerfile 
+docker build --platform linux/amd64 -t micropowermanager-frontend-prod -f Dockerfile
 ```
