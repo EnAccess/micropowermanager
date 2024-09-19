@@ -6,7 +6,7 @@ The Open Source in Energy Access (OSEA) community is made up of members from aro
 
 Members of the OSEA community are **open, considerate, and respectful**. Behaviours that reinforce these values contribute to a positive environment, and include:
 
-- **Being open.** Members of the community are open to collaboration, whether it's on PEPs, patches, problems, or otherwise.
+- **Being open.** Members of the community are open to collaboration, whether it's on enhancement proposals, patches, problems, or otherwise.
 - **Focusing on what is best for the community.** We're respectful of the processes set forth in the community, and we work within them.
 - **Acknowledging time and effort.** We're respectful of the volunteer efforts that permeate the OSEA community. We're thoughtful when addressing the efforts of others, keeping in mind that often times the labor was completed simply for the good of the community.
 - **Being respectful of differing viewpoints and experiences.** We're receptive to constructive comments and criticism, as the experiences and skill sets of other members contribute to the whole of our efforts.
