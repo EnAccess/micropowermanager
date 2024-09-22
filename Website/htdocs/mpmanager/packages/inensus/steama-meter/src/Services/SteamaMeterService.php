@@ -11,6 +11,7 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
@@ -24,55 +25,25 @@ use Inensus\SteamaMeter\Models\SyncStatus;
 
 class SteamaMeterService implements ISynchronizeService
 {
-    private $stmMeter;
-    private $steamaApi;
-    private $apiHelpers;
     private $rootUrl = '/meters';
-    private $meter;
-    private $customer;
-    private $manufacturer;
-    private $connectionGroup;
-    private $meterTariff;
-    private $city;
-    private $stmMeterType;
-    private $meterType;
-    private $meterParameter;
-    private $tariff;
-    private $steamaSyncSettingService;
-    private $steamaSyncActionService;
 
     public function __construct(
-        SteamaMeter $steamaMeterModel,
-        SteamaMeterApiClient $steamaApi,
-        ApiHelpers $apiHelpers,
-        Meter $meter,
-        SteamaCustomer $customer,
-        Manufacturer $manufacturer,
-        ConnectionGroup $connectionGroup,
-        MeterTariff $meterTariff,
-        City $city,
-        MeterType $meterType,
-        SteamaMeterType $stmMeterType,
-        MeterParameter $meterParameter,
-        SteamaTariff $tariff,
-        SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService
+        private SteamaMeter $stmMeter,
+        private SteamaMeterApiClient $steamaApi,
+        private ApiHelpers $apiHelpers,
+        private Meter $meter,
+        private SteamaCustomer $customer,
+        private Manufacturer $manufacturer,
+        private ConnectionGroup $connectionGroup,
+        private MeterTariff $meterTariff,
+        private City $city,
+        private MeterType $meterType,
+        private SteamaMeterType $stmMeterType,
+        private MeterParameter $meterParameter,
+        private SteamaTariff $tariff,
+        private SteamaSyncSettingService $steamaSyncSettingService,
+        private StemaSyncActionService $steamaSyncActionService
     ) {
-        $this->stmMeter = $steamaMeterModel;
-        $this->steamaApi = $steamaApi;
-        $this->apiHelpers = $apiHelpers;
-        $this->meter = $meter;
-        $this->customer = $customer;
-        $this->manufacturer = $manufacturer;
-        $this->connectionGroup = $connectionGroup;
-        $this->meterTariff = $meterTariff;
-        $this->city = $city;
-        $this->stmMeterType = $stmMeterType;
-        $this->meterType = $meterType;
-        $this->meterParameter = $meterParameter;
-        $this->tariff = $tariff;
-        $this->steamaSyncSettingService = $steamaSyncSettingService;
-        $this->steamaSyncActionService = $steamaSyncActionService;
     }
 
     public function getMeters($request)
@@ -91,7 +62,7 @@ class SteamaMeterService implements ISynchronizeService
         return count($this->stmMeter->newQuery()->get());
     }
 
-    public function sync()
+    public function sync(): LengthAwarePaginator
     {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Meters');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
@@ -132,7 +103,7 @@ class SteamaMeterService implements ISynchronizeService
         } catch (\Exception $e) {
             $this->steamaSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Steama meters sync failed.', ['Error :' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw $e;
         }
     }
 
@@ -252,7 +223,7 @@ class SteamaMeterService implements ISynchronizeService
                     'city_id' => request()->input('city_id') ?? $steamaCity->id,
                 ]);
                 $address->owner()->associate($meterParameter);
-                $address->geo()->associate($meterParameter->geo);
+                $address->geo()->save($meterParameter?->geo()->first());
                 $address->save();
             }
             DB::connection('shard')->commit();
@@ -261,7 +232,7 @@ class SteamaMeterService implements ISynchronizeService
         } catch (\Exception $e) {
             DB::connection('shard')->rollBack();
             Log::critical('Error while synchronizing steama meters', ['message' => $e->getMessage()]);
-            throw new \Exception($e->getMessage());
+            throw $e;
         }
     }
 

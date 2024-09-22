@@ -3,28 +3,22 @@
 namespace App\Services;
 
 use App\Models\Plugins;
-use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @implements IBaseService<Plugins>
- */
-class PluginsService implements IBaseService
+class PluginsService
 {
     public function __construct(
         private Plugins $plugin
     ) {
     }
 
-    public function getById(int $id): Plugins
-    {
-        throw new \Exception('Method getById() not yet implemented.');
-    }
-
     public function create(array $pluginData): Plugins
     {
-        return $this->plugin->newQuery()->create($pluginData);
+        /** @var Plugins $plugin */
+        $plugin = $this->plugin->newQuery()->create($pluginData);
+
+        return $plugin;
     }
 
     public function update($model, array $data): Plugins
@@ -33,11 +27,6 @@ class PluginsService implements IBaseService
         $model->fresh();
 
         return $model;
-    }
-
-    public function delete($model): ?bool
-    {
-        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator
@@ -52,5 +41,12 @@ class PluginsService implements IBaseService
     public function getByMpmPluginId($mpmPluginId)
     {
         return $this->plugin->newQuery()->where('mpm_plugin_id', $mpmPluginId)->first();
+    }
+
+    public function isPluginActive(int $pluginId): bool
+    {
+        return $this->plugin->newQuery()
+            ->where('mpm_plugin_id', '=', $pluginId)
+            ->exists();
     }
 }
