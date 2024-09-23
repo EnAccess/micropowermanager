@@ -1,6 +1,6 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Discord Chat
+  - name: Open Source in Energy Access (OSEA) Community Discord
     url: https://discord.osea-community.org/
     about: Have questions or trouble getting started? Try asking on our Discord! (The Github issue tracker is preferably used for reporting bugs or feature requests.)
   - name: EnAccess Homepage
