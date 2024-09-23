@@ -1,0 +1,68 @@
+name: Bug Report
+description: Report a bug to help improve the project.
+title: "[Bug]: "
+labels:
+  - "bug"
+body:
+  - type: checkboxes
+    attributes:
+      label: Preflight Checklist
+      description: Please ensure you've completed all of the following.
+      options:
+        - label: I have read the [Contributing Guidelines](https://github.com/EnAccess/micropowermanager/blob/main/CONTRIBUTING.md) for this project, if it exists.
+          required: true
+        - label: I agree to follow the [Code of Conduct](https://github.com/EnAccess/micropowermanager/blob/main/CODE_OF_CONDUCT.md) that this project adheres to.
+          required: true
+        - label: I have searched the [issue tracker](https://github.com/EnAccess/micropowermanager/issues) for a feature request that matches the one I want to file, without success.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: Please explain what behaviour you expected and why you think this is the correct behaviour.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual Behavior
+      description: A clear description of what actually happens.
+      placeholder: Please explain what actually happens. Feel free to provide screenshot if helpful.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: A list of clear and minimal steps to reproduce the problem.
+      placeholder: >
+        Please make sure you provide a reproducible step-by-step case of how to reproduce the problem,
+        as minimally and precisely as possible.
+        Keep in mind we do not have access to your deployment.
+
+        Unfortunately non-reproducible issues will have to be closed.
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: What operating system(s) are you using?
+      multiple: true
+      options:
+        - Windows
+        - macOS
+        - Ubuntu
+        - Other Linux
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: If your problem needs further explanation, please add more information here.
+
+  - type: markdown
+    attributes:
+      value: "Thank you for completing our form!"
