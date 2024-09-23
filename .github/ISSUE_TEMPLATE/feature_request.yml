@@ -46,4 +46,4 @@ body:
 
   - type: markdown
     attributes:
-      value: "Thank you for completing our form!"
+      value: Thank you for completing our form!
