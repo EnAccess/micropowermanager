@@ -2,7 +2,7 @@ name: Bug Report
 description: Report a bug to help improve the project.
 title: "[Bug]: "
 labels:
-  - "bug"
+  - bug
 body:
   - type: checkboxes
     attributes:
@@ -65,4 +65,4 @@ body:
 
   - type: markdown
     attributes:
-      value: "Thank you for completing our form!"
+      value: Thank you for completing our form!
