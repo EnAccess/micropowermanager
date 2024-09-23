@@ -53,15 +53,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'SunKingSHS',
-            'composer_name' => 'inensus/sun-king-shs',
-            'description' => 'SunKingSHS integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

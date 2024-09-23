@@ -52,15 +52,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'MicroStarMeter',
-            'composer_name' => 'inensus/micro-star-meter',
-            'description' => 'MicroStarMeter integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

@@ -138,7 +138,7 @@ class DummyDataCreator extends AbstractSharedCommand
         ]);
 
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
-
+        $subTransaction = null;
         if ($transactionType instanceof AgentTransaction) {
             $city = $randomMeter->device->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
@@ -233,11 +233,17 @@ class DummyDataCreator extends AbstractSharedCommand
         $transaction->originalTransaction()->associate($subTransaction);
         $transaction->save();
 
+        if ($subTransaction === null ) {
+            $message = 'failed to create transaction, no sub transaction!';
+
+            event('transaction.failed', [$this->transaction, $message()]);
+            throw new \Exception($message);
+        }
         try {
             // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
-            event('transaction.failed', [$this->transaction, $e->getMessage()]);
+            event('transaction.failed', [$this->transaction, $exception->getMessage()]);
             throw $exception;
         }
 

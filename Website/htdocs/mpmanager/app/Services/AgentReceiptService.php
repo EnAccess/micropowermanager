@@ -65,6 +65,7 @@ class AgentReceiptService implements IBaseService
 
     public function getLastReceiptDate($agent)
     {
+        /* @phpstan-ignore-next-line */
         $lastReceiptDate = $this->agentReceipt->newQuery()->where('agent_id', $agent->id)->get()->last();
 
         if ($lastReceiptDate) {

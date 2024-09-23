@@ -34,13 +34,4 @@ class InstallPackage extends Command
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
-
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'MesombPaymentProvider',
-            'composer_name' => 'inensus/mesomb-payment-provider',
-            'description' => 'MesombPaymentProvider integration package for MicroPowerManager',
-        ]);
-    }
 }

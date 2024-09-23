@@ -48,15 +48,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'ViberMessaging',
-            'composer_name' => 'inensus/wave-money-payment-provider',
-            'description' => 'WaveMoney integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

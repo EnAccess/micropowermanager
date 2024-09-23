@@ -44,11 +44,11 @@ class AgentReceiptObserver
         $collected = $receipt->amount;
         $agentReceiptDetailData = [
             'agent_receipt_id' => $receipt->id,
-            'due' => $due ?? 0,
-            'collected' => $collected ?? 0,
+            'due' => $due,
+            'collected' => $collected,
             'since_last_visit' => $sinceLastVisit ?? 0,
             'earlier' => $earlier ?? 0,
-            'summary' => $summary ?? 0,
+            'summary' => $summary,
         ];
         $this->agentReceiptDetailService->create($agentReceiptDetailData);
         $agentBalanceHistoryData = [

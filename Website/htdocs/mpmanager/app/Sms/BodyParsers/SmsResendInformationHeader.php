@@ -20,7 +20,7 @@ class SmsResendInformationHeader extends SmsBodyParser
             $person = $this->data->meter->meterParameter->owner()->first();
         } else {
             try {
-                $person = Person::query()->with(['meters.meter' => function ($q) {
+                $person = Person::query()->with(['devices.device' => function ($q) {
                     return $q->where('serial_number', $this->data['meter'])->first();
                 }])->firstOrFail();
             } catch (\Exception $e) {

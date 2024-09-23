@@ -132,7 +132,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function jsonResponse(?array $payload = null, $status_code)
+    protected function jsonResponse(?array $payload = null, $status_code = 400)
     {
         $payload = $payload ?: [];
 

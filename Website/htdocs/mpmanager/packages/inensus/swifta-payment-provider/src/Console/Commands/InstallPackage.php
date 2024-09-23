@@ -62,15 +62,6 @@ class InstallPackage extends Command
         $this->call('migrate');
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'SwiftaPaymentProvider',
-            'composer_name' => 'inensus/swifta-payment-provider',
-            'description' => 'SwiftaPaymentProvider integration package for MicroPowerManager',
-        ]);
-    }
-
     private function generateAuthenticationToken()
     {
         $password = $this->generateRandomNumber();

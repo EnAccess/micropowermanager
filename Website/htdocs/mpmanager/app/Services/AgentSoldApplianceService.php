@@ -20,28 +20,33 @@ class AgentSoldApplianceService implements IBaseService
     ) {
     }
 
-    public function create($applianceData): AgentSoldAppliance
+    public function create($data): AgentSoldAppliance
     {
-        return $this->agentSoldAppliance->newQuery()->create($applianceData);
+        /** @var AgentSoldAppliance $result */
+        $result = $this->agentSoldAppliance->newQuery()->create($data);
+
+        return $result;
     }
 
-    public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance
+    public function getById(int $id, ?int $customerId = null): AgentSoldAppliance
     {
-        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
+        /** @var AgentSoldAppliance $result */
+        $result = $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
-                function ($q) use ($agentId) {
-                    $q->where('id', $agentId);
+                function ($q) use ($id) {
+                    $q->where('id', $id);
                 }
             )
             ->where('person_id', $customerId)
             ->latest()
-            // Not sure why it want to return a paginate here.
-            // Commenting out for now to return a singleton.
-            // ->paginate();
-            ->first();
+            ->firstOrFail();
+
+        return $result;
     }
+
+
 
     public function update($model, array $data): AgentSoldAppliance
     {
@@ -65,7 +70,7 @@ class AgentSoldApplianceService implements IBaseService
 
         $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
-            'assignedAppliance.applianceType',
+            'assignedAppliance.appliance.assetType',
             'person',
         ]);
 
@@ -94,7 +99,7 @@ class AgentSoldApplianceService implements IBaseService
 
     public function list($agentId)
     {
-        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
+        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],

@@ -33,12 +33,7 @@ class ModelShowTenant extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    public function handle(): void
     {
         $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
 

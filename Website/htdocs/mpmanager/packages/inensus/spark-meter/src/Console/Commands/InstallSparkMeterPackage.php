@@ -124,15 +124,6 @@ class InstallSparkMeterPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'SparkMeter',
-            'composer_name' => 'inensus/spark-meter',
-            'description' => 'Spark meters integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

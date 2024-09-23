@@ -23,6 +23,7 @@ abstract class AbstractSharedCommand extends Command
 
         $companyId = null;
         if ($this->hasOption('company-id')) {
+            /* @phpstan-ignore-next-line */
             $companyId = $this->option('company-id');
         }
         if ($companyId) {

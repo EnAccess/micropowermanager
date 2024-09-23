@@ -29,7 +29,7 @@ class AgentAssignedApplianceService implements IBaseService
 
     public function getById(int $id): AgentAssignedAppliances
     {
-        return $this->agentAssignedAppliance->newQuery()->with('applianceType')->find($id);
+        return $this->agentAssignedAppliance->newQuery()->with('appliance')->find($id);
     }
 
     public function update($model, array $data): AgentAssignedAppliances
