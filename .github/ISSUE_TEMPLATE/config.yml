@@ -2,7 +2,7 @@ blank_issues_enabled: true
 contact_links:
   - name: Discord Chat
     url: https://discord.osea-community.org/
-    about: Have questions? Try asking on our Discord - this issue tracker is preferably used for reporting bugs or feature requests.
+    about: Have questions or trouble getting started? Try asking on our Discord! (The Github issue tracker is preferably used for reporting bugs or feature requests.)
   - name: EnAccess Homepage
     url: https://enaccess.org/
-    about: If you would like more details about how to use one of EnAccess' projects or have any questions, we are happy to help.
+    about: If you would like more details about how to use one of EnAccess' projects or have any further questions, we are happy to help.
