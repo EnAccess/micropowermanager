@@ -55,6 +55,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
 
     public function getLastAgentBalanceHistory($agentId)
     {
+        /* @phpstan-ignore-next-line */
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->get()->last();
     }
 
@@ -69,6 +70,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
     public function getTransactionAverage($agent, $lastReceipt)
     {
         if ($lastReceipt) {
+            /* @phpstan-ignore-next-line */
             $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
                 ->where('agent_id', $agent->id)
                 ->where('trigger_type', 'agent_transaction')
@@ -76,6 +78,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
                 ->get()
                 ->avg('amount');
         } else {
+            /* @phpstan-ignore-next-line */
             $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
                 ->where('agent_id', $agent->id)
                 ->where('trigger_type', 'agent_transaction')

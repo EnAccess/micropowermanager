@@ -59,15 +59,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'StronMeter',
-            'composer_name' => 'inensus/stron-meter',
-            'description' => 'Stron Meter integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

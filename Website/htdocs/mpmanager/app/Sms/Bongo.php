@@ -4,6 +4,7 @@ namespace App\Sms;
 
 use App\Lib\ISmsProvider;
 use App\Models\Sms;
+use App\Models\SmsAndroidSetting;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Facades\Log;
@@ -37,15 +38,7 @@ class Bongo implements ISmsProvider
 
     public $defer = true;
 
-    /**
-     * @param string $number
-     * @param string $body
-     *
-     * @return StreamInterface
-     *
-     * @throws \Exception
-     */
-    public function sendGetSms(string $number, string $body)
+    public function sendGetSms(string $number, string $body): StreamInterface
     {
         $httpClient = new Client();
         if ($number[0] !== '+') {
@@ -77,15 +70,16 @@ class Bongo implements ISmsProvider
     }
 
     /**
+     *
      * @param string $number
      * @param string $body
      * @param string $callback
-     *
+     * @param SmsAndroidSetting $smsAndroidSetting
      * @return mixed|StreamInterface
      *
      * @throws \Exception
      */
-    public function sendSms(string $number, string $body, $callback)
+    public function sendSms(string $number, string $body, $callback, SmsAndroidSetting $smsAndroidSetting)
     {
         $httpClient = new Client();
         if ($number[0] !== '+') {

@@ -65,15 +65,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'BulkRegistration',
-            'composer_name' => 'inensus/bulk-registration',
-            'description' => 'BulkRegistration integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

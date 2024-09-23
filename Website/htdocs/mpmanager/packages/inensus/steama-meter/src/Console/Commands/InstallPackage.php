@@ -81,7 +81,6 @@ class InstallPackage extends Command
         // $this->publishVueFiles();
         $this->apiHelpers->registerSparkMeterManufacturer();
         $this->credentialService->createCredentials();
-        // $this->createPluginRecord();
         $tariff = $this->tariffService->createTariff();
         $this->userTypeService->createUserTypes($tariff);
         $this->paymentPlanService->createPaymentPlans();
@@ -119,15 +118,6 @@ class InstallPackage extends Command
             '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
             '--tag' => 'vue-components',
             '--force' => true,
-        ]);
-    }
-
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'SteamaMeter',
-            'composer_name' => 'inensus/steama-meter',
-            'description' => 'SteamaMeter integration package for MicroPowerManager',
         ]);
     }
 

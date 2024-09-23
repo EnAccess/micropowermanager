@@ -97,7 +97,7 @@ class LoanDataContainer
     {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
 
-        return AssetRate::with('assetPerson.assetType')
+        return AssetRate::with('assetPerson.device')
             ->whereIn('asset_person_id', $loans)
             ->where('remaining', '>', 0)
             ->whereDate('due_date', '<', date('Y-m-d'))
@@ -116,7 +116,7 @@ class LoanDataContainer
     {
         try {
             /** @var Meter $meter */
-            $meter = Meter::with('meterParameter.owner')
+            $meter = Meter::with('device.person')
                 ->where('serial_number', $serialNumber)
                 ->firstOrFail();
         } catch (ModelNotFoundException $ex) {

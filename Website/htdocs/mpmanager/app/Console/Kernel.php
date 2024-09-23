@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use app\Console\Commands\MailApplianceDebtsCommand;
+use App\Console\Commands\MailApplianceDebtsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage;

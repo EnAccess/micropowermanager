@@ -59,15 +59,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'CalinSmartMeter',
-            'composer_name' => 'inensus/calin-smart-meter',
-            'description' => 'CalinSmartMeter integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

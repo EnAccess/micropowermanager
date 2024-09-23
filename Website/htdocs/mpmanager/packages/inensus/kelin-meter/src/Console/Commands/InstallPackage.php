@@ -72,13 +72,4 @@ class InstallPackage extends Command
             '--tag' => 'vue-components',
         ]);
     }
-
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'KelinMeters',
-            'composer_name' => 'inensus/kelin-meter',
-            'description' => 'KelinMeters integration package for MicroPowerManager',
-        ]);
-    }
 }

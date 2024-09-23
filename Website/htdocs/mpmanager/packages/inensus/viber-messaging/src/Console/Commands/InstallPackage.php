@@ -50,15 +50,6 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
-        $this->call('plugin:add', [
-            'name' => 'ViberMessaging',
-            'composer_name' => 'inensus/viber-messaging',
-            'description' => 'Viber Messaging integration package for MicroPowerManager',
-        ]);
-    }
-
     private function createMenuItems()
     {
         $menuItems = $this->menuItemService->createMenuItems();

@@ -51,6 +51,7 @@ class AgentTransactionService implements IBaseService
 
     public function getById(int $agentId, ?int $customerId = null): AgentTransaction
     {
+        /* @phpstan-ignore-next-line */
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->get()->pluck('device_serial');
 
