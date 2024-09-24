@@ -12,6 +12,9 @@ COPY package*.json ./
 # install project dependencies
 RUN npm install
 
+# Force the upgrade of restore-cursor and onetime to the latest versions
+RUN npm install restore-cursor@latest onetime@latest
+
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 
