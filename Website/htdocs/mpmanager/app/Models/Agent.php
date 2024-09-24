@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,6 +34,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Agent extends Authenticatable implements JWTSubject
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'agent';
 
     public function __construct(array $attributes = [])
@@ -60,9 +62,9 @@ class Agent extends Authenticatable implements JWTSubject
         'device_id',
     ];
 
-    public function miniGrid(): HasOne
+    public function miniGrid(): BelongsTo
     {
-        return $this->hasOne(MiniGrid::class, 'id', 'mini_grid_id');
+        return $this->belongsTo(MiniGrid::class);
     }
 
     /**
@@ -126,7 +128,7 @@ class Agent extends Authenticatable implements JWTSubject
 
     public function commission(): BelongsTo
     {
-        return $this->belongsTo(AgentCommission::class, 'agent_commission_id', 'id');
+        return $this->belongsTo(AgentCommission::class, 'agent_commission_id');
     }
 
     public function soldAppliances(): MorphMany

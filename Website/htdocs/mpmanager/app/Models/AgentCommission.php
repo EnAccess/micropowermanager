@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class AgentCommission extends BaseModel
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'agent_commission';
 
     public function agent(): HasMany

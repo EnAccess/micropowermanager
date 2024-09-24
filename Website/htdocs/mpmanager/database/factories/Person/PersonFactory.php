@@ -10,7 +10,7 @@ class PersonFactory extends Factory
     protected $model = Person::class;
 
     /**
-     * Indicate that the person is a custoker.
+     * Indicate that the person is a customer.
      *
      * @return Factory
      */
@@ -19,6 +19,22 @@ class PersonFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'is_customer' => true,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the person is an Agent.
+     *
+     * @return Factory
+     */
+    public function isAgent($village_name = 'Demo')
+    {
+        return $this->state(function (array $attributes) use ($village_name) {
+            return [
+                'is_customer' => false,
+                'education' => 'MicroPowerManager Agent',
+                'surname' => $attributes['surname'].' (Agent '.$village_name.')',
             ];
         });
     }

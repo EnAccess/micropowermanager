@@ -1,0 +1,65 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Address\Address;
+use App\Models\Agent;
+use App\Models\AgentCommission;
+use App\Models\GeographicalInformation;
+use App\Models\MiniGrid;
+use App\Models\Person\Person;
+use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
+
+class AgentSeeder extends Seeder
+{
+    public function __construct(
+        private DatabaseProxyManagerService $databaseProxyManagerService,
+    ) {
+        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
+    }
+
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $agentCommission = AgentCommission::factory()
+            ->create();
+
+        // Get available MiniGrids
+        $minigrids = MiniGrid::all();
+
+        // For each Mini-Grid we create an Agents
+        foreach ($minigrids as $minigrid) {
+            $village = $minigrid->cities()->get()->random();
+
+            $person = Person::factory()
+            ->isAgent($village->name)
+            ->has(
+                Address::factory()
+                    ->for($village)
+                    ->has(
+                        GeographicalInformation::factory()
+                            ->state(function (array $attributes, Address $address) {
+                                return ['points' => $address->city->location->points];
+                            })
+                            ->randomizePoints(),
+                        'geo'
+                    )
+            )
+            ->create();
+
+            $agents = Agent::factory()
+                ->for($minigrid)
+                ->for($agentCommission, 'commission')
+                ->for($person)
+                ->state(
+                    ['name' => $person->name]
+                )
+                ->create();
+        }
+    }
+}
