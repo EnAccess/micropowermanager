@@ -3,11 +3,11 @@ FROM node:18.20.4
 WORKDIR /usr/app
 
 # Copy the package.json and install dependencies
-COPY package*.json ./
+COPY ../Website/ui/package*.json ./
 RUN npm install
 
-# Copy rest of the files
-COPY --chown=www-data:www-data  . .
+# Copy the rest of the files
+COPY --chown=www-data:www-data  ../Website/ui .
 
 EXPOSE 8080
 
