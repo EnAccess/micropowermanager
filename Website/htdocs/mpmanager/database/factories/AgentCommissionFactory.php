@@ -17,7 +17,7 @@ class AgentCommissionFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'test commission',
+            'name' => 'Sample Commission',
             'energy_commission' => 0.05,
             'appliance_commission' => 0.05,
             'risk_balance' => -10000,

@@ -1,36 +1,3 @@
-INSERT INTO `people` (`id`, `title`, `education`, `name`, `surname`, `birth_date`, `sex`, `nationality`, `is_customer`, `deleted_at`, `created_at`, `updated_at`, `additional_json`)
-VALUES
-    (198,NULL,NULL,'Demo','Agent','2023-09-30','male',NULL,0,NULL,'2023-10-24 15:12:38','2023-10-24 15:12:38',NULL),
-    (199,NULL,NULL,'Demo','Agent2',NULL,'male',NULL,0,NULL,'2023-10-24 15:14:41','2023-10-24 15:14:41',NULL),
-    (200,NULL,NULL,'Demo','Agent3','2023-09-30','male',NULL,0,NULL,'2023-10-24 15:15:18','2023-10-24 15:15:18',NULL),
-    (201,NULL,NULL,'Demo','Agent4','2023-10-23','male',NULL,0,NULL,'2023-10-24 15:15:49','2023-10-24 15:15:49',NULL),
-    (202,NULL,NULL,'Demo','Agent5','2023-10-23','male',NULL,0,NULL,'2023-10-24 15:16:23','2023-10-24 15:16:23',NULL),
-    (203,NULL,NULL,'Demo','Agent6','2023-10-23','male',NULL,0,NULL,'2023-10-24 15:17:01','2023-10-24 15:17:01',NULL),
-    (204,NULL,NULL,'Demo','Agent7','2023-10-23','male',NULL,0,NULL,'2023-10-24 15:17:34','2023-10-24 15:17:34',NULL);
-
-
-INSERT INTO `addresses` (`id`, `owner_type`, `owner_id`, `email`, `phone`, `street`, `city_id`, `is_primary`, `created_at`, `updated_at`)
-VALUES
-    (391,'person',198,'da@inenus.com','+25543563422','',1,1,'2023-10-24 15:12:38','2023-10-24 15:12:38'),
-    (392,'person',199,'da2@inensus.com','+25512321232','',6,1,'2023-10-24 15:14:41','2023-10-24 15:14:41'),
-    (393,'person',200,'da3@inensus.com','+25533322212','',7,1,'2023-10-24 15:15:18','2023-10-24 15:15:18'),
-    (394,'person',201,'da4@inensus.com','+2553212232','',9,1,'2023-10-24 15:15:49','2023-10-24 15:15:49'),
-    (395,'person',202,'da5@inensus.com','+25512332123','',10,1,'2023-10-24 15:16:23','2023-10-24 15:16:23'),
-    (396,'person',203,'da6@inensus.com','+25523212323','',11,1,'2023-10-24 15:17:01','2023-10-24 15:17:01'),
-    (397,'person',204,'da7@inensus.com','+25513212321','',12,1,'2023-10-24 15:17:34','2023-10-24 15:17:34');
-
-
-INSERT INTO `agents` (`id`, `person_id`, `mini_grid_id`, `agent_commission_id`, `device_id`, `name`, `email`, `password`, `fire_base_token`, `balance`, `commission_revenue`, `due_to_energy_supplier`, `remember_token`, `created_at`, `updated_at`, `connection`)
-VALUES
-    (1,198,1,1,'-','Demo','da@inenus.com','$2y$10$cgWHqWEqsiHdt0zC0wwtTOAiJ8Ox1zaBZ363ETzdxX4dZhoWhkI5q','-',-692985,138597,554388,NULL,'2023-10-24 15:12:38','2023-11-13 00:00:42',' '),
-    (2,199,6,1,'-','Demo','da2@inensus.com','$2y$10$JNycdceN.G6GvIbOVftUOOF8SkmJw5owVw0JtmOHhgxEfXDTzqJji','-',-976502,195300.4,781201.6,NULL,'2023-10-24 15:14:41','2023-11-14 00:00:41',' '),
-    (3,200,7,1,'-','Demo','da3@inensus.com','$2y$10$8m5NnNCuo37OjNQ8E.p3e..KUWIzuN8oAIZA.zkEHuTRa/7RIqQ3a','-',-1248530,249706,998824,NULL,'2023-10-24 15:15:18','2023-11-15 00:00:45',' '),
-    (4,201,9,1,'-','Demo','da4@inensus.com','$2y$10$i7mwW1V1cJ0bNKixNgJJuOArCtnhLDKVOAvtqacRgfHvSqNcQyhFu','-',-1145268,229053.6,916214.4,NULL,'2023-10-24 15:15:49','2023-11-13 00:00:42',' '),
-    (5,202,10,1,'-','Demo','da5@inensus.com','$2y$10$p8gyufWPzlL9kDQlGTxuUu9VXuSDfbijPhn66jOQ6WzD1gGhAWmvS','-',-1192474,238494.8,953979.2,NULL,'2023-10-24 15:16:24','2023-11-15 00:00:45',' '),
-    (6,203,11,1,'-','Demo','da6@inensus.com','$2y$10$0UGLZHC.kgatAEfwEGflTOiWTE2STAXw.pU6eMQ37ngMkBCc560v.','-',0,0,0,NULL,'2023-10-24 15:17:01','2023-10-24 15:17:01',' '),
-    (7,204,12,1,'-','Demo','da7@inensus.com','$2y$10$pENCYR07c0r8GsyTB6j1hu5uVn/jUB0qUetcvLAbhAGmDD1QL2Xt2','-',0,0,0,NULL,'2023-10-24 15:17:34','2023-10-24 15:17:34',' ');
-
-
 INSERT INTO `agent_balance_histories` (`id`, `agent_id`, `trigger_type`, `trigger_id`, `amount`, `available_balance`, `due_to_supplier`, `transaction_id`, `created_at`, `updated_at`)
 VALUES
     (1,2,'agent_transaction',1,-17304,-648495,518796,14,'2023-10-25 12:43:47','2023-10-25 12:43:47'),
@@ -399,10 +366,3 @@ VALUES
     (364,5,'agent_commission',1,510.8,237984,951936,1012,'2023-11-15 00:00:45','2023-11-15 00:00:45'),
     (365,3,'agent_transaction',183,-17838,-1230692,984553.6,1017,'2023-11-15 00:00:45','2023-11-15 00:00:45'),
     (366,3,'agent_commission',1,3567.6,246138.4,984553.6,1017,'2023-11-15 00:00:45','2023-11-15 00:00:45');
-
-
-INSERT INTO `agent_commissions` (`id`, `name`, `energy_commission`, `appliance_commission`, `risk_balance`, `created_at`, `updated_at`)
-VALUES
-    (1,'Demo Agent Commission Type',0.2,0.2,-30000,'2023-10-24 14:48:40','2023-10-24 14:48:40');
-
-
