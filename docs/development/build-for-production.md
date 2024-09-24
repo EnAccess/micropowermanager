@@ -15,9 +15,5 @@ docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f Docker/
 ## Frontend Prod
 
 ```bash
-cd Website/ui
-```
-
-```bash
-docker build --platform linux/amd64 -t micropowermanager-frontend-prod -f Dockerfile
+docker build --platform linux/amd64 -t micropowermanager-ui-prod -f Docker/DockerfileUIProd .
 ```
