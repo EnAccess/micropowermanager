@@ -7,13 +7,8 @@ use Inensus\SteamaMeter\Models\SteamaTariff;
 
 class SteamaTariffService
 {
-    private $tariff;
-    private $meterTariff;
-
-    public function __construct(SteamaTariff $steamaTariffModel, MeterTariff $meterTariffModel)
+    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff)
     {
-        $this->tariff = $steamaTariffModel;
-        $this->meterTariff = $meterTariffModel;
     }
 
     /**
