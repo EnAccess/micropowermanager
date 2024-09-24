@@ -21,8 +21,7 @@ services:
   ui:
     container_name: ui
     build:
-      context: ./Website/ui/
-      dockerfile: DockerfileServe
+      dockerfile: Docker/DockerfileUIDev
     ports:
       - 8001:8080
     volumes:
