@@ -1,13 +1,12 @@
-version: "3.1"
-
 services:
-  laravel:
-    container_name: laravel
+  laravel-dev:
+    container_name: laravel-dev
     build:
       context: Docker/
       dockerfile: DockerfileLaravelDev
     depends_on:
       - maria
+      - redis
     links:
       - maria:db
       - redis:redis
@@ -18,8 +17,8 @@ services:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
       - ./Website/htdocs:/var/www/html
 
-  ui:
-    container_name: ui
+  ui-dev:
+    container_name: ui-dev
     build:
       dockerfile: Docker/DockerfileUIDev
     ports:
@@ -29,12 +28,13 @@ services:
       - frontend_node_modules:/usr/app/node_modules/
 
   cron:
-    container_name: cron_job
+    container_name: cron
     build:
       context: Docker/
       dockerfile: DockerfileCron
     depends_on:
       - maria
+      - redis
     links:
       - maria:db
       - redis:redis
@@ -53,11 +53,13 @@ services:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - maria
+      - redis
     links:
       - maria:db
       - redis:redis
 
   redis:
+    container_name: redis
     image: redis:5
     volumes:
       - redis_data:/data
@@ -73,7 +75,6 @@ services:
       - mariadb_data:/var/lib/mysql
     ports:
       - 3306:3306
-
 
 volumes:
   frontend_node_modules:
