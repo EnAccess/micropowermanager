@@ -5,12 +5,9 @@ namespace Database\Seeders;
 use App\Models\Address\Address;
 use App\Models\Agent;
 use App\Models\AgentCommission;
-use App\Models\City;
-use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
