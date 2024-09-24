@@ -11,7 +11,7 @@ automatically. If you prefer to install dependencies manually or need to add add
 1. Enter the Docker container named "laravel" by navigating to the "mpmanager" directory:
 
    ```bash
-   docker exec -it laravel bash
+   docker exec -it laravel-dev bash
    cd mpmanager
    ```
 

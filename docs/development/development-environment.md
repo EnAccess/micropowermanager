@@ -43,7 +43,7 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
 When you run the application for the first time, you need to run the following command to initialize the databases and load Demo data:
 
 ```bash
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php artisan migrate --seed
 ```
@@ -91,7 +91,7 @@ It can be run multiple times to generate more data as required.
 If you wish reset the Demo data setup to the default setup run:
 
 ```sh
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php artisan migrate-tenant:drop-demo-company
 php artisan migrate:fresh --seed

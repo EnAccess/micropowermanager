@@ -41,7 +41,7 @@ with data exclusive to their company, providing a personalized and secure experi
   When creating a migration file, you need to use the following command:
 
 ```bash
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php artisan migrator:create {migration-name}
 ```
@@ -51,7 +51,7 @@ This command creates a migration file in Micropower Manager's core migration fil
 After creating the migration file, you can shift it to other company databases using the following command:
 
 ```bash
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php artisan migrator:copy
 ```
@@ -61,7 +61,7 @@ This command syncs the migration files in the core migration folder for other co
 To migrate the database, use the following command:
 
 ```bash
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php artisan migrator:migrate
 ```
@@ -69,7 +69,7 @@ php artisan migrator:migrate
 Alternatively, you can migrate the database for a specific company using the following command:
 
 ```bash
-docker exec -it laravel bash
+docker exec -it laravel-dev bash
 cd mpmanager
 php shard:migrate {company_id} {--force}
 ```
