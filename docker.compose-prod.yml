@@ -2,8 +2,7 @@ services:
   laravel-prod:
     container_name: laravel-prod
     build:
-      context: Docker/
-      dockerfile: DockerfileLaravelProd
+      dockerfile: Docker/DockerfileLaravelProd
     depends_on:
       - maria
       - redis
@@ -15,7 +14,6 @@ services:
       - 8443:443
     volumes:
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
-      - ./Website/htdocs:/var/www/html
 
   ui-prod:
     container_name: ui-prod
