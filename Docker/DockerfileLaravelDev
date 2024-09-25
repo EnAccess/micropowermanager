@@ -39,6 +39,8 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 COPY configuration/webserver/sites-enabled/000-default.conf /etc/apache2/sites-enabled
+    
+VOLUME ["/var/www/html"]
 
 COPY entrypoint-dev.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-dev.sh

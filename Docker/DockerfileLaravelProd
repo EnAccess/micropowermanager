@@ -1,7 +1,4 @@
-FROM php:8.2-fpm
-
-WORKDIR /app
-COPY ./Website/htdocs/mpmanager /app
+FROM php:8.2-apache
 
 RUN apt-get update && \
     apt-get install -y \
@@ -35,9 +32,6 @@ RUN docker-php-ext-install gd mysqli zip pdo pdo_mysql soap ftp opcache bcmath p
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg\
 && docker-php-ext-configure pcntl --enable-pcntl
 
-# Download composer.phar
-RUN curl -sS https://getcomposer.org/composer.phar -o /usr/local/bin/composer.phar
-
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
@@ -45,12 +39,18 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
+COPY ./Docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# Download composer.phar
+RUN curl -sS https://getcomposer.org/composer.phar -o /usr/local/bin/composer.phar
+
+WORKDIR /app
+COPY ./Website/htdocs/mpmanager /app    
+
 # Run the composer install
 RUN php /usr/local/bin/composer.phar install
 
 EXPOSE 80
-
-COPY ./Docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 RUN chown -R www-data:www-data /app
 RUN chmod -R 775 /app/storage
