@@ -13,15 +13,7 @@ RUN apt-get update && \
     supervisor \
     libzip-dev \
     vim \
-    git \
-    zsh
-
-# install ohmyzsh
-RUN chsh -s $(which zsh)
-RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# add php artisan alias
-RUN echo 'alias "cmd=php artisan"'  >> ~/.zshrc
+    git
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
@@ -31,6 +23,14 @@ RUN docker-php-ext-install gd mysqli zip pdo pdo_mysql soap ftp opcache bcmath p
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg\
 && docker-php-ext-configure pcntl --enable-pcntl
 
+# install composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php --version=2.7.9
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+
+# enable remote debugging
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
@@ -38,14 +38,20 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
-COPY configuration/webserver/sites-enabled/000-default.conf /etc/apache2/sites-enabled
-    
+# configure apache
+COPY Docker/configuration/webserver/sites-enabled/000-default.conf /etc/apache2/sites-enabled
+
+# get MicroPowerManager source code
 VOLUME ["/var/www/html"]
 
-COPY entrypoint-dev.sh /usr/local/bin/
+# install MicroPowerManager
+COPY Docker/entrypoint-dev.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-dev.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint-dev.sh"]
 
+# apache stuff
 RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN service apache2 restart
+
+EXPOSE 80

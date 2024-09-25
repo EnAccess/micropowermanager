@@ -2,8 +2,7 @@ services:
   laravel-dev:
     container_name: laravel-dev
     build:
-      context: Docker/
-      dockerfile: DockerfileLaravelDev
+      dockerfile: Docker/DockerfileLaravelDev
     depends_on:
       - maria
       - redis
