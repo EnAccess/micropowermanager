@@ -8,12 +8,20 @@ order: 6
 
 From the root directory run
 
-```bash
+```sh
 docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f Docker/DockerfileLaravelProd .
 ```
 
 ## Frontend Prod
 
-```bash
+```sh
 docker build --platform linux/amd64 -t micropowermanager-ui-prod -f Docker/DockerfileUIProd .
+```
+
+## Docker Compose
+
+A working environment running with production containers can be achieved by running:
+
+```sh
+docker compose -f docker-compose-prod.yml up
 ```
