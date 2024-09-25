@@ -20,7 +20,7 @@ services:
     build:
       dockerfile: Docker/DockerfileUIProd
     ports:
-      - 8001:8080
+      - 8001:8081
     volumes:
       - ./Website/ui:/usr/app/
       - frontend_node_modules:/usr/app/node_modules/
