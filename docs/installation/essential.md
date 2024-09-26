@@ -160,7 +160,7 @@ $this->app->singleton('SmsProvider', static function ($app) {
             'token' => 'FIREBASE_TOKEN',
             'key' => 'PHONE_KEY',
         ],
-        'callback' => 'https://mpmanager.local/api/sms/%s/confirm',
+        'callback' => 'https://localhost:8000/api/sms/%s/confirm',
     ],
 ```
 

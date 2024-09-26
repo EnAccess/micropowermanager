@@ -9,13 +9,13 @@ order: 6
 From the root directory run
 
 ```sh
-docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f Docker/DockerfileLaravelProd .
+docker build --platform linux/amd64 -t micropowermanager-laravel-prod -f docker/DockerfileLaravelProd .
 ```
 
 ## Frontend Prod
 
 ```sh
-docker build --platform linux/amd64 -t micropowermanager-ui-prod -f Docker/DockerfileUIProd .
+docker build --platform linux/amd64 -t micropowermanager-ui-prod -f docker/DockerfileUIProd .
 ```
 
 ## Docker Compose

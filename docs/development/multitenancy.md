@@ -27,7 +27,7 @@ company-specific information and common data such as installable plugins.
 ### New Company Registration Process
 
 When a new company registers an account, a dedicated database is dynamically created for that specific company. This new
-database incorporates Micropower Manager's core migration files located at `Website/htdocs/mpmanager/database/migrations/micropowermanager`
+database incorporates Micropower Manager's core migration files located at `src/backend/database/migrations/micropowermanager`
 
 ### User Session Interaction
 
@@ -42,17 +42,15 @@ with data exclusive to their company, providing a personalized and secure experi
 
 ```bash
 docker exec -it laravel-dev bash
-cd mpmanager
 php artisan migrator:create {migration-name}
 ```
 
-This command creates a migration file in Micropower Manager's core migration files location: `Website/htdocs/mpmanager/database/migrations/micropowermanager`
+This command creates a migration file in Micropower Manager's core migration files location: `src/backend/database/migrations/micropowermanager`
 
 After creating the migration file, you can shift it to other company databases using the following command:
 
 ```bash
 docker exec -it laravel-dev bash
-cd mpmanager
 php artisan migrator:copy
 ```
 
@@ -62,7 +60,6 @@ To migrate the database, use the following command:
 
 ```bash
 docker exec -it laravel-dev bash
-cd mpmanager
 php artisan migrator:migrate
 ```
 
@@ -70,6 +67,5 @@ Alternatively, you can migrate the database for a specific company using the fol
 
 ```bash
 docker exec -it laravel-dev bash
-cd mpmanager
 php shard:migrate {company_id} {--force}
 ```

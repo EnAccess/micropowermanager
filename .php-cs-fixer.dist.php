@@ -1,7 +1,7 @@
 <?php
 
 // The main file that governs the PHP code style for this project is
-// `Website/htdocs/mpmanager/.php-cs-fixer.dist.php`
+// `src/backend/.php-cs-fixer.dist.php`
 // This is file is essentially a convienience copy of the same file for
 // easier editor integration at the root of the repository.
 

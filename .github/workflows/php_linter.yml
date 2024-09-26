@@ -29,18 +29,18 @@ jobs:
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
-        working-directory: ./Website/htdocs/mpmanager
+        working-directory: ./src/backend
 
       - name: Run PHP-CS-Fixer
         run: composer php-cs-fixer-check
-        working-directory: ./Website/htdocs/mpmanager
+        working-directory: ./src/backend
 
       - name: Run PHPStan
         run: composer phpstan-analyse
-        working-directory: ./Website/htdocs/mpmanager
+        working-directory: ./src/backend
         continue-on-error: true
 
       - name: Run Psalm
         run: composer psalm-check
-        working-directory: ./Website/htdocs/mpmanager
+        working-directory: ./src/backend
         continue-on-error: true

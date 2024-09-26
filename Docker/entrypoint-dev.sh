@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /var/www/html/mpmanager
+cd /var/www/html
 composer install
 
 echo "Executing command: $@"

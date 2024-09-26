@@ -44,7 +44,6 @@ When you run the application for the first time, you need to run the following c
 
 ```bash
 docker exec -it laravel-dev bash
-cd mpmanager
 php artisan migrate --seed
 ```
 
@@ -92,7 +91,6 @@ If you wish reset the Demo data setup to the default setup run:
 
 ```sh
 docker exec -it laravel-dev bash
-cd mpmanager
 php artisan migrate-tenant:drop-demo-company
 php artisan migrate:fresh --seed
 ```
