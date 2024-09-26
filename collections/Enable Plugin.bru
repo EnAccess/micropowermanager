@@ -1,0 +1,22 @@
+meta {
+  name: Enable Plugin
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8000/api/plugins/3
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": 3,
+    "name": "CalinMeter",
+    "description": "This plugin integrates Calin meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.",
+    "usage_type": "mini-grid",
+    "checked": true,
+    "plugin_for_usage_type": true
+  }
+}
