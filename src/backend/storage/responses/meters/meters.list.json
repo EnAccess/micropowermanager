@@ -37,12 +37,12 @@
             }
         }
     ],
-    "first_page_url": "http://mpmanager.local/api/meters?page=1",
+    "first_page_url": "http://localhost:8000/api/meters?page=1",
     "from": 1,
     "last_page": 324,
-    "last_page_url": "http://mpmanager.local/api/meters?page=324",
-    "next_page_url": "http://mpmanager.local/api/meters?page=2",
-    "path": "http://mpmanager.local/api/meters",
+    "last_page_url": "http://localhost:8000/api/meters?page=324",
+    "next_page_url": "http://localhost:8000/api/meters?page=2",
+    "path": "http://localhost:8000/api/meters",
     "per_page": 15,
     "prev_page_url": null,
     "to": 15,

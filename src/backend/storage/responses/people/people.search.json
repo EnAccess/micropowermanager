@@ -78,12 +78,12 @@
             ]
         }
     ],
-    "first_page_url": "http:\/\/mpmanager.local\/api\/people\/search?page=1",
+    "first_page_url": "http:\/\/localhost:8000\/api\/people\/search?page=1",
     "from": 1,
     "last_page": 1,
-    "last_page_url": "http:\/\/mpmanager.local\/api\/people\/search?page=1",
+    "last_page_url": "http:\/\/localhost:8000\/api\/people\/search?page=1",
     "next_page_url": null,
-    "path": "http:\/\/mpmanager.local\/api\/people\/search",
+    "path": "http:\/\/localhost:8000\/api\/people\/search",
     "per_page": 15,
     "prev_page_url": null,
     "to": 1,
