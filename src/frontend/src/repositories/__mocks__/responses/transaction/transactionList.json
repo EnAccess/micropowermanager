@@ -363,12 +363,12 @@
         }
       }
     ],
-    "first_page_url": "http://mpmanager.local/api/transactions?page=1",
+    "first_page_url": "http://localhost:8000/api/transactions?page=1",
     "from": 1,
     "last_page": 644,
-    "last_page_url": "http://mpmanager.local/api/transactions?page=644",
-    "next_page_url": "http://mpmanager.local/api/transactions?page=2",
-    "path": "http://mpmanager.local/api/transactions",
+    "last_page_url": "http://localhost:8000/api/transactions?page=644",
+    "next_page_url": "http://localhost:8000/api/transactions?page=2",
+    "path": "http://localhost:8000/api/transactions",
     "per_page": 15,
     "prev_page_url": null,
     "to": 15,

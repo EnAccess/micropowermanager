@@ -2,7 +2,7 @@
   <div class="centered-container">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img src="http://mpmanager.local/admin/img/logo.png" alt="logo" />
+        <img src="http://localhost:8000/admin/img/logo.png" alt="logo" />
         <div class="md-title">MicroPowerManager</div>
         <div class="md-body-1">
           The simplest tool to manage your

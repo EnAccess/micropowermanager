@@ -17,7 +17,7 @@ return new class() extends Migration {
             $table->string('url')->default('https://fcm.googleapis.com/fcm/send');
             $table->string('token')->nullable();
             $table->string('key')->nullable();
-            $table->string('callback')->default('https://mpmanager.local/api/sms/%s/confirm');
+            $table->string('callback')->default('http://localhost:8000/api/sms/%s/confirm');
             $table->timestamps();
         });
     }

@@ -44,12 +44,12 @@
             "geo": null
         }
     ],
-    "first_page_url": "http:\/\/mpmanager.local\/api\/people\/1\/addresses?page=1",
+    "first_page_url": "http:\/\/localhost:8000\/api\/people\/1\/addresses?page=1",
     "from": 1,
     "last_page": 1,
-    "last_page_url": "http:\/\/mpmanager.local\/api\/people\/1\/addresses?page=1",
+    "last_page_url": "http:\/\/localhost:8000\/api\/people\/1\/addresses?page=1",
     "next_page_url": null,
-    "path": "http:\/\/mpmanager.local\/api\/people\/1\/addresses",
+    "path": "http:\/\/localhost:8000\/api\/people\/1\/addresses",
     "per_page": 5,
     "prev_page_url": null,
     "to": 2,

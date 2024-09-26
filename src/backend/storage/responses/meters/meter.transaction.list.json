@@ -36,12 +36,12 @@
             }
         }
     ],
-    "first_page_url": "http://mpmanager.local/api/meters/47000268822/transactions?page=1",
+    "first_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=1",
     "from": 1,
     "last_page": 13,
-    "last_page_url": "http://mpmanager.local/api/meters/47000268822/transactions?page=13",
-    "next_page_url": "http://mpmanager.local/api/meters/47000268822/transactions?page=2",
-    "path": "http://mpmanager.local/api/meters/47000268822/transactions",
+    "last_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=13",
+    "next_page_url": "http://localhost:8000/api/meters/47000268822/transactions?page=2",
+    "path": "http://localhost:8000/api/meters/47000268822/transactions",
     "per_page": 5,
     "prev_page_url": null,
     "to": 5,
