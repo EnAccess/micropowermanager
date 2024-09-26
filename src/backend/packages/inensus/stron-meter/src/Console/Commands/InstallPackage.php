@@ -4,7 +4,6 @@ namespace Inensus\StronMeter\Console\Commands;
 
 use Illuminate\Console\Command;
 use Inensus\StronMeter\Helpers\ApiHelpers;
-use Inensus\StronMeter\Services\MenuItemService;
 use Inensus\StronMeter\Services\StronCredentialService;
 
 class InstallPackage extends Command
@@ -12,19 +11,11 @@ class InstallPackage extends Command
     protected $signature = 'stron-meter:install';
     protected $description = 'Install StronMeter Package';
 
-    private $menuItemService;
-    private $apiHelpers;
-    private $credentialService;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        ApiHelpers $apiHelpers,
-        StronCredentialService $credentialService
+        private ApiHelpers $apiHelpers,
+        private StronCredentialService $credentialService,
     ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->apiHelpers = $apiHelpers;
-        $this->credentialService = $credentialService;
     }
 
     public function handle(): void
@@ -65,15 +56,6 @@ class InstallPackage extends Command
             'name' => 'StronMeter',
             'composer_name' => 'inensus/stron-meter',
             'description' => 'Stron Meter integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

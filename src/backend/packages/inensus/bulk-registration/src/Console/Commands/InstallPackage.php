@@ -3,7 +3,6 @@
 namespace Inensus\BulkRegistration\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\BulkRegistration\Services\MenuItemService;
 use Inensus\BulkRegistration\Services\MeterTypeService;
 
 class InstallPackage extends Command
@@ -11,14 +10,10 @@ class InstallPackage extends Command
     protected $signature = 'bulk-registration:install';
     protected $description = 'Install Bulk Registration Package';
 
-    private $menuItemService;
-    private $meterTypeService;
-
-    public function __construct(MenuItemService $menuItemService, MeterTypeService $meterTypeService)
-    {
+    public function __construct(
+        private MeterTypeService $meterTypeService,
+    ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->meterTypeService = $meterTypeService;
     }
 
     public function handle(): void
@@ -71,15 +66,6 @@ class InstallPackage extends Command
             'name' => 'BulkRegistration',
             'composer_name' => 'inensus/bulk-registration',
             'description' => 'BulkRegistration integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

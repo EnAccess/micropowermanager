@@ -5,7 +5,6 @@ namespace Inensus\GomeLongMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
 use Inensus\GomeLongMeter\Services\ManufacturerService;
-use Inensus\GomeLongMeter\Services\MenuItemService;
 
 class InstallPackage extends Command
 {
@@ -13,9 +12,8 @@ class InstallPackage extends Command
     protected $description = 'Install GomeLongMeter Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
-        private GomeLongCredentialService $credentialService
+        private GomeLongCredentialService $credentialService,
     ) {
         parent::__construct();
     }
@@ -28,14 +26,5 @@ class InstallPackage extends Command
         $this->credentialService->createCredentials();
 
         $this->info('Package installed successfully..');
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
-        ]);
     }
 }

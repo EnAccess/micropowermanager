@@ -15,12 +15,12 @@ class UpdatePackage extends Command
     protected $signature = 'swifta-payment-provider:update';
     protected $description = 'Update the Swifta Payment Provider Integration Package';
     private $user;
-    private $fileSystem;
+    private $filesystem;
     private $authentication;
 
     public function __construct(
         User $user,
-        Filesystem $filesystem, SwiftaAuthentication $authentication
+        Filesystem $filesystem, SwiftaAuthentication $authentication,
     ) {
         parent::__construct();
         $this->fileSystem = $filesystem;

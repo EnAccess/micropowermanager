@@ -4,7 +4,6 @@ namespace Inensus\SunKingSHS\Console\Commands;
 
 use Illuminate\Console\Command;
 use Inensus\SunKingSHS\Services\ManufacturerService;
-use Inensus\SunKingSHS\Services\MenuItemService;
 use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
 class InstallPackage extends Command
@@ -13,7 +12,6 @@ class InstallPackage extends Command
     protected $description = 'Install SunKingSHS Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
         private SunKingCredentialService $credentialService,
     ) {
@@ -59,15 +57,6 @@ class InstallPackage extends Command
             'name' => 'SunKingSHS',
             'composer_name' => 'inensus/sun-king-shs',
             'description' => 'SunKingSHS integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

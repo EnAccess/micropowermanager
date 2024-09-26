@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Inensus\SparkMeter\Helpers\InsertSparkMeterApi;
 use Inensus\SparkMeter\Services\CredentialService;
 use Inensus\SparkMeter\Services\CustomerService;
-use Inensus\SparkMeter\Services\MenuItemService;
 use Inensus\SparkMeter\Services\MeterModelService;
 use Inensus\SparkMeter\Services\PackageInstallationService;
 use Inensus\SparkMeter\Services\SiteService;
@@ -23,66 +22,21 @@ class UpdateSparkMeterPackage extends Command
     protected $signature = 'spark-meter:update';
     protected $description = 'Update the Spark Meter Integration Package';
 
-    private $insertSparkMeterApi;
-    private $meterModelService;
-    private $credentialService;
-    private $menuItemService;
-    private $customerService;
-    private $siteService;
-    private $smsSettingService;
-    private $syncSettingService;
-    private $smsBodyService;
-    private $defaultValueService;
-    private $smSmsFeedbackWordService;
-    private $packageInstallationService;
-    private $fileSystem;
-
-    /**
-     * Create a new command instance.
-     *
-     * @param InsertSparkMeterApi              $insertSparkMeterApi
-     * @param MeterModelService                $meterModelService
-     * @param CredentialService                $credentialService
-     * @param MenuItemService                  $menuItemService
-     * @param CustomerService                  $customerService
-     * @param SiteService                      $siteService
-     * @param SmSmsSettingService              $smsSettingService
-     * @param SmSyncSettingService             $syncSettingService
-     * @param SmSmsBodyService                 $smsBodyService
-     * @param SmSmsVariableDefaultValueService $defaultValueService
-     * @param SmSmsFeedbackWordService         $smSmsFeedbackWordService
-     * @param PackageInstallationService       $packageInstallationService
-     * @param Filesystem                       $filesystem
-     */
     public function __construct(
-        InsertSparkMeterApi $insertSparkMeterApi,
-        MeterModelService $meterModelService,
-        CredentialService $credentialService,
-        MenuItemService $menuItemService,
-        CustomerService $customerService,
-        SiteService $siteService,
-        SmSmsSettingService $smsSettingService,
-        SmSyncSettingService $syncSettingService,
-        SmSmsBodyService $smsBodyService,
-        SmSmsVariableDefaultValueService $defaultValueService,
-        SmSmsFeedbackWordService $smSmsFeedbackWordService,
-        PackageInstallationService $packageInstallationService,
-        Filesystem $filesystem
+        private InsertSparkMeterApi $insertSparkMeterApi,
+        private MeterModelService $meterModelService,
+        private CredentialService $credentialService,
+        private CustomerService $customerService,
+        private SiteService $siteService,
+        private SmSmsSettingService $smsSettingService,
+        private SmSyncSettingService $syncSettingService,
+        private SmSmsBodyService $smsBodyService,
+        private SmSmsVariableDefaultValueService $defaultValueService,
+        private SmSmsFeedbackWordService $smSmsFeedbackWordService,
+        private PackageInstallationService $packageInstallationService,
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->insertSparkMeterApi = $insertSparkMeterApi;
-        $this->meterModelService = $meterModelService;
-        $this->credentialService = $credentialService;
-        $this->menuItemService = $menuItemService;
-        $this->customerService = $customerService;
-        $this->siteService = $siteService;
-        $this->smsSettingService = $smsSettingService;
-        $this->syncSettingService = $syncSettingService;
-        $this->smsBodyService = $smsBodyService;
-        $this->defaultValueService = $defaultValueService;
-        $this->smSmsFeedbackWordService = $smSmsFeedbackWordService;
-        $this->packageInstallationService = $packageInstallationService;
-        $this->fileSystem = $filesystem;
     }
 
     /**
@@ -93,13 +47,12 @@ class UpdateSparkMeterPackage extends Command
         $this->info('Spark Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->info('Package updated successfully..');
     }
 
@@ -150,15 +103,6 @@ class UpdateSparkMeterPackage extends Command
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
             '--tag' => 'vue-components',
             '--force' => true,
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

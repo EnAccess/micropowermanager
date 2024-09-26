@@ -11,7 +11,7 @@ class UpdatePackage extends Command
     protected $signature = 'mesomb-payment-provider:update';
     protected $description = 'Update the Mesomb Payment Provider Integration Package';
 
-    private $fileSystem;
+    private $filesystem;
 
     /**
      * Create a new command instance.
@@ -19,7 +19,7 @@ class UpdatePackage extends Command
      * @param Filesystem $filesystem
      */
     public function __construct(
-        Filesystem $filesystem
+        Filesystem $filesystem,
     ) {
         parent::__construct();
         $this->fileSystem = $filesystem;

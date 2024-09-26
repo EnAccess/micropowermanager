@@ -3,7 +3,6 @@
 namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\WaveMoneyPaymentProvider\Services\MenuItemService;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 
 class InstallPackage extends Command
@@ -11,7 +10,8 @@ class InstallPackage extends Command
     protected $signature = 'wave-money-payment-provider:install';
     protected $description = 'Install WaveMoneyPaymentProvider Package';
 
-    public function __construct(private MenuItemService $menuItemService, private WaveMoneyCredentialService $credentialService)
+    public function __construct(
+        private WaveMoneyCredentialService $credentialService)
     {
         parent::__construct();
     }
@@ -19,7 +19,6 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing WaveMoneyPaymentProvider Integration Package\n');
-        $this->createMenuItems();
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
@@ -54,15 +53,6 @@ class InstallPackage extends Command
             'name' => 'ViberMessaging',
             'composer_name' => 'inensus/wave-money-payment-provider',
             'description' => 'WaveMoney integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }
