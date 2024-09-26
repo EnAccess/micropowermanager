@@ -39,9 +39,10 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure apache
-COPY Docker/configuration/webserver/sites-enabled/000-default.conf /etc/apache2/sites-enabled
+COPY Docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
 
-# get MicroPowerManager source code
+# get MicroPowerManager source code and configuration
+COPY Website/config/php/php.ini /usr/local/etc/php/php.ini
 COPY Website/htdocs /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/mpmanager/storage
