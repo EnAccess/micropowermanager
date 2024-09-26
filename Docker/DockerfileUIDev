@@ -1,14 +1,16 @@
 FROM node:18.20.4
 
-WORKDIR /usr/app
+WORKDIR /app
 
-# Copy the package.json and install dependencies
-COPY ../Website/ui/package*.json ./
+# install JavaScript dependencies
+COPY Website/ui/package*.json ./
 RUN npm install
 
-# Copy the rest of the files
-COPY --chown=www-data:www-data  ../Website/ui .
+# get MicroPowerManager source code and configuration
+COPY Website/ui .
+VOLUME ["/app/"]
 
+# serve the application
 CMD npm run serve & tail -f /dev/null
 
 EXPOSE 8080
