@@ -318,10 +318,6 @@ Route::group(['prefix' => 'mpm-plugins'], static function () {
     Route::get('/', 'MpmPluginController@index');
 });
 
-Route::group(['prefix' => 'sidebar'], static function () {
-    Route::get('/', 'SidebarController@index');
-});
-
 Route::group(['prefix' => 'registration-tails'], static function () {
     Route::get('/', 'RegistrationTailController@index');
     Route::put('/{registrationTail}', 'RegistrationTailController@update');
