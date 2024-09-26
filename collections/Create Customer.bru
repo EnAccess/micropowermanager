@@ -1,0 +1,33 @@
+meta {
+  name: Create Customer
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8000/api/people
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "dummy_user@example.com",
+    "name": "Name",
+    "surname": "surname",
+    "phone": "+254123456789",
+    "street": "Some street, somewhere",
+    "city_id": 1,
+    "is_primary": true,
+    "title": "Mr",
+    "education": "Well educated",
+    "birth_date": "2014-01-01",
+    "sex": "female",
+    "is_customer": true
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

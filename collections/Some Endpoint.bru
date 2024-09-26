@@ -1,0 +1,16 @@
+meta {
+  name: Some Endpoint
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8000/api/settings/country-list
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
