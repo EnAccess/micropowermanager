@@ -48,14 +48,14 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure apache
-COPY Docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
+COPY docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
 
 # get MicroPowerManager source code and configuration
-COPY Website/config/php/php.ini /usr/local/etc/php/php.ini
+COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
 VOLUME ["/var/www/html"]
 
 # install MicroPowerManager
-COPY Docker/entrypoint-dev.sh /usr/local/bin/
+COPY docker/entrypoint-dev.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-dev.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint-dev.sh"]
 

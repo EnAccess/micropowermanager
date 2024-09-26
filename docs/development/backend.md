@@ -5,14 +5,13 @@ order: 2
 # Backend
 
 The backend is built with Laravel. The backend is served under <http://localhost:8000/api>. You can find backend
-files under `Website/htdocs/mpmanager`. After the first run with `docker-compose up`, dependencies will be installed
+files under `src/backend`. After the first run with `docker-compose up`, dependencies will be installed
 automatically. If you prefer to install dependencies manually or need to add additional packages, follow these steps:
 
-1. Enter the Docker container named "laravel" by navigating to the "mpmanager" directory:
+1. Enter the Docker container named "laravel":
 
    ```bash
    docker exec -it laravel-dev bash
-   cd mpmanager
    ```
 
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:

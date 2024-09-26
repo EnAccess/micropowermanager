@@ -7,7 +7,7 @@ packageName="$1"
 nameSpace="$2"
 
 echo $packageName
-cd /var/www/html/mpmanager/packages/inensus
+cd /var/www/html/packages/inensus
 mkdir $packageName
 git clone https://github.com/inensus/Package-Development-Starter-Pack $packageName
 

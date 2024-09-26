@@ -49,13 +49,13 @@ redis/dump.rdb
 /redis/dump.rdb
 
 
-/Website/htdocs/mpmanager/public/vendor/
+src/backend/public/vendor/
 InternalApi
 
 *.xlsx
 
-Website/htdocs/mpmanager/.env_production
-Website/htdocs/mpmanager/.env_staging
+src/backend/.env_production
+src/backend/.env_staging
 
 # Sphinx documentation
 docs/_build/

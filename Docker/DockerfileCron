@@ -41,7 +41,7 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure cron
-ADD Docker/config/cron/crontab /etc/cron.d/cron
+ADD docker/config/cron/crontab /etc/cron.d/cron
 RUN chmod 0644 /etc/cron.d/cron
 # create the log file to be able to run tail
 RUN touch /var/log/cron.log

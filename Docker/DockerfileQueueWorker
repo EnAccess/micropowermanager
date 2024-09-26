@@ -47,7 +47,7 @@ RUN touch /etc/supervisor/logs/horizon/out.log
 RUN touch /etc/supervisor/logs/horizon/err.log
 
 # get MicroPowerManager source code and configuration
-COPY Docker/config/supervisor/ /etc/supervisor/conf.d/
+COPY docker/config/supervisor/ /etc/supervisor/conf.d/
 RUN chmod 0644 /etc/supervisor
 RUN chown -R www-data:www-data .
 

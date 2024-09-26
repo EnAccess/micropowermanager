@@ -3,11 +3,11 @@ FROM node:18.20.4
 WORKDIR /app
 
 # install JavaScript dependencies
-COPY Website/ui/package*.json ./
+COPY src/frontend/package*.json ./
 RUN npm install
 
 # get MicroPowerManager source code and configuration
-COPY Website/ui .
+COPY src/frontend .
 
 # build app for production with minification
 RUN npm run build

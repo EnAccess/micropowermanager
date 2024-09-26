@@ -23,11 +23,11 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm install
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend
 
       - name: Run ESLint
         run: npm run lint
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend
 
   prettier:
     runs-on: ubuntu-latest
@@ -43,11 +43,11 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm install
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend
 
       - name: Run Prettier
         run: npm run prettier
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend
 
   misc:
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
         # Too sort a translation JSON you can run
         # > cat lang.json | jq -S . > tmp.json && mv tmp.json lang.json
         # Remember to apply Prettier formatting after.
-        working-directory: ./Website/ui/src/assets/locales
+        working-directory: ./src/frontend/src/assets/locales
         run: |
           # Flag to track if any file fails the check
           failed=0
@@ -86,7 +86,7 @@ jobs:
 
       - name: Check i18n JSON's length
         # We check if all JSON have the same number of rows
-        working-directory: ./Website/ui/src/assets/locales
+        working-directory: ./src/frontend/src/assets/locales
         run: |
           # Flag to track if any file fails the check
           failed=0
@@ -128,8 +128,8 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm install
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend
 
       - name: Build npm on production mode
         run: npm run build
-        working-directory: ./Website/ui
+        working-directory: ./src/frontend

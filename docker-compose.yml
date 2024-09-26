@@ -2,7 +2,7 @@ services:
   laravel-dev:
     container_name: laravel-dev
     build:
-      dockerfile: Docker/DockerfileLaravelDev
+      dockerfile: docker/DockerfileLaravelDev
     depends_on:
       - maria
       - redis
@@ -13,22 +13,22 @@ services:
       - 8000:80
       - 8443:443
     volumes:
-      - ./Website/htdocs:/var/www/html
+      - ./src/backend:/var/www/html
 
   ui-dev:
     container_name: ui-dev
     build:
-      dockerfile: Docker/DockerfileUIDev
+      dockerfile: docker/DockerfileUIDev
     ports:
       - 8001:8080
     volumes:
-      - ./Website/ui:/app/
+      - ./src/frontend:/app/
       - frontend_node_modules:/app/node_modules/
 
   cron:
     container_name: cron
     build:
-      dockerfile: Docker/DockerfileCron
+      dockerfile: docker/DockerfileCron
     depends_on:
       - maria
       - redis
@@ -36,17 +36,17 @@ services:
       - maria:db
       - redis:redis
     volumes:
-      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
-      - ./Website/htdocs:/var/www/html
+      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./src/backend:/var/www/html
 
   worker:
     container_name: worker
     restart: unless-stopped
     build:
-      dockerfile: Docker/DockerfileQueueWorker
+      dockerfile: docker/DockerfileQueueWorker
     volumes:
-      - ./Website/htdocs/mpmanager:/var/www/laravel
-      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./src/backend:/var/www/laravel
+      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - maria
       - redis
@@ -66,7 +66,7 @@ services:
     container_name: maria
     image: mariadb:10.3
     env_file:
-      - ./Docker/.env
+      - ./docker/.env
     volumes:
       - mariadb_data:/var/lib/mysql
     ports:
