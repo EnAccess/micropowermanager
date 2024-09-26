@@ -40,7 +40,7 @@ RUN touch /etc/supervisor/logs/supervisord.log
 RUN touch /etc/supervisor/logs/horizon/out.log
 RUN touch /etc/supervisor/logs/horizon/err.log
 
-ADD ./supervisor/ /etc/supervisor/conf.d/
+COPY Docker/config/supervisor/ /etc/supervisor/conf.d/
 
 
 # Give execution rights on the cron job

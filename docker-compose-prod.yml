@@ -12,8 +12,6 @@ services:
     ports:
       - 8000:80
       - 8443:443
-    volumes:
-      - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
 
   ui-prod:
     container_name: ui-prod
@@ -28,8 +26,7 @@ services:
   cron:
     container_name: cron
     build:
-      context: Docker/
-      dockerfile: DockerfileCron
+      dockerfile: Docker/DockerfileCron
     depends_on:
       - maria
       - redis
@@ -44,8 +41,7 @@ services:
     container_name: worker
     restart: unless-stopped
     build:
-      context: Docker/
-      dockerfile: DockerfileQueueWorker
+      dockerfile: Docker/DockerfileQueueWorker
     volumes:
       - ./Website/htdocs/mpmanager:/var/www/laravel
       - ./Website/config/php/php.ini:/usr/local/etc/php/php.ini
