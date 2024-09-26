@@ -1,27 +1,36 @@
 FROM php:8.2-apache
 
-RUN apt-get update && \
-    apt-get install -y \
-    cron \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    libssl-dev \
-    mariadb-client \
-    zlib1g-dev \
+RUN apt-get update && apt-get install -y \
     bzip2 \
-    supervisor \
+    cron \
+    git \
+    libfreetype6-dev \
+    libjpeg-dev \
+    libssl-dev \
+    libxml2-dev \
     libzip-dev \
+    mariadb-client \
+    supervisor \
     vim \
-    git
+    zlib1g-dev
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
 
-# install php extentions
-RUN docker-php-ext-install gd mysqli zip pdo pdo_mysql soap ftp opcache bcmath pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg\
-&& docker-php-ext-configure pcntl --enable-pcntl
+# install and configure php extensions
+RUN docker-php-ext-install \
+    bcmath \
+    ftp \
+    gd \
+    mysqli \
+    opcache \
+    pcntl \
+    pdo \
+    pdo_mysql \
+    soap \
+    zip
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure pcntl --enable-pcntl
 
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
