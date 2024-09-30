@@ -9,7 +9,7 @@ class OrganizationService
     private $organization;
 
     public function __construct(
-        SmOrganization $organization
+        SmOrganization $organization,
     ) {
         $this->organization = $organization;
     }

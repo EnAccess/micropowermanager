@@ -38,7 +38,7 @@ class SiteService implements ISynchronizeService
         City $city,
         GeographicalInformation $geographicalInformation,
         SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService
+        SmSyncActionService $smSyncActionService,
     ) {
         $this->site = $site;
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;

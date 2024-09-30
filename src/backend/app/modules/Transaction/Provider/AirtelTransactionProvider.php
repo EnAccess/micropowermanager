@@ -181,7 +181,7 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     private function prepareRequest(
         Transaction $transaction,
-        AirtelTransaction $airtelTransaction
+        AirtelTransaction $airtelTransaction,
     ): string {
         return '<COMMAND>'.
             '<TYPE>ROLLBACK</TYPE>'.

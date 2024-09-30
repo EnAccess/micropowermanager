@@ -22,7 +22,7 @@ class SmsListener
         SmSmsFeedbackWordService $smsFeedbackWordService,
         CustomerService $customerService,
         Meter $meter,
-        SmsService $smsService
+        SmsService $smsService,
     ) {
         $this->smsFeedbackWordService = $smsFeedbackWordService;
         $this->customerService = $customerService;

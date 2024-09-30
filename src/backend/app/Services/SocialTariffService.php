@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class SocialTariffService implements IBaseService
 {
     public function __construct(
-        private SocialTariff $socialTariff
+        private SocialTariff $socialTariff,
     ) {
     }
 

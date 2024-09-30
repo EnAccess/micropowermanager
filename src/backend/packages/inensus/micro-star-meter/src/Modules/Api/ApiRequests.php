@@ -13,7 +13,7 @@ class ApiRequests
 {
     public function __construct(
         private Client $httpClient,
-        private ResponseResolver $responseResolver
+        private ResponseResolver $responseResolver,
     ) {
     }
 

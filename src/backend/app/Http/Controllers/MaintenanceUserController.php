@@ -19,7 +19,7 @@ class MaintenanceUserController extends Controller
         private MaintenanceUsers $maintenanceUsers,
         private Person $person,
         private PersonService $personService,
-        private AddressService $addressService
+        private AddressService $addressService,
     ) {
     }
 

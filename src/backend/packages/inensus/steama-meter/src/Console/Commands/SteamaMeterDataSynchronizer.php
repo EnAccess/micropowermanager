@@ -47,7 +47,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
         SteamaAgentService $steamaAgentService,
         StemaSyncActionService $steamaSyncActionService,
         Address $address,
-        Cluster $cluster
+        Cluster $cluster,
     ) {
         parent::__construct();
         $this->steamaTransactionsService = $steamaTransactionsService;

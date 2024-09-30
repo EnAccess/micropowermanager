@@ -14,7 +14,7 @@ class StartTransactionResource extends AbstractApiResource
 
     public function __construct(
         private WaveMoneyCredential $waveMoneyCredential,
-        private WaveMoneyTransaction $waveMoneyTransaction
+        private WaveMoneyTransaction $waveMoneyTransaction,
     ) {
     }
 

@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class EBikeService implements IBaseService
 {
     public function __construct(
-        private EBike $eBike
+        private EBike $eBike,
     ) {
     }
 

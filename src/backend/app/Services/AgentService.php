@@ -22,7 +22,7 @@ class AgentService implements IBaseService
         private AgentReceipt $agentReceipt,
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
-        private PersonService $personService
+        private PersonService $personService,
     ) {
     }
 

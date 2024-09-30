@@ -28,7 +28,7 @@ class AgentSoldApplianceObserver
         private AgentAppliancePersonService $agentAppliancePersonService,
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentCommissionService $agentCommissionService,
-        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService
+        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
     ) {
     }
 

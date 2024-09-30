@@ -15,7 +15,7 @@ class SteamaCredentialService
 
     public function __construct(
         SteamaCredential $credentialModel,
-        SteamaMeterApiClient $steamaApi
+        SteamaMeterApiClient $steamaApi,
     ) {
         $this->credential = $credentialModel;
         $this->steamaApi = $steamaApi;

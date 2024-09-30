@@ -18,7 +18,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand
 
     public function __construct(
         private DailyConsumptionService $dailyConsumptionService,
-        private KelinCredentialService $credentialService
+        private KelinCredentialService $credentialService,
     ) {
         parent::__construct();
     }

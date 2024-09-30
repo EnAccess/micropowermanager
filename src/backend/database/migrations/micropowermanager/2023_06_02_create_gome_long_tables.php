@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 // Despite the migration's name, this migration was actually created on Feb 6h
 // Name should be 2023-02-06 not 2023-06-02...
-return new class() extends Migration {
+return new class extends Migration {
     public function up()
     {
         if (!Schema::hasTable('gome_long_api_credentials')) {

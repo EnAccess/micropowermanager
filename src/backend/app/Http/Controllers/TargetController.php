@@ -16,7 +16,7 @@ class TargetController extends Controller
         private TargetService $targetService,
         private ClusterService $clusterService,
         private MiniGridService $miniGridService,
-        private SubTargetService $subTargetService
+        private SubTargetService $subTargetService,
     ) {
     }
 

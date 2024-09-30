@@ -14,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 class MeterController extends Controller
 {
     public function __construct(
-        private MeterService $meterService
+        private MeterService $meterService,
     ) {
     }
 

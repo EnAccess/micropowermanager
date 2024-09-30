@@ -24,7 +24,7 @@ class PersonObserver
         SteamaCustomerService $stmCustomerService,
         Person $person,
         SteamaCustomer $steamaCustomer,
-        SteamaMeterApiClient $steamaApi
+        SteamaMeterApiClient $steamaApi,
     ) {
         $this->apiHelpers = $apiHelpers;
         $this->stmCustomerService = $stmCustomerService;

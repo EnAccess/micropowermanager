@@ -13,7 +13,7 @@ use Inensus\Ticket\Models\TicketCategory;
 class TicketCategoryService implements IBaseService
 {
     public function __construct(
-        private TicketCategory $ticketCategory
+        private TicketCategory $ticketCategory,
     ) {
     }
 

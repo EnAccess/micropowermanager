@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class RestrictionService implements IBaseService
 {
     public function __construct(
-        private Restriction $restriction
+        private Restriction $restriction,
     ) {
     }
 

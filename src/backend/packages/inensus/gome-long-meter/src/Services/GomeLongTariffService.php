@@ -21,7 +21,7 @@ class GomeLongTariffService
         private MeterTariff $meterTariff,
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
-        private MainSettings $mainSettings
+        private MainSettings $mainSettings,
     ) {
     }
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class AccessRateService implements IBaseService
 {
     public function __construct(
-        private AccessRate $accessRate
+        private AccessRate $accessRate,
     ) {
     }
 

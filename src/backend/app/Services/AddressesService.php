@@ -17,7 +17,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AddressesService implements IBaseService, IAssociative
 {
     public function __construct(
-        private Address $address
+        private Address $address,
     ) {
     }
 

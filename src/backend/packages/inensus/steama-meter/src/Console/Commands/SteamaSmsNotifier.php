@@ -38,7 +38,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         SteamaTransactionsService $steamaTransactionsService,
         SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
         SteamaCustomerService $steamaCustomerService,
-        SmsService $smsService
+        SmsService $smsService,
     ) {
         parent::__construct();
         $this->smsSettingsService = $smsSettingService;

@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ClusterService implements IBaseService
 {
     public function __construct(
-        private Cluster $cluster
+        private Cluster $cluster,
     ) {
     }
 
@@ -36,7 +36,7 @@ class ClusterService implements IBaseService
         Cluster $cluster,
         int $meterCount,
         int $totalTransactionsAmount,
-        int $populationCount
+        int $populationCount,
     ): Cluster {
         $this->setClusterMeterCount($cluster, $meterCount);
         $this->setRevenue($cluster, $totalTransactionsAmount);

@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AccessRatePaymentService implements IBaseService
 {
     public function __construct(
-        private AccessRatePayment $accessRatePayment
+        private AccessRatePayment $accessRatePayment,
     ) {
     }
 

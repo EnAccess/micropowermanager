@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class ClusterMiniGridRevenueController extends Controller
 {
     public function __construct(
-        private ClusterRevenueService $clusterRevenueService
+        private ClusterRevenueService $clusterRevenueService,
     ) {
     }
 

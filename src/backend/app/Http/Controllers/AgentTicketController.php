@@ -25,7 +25,7 @@ class AgentTicketController extends Controller
         private AgentService $agentService,
         private TicketService $ticketService,
         private PersonService $personService,
-        private TicketUserService $ticketUserService
+        private TicketUserService $ticketUserService,
     ) {
         // $this->board = $this->boardService->initializeBoard($this->ticketUserService);
         // $this->card = $this->cardService->initalizeList($this->board);

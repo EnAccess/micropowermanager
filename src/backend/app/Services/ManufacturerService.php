@@ -14,7 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ManufacturerService implements IBaseService
 {
     public function __construct(
-        private Manufacturer $manufacturer
+        private Manufacturer $manufacturer,
     ) {
     }
 

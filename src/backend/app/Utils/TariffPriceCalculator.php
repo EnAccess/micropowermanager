@@ -15,13 +15,13 @@ class TariffPriceCalculator
         private AccessRateService $accessRateService,
         private SocialTariffService $socialTariffService,
         private TimeOfUsageService $timeOfUsageService,
-        private TariffPricingComponentService $tariffPricingComponentService
+        private TariffPricingComponentService $tariffPricingComponentService,
     ) {
     }
 
     public function calculateTotalPrice(
         MeterTariff $meterTariff,
-        TariffCreateRequest $request
+        TariffCreateRequest $request,
     ) {
         $accessRate = $request->input('access_rate');
         $socialTariff = $request->input('social_tariff');

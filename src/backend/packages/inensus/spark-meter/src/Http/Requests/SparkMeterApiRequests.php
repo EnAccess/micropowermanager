@@ -22,7 +22,7 @@ class SparkMeterApiRequests
         ResultStatusChecker $resultStatusChecker,
         SmCredential $credential,
         SmSite $site,
-        SmCredential $smCredential
+        SmCredential $smCredential,
     ) {
         $this->client = $httpClient;
         $this->resultStatusChecker = $resultStatusChecker;

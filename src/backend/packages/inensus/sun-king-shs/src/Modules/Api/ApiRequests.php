@@ -11,7 +11,7 @@ use Inensus\SunKingSHS\Models\SunKingCredential;
 class ApiRequests
 {
     public function __construct(
-        private Client $httpClient
+        private Client $httpClient,
     ) {
     }
 

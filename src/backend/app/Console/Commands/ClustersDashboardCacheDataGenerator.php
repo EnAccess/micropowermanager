@@ -10,7 +10,7 @@ class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
     protected $description = 'Update Clusters Dashboard Data';
 
     public function __construct(
-        private ClustersDashboardCacheDataService $clustersDashboardCacheDataService
+        private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
     ) {
         parent::__construct();
     }

@@ -7,7 +7,7 @@ use Inensus\AngazaSHS\Models\AngazaCredential;
 class AngazaCredentialService
 {
     public function __construct(
-        private AngazaCredential $credential
+        private AngazaCredential $credential,
     ) {
     }
 

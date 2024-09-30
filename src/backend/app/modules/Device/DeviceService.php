@@ -15,7 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class DeviceService implements IBaseService, IAssociative
 {
     public function __construct(
-        private Device $device
+        private Device $device,
     ) {
     }
 

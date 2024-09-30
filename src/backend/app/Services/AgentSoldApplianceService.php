@@ -16,7 +16,7 @@ class AgentSoldApplianceService implements IBaseService
 {
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
-        private AssetPerson $assetPerson
+        private AssetPerson $assetPerson,
     ) {
     }
 
@@ -57,7 +57,7 @@ class AgentSoldApplianceService implements IBaseService
         ?int $limit = null,
         $agentId = null,
         $customerId = null,
-        $forApp = false
+        $forApp = false,
     ): Collection|LengthAwarePaginator {
         if ($forApp) {
             return $this->list($agentId);

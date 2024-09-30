@@ -12,7 +12,7 @@ class TicketExportController
 {
     public function __construct(
         private TicketOutsourceReportService $ticketOutsourceReportService,
-        private TicketService $ticketService
+        private TicketService $ticketService,
     ) {
     }
 

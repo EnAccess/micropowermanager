@@ -17,14 +17,14 @@ class AgentTransactionService implements IBaseService
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
-        private Device $device
+        private Device $device,
     ) {
     }
 
     public function getAll(
         ?int $limit = null,
         $agentId = null,
-        $forApp = false
+        $forApp = false,
     ): Collection|LengthAwarePaginator {
         $query = $this->transaction->newQuery();
 

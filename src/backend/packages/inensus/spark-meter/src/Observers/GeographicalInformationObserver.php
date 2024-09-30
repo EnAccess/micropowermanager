@@ -17,7 +17,7 @@ class GeographicalInformationObserver
         private SmTableEncryption $smTableEncryption,
         private Person $person,
         private SmCustomer $smCustomer,
-        private PluginsService $pluginsService
+        private PluginsService $pluginsService,
     ) {
     }
 

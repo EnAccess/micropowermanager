@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class CountryService implements IBaseService
 {
     public function __construct(
-        private Country $country
+        private Country $country,
     ) {
     }
 

@@ -9,7 +9,7 @@ use MPM\Device\MiniGridDeviceService;
 class MiniGridDeviceController extends Controller
 {
     public function __construct(
-        private MiniGridDeviceService $miniGridDeviceService
+        private MiniGridDeviceService $miniGridDeviceService,
     ) {
     }
 

@@ -11,7 +11,7 @@ class AgentDashboardRevenueController extends Controller
 {
     public function __construct(
         private AgentService $agentService,
-        private AgentBalanceHistoryService $agentBalanceHistoryService
+        private AgentBalanceHistoryService $agentBalanceHistoryService,
     ) {
     }
 

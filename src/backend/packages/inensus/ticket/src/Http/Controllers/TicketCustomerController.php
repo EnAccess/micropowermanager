@@ -24,7 +24,7 @@ class TicketCustomerController extends Controller
         private PersonService $personService,
         private TicketOutSourceService $ticketOutSourceService,
         private MaintenanceUserService $maintenanceUserService,
-        private MaintenanceUserTicketService $maintenanceUserTicketService
+        private MaintenanceUserTicketService $maintenanceUserTicketService,
     ) {
     }
 

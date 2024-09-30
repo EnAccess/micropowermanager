@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class TariffPricingComponentService implements IBaseService
 {
     public function __construct(
-        private TariffPricingComponent $tariffPricingComponent
+        private TariffPricingComponent $tariffPricingComponent,
     ) {
     }
 

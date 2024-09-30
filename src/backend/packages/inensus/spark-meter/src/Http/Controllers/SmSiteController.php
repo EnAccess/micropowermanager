@@ -13,7 +13,7 @@ class SmSiteController implements IBaseController
     private $siteService;
 
     public function __construct(
-        SiteService $siteService
+        SiteService $siteService,
     ) {
         $this->siteService = $siteService;
     }

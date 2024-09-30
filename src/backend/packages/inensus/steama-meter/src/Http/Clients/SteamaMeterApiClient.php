@@ -18,7 +18,7 @@ class SteamaMeterApiClient
     public function __construct(
         Client $httpClient,
         ApiHelpers $apiHelpers,
-        SteamaCredential $credentialModel
+        SteamaCredential $credentialModel,
     ) {
         $this->client = $httpClient;
         $this->apiHelpers = $apiHelpers;

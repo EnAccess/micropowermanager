@@ -7,7 +7,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 class WaveMoneyCredentialService
 {
     public function __construct(
-        private WaveMoneyCredential $credential
+        private WaveMoneyCredential $credential,
     ) {
     }
 

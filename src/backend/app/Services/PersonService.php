@@ -18,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PersonService implements IBaseService
 {
     public function __construct(
-        private Person $person
+        private Person $person,
     ) {
     }
 

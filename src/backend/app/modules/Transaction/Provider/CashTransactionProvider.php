@@ -13,7 +13,7 @@ class CashTransactionProvider implements ITransactionProvider
 
     public function __construct(
         private CashTransaction $cashTransaction,
-        private Transaction $transaction
+        private Transaction $transaction,
     ) {
     }
 

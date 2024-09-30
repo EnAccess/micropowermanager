@@ -37,7 +37,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
         private CustomerService $smCustomerService,
         private SmSyncActionService $smSyncActionService,
         private Address $address,
-        private Cluster $cluster
+        private Cluster $cluster,
     ) {
         parent::__construct();
     }

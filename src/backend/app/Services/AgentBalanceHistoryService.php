@@ -17,7 +17,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
 {
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
-        private PeriodService $periodService
+        private PeriodService $periodService,
     ) {
     }
 

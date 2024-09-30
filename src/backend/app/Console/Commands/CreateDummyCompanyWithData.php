@@ -38,7 +38,7 @@ class CreateDummyCompanyWithData extends Command
 
     public function __construct(
         private CompanyDatabaseService $companyDatabaseService,
-        private DatabaseProxyManagerService $databaseProxyManagerService
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
         parent::__construct();
     }

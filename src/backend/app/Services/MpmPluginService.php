@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class MpmPluginService implements IBaseService
 {
     public function __construct(
-        private MpmPlugin $mpmPlugin
+        private MpmPlugin $mpmPlugin,
     ) {
     }
 

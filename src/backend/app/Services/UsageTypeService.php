@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class UsageTypeService implements IBaseService
 {
     public function __construct(
-        private UsageType $usageType
+        private UsageType $usageType,
     ) {
     }
 

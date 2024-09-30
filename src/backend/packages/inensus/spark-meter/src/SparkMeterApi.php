@@ -25,7 +25,7 @@ class SparkMeterApi implements IManufacturerAPI
         private TariffService $tariffService,
         private SmCustomer $smCustomer,
         private SmTransaction $smTransaction,
-        private SmTariff $smTariff
+        private SmTariff $smTariff,
     ) {
         $this->api = $httpClient;
     }

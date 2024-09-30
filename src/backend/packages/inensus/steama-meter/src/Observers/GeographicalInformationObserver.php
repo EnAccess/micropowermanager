@@ -22,7 +22,7 @@ class GeographicalInformationObserver
         SteamaMeter $stmMeter,
         Person $person,
         SteamaCustomer $steamaCustomer,
-        MeterParameter $meterParameter
+        MeterParameter $meterParameter,
     ) {
         $this->stmMeterService = $stmMeterService;
         $this->stmMeter = $stmMeter;

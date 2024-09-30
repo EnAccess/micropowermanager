@@ -11,7 +11,7 @@ class SoldApplianceListener
 {
     public function __construct(
         private ApplianceRateService $applianceRateService,
-        private PersonService $personService
+        private PersonService $personService,
     ) {
     }
 

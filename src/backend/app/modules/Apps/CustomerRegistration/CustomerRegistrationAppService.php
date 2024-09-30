@@ -23,7 +23,7 @@ class CustomerRegistrationAppService
         private AddressesService $addressService,
         private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
-        private AddressGeographicalInformationService $addressGeographicalInformationService
+        private AddressGeographicalInformationService $addressGeographicalInformationService,
     ) {
     }
 

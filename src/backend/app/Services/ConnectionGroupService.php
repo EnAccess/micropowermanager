@@ -12,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */ class ConnectionGroupService implements IBaseService
 {
     public function __construct(
-        private ConnectionGroup $connectionGroup
+        private ConnectionGroup $connectionGroup,
     ) {
     }
 

@@ -42,7 +42,7 @@ class SteamaMeterService implements ISynchronizeService
         private MeterParameter $meterParameter,
         private SteamaTariff $tariff,
         private SteamaSyncSettingService $steamaSyncSettingService,
-        private StemaSyncActionService $steamaSyncActionService
+        private StemaSyncActionService $steamaSyncActionService,
     ) {
     }
 

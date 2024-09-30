@@ -19,7 +19,7 @@ class SunKingSHSApi implements IManufacturerAPI
     public function __construct(
         private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
-        private ApiRequests $apiRequests
+        private ApiRequests $apiRequests,
     ) {
     }
 

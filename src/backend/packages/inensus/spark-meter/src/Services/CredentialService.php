@@ -18,7 +18,7 @@ class CredentialService
     public function __construct(
         SparkMeterApiRequests $sparkMeterApiRequests,
         SmCredential $smCredential,
-        OrganizationService $organizationService
+        OrganizationService $organizationService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->smCredential = $smCredential;

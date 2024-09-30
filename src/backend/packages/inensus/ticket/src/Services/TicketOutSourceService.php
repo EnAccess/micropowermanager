@@ -12,7 +12,7 @@ use Inensus\Ticket\Models\TicketOutsource;
 class TicketOutSourceService implements IBaseService
 {
     public function __construct(
-        private TicketOutsource $ticketOutsource
+        private TicketOutsource $ticketOutsource,
     ) {
     }
 

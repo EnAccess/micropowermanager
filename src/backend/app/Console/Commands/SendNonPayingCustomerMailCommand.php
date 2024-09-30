@@ -27,7 +27,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
         private ClusterManagerService $clusterManagerService,
         private PdfService $pdfService,
         private PersonService $personService,
-        private MailService $mailService
+        private MailService $mailService,
     ) {
         parent::__construct();
     }

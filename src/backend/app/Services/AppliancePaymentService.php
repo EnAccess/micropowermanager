@@ -20,7 +20,7 @@ class AppliancePaymentService
         private CashTransactionService $cashTransactionService,
         private MainSettings $mainSettings,
         private AppliancePersonService $appliancePersonService,
-        private DeviceService $deviceService
+        private DeviceService $deviceService,
     ) {
     }
 

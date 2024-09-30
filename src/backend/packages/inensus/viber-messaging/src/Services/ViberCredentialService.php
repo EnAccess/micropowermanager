@@ -9,7 +9,7 @@ class ViberCredentialService
     public function __construct(
         private ViberCredential $credential,
         private WebhookService $webhookService,
-        private AccountService $accountService
+        private AccountService $accountService,
     ) {
     }
 

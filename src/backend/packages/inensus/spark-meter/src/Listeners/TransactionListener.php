@@ -14,7 +14,7 @@ class TransactionListener
 
     public function __construct(
         TransactionService $transactionService,
-        SmTransaction $smTransaction
+        SmTransaction $smTransaction,
     ) {
         $this->transactionService = $transactionService;
         $this->smTransaction = $smTransaction;

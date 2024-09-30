@@ -26,7 +26,7 @@ class PersonController extends Controller
         private PersonService $personService,
         private PersonAddressService $personAddressService,
         private MaintenanceUserService $maintenanceUserService,
-        private CountryService $countryService
+        private CountryService $countryService,
     ) {
     }
 
@@ -137,7 +137,7 @@ class PersonController extends Controller
      */
     public function update(
         int $personId,
-        PersonRequest $request
+        PersonRequest $request,
     ): ApiResource {
         $person = $this->personService->getById($personId);
         $personData = $request->all();
@@ -159,7 +159,7 @@ class PersonController extends Controller
      * @responseFile responses/people/person.transaction.list.json
      */
     public function transactions(
-        int $personId
+        int $personId,
     ): ApiResource {
         $person = $this->personService->getById($personId);
 
@@ -183,7 +183,7 @@ class PersonController extends Controller
      * @responseFile responses/people/people.search.json
      */
     public function search(
-        Request $request
+        Request $request,
     ): ApiResource {
         $term = $request->input('term');
         $paginate = $request->input('paginate', 1);
@@ -207,7 +207,7 @@ class PersonController extends Controller
      * @apiResourceModel App\Models\Person\Person
      */
     public function destroy(
-        int $personId
+        int $personId,
     ): ApiResource {
         $person = $this->personService->getById($personId);
 

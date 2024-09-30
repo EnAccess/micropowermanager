@@ -22,7 +22,7 @@ class SolarDataListener
     public function __construct(
         private WeatherData $weatherData,
         private IWeatherDataProvider $weatherDataProvider,
-        private MiniGrid $miniGrid
+        private MiniGrid $miniGrid,
     ) {
     }
 

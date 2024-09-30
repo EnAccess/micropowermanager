@@ -42,7 +42,7 @@ class SteamaAgentService implements ISynchronizeService
         SteamaSite $site,
         Address $address,
         SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService
+        StemaSyncActionService $steamaSyncActionService,
     ) {
         $this->agentCommission = $agentCommissionModel;
         $this->stmAgent = $steamaAgentModel;

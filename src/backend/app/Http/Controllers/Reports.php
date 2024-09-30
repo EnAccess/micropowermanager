@@ -45,7 +45,7 @@ class Reports
         private PaymentHistory $paymentHistory,
         private City $city,
         private Target $target,
-        private Report $report
+        private Report $report,
     ) {
     }
 
@@ -257,7 +257,7 @@ class Reports
     public function generateXls(
         Worksheet $sheet,
         string $dateRange,
-        $transactions
+        $transactions,
     ): void {
         $this->addStaticText($sheet, $dateRange);
 
@@ -355,7 +355,7 @@ class Reports
         $paymentHistories,
         int $index,
         string $connectionGroupName,
-        $tariff
+        $tariff,
     ): void {
         $column = $this->getConnectionGroupColumn($connectionGroupName);
         $soldAmount = [];
@@ -416,7 +416,7 @@ class Reports
         Worksheet $sheet,
         $connectionGroups,
         string $startingColumn,
-        int $startingRow
+        int $startingRow,
     ): void {
         $tmpConnectionTypeName = null;
 
@@ -540,7 +540,7 @@ class Reports
         $cityName,
         $startDate,
         string $endDate,
-        $reportType
+        $reportType,
     ): void {
         $this->initSheet();
 

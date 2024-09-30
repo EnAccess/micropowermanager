@@ -13,7 +13,7 @@ use Inensus\ViberMessaging\Models\ViberContact;
 class ViberContactService implements IBaseService
 {
     public function __construct(
-        private ViberContact $viberContact, private Person $person
+        private ViberContact $viberContact, private Person $person,
     ) {
     }
 

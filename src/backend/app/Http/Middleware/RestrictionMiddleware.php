@@ -17,7 +17,7 @@ class RestrictionMiddleware
     public function __construct(
         private RestrictionService $restrictionService,
         private MaintenanceUserService $maintenanceUserService,
-        private MiniGridService $miniGridService
+        private MiniGridService $miniGridService,
     ) {
     }
 

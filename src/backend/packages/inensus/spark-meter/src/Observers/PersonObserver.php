@@ -18,7 +18,7 @@ class PersonObserver
         CustomerService $customerService,
         SmTableEncryption $smTableEncryption,
         Person $person,
-        SmCustomer $smCustomer
+        SmCustomer $smCustomer,
     ) {
         $this->customerService = $customerService;
         $this->smTableEncryption = $smTableEncryption;

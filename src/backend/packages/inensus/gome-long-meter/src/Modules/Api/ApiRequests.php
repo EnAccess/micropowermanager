@@ -11,7 +11,7 @@ use Inensus\GomeLongMeter\Models\GomeLongCredential;
 class ApiRequests
 {
     public function __construct(
-        private Client $httpClient
+        private Client $httpClient,
     ) {
     }
 

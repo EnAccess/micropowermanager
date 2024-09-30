@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class TokenService implements IBaseService
 {
     public function __construct(
-        private Token $token
+        private Token $token,
     ) {
     }
 

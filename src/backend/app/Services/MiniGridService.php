@@ -15,7 +15,7 @@ class MiniGridService implements IBaseService
 {
     public function __construct(
         private MiniGrid $miniGrid,
-        private Cluster $cluster
+        private Cluster $cluster,
     ) {
     }
 

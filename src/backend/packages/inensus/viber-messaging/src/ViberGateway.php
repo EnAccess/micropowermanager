@@ -17,7 +17,7 @@ class ViberGateway
 
     public function __construct(
         private ViberCredentialService $credentialService,
-        private ViberMessageService $viberMessageService
+        private ViberMessageService $viberMessageService,
     ) {
         $credential = $this->credentialService->getCredentials();
         $apiKey = $credential->api_token;
@@ -31,7 +31,7 @@ class ViberGateway
     public function sendSms(
         string $body,
         string $viberId,
-        ?Sms $registeredSms = null
+        ?Sms $registeredSms = null,
     ) {
         try {
             $this->bot->getClient()->sendMessage(

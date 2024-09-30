@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class MeterService implements IBaseService
 {
     public function __construct(
-        private Meter $meter
+        private Meter $meter,
     ) {
     }
 

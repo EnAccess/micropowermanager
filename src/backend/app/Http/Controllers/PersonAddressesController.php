@@ -14,7 +14,7 @@ class PersonAddressesController extends Controller
     public function __construct(
         private AddressesService $addressService,
         private PersonService $personService,
-        private PersonAddressService $personAddressService
+        private PersonAddressService $personAddressService,
     ) {
     }
 

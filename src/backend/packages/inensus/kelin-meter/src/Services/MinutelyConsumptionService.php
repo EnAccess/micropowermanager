@@ -15,7 +15,7 @@ class MinutelyConsumptionService
 
     public function __construct(
         KelinMeterApiClient $kelinApi,
-        KelinMeterMinutelyData $kelinMeterMinutelyData
+        KelinMeterMinutelyData $kelinMeterMinutelyData,
     ) {
         $this->kelinApi = $kelinApi;
         $this->kelinMeterMinutelyData = $kelinMeterMinutelyData;

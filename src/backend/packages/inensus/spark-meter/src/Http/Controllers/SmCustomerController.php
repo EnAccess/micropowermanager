@@ -13,7 +13,7 @@ class SmCustomerController implements IBaseController
     private $customerService;
 
     public function __construct(
-        CustomerService $customerService
+        CustomerService $customerService,
     ) {
         $this->customerService = $customerService;
     }

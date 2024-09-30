@@ -35,7 +35,7 @@ class AssetPersonController extends Controller
         private AddressGeographicalInformationService $addressGeographicalInformationService,
         private CashTransactionService $cashTransactionService,
         private AssetService $applianceService,
-        private ApplianceRateService $applianceRateService
+        private ApplianceRateService $applianceRateService,
     ) {
     }
 
@@ -51,7 +51,7 @@ class AssetPersonController extends Controller
     public function store(
         Asset $asset,
         Person $person,
-        Request $request
+        Request $request,
     ): ApiResource {
         try {
             $userId = $request->input('user_id');

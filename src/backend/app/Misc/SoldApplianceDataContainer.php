@@ -13,7 +13,7 @@ class SoldApplianceDataContainer
         private Asset $asset,
         private AssetType $assetType,
         private AssetPerson $assetPerson,
-        private ?Transaction $transaction = null
+        private ?Transaction $transaction = null,
     ) {
     }
 

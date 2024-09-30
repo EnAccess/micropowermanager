@@ -8,7 +8,7 @@ use App\Services\PaymentHistoryService;
 class MeterPaymentHistoryController
 {
     public function __construct(
-        private PaymentHistoryService $paymentHistoryService
+        private PaymentHistoryService $paymentHistoryService,
     ) {
     }
 

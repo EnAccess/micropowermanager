@@ -25,7 +25,7 @@ class ApplianceInstallmentPayer
         private AppliancePersonService $appliancePersonService,
         private ApplianceRateService $applianceRateService,
         private AppliancePaymentService $appliancePaymentService,
-        private DeviceService $deviceService
+        private DeviceService $deviceService,
     ) {
     }
 

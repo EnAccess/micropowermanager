@@ -64,7 +64,7 @@ class CustomerService implements ISynchronizeService
         Cluster $cluster,
         SmSyncSettingService $smSyncSettingService,
         SmSyncActionService $smSyncActionService,
-        SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService
+        SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->smTableEncryption = $smTableEncryption;

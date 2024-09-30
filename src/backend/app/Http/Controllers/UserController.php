@@ -15,7 +15,7 @@ class UserController extends Controller
     public function __construct(
         private UserService $userService,
         private DatabaseProxyService $databaseProxyService,
-        private CompanyDatabaseService $companyDatabaseService
+        private CompanyDatabaseService $companyDatabaseService,
     ) {
     }
 

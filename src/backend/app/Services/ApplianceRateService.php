@@ -15,7 +15,7 @@ class ApplianceRateService
 {
     public function __construct(
         private AssetRate $applianceRate,
-        private MainSettings $mainSettings
+        private MainSettings $mainSettings,
     ) {
     }
 

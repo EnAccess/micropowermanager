@@ -24,7 +24,7 @@ class AgentWebController extends Controller
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
-        private DatabaseProxyService $databaseProxyService
+        private DatabaseProxyService $databaseProxyService,
     ) {
     }
 

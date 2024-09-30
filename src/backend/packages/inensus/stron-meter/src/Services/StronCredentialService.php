@@ -15,7 +15,7 @@ class StronCredentialService
 
     public function __construct(
         StronCredential $credentialModel,
-        StronMeterApiRequests $stronApi
+        StronMeterApiRequests $stronApi,
     ) {
         $this->credential = $credentialModel;
         $this->stronApi = $stronApi;

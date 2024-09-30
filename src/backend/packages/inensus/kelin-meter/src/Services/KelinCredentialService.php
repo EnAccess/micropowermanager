@@ -16,7 +16,7 @@ class KelinCredentialService
 
     public function __construct(
         KelinCredential $credential,
-        KelinMeterApiClient $kelinApi
+        KelinMeterApiClient $kelinApi,
     ) {
         $this->credential = $credential;
         $this->kelinApi = $kelinApi;

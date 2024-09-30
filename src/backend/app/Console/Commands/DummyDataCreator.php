@@ -57,7 +57,7 @@ class DummyDataCreator extends AbstractSharedCommand
         private Person $person,
         private Ticket $ticket,
         private MaintenanceUsers $maintenanceUsers,
-        private TicketOutsource $ticketOutsource
+        private TicketOutsource $ticketOutsource,
     ) {
         parent::__construct();
     }

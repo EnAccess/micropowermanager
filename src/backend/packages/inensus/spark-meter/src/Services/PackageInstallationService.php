@@ -15,7 +15,7 @@ class PackageInstallationService
         SmSyncSettingService $syncSettingService,
         SmSmsBodyService $smsBodyService,
         SmSmsVariableDefaultValueService $defaultValueService,
-        SmSmsFeedbackWordService $smSmsFeedbackWordService
+        SmSmsFeedbackWordService $smSmsFeedbackWordService,
     ) {
         $this->smsSettingService = $smsSettingService;
         $this->syncSettingService = $syncSettingService;

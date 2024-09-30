@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 class MeterConsumptionService implements IBaseService
 {
     public function __construct(
-        private MeterConsumption $meterConsumption
+        private MeterConsumption $meterConsumption,
     ) {
     }
 

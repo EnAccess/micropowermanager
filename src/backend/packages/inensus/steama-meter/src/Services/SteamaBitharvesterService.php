@@ -10,7 +10,7 @@ class SteamaBitharvesterService
     private $rootUrl = '/bitharvesters';
 
     public function __construct(
-        SteamaMeterApiClient $steamaApi
+        SteamaMeterApiClient $steamaApi,
     ) {
         $this->steamaApi = $steamaApi;
     }

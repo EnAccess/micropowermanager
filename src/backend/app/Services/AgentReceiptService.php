@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AgentReceiptService implements IBaseService
 {
     public function __construct(
-        private AgentReceipt $agentReceipt
+        private AgentReceipt $agentReceipt,
     ) {
     }
 

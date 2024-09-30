@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class MeterTariffController extends Controller
 {
     public function __construct(
-        private MeterTariffService $meterTariffService
+        private MeterTariffService $meterTariffService,
     ) {
     }
 
