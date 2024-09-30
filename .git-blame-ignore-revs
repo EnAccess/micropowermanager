@@ -14,3 +14,5 @@ f424854667e15daf0ad59d5fc68cc3eba6ea152e
 f5a93ae18ec8e036cb47bb05b71f40d49049a505
 # Apply Prettier after updated config
 bc92390b1fb7a7b16e88d7afd88ba5372afe4e51
+# Update PHP-CS-Fixer to `v3.64.0`
+7e5de40aa261fd2dad0d8de09c6929719e044d96
