@@ -5,26 +5,17 @@ namespace Inensus\CalinMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Inensus\CalinMeter\Helpers\ApiHelpers;
 use Inensus\CalinMeter\Services\CalinCredentialService;
-use Inensus\CalinMeter\Services\MenuItemService;
 
 class InstallPackage extends Command
 {
     protected $signature = 'calin-meter:install';
     protected $description = 'Install CalinMeter Package';
 
-    private $menuItemService;
-    private $apiHelpers;
-    private $credentialService;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        ApiHelpers $apiHelpers,
-        CalinCredentialService $credentialService
+        private ApiHelpers $apiHelpers,
+        private CalinCredentialService $credentialService,
     ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->apiHelpers = $apiHelpers;
-        $this->credentialService = $credentialService;
     }
 
     public function handle(): void
@@ -65,15 +56,6 @@ class InstallPackage extends Command
             'name' => 'CalinMeter',
             'composer_name' => 'inensus/calin-meter',
             'description' => 'CalinMeter integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

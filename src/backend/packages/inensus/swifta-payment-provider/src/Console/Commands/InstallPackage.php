@@ -10,7 +10,6 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
-use Inensus\SwiftaPaymentProvider\Services\MenuItemService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class InstallPackage extends Command
@@ -24,7 +23,6 @@ class InstallPackage extends Command
         private CompanyService $companyService,
         private CompanyDatabaseService $companyDatabaseService,
         private DatabaseProxyService $databaseProxyService,
-        private MenuItemService $menuItemService
     ) {
         parent::__construct();
     }
@@ -32,7 +30,6 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing SwiftaPaymentProvider Integration Package\n');
-        $this->createMenuItems();
         $token = $this->generateAuthenticationToken();
         $this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
         $this->info('Package installed successfully..');
@@ -114,14 +111,5 @@ class InstallPackage extends Command
         }
 
         return $number;
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
-        ]);
     }
 }

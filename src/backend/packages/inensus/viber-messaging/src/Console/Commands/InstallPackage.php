@@ -3,7 +3,6 @@
 namespace Inensus\ViberMessaging\Console\Commands;
 
 use Illuminate\Console\Command;
-use Inensus\ViberMessaging\Services\MenuItemService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
 
 class InstallPackage extends Command
@@ -12,8 +11,7 @@ class InstallPackage extends Command
     protected $description = 'Install ViberMessaging Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
-        private ViberCredentialService $credentialService
+        private ViberCredentialService $credentialService,
     ) {
         parent::__construct();
     }
@@ -21,7 +19,6 @@ class InstallPackage extends Command
     public function handle(): void
     {
         $this->info('Installing ViberMessaging Integration Package\n');
-        $this->createMenuItems();
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
@@ -56,15 +53,6 @@ class InstallPackage extends Command
             'name' => 'ViberMessaging',
             'composer_name' => 'inensus/viber-messaging',
             'description' => 'Viber Messaging integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

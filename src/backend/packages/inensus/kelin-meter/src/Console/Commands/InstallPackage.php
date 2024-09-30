@@ -5,7 +5,6 @@ namespace Inensus\KelinMeter\Console\Commands;
 use Illuminate\Console\Command;
 use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Services\KelinCredentialService;
-use Inensus\KelinMeter\Services\MenuItemService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
 class InstallPackage extends Command
@@ -13,22 +12,12 @@ class InstallPackage extends Command
     protected $signature = 'kelin-meter:install';
     protected $description = 'Install KelinMeters Package';
 
-    private $menuItemService;
-    private $apiHelpers;
-    private $credentialService;
-    private $packageInstallationService;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        ApiHelpers $apiHelpers,
-        KelinCredentialService $credentialService,
-        PackageInstallationService $packageInstallationService
+        private ApiHelpers $apiHelpers,
+        private KelinCredentialService $credentialService,
+        private PackageInstallationService $packageInstallationService,
     ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->apiHelpers = $apiHelpers;
-        $this->credentialService = $credentialService;
-        $this->packageInstallationService = $packageInstallationService;
     }
 
     public function handle(): void

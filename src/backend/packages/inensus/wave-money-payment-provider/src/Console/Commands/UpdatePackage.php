@@ -5,7 +5,6 @@ namespace Inensus\WaveMoneyPaymentProvider\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\WaveMoneyPaymentProvider\Services\MenuItemService;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 
 class UpdatePackage extends Command
@@ -14,9 +13,8 @@ class UpdatePackage extends Command
     protected $description = 'Update WaveMoney Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
         private WaveMoneyCredentialService $credentialService,
-        private Filesystem $fileSystem
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
     }
@@ -26,12 +24,11 @@ class UpdatePackage extends Command
         $this->info('WaveMoney Integration Updating Started\n');
         // $this->removeOldVersionOfPackage();
         // $this->installNewVersionOfPackage();
-        // $this->deleteMigration($this->fileSystem);
+        // $this->deleteMigration($this->filesystem);
         // $this->publishMigrationsAgain();
         // $this->updateDatabase();
         // $this->publishVueFilesAgain();
         // $this->call('routes:generate');
-        $this->createMenuItems();
         // $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
@@ -83,15 +80,6 @@ class UpdatePackage extends Command
         $this->call('vendor:publish', [
             '--provider' => "Inensus\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider",
             '--tag' => 'vue-components',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

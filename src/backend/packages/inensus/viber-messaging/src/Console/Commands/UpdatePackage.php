@@ -5,7 +5,6 @@ namespace Inensus\ViberMessaging\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\ViberMessaging\Services\MenuItemService;
 use Inensus\ViberMessaging\Services\ViberCredentialService;
 
 class UpdatePackage extends Command
@@ -13,16 +12,11 @@ class UpdatePackage extends Command
     protected $signature = 'viber-messaging:update';
     protected $description = 'Update ViberMessaging Package';
 
-    private $fileSystem;
-
     public function __construct(
-        private MenuItemService $menuItemService,
         private ViberCredentialService $credentialService,
-        Filesystem $fileSystem
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-
-        $this->fileSystem = $fileSystem;
     }
 
     public function handle(): void
@@ -30,12 +24,11 @@ class UpdatePackage extends Command
         $this->info('Viber Messaging Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
@@ -87,15 +80,6 @@ class UpdatePackage extends Command
         $this->call('vendor:publish', [
             '--provider' => "Inensus\ViberMessaging\Providers\ViberMessagingServiceProvider",
             '--tag' => 'vue-components',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

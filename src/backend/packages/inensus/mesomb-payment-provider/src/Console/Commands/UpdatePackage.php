@@ -11,18 +11,10 @@ class UpdatePackage extends Command
     protected $signature = 'mesomb-payment-provider:update';
     protected $description = 'Update the Mesomb Payment Provider Integration Package';
 
-    private $fileSystem;
-
-    /**
-     * Create a new command instance.
-     *
-     * @param Filesystem $filesystem
-     */
     public function __construct(
-        Filesystem $filesystem
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->fileSystem = $filesystem;
     }
 
     /**
@@ -33,7 +25,7 @@ class UpdatePackage extends Command
         $this->info('Mesomb Payment Provider Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->info('Package updated successfully..');

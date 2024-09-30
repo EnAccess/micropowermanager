@@ -14,18 +14,13 @@ class UpdatePackage extends Command
 {
     protected $signature = 'swifta-payment-provider:update';
     protected $description = 'Update the Swifta Payment Provider Integration Package';
-    private $user;
-    private $fileSystem;
-    private $authentication;
 
     public function __construct(
-        User $user,
-        Filesystem $filesystem, SwiftaAuthentication $authentication
+        private User $user,
+        private Filesystem $filesystem,
+        private SwiftaAuthentication $authentication,
     ) {
         parent::__construct();
-        $this->fileSystem = $filesystem;
-        $this->user = $user;
-        $this->authentication = $authentication;
     }
 
     /**
@@ -36,7 +31,7 @@ class UpdatePackage extends Command
         $this->info('Swifta Payment Provider Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishConfigurations();
         $this->publishMigrationsAgain();
         $this->updateDatabase();

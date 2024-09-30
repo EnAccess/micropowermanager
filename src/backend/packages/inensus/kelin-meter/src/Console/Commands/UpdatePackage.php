@@ -7,7 +7,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Services\KelinCredentialService;
-use Inensus\KelinMeter\Services\MenuItemService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
 class UpdatePackage extends Command
@@ -15,25 +14,13 @@ class UpdatePackage extends Command
     protected $signature = 'kelin-meter:update';
     protected $description = 'Update Kelin Meter Package';
 
-    private $menuItemService;
-    private $credentialService;
-    private $apiHelpers;
-    private $packageInstallationService;
-    private $fileSystem;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        KelinCredentialService $credentialService,
-        ApiHelpers $apiHelpers,
-        PackageInstallationService $packageInstallationService,
-        Filesystem $fileSystem
+        private KelinCredentialService $credentialService,
+        private ApiHelpers $apiHelpers,
+        private PackageInstallationService $packageInstallationService,
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->apiHelpers = $apiHelpers;
-        $this->menuItemService = $menuItemService;
-        $this->credentialService = $credentialService;
-        $this->packageInstallationService = $packageInstallationService;
-        $this->fileSystem = $fileSystem;
     }
 
     public function handle(): void
@@ -42,13 +29,12 @@ class UpdatePackage extends Command
 
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->info('Package updated successfully..');
     }
 
@@ -100,16 +86,5 @@ class UpdatePackage extends Command
             '--tag' => 'vue-components',
             '--force' => true,
         ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        if (array_key_exists('menuItem', $menuItems)) {
-            $this->call('menu-items:generate', [
-                'menuItem' => $menuItems['menuItem'],
-                'subMenuItems' => $menuItems['subMenuItems'],
-            ]);
-        }
     }
 }

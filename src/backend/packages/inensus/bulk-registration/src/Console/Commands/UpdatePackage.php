@@ -5,23 +5,16 @@ namespace Inensus\BulkRegistration\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Inensus\BulkRegistration\Services\MenuItemService;
 
 class UpdatePackage extends Command
 {
     protected $signature = 'bulk-registration:update';
     protected $description = 'Update  Bulk Registration Package';
 
-    private $menuItemService;
-    private $fileSystem;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        Filesystem $filesystem
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->fileSystem = $filesystem;
     }
 
     public function handle(): void
@@ -29,13 +22,12 @@ class UpdatePackage extends Command
         $this->info('Bulk Registration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishConfigurations();
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->call('sidebar:generate');
         $this->info('Package updated successfully..');
     }
@@ -96,15 +88,6 @@ class UpdatePackage extends Command
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
             '--tag' => 'vue-components',
             '--force' => true,
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

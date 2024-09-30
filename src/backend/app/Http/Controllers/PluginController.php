@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Services\CompanyDatabaseService;
-use App\Services\MenuItemsService;
 use App\Services\MpmPluginService;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
@@ -17,7 +16,6 @@ class PluginController extends Controller
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
         private CompanyDatabaseService $companyDatabaseService,
-        private MenuItemsService $menuItemsService,
         private RegistrationTailService $registrationTailService,
     ) {
     }
@@ -53,16 +51,10 @@ class PluginController extends Controller
             }
 
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
-            $ExistingMenuItem = $this->menuItemsService->checkMenuItemIsExistsForTag($mpmPlugin);
-
-            if (!$ExistingMenuItem) {
-                $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
-            }
 
             $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
         } else {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
-            $this->menuItemsService->removeMenuItemAndSubmenuItemForMenuItemName($mpmPlugin);
 
             $this->registrationTailService->removeMpmPluginFromRegistrationTail($registrationTail, $mpmPlugin);
         }

@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
-use Inensus\SteamaMeter\Services\MenuItemService;
 use Inensus\SteamaMeter\Services\PackageInstallationService;
 use Inensus\SteamaMeter\Services\SteamaAgentService;
 use Inensus\SteamaMeter\Services\SteamaCredentialService;
@@ -25,55 +24,23 @@ class UpdatePackage extends Command
     protected $signature = 'steama-meter:update';
     protected $description = 'Install Steamaco Meter Package';
 
-    private $menuItemService;
-    private $agentService;
-    private $credentialService;
-    private $paymentPlanService;
-    private $tariffService;
-    private $userTypeService;
-    private $apiHelpers;
-    private $siteService;
-    private $smsSettingService;
-    private $syncSettingService;
-    private $smsBodyService;
-    private $defaultValueService;
-    private $steamaSmsFeedbackWordService;
-    private $packageInstallationService;
-    private $fileSystem;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        SteamaAgentService $agentService,
-        SteamaCredentialService $credentialService,
-        SteamaSiteLevelPaymentPlanTypeService $paymentPlanService,
-        SteamaTariffService $tariffService,
-        SteamaUserTypeService $userTypeService,
-        ApiHelpers $apiHelpers,
-        SteamaSiteService $siteService,
-        SteamaSmsSettingService $smsSettingService,
-        SteamaSyncSettingService $syncSettingService,
-        SteamaSmsBodyService $smsBodyService,
-        SteamaSmsVariableDefaultValueService $defaultValueService,
-        SteamaSmsFeedbackWordService $steamaSmsFeedbackWordService,
-        PackageInstallationService $packageInstallationService,
-        Filesystem $fileSystem
+        private SteamaAgentService $agentService,
+        private SteamaCredentialService $credentialService,
+        private SteamaSiteLevelPaymentPlanTypeService $paymentPlanService,
+        private SteamaTariffService $tariffService,
+        private SteamaUserTypeService $userTypeService,
+        private ApiHelpers $apiHelpers,
+        private SteamaSiteService $siteService,
+        private SteamaSmsSettingService $smsSettingService,
+        private SteamaSyncSettingService $syncSettingService,
+        private SteamaSmsBodyService $smsBodyService,
+        private SteamaSmsVariableDefaultValueService $defaultValueService,
+        private SteamaSmsFeedbackWordService $steamaSmsFeedbackWordService,
+        private PackageInstallationService $packageInstallationService,
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->apiHelpers = $apiHelpers;
-        $this->menuItemService = $menuItemService;
-        $this->agentService = $agentService;
-        $this->credentialService = $credentialService;
-        $this->paymentPlanService = $paymentPlanService;
-        $this->tariffService = $tariffService;
-        $this->userTypeService = $userTypeService;
-        $this->siteService = $siteService;
-        $this->smsSettingService = $smsSettingService;
-        $this->syncSettingService = $syncSettingService;
-        $this->smsBodyService = $smsBodyService;
-        $this->defaultValueService = $defaultValueService;
-        $this->steamaSmsFeedbackWordService = $steamaSmsFeedbackWordService;
-        $this->packageInstallationService = $packageInstallationService;
-        $this->fileSystem = $fileSystem;
     }
 
     public function handle(): void
@@ -82,13 +49,12 @@ class UpdatePackage extends Command
 
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->info('Package updated successfully..');
     }
 
@@ -140,16 +106,5 @@ class UpdatePackage extends Command
             '--tag' => 'vue-components',
             '--force' => true,
         ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        if (array_key_exists('menuItem', $menuItems)) {
-            $this->call('menu-items:generate', [
-                'menuItem' => $menuItems['menuItem'],
-                'subMenuItems' => $menuItems['subMenuItems'],
-            ]);
-        }
     }
 }

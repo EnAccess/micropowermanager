@@ -4,7 +4,6 @@ namespace Inensus\MicroStarMeter\Console\Commands;
 
 use Illuminate\Console\Command;
 use Inensus\MicroStarMeter\Services\ManufacturerService;
-use Inensus\MicroStarMeter\Services\MenuItemService;
 use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
 
 class InstallPackage extends Command
@@ -13,9 +12,8 @@ class InstallPackage extends Command
     protected $description = 'Install MicroStarMeter Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
-        private MicroStarCredentialService $credentialService
+        private MicroStarCredentialService $credentialService,
     ) {
         parent::__construct();
     }
@@ -58,15 +56,6 @@ class InstallPackage extends Command
             'name' => 'MicroStarMeter',
             'composer_name' => 'inensus/micro-star-meter',
             'description' => 'MicroStarMeter integration package for MicroPowerManager',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

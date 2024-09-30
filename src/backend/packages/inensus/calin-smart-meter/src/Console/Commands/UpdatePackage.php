@@ -6,26 +6,17 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
-use Inensus\CalinSmartMeter\Services\MenuItemService;
 
 class UpdatePackage extends Command
 {
     protected $signature = 'calin-smart-meter:update';
     protected $description = 'Update CalinSmartMeter Package';
 
-    private $menuItemService;
-    private $credentialService;
-    private $fileSystem;
-
     public function __construct(
-        MenuItemService $menuItemService,
-        CalinSmartCredentialService $credentialService,
-        Filesystem $fileSystem
+        private CalinSmartCredentialService $credentialService,
+        private Filesystem $filesystem,
     ) {
         parent::__construct();
-        $this->menuItemService = $menuItemService;
-        $this->credentialService = $credentialService;
-        $this->fileSystem = $fileSystem;
     }
 
     public function handle(): void
@@ -33,12 +24,11 @@ class UpdatePackage extends Command
         $this->info('Calin Smart Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
         $this->call('routes:generate');
-        $this->createMenuItems();
         $this->info('Package updated successfully..');
     }
 
@@ -88,15 +78,6 @@ class UpdatePackage extends Command
         $this->call('vendor:publish', [
             '--provider' => "Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider",
             '--tag' => 'vue-components',
-        ]);
-    }
-
-    private function createMenuItems()
-    {
-        $menuItems = $this->menuItemService->createMenuItems();
-        $this->call('menu-items:generate', [
-            'menuItem' => $menuItems['menuItem'],
-            'subMenuItems' => $menuItems['subMenuItems'],
         ]);
     }
 }

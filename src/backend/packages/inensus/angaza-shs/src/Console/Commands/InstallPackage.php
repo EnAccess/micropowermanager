@@ -5,7 +5,6 @@ namespace Inensus\AngazaSHS\Console\Commands;
 use Illuminate\Console\Command;
 use Inensus\AngazaSHS\Services\AngazaCredentialService;
 use Inensus\AngazaSHS\Services\ManufacturerService;
-use Inensus\AngazaSHS\Services\MenuItemService;
 
 class InstallPackage extends Command
 {
@@ -13,9 +12,8 @@ class InstallPackage extends Command
     protected $description = 'Install AngazaSHS Package';
 
     public function __construct(
-        private MenuItemService $menuItemService,
         private ManufacturerService $manufacturerService,
-        private AngazaCredentialService $credentialService
+        private AngazaCredentialService $credentialService,
     ) {
         parent::__construct();
     }
