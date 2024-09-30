@@ -26,7 +26,7 @@ class UpdatePackage extends Command
         $this->info('Calin Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();

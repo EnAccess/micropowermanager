@@ -24,7 +24,7 @@ class UpdatePackage extends Command
         $this->info('Stron Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
-        $this->deleteMigration($this->fileSystem);
+        $this->deleteMigration($this->filesystem);
         $this->publishMigrationsAgain();
         $this->updateDatabase();
         $this->publishVueFilesAgain();
