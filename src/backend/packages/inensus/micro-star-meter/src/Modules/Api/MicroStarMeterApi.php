@@ -17,7 +17,7 @@ class MicroStarMeterApi implements IManufacturerAPI
     public function __construct(
         private MicroStarCredentialService $credentialService,
         private MicroStarTransaction $microStarTransaction,
-        private ApiRequests $apiRequests
+        private ApiRequests $apiRequests,
     ) {
     }
 

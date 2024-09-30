@@ -12,7 +12,7 @@ use Inensus\ViberMessaging\Models\ViberMessage;
 class ViberMessageService implements IBaseService
 {
     public function __construct(
-        private ViberMessage $viberMessage
+        private ViberMessage $viberMessage,
     ) {
     }
 

@@ -14,7 +14,7 @@ class AgentSoldApplianceController extends Controller
 
     public function __construct(
         private AgentSoldApplianceService $agentSoldApplianceService,
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AgentFirebaseController extends Controller
 {
     public function __construct(
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 

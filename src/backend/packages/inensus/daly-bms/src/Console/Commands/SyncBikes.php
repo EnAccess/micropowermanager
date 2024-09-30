@@ -21,7 +21,7 @@ class SyncBikes extends AbstractSharedCommand
     public function __construct(
         private EBikeService $eBikeService,
         private DalyBmsApi $dalyBmsApi,
-        private DeviceAddressService $deviceAddressService
+        private DeviceAddressService $deviceAddressService,
     ) {
         parent::__construct();
     }

@@ -42,7 +42,7 @@ class ApiHelpers
         string $tokenType,
         float $amount,
         int $timestamp,
-        $key
+        $key,
     ): string {
         return md5(
             sprintf(

@@ -55,7 +55,7 @@ class TransactionService
         MeterToken $meterToken,
         SmCustomer $smCustomer,
         SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService
+        SmSyncActionService $smSyncActionService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->sparkOrganization = $sparkOrganization;

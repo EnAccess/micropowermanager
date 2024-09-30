@@ -21,7 +21,7 @@ class ClusterRevenueController extends Controller
         private ClusterMeterService $clusterMeterService,
         private ClusterTransactionService $clusterTransactionService,
         private ClusterPopulationService $clusterPopulationService,
-        private PeriodService $periodService
+        private PeriodService $periodService,
     ) {
     }
 

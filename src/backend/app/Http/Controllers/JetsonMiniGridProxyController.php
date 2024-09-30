@@ -12,7 +12,7 @@ class JetsonMiniGridProxyController extends Controller
     public const INTERNAL_API_URL = 'http://172.18.0.1:3000/api/jetson';
 
     public function __construct(
-        private Client $httpClient
+        private Client $httpClient,
     ) {
     }
 

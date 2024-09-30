@@ -17,7 +17,7 @@ class GomeLongMeterApi implements IManufacturerAPI
     public function __construct(
         private GomeLongCredentialService $credentialService,
         private GomeLongTransaction $gomeLongTransaction,
-        private ApiRequests $apiRequests
+        private ApiRequests $apiRequests,
     ) {
     }
 

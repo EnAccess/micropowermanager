@@ -9,7 +9,7 @@ class CalinCredentialService
     private $credential;
 
     public function __construct(
-        CalinCredential $credentialModel
+        CalinCredential $credentialModel,
     ) {
         $this->credential = $credentialModel;
     }

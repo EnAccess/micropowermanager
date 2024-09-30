@@ -24,7 +24,7 @@ class AssetRateChecker extends AbstractSharedCommand
         private SmsApplianceRemindRateService $smsApplianceRemindRateService,
         private User $user,
         private TicketCategory $label,
-        private MainSettingsService $mainSettingsService
+        private MainSettingsService $mainSettingsService,
     ) {
         parent::__construct();
     }

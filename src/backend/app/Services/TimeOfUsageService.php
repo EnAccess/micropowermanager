@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class TimeOfUsageService implements IBaseService
 {
     public function __construct(
-        private TimeOfUsage $timeOfUsage
+        private TimeOfUsage $timeOfUsage,
     ) {
     }
 

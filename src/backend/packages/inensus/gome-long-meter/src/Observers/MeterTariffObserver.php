@@ -15,7 +15,7 @@ class MeterTariffObserver
 
     public function __construct(
         private GomeLongTariffService $gomeLongTariffService,
-        private GomeLongCredentialService $credentialService
+        private GomeLongCredentialService $credentialService,
     ) {
     }
 

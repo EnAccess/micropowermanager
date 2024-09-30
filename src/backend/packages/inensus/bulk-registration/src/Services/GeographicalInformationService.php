@@ -57,7 +57,7 @@ class GeographicalInformationService
     private function createMeterParameterRelatedGeographicalInformation(
         $geographicalInformationData,
         $csvData,
-        $ownerModel
+        $ownerModel,
     ) {
         $meterParameterId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])

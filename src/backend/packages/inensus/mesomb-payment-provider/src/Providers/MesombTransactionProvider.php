@@ -29,7 +29,7 @@ class MesombTransactionProvider implements ITransactionProvider
         Transaction $transaction,
         MesombTransaction $mesombTransaction,
         MesomTransactionService $mesombTransactionService,
-        Address $address
+        Address $address,
     ) {
         $this->mesombTransaction = $mesombTransaction;
         $this->transaction = $transaction;

@@ -27,7 +27,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         private Ticket $ticket,
         private TicketCategory $label,
         private MiniGridDeviceService $miniGridDeviceService,
-        private MeterRevenueService $meterRevenueService
+        private MeterRevenueService $meterRevenueService,
     ) {
         parent::__construct(self::CACHE_KEY_MINI_GRIDS_DATA);
     }

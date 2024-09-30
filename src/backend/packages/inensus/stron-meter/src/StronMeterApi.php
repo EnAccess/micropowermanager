@@ -22,7 +22,7 @@ class StronMeterApi implements IManufacturerAPI
         Client $httpClient,
         private StronTransaction $stronTransaction,
         private MainSettings $mainSettings,
-        private StronCredential $credentials
+        private StronCredential $credentials,
     ) {
         $this->api = $httpClient;
     }

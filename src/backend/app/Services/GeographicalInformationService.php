@@ -15,7 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class GeographicalInformationService implements IBaseService, IAssociative
 {
     public function __construct(
-        private GeographicalInformation $geographicalInformation
+        private GeographicalInformation $geographicalInformation,
     ) {
     }
 

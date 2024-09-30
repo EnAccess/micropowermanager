@@ -11,7 +11,7 @@ class MeterTariffMeterParameterService
     public function __construct(
         private MeterTariff $meterTariff,
         private MeterParameter $meterParameter,
-        private Meter $meter
+        private Meter $meter,
     ) {
     }
 

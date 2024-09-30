@@ -13,7 +13,7 @@ use App\Services\AgentService;
 class AgentBalanceHistoryObserver
 {
     public function __construct(
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 

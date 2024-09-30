@@ -29,7 +29,7 @@ class MeterModelService implements ISynchronizeService
         SmSite $smSite,
         MeterType $meterType,
         SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService
+        SmSyncActionService $smSyncActionService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->smTableEncryption = $smTableEncryption;

@@ -19,7 +19,7 @@ class MeterTariffObserver
         TariffService $tariffService,
         SmTableEncryption $smTableEncryption,
         SmTariff $smTariff,
-        AccessRate $accessRate
+        AccessRate $accessRate,
     ) {
         $this->tariffService = $tariffService;
         $this->smTableEncryption = $smTableEncryption;

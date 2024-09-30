@@ -17,7 +17,7 @@ class MailSettingsController extends Controller
 
     public function __construct(
         MailSettings $mailSettings,
-        MailSettingsService $mailSettingsService
+        MailSettingsService $mailSettingsService,
     ) {
         $this->mailSettings = $mailSettings;
         $this->mailSettingsService = $mailSettingsService;

@@ -16,7 +16,7 @@ class StronMeterApiRequests
     public function __construct(
         Client $httpClient,
         ApiHelpers $apiHelpers,
-        StronCredential $credentialModel
+        StronCredential $credentialModel,
     ) {
         $this->client = $httpClient;
         $this->apiHelpers = $apiHelpers;

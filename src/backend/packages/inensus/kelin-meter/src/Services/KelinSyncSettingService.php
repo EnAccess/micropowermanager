@@ -17,7 +17,7 @@ class KelinSyncSettingService
     public function __construct(
         KelinSyncSetting $syncSetting,
         KelinSetting $setting,
-        KelinSyncActionService $syncActionService
+        KelinSyncActionService $syncActionService,
     ) {
         $this->syncSetting = $syncSetting;
         $this->setting = $setting;

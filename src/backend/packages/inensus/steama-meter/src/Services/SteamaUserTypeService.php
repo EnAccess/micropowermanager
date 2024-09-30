@@ -15,7 +15,7 @@ class SteamaUserTypeService
     public function __construct(
         ConnectionType $connectionTypeModel,
         SteamaUserType $userTypeModel,
-        SubConnectionType $subConnectionType
+        SubConnectionType $subConnectionType,
     ) {
         $this->connectionType = $connectionTypeModel;
         $this->userType = $userTypeModel;

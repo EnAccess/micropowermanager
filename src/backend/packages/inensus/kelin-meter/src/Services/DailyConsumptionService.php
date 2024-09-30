@@ -15,7 +15,7 @@ class DailyConsumptionService
 
     public function __construct(
         KelinMeterApiClient $kelinApi,
-        KelinMeterDailyData $kelinMeterDailyData
+        KelinMeterDailyData $kelinMeterDailyData,
     ) {
         $this->kelinApi = $kelinApi;
         $this->kelinMeterDailyData = $kelinMeterDailyData;

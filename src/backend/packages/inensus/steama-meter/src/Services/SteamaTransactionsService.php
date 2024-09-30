@@ -45,7 +45,7 @@ class SteamaTransactionsService implements ISynchronizeService
         MeterToken $meterToken,
         SteamaCustomer $steamaCustomer,
         SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService
+        StemaSyncActionService $steamaSyncActionService,
     ) {
         $this->stemaMeterService = $steamaMeterService;
         $this->steamaCustomerService = $steamaCustomerService;

@@ -15,7 +15,7 @@ class ManufacturerController extends Controller
     public function __construct(
         private ManufacturerService $manufacturerService,
         private ManufacturerAddressService $manufacturerAddressService,
-        private AddressesService $addressService
+        private AddressesService $addressService,
     ) {
     }
 

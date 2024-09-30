@@ -98,7 +98,7 @@ class BelongsToMorph extends BelongsTo
         $type = null,
         $id = null,
         $otherKey = null,
-        $relation = null
+        $relation = null,
     ): BelongsToMorph {
         // If no relation name was given, we will use this debug backtrace to extract
         // the calling method's name and use that as the relationship name as most

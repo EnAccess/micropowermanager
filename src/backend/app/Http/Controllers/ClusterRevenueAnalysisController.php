@@ -13,7 +13,7 @@ class ClusterRevenueAnalysisController extends Controller
     public function __construct(
         private ClusterService $clusterService,
         private ClusterRevenueService $clusterRevenueService,
-        private ConnectionTypeService $connectionTypeService
+        private ConnectionTypeService $connectionTypeService,
     ) {
     }
 

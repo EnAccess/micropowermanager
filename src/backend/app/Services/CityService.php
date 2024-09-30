@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CityService implements IBaseService
 {
     public function __construct(
-        private City $city
+        private City $city,
     ) {
     }
 

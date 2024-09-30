@@ -14,7 +14,7 @@ class SolarHomeSystemController extends Controller
     public function __construct(
         private DeviceService $deviceService,
         private SolarHomeSystemService $solarHomeSystemService,
-        private SolarHomeSystemDeviceService $solarHomeSystemDeviceService
+        private SolarHomeSystemDeviceService $solarHomeSystemDeviceService,
     ) {
     }
 

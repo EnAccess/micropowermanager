@@ -38,7 +38,7 @@ class TariffService implements ISynchronizeService
         TimeOfUsage $timeOfUsage,
         AccessRate $accessRate,
         SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService
+        SmSyncActionService $smSyncActionService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->smTableEncryption = $smTableEncryption;

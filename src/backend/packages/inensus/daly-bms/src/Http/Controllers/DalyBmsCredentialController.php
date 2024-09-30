@@ -10,7 +10,7 @@ use Inensus\DalyBms\Services\DalyBmsCredentialService;
 class DalyBmsCredentialController extends Controller
 {
     public function __construct(
-        private DalyBmsCredentialService $credentialService
+        private DalyBmsCredentialService $credentialService,
     ) {
     }
 

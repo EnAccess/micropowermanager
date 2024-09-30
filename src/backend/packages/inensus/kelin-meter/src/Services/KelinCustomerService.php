@@ -30,7 +30,7 @@ class KelinCustomerService implements ISynchronizeService
         KelinMeterApiClient $kelinApiClient,
         ApiHelpers $apiHelpers,
         KelinSyncSettingService $syncSettingService,
-        KelinSyncActionService $syncActionService
+        KelinSyncActionService $syncActionService,
     ) {
         $this->kelinCustomer = $kelinCustomer;
         $this->person = $person;

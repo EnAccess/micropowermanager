@@ -38,7 +38,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         TransactionService $smTransactionsService,
         SmSmsNotifiedCustomerService $smSmsNotifiedCustomerService,
         CustomerService $smCustomerService,
-        SmsService $smsService
+        SmsService $smsService,
     ) {
         parent::__construct();
         $this->smsSettingsService = $smsSettingService;

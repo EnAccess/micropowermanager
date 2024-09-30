@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\Builder;
 class PaymentHistoryService implements IAssociative
 {
     public function __construct(
-        private PaymentHistory $paymentHistory
+        private PaymentHistory $paymentHistory,
     ) {
     }
 
     public function findPayingCustomersInRange(
         array $customerIds,
         CarbonImmutable $startDate,
-        CarbonImmutable $endDate
+        CarbonImmutable $endDate,
     ) {
         return $this->paymentHistory->findCustomersPaidInRange($customerIds, $startDate, $endDate);
     }

@@ -35,7 +35,7 @@ class SteamaSiteService implements ISynchronizeService
         GeographicalInformation $geographicalInformation,
         City $city,
         SteamaSyncSettingService $steamaSyncSettingService,
-        StemaSyncActionService $steamaSyncActionService
+        StemaSyncActionService $steamaSyncActionService,
     ) {
         $this->site = $steamaSiteModel;
         $this->steamaApi = $steamaApi;

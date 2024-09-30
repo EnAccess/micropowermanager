@@ -13,7 +13,7 @@ use Inensus\Ticket\Models\Ticket;
 class TicketService implements IAssociative
 {
     public function __construct(
-        private Ticket $ticket
+        private Ticket $ticket,
     ) {
     }
 
@@ -23,7 +23,7 @@ class TicketService implements IAssociative
         int $categoryId,
         int $assignedId,
         ?string $dueDate,
-        mixed $owner
+        mixed $owner,
     ) {
         $ticket = $this->ticket->newQuery()->create(
             [
@@ -78,7 +78,7 @@ class TicketService implements IAssociative
         $agentId = null,
         $customerId = null,
         $assignedId = null,
-        $categoryId = null
+        $categoryId = null,
     ) {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 

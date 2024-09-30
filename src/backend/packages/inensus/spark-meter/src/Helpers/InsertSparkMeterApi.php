@@ -9,7 +9,7 @@ class InsertSparkMeterApi
     private $manufacturer;
 
     public function __construct(
-        Manufacturer $manufacturer
+        Manufacturer $manufacturer,
     ) {
         $this->manufacturer = $manufacturer;
     }

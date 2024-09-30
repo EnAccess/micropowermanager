@@ -23,7 +23,7 @@ class AssetRateController extends Controller
 
     public function __construct(
         CashTransactionService $cashTransactionService,
-        ApplianceRateService $applianceRateService
+        ApplianceRateService $applianceRateService,
     ) {
         $this->cashTransactionService = $cashTransactionService;
         $this->applianceRateService = $applianceRateService;

@@ -21,7 +21,7 @@ class ClusterRevenueService
         $clusterId,
         $period,
         $connectionType = null,
-        $miniGridId = null
+        $miniGridId = null,
     ): Collection|array {
         return $this->transaction->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
@@ -103,7 +103,7 @@ class ClusterRevenueService
         $startDate,
         $endDate,
         $periods,
-        $period
+        $period,
     ) {
         foreach ($clusters as $clusterIndex => $cluster) {
             $totalRevenue = 0;
@@ -163,7 +163,7 @@ class ClusterRevenueService
         $endDate,
         $period,
         $cluster,
-        $connectionTypes
+        $connectionTypes,
     ) {
         $revenueAnalysis = [];
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, 0);
@@ -207,7 +207,7 @@ class ClusterRevenueService
 
     public function getMonthlyRevenueAnalysisForConnectionTypesById(
         $clusterId,
-        $connectionTypes
+        $connectionTypes,
     ) {
         $revenueAnalysis = [];
         $startDate = date('Y-01-01');
@@ -278,7 +278,7 @@ class ClusterRevenueService
         $clusterId,
         $startDate,
         $endDate,
-        $period
+        $period,
     ) {
         $clusterMiniGrids = $this->cluster->newQuery()->with('miniGrids')->find($clusterId);
         $miniGrids = $clusterMiniGrids->miniGrids;

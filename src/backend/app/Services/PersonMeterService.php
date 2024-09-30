@@ -9,7 +9,7 @@ class PersonMeterService
 {
     public function __construct(
         private Person $person,
-        private Meter $meter
+        private Meter $meter,
     ) {
     }
 

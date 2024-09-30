@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AgentCommissionService implements IBaseService
 {
     public function __construct(
-        private AgentCommission $agentCommission
+        private AgentCommission $agentCommission,
     ) {
     }
 

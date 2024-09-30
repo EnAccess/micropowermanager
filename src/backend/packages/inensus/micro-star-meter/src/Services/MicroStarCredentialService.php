@@ -7,7 +7,7 @@ use Inensus\MicroStarMeter\Models\MicroStarCredential;
 class MicroStarCredentialService
 {
     public function __construct(
-        private MicroStarCredential $credential
+        private MicroStarCredential $credential,
     ) {
     }
 

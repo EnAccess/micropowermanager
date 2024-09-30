@@ -11,7 +11,7 @@ abstract class AbstractDashboardCacheDataService
     protected string $cacheDataKey;
 
     public function __construct(
-        string $cacheDataKey
+        string $cacheDataKey,
     ) {
         $this->cacheDataKey = $cacheDataKey;
     }

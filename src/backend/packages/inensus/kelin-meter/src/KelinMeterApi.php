@@ -20,7 +20,7 @@ class KelinMeterApi implements IManufacturerAPI
     public function __construct(
         private KelinMeter $kelinMeter,
         private KelinTransaction $kelinTransaction,
-        private KelinMeterApiClient $kelinApi
+        private KelinMeterApiClient $kelinApi,
     ) {
     }
 

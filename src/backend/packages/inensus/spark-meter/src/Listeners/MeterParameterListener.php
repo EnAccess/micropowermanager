@@ -32,7 +32,7 @@ class MeterParameterListener
         SmTariff $smTariff,
         MiniGrid $miniGrid,
         SmSite $smSite,
-        City $city
+        City $city,
     ) {
         $this->tariffService = $tariffService;
         $this->customerService = $customerService;

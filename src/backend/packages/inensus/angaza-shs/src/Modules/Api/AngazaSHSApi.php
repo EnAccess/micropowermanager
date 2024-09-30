@@ -19,7 +19,7 @@ class AngazaSHSApi implements IManufacturerAPI
     public function __construct(
         private AngazaCredentialService $credentialService,
         private AngazaTransaction $angazaTransaction,
-        private ApiRequests $apiRequests
+        private ApiRequests $apiRequests,
     ) {
     }
 

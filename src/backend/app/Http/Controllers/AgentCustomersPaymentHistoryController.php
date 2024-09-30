@@ -9,7 +9,7 @@ class AgentCustomersPaymentHistoryController extends Controller
 {
     public function __construct(
         private AgentService $agentService,
-        private AgentCustomersPaymentHistoryService $agentCustomersPaymentHistoryService
+        private AgentCustomersPaymentHistoryService $agentCustomersPaymentHistoryService,
     ) {
     }
 

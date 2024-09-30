@@ -14,7 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class MainSettingsService implements IBaseService
 {
     public function __construct(
-        private MainSettings $mainSettings
+        private MainSettings $mainSettings,
     ) {
     }
 

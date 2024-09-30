@@ -31,7 +31,7 @@ class MeterParameterListener
         MeterParameter $meterParameter,
         SteamaTariff $stmTariff,
         SteamaCustomer $stmCustomer,
-        SteamaMeter $stmMeter
+        SteamaMeter $stmMeter,
     ) {
         $this->apiHelpers = $apiHelpers;
         $this->stmCustomerService = $stmCustomerService;

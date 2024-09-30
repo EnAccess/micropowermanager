@@ -26,7 +26,7 @@ class CheckPayments extends AbstractSharedCommand
         private SmsApplianceRemindRateService $smsApplianceRemindRateService,
         private DalyBmsApi $dalyBmsApi,
         private EBikeService $eBikeService,
-        private User $user
+        private User $user,
     ) {
         parent::__construct();
     }

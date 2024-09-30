@@ -55,7 +55,7 @@ class KelinMeterService implements ISynchronizeService
         ConnectionGroup $connectionGroup,
         ConnectionType $connectionType,
         MeterTariff $meterTariff,
-        City $city
+        City $city,
     ) {
         $this->meter = $meter;
         $this->kelinMeter = $kelinMeter;

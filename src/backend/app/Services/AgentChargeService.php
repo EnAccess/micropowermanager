@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class AgentChargeService implements IBaseService
 {
     public function __construct(
-        private AgentCharge $agentCharge
+        private AgentCharge $agentCharge,
     ) {
     }
 

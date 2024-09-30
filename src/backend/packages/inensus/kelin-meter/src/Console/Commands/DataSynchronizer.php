@@ -30,7 +30,7 @@ class DataSynchronizer extends AbstractSharedCommand
         private KelinCustomerService $customerService,
         private KelinSyncActionService $syncActionService,
         private Address $address,
-        private Cluster $cluster
+        private Cluster $cluster,
     ) {
         parent::__construct();
     }

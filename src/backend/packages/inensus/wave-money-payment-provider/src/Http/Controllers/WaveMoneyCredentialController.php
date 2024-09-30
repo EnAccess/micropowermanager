@@ -15,7 +15,7 @@ class WaveMoneyCredentialController extends Controller
     public function __construct(
         private WaveMoneyCredentialService $credentialService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-        private CompanyService $companyService
+        private CompanyService $companyService,
     ) {
     }
 

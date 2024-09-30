@@ -11,7 +11,7 @@ class MiniGridRevenueController
 {
     public function __construct(
         private MeterService $meterService,
-        private MiniGridRevenueService $miniGridRevenueService
+        private MiniGridRevenueService $miniGridRevenueService,
     ) {
     }
 

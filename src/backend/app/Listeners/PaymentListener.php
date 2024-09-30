@@ -65,7 +65,7 @@ class PaymentListener
         $sender,
         $paidFor,
         $payer,
-        $transaction
+        $transaction,
     ): void {
         $paymentHistoryData = [
             'amount' => $amount,

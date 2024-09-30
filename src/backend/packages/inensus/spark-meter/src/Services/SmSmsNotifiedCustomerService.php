@@ -9,7 +9,7 @@ class SmSmsNotifiedCustomerService
     private $smSmsNotifiedCustomer;
 
     public function __construct(
-        SmSmsNotifiedCustomer $smSmsNotifiedCustomer
+        SmSmsNotifiedCustomer $smSmsNotifiedCustomer,
     ) {
         $this->smSmsNotifiedCustomer = $smSmsNotifiedCustomer;
     }

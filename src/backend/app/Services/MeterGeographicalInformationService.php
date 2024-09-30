@@ -9,7 +9,7 @@ class MeterGeographicalInformationService
 {
     public function __construct(
         private GeographicalInformation $geographicalInformation,
-        private Meter $meter
+        private Meter $meter,
     ) {
     }
 

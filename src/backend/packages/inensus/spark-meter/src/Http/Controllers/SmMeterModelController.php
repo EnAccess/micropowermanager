@@ -12,7 +12,7 @@ class SmMeterModelController extends Controller implements IBaseController
     private $meterModelService;
 
     public function __construct(
-        MeterModelService $meterModelService
+        MeterModelService $meterModelService,
     ) {
         $this->meterModelService = $meterModelService;
     }

@@ -19,7 +19,7 @@ class SmsListener
     public function __construct(
         SmsResendInformationKeyService $smsResendInformationKeyService,
         Transaction $transaction,
-        SmsService $smsService
+        SmsService $smsService,
     ) {
         $this->smsResendInformationKeyService = $smsResendInformationKeyService;
         $this->transaction = $transaction;

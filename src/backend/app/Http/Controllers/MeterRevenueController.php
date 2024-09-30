@@ -8,7 +8,7 @@ use App\Services\MeterRevenueService;
 class MeterRevenueController extends Controller
 {
     public function __construct(
-        private MeterRevenueService $meterRevenueService
+        private MeterRevenueService $meterRevenueService,
     ) {
     }
 

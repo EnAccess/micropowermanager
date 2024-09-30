@@ -9,7 +9,7 @@ class SteamaSmsNotifiedCustomerService
     private $steamaSmsNotifiedCustomer;
 
     public function __construct(
-        SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer
+        SteamaSmsNotifiedCustomer $steamaSmsNotifiedCustomer,
     ) {
         $this->steamaSmsNotifiedCustomer = $steamaSmsNotifiedCustomer;
     }

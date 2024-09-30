@@ -16,7 +16,7 @@ class AgentBalanceMiddleware
     public function __construct(
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-        private AgentTransactionService $agentTransactionService
+        private AgentTransactionService $agentTransactionService,
     ) {
     }
 

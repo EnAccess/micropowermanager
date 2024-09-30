@@ -18,7 +18,7 @@ class ReadMinutelyMeterConsumptions extends AbstractSharedCommand
 
     public function __construct(
         private MinutelyConsumptionService $minutelyConsumptionService,
-        private KelinCredentialService $credentialService
+        private KelinCredentialService $credentialService,
     ) {
         parent::__construct();
     }

@@ -37,7 +37,7 @@ abstract class AbstractSharedCommand extends Command
     private function runForAllShards(
         DatabaseProxyManagerService $databaseProxyManagerService,
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): void {
         $databaseProxyManagerService->queryAllConnections()
             ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
@@ -60,7 +60,7 @@ abstract class AbstractSharedCommand extends Command
         DatabaseProxyManagerService $databaseProxyManagerService,
         int $companyId,
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): void {
         $this->info('Running '.$this->name.' for company ID : '.$companyId);
         $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {

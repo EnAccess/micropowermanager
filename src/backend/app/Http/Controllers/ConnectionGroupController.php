@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ConnectionGroupController
 {
     public function __construct(
-        private ConnectionGroupService $connectionGroupService
+        private ConnectionGroupService $connectionGroupService,
     ) {
     }
 

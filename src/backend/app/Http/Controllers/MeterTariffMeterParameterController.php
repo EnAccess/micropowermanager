@@ -8,7 +8,7 @@ use App\Services\MeterTariffMeterParameterService;
 class MeterTariffMeterParameterController extends Controller
 {
     public function __construct(
-        private MeterTariffMeterParameterService $meterTariffMeterParameterService
+        private MeterTariffMeterParameterService $meterTariffMeterParameterService,
     ) {
     }
 

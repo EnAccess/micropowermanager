@@ -17,7 +17,7 @@ class AgentReceiptObserver
         private AgentService $agentService,
         private AgentReceiptService $agentReceiptService,
         private AgentReceiptDetailService $agentReceiptDetailService,
-        private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService
+        private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService,
     ) {
     }
 

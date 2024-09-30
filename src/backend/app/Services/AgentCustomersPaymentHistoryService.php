@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class AgentCustomersPaymentHistoryService
 {
     public function __construct(
-        private PaymentHistory $paymentHistory
+        private PaymentHistory $paymentHistory,
     ) {
     }
 

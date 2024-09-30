@@ -15,7 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class ConnectionTypeService implements IBaseService
 {
     public function __construct(
-        private ConnectionType $connectionType
+        private ConnectionType $connectionType,
     ) {
     }
 

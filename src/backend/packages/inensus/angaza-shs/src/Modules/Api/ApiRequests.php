@@ -10,7 +10,7 @@ use Inensus\AngazaSHS\Models\AngazaCredential;
 class ApiRequests
 {
     public function __construct(
-        private Client $httpClient
+        private Client $httpClient,
     ) {
     }
 

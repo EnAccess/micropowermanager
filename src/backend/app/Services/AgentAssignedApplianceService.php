@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AgentAssignedApplianceService implements IBaseService
 {
     public function __construct(
-        private AgentAssignedAppliances $agentAssignedAppliance
+        private AgentAssignedAppliances $agentAssignedAppliance,
     ) {
     }
 

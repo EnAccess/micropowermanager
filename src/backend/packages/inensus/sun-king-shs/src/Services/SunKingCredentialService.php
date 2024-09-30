@@ -7,7 +7,7 @@ use Inensus\SunKingSHS\Models\SunKingCredential;
 class SunKingCredentialService
 {
     public function __construct(
-        private SunKingCredential $credential
+        private SunKingCredential $credential,
     ) {
     }
 

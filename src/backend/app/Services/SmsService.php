@@ -21,7 +21,7 @@ class SmsService
     public const DIRECTION_OUTGOING = 1;
 
     public function __construct(
-        private Sms $sms
+        private Sms $sms,
     ) {
     }
 

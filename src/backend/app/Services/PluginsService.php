@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PluginsService
 {
     public function __construct(
-        private Plugins $plugin
+        private Plugins $plugin,
     ) {
     }
 

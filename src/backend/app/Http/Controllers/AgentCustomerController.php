@@ -11,7 +11,7 @@ class AgentCustomerController extends Controller
 {
     public function __construct(
         private AgentCustomerService $agentCustomerService,
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 

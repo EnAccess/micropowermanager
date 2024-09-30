@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class MaintenanceUserService implements IBaseService
 {
     public function __construct(
-        private MaintenanceUsers $maintenanceUser
+        private MaintenanceUsers $maintenanceUser,
     ) {
     }
 

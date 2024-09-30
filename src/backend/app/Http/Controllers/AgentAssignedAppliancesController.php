@@ -16,7 +16,7 @@ class AgentAssignedAppliancesController extends Controller
 {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 

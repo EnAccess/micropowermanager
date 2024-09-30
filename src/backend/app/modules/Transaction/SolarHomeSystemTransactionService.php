@@ -19,7 +19,7 @@ class SolarHomeSystemTransactionService
         ?string $fromDate = null,
         ?string $toDate = null,
         ?int $limit = null,
-        bool $whereApplied = false
+        bool $whereApplied = false,
     ) {
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',

@@ -17,7 +17,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
 
     public function __construct(
         private TransactionService $transactionService,
-        private SmTransaction $smTransaction
+        private SmTransaction $smTransaction,
     ) {
         parent::__construct();
     }

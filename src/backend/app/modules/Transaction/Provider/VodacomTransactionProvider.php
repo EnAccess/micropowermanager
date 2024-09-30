@@ -291,7 +291,7 @@ class VodacomTransactionProvider implements ITransactionProvider
         $phonePassword,
         $time,
         $result = 'Failure',
-        $resultCode = 999
+        $resultCode = 999,
     ): string {
         return
             '<?xml version="1.0" encoding="UTF-8"?>

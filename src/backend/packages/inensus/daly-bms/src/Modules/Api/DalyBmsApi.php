@@ -26,7 +26,7 @@ class DalyBmsApi implements IManufacturerAPI
         private DalyBmsCredentialService $credentialService,
         private DalyBmsTransaction $dalyBmsTransaction,
         private EBikeService $eBikeService,
-        private ApiRequests $apiRequests
+        private ApiRequests $apiRequests,
     ) {
     }
 

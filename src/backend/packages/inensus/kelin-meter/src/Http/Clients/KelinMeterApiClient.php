@@ -19,7 +19,7 @@ class KelinMeterApiClient
     public function __construct(
         Client $httpClient,
         ApiHelpers $apiHelpers,
-        KelinCredential $credential
+        KelinCredential $credential,
     ) {
         $this->client = $httpClient;
         $this->apiHelpers = $apiHelpers;

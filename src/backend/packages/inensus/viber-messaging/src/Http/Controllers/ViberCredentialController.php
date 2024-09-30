@@ -13,7 +13,7 @@ class ViberCredentialController extends Controller
 {
     public function __construct(
         private ViberCredentialService $credentialService,
-        private DatabaseProxyManagerService $databaseProxyManagerService
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
     }
 

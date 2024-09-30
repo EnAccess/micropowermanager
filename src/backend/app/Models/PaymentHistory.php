@@ -117,7 +117,7 @@ class PaymentHistory extends BaseModel
     public function findCustomersPaidInRange(
         array $customerIds,
         CarbonImmutable $startDate,
-        CarbonImmutable $endDate
+        CarbonImmutable $endDate,
     ): Collection {
         return DB::connection('shard')->table($this->getTable())
             ->select('payer_id as customer_id')

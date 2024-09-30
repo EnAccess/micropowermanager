@@ -17,7 +17,7 @@ class SteamaSyncSettingService
     public function __construct(
         SteamaSyncSetting $syncSetting,
         SteamaSetting $setting,
-        StemaSyncActionService $syncActionService
+        StemaSyncActionService $syncActionService,
     ) {
         $this->syncSetting = $syncSetting;
         $this->setting = $setting;

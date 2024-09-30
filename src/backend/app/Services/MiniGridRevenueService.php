@@ -10,7 +10,7 @@ class MiniGridRevenueService
 {
     public function __construct(
         private Transaction $transaction,
-        private MeterToken $meterToken
+        private MeterToken $meterToken,
     ) {
     }
 

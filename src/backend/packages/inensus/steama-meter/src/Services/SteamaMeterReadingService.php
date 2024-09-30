@@ -19,7 +19,7 @@ class SteamaMeterReadingService
         SteamaMeter $steamaMeter,
         SteamaMeterApiClient $steamaApi,
 
-        MeterConsumption $meterConsumption
+        MeterConsumption $meterConsumption,
     ) {
         $this->steamaMeter = $steamaMeter;
         $this->steamaApi = $steamaApi;

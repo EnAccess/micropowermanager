@@ -7,7 +7,7 @@ use Inensus\GomeLongMeter\Models\GomeLongCredential;
 class GomeLongCredentialService
 {
     public function __construct(
-        private GomeLongCredential $credential
+        private GomeLongCredential $credential,
     ) {
     }
 

@@ -7,7 +7,7 @@ use Inensus\DalyBms\Models\DalyBmsCredential;
 class DalyBmsCredentialService
 {
     public function __construct(
-        private DalyBmsCredential $credential
+        private DalyBmsCredential $credential,
     ) {
     }
 

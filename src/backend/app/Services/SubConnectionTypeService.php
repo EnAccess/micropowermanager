@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class SubConnectionTypeService implements IBaseService
 {
     public function __construct(
-        private SubConnectionType $subConnectionType
+        private SubConnectionType $subConnectionType,
     ) {
     }
 

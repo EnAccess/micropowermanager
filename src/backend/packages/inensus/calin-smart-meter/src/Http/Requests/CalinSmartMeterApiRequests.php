@@ -18,7 +18,7 @@ class CalinSmartMeterApiRequests
     public function __construct(
         Client $httpClient,
         ApiHelpers $apiHelpers,
-        CalinSmartCredential $credentialModel
+        CalinSmartCredential $credentialModel,
     ) {
         $this->client = $httpClient;
         $this->apiHelpers = $apiHelpers;

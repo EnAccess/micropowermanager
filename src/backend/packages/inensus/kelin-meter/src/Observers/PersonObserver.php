@@ -18,7 +18,7 @@ class PersonObserver
         KelinCustomerService $customerService,
         ApiHelpers $apiHelpers,
         Person $person,
-        KelinCustomer $kelinCustomer
+        KelinCustomer $kelinCustomer,
     ) {
         $this->customerService = $customerService;
         $this->apiHelpers = $apiHelpers;

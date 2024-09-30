@@ -19,7 +19,7 @@ class AgentTransactionProvider implements ITransactionProvider
     public function __construct(
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
-        private FirebaseService $fireBaseService
+        private FirebaseService $fireBaseService,
     ) {
     }
 

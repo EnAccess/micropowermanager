@@ -65,7 +65,7 @@ class SteamaCustomerService implements ISynchronizeService
         City $city,
         SteamaSyncSettingService $steamaSyncSettingService,
         StemaSyncActionService $steamaSyncActionService,
-        SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService
+        SteamaSmsNotifiedCustomerService $steamaSmsNotifiedCustomerService,
     ) {
         $this->customer = $steamaCustomerModel;
         $this->apiHelpers = $apiHelpers;

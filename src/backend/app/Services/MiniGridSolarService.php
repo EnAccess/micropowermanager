@@ -14,7 +14,7 @@ class MiniGridSolarService
 {
     public function __construct(
         private MiniGrid $miniGrid,
-        private Solar $solar
+        private Solar $solar,
     ) {
     }
 

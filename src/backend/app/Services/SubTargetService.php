@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class SubTargetService implements IBaseService
 {
     public function __construct(
-        private SubTarget $subTarget
+        private SubTarget $subTarget,
     ) {
     }
 

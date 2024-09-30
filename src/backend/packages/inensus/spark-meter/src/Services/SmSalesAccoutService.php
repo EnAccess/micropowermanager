@@ -26,7 +26,7 @@ class SmSalesAccoutService implements ISynchronizeService
         SmSalesAccount $smSalesAccount,
         SmSite $smSite,
         SmSyncSettingService $smSyncSettingService,
-        SmSyncActionService $smSyncActionService
+        SmSyncActionService $smSyncActionService,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->smTableEncryption = $smTableEncryption;

@@ -18,7 +18,7 @@ class EBikeController extends Controller
         private EBikeService $eBikeService,
         private EBikeDeviceService $eBikeDeviceService,
         private ManufacturerService $manufacturerService,
-        private AppliancePersonService $appliancePersonService
+        private AppliancePersonService $appliancePersonService,
     ) {
     }
 

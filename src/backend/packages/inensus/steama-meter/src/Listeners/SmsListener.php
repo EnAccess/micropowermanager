@@ -21,7 +21,7 @@ class SmsListener
         SteamaSmsFeedbackWordService $smsFeedbackWordService,
         SteamaCustomerService $customerService,
         Meter $meter,
-        SmsService $smsService
+        SmsService $smsService,
     ) {
         $this->smsFeedbackWordService = $smsFeedbackWordService;
         $this->customerService = $customerService;

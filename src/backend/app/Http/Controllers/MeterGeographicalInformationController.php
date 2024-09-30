@@ -16,7 +16,7 @@ class MeterGeographicalInformationController extends Controller
         private MeterGeographicalInformationService $meterGeographicalInformationService,
         private PersonMeterService $personMeterService,
         private CityService $cityService,
-        private MeterService $meterService
+        private MeterService $meterService,
     ) {
     }
 

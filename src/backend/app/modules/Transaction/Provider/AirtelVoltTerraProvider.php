@@ -28,7 +28,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
      */
     public function __construct(
         private AirtelTransaction $airtelTransaction,
-        private Transaction $transaction
+        private Transaction $transaction,
     ) {
     }
 

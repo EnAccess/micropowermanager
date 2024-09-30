@@ -16,7 +16,7 @@ class OutstandingDebtsExportService extends AbstractExportService
         private readonly UserService $userService,
         private ApplianceRateService $applianceService,
         private ApplianceRateService $applianceRateService,
-        private MailHelper $mailHelper
+        private MailHelper $mailHelper,
     ) {
     }
 

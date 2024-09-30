@@ -16,7 +16,7 @@ class MeterParameterService
     public function createMeterParameter(
         array $meterParameterData,
         GeographicalInformation $geographicalInformation,
-        Person $person
+        Person $person,
     ): MeterParameter {
         $meterParameter = $this->meterParameter->newQuery()->create([
             'owner_type' => 'person',

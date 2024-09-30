@@ -25,7 +25,7 @@ class SmsController extends Controller
         private Person $person,
         private MeterParameter $meterParameter,
         private SmsService $smsService,
-        private TicketCommentService $commentService
+        private TicketCommentService $commentService,
     ) {
     }
 

@@ -11,7 +11,7 @@ use Inensus\DalyBms\Models\DalyBmsCredential;
 class ApiRequests
 {
     public function __construct(
-        private Client $httpClient
+        private Client $httpClient,
     ) {
     }
 
