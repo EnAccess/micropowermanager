@@ -1,0 +1,11 @@
+meta {
+  name: Get Plugins
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{mpm_backend_url}}/api/plugins/
+  body: none
+  auth: inherit
+}
