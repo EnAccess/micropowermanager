@@ -12,7 +12,7 @@ hero:
       link: /get-started
     - theme: alt
       text: Demo Version
-      link: https://demo.micropowermanager.io
+      link: https://demo.micropowermanager.io/#/login
   image:
     src: /mpmlogo_raw.png
     alt: MicroPowerManager
