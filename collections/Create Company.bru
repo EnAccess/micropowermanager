@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:8000/api/companies
+  url: {{mpm_backend_url}}/api/companies
   body: json
   auth: none
 }
@@ -19,7 +19,7 @@ body:json {
     "protected_page_password": "123123",
     "user": {
       "name": "A user",
-      "email": "user2@example.com",
+      "email": "{{username}}@example.com",
       "password": "123123",
       "confirmPassword": "123123"
     },
@@ -31,4 +31,10 @@ body:json {
 assert {
   res.status: eq 200
   res.body.data: isJson
+}
+
+script:pre-request {
+  const { v4: uuidv4 } = require('uuid');
+  const inputName=uuidv4();
+  bru.setVar("username", inputName);
 }
