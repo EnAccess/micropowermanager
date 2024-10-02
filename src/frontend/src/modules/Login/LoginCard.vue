@@ -91,8 +91,9 @@ export default {
   data: () => ({
     authError: false,
     form: {
-      email: config.env === "demo" ? "demo@inensus.com" : null,
-      password: config.env === "demo" ? "123123" : null,
+      email:
+        config.env === "development" ? "dummy_company_admin@example.com" : null,
+      password: config.env === "development" ? "123123" : null,
     },
 
     userSaved: false,
