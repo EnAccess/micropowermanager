@@ -3,7 +3,7 @@ import {
   convertObjectKeysToCamelCase,
   convertObjectKeysToSnakeCase,
 } from "@/Helpers/Utils"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { EventBus } from "@/shared/eventbus"
 import EBikeRepository from "@/repositories/EBikeRepository"
 

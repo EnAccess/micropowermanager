@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { SyncSettingService } from "./SyncSettingService"
 import { SmsSettingService } from "./SmsSettingService"
 import SettingRepository from "../repositories/SettingRepository"
