@@ -9,11 +9,14 @@ RUN npm install
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
-# build app for production with minification
-RUN npm run build
+# Copy the entrypoint script to the container and make it executable
+COPY docker/entrypoint-ui-prod.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-ui-prod.sh
 
-# serve the application
+# Set the entrypoint script to run when the container starts
+ENTRYPOINT ["/usr/local/bin/entrypoint-ui-prod.sh"]
+
+# Install http-server globally
 RUN npm install -g http-server
-CMD [ "http-server", "dist", "-p", "8081" ]
 
 EXPOSE 8081
