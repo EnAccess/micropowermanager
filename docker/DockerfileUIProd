@@ -2,7 +2,6 @@ FROM node:18.20.4
 
 WORKDIR /app
 
-
 # install JavaScript dependencies
 COPY src/frontend/package*.json ./
 RUN npm install
@@ -10,13 +9,28 @@ RUN npm install
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
-
+# Copy the entrypoint script to the container and make it executable
 COPY docker/entrypoint-ui-prod.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-ui-prod.sh
+
+# Set the entrypoint script to run when the container starts
 ENTRYPOINT ["/usr/local/bin/entrypoint-ui-prod.sh"]
 
-
-# serve the application
+# Install http-server globally
 RUN npm install -g http-server
 
 EXPOSE 8081
+
+
+
+# -----------------------------------------------------------------------------
+# Dockerfile for MPM frontend production docker image
+# -----------------------------------------------------------------------------
+# This Dockerfile sets up the environment to build and run the frontend. 
+# The main objective is to create a production-ready Docker image 
+# that serves the frontend  using http-server.
+#
+# The approach taken here is to use an entrypoint script as a workaround to handle
+# the loading of environment variables. This ensures that any dynamic environment 
+# variables required at runtime are correctly 
+# applied before starting the server.
