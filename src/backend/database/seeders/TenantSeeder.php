@@ -19,6 +19,10 @@ const DUMMY_COMPANY_DATA = [
     'email' => 'dummy_company@example.com',
     'protected_page_password' => '123123',
 ];
+const DUMMY_COMPANY_SETTINGS = [
+    'company_name' => 'Dummy Company',
+    'currency' => 'TSZ',
+];
 const DUMMY_COMPANY_ADMIN = [
     'password' => '123123',
     'email' => 'dummy_company_admin@example.com',
@@ -75,7 +79,10 @@ class TenantSeeder extends Seeder
                 $mainSettings = $this->mainSettingsService->getAll()->first();
                 $this->mainSettingsService->update(
                     $mainSettings,
-                    ['company_name' => DUMMY_COMPANY_DATA['name']]
+                    [
+                        'company_name' => DUMMY_COMPANY_SETTINGS['company_name'],
+                        'currency' => DUMMY_COMPANY_SETTINGS['currency'],
+                    ]
                 );
             }
         );
