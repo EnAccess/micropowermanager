@@ -33,8 +33,7 @@ class DummyDataCreator extends AbstractSharedCommand
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
-        // TODO: Currently doesn't work, we first need to configure demo agents.
-        // AgentTransaction::class,
+        AgentTransaction::class,
         VodacomTransaction::class,
         AirtelTransaction::class,
     ];
