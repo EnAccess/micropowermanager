@@ -28,7 +28,10 @@ spec:
           image: mariadb:10.3
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: wF9zLp2qRxaS2e
+              valueFrom: 
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_PASSWORD
             - name: MYSQL_DATABASE
               value: micro_power_manager
           ports:
