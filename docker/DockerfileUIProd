@@ -2,6 +2,7 @@ FROM node:18.20.4
 
 WORKDIR /app
 
+
 # install JavaScript dependencies
 COPY src/frontend/package*.json ./
 RUN npm install
@@ -9,11 +10,13 @@ RUN npm install
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
-# build app for production with minification
-RUN npm run build
+
+COPY docker/entrypoint-ui-prod.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-ui-prod.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint-ui-prod.sh"]
+
 
 # serve the application
 RUN npm install -g http-server
-CMD [ "http-server", "dist", "-p", "8081" ]
 
 EXPOSE 8081
