@@ -1,19 +1,15 @@
 #!/bin/sh
 
+# This script builds the production application at container runtime before serving it
+# via webserver.
+# This is enable the use of environment variables in the production container.
+# As VueJS bundles the environment variables value into the application,
+# see https://cli.vuejs.org/guide/mode-and-env.html#environment-variables
+
+# An alternative approach would be to use a tool like:
+# https://import-meta-env.org/
+
 cd /app
 npm run build
 
-http-server dist -p 8081 
-
-
-# -----------------------------------------------------------------------------
-# Dockerfile for MPM frontend production docker image
-# -----------------------------------------------------------------------------
-# This Dockerfile sets up the environment to build and run the frontend. 
-# The main objective is to create a production-ready Docker image 
-# that serves the frontend  using http-server.
-#
-# The approach taken here is to use an entrypoint script as a workaround to handle
-# the loading of environment variables. This ensures that any dynamic environment 
-# variables required at runtime are correctly 
-# applied before starting the server.
+http-server dist -p 8081
