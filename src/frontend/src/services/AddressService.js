@@ -1,6 +1,6 @@
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 
 import AddressRepository from "@/repositories/AddressRepository"
 

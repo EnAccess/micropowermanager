@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import moment from "moment"
 
 import MaintenanceRepository from "@/repositories/MaintenanceRepository"

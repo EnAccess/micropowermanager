@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import CsvUploadRepository from "../repositories/CsvUploadRepository"
 
 export class CsvUploadService {

@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import store from "@/store/store"
 import meterIcon from "@/assets/icons/meter.png"
 import shsIcon from "@/assets/icons/shs.png"

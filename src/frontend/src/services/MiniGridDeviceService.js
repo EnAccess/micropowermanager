@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import MiniGridDeviceRepository from "@/repositories/MiniGridDeviceRepository"
 
 export class MiniGridDeviceService {
