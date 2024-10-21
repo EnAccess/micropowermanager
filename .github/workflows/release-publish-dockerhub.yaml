@@ -32,7 +32,7 @@ jobs:
           file: ./Docker/DockerfileUIProd
           platforms: linux/amd64
           push: true
-          tags: enaccess/micopowermanager-frontend:latest
+          tags: enaccess/micropowermanager-frontend:latest
 
       - name: Build and push Backend Docker image
         uses: docker/build-push-action@v5
@@ -40,4 +40,4 @@ jobs:
           file: ./Docker/DockerfileLaravelProd
           platforms: linux/amd64
           push: true
-          tags: enaccess/micopowermanager-backend:latest
+          tags: enaccess/micropowermanager-backend:latest
