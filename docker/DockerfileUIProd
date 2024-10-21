@@ -6,6 +6,9 @@ WORKDIR /app
 COPY src/frontend/package*.json ./
 RUN npm install
 
+# Install webserver
+RUN npm install -g http-server
+
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
@@ -13,10 +16,7 @@ COPY src/frontend .
 COPY docker/entrypoint-ui-prod.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-ui-prod.sh
 
-# Set the entrypoint script to run when the container starts
+# serve the application via entrypoint script
 ENTRYPOINT ["/usr/local/bin/entrypoint-ui-prod.sh"]
-
-# Install http-server globally
-RUN npm install -g http-server
 
 EXPOSE 8081
