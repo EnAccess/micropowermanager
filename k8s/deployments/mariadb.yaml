@@ -28,7 +28,7 @@ spec:
           image: mariadb:10.3
           env:
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom: 
+              valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: DB_PASSWORD
@@ -44,7 +44,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: maria-db-data
-      
 ---
 apiVersion: v1
 kind: Service

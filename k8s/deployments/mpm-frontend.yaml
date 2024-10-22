@@ -20,4 +20,7 @@ spec:
         - containerPort: 8081
         env:
           - name: VUE_APP_MPM_BACKEND_URL
-            value: https://backend-demo.micropowermanager.io
+            valueFrom:
+              secretKeyRef: 
+                name: mpm-secrets
+                key: VUE_APP_MPM_BACKEND_URL
