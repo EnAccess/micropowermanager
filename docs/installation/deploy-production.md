@@ -19,4 +19,6 @@ docker compose -f docker-compose-prod.yml up
 ## Kubernetes
 
 > [!NOTE]
-> Comming soon...
+> This section will be expanded in the future.
+
+A working sample of Kubernetes manifest files that are used to run the [MPM Demo Version](https://demo.micropowermanager.io/#/login) can be found in the `k8s` directory of this repository.
