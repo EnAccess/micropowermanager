@@ -17,11 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get version
-        run: |
-          VERSION=$(cat version)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -30,6 +25,33 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get version
+        run: |
+          VERSION=$(cat version)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check if image tag already exists Frontend
+        run: |
+          IMAGE_NAME="enaccess/micropowermanager-frontend"
+          VERSION="${{ env.VERSION }}"
+          if docker manifest inspect $IMAGE_NAME:$VERSION > /dev/null 2>&1; then
+            echo "Docker image tag $VERSION already exists."
+            exit 1
+          else
+            echo "Docker image tag $VERSION does not exist. Proceeding with build."
+          fi
+
+      - name: Check if image tag already exists Backend
+        run: |
+          IMAGE_NAME="enaccess/micropowermanager-frontend"
+          VERSION="${{ env.VERSION }}"
+          if docker manifest inspect $IMAGE_NAME:$VERSION > /dev/null 2>&1; then
+            echo "Docker image tag $VERSION already exists."
+            exit 1
+          else
+            echo "Docker image tag $VERSION does not exist. Proceeding with build."
+          fi
 
       - name: Build and push Docker image Frontend
         uses: docker/build-push-action@v5
