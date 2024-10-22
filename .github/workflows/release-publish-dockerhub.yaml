@@ -6,13 +6,21 @@ on:
       - published
   workflow_dispatch:
 
-env:
-  IMAGE_NAME_FRONTEND: enaccess/micropowermanager-frontend
-  IMAGE_NAME_BACKEND: enaccess/micropowermanager-backend
-
 jobs:
   release-publish:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - repo: enaccess/micropowermanager-frontend
+            dockerfile: ./docker/DockerfileUIProd
+          - repo: enaccess/micropowermanager-backend
+            dockerfile: ./docker/DockerfileLaravelProd
+        platform:
+          - linux/amd64
+          - linux/arm64
+
     permissions:
       contents: read
       id-token: write
@@ -38,58 +46,30 @@ jobs:
           VERSION=$(cat version)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Check if image tag already exists Frontend
+      - name: Check if image tag already exists
         run: |
           VERSION="${{ env.VERSION }}"
-          if docker manifest inspect $IMAGE_NAME_FRONTEND:$VERSION > /dev/null 2>&1; then
+          if docker manifest inspect ${{ matrix.image.repo }}:$VERSION > /dev/null 2>&1; then
             echo "Docker image tag $VERSION already exists."
             exit 1
           else
             echo "Docker image tag $VERSION does not exist. Proceeding with build."
           fi
 
-      - name: Check if image tag already exists Backend
-        run: |
-          VERSION="${{ env.VERSION }}"
-          if docker manifest inspect $IMAGE_NAME_BACKEND:$VERSION > /dev/null 2>&1; then
-            echo "Docker image tag $VERSION already exists."
-            exit 1
-          else
-            echo "Docker image tag $VERSION does not exist. Proceeding with build."
-          fi
-
-      - name: Build and push Docker image Frontend
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          file: ./docker/DockerfileUIProd
-          platforms: linux/amd64,linux/arm64
+          file: ${{ matrix.image.dockerfile }}
+          platforms: ${{ matrix.platform }}
           push: true
           tags: |
-            ${{ env.IMAGE_NAME_FRONTEND }}:latest
-            ${{ env.IMAGE_NAME_FRONTEND }}:${{ env.VERSION }}
+            ${{ matrix.image.repo }}:latest
+            ${{ matrix.image.repo }}:${{ env.VERSION }}
 
-      - name: Build and push Docker image Backend
-        uses: docker/build-push-action@v5
-        with:
-          file: ./docker/DockerfileLaravelProd
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME_BACKEND }}:latest
-            ${{ env.IMAGE_NAME_BACKEND }}:${{ env.VERSION }}
-
-      - name: Update Docker Hub Description Frontend
+      - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAME_FRONTEND }}
-          short-description: Open Source Management Tool for Decentralized Utilities
-
-      - name: Update Docker Hub Description Backend
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAME_BACKEND }}
+          repository: ${{ matrix.image.repo }}
           short-description: Open Source Management Tool for Decentralized Utilities
