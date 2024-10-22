@@ -17,9 +17,6 @@ jobs:
             dockerfile: ./docker/DockerfileUIProd
           - repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileLaravelProd
-        platform:
-          - linux/amd64
-          - linux/arm64
 
     permissions:
       contents: read
@@ -60,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: ${{ matrix.image.dockerfile }}
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ matrix.image.repo }}:latest
