@@ -19,5 +19,5 @@ spec:
         ports:
         - containerPort: 8081
         env:
-          - name: VITE_APP_MPM_BACKEND_URL
+          - name: VUE_APP_MPM_BACKEND_URL
             value: https://backend-demo.micropowermanager.io
