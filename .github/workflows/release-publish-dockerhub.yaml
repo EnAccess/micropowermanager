@@ -6,6 +6,10 @@ on:
       - published
   workflow_dispatch:
 
+env:
+  IMAGE_NAME_FRONTEND: enaccess/micropowermanager-frontend
+  IMAGE_NAME_BACKEND: enaccess/micropowermanager-backend
+
 jobs:
   release-publish:
     runs-on: ubuntu-latest
@@ -33,9 +37,8 @@ jobs:
 
       - name: Check if image tag already exists Frontend
         run: |
-          IMAGE_NAME="enaccess/micropowermanager-frontend"
           VERSION="${{ env.VERSION }}"
-          if docker manifest inspect $IMAGE_NAME:$VERSION > /dev/null 2>&1; then
+          if docker manifest inspect $IMAGE_NAME_FRONTEND:$VERSION > /dev/null 2>&1; then
             echo "Docker image tag $VERSION already exists."
             exit 1
           else
@@ -44,9 +47,8 @@ jobs:
 
       - name: Check if image tag already exists Backend
         run: |
-          IMAGE_NAME="enaccess/micropowermanager-frontend"
           VERSION="${{ env.VERSION }}"
-          if docker manifest inspect $IMAGE_NAME:$VERSION > /dev/null 2>&1; then
+          if docker manifest inspect $IMAGE_NAME_BACKEND:$VERSION > /dev/null 2>&1; then
             echo "Docker image tag $VERSION already exists."
             exit 1
           else
@@ -60,8 +62,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            enaccess/micropowermanager-frontend:latest
-            enaccess/micropowermanager-frontend:${{ env.VERSION }}
+            ${{ env.IMAGE_NAME_FRONTEND }}:latest
+            ${{ env.IMAGE_NAME_FRONTEND }}:${{ env.VERSION }}
 
       - name: Build and push Docker image Backend
         uses: docker/build-push-action@v5
@@ -70,15 +72,15 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            enaccess/micropowermanager-backend:latest
-            enaccess/micropowermanager-backend:${{ env.VERSION }}
+            ${{ env.IMAGE_NAME_BACKEND }}:latest
+            ${{ env.IMAGE_NAME_BACKEND }}:${{ env.VERSION }}
 
       - name: Update Docker Hub Description Frontend
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: enaccess/micropowermanager-frontend
+          repository: ${{ env.IMAGE_NAME_FRONTEND }}
           short-description: Open Source Management Tool for Decentralized Utilities
 
       - name: Update Docker Hub Description Backend
@@ -86,5 +88,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: enaccess/micropowermanager-backend
+          repository: ${{ env.IMAGE_NAME_BACKEND }}
           short-description: Open Source Management Tool for Decentralized Utilities
