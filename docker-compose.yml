@@ -1,6 +1,6 @@
 services:
-  laravel-dev:
-    container_name: laravel-dev
+  backend-dev:
+    container_name: backend-dev
     build:
       dockerfile: docker/DockerfileBackendDev
     depends_on:
@@ -15,8 +15,8 @@ services:
     volumes:
       - ./src/backend:/var/www/html
 
-  ui-dev:
-    container_name: ui-dev
+  frontend-dev:
+    container_name: frontend-dev
     build:
       dockerfile: docker/DockerfileFrontendDev
     ports:

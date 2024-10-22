@@ -1,8 +1,7 @@
 services:
-  laravel-prod:
-    container_name: laravel-prod
-    build:
-      dockerfile: docker/DockerfileBackendProd
+  backend:
+    container_name: backend
+    image: enaccess/micropowermanager-backend:latest
     depends_on:
       - maria
       - redis
@@ -13,10 +12,9 @@ services:
       - 8000:80
       - 8443:443
 
-  ui-prod:
-    container_name: ui-prod
-    build:
-      dockerfile: docker/DockerfileFrontendProd
+  frontend:
+    container_name: frontend
+    image: enaccess/micropowermanager-frontend:latest
     ports:
       - 8001:8081
     volumes:
