@@ -2,7 +2,7 @@ services:
   laravel-prod:
     container_name: laravel-prod
     build:
-      dockerfile: docker/DockerfileLaravelProd
+      dockerfile: docker/DockerfileBackendProd
     depends_on:
       - maria
       - redis
@@ -16,7 +16,7 @@ services:
   ui-prod:
     container_name: ui-prod
     build:
-      dockerfile: docker/DockerfileUIProd
+      dockerfile: docker/DockerfileFrontendProd
     ports:
       - 8001:8081
     volumes:

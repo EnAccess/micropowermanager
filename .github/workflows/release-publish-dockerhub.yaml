@@ -14,9 +14,9 @@ jobs:
       matrix:
         image:
           - repo: enaccess/micropowermanager-frontend
-            dockerfile: ./docker/DockerfileUIProd
+            dockerfile: ./docker/DockerfileFrontendProd
           - repo: enaccess/micropowermanager-backend
-            dockerfile: ./docker/DockerfileLaravelProd
+            dockerfile: ./docker/DockerfileBackendProd
 
     permissions:
       contents: read

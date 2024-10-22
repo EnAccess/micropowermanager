@@ -2,7 +2,7 @@ services:
   laravel-dev:
     container_name: laravel-dev
     build:
-      dockerfile: docker/DockerfileLaravelDev
+      dockerfile: docker/DockerfileBackendDev
     depends_on:
       - maria
       - redis
@@ -18,7 +18,7 @@ services:
   ui-dev:
     container_name: ui-dev
     build:
-      dockerfile: docker/DockerfileUIDev
+      dockerfile: docker/DockerfileFrontendDev
     ports:
       - 8001:8080
     volumes:
