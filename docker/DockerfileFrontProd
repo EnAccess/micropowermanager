@@ -13,10 +13,10 @@ RUN npm install -g http-server
 COPY src/frontend .
 
 # Copy the entrypoint script to the container and make it executable
-COPY docker/entrypoint-ui-prod.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint-ui-prod.sh
+COPY docker/entrypoint-frontend-prod.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-frontend-prod.sh
 
 # serve the application via entrypoint script
-ENTRYPOINT ["/usr/local/bin/entrypoint-ui-prod.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint-frontend-prod.sh"]
 
 EXPOSE 8081
