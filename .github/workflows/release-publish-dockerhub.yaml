@@ -34,7 +34,7 @@ jobs:
           push: true
           tags: |
             enaccess/micropowermanager-frontend:latest
-            enaccess/micropowermanager-frontend:0.0.1
+            enaccess/micropowermanager-frontend:0.0.2
 
       - name: Build and push Docker image Backend
         uses: docker/build-push-action@v5
@@ -44,7 +44,7 @@ jobs:
           push: true
           tags: |
             enaccess/micropowermanager-backend:latest
-            enaccess/micropowermanager-frontend:0.0.1
+            enaccess/micropowermanager-frontend:0.0.2
 
       - name: Update Docker Hub Description Frontend
         uses: peter-evans/dockerhub-description@v4
@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: enaccess/micropowermanager-frontend
 
-      - name: Docker Hub Description Backend
+      - name: Update Docker Hub Description Backend
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
