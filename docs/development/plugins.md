@@ -22,7 +22,7 @@ In the backend section, you'll find instructions on how to create a plugin.
 We have a custom plugin creator command that generates a template. Use the following command to create a new plugin:
 
 ```bash
-docker exec -it laravel-dev bash
+docker exec -it backend-dev bash
 php artisan micropowermanager:new-package {package-name}
 ```
 
