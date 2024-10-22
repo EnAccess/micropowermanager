@@ -1,0 +1,61 @@
+name: Build and publish images to DockerHub
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  release-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image Frontend
+        uses: docker/build-push-action@v5
+        with:
+          file: ./Docker/DockerfileUIProd
+          platforms: linux/amd64
+          push: true
+          tags: |
+            enaccess/micropowermanager-frontend:latest
+            enaccess/micropowermanager-frontend:0.0.1
+
+      - name: Build and push Docker image Backend
+        uses: docker/build-push-action@v5
+        with:
+          file: ./Docker/DockerfileLaravelProd
+          platforms: linux/amd64
+          push: true
+          tags: |
+            enaccess/micropowermanager-backend:latest
+            enaccess/micropowermanager-frontend:0.0.1
+
+      - name: Update Docker Hub Description Frontend
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: enaccess/micropowermanager-frontend
+
+      - name: Docker Hub Description Backend
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: enaccess/micropowermanager-backend
