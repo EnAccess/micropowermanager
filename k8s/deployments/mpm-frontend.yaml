@@ -14,11 +14,10 @@ spec:
     spec:
       containers:
       - name: mpm-frontend
-        image: enaccess/mpm-frontend:latest
+        image: enaccess/micropowermanager-frontend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
         env:
-          - name: VUE_APP_MPM_BACKEND_URL
+          - name: VITE_APP_MPM_BACKEND_URL
             value: https://backend-demo.micropowermanager.io
-        

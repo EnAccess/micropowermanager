@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mpm-backend
-          image: enaccess/mpm-backend:latest
+          image: enaccess/micropowermanager-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

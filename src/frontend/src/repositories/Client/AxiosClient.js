@@ -2,7 +2,8 @@ import axios from "axios"
 import { config } from "@/config"
 
 function getBaseUrl() {
-  const baseUrlFromEnv = process.env.VUE_APP_MPM_BACKEND_URL
+  const baseUrlFromEnv = process.env.VITE_APP_MPM_BACKEND_URL
+  console.log('process env', process.env)
 
   if (baseUrlFromEnv) {
     return baseUrlFromEnv
