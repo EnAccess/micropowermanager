@@ -52,6 +52,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: enaccess/micropowermanager-frontend
+          short-description: Open Source Management Tool for Decentralized Utilities
 
       - name: Update Docker Hub Description Backend
         uses: peter-evans/dockerhub-description@v4
@@ -59,3 +60,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: enaccess/micropowermanager-backend
+          short-description: Open Source Management Tool for Decentralized Utilities
