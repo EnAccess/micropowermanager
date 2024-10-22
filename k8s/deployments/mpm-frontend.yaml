@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-frontend
+  template:
+    metadata:
+      labels:
+        app: mpm-frontend
+    spec:
+      containers:
+      - name: mpm-frontend
+        image: enaccess/micropowermanager-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        env:
+          - name: VITE_APP_MPM_BACKEND_URL
+            value: https://backend-demo.micropowermanager.io

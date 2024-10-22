@@ -60,3 +60,6 @@ src/backend/.env_staging
 # Sphinx documentation
 docs/_build/
 docs/build/
+
+# secret file
+k8s/secrets/mpm-secrets.yaml
