@@ -17,6 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get version
+        run: |
+          VERSION=$(cat version)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -34,7 +39,7 @@ jobs:
           push: true
           tags: |
             enaccess/micropowermanager-frontend:latest
-            enaccess/micropowermanager-frontend:0.0.2
+            enaccess/micropowermanager-frontend:${{ env.VERSION }}
 
       - name: Build and push Docker image Backend
         uses: docker/build-push-action@v5
@@ -44,7 +49,7 @@ jobs:
           push: true
           tags: |
             enaccess/micropowermanager-backend:latest
-            enaccess/micropowermanager-frontend:0.0.2
+            enaccess/micropowermanager-backend:${{ env.VERSION }}
 
       - name: Update Docker Hub Description Frontend
         uses: peter-evans/dockerhub-description@v4
