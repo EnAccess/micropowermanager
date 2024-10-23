@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             TenantSeeder::class,
             ClusterSeeder::class,
             CustomerSeeder::class,
-            DeviceSeeder::class,
+            MeterSeeder::class,
             TicketSeeder::class,
             AgentSeeder::class,
         ]);

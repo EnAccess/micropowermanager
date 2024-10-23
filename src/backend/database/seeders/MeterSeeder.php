@@ -16,7 +16,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class DeviceSeeder extends Seeder
+class MeterSeeder extends Seeder
 {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
