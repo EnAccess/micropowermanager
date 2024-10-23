@@ -5,8 +5,7 @@ import AgentChargeRepository from "@/repositories/AgentChargeRepository"
 export class AgentChargeService {
   constructor() {
     this.repository = AgentChargeRepository
-    this.newBalance = {
-      userId: null,
+    this.balance = {
       amount: null,
       agentId: null,
     }
@@ -14,14 +13,12 @@ export class AgentChargeService {
 
   async addNewBalance() {
     try {
-      let newBalancePM = {
-        user_id: this.newBalance.userId,
-        amount: this.newBalance.amount,
+      let balancePM = {
+        agent_id: this.balance.agentId,
+        amount: this.balance.amount,
       }
-      let response = await this.repository.create(
-        newBalancePM,
-        this.newBalance.agentId,
-      )
+      let response = await this.repository.create(balancePM)
+
       if (response.status === 200 || response.status === 201) {
         this.resetNewBalance()
         return response
@@ -34,8 +31,7 @@ export class AgentChargeService {
     }
   }
   resetNewBalance() {
-    this.newBalance = {
-      personId: null,
+    this.balance = {
       amount: null,
       agentId: null,
     }

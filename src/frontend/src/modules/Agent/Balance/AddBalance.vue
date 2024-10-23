@@ -20,7 +20,7 @@
             <md-input
               :name="$tc('words.amount')"
               id="amount"
-              v-model="agentChargeService.newBalance.amount"
+              v-model="agentChargeService.balance.amount"
               v-validate="'required|min_value:0'"
               type="number"
             />
@@ -83,11 +83,8 @@ export default {
       if (validator) {
         this.loading = true
         try {
-          this.agentChargeService.newBalance.userId =
-            this.$store.getters[
-              "auth/authenticationService"
-            ].authenticateUser.id
-          this.agentChargeService.newBalance.agentId = this.agentId
+          this.agentChargeService.balance.agentId = this.agentId
+
           await this.agentChargeService.addNewBalance()
           this.loading = false
           this.balanceAdded()

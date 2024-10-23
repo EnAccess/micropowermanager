@@ -136,6 +136,11 @@ class Agent extends Authenticatable implements JWTSubject
         return $this->morphMany(AssetPerson::class, 'creator');
     }
 
+    public function agentCharges(): HasMany
+    {
+        return $this->hasMany(AgentCharge::class);
+    }
+
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'owner');
