@@ -32,9 +32,9 @@ class MeterSeeder extends Seeder
     public function run()
     {
         // Manufacturer
-        // For now, we just adding some dummy Manufacturers.
-        // Later, this should probably be synced with the manufacturers
-        // for which we have plugins in the Demo setup.
+        // Here, we adding some dummy Manufacturers for seeding.
+        // Additional (actual) manufacturers can be added by
+        // enabling to corresponding plugin in the demo environment.
         $manufacturers = Manufacturer::factory()
             ->count(3)
             ->isMeterManufacturer()
