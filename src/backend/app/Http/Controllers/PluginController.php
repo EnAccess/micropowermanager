@@ -41,10 +41,12 @@ class PluginController extends Controller
         }
 
         if ($request->input('checked')) {
+            // Check if this is the first time we are installing the plugin.
+            // In that case we also need to run install commands, if present
             if (!$plugin) {
                 $createdPlugin = $this->pluginsService->create($pluginData);
-                $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase($mpmPlugin);
                 $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
+
                 Artisan::call($mpmPlugin->installation_command);
 
                 return ApiResource::make($createdPlugin);

@@ -85,10 +85,6 @@ class CompanyController extends Controller
                         'status' => 1,
                     ];
                     $this->pluginsService->create($pluginData);
-                    $this->companyDatabaseService->addPluginSpecificMenuItemsToCompanyDatabase(
-                        $plugin,
-                        $company->getId()
-                    );
 
                     $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
                     $registrationTail[] = [
