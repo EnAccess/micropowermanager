@@ -18,7 +18,7 @@ class AgentChargeFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'amount' => rand(1, 10) * 100000,
+            'amount' => $this->faker->randomDigitNotNull() * 100000,
         ];
     }
 }

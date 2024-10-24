@@ -20,6 +20,8 @@ class Device extends BaseModel
     // TODO: This name seems unintuive and confusing.
     // The device table now has a column called `id` and a column called `device_id`
     // but they are completely different things.
+    // `id` is this device's... well... id, which it can be references with in the `device` table
+    // `device_id` is the `id` in the target table depending on type. For example `meter` or `solar_home_system`.
     public function device(): MorphTo
     {
         return $this->morphTo();

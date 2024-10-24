@@ -102,25 +102,25 @@ class MeterSeeder extends Seeder
 
         // Meter Types
         $clusters = MeterType::factory()
-        ->count(3)
-        ->sequence(
-            [
-                'online' => 0,
-                'phase' => '1',
-                'max_current' => '5',
-            ],
-            [
-                'online' => 1,
-                'phase' => '1',
-                'max_current' => '60',
-            ],
-            [
-                'online' => 1,
-                'phase' => '2',
-                'max_current' => '60',
-            ],
-        )
-        ->create();
+            ->count(3)
+            ->sequence(
+                [
+                    'online' => 0,
+                    'phase' => '1',
+                    'max_current' => '5',
+                ],
+                [
+                    'online' => 1,
+                    'phase' => '1',
+                    'max_current' => '60',
+                ],
+                [
+                    'online' => 1,
+                    'phase' => '2',
+                    'max_current' => '60',
+                ],
+            )
+            ->create();
 
         // Actual Meters
 
