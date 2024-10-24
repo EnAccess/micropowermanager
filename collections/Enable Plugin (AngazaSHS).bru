@@ -1,0 +1,22 @@
+meta {
+  name: Enable Plugin (AngazaSHS)
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{mpm_backend_url}}/api/plugins/17
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": 17,
+    "name": "AngazaSHS",
+    "description": "This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.",
+    "usage_type": "shs",
+    "checked": true,
+    "plugin_for_usage_type": true
+  }
+}
