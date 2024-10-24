@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
 import { EventBus } from "@/shared/eventbus"

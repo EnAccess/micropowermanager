@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { EventBus } from "@/shared/eventbus"
 import GenerationAssetsRepository from "@/repositories/GenerationAssetsRepository"
 

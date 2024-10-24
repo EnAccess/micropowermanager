@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import TicketTrelloRepository from "@/repositories/TicketTrelloRepository"
 
 export class TicketTrelloService {
