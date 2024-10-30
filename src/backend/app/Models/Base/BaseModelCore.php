@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * Only applies to very few common, high-level configuration entities in
  * the entire MPM-instance like database and plugin configuration.
  */
-class BaseModelCore extends Model
+abstract class BaseModelCore extends Model
 {
     protected $guarded = ['id'];
     public static $rules = [];
