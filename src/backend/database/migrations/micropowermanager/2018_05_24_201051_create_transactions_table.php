@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('original_transaction_id');
             $table->string('original_transaction_type');
             $table->integer('amount');
-            $table->enum('type', ['energy', 'deferred_payment', 'unknown'])->default('unknown');
+            // $table->enum('type', ['energy', 'deferred_payment', 'unknown'])->default('unknown');
             $table->string('sender');
             $table->string('message');
             $table->timestamps();

@@ -25,16 +25,19 @@ return new class extends Migration {
         DB::connection('shard')->table('asset_types')->insert([
             [
                 'name' => 'Solar Home System',
+                // 'price' => 0,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'E-Bike',
+                // 'price' => 0,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Electronics',
+                // 'price' => 0,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

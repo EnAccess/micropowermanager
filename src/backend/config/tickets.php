@@ -11,5 +11,6 @@ return [
         'ticket_outsource' => 'ticket_outsources',
         'outsource_reports' => 'ticket_outsource_reports',
         'ticket_comments' => 'ticket_comments',
+        // 'ticket_cards' => 'ticket_cards'
     ],
 ];

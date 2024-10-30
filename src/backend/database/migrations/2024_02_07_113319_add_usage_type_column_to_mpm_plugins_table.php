@@ -15,14 +15,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('mpm_plugins', function (Blueprint $table) {
-            $table->enum('usage_type', [
-                'mini-grid',
-                'shs',
-                'e-bike',
-                'general',
-            ])->default('general')->after('id');
-        });
+        // Schema::table('mpm_plugins', function (Blueprint $table) {
+        //     $table->enum('usage_type', [
+        //         'mini-grid',
+        //         'shs',
+        //         'e-bike',
+        //         'general',
+        //     ])->default('general')->after('id');
+        // });
 
         $mpm_plugins_mapping = [
             MpmPlugin::SPARK_METER => 'mini-grid',

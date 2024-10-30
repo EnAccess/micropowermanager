@@ -11,7 +11,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown','imported','3rd party api sync')");
+        // DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown','imported','3rd party api sync')");
     }
 
     /**
@@ -21,6 +21,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown')");
+        // DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown')");
     }
 };

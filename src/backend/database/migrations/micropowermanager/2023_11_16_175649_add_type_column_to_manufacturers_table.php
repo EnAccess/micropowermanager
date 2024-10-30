@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::connection('shard')->table('manufacturers', function (Blueprint $table) {
-            $table->enum('type', ['meter', 'shs', 'e-bike'])->default('meter')->after('id');
+            // $table->enum('type', ['meter', 'shs', 'e-bike'])->default('meter')->after('id');
         });
     }
 

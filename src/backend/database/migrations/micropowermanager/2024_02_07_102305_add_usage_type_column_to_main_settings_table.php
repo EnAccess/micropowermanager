@@ -13,15 +13,15 @@ return new class extends Migration {
     public function up()
     {
         Schema::connection('shard')->table('main_settings', function (Blueprint $table) {
-            $table->enum('usage_type', [
-                'mini-grid',
-                'shs',
-                'e-bike',
-                'mini-grid&shs',
-                'mini-grid&e-bike',
-                'shs&e-bike',
-                'mini-grid&shs&e-bike',
-            ])->default('mini-grid&shs&e-bike')->after('id');
+            // $table->enum('usage_type', [
+            //     'mini-grid',
+            //     'shs',
+            //     'e-bike',
+            //     'mini-grid&shs',
+            //     'mini-grid&e-bike',
+            //     'shs&e-bike',
+            //     'mini-grid&shs&e-bike',
+            // ])->default('mini-grid&shs&e-bike')->after('id');
         });
     }
 
