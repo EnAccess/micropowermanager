@@ -12,7 +12,6 @@ class CreateDummyCompanyWithData extends Command
     public const SQL_DUMMY_DATA_FILE_NAMES = [
         'dummy_agent_data.sql',
         'dummy_data.sql',
-        'dummy_device_data.sql',
         'dummy_plugin_data.sql',
         'dummy_sms_data.sql',
         'dummy_ticket_data.sql',

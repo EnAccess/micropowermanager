@@ -161,7 +161,6 @@ return [
 
         App\Providers\VodacomServiceProvider::class,
         App\Providers\ServicesProvider::class, // for helper services
-        App\Providers\ServicesServiceProvider::class, // repositories
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Inensus\Ticket\Providers\TicketServiceProvider::class,
         Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
