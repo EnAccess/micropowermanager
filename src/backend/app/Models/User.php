@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+// use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -24,7 +24,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    // use Notifiable;
     use HasFactory;
 
     public const RELATION_NAME = 'admin';
