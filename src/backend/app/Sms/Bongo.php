@@ -4,6 +4,7 @@ namespace App\Sms;
 
 use App\Lib\ISmsProvider;
 use App\Models\Sms;
+use App\Models\SmsAndroidSetting;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Facades\Log;
@@ -85,7 +86,7 @@ class Bongo implements ISmsProvider
      *
      * @throws \Exception
      */
-    public function sendSms(string $number, string $body, $callback)
+    public function sendSms(string $number, string $body, string $callback, ?SmsAndroidSetting $smsAndroidSetting = null)
     {
         $httpClient = new Client();
         if ($number[0] !== '+') {
