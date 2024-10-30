@@ -42,8 +42,7 @@
     "phpunit/phpunit": "^9.0",
     "roave/security-advisories": "dev-latest",
     "spatie/laravel-ignition": "^1.0",
-    "spatie/laravel-web-tinker": "^1.7",
-    "vimeo/psalm": "^5.24"
+    "spatie/laravel-web-tinker": "^1.7"
   },
   "config": {
     "optimize-autoloader": true,
@@ -102,7 +101,6 @@
     "php-cs-fixer-fix": "php-cs-fixer fix --diff",
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
-    "phpstan-analyse": "phpstan analyse --memory-limit=2G --no-progress",
-    "psalm-check": "psalm app/"
+    "phpstan-analyse": "phpstan analyse --memory-limit=2G --no-progress"
   }
 }
