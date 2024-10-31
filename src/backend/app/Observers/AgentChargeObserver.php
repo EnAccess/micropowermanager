@@ -21,7 +21,7 @@ class AgentChargeObserver
         $agent = $this->agentService->getById($agentCharge->agent_id);
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
-            'amount' => request()->input('amount'),
+            'amount' => $agentCharge->amount,
             'available_balance' => $agent->balance,
             'due_to_supplier' => $agent->due_to_energy_supplier,
         ];

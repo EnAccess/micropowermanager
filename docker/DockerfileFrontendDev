@@ -10,7 +10,7 @@ RUN npm install
 COPY src/frontend .
 VOLUME ["/app/"]
 
-# serve the application
+# serve the application in development mode
 CMD npm run serve & tail -f /dev/null
 
 EXPOSE 8080

@@ -3,17 +3,21 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Asset extends BaseModel
 {
+    use HasFactory;
+
     public const RELATION_NAME = 'appliance';
     protected $table = 'assets';
 
-    public function assetType(): HasOne
+    public function assetType(): BelongsTo
     {
-        return $this->hasOne(AssetType::class, 'id', 'asset_type_id');
+        return $this->belongsTo(AssetType::class);
     }
 
     public function agentAssignedAppliance(): HasMany

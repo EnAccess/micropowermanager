@@ -1,0 +1,22 @@
+FROM node:18.20.4
+
+WORKDIR /app
+
+# install JavaScript dependencies
+COPY src/frontend/package*.json ./
+RUN npm install
+
+# Install webserver
+RUN npm install -g http-server
+
+# get MicroPowerManager source code and configuration
+COPY src/frontend .
+
+# Copy the entrypoint script to the container and make it executable
+COPY docker/entrypoint-frontend-prod.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-frontend-prod.sh
+
+# serve the application via entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint-frontend-prod.sh"]
+
+EXPOSE 8081

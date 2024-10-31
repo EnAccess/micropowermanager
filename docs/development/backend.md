@@ -11,7 +11,7 @@ automatically. If you prefer to install dependencies manually or need to add add
 1. Enter the Docker container named "laravel":
 
    ```bash
-   docker exec -it laravel-dev bash
+   docker exec -it backend-dev bash
    ```
 
 2. Run the following command to install dependencies, replacing {package-name} with the actual name of the package:

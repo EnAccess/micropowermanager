@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Address\Address;
 use App\Models\Agent;
+use App\Models\AgentCharge;
 use App\Models\AgentCommission;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
@@ -32,7 +33,7 @@ class AgentSeeder extends Seeder
         // Get available MiniGrids
         $minigrids = MiniGrid::all();
 
-        // For each Mini-Grid we create an Agents
+        // For each Mini-Grid we create one Agent
         foreach ($minigrids as $minigrid) {
             $village = $minigrid->cities()->get()->random();
 
@@ -52,13 +53,18 @@ class AgentSeeder extends Seeder
             )
             ->create();
 
-            $agents = Agent::factory()
+            $agent = Agent::factory()
                 ->for($minigrid)
                 ->for($agentCommission, 'commission')
                 ->for($person)
                 ->state(
                     ['name' => $person->name]
                 )
+                ->create();
+
+            // Give our Agent some balance
+            $agent_charge = AgentCharge::factory()
+                ->for($agent)
                 ->create();
         }
     }

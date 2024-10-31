@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\AssetType;
+use App\Models\AgentCharge;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AssetTypeFactory extends Factory
+class AgentChargeFactory extends Factory
 {
-    protected $model = AssetType::class;
+    protected $model = AgentCharge::class;
 
     /**
      * Define the model's default state.
@@ -17,7 +17,8 @@ class AssetTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'user_id' => 1,
+            'amount' => $this->faker->randomDigitNotNull() * 100000,
         ];
     }
 }

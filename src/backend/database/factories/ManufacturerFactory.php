@@ -24,6 +24,20 @@ class ManufacturerFactory extends Factory
         });
     }
 
+    /**
+     * Indicate that the manufacturer is for SHS devices.
+     *
+     * @return Factory
+     */
+    public function isShsManufacturer()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => 'shs',
+            ];
+        });
+    }
+
     public function definition(): array
     {
         $inflector = InflectorFactory::create()->build();

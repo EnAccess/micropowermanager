@@ -16,7 +16,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class DeviceSeeder extends Seeder
+class MeterSeeder extends Seeder
 {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
@@ -32,9 +32,9 @@ class DeviceSeeder extends Seeder
     public function run()
     {
         // Manufacturer
-        // For now, we just adding some dummy Manufacturers.
-        // Later, this should probably be synced with the manufacturers
-        // for which we have plugins in the Demo setup.
+        // Here, we adding some dummy Manufacturers for seeding.
+        // Additional (actual) manufacturers can be added by
+        // enabling to corresponding plugin in the demo environment.
         $manufacturers = Manufacturer::factory()
             ->count(3)
             ->isMeterManufacturer()
@@ -102,25 +102,25 @@ class DeviceSeeder extends Seeder
 
         // Meter Types
         $clusters = MeterType::factory()
-        ->count(3)
-        ->sequence(
-            [
-                'online' => 0,
-                'phase' => '1',
-                'max_current' => '5',
-            ],
-            [
-                'online' => 1,
-                'phase' => '1',
-                'max_current' => '60',
-            ],
-            [
-                'online' => 1,
-                'phase' => '2',
-                'max_current' => '60',
-            ],
-        )
-        ->create();
+            ->count(3)
+            ->sequence(
+                [
+                    'online' => 0,
+                    'phase' => '1',
+                    'max_current' => '5',
+                ],
+                [
+                    'online' => 1,
+                    'phase' => '1',
+                    'max_current' => '60',
+                ],
+                [
+                    'online' => 1,
+                    'phase' => '2',
+                    'max_current' => '60',
+                ],
+            )
+            ->create();
 
         // Actual Meters
 

@@ -70,27 +70,6 @@ class CompanyDatabaseService implements IBaseService
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function addPluginSpecificMenuItemsToCompanyDatabase($plugin, ?int $companyId = null): void
-    {
-        $rootClass = $plugin['root_class'];
-
-        if ($companyId !== null) {
-            /** @var DatabaseProxyManagerService $databaseProxyManagerService */
-            $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
-            $databaseProxyManagerService->runForCompany($companyId, function () use ($menuItems) {
-                Artisan::call('menu-items:generate', [
-                    'menuItem' => $menuItems['menuItem'],
-                    'subMenuItems' => $menuItems['subMenuItems'],
-                ]);
-            });
-        } else {
-            Artisan::call('menu-items:generate', [
-                'menuItem' => $menuItems['menuItem'],
-                'subMenuItems' => $menuItems['subMenuItems'],
-            ]);
-        }
-    }
-
     public function findByCompanyId(int $companyId): CompanyDatabase
     {
         /** @var CompanyDatabase $result */
