@@ -88,10 +88,6 @@ return [
         'misc' => env('QUEUE_MISC'),
     ],
 
-    'weather' => [
-        'owm_app_id' => '4a84b68e24abd9d99758a67f8d1d984b',
-    ],
-
     'payment' => [
         'data-stream' => 'placeholder-url',
         'maintenance' => 'placeholder-url',
