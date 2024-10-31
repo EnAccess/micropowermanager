@@ -172,22 +172,6 @@ $this->app->singleton('SmsProvider', static function ($app) {
 
 To change the predefined SMS texts, please edit `app/Sms/SmsTypes.php`
 
-## Weather Data
-
-> [!WARNING]
-> This sites describes a potentially deprecated feature of MPM
-
-The system shows the weather data on the Mini-Grid level. To be able to
-read out the data from `Open Weather Map` service you have to register
-yourself there and get an **API-KEY** Change the following value in
-`services.php`
-
-```bash
-'weather' => [
-        'owm_app_id' => 'api_key',
-    ]
-```
-
 ## Email
 
 To be able to send E-Mails please edit following configuration variables
