@@ -29,22 +29,6 @@
               </md-menu-content>
             </md-menu>
 
-            <md-switch
-              v-model="enableDataStream"
-              @change="onDataStreamChange($event)"
-              :disabled="switching"
-              class="data-stream-switch"
-            >
-              <span v-if="!enableDataStream">
-                {{ $tc("words.activate") }}
-                {{ $tc("phrases.dataLogger", 0) }}
-              </span>
-              <span v-else>
-                {{ $tc("words.deactivate") }}
-                {{ $tc("phrases.dataLogger", 0) }}
-              </span>
-            </md-switch>
-
             <div class="md-toolbar-section-end">
               <span style="float: left">Selected Period: {{ periodText }}</span>
               <md-button
@@ -116,13 +100,6 @@
             :mini-grid-id="miniGridId"
             :miniGridData="miniGridData"
           ></box-group>
-        </div>
-        <div
-          class="md-layout-item md-size-100"
-          v-if="enableDataStream"
-          style="margin-top: 3rem"
-        >
-          <energy-chart-box :mini-grid-id="miniGridId" />
         </div>
 
         <div
@@ -268,7 +245,6 @@
 
 <script>
 import RevenueTargetPerCustomerType from "@/modules/MiniGrid/RevenueTargetPerCustomerType.vue"
-import EnergyChartBox from "@/modules/MiniGrid/EnergyChartBox.vue"
 import MiniGridMap from "@/modules/Map/MiniGridMap.vue"
 import RevenueTrends from "@/modules/MiniGrid/RevenueTrends.vue"
 import BoxGroup from "@/modules/MiniGrid/BoxGroup.vue"
@@ -290,7 +266,6 @@ export default {
   name: "Dashboard",
   components: {
     RevenueTargetPerCustomerType,
-    EnergyChartBox,
     MiniGridMap,
     RevenueTrends,
     Stepper,
@@ -306,10 +281,7 @@ export default {
       mappingService: new MappingService(),
       batchRevenueService: new BatchRevenueService(),
       deviceAddressService: new DeviceAddressService(),
-      enableDataStream: false,
-      isLoggerActive: false,
       ModalVisibility: false,
-      switching: false,
       watchingMiniGrids: [],
       activeStep: "firstStep",
       firstStep: false,
@@ -404,8 +376,6 @@ export default {
       this.$store.dispatch("miniGridDashboard/get", this.miniGridId)
       this.miniGridData =
         this.$store.getters["miniGridDashboard/getMiniGridData"]
-      this.enableDataStream = this.miniGridData.data_stream === 1
-      this.isLoggerActive = this.enableDataStream
       this.setDashboardData()
       this.loading = false
       EventBus.$emit("miniGridCachedDataLoading", this.loading)
@@ -439,36 +409,6 @@ export default {
       this.setPeriod = false
       this.loading = false
       EventBus.$emit("miniGridCachedDataLoading", this.loading)
-    },
-    async onDataStreamChange(value) {
-      try {
-        this.switching = true
-        let data_stream = this.enableDataStream === true ? 1 : 0
-        await this.miniGridService.setMiniGridDataStream(
-          this.miniGridId,
-          data_stream,
-        )
-        let message =
-          value === true
-            ? this.$tc("phrases.dataLogger", 1)
-            : this.$tc("phrases.dataLogger", 2)
-        this.alertNotify("success", message)
-        this.isLoggerActive = value
-        this.enableDataStream = value
-        this.switching = false
-      } catch (e) {
-        this.switching = false
-        this.alertNotify("warn", e.message)
-        this.isLoggerActive = !value
-        this.enableDataStream = !value
-        try {
-          this.watchingMiniGrids =
-            await this.miniGridService.getMiniGridDataStreams(1)
-          this.ModalVisibility = true
-        } catch (e) {
-          this.alertNotify("error", e.message)
-        }
-      }
     },
     async deviceLocationsEditedSet(editedItems) {
       try {

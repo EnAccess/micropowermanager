@@ -37,16 +37,6 @@ class MiniGridTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
     }
 
-    public function testUserGetsMiniGridsForDataStream()
-    {
-        $clusterCount = 1;
-        $miniGridCount = 2;
-        $this->createTestData($clusterCount, $miniGridCount);
-        $response = $this->actingAs($this->user)->get('/api/mini-grids?data_stream=1');
-        $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), 0);
-    }
-
     public function testUserGetsMiniGridById()
     {
         $clusterCount = 1;

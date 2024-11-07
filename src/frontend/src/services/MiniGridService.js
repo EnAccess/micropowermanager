@@ -82,41 +82,6 @@ export class MiniGridService {
     }
   }
 
-  async setMiniGridDataStream(miniGridId, dataStream) {
-    try {
-      let miniGridPM = {
-        data_stream: dataStream,
-      }
-      let response = await this.repository.watch(miniGridId, miniGridPM)
-
-      if (response.status === 200) {
-        return response.data.data
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
-  async getMiniGridDataStreams(dataStream) {
-    try {
-      let response = await this.repository.listDataStream(dataStream)
-
-      if (response.status === 200) {
-        this.miniGrids = response.data.data
-
-        return this.miniGrids
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
   async getTransactionsOverview(miniGridId, startDate, endDate) {
     try {
       let period = {

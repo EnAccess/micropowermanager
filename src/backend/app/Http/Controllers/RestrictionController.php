@@ -75,10 +75,7 @@ class RestrictionController extends Controller
             return $response->setStatusCode(409);
         }
 
-        if ($type === 'mini-grid') {
-            $target = 'enable-data-stream';
-            $toAdd = 1;
-        } elseif ($type === 'maintenance') {
+        if ($type === 'maintenance') {
             $target = 'maintenance-user';
             $toAdd = 5;
         } else {
