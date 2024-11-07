@@ -24,11 +24,6 @@ class MiniGridService implements IBaseService
         return $this->miniGrid->newQuery()->with(['location'])->find($miniGridId);
     }
 
-    public function getDataStreamEnabledMiniGridsCount(): int
-    {
-        return $this->miniGrid->newQuery()->where('data_stream', 1)->count();
-    }
-
     public function getById($miniGridId): MiniGrid
     {
         /** @var MiniGrid $model */

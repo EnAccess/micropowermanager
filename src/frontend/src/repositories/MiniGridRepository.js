@@ -16,12 +16,6 @@ export default {
   geoData(miniGridId) {
     return Client.get(`${resource}/${miniGridId}?relation=1`)
   },
-  watch(Id, miniGridPM) {
-    return Client.put(`${resource}` + "/" + Id, miniGridPM)
-  },
-  listDataStream(dataStream) {
-    return Client.get(`${resource}` + "?data_stream=" + dataStream)
-  },
   transactions(miniGridId, period) {
     return Client.post(`${resource}/${miniGridId}/transactions`, period)
   },
