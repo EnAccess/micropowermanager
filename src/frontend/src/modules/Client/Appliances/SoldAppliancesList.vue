@@ -24,8 +24,7 @@
           v-for="(item, index) in soldAppliancesList"
           :key="index"
           :class="selectedApplianceId === item.id ? 'selected-row' : ''"
-           @click="showDetails(soldAppliancesList[index].id)"
-
+          @click="showDetails(soldAppliancesList[index].id)"
         >
           <md-table-cell md-label="Name" md-sort-by="name">
             {{ item.asset.name }}
