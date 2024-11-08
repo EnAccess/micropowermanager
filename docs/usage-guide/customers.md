@@ -26,3 +26,5 @@ assets, that bought by the customer. - A detailed list of the payments.
 
 Some of the elments are editable (ex:name,surname) or addable
 (ex:ticket, address).
+
+TEST TEST TEST **TEST**
