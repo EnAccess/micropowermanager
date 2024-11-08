@@ -19,12 +19,12 @@ Is a chart that shows how often the customer makes payments - Addresses:
 A list of the addresses that belong to the customer. - Sold Assets: The
 assets, that bought by the customer. - A detailed list of the payments.
 
-- Payment types: Shows how the sent money is neem spent (Energy, Access
+- Payment types: Shows how the sent money is spent (Energy, Access
   Rate payment, etc.). - List of tickets that belong to the customer. - A
   list of the meters which belong to the customer and a map where the
   meters are visually displayed.
 
-Some of the elments are editable (ex:name,surname) or addable
+Some of the elements are editable (ex:name,surname) or addable
 (ex:ticket, address).
 
-TEST TEST TEST **TEST**
+On MPM website, there is a “+” at the right top corner, as if customers could be added from the page. Is that possible? I thought customers must be added through the customer registration app?
