@@ -7,9 +7,9 @@ order: 10
 The page contains two main sections.
 
 1. The comparison section; gives a quick overview of the situation. That
-   section contains; Total incoming transactions, Confirmed
+   section contains: Total incoming transactions, Confirmed
    Transactions, Cancelled Transactions, and the Revenue. The part which
-   makes that information a bit interesting is the availability of
+   makes that information interesting is the availability of
    comparison. The manager/admin can compare the day with; yesterday,
    same day last week, or the current week with last week or the current
    month with last month.
@@ -26,5 +26,5 @@ the transaction details. This information is required by the mobile
 money provider in case of an issue.
 
 **Transaction Processing:** A detailed list that shows how the incoming
-money is been used by the system. Ex: 100$ for Energy, 20$ for Access
-Rate, and 400$ for Milling Machine Rate Payment.
+money is been used by the system. Ex: USD 100 for Energy, USD 20 for Access
+Rate, and USD 400 for Milling Machine Rate Payment.
