@@ -12,8 +12,11 @@ MicroPowerManager (MPM) is an open source, free-of-charge software that enables 
 The MPM package includes:
 1.	The website interface (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed. Customer complaints and technical faults can also be managed in a centralized manner via this interface. It also enables the registration “in bulk” of an existing portfolio of customers.
 2.	MPM Android Apps:
+
 2.1. Customer Registration App: it is required to be able to register new customers.
+
 2.2. Agent/Merchant App: serves as the bilateral communication channel between the company headquarters (users of MPM website interface) and the team of agents on site, managing and responding to customer complaints. The Agent App is also used to manually generate STS electricity tokens (where customers are not able to do so themselves with their own phones).
+
 2.3. SMS bulk registration app: required to enable the possibility of customer bulk registration via the MPM website interface.
 
 The apps can be downloaded on the Github repository. The following steps are required:
