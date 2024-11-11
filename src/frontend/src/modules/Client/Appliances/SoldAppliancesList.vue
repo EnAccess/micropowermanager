@@ -24,6 +24,7 @@
           v-for="(item, index) in soldAppliancesList"
           :key="index"
           :class="selectedApplianceId === item.id ? 'selected-row' : ''"
+          @click="showDetails(soldAppliancesList[index].id)"
         >
           <md-table-cell md-label="Name" md-sort-by="name">
             {{ item.asset.name }}
@@ -36,14 +37,6 @@
           </md-table-cell>
           <md-table-cell md-label="Rates" md-sort-by="rate_count">
             {{ item.rate_count }}
-            <div
-              :class="index === -999 ? 'text-danger' : 'text-success'"
-              style="cursor: pointer; display: inline-block"
-              @click="showDetails(soldAppliancesList[index].id)"
-            >
-              <md-icon>remove_red_eye</md-icon>
-              {{ $tc("words.detail", 1) }}
-            </div>
           </md-table-cell>
         </md-table-row>
       </md-table>
