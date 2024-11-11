@@ -122,7 +122,6 @@ Route::group(['prefix' => 'mini-grids', 'middleware' => 'jwt.verify'], static fu
     Route::get('/', 'MiniGridController@index');
     Route::post('/', 'MiniGridController@store');
     Route::get('/{miniGridId}', 'MiniGridController@show');
-    Route::put('/{miniGridId}', 'MiniGridController@update')->middleware('restriction:enable-data-stream');
 
     Route::post('/{miniGridId}/transactions', 'MiniGridRevenueController@show');
     Route::post('/{miniGridId}/energy', 'MiniGridRevenueController@show');
