@@ -15,16 +15,4 @@ class UpdateMiniGridRequest extends FormRequest
     {
         return true;
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'data_stream' => 'sometimes|integer|in:0,1',
-        ];
-    }
 }

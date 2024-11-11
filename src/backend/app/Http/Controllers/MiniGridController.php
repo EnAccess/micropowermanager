@@ -21,23 +21,6 @@ class MiniGridController extends Controller
     }
 
     /**
-     * List.
-     *
-     * @urlParam data_stream filters the list based on data_stream column
-     *
-     * @param Request $request
-     *
-     * @return ApiResource
-     */
-    public function index(Request $request): ApiResource
-    {
-        $dataStream = $request->input('data_stream');
-        $limit = $request->input('per_page');
-
-        return ApiResource::make($this->miniGridService->getAll($limit, $dataStream));
-    }
-
-    /**
      * Detail.
      *
      * @bodyParam id int required
@@ -75,7 +58,6 @@ class MiniGridController extends Controller
      * Update.
      *
      * @bodyParam name string The name of the MiniGrid.
-     * @bodyParam data_stream int If the data_stream is enabled or not.
      *
      * @param MiniGrid              $miniGrid
      * @param UpdateMiniGridRequest $request
@@ -85,7 +67,6 @@ class MiniGridController extends Controller
     public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource
     {
         $miniGrid = $this->miniGridService->getById($miniGridId);
-        $this->miniGridService->update($miniGrid, $request->only(['name', 'data_stream']));
 
         return ApiResource::make($this->miniGridService->getById($miniGridId));
     }
