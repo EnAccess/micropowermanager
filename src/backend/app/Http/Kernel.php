@@ -4,7 +4,6 @@ namespace App\Http;
 
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
-use App\Http\Middleware\DataControllerMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -96,7 +95,6 @@ class Kernel extends HttpKernel
         'admin' => AdminJWT::class,
         'jwt.verify' => JwtMiddleware::class,
         'restriction' => RestrictionMiddleware::class,
-        'data.controller' => DataControllerMiddleware::class,
         'agent.balance' => AgentBalanceMiddleware::class,
     ];
 }

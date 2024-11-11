@@ -158,7 +158,6 @@ export default {
           serialNumber: device.device_serial,
           lat: lat,
           lon: lon,
-          dataStream: null,
           deviceType: device.device_type,
           markerType: markerType,
         })

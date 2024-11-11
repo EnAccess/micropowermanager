@@ -331,7 +331,6 @@ export default {
         serialNumber: null,
         lat: lat,
         lon: lon,
-        dataStream: -1,
         deviceType: null,
         markerType: MARKER_TYPE.MINI_GRID,
       })
@@ -362,7 +361,6 @@ export default {
           addressId: device.address.id,
           lat: lat,
           lon: lon,
-          dataStream: -1,
           deviceType: device.device_type,
           markerType: markerType,
         })

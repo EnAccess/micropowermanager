@@ -44,19 +44,15 @@ class MiniGridService implements IBaseService
     {
         $miniGrid->update([
             'name' => $miniGridData['name'] ?? $miniGrid->name,
-            'data_stream' => $miniGridData['data_stream'] ?? $miniGrid->data_stream,
         ]);
         $miniGrid->fresh();
 
         return $miniGrid;
     }
 
-    public function getAll(?int $limit = null, $dataStream = null): Collection|LengthAwarePaginator
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
         $miniGrids = $this->miniGrid->newQuery()->with(['location']);
-        if ($dataStream) {
-            $miniGrids->where('data_stream', $dataStream);
-        }
 
         if ($limit) {
             return $miniGrids->newQuery()->paginate($limit);

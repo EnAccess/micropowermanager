@@ -102,7 +102,6 @@ class CityTest extends TestCase
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
                     'name' => $this->faker->unique()->companySuffix,
-                    'data_stream' => 0,
                 ]);
 
                 while ($cityCount > 0) {

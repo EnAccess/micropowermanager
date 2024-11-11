@@ -24,7 +24,6 @@
                   @click="setMiniGrid(miniGrid.id)"
                 >
                   <span>{{ miniGrid.name }}</span>
-                  <md-icon v-if="miniGrid.data_stream === 1">check</md-icon>
                 </md-menu-item>
               </md-menu-content>
             </md-menu>
@@ -628,7 +627,6 @@ export default {
           return {
             id: miniGrid.id,
             name: miniGrid.name,
-            data_stream: miniGrid.data_stream,
           }
         },
       )

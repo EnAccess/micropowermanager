@@ -83,7 +83,6 @@ class MiniGridTest extends TestCase
         $this->createTestData($clusterCount, $miniGridCount);
         $miniGrid = MiniGrid::query()->first();
         $miGridData = [
-            'data_stream' => 1,
             'name' => 'updatedName',
         ];
         $response = $this->actingAs($this->user)->put(sprintf('/api/mini-grids/%s', $miniGrid->id), $miGridData);
@@ -110,7 +109,6 @@ class MiniGridTest extends TestCase
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
                     'name' => $this->faker->unique()->companySuffix,
-                    'data_stream' => 0,
                 ]);
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();

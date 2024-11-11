@@ -308,7 +308,6 @@ export default {
         serialNumber: null,
         lat: lat,
         lon: lon,
-        dataStream: -1,
         deviceType: null,
         markerType: MARKER_TYPE.MINI_GRID,
       })
