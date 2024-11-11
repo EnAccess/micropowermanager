@@ -21,6 +21,20 @@ class MiniGridController extends Controller
     }
 
     /**
+     * List.
+     *
+     * @param Request $request
+     *
+     * @return ApiResource
+     */
+    public function index(Request $request): ApiResource
+    {
+        $limit = $request->input('per_page');
+
+        return ApiResource::make($this->miniGridService->getAll($limit));
+    }
+
+    /**
      * Detail.
      *
      * @bodyParam id int required
