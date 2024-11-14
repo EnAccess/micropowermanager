@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $fk_company_id
@@ -51,5 +52,15 @@ class DatabaseProxy extends BaseModelCore
     public function getCompanyId(): int
     {
         return $this->fk_company_id;
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'fk_company_id');
+    }
+
+    public function companyDatabase(): BelongsTo
+    {
+        return $this->belongsTo(CompanyDatabase::class, 'fk_company_database_id');
     }
 }

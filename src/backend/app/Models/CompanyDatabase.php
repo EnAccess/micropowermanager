@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id;
@@ -22,6 +23,11 @@ class CompanyDatabase extends BaseModelCore
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function databaseProxies(): HasMany
+    {
+        return $this->hasMany(DatabaseProxy::class);
     }
 
     public function findByCompanyId(int $companyId): CompanyDatabase
