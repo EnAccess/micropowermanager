@@ -31,6 +31,7 @@ check the [Laravel documentation](https://laravel.com/docs/9.x/structure).
 
 ### Central Database Schema
 
+<!-- prettier-ignore -->
 [![Central Database Schema](/schemas/schema_central_database.png)](/schemas/schema_central_database.html){target="_self"}
 
 ### Tenant Database Schema
