@@ -28,6 +28,30 @@ Most changes are reflected live without having to restart the server.
 Deployment is done using Github Actions and does not involve manual steps.
 Check out `.github/workflows` folder of the root repository.
 
+## Generate Database ERD
+
+Currently, ERD generation is a (semi-)manual process.
+
+Assumping you have a local development setup running, run
+
+```sh
+docker exec -it backend-dev bash
+php artisan erd:generate micro_power_manager --excludes=plugins
+php artisan export
+```
+
+Run (from the host)
+
+```sh
+cp src/backend/dist/laravel-erd/index.html docs/.public/schemas/schema_central_database.html
+```
+
+Go to [laravel-erd](http://localhost:8000/laravel-erd) and export PNG using "right click -> export" and save it as
+
+```sh
+docs/.public/schemas/schema_central_database.png
+```
+
 ## Further Read
 
 - [Markdown Features](https://vitepress.dev/guide/markdown)

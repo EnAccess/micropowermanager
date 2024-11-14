@@ -26,3 +26,11 @@ Make sure to replace `{package-name}` with the actual name of the package you wa
 
 We followed the laravel folder structure for the backend. If you want to learn more about the folder structure, you can
 check the [Laravel documentation](https://laravel.com/docs/9.x/structure).
+
+## Schemas
+
+### Central Database Schema
+
+[![Central Database Schema](/schemas/schema_central_database.png)](/schemas/schema_central_database.html){target="_self"}
+
+### Tenant Database Schema
