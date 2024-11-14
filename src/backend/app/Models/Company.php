@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Base\BaseModelCore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int    $id
@@ -21,10 +23,14 @@ class Company extends BaseModelCore
     //     return $this->hasMany(User::class);
     // }
 
-    // has one company database
-    public function database()
+    public function database(): HasOne
     {
         return $this->hasOne(CompanyDatabase::class);
+    }
+
+    public function databaseProxies(): HasMany
+    {
+        return $this->hasMany(DatabaseProxy::class);
     }
 
     public function getId(): int
@@ -37,7 +43,6 @@ class Company extends BaseModelCore
         return $this->name;
     }
 
-    // has many company jobs
     public function jobs()
     {
         return $this->hasMany(CompanyJob::class);

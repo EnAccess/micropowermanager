@@ -33,7 +33,6 @@ class MpmPlugin extends BaseModelCore
 
     protected $table = 'mpm_plugins';
 
-    // has many used
     public function plugins()
     {
         return $this->hasMany(Plugins::class);
