@@ -57,9 +57,16 @@ InternalApi
 src/backend/.env_production
 src/backend/.env_staging
 
-# Sphinx documentation
+# docs related
+
+## Sphinx documentation
 docs/_build/
 docs/build/
 
-# secret file
+## ERD
+dist/
+
+# deployment related
+
+## secret file
 k8s/secrets/mpm-secrets.yaml
