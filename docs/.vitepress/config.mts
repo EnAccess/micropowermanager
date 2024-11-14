@@ -18,7 +18,24 @@ export default withMermaid(
     title: "MicroPowerManager",
     description: "Documentation for the MicroPowerManager",
 
-    head: [["link", { rel: "icon", type: "image/png", href: "favicon.png" }]],
+    head: [
+      ["link", { rel: "icon", type: "image/png", href: "favicon.png" }],
+      [
+        "script",
+        {
+          async: "",
+          src: "https://www.googletagmanager.com/gtag/js?id=G-KJX9KM0WPR",
+        },
+      ],
+      [
+        "script",
+        {},
+        `window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KJX9KM0WPR');`,
+      ],
+    ],
 
     // For hosting on Github pages
     // https://vitepress.dev/guide/deploy#github-pages
