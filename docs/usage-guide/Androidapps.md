@@ -14,7 +14,7 @@ Once logged in, the user should go to “Add Customer” on the bottom right of 
 
 The app also enables the user to access the customer list for the systems for which it is in charge (see bottom left of the screenshot below).
 
-![alt text](image-13.png)
+![alt text](image-18.png)
 
 ## Agent/Merchant App
 
@@ -63,4 +63,4 @@ Kindly be aware that this app has created issues with service providers. The pri
 
 The purpose of the app is to enable SMS-sending from and to the MPM website interface as well as to be able to send SMS to your customer portfolio through the same website. For this feature to work, the SMS Gateway App must be installed on the applicable mobile phone (following the steps outlined on the “Get Started with MPM”). Click then on the Copy Device Token and share the token with the headquarters staff. The users with access to the MPM account’s website interface can then insert the device token under the “Settings” page, thereby interlinking this phone with the MPM account.
 
-![alt text](image-17.png)
+![alt text](image-19.png)
