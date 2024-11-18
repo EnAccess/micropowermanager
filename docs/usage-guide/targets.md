@@ -31,4 +31,3 @@ the date by when that target should be accomplished should be selected.
 
 When these two steps are done, it is time to define our target with some
 fields like `New connections`, `Revenue per Month`,\... None of these fields are marked as required. That means the manager/admin is free to enter or not a value for each goal.
-
