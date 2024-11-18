@@ -17,7 +17,7 @@ return new class extends Migration {
         Schema::connection('shard')->create('asset_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('price')->unsigned();
+            $table->integer('price')->unsigned()->nullable();
             $table->timestamps();
         });
 
