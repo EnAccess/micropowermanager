@@ -1,28 +1,28 @@
 ---
-order: 7
+order: 8
 ---
 
 # Customers
 
-MPManager customers are listed under `Customers` in the sidebar. This
-table contains the customers' name, phone number, city, and meter
-number. The search function also includes all those fields.
+MPManager customers are listed under `Customers` in the sidebar. This table contains the customers' name, phone number, city, and device number. The search function also includes all those fields. By clicking on a customer, the customer’s profile page will be loaded. Data parameters included are:
 
-By clicking on a customer, will load the details of that specific
-customer.
+• Basic information: Name, Surname, Birth date, etc.
 
-This `customer details` page shows all information about that
-customer.
+• Payment flow: It is a chart that shows how often the customer makes payments.
 
-Such as - Basic Details: Name, Surname, Birth Date, etc. - Payment flow:
-Is a chart that shows how often the customer makes payments - Addresses:
-A list of the addresses that belong to the customer. - Sold Assets: The
-assets, that bought by the customer. - A detailed list of the payments.
+• Addresses: A list of the addresses that belong to the customer.
 
-- Payment types: Shows how the sent money is neem spent (Energy, Access
-  Rate payment, etc.). - List of tickets that belong to the customer. - A
-  list of the meters which belong to the customer and a map where the
-  meters are visually displayed.
+• Sold Assets: The SHSs, e-bikes and appliances sold to that customer, including a detailed list of the payments.
 
-Some of the elments are editable (ex:name,surname) or addable
-(ex:ticket, address).
+• Payment Overview: Shows how the sent money is spent (Energy, Access Rate payment, SHS, etc.).
+
+• List of tickets that belong to the customer.
+
+• A list of the devices which belong to the customer and a map where the meters are visually displayed.
+
+Some of the elements are editable (i.e.: name, surname) or addable (i.e.: ticket, address).
+New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the “+” on the “Customer” Menu.
+
+![Customers Overview](images/customers-overview.png)
+
+![Customers Detail](images/customers-detail.png)

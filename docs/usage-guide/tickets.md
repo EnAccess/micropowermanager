@@ -1,28 +1,19 @@
 ---
-order: 11
+order: 12
 ---
 
 # Tickets
 
-> [!WARNING]
-> This sites describes a potentially deprecated feature of MPM
+The “Tickets” (“List”) menu shows a list of the company’s open and closed tickets. The “Tickets” (“Categories”) menu enables the user to create a new ticket category (for example, installation issue, payment issue, software issue, etc). This enables the company to categorize/organize its different tickets.
 
-MPManager is using [Trello](https://trello.com>) as a ticketing
-platform. All tickets are basically Trello cards. The database is only
-holding references to the tickets. The ticketing system aims to resolve
-requests and complaints from customers as quickly as possible. It is
-important to assign a ticket to the correct category to maintain tickets
-easily. Therefore, there are some ticket categories. To add/ list
-category please click on `Categories` that is listed under `Tickets`
-in the sidebar.
+To create a new ticket, however, following steps must be done (depending on whether the ticket is to resolve a customer-specific issue or rather a system-level technical problem):
 
-## Adding User to Ticketing System
+1. **Ticket for a specific customer:**
 
-As already mentioned, the ticketing system is using Trello. To be able
-to assign tickets internally, all the staff has to be registered on
-[Trello](https://trello.com>). The user name is been used to associate
-the Trello user to MPManager users.
+   a) If the customer calls the company headquarters, it makes sense to generate the ticket directly from the website interface. Choose the customer from the “Customer” menu and create a ticket.
 
-To add a user click on `Users` in the list below `Tickets`. It will
-ask you the `Ticketing System Tag`. That is the name that begins with
-an **@** in the Trello user profile.
+   b) If the customer reports an issue to an Agent on site, it makes sense for the Agent to generate the ticket via the Agent App (see “Android Apps” section below). Note: Agents at present can create tickets but cannot be assigned tickets (unlike maintenance service providers). This may be adjusted with additional development work or by first registering the Agent as well as a “Maintenance Service Provider” in MPM.
+
+   The newly created ticket will now be shown on both that customer’s page as well as on the “Ticket” menu.
+
+2. **Tickets as System Maintenance Requests**: kindly check the “Maintenance” section below.

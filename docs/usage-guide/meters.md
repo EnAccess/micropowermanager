@@ -1,21 +1,11 @@
 ---
-order: 8
+order: 9
 ---
 
 # Meters
 
-The `Meters` link on the sidebar loads a list that contains all
-registered meters with some additional details such as its serial
-number, assigned tariff, etc.. The search area on the page searches in
-`serial_number` and `tariff name`.
+The “Meter” menu is a list of all registered electricity meter devices on the MPM account. It is only applicable for companies managing mini-grid customers (if a company only has SHS and/or e-bike devices, this page will be blank).
 
-By clicking on a meter in the list, a new `meter detail` page will be
-loaded. This page, contains `basic information`, `meter details`,
-and `meter transactions`. If the meter can send its usage data it also
-shows it in an additional `meter reading` section. The
-`Basic Information` section contains the total revenue that the meter
-made, the owner, when the last payment occurs, and the registration
-date. `Meter Details` are meter specified details such as the
-manufacturer name, the serial number, assigned tariff, and its
-connection type. `Meter transactions` is a basic list that contains
-all transactions that hit the meter.
+The “Meter” menu shows, in tabular form, the meter serial number, the tariff applying to that meter, the meter manufacturer and the meter model/type. Upon clicking on a given device number, the accumulated meter transactions are shown.
+
+As outlined on the “Setting up your MPM company account” above, registering a new meter device must be done via the Customer Registration App. What can be done from the MPM website interface is re-assign existing meters from customer to customer.
