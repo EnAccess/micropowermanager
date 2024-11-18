@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Laravel Erd</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <erd-editor
+      automatic-layout
+      system-dark-mode
+      enable-theme-builder
+    ></erd-editor>
+    <script>
+      const checkModuleSupport = () =>
+        "supports" in HTMLScriptElement
+          ? HTMLScriptElement.supports("module")
+          : "noModule" in document.createElement("script")
+
+      const createScript = (src) => {
+        return checkModuleSupport()
+          ? import(src)
+          : new Promise((resolve, reject) => {
+              const script = document.createElement("script")
+              script.onload = () => resolve()
+              script.onerror = () => reject()
+              script.src = src
+              document.body.appendChild(script)
+            })
+      }
+
+      const loader = (src, fallback) => {
+        return createScript(src).catch(() => createScript(fallback))
+      }
+
+      const sql = atob(
+        "Q1JFQVRFIFRBQkxFIGNvbXBhbmllcyAoCiAgICBpZCBiaWdpbnQgTk9UIE5VTEwgQVVUT19JTkNSRU1FTlQsCiAgICBuYW1lIHZhcmNoYXIoMjU1KSBOT1QgTlVMTCwKICAgIGFkZHJlc3MgdmFyY2hhcigyNTUpIE5PVCBOVUxMLAogICAgcGhvbmUgdmFyY2hhcigyNTUpIE5PVCBOVUxMLAogICAgY291bnRyeV9pZCBpbnRlZ2VyKDExKSBOT1QgTlVMTCBERUZBVUxUIC0xLAogICAgY3JlYXRlZF9hdCBkYXRldGltZSwKICAgIHVwZGF0ZWRfYXQgZGF0ZXRpbWUsCiAgICBlbWFpbCB2YXJjaGFyKDI1NSkgTk9UIE5VTEwsCiAgICBwcm90ZWN0ZWRfcGFnZV9wYXNzd29yZCB2YXJjaGFyKDI1NSksCiAgICBQUklNQVJZIEtFWShpZCkKKQpDUkVBVEUgVEFCTEUgY29tcGFueV9kYXRhYmFzZXMgKAogICAgaWQgYmlnaW50IE5PVCBOVUxMIEFVVE9fSU5DUkVNRU5ULAogICAgY29tcGFueV9pZCBpbnRlZ2VyKDExKSBOT1QgTlVMTCwKICAgIGRhdGFiYXNlX25hbWUgdmFyY2hhcigyNTUpIE5PVCBOVUxMLAogICAgY3JlYXRlZF9hdCBkYXRldGltZSwKICAgIHVwZGF0ZWRfYXQgZGF0ZXRpbWUsCiAgICBQUklNQVJZIEtFWShpZCkKKQpDUkVBVEUgVEFCTEUgY29tcGFueV9qb2JzICgKICAgIGlkIGJpZ2ludCBOT1QgTlVMTCBBVVRPX0lOQ1JFTUVOVCwKICAgIGNvbXBhbnlfaWQgYmlnaW50LAogICAgam9iX25hbWUgdmFyY2hhcigyNTUpIE5PVCBOVUxMLAogICAgam9iX3V1aWQgdmFyY2hhcigyNTUpLAogICAgc3RhdHVzIGludGVnZXIoMTEpIE5PVCBOVUxMLAogICAgY3JlYXRlZF9hdCBkYXRldGltZSwKICAgIHVwZGF0ZWRfYXQgZGF0ZXRpbWUsCiAgICBtZXNzYWdlIHZhcmNoYXIoMjU1KSwKICAgIHRyYWNlIHZhcmNoYXIoMjU1KSwKICAgIFBSSU1BUlkgS0VZKGlkKQopCkNSRUFURSBUQUJMRSBkYXRhYmFzZV9wcm94aWVzICgKICAgIGlkIGJpZ2ludCBOT1QgTlVMTCBBVVRPX0lOQ1JFTUVOVCwKICAgIGVtYWlsIHZhcmNoYXIoMjU1KSBOT1QgTlVMTCwKICAgIGZrX2NvbXBhbnlfaWQgaW50ZWdlcigxMSkgTk9UIE5VTEwsCiAgICBma19jb21wYW55X2RhdGFiYXNlX2lkIGludGVnZXIoMTEpIE5PVCBOVUxMLAogICAgY3JlYXRlZF9hdCBkYXRldGltZSwKICAgIHVwZGF0ZWRfYXQgZGF0ZXRpbWUsCiAgICBQUklNQVJZIEtFWShpZCkKKQpDUkVBVEUgVEFCTEUgbXBtX3BsdWdpbnMgKAogICAgaWQgYmlnaW50IE5PVCBOVUxMIEFVVE9fSU5DUkVNRU5ULAogICAgdXNhZ2VfdHlwZSB2YXJjaGFyKDI1NSkgTk9UIE5VTEwgREVGQVVMVCBnZW5lcmFsLAogICAgbmFtZSB2YXJjaGFyKDI1NSkgTk9UIE5VTEwsCiAgICBkZXNjcmlwdGlvbiB0ZXh0IE5PVCBOVUxMLAogICAgY3JlYXRlZF9hdCBkYXRldGltZSwKICAgIHVwZGF0ZWRfYXQgZGF0ZXRpbWUsCiAgICB0YWlsX3RhZyB2YXJjaGFyKDI1NSksCiAgICBpbnN0YWxsYXRpb25fY29tbWFuZCB2YXJjaGFyKDI1NSksCiAgICByb290X2NsYXNzIHZhcmNoYXIoMjU1KSwKICAgIFBSSU1BUlkgS0VZKGlkKQopCkNSRUFURSBUQUJMRSBwcm90ZWN0ZWRfcGFnZXMgKAogICAgaWQgYmlnaW50IE5PVCBOVUxMIEFVVE9fSU5DUkVNRU5ULAogICAgbmFtZSB2YXJjaGFyKDI1NSkgTk9UIE5VTEwsCiAgICBjcmVhdGVkX2F0IGRhdGV0aW1lLAogICAgdXBkYXRlZF9hdCBkYXRldGltZSwKICAgIFBSSU1BUlkgS0VZKGlkKQopCkNSRUFURSBUQUJMRSB1c2FnZV90eXBlcyAoCiAgICBpZCBiaWdpbnQgTk9UIE5VTEwgQVVUT19JTkNSRU1FTlQsCiAgICBuYW1lIHZhcmNoYXIoMjU1KSBOT1QgTlVMTCwKICAgIHZhbHVlIHZhcmNoYXIoMjU1KSBOT1QgTlVMTCwKICAgIGNyZWF0ZWRfYXQgZGF0ZXRpbWUsCiAgICB1cGRhdGVkX2F0IGRhdGV0aW1lLAogICAgUFJJTUFSWSBLRVkoaWQpCikKQUxURVIgVEFCTEUgY29tcGFuaWVzIEFERCBGT1JFSUdOIEtFWSAoaWQpIFJFRkVSRU5DRVMgY29tcGFueV9kYXRhYmFzZXMgKGNvbXBhbnlfaWQpCkFMVEVSIFRBQkxFIGNvbXBhbmllcyBBREQgRk9SRUlHTiBLRVkgKGlkKSBSRUZFUkVOQ0VTIGNvbXBhbnlfam9icyAoY29tcGFueV9pZCkKQUxURVIgVEFCTEUgY29tcGFuaWVzIEFERCBGT1JFSUdOIEtFWSAoaWQpIFJFRkVSRU5DRVMgZGF0YWJhc2VfcHJveGllcyAoY29tcGFueV9pZCkKQUxURVIgVEFCTEUgY29tcGFueV9kYXRhYmFzZXMgQUREIEZPUkVJR04gS0VZIChpZCkgUkVGRVJFTkNFUyBkYXRhYmFzZV9wcm94aWVzIChjb21wYW55X2RhdGFiYXNlX2lkKQ==",
+      )
+      const editor = document.querySelector("erd-editor")
+
+      if (checkModuleSupport()) {
+        const scripts = [
+          [
+            "http://localhost:8000/vendor/laravel-erd/erd-editor.esm.js",
+            "https://cdn.jsdelivr.net/npm/@dineug/erd-editor/+esm",
+          ],
+          [
+            "http://localhost:8000/vendor/laravel-erd/erd-editor-shiki-worker.esm.js",
+            "https://cdn.jsdelivr.net/npm/@dineug/erd-editor-shiki-worker/+esm",
+          ],
+        ].map(([src, fallback]) => loader(src, fallback))
+
+        Promise.all(scripts)
+          .then(([{ setGetShikiServiceCallback }, { getShikiService }]) =>
+            setGetShikiServiceCallback(getShikiService),
+          )
+          .then(() => editor.setSchemaSQL(sql))
+      } else {
+        const scripts = [
+          [
+            "http://localhost:8000/vendor/laravel-erd/vuerd.min.js",
+            "https://cdn.jsdelivr.net/npm/vuerd/dist/vuerd.min.js",
+          ],
+        ].map(([src, fallback]) => loader(src, fallback))
+
+        Promise.all(scripts).then(() => editor.loadSQLDDL(sql))
+      }
+    </script>
+  </body>
+</html>
