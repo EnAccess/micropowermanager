@@ -8,13 +8,13 @@ As outlined in the “Get Started with MPM section”, the MPM software package 
 
 The 3 apps (APK files) can be downloaded and installed as follows:
 
-1. Accessing this link: https://cloud.micropowermanager.com/#/welcome
+1. Accessing this link: <https://cloud.micropowermanager.com/#/welcome>
 
 2. Click on the APK app files via your phone (Android required) – For Agent App Android version 6 or above is required)
 
 3. Apps get installed
 
-4. Once the app is installed on the phone, you will be asked for an URL. Following URL can be used: https://cloud.micropowermanager.com
+4. Once the app is installed on the phone, you will be asked for an URL. Following URL can be used: <https://cloud.micropowermanager.com>
 
 5. Log in to the apps with the login credentials used to access MPM website interface (in case you have access to the website interface) or with the credentials given to you by management.
 
@@ -38,40 +38,40 @@ The purpose of the Agent app is to:
 
 1. **Generate electricity tokens** for registered devices (in case the customer cannot use mobile money, it can rely on a local Agent to generate a token on his/her behalf after a cash payment). The Agent hands in the generated token by the app, which the customer can then use to top-up the applicable device (electricity meter, SHS or e-bike). To generate a token, follow these steps:
 
-a) Select the “Customers” Menu on the Agent/Merchant app
+   a) Select the “Customers” Menu on the Agent/Merchant app
 
-b) Select the customer for which a token should be generated
+   b) Select the customer for which a token should be generated
 
-c) Click on the “+” at the bottom right of the skin
+   c) Click on the “+” at the bottom right of the skin
 
-d) Insert the currency amount the customer has paid (which should be converted into a token)
+   d) Insert the currency amount the customer has paid (which should be converted into a token)
 
-e) Press “Continue” and then “Confirm”.
+   e) Press “Continue” and then “Confirm”.
 
-f) The app will give you the token, which you then share with the customer.
-![alt text](image-14.png)
+   f) The app will give you the token, which you then share with the customer.
+   ![alt text](image-14.png)
 
 2. Sell an “Appliance” to a customer:
 
-a) Select the “Customers” Menu on the Agent/Merchant app
+   a) Select the “Customers” Menu on the Agent/Merchant app
 
-b) Select the customer to which an appliance is to be sold
+   b) Select the customer to which an appliance is to be sold
 
-c) Click on the “Appliance” logo at the bottom of the screen
+   c) Click on the “Appliance” logo at the bottom of the screen
 
-d) Click on “+” and define the appliance data (name, cost, etc.).
-![alt text](image-15.png)
+   d) Click on “+” and define the appliance data (name, cost, etc.).
+   ![alt text](image-15.png)
 
 3. Issue a ticket for a customer:
 
-a) Select the “Customers” Menu on the Agent/Merchant app
+   a) Select the “Customers” Menu on the Agent/Merchant app
 
-b) Select the customer to which a ticket is to be issued
+   b) Select the customer to which a ticket is to be issued
 
-c) Click on the “Tickets” logo at the bottom right of the screen
+   c) Click on the “Tickets” logo at the bottom right of the screen
 
-d) Click on “+” and insert customer issue to be resolved.
-![alt text](image-16.png)
+   d) Click on “+” and insert customer issue to be resolved.
+   ![alt text](image-16.png)
 
 ## SMS Gateway App
 

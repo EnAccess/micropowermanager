@@ -57,4 +57,4 @@ Note that the activated plug-ins can be changed/removed/added later on from the 
 
 **Payment flow:**
 
-![Payment Flow](payment-flow.png)
+![Payment Flow](images/payment-flow.png)
