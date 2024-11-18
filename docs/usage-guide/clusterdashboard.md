@@ -21,5 +21,6 @@ In order to add a new mini-grid, cluster or village to the MPM account, followin
 2. Select applicable option.
 
 3. Fill the required fields.
-   ![alt text](image-5.png)
-   ![alt text](image-6.png)
+
+   ![New Mini-Grid 1](images/new-mini-grid-1.png)
+   ![New Mini-Grid 2](images/new-mini-grid-2.png)

@@ -20,7 +20,7 @@ The 3 apps (APK files) can be downloaded and installed as follows:
 
 For more information on how to use the Android Apps, kindly check the "Android Apps" section of this user manual.
 
-![alt text](images/apps-overview.png)
+![App Overview](images/apps-overview.png)
 
 ## Customer Registration App
 
@@ -30,7 +30,7 @@ Once logged in, the user should go to “Add Customer” on the bottom right of 
 
 The app also enables the user to access the customer list for the systems for which it is in charge (see bottom left of the screenshot below).
 
-![alt text](image-18.png)
+![Customer Registration App Overview](images/customer-registration-app-overview.png)
 
 ## Agent/Merchant App
 
@@ -49,7 +49,8 @@ The purpose of the Agent app is to:
    e) Press “Continue” and then “Confirm”.
 
    f) The app will give you the token, which you then share with the customer.
-   ![alt text](image-14.png)
+
+   ![Agent App Token Generation](images/agent-app-token-generation.png)
 
 2. Sell an “Appliance” to a customer:
 
@@ -60,7 +61,8 @@ The purpose of the Agent app is to:
    c) Click on the “Appliance” logo at the bottom of the screen
 
    d) Click on “+” and define the appliance data (name, cost, etc.).
-   ![alt text](image-15.png)
+
+   ![Agent App Selling Appliance](images/agent-app-selling-appliance.png)
 
 3. Issue a ticket for a customer:
 
@@ -71,7 +73,8 @@ The purpose of the Agent app is to:
    c) Click on the “Tickets” logo at the bottom right of the screen
 
    d) Click on “+” and insert customer issue to be resolved.
-   ![alt text](image-16.png)
+
+   ![Agent App Create Ticket](images/agent-app-create-ticket.png)
 
 ## SMS Gateway App
 
@@ -79,4 +82,4 @@ Kindly be aware that this app has created issues with service providers. The pri
 
 The purpose of the app is to enable SMS-sending from and to the MPM website interface as well as to be able to send SMS to your customer portfolio through the same website. For this feature to work, the SMS Gateway App must be installed on the applicable mobile phone (following the steps outlined on the “Get Started with MPM”). Click then on the Copy Device Token and share the token with the headquarters staff. The users with access to the MPM account’s website interface can then insert the device token under the “Settings” page, thereby interlinking this phone with the MPM account.
 
-![alt text](image-19.png)
+![SMS Gateway App Overview](images/sms-gateway-app-overview.png)

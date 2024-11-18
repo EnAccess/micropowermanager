@@ -23,6 +23,6 @@ MPManager customers are listed under `Customers` in the sidebar. This table cont
 Some of the elements are editable (i.e.: name, surname) or addable (i.e.: ticket, address).
 New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the “+” on the “Customer” Menu.
 
-![alt text](image-10.png)
+![Customers Overview](images/customers-overview.png)
 
-![alt text](image-9.png)
+![Customers Detail](images/customers-detail.png)
