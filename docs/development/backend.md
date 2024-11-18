@@ -39,8 +39,6 @@ check the [Laravel documentation](https://laravel.com/docs/9.x/structure).
 <!-- prettier-ignore -->
 [![Central Database Schema](images/schema_tenant_database.png)](/schemas/tenant_database/index.html){target="_self"}
 
-![alt text](image.png)
-
 > [!NOTE]
 > The schema of the central database is massive.
 > In `erd-editor` you can use `Right Click => Automatic Table Placement` to get nicer overview.
