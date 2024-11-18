@@ -18,7 +18,7 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('shard')->table('asset_types', function (Blueprint $table) {
-            $table->double('price', 15, 6)->change();
+            $table->double('price', 15, 6)->nullable()->change();
         });
     }
 
@@ -30,6 +30,7 @@ return new class extends Migration {
     public function down()
     {
         Schema::connection('shard')->table('asset_types', function (Blueprint $table) {
+            $table->integer('price')->unsigned()->nullable()->change();
         });
     }
 };
