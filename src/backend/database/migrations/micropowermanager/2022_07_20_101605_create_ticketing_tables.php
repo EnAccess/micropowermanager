@@ -75,10 +75,12 @@ class CreateTicketingTables extends Migration
      */
     public function down()
     {
-        $tableNames = config('ticket.table_names');
+        $tableNames = config('tickets.table_names');
         Schema::connection('shard')->drop($tableNames['ticket']);
         Schema::connection('shard')->drop($tableNames['user']);
         Schema::connection('shard')->drop($tableNames['ticket_categories']);
+        Schema::connection('shard')->drop($tableNames['outsource_reports']);
         Schema::connection('shard')->drop($tableNames['ticket_outsource']);
+        Schema::connection('shard')->drop($tableNames['ticket_comments']);
     }
 }

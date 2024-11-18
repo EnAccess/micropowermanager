@@ -32,6 +32,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::connection('shard')->dropIfExists('person_roles');
+        Schema::connection('shard')->dropIfExists('role_definitions');
+        Schema::connection('shard')->dropIfExists('roles');
     }
 };

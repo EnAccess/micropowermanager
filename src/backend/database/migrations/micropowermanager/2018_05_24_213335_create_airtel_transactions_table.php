@@ -30,6 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::connection('shard')->dropIfExists('aritel_transactions');
+        Schema::connection('shard')->dropIfExists('airtel_transactions');
     }
 };

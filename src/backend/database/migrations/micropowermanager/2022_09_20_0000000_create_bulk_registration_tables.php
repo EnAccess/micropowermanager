@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        if (!Schema::hasTable('bulk_registration_csv_datas')) {
+        if (!Schema::connection('shard')->hasTable('bulk_registration_csv_datas')) {
             Schema::connection('shard')->create('bulk_registration_csv_datas', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id');
@@ -20,6 +20,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::connection('micropowermanager')->dropIfExists('bulk_registration_csv_datas');
+        Schema::connection('shard')->dropIfExists('bulk_registration_csv_datas');
     }
 };

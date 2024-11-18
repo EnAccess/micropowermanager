@@ -25,6 +25,7 @@ return new class extends Migration {
     public function down()
     {
         Schema::connection('shard')->table('addresses', function (Blueprint $table) {
+            $table->integer('geo_id')->nullable();
         });
     }
 };
