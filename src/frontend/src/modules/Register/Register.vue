@@ -525,7 +525,6 @@ export default {
         await this.companyService.register(this.companyForm)
         this.loading = false
 
-        await this.$store.dispatch("settings/fetchPlugins")
         const email = this.companyForm.user.email
         const password = this.companyForm.user.password
 
@@ -533,6 +532,9 @@ export default {
           email,
           password,
         })
+
+        await this.$store.dispatch("settings/fetchPlugins")
+
         await this.$store.dispatch("registrationTail/getRegistrationTail")
         setTimeout(() => {
           this.$router.push("/")

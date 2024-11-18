@@ -4,13 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
-use Database\Factories\BatteryFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\ClusterFactory;
 use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\MiniGridFactory;
-use Database\Factories\SolarFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\RefreshMultipleDatabases;
@@ -37,16 +35,6 @@ class MiniGridTest extends TestCase
         $response = $this->actingAs($this->user)->get('/api/mini-grids');
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
-    }
-
-    public function testUserGetsMiniGridsForDataStream()
-    {
-        $clusterCount = 1;
-        $miniGridCount = 2;
-        $this->createTestData($clusterCount, $miniGridCount);
-        $response = $this->actingAs($this->user)->get('/api/mini-grids?data_stream=1');
-        $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), 0);
     }
 
     public function testUserGetsMiniGridById()
@@ -95,45 +83,11 @@ class MiniGridTest extends TestCase
         $this->createTestData($clusterCount, $miniGridCount);
         $miniGrid = MiniGrid::query()->first();
         $miGridData = [
-            'data_stream' => 1,
             'name' => 'updatedName',
         ];
         $response = $this->actingAs($this->user)->put(sprintf('/api/mini-grids/%s', $miniGrid->id), $miGridData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $miGridData['name']);
-    }
-
-    public function testUserGetsBatteryReadingsForMiniGrid()
-    {
-        $clusterCount = 1;
-        $miniGridCount = 1;
-        $this->createTestData($clusterCount, $miniGridCount);
-        $batteryReading = 10;
-
-        while ($batteryReading > 0) {
-            BatteryFactory::new()->create();
-            --$batteryReading;
-        }
-
-        $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s/batteries', $this->miniGridIds[0]));
-        $response->assertStatus(200);
-        $this->assertEquals(count($response['data']), 10);
-    }
-
-    public function testUserGetsSolarReadingsForMiniGrid()
-    {
-        $clusterCount = 1;
-        $miniGridCount = 1;
-        $this->createTestData($clusterCount, $miniGridCount);
-        $solarReading = 10;
-
-        while ($solarReading > 0) {
-            SolarFactory::new()->create();
-            --$solarReading;
-        }
-
-        $response = $this->actingAs($this->user)->get(sprintf('/api/mini-grids/%s/solar', $this->miniGridIds[0]));
-        $response->assertStatus(200);
     }
 
     protected function createTestData($clusterCount = 1, $miniGridCount = 1)
@@ -155,7 +109,6 @@ class MiniGridTest extends TestCase
                 $miniGrid = MiniGridFactory::new()->create([
                     'cluster_id' => $cluster->id,
                     'name' => $this->faker->unique()->companySuffix,
-                    'data_stream' => 0,
                 ]);
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();

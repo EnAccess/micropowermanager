@@ -50,7 +50,6 @@ export class MappingService {
       lat: 0,
       lon: 0,
       markerType: null,
-      dataStream: null,
       deviceType: null,
       iconUrl: null,
     }
@@ -129,7 +128,6 @@ export class MappingService {
     serialNumber,
     lat,
     lon,
-    dataStream,
     deviceType = null,
     iconUrl = null,
   ) {
@@ -139,7 +137,6 @@ export class MappingService {
       name: name,
       lat: lat,
       lon: lon,
-      dataStream: dataStream,
       deviceType: deviceType,
       iconUrl: iconUrl,
     }

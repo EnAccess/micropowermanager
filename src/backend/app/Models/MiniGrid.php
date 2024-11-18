@@ -17,7 +17,6 @@ use MPM\Target\TargetAssignable;
  * @property int        $id
  * @property string     $name
  * @property int        $cluster_id
- * @property int        $data_stream
  * @property Collection $cities
  */
 class MiniGrid extends BaseModel implements TargetAssignable

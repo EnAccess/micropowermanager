@@ -7,7 +7,6 @@ const miniGridProperties = [
   "name",
   "created_at",
   "updated_at",
-  "data_stream",
 ]
 
 describe("MiniGridService #getMiniGrids", () => {

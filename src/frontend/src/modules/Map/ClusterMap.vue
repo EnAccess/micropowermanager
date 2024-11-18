@@ -179,15 +179,7 @@ export default {
       this.map.fitBounds(bounds)
     },
     setMiniGridMarkers() {
-      const dataLoggerActiveMiniGrids = L.featureGroup.subGroup(
-        this.markersLayer,
-      )
-      const dataLoggerInactiveMiniGrids = L.featureGroup.subGroup(
-        this.markersLayer,
-      )
       const control = L.control.layers(null, null, { collapsed: false })
-      control.addOverlay(dataLoggerActiveMiniGrids, "Data Stream Active")
-      control.addOverlay(dataLoggerInactiveMiniGrids, "Data Stream Inactive")
       control.addTo(this.map)
       this.mappingService.markingInfos
         .filter(
@@ -216,16 +208,9 @@ export default {
             parent.routeToDetail("/dashboards/mini-grid", markingInfo.id)
           })
 
-          if (markingInfo.dataStream > 0) {
-            miniGridMarker.addTo(dataLoggerActiveMiniGrids)
-          } else {
-            miniGridMarker.addTo(dataLoggerInactiveMiniGrids)
-          }
           miniGridMarker.addTo(this.markersLayer)
         })
       this.map.addLayer(this.markersLayer)
-      this.map.addLayer(dataLoggerActiveMiniGrids)
-      this.map.addLayer(dataLoggerInactiveMiniGrids)
     },
   },
 }

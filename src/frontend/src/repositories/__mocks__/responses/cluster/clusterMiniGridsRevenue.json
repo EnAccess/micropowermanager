@@ -7,7 +7,6 @@
         "name": "Konde",
         "created_at": null,
         "updated_at": "2021-02-02T20:17:45.000000Z",
-        "data_stream": 1,
         "period": {
           "2021-01": {
             "revenue": 76002
@@ -30,7 +29,6 @@
         "name": "Wette",
         "created_at": null,
         "updated_at": "2021-02-04T16:58:03.000000Z",
-        "data_stream": 1,
         "period": {
           "2021-01": {
             "revenue": 153734
@@ -53,7 +51,6 @@
         "name": "Tumbe",
         "created_at": null,
         "updated_at": "2020-11-10T11:39:23.000000Z",
-        "data_stream": 1,
         "period": {
           "2021-01": {
             "revenue": 68239

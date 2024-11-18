@@ -78,7 +78,6 @@ class AgentSellApplianceTest extends TestCase
         MiniGrid::query()->create([
             'cluster_id' => 1,
             'name' => 'Test-Grid',
-            'data_stream' => 0,
         ]);
         Agent::query()->create([
             'person_id' => 1,
