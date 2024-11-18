@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +16,10 @@ return new class extends Migration {
     {
         Schema::connection('shard')->table('asset_types', function (Blueprint $table) {
             $table->dropColumn('price');
-            $table->dropColumn('default_rate');
         });
         Schema::connection('shard')->table('assets', function (Blueprint $table) {
             $table->renameColumn('default_price', 'price');
+            $table->dropColumn('default_rate');
         });
         Schema::connection('shard')->table('asset_people', function (Blueprint $table) {
             $table->renameColumn('asset_type_id', 'asset_id');
@@ -42,10 +44,13 @@ return new class extends Migration {
         });
         Schema::connection('shard')->table('assets', function (Blueprint $table) {
             $table->renameColumn('price', 'default_price');
+            $table->integer('default_rate');
         });
+        if (!Type::hasType('double')) {
+            Type::addType('double', FloatType::class);
+        }
         Schema::connection('shard')->table('asset_types', function (Blueprint $table) {
             $table->double('price', 15, 6)->nullable();
-            $table->integer('default_rate');
         });
     }
 };
