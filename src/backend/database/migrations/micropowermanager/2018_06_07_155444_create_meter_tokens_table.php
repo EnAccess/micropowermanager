@@ -29,6 +29,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::connection('shard')->dropIfExists('tokens');
+        Schema::connection('shard')->dropIfExists('meter_tokens');
     }
 };

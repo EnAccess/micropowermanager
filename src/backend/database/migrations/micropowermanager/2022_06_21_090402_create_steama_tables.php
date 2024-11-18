@@ -318,10 +318,11 @@ return new class extends Migration {
         Schema::connection('shard')->dropIfExists('steama_tariffs');
         Schema::connection('shard')->dropIfExists('steama_transactions');
         Schema::connection('shard')->dropIfExists('steama_user_types');
-        Schema::connection('shard')->dropIfExists('stema_sync_actions');
+        Schema::connection('shard')->dropIfExists('steama_sync_actions');
         Schema::connection('shard')->dropIfExists('steama_settings');
         Schema::connection('shard')->dropIfExists('steama_sms_settings');
         Schema::connection('shard')->dropIfExists('steama_sync_settings');
+        Schema::connection('shard')->dropIfExists('steama_sms_notified_customers');
         Schema::connection('shard')->dropIfExists('steama_sms_bodies');
         Schema::connection('shard')->dropIfExists('steama_sms_variable_default_values');
         Schema::connection('shard')->dropIfExists('steama_sms_feedback_words');

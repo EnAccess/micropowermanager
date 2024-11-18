@@ -30,6 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::connection('shard')->dropIfExists('tariffs');
+        Schema::connection('shard')->dropIfExists('meter_tariffs');
     }
 };

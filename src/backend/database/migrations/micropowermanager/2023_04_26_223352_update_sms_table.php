@@ -26,5 +26,10 @@ return new class extends Migration {
      */
     public function down()
     {
+        Schema::connection('shard')->table('sms', function (Blueprint $table) {
+            $table->string('uuid')->change();
+            $table->integer('attempts')->default(0);
+            $table->integer('dispatched')->default(-1);
+        });
     }
 };
