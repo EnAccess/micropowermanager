@@ -27,5 +27,21 @@ return [
             // 'engine' => null,
             // 'options' => [],
         ],
+        'shard' => [
+            'driver' => 'mysql',
+            'host' => 'db',
+            // 'port' => '3306',
+            'database' => 'erd', // <-- this is a fake database, don't set this to your production database or development database
+            // 'username' => 'root',
+            // 'password' => 'wF9zLp2qRxaS2e',
+            // 'unix_socket' => '',
+            // 'charset' => 'utf8mb4',
+            // 'collation' => 'utf8mb4_unicode_ci',
+            // 'prefix' => '',
+            // 'prefix_indexes' => true,
+            // 'strict' => true,
+            // 'engine' => null,
+            // 'options' => [],
+        ],
     ],
 ];

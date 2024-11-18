@@ -36,20 +36,32 @@ Assumping you have a local development setup running, run
 
 ```sh
 docker exec -it backend-dev bash
-php artisan erd:generate micro_power_manager --excludes=plugins
+php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
+php artisan erd:generate shard --path=/database/migrations/micropowermanager --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
 php artisan export
 ```
 
 Run (from the host)
 
 ```sh
-cp src/backend/dist/laravel-erd/index.html docs/.public/schemas/schema_central_database.html
+cp -r src/backend/dist/laravel-erd/ docs/.public/schemas/
 ```
 
-Go to [laravel-erd](http://localhost:8000/laravel-erd) and export PNG using "right click -> export" and save it as
+Go to each
+
+- [laravel-erd](http://localhost:8000/laravel-erd/central_database)
+- [laravel-erd](http://localhost:8000/laravel-erd/tenant_database)
+
+and export PNG by either
+
+- using "right click -> export"
+- or your operating system's screenshot tool
+
+and save these as
 
 ```sh
-docs/.public/schemas/schema_central_database.png
+docs/development/images/schema_central_database.png
+docs/development/images/schema_central_database.png
 ```
 
 ## Further Read

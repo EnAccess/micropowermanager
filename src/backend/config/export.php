@@ -2,6 +2,7 @@
 
 return [
     'paths' => [
-        '/laravel-erd',
+        '/laravel-erd/central_database',
+        '/laravel-erd/tenant_database',
     ],
 ];
