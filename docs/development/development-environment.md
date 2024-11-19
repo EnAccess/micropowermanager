@@ -33,7 +33,8 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
 
 ## Pre-requisites
 
-- A docker container runtime with [Docker Compose](https://docs.docker.com/compose/) (for example [Docker Desktop](https://www.docker.com/products/docker-desktop))
+- A docker container runtime with [Docker Compose](https://docs.docker.com/compose/) (for example [Docker Desktop](https://www.docker.com/products/docker-desktop)).
+  Make sure to configure at least 4GB of memory and 50GB disk (more doesn't hurt either) to the Docker Virtual Machine (VM).
 - Working installation of [git](https://git-scm.com/)
 - A Text editor (While you can use any text editor you're comfortable with, we recommend [VS Code](https://code.visualstudio.com/) for this project)
 
@@ -180,7 +181,11 @@ For frontend developmenet it can be helpful to use the Vue DevTools.
 
 ### Docker build errors
 
+**Problem:**
 Certain Docker build errors can be related to interfering volumes that were created in previous runs of MPM.
+
+**Solution:**
+
 If you encounter Docker build errors, try removing orphaned containers by
 
 ```sh
@@ -188,3 +193,26 @@ docker compose down --volumes --remove-orphans
 docker-compose build --no-cache
 docker-compose up
 ```
+
+### Containers get killed at runtime
+
+**Problem:**
+
+The containers builds fine, but when running them via `docker compose up` some of the containers get killed randomly without throwing an error.
+
+The logs could contain something like this:
+
+```sh
+frontend-dev | killed
+```
+
+**Solution:**
+
+Make sure your Docker's Virtual Machine (VM) has enough resources.
+For example through [setting on Docker Desktop](https://docs.docker.com/desktop/settings-and-maintenance/settings/).
+
+We recommend the following settings
+
+- CPU: 4 or more
+- Memory: 4GB or more
+- Disk: 50GB or more
