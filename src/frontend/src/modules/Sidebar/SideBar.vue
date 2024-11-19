@@ -28,7 +28,6 @@
             <router-link
               v-if="!hasSubMenu(menu)"
               :to="menu.path"
-              :exact-path="true"
               :key="'menu' + menu.path"
             >
               <md-list-item>
@@ -68,7 +67,6 @@
                     :key="sub.path"
                     :to="subMenuUrl(menu.path, sub.path)"
                     class="sub-menu"
-                    :exact-path="true"
                   >
                     <template
                       v-if="
@@ -247,7 +245,7 @@ export default {
   background-color: rgba(32, 66, 32, 0.74);
 }
 
-.exact-active {
+.active {
   background: #6b6a6a !important;
   position: relative;
   width: calc(100%) !important;
