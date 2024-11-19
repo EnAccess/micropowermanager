@@ -131,7 +131,7 @@ export const exportedRoutes = [
   },
   {
     path: "/",
-    component: ClusterOverviewPage,
+    redirect: "/clusters",
     name: "cluster-list-dashboard",
     meta: {
       layout: "default",
@@ -143,40 +143,7 @@ export const exportedRoutes = [
     },
   },
   {
-    path: "/clusters",
-    component: ChildRouteWrapper,
-    children: [
-      {
-        path: "",
-        component: ClusterOverviewPage,
-        name: "cluster-list",
-        meta: {
-          layout: "default",
-          breadcrumb: {
-            level: "base",
-            name: "Clusters",
-            link: "/clusters",
-          },
-        },
-      },
-      {
-        path: ":id",
-        component: ClusterDetailPage,
-        name: "cluster-detail",
-        meta: {
-          layout: "default",
-          breadcrumb: {
-            level: "detail",
-            name: "Clusters",
-            link: "/clusters",
-            target: "id",
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: "/dashboards",
+    path: "",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
@@ -188,16 +155,45 @@ export const exportedRoutes = [
     children: [
       {
         path: "clusters",
-        redirect: "/",
+        component: ChildRouteWrapper,
         meta: {
           sidebar: {
             enabled: true,
             name: "Clusters",
           },
         },
+        children: [
+          {
+            path: "",
+            component: ClusterOverviewPage,
+            name: "cluster-list",
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Clusters",
+                link: "/clusters",
+              },
+            },
+          },
+          {
+            path: ":id",
+            component: ClusterDetailPage,
+            name: "cluster-detail",
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "detail",
+                name: "Clusters",
+                link: "/clusters",
+                target: "id",
+              },
+            },
+          },
+        ],
       },
       {
-        path: "mini-grid",
+        path: "dashboards/mini-grid",
         component: ChildRouteWrapper,
         meta: {
           sidebar: {
@@ -390,7 +386,7 @@ export const exportedRoutes = [
     ],
   },
   {
-    path: "/tickets",
+    path: "",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
@@ -401,7 +397,7 @@ export const exportedRoutes = [
     },
     children: [
       {
-        path: "",
+        path: "tickets",
         component: TicketList,
         meta: {
           layout: "default",
@@ -412,14 +408,14 @@ export const exportedRoutes = [
         },
       },
       {
-        path: "settings/users",
+        path: "tickets-settings/users",
         component: TicketSettingsUsers,
         meta: {
           layout: "default",
         },
       },
       {
-        path: "settings/categories",
+        path: "tickets-settings/categories",
         component: TicketSettingsCategories,
         meta: {
           layout: "default",
@@ -470,7 +466,7 @@ export const exportedRoutes = [
     ],
   },
   {
-    path: "/meters",
+    path: "",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
@@ -481,18 +477,7 @@ export const exportedRoutes = [
     },
     children: [
       {
-        path: "types",
-        component: MeterTypeList,
-        meta: {
-          layout: "default",
-          sidebar: {
-            enabled: true,
-            name: "Types",
-          },
-        },
-      },
-      {
-        path: "",
+        path: "meters",
         component: ChildRouteWrapper,
         meta: {
           sidebar: {
@@ -527,6 +512,17 @@ export const exportedRoutes = [
             },
           },
         ],
+      },
+      {
+        path: "meters-types",
+        component: MeterTypeList,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Types",
+          },
+        },
       },
     ],
   },
@@ -698,7 +694,7 @@ export const exportedRoutes = [
     },
   },
   {
-    path: "/agents",
+    path: "",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
@@ -709,8 +705,8 @@ export const exportedRoutes = [
     },
     children: [
       {
-        path: "",
-        component: AgentList,
+        path: "agents",
+        component: ChildRouteWrapper,
         meta: {
           layout: "default",
           sidebar: {
@@ -718,39 +714,41 @@ export const exportedRoutes = [
             name: "List",
           },
         },
+        children: [
+          {
+            path: "",
+            component: AgentList,
+            meta: {
+              layout: "default",
+            },
+          },
+          {
+            path: ":id",
+            component: AgentDetail,
+            meta: {
+              layout: "default",
+              breadcrumb: {
+                level: "base",
+                name: "Agents",
+                link: "/agents",
+                target: "id",
+              },
+            },
+          },
+        ],
       },
       {
-        path: "commission-types",
-        redirect: "/commissions",
+        path: "commissions",
+        component: AgentCommissionTypeList,
         meta: {
+          layout: "default",
           sidebar: {
             enabled: true,
             name: "Commission Types",
           },
         },
       },
-      {
-        path: ":id",
-        component: AgentDetail,
-        meta: {
-          layout: "default",
-          breadcrumb: {
-            level: "base",
-            name: "Agents",
-            link: "/agents",
-            target: "id",
-          },
-        },
-      },
     ],
-  },
-  {
-    // FIXME: This should probably be part of agents menu and endpoint
-    path: "/commissions",
-    component: AgentCommissionTypeList,
-    meta: {
-      layout: "default",
-    },
   },
   {
     // FIXME: Should this be part of the Customer route?
