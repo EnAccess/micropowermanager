@@ -41,7 +41,10 @@ class PersonService implements IBaseService
 
         return $this->person->newQuery()->with(
             [
-                'addresses' => fn ($q) => $q->orderBy('is_primary')->with('city', fn ($q) => $q->whereHas('location'))
+                'addresses' => fn ($q) => $q->orderBy('is_primary')
+                    ->with('city', fn ($q) => $q->whereHas('location'))
+                    ->with('city.location')
+                    ->with('geo')
                     ->get(),
                 'citizenship',
                 'roleOwner.definitions',
