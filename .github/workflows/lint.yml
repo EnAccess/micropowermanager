@@ -1,7 +1,7 @@
 name: Fix Code Style
- 
+
 on: [push]
- 
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -9,23 +9,22 @@ jobs:
       fail-fast: true
       matrix:
         php: [8.3]
- 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
- 
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: json, dom, curl, libxml, mbstring
           coverage: none
- 
+
       - name: Install Pint
         run: composer global require laravel/pint
         working-directory: ./src/backend
- 
+
       - name: Run Pint
         run: pint
         working-directory: ./src/backend
- 
