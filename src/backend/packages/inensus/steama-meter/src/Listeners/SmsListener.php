@@ -39,9 +39,11 @@ class SmsListener
 
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
-            $this->smsService->sendSms($steamaCustomer,
+            $this->smsService->sendSms(
+                $steamaCustomer,
                 SteamaSmsTypes::BALANCE_FEEDBACK,
-                SteamaSmsConfig::class);
+                SteamaSmsConfig::class
+            );
 
             return;
         }

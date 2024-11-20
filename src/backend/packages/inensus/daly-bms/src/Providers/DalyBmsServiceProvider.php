@@ -63,8 +63,10 @@ class DalyBmsServiceProvider extends ServiceProvider
                 if (count($filesystem->glob($path.'*_create_daly_bms_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_daly_bms_tables.php')[0];
 
-                    file_put_contents($file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_daly_bms_tables.php.stub'));
+                    file_put_contents(
+                        $file,
+                        file_get_contents(__DIR__.'/../../database/migrations/create_daly_bms_tables.php.stub')
+                    );
                 }
 
                 return $filesystem->glob($path.'*_create_daly_bms_tables.php');

@@ -83,7 +83,8 @@ class CheckPayments extends AbstractSharedCommand
         ];
         $this->eBikeService->update(
             $eBike,
-            $updatingData);
+            $updatingData
+        );
 
         $creator = $this->user->newQuery()->firstOrCreate([
             'name' => 'System',

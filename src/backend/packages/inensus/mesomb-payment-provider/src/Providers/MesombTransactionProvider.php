@@ -57,8 +57,10 @@ class MesombTransactionProvider implements ITransactionProvider
 
     public function saveCommonData(): Model
     {
-        return $this->mesombTransactionService->associateMesombTransactionWithTransaction($this->mesombTransaction,
-            $this->transaction);
+        return $this->mesombTransactionService->associateMesombTransactionWithTransaction(
+            $this->mesombTransaction,
+            $this->transaction
+        );
     }
 
     public function sendResult(bool $requestType, Transaction $transaction)
@@ -107,7 +109,9 @@ class MesombTransactionProvider implements ITransactionProvider
     private function checkSenderHasOnlyOneMeterRegistered($senderAddress): void
     {
         $senderMeters = $senderAddress->newQuery()->whereHasMorph(
-            'owner', [Person::class])
+            'owner',
+            [Person::class]
+        )
             ->first()->owner()->first()->meters();
         $senderMetersCount = $senderMeters->count();
         if ($senderMetersCount > 1 || $senderMetersCount == 0) {

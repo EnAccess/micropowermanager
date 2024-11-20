@@ -36,6 +36,7 @@
     "friendsofphp/php-cs-fixer": "^3.64",
     "knuckleswtf/scribe": "^4.38",
     "larastan/larastan": "^2.0",
+    "laravel/pint": "^1.18",
     "mockery/mockery": "^1.0",
     "nunomaduro/collision": "^6.1",
     "phpstan/phpstan": "^1.1",
@@ -103,6 +104,8 @@
     "php-cs-fixer-fix": "php-cs-fixer fix --diff",
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
-    "phpstan-analyse": "phpstan analyse --memory-limit=2G --no-progress"
+    "phpstan-analyse": "phpstan analyse --memory-limit=2G --no-progress",
+    "lint-test":"pint --test",
+    "lint-repair":"pint --repair"
   }
 }

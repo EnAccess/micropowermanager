@@ -62,8 +62,10 @@ class SwiftaServiceProvider extends ServiceProvider
                 if (count($filesystem->glob($path.'*_create_swifta_payment_provider_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_swifta_payment_provider_tables.php')[0];
 
-                    file_put_contents($file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_swifta_payment_provider_tables.php.stub'));
+                    file_put_contents(
+                        $file,
+                        file_get_contents(__DIR__.'/../../database/migrations/create_swifta_payment_provider_tables.php.stub')
+                    );
                 }
 
                 return $filesystem->glob($path.'*_create_swifta_payment_provider_tables.php');

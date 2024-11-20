@@ -89,10 +89,13 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                         return true;
                     }
                     $adminId = $cluster->manager->id;
-                    $adminAddress = $this->address->whereHasMorph('owner', [Person::class],
+                    $adminAddress = $this->address->whereHasMorph(
+                        'owner',
+                        [Person::class],
                         function ($q) use ($adminId) {
                             $q->where('id', $adminId);
-                        })->first();
+                        }
+                    )->first();
                     if (!$adminAddress) {
                         return true;
                     }

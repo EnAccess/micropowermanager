@@ -544,9 +544,11 @@ class SteamaCustomerService implements ISynchronizeService
     public function getSteamaCustomerWithPhone($phoneNumber)
     {
         $person = $this->person::with(['addresses'])
-            ->whereHas('addresses', static function ($q) use ($phoneNumber) {
-                $q->where('phone', $phoneNumber);
-            }
+            ->whereHas(
+                'addresses',
+                static function ($q) use ($phoneNumber) {
+                    $q->where('phone', $phoneNumber);
+                }
             )->first();
 
         return $this->customer->newQuery()->with(['site', 'mpmPerson.meters.meter'])->where('mpm_customer_id', $person->id)->first();

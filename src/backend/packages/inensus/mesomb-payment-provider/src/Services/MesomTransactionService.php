@@ -12,8 +12,8 @@ class MesomTransactionService
 
     public function __construct(
         MesombTransaction $mesombTransaction,
-        Transaction $transaction)
-    {
+        Transaction $transaction
+    ) {
         $this->mesombTransaction = $mesombTransaction;
         $this->transaction = $transaction;
     }

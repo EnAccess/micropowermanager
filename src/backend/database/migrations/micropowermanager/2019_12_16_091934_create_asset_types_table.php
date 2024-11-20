@@ -6,7 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -22,7 +22,8 @@ return new class extends Migration {
         });
 
         // Insert initial data
-        DB::connection('shard')->table('asset_types')->insert([
+        DB::connection('shard')->table('asset_types')->insert(
+            [
             [
                 'name' => 'Solar Home System',
                 'created_at' => Carbon::now(),

@@ -55,8 +55,10 @@ class ConnectionGroupTest extends TestCase
         $connectionGroupCount = 1;
         $this->createTestData($connectionGroupCount);
         $connectionGroupData = ['name' => 'Updated Connection Group'];
-        $response = $this->actingAs($this->user)->put(sprintf('/api/connection-groups/%s',
-            $this->connectonGroupIds[0]), $connectionGroupData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/connection-groups/%s',
+            $this->connectonGroupIds[0]
+        ), $connectionGroupData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $connectionGroupData['name']);
     }

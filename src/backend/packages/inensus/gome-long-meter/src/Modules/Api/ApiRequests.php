@@ -22,12 +22,14 @@ class ApiRequests
             $url .= $key.'='.$value.'&';
         }
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
-                ]);
+                ]
+            );
             $result = json_decode((string) $request->getBody(), true);
 
             if ($result['ReturnCode'] !== 0) {

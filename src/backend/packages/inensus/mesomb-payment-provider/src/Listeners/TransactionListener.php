@@ -26,10 +26,12 @@ class TransactionListener
 
     public function subscribe(Dispatcher $events)
     {
-        $events->listen('transaction.successful',
+        $events->listen(
+            'transaction.successful',
             'Inensus\MesombPaymentProvider\Listeners\TransactionListener@onTransactionSuccess'
         );
-        $events->listen('transaction.failed',
+        $events->listen(
+            'transaction.failed',
             'Inensus\MesombPaymentProvider\Listeners\TransactionListener@onTransactionFailed'
         );
     }

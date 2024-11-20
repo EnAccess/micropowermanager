@@ -81,8 +81,10 @@ class ClusterRevenueTest extends TestCase
         $meterCount = 2;
         $transactionCount = 1;
         $this->createTestData($clusterCount, $meterCount, $transactionCount);
-        $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s/revenue/analysis',
-            $this->clusterIds[0]));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/clusters/%s/revenue/analysis',
+            $this->clusterIds[0]
+        ));
         $response->assertStatus(200);
     }
 
@@ -92,8 +94,10 @@ class ClusterRevenueTest extends TestCase
         $meterCount = 1;
         $transactionCount = 1;
         $this->createTestData($clusterCount, $meterCount, $transactionCount);
-        $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s/cities-revenue',
-            $this->clusterIds[0]));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/clusters/%s/cities-revenue',
+            $this->clusterIds[0]
+        ));
         $response->assertStatus(200);
         $totalRevenue = array_reduce($response['data'], function ($acc, $curr) {
             return $acc + $curr['totalRevenue'];
@@ -107,8 +111,10 @@ class ClusterRevenueTest extends TestCase
         $meterCount = 1;
         $transactionCount = 1;
         $this->createTestData($clusterCount, $meterCount, $transactionCount);
-        $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s/cities-revenue?period=weekly',
-            $this->clusterIds[0]));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/clusters/%s/cities-revenue?period=weekly',
+            $this->clusterIds[0]
+        ));
         $response->assertStatus(200);
         $totalRevenue = array_reduce($response['data'], function ($acc, $curr) {
             return $acc + $curr['totalRevenue'];

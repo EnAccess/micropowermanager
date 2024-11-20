@@ -138,8 +138,10 @@ Route::group(['prefix' => 'paymenthistories', 'middleware' => 'jwt.verify'], fun
     Route::get('/{person}/period', 'PaymentHistoryController@getPaymentPeriod')->where('personId', '[0-9]+');
     Route::get('/debt/{personId}', 'PaymentHistoryController@debts')->where('personId', '[0-9]+');
     Route::post('/overview', 'PaymentHistoryController@getPaymentRange');
-    Route::get('/{personId}/payments/{period}/{limit?}/{order?}', 'PaymentHistoryController@show')->where('personId',
-        '[0-9]+');
+    Route::get('/{personId}/payments/{period}/{limit?}/{order?}', 'PaymentHistoryController@show')->where(
+        'personId',
+        '[0-9]+'
+    );
 });
 // People
 Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static function () {
@@ -259,13 +261,17 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
     Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffMeterParameterController@updateForMeter');
 });
 // Transactions
-Route::group(['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
+Route::group(
+    ['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
     static function () {
         Route::post('/airtel', 'TransactionController@store');
         Route::post('/vodacom', ['as' => 'vodacomTransaction', 'uses' => 'TransactionController@store']);
-        Route::post('/agent',
-            ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']);
-    });
+        Route::post(
+            '/agent',
+            ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']
+        );
+    }
+);
 
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {
     Route::delete('/{timeOfUsageId}', 'TimeOfUsageController@destroy');

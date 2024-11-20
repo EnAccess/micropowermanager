@@ -72,7 +72,8 @@ class SyncBikes extends AbstractSharedCommand
         $eBike = $this->eBikeService->getBySerialNumber($deviceData['Code']);
         $this->eBikeService->update(
             $eBike,
-            $updatingData);
+            $updatingData
+        );
 
         $address = $this->deviceAddressService->getAddressByDevice($eBike->device);
         $geoData = [

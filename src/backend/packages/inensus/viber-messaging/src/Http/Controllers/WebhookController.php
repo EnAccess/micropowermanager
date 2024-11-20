@@ -69,8 +69,12 @@ class WebhookController extends Controller
                 $viberContact = $this->viberContactService->getByRegisteredMeterSerialNumber($meterSerialNumber);
 
                 if ($viberContact) {
-                    $this->answerToCustomer($bot, $botSender, $event,
-                        $this->setAlreadyRegisteredMessage($meterSerialNumber));
+                    $this->answerToCustomer(
+                        $bot,
+                        $botSender,
+                        $event,
+                        $this->setAlreadyRegisteredMessage($meterSerialNumber)
+                    );
 
                     return;
                 }

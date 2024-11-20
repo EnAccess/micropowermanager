@@ -76,7 +76,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw $e;
         }
     }
@@ -115,7 +116,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw $e;
         }
     }

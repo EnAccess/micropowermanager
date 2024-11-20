@@ -25,7 +25,8 @@ class CalinMeterServiceProvider extends ServiceProvider
         Relation::morphMap(
             [
                 'calin_transaction' => CalinTransaction::class,
-            ]);
+            ]
+        );
     }
 
     public function register()

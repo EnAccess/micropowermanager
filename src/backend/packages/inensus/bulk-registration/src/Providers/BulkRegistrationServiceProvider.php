@@ -23,8 +23,10 @@ class BulkRegistrationServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../../config/bulk-registration.php',
-            'bulk-registration');
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/bulk-registration.php',
+            'bulk-registration'
+        );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         /*     $this->app->bind(GeographicalLocationFinder::class,function($app){
@@ -42,7 +44,8 @@ class BulkRegistrationServiceProvider extends ServiceProvider
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/bulk-registration'
+            __DIR__.'/../resources/assets' => resource_path(
+                'assets/js/plugins/bulk-registration'
             ),
         ], 'vue-components');
     }
@@ -62,8 +65,10 @@ class BulkRegistrationServiceProvider extends ServiceProvider
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_bulk-registration_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_bulk-registration_tables.php')[0];
-                    file_put_contents($file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_bulk_registration_tables.php'));
+                    file_put_contents(
+                        $file,
+                        file_get_contents(__DIR__.'/../../database/migrations/create_bulk_registration_tables.php')
+                    );
                 }
 
                 return $filesystem->glob($path.'*_create_bulk-registration_tables.php');

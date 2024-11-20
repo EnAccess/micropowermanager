@@ -72,8 +72,10 @@ class MeterTypeTest extends TestCase
             'phase' => 3,
             'max_current' => 15,
         ];
-        $response = $this->actingAs($this->user)->put(sprintf('/api/meter-types/%s',
-            $this->meterTypes[0]->id), $meterTypeData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/meter-types/%s',
+            $this->meterTypes[0]->id
+        ), $meterTypeData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['max_current'], $meterTypeData['max_current']);
         $this->assertEquals($response['data']['phase'], $meterTypeData['phase']);
@@ -90,8 +92,10 @@ class MeterTypeTest extends TestCase
         $this->createMeterManufacturer();
         $this->createPerson();
         $this->createMetersWithDifferentMeterTypes();
-        $response = $this->actingAs($this->user)->get(sprintf('/api/meter-types/%s/list',
-            $this->meterTypes[0]->id));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/meter-types/%s/list',
+            $this->meterTypes[0]->id
+        ));
         $response->assertStatus(200);
         $this->assertEquals(count($response['data']['meters']), 1);
     }

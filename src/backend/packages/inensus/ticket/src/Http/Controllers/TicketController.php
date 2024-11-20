@@ -23,8 +23,14 @@ class TicketController extends Controller
         $agentId = $request->input('agent') ?? null;
         $customerId = $request->input('customer') ?? null;
 
-        return TicketResource::make($this->ticketService->getAll($limit, $status, $agentId, $customerId, $assignedId,
-            $categoryId));
+        return TicketResource::make($this->ticketService->getAll(
+            $limit,
+            $status,
+            $agentId,
+            $customerId,
+            $assignedId,
+            $categoryId
+        ));
     }
 
     public function show(int $id): TicketResource

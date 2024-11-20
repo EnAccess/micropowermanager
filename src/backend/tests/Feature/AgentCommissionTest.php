@@ -50,8 +50,10 @@ class AgentCommissionTest extends TestCase
             'risk_balance' => -20000,
         ];
 
-        $response = $this->actingAs($this->user)->put(sprintf('/api/agents/commissions/%s',
-            $this->agentCommissions[0]->id), $putData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/agents/commissions/%s',
+            $this->agentCommissions[0]->id
+        ), $putData);
         $response->assertStatus(200);
         $this->assertEquals($putData['name'], $response['data']['name']);
         $this->assertEquals($putData['energy_commission'], $response['data']['energy_commission']);

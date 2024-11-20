@@ -43,7 +43,8 @@ class SmSmsVariableDefaultValueService
             ],
         ];
         collect($smsVariableDefaultValues)->each(function ($variable) {
-            $this->smsVariableDefaultValue->newQuery()->firstOrCreate(['variable' => $variable['variable']],
+            $this->smsVariableDefaultValue->newQuery()->firstOrCreate(
+                ['variable' => $variable['variable']],
                 $variable
             );
         });

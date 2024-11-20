@@ -50,8 +50,10 @@ class SunKingSHSApi implements IManufacturerAPI
             $this->credentialService->updateCredentials($credentials, $authResponse);
             $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
         } catch (SunKingApiResponseException $e) {
-            $this->credentialService->updateCredentials($credentials,
-                ['access_token' => null, 'token_expires_in' => null]);
+            $this->credentialService->updateCredentials(
+                $credentials,
+                ['access_token' => null, 'token_expires_in' => null]
+            );
             throw new SunKingApiResponseException($e->getMessage());
         }
 

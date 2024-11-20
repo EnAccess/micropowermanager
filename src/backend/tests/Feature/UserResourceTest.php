@@ -65,12 +65,14 @@ class UserResource extends TestCase
 
         $user = User::query()->get()[1];
 
-        $response = $this->actingAs($user)->put('/api/users/password/'.$user->id,
+        $response = $this->actingAs($user)->put(
+            '/api/users/password/'.$user->id,
             [
                 'id' => $user->id,
                 'password' => '12345',
                 'confirm_password' => '12345',
-            ]);
+            ]
+        );
         $response->assertStatus(200);
         $user = User::query()->get()[1];
         $this->assertTrue(Hash::check('12345', $user->password));

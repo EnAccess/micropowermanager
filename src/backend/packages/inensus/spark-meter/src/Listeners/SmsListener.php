@@ -42,22 +42,28 @@ class SmsListener
         if ($meterReset !== false) {
             try {
                 $this->customerService->resetMeter($sparkCustomer);
-                $this->smsService->sendSms($meter,
+                $this->smsService->sendSms(
+                    $meter,
                     SparkSmsTypes::METER_RESET_FEEDBACK,
-                    SparkSmsConfig::class);
+                    SparkSmsConfig::class
+                );
 
                 return;
             } catch (SparkAPIResponseException $exception) {
-                $this->smsService->sendSms(['meter' => $meter['serial_number'], 'phone' => $sender],
+                $this->smsService->sendSms(
+                    ['meter' => $meter['serial_number'], 'phone' => $sender],
                     SparkSmsTypes::METER_RESET_FEEDBACK,
-                    SparkSmsConfig::class);
+                    SparkSmsConfig::class
+                );
             }
         }
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
-            $this->smsService->sendSms($sparkCustomer,
+            $this->smsService->sendSms(
+                $sparkCustomer,
                 SparkSmsTypes::BALANCE_FEEDBACK,
-                SparkSmsConfig::class);
+                SparkSmsConfig::class
+            );
 
             return;
         }
