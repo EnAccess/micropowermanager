@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 class TokenListener
 {
     private $token;
+
     protected $tokenData;
 
     /**
@@ -25,9 +26,6 @@ class TokenListener
         $this->token = $token;
     }
 
-    /**
-     * @param TransactionDataContainer $transactionContainer
-     */
     public function generateToken(TransactionDataContainer $transactionContainer): void
     {
         $api = null;

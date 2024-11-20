@@ -29,22 +29,39 @@ use Inensus\SparkMeter\Models\SyncStatus;
 class CustomerService implements ISynchronizeService
 {
     private $sparkMeterApiRequests;
+
     private $rootUrl = '/customer/';
+
     private $smTableEncryption;
+
     private $person;
+
     private $smCustomer;
+
     private $smMeterModel;
+
     private $smTariff;
+
     private $smSite;
+
     private $meter;
+
     private $manufacturer;
+
     private $meterParameter;
+
     private $connectionType;
+
     private $connectionGroup;
+
     private $city;
+
     private $cluster;
+
     private $smSyncSettingService;
+
     private $smSyncActionService;
+
     private $smSmsNotifiedCustomerService;
 
     public function __construct(
@@ -104,7 +121,7 @@ class CustomerService implements ISynchronizeService
                 'hash' => $smCustomerHash,
             ]);
         }
-        if (!$customerExists) {
+        if (! $customerExists) {
             $rootUrl = '/system-info';
             $result = $this->sparkMeterApiRequests->get($rootUrl, $siteId);
             $grid = $result['grids'][0];
@@ -183,14 +200,14 @@ class CustomerService implements ISynchronizeService
             $meter = $this->meter->newQuery()->where('serial_number', $sparkCustomerMeterSerial)->first();
             $person = null;
             if ($meter === null) {
-                $meter = new Meter();
-                $meterParameter = new MeterParameter();
-                $geoLocation = new GeographicalInformation();
+                $meter = new Meter;
+                $meterParameter = new MeterParameter;
+                $geoLocation = new GeographicalInformation;
             } else {
                 $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
                 $geoLocation = $meterParameter->geo()->first();
                 if ($geoLocation === null) {
-                    $geoLocation = new GeographicalInformation();
+                    $geoLocation = new GeographicalInformation;
                 }
                 $person = $this->person->newQuery()->whereHas('meters', static function ($q) use ($meterParameter) {
                     return $q->where('id', $meterParameter->id);
@@ -244,7 +261,7 @@ class CustomerService implements ISynchronizeService
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
             $sparkCity = $site->mpmMiniGrid->cities[0];
-            $address = new Address();
+            $address = new Address;
             $address = $address->newQuery()->create([
                 'city_id' => request()->input('city_id') ?? $sparkCity->id,
             ]);

@@ -15,18 +15,31 @@ use MPM\Device\DeviceService;
 class TransactionDataContainer
 {
     public int $accessRateDebt;
+
     public Transaction $transaction;
+
     public Device $device;
+
     public ?MeterTariff $tariff;
+
     public Manufacturer $manufacturer;
+
     public Token $token;
+
     public array $paidRates;
+
     public float $chargedEnergy;
+
     public float $amount;
+
     public float $totalAmount;
+
     public float $rawAmount;
+
     public ?AssetPerson $appliancePerson;
+
     public float $installmentCost;
+
     public string $dayDifferenceBetweenTwoInstallments;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer

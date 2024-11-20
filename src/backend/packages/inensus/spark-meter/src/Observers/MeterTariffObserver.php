@@ -11,8 +11,11 @@ use Inensus\SparkMeter\Services\TariffService;
 class MeterTariffObserver
 {
     private $tariffService;
+
     private $smTableEncryption;
+
     private $smTariff;
+
     private $accessRate;
 
     public function __construct(
@@ -60,7 +63,7 @@ class MeterTariffObserver
             $updatedTariff = $this->tariffService->updateSparkTariffInfo($tariffData);
             $modelTouString = '';
             foreach ($updatedTariff['tous'] as $item) {
-                $modelTouString .= $item['start'].$item['end'].doubleval($item['value']);
+                $modelTouString .= $item['start'].$item['end'].floatval($item['value']);
             }
             $modelHash = $this->smTableEncryption->makeHash([
                 $updatedTariff['name'],

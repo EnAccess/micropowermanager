@@ -16,19 +16,33 @@ use Inensus\SteamaMeter\Models\SteamaTransaction;
 class SteamaTransactionsService implements ISynchronizeService
 {
     private $stemaMeterService;
+
     private $steamaCustomerService;
+
     private $steamaCredentialService;
+
     private $steamaSiteService;
+
     private $steamaAgentService;
+
     private $steamaTransaction;
+
     private $steamaMeter;
+
     private $steamaApi;
+
     private $thirdPartyTransaction;
+
     private $rootUrl = '/transactions';
+
     private $transaction;
+
     private $meterToken;
+
     private $steamaCustomer;
+
     private $steamaSyncSettingService;
+
     private $steamaSyncActionService;
 
     public function __construct(

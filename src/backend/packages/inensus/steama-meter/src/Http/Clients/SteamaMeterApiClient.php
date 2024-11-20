@@ -12,7 +12,9 @@ use Inensus\SteamaMeter\Models\SteamaCredential;
 class SteamaMeterApiClient
 {
     private $client;
+
     private $apiHelpers;
+
     private $credential;
 
     public function __construct(

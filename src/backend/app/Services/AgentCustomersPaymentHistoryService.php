@@ -9,8 +9,7 @@ class AgentCustomersPaymentHistoryService
 {
     public function __construct(
         private PaymentHistory $paymentHistory,
-    ) {
-    }
+    ) {}
 
     public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC')
     {

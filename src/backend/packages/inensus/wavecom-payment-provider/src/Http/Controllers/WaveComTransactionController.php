@@ -11,9 +11,7 @@ use Inensus\WavecomPaymentProvider\Services\TransactionService;
 
 class WaveComTransactionController extends Controller
 {
-    public function __construct(private TransactionService $transactionService)
-    {
-    }
+    public function __construct(private TransactionService $transactionService) {}
 
     public function uploadTransaction(UploadTransactionRequest $request): ApiResource
     {

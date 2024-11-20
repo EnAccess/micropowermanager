@@ -14,12 +14,19 @@ use Inensus\SparkMeter\Models\SyncStatus;
 class MeterModelService implements ISynchronizeService
 {
     private $sparkMeterApiRequests;
+
     private $rootUrl = '/meters';
+
     private $smTableEncryption;
+
     private $smMeterModel;
+
     private $smSite;
+
     private $meterType;
+
     private $smSyncSettingService;
+
     private $smSyncActionService;
 
     public function __construct(

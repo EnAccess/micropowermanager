@@ -25,8 +25,7 @@ class PaymentListener
         private ApplianceRatePaymentHistoryService $applianceRatePaymentHistoryService,
         private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
         private TransactionPaymentHistoryService $transactionPaymentHistoryService,
-    ) {
-    }
+    ) {}
 
     public function onEnergyPayment(ITransactionProvider $transactionProvider): void
     {
@@ -40,9 +39,7 @@ class PaymentListener
         }
     }
 
-    public function onLoanPayment(string $customer_id, int $amount): void
-    {
-    }
+    public function onLoanPayment(string $customer_id, int $amount): void {}
 
     public function onPaymentFailed(): void
     {
@@ -50,13 +47,10 @@ class PaymentListener
     }
 
     /**
-     * @param int    $amount
-     * @param string $paymentService the name of the Payment gateway
-     * @param        $paymentType
-     * @param mixed  $sender         : The number or person who sent the money
-     * @param mixed  $paidFor        the identifier for the payment. Ex; { LoanID, TokenID }
-     * @param        $payer
-     * @param        $transaction
+     * @param  int  $amount
+     * @param  string  $paymentService  the name of the Payment gateway
+     * @param  mixed  $sender  : The number or person who sent the money
+     * @param  mixed  $paidFor  the identifier for the payment. Ex; { LoanID, TokenID }
      */
     public function onPaymentSuccess(
         $amount,

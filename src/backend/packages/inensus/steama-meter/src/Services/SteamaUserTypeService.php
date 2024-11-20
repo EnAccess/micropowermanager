@@ -9,7 +9,9 @@ use Inensus\SteamaMeter\Models\SteamaUserType;
 class SteamaUserTypeService
 {
     private $connectionType;
+
     private $userType;
+
     private $subConnectionType;
 
     public function __construct(
@@ -36,14 +38,14 @@ class SteamaUserTypeService
         foreach ($connectionTypes as $key => $value) {
             $connectionType = $this->connectionType->newQuery()->where('name', $value)->first();
 
-            if (!$connectionType) {
+            if (! $connectionType) {
                 $connectionType = $this->connectionType->newQuery()->create([
                     'name' => $value,
                 ]);
             }
 
             $userType = $this->userType->newQuery()->where('name', $value)->first();
-            if (!$userType) {
+            if (! $userType) {
                 $this->userType->newQuery()->create([
                     'mpm_connection_type_id' => $connectionType->id,
                     'name' => $value,
@@ -52,7 +54,7 @@ class SteamaUserTypeService
             }
 
             $subConnectionType = $this->subConnectionType->newQuery()->where('name', $value)->first();
-            if (!$subConnectionType) {
+            if (! $subConnectionType) {
                 $this->subConnectionType->newQuery()->create([
                     'name' => $value,
                     'connection_type_id' => $connectionType->id,

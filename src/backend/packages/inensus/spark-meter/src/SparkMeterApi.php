@@ -17,6 +17,7 @@ use Inensus\SparkMeter\Services\TariffService;
 class SparkMeterApi implements IManufacturerAPI
 {
     protected $api;
+
     private $rootUrl = '/transaction/';
 
     public function __construct(

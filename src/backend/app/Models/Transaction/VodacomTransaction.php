@@ -17,7 +17,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property string transaction_date
  * @property int status
  */
-class VodacomTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
+class VodacomTransaction extends BaseModel implements FullySupportedTransactionInterface, IRawTransaction
 {
     public const RELATION_NAME = 'vodacom_transaction';
 

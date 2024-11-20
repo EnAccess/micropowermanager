@@ -17,6 +17,7 @@ use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 class CalinSmartMeterApi implements IManufacturerAPI
 {
     protected $api;
+
     private $rootUrl = '/POS_Purchase/';
 
     public function __construct(
@@ -72,7 +73,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
     }
 
     /**
-     * @param Meter $meter
+     * @param  Meter  $meter
      *
      * @throws GuzzleException
      *

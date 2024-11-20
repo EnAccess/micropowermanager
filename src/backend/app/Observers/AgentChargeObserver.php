@@ -13,8 +13,7 @@ class AgentChargeObserver
         private AgentChargeHistoryBalanceService $agentChargeHistoryBalanceService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     public function created(AgentCharge $agentCharge): void
     {

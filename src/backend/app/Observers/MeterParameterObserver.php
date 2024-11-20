@@ -10,16 +10,10 @@ use App\Services\MeterParameterService;
 
 class MeterParameterObserver
 {
-    public function __construct(private MeterParameterService $meterParameterService)
-    {
-    }
+    public function __construct(private MeterParameterService $meterParameterService) {}
 
     /**
      * Handle "deleted" event.
-     *
-     * @param MeterParameter $meterParameter
-     *
-     * @return void
      */
     public function deleted(MeterParameter $meterParameter): void
     {

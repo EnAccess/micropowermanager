@@ -72,7 +72,7 @@ class SmsNotifyTest extends TestCase
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                ! $customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -124,11 +124,11 @@ class SmsNotifyTest extends TestCase
             $notifyCustomer = $customers->filter(function ($customer) use ($sparkTransaction) {
                 return $customer->customer_id == $sparkTransaction->customer_id;
             })->first();
-            if (!$notifyCustomer) {
+            if (! $notifyCustomer) {
                 return true;
             }
             if (
-                !$notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
+                ! $notifyCustomer->mpmPerson->addresses || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                 || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -160,7 +160,7 @@ class SmsNotifyTest extends TestCase
         SmSyncSetting::query()->get()->each(function ($syncSetting) use ($syncActions) {
             $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
 
-            if (!$syncAction) {
+            if (! $syncAction) {
                 return true;
             }
             if ($syncAction->attempts >= $syncSetting->max_attempts) {
@@ -170,7 +170,7 @@ class SmsNotifyTest extends TestCase
                     'owner',
                     [User::class]
                 )->first();
-                if (!$adminAddress) {
+                if (! $adminAddress) {
                     return true;
                 }
                 $data = [

@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Validator;
 class VodacomTransactionProvider implements ITransactionProvider
 {
     private VodacomTransaction $vodacomTransaction;
+
     private Transaction $transaction;
+
     private \SimpleXMLElement $valid_data;
 
     /**
@@ -27,9 +29,9 @@ class VodacomTransactionProvider implements ITransactionProvider
     public function saveTransaction(): void
     {
         // initializes needed model
-        $this->vodacomTransaction = new VodacomTransaction();
+        $this->vodacomTransaction = new VodacomTransaction;
 
-        $this->transaction = new Transaction();
+        $this->transaction = new Transaction;
 
         // assign data
         $this->assignData($this->valid_data);
@@ -39,18 +41,15 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * Sends the final state of the transaction based on resultType.
-     *
-     * @param bool        $requestType
-     * @param Transaction $transaction
      */
     public function sendResult(bool $requestType, Transaction $transaction): void
     {
-        if (!app()->environment('production')) {
+        if (! app()->environment('production')) {
             return;
         }
         $requestContent = $this->prepareRequest($requestType);
 
-        $request = new Client();
+        $request = new Client;
 
         try {
             $response = $request->post(
@@ -67,7 +66,7 @@ class VodacomTransactionProvider implements ITransactionProvider
             );
             // request was  successful
             if ($response->getStatusCode() === 200) {
-                if (!$requestType) {
+                if (! $requestType) {
                     Log::critical(
                         'Vodacom transaction cancelled',
                         [
@@ -87,7 +86,7 @@ class VodacomTransactionProvider implements ITransactionProvider
                     // vodacom returns 0 for confirmation and 999 for cancellation request
                     // cast bool to int gives (0,1) as number. Multiply its inverse by
                     // 999 gives 0 for true and 999 for false
-                    $expectedResponseCode = (int) !$requestType * 999;
+                    $expectedResponseCode = (int) ! $requestType * 999;
                     if ((int) $xmlResponse->response->responseCode === $expectedResponseCode) {
                         // mark transaction as done
                         $this->vodacomTransaction->status = $requestType === true ? 1 : -1;
@@ -125,7 +124,6 @@ class VodacomTransactionProvider implements ITransactionProvider
      * Validates incoming request
      * stores the request data to valid_data if  request is valid.
      *
-     * @param $request
      *
      * @throws \Exception
      */
@@ -184,8 +182,6 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * The message which is been typed by the user.
-     *
-     * @return string
      */
     public function getMessage(): string
     {
@@ -194,8 +190,6 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * The amount sent by the user.
-     *
-     * @return int
      */
     public function getAmount(): int
     {
@@ -204,8 +198,6 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * The number, which sent money.
-     *
-     * @return string
      */
     public function getSender(): string
     {
@@ -224,8 +216,6 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     /**
      * Assign request data to model.
-     *
-     * @param $data
      */
     private function assignData(\SimpleXMLElement $data): void
     {
@@ -254,7 +244,7 @@ class VodacomTransactionProvider implements ITransactionProvider
         $providerPassword = $this->encryptProviderPassword($time);
         $phonePassword = $this->encryptPhonePassword();
 
-        if (!$requestType) {
+        if (! $requestType) {
             $requestContent = $this->serveResult(
                 $providerPassword,
                 $phonePassword,
@@ -278,13 +268,11 @@ class VodacomTransactionProvider implements ITransactionProvider
     /**
      * Generates result for cancel/approve transaction.
      *
-     * @param string $serviceProviderPassword
-     * @param string $phonePassword
-     * @param string $time                    Y-md H:i:s
-     * @param string $result
-     * @param int    $resultCode
-     *
-     * @return string
+     * @param  string  $serviceProviderPassword
+     * @param  string  $phonePassword
+     * @param  string  $time  Y-md H:i:s
+     * @param  string  $result
+     * @param  int  $resultCode
      */
     private function serveResult(
         $serviceProviderPassword,
@@ -359,7 +347,7 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts();
+        $conflict = new TransactionConflicts;
         $conflict->state = $message;
         $conflict->transaction()->associate($this->vodacomTransaction);
         $conflict->save();

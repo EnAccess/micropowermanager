@@ -9,8 +9,7 @@ class MeterRevenueController extends Controller
 {
     public function __construct(
         private MeterRevenueService $meterRevenueService,
-    ) {
-    }
+    ) {}
 
     /**
      * Revenue
@@ -21,10 +20,6 @@ class MeterRevenueController extends Controller
      * @bodyParam serialNumber string required.
      *
      * @responseFile responses/meters/meter.revenue.json
-     *
-     * @param $serialNumber
-     *
-     * @return ApiResource
      */
     public function show(string $serialNumber): ApiResource
     {

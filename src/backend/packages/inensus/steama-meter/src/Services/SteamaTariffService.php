@@ -7,9 +7,7 @@ use Inensus\SteamaMeter\Models\SteamaTariff;
 
 class SteamaTariffService
 {
-    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff)
-    {
-    }
+    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff) {}
 
     /**
      * This function uses one time on installation of the package.
@@ -17,7 +15,7 @@ class SteamaTariffService
     public function createTariff()
     {
         $meterTariff = $this->meterTariff->newQuery()->where('name', 'Steama External Tariff')->first();
-        if (!$meterTariff) {
+        if (! $meterTariff) {
             $meterTariff = $this->meterTariff->newQuery()->create([
                 'name' => 'Steama External Tariff',
                 'price' => 0,

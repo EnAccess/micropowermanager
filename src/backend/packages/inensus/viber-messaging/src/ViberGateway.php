@@ -13,6 +13,7 @@ use Viber\Bot;
 class ViberGateway
 {
     private $bot;
+
     private $botSender;
 
     public function __construct(
@@ -35,7 +36,7 @@ class ViberGateway
     ) {
         try {
             $this->bot->getClient()->sendMessage(
-                (new \Viber\Api\Message\Text())
+                (new \Viber\Api\Message\Text)
                     ->setSender($this->botSender)
                     ->setReceiver($viberId)
                     ->setText($body)

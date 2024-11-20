@@ -43,8 +43,7 @@ class SteamaMeterService implements ISynchronizeService
         private SteamaTariff $tariff,
         private SteamaSyncSettingService $steamaSyncSettingService,
         private StemaSyncActionService $steamaSyncActionService,
-    ) {
-    }
+    ) {}
 
     public function getMeters($request)
     {
@@ -167,14 +166,14 @@ class SteamaMeterService implements ISynchronizeService
                 $stmMeter['customer']
             )->first();
             if ($meter === null) {
-                $meter = new Meter();
-                $meterParameter = new MeterParameter();
-                $geoLocation = new GeographicalInformation();
+                $meter = new Meter;
+                $meterParameter = new MeterParameter;
+                $geoLocation = new GeographicalInformation;
             } else {
                 $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
                 $geoLocation = $meterParameter->geo()->first();
                 if ($geoLocation === null) {
-                    $geoLocation = new GeographicalInformation();
+                    $geoLocation = new GeographicalInformation;
                 }
             }
             $meter->serial_number = $meterSerial;
@@ -188,8 +187,8 @@ class SteamaMeterService implements ISynchronizeService
                     $points = $stmMeter['latitude'].','.$stmMeter['longitude'];
                 } else {
                     $points = explode(',', config('steama.geoLocation'));
-                    $latitude = strval(doubleval($points[0]) - (mt_rand(10, 1000) / 10000));
-                    $longitude = strval(doubleval($points[1]) - (mt_rand(10, 1000) / 10000));
+                    $latitude = strval(floatval($points[0]) - (mt_rand(10, 1000) / 10000));
+                    $longitude = strval(floatval($points[1]) - (mt_rand(10, 1000) / 10000));
                     $points = $latitude.','.$longitude;
                 }
 
@@ -197,7 +196,7 @@ class SteamaMeterService implements ISynchronizeService
 
                 $connectionType = $stmCustomer->userType->mpmConnectionType;
                 $connectionGroup = $this->connectionGroup->newQuery()->first();
-                if (!$connectionGroup) {
+                if (! $connectionGroup) {
                     $connectionGroup = $this->connectionGroup->newQuery()->create([
                         'name' => 'default',
                     ]);
@@ -218,7 +217,7 @@ class SteamaMeterService implements ISynchronizeService
                 $cityName = $stmCustomerAddress->addresses[0]->city->name;
 
                 $steamaCity = $this->city->newQuery()->with('miniGrid')->where('name', $cityName)->first();
-                $address = new Address();
+                $address = new Address;
                 $address = $address->newQuery()->create([
                     'city_id' => request()->input('city_id') ?? $steamaCity->id,
                 ]);

@@ -10,9 +10,13 @@ use Inensus\SparkMeter\Models\SmCredential;
 class CredentialService
 {
     private $sparkMeterApiRequests;
+
     private $smCredential;
+
     private $smTableEncryption;
+
     private $rootUrl = '/organizations';
+
     private $organizationService;
 
     public function __construct(

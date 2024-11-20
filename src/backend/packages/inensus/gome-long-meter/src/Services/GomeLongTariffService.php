@@ -11,9 +11,13 @@ use Inensus\GomeLongMeter\Modules\Api\ApiRequests;
 class GomeLongTariffService
 {
     public const API_CALL_TARIFF_LIST = '/UTSearch';
+
     public const API_CALL_TARIFF_CREATE = '/UTAdd';
+
     public const API_CALL_TARIFF_UPDATE = '/UTUpdate';
+
     public const API_CALL_TARIFF_DELETE = '/UTdelete';
+
     public const ELECTRICITY_TARIFF_TYPE = 1;
 
     public function __construct(
@@ -22,8 +26,7 @@ class GomeLongTariffService
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
         private MainSettings $mainSettings,
-    ) {
-    }
+    ) {}
 
     public function getByMpmTariffId($mpmTariffId)
     {
@@ -34,7 +37,7 @@ class GomeLongTariffService
     {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-        if (!$gomeLongTariff) {
+        if (! $gomeLongTariff) {
             $credentials = $this->credentialService->getCredentials();
             $vatEnergy = $this->mainSettings->newQuery()->first()->vat_energy;
             $params = [
@@ -61,7 +64,7 @@ class GomeLongTariffService
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if (!$gomeLongTariff) {
+            if (! $gomeLongTariff) {
                 return true;
             }
 
@@ -118,7 +121,7 @@ class GomeLongTariffService
         try {
             $credentials = $this->credentialService->getCredentials();
 
-            if (!$credentials || ($credentials->getUserId() === null
+            if (! $credentials || ($credentials->getUserId() === null
                     || $credentials->getUserPassword() === null)) {
                 return true;
             }
@@ -153,7 +156,7 @@ class GomeLongTariffService
                         'vat' => $gomeLongTariff['FVAT'],
                     ]);
                 } else {
-                    $IncidentModel = new MeterTariff();
+                    $IncidentModel = new MeterTariff;
                     $IncidentModel->unsetEventDispatcher();
                     $meterTariff = $IncidentModel->create([
                         'name' => $gomeLongTariff['FName'],

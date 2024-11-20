@@ -12,8 +12,7 @@ class OutstandingDebtsExportController
 {
     public function __construct(
         private OutstandingDebtsExportService $outstandingDebtsExportService,
-    ) {
-    }
+    ) {}
 
     public function download(): BinaryFileResponse
     {

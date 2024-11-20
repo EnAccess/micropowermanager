@@ -13,6 +13,7 @@ class Asset extends BaseModel
     use HasFactory;
 
     public const RELATION_NAME = 'appliance';
+
     protected $table = 'assets';
 
     public function assetType(): BelongsTo

@@ -14,8 +14,7 @@ class SoldApplianceDataContainer
         private AssetType $assetType,
         private AssetPerson $assetPerson,
         private ?Transaction $transaction = null,
-    ) {
-    }
+    ) {}
 
     public function getAsset()
     {

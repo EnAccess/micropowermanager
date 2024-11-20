@@ -13,6 +13,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
     use ScheduledPluginCommand;
 
     protected $signature = 'spark-meter:transactionStatusCheck';
+
     protected $description = 'Checks status of Spark Meter transactions';
 
     public function __construct(
@@ -24,7 +25,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+        if (! $this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 

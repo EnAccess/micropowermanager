@@ -5,13 +5,7 @@ namespace App\Services;
 class PeriodService
 {
     /**
-     * @param                   $startDate
-     * @param                   $endDate
-     * @param                   $interval
-     * @param                   $initialData
-     * @param (int|int[])[]|int $initialData
-     *
-     * @return array
+     * @param  (int|int[])[]|int  $initialData
      *
      * @throws \Exception
      */

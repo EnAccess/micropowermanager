@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class RegistrationTailController extends Controller
 {
-    public function __construct(private RegistrationTailService $registrationTailService)
-    {
-    }
+    public function __construct(private RegistrationTailService $registrationTailService) {}
 
     public function index(): ApiResource
     {

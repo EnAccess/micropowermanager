@@ -9,6 +9,7 @@ use Inensus\SunKingSHS\Services\SunKingCredentialService;
 class InstallPackage extends Command
 {
     protected $signature = 'sun-king-shs:install';
+
     protected $description = 'Install SunKingSHS Package';
 
     public function __construct(

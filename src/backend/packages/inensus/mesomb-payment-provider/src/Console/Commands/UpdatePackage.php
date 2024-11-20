@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class UpdatePackage extends Command
 {
     protected $signature = 'mesomb-payment-provider:update';
+
     protected $description = 'Update the Mesomb Payment Provider Integration Package';
 
     public function __construct(
@@ -48,7 +49,7 @@ class UpdatePackage extends Command
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_mesomb_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return;
         }
         DB::table('migrations')

@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 class BackupTenantDatabase extends AbstractSharedCommand
 {
     protected $signature = 'backup-tenant:run';
+
     protected $description = 'Run the backup for provided tenant database(s)';
 
     public function handle()

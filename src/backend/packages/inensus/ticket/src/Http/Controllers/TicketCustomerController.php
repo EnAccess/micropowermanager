@@ -25,8 +25,7 @@ class TicketCustomerController extends Controller
         private TicketOutSourceService $ticketOutSourceService,
         private MaintenanceUserService $maintenanceUserService,
         private MaintenanceUserTicketService $maintenanceUserTicketService,
-    ) {
-    }
+    ) {}
 
     public function store(UserTicketCreateRequest $request): TicketResource
     {

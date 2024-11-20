@@ -16,8 +16,6 @@ class SmSetting extends BaseModel
 
     /**
      * A work-around for querying the polymorphic relation with whereHas.
-     *
-     * @return BelongsToMorph
      */
     public function settingSms(): BelongsToMorph
     {
@@ -26,8 +24,6 @@ class SmSetting extends BaseModel
 
     /**
      * A work-around for querying the polymorphic relation with whereHas.
-     *
-     * @return BelongsToMorph
      */
     public function settingSync(): BelongsToMorph
     {

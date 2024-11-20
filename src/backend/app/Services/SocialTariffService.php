@@ -13,8 +13,7 @@ class SocialTariffService implements IBaseService
 {
     public function __construct(
         private SocialTariff $socialTariff,
-    ) {
-    }
+    ) {}
 
     public function create(array $socialTariffData): SocialTariff
     {

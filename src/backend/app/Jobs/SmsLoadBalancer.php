@@ -18,7 +18,9 @@ class SmsLoadBalancer extends AbstractJob
     use SerializesModels;
 
     public $timeout = 600;
+
     public $tries = 250;
+
     public $gateways;
 
     public $smsBody;
@@ -46,7 +48,7 @@ class SmsLoadBalancer extends AbstractJob
     {
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
-        $httpClient = new Client();
+        $httpClient = new Client;
         $request = $httpClient->post(
             $smsCollection[1]['setting']['url'],
             [

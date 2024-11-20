@@ -14,8 +14,7 @@ class EBikeService implements IBaseService
 {
     public function __construct(
         private EBike $eBike,
-    ) {
-    }
+    ) {}
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {
@@ -45,7 +44,7 @@ class EBikeService implements IBaseService
                 fn ($q) => $q->whereHas(
                     'person',
                     fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%')
-                    ->orWhere('surname', 'LIKE', '%'.$term.'%')
+                        ->orWhere('surname', 'LIKE', '%'.$term.'%')
                 )
             )
             ->orWhere(

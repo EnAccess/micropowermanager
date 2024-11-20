@@ -10,9 +10,7 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources\AbstractApiResource;
 
 abstract class AbstractApi
 {
-    public function __construct(private Client $client)
-    {
-    }
+    public function __construct(private Client $client) {}
 
     public function doRequest(AbstractApiResource $resource): AbstractApiResource
     {

@@ -9,14 +9,19 @@ use Illuminate\Support\Facades\Log;
 class TransactionConfirmation extends SmsSender
 {
     protected $data;
+
     public $body = '';
+
     protected $references = [
         'header' => 'SmsTransactionHeader',
         'footer' => 'SmsTransactionFooter',
         'body' => '',
     ];
+
     public const ENERGY_CONFIRMATION = 'energy';
+
     public const ACCESS_RATE_PAYMENT = 'access rate';
+
     public const ASSET_RATE_PAYMENT = 'loan rate';
 
     public function prepareBody()

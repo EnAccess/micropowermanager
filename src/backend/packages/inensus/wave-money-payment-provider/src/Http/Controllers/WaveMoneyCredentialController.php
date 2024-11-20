@@ -16,8 +16,7 @@ class WaveMoneyCredentialController extends Controller
         private WaveMoneyCredentialService $credentialService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
         private CompanyService $companyService,
-    ) {
-    }
+    ) {}
 
     public function show(): WaveMoneyResource
     {

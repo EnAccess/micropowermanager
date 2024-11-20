@@ -7,11 +7,17 @@ namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Data;
 class TransactionCallbackData
 {
     public const STATUS_PAYMENT_CONFIRMED = 'PAYMENT_CONFIRMED';
+
     public const STATUS_BILL_COLLECTION_FAILED = 'BILL_COLLECTION_FAILED';
+
     public const STATUS_INSUFFICIENT_BALANCE = 'INSUFFICIENT_BALANCE';
+
     public const STATUS_ACCOUNT_LOCKED = 'ACCOUNT_LOCKED';
+
     public const STATUS_SCHEDULER_TRANSACTION_TIMED_OUT = 'SCHEDULER_TRANSACTION_TIMED_OUT';
+
     public const STATUS_SUCCESS = 1;
+
     public const STATUS_FAILURE = -1;
 
     public function __construct(
@@ -35,8 +41,7 @@ class TransactionCallbackData
         private ?string $additional3,
         private ?string $additional4,
         private ?string $additional5,
-    ) {
-    }
+    ) {}
 
     public function getStatus(): string
     {

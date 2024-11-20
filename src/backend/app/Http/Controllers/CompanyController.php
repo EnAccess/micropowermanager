@@ -27,8 +27,7 @@ class CompanyController extends Controller
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
-    ) {
-    }
+    ) {}
 
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {
@@ -94,7 +93,7 @@ class CompanyController extends Controller
                             '-',
                             $mpmPlugin->tail_tag
                         ) : null,
-                        'adjusted' => !isset($mpmPlugin->tail_tag),
+                        'adjusted' => ! isset($mpmPlugin->tail_tag),
                     ];
                     Artisan::call($mpmPlugin->installation_command);
                 }

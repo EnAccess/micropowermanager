@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class OutsourceReportGenerator extends AbstractSharedCommand
 {
     protected $signature = 'reports:outsource {--start-date=}';
+
     protected $description = 'Create outsources reports';
 
     public function __construct(private TicketExportController $reports)

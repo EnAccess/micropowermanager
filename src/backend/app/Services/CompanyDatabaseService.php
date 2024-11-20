@@ -17,8 +17,7 @@ class CompanyDatabaseService implements IBaseService
     public function __construct(
         private CompanyDatabase $companyDatabase,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-    ) {
-    }
+    ) {}
 
     public function getById(int $id): CompanyDatabase
     {

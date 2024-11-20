@@ -12,6 +12,7 @@ class SolarHomeSystem extends BaseModel
     use HasFactory;
 
     public const RELATION_NAME = 'solar_home_system';
+
     protected $table = 'solar_home_systems';
 
     public function device(): MorphOne

@@ -9,10 +9,6 @@ class PersonObserver
 {
     /**
      * Handle the Person "updated" event.
-     *
-     * @param Person $person
-     *
-     * @return void
      */
     public function updated(Person $person): void
     {
@@ -21,10 +17,6 @@ class PersonObserver
 
     /**
      * Handle the User "deleted" event.
-     *
-     * @param Person $person
-     *
-     * @return void
      */
     public function deleted(Person $person): void
     {

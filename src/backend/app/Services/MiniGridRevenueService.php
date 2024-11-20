@@ -11,8 +11,7 @@ class MiniGridRevenueService
     public function __construct(
         private Transaction $transaction,
         private MeterToken $meterToken,
-    ) {
-    }
+    ) {}
 
     public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService)
     {

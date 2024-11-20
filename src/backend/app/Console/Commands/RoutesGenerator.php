@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 class RoutesGenerator extends AbstractSharedCommand
 {
     protected $signature = 'routes:generate';
+
     protected $description = 'Generates new routes from packages';
 
     public function runInCompanyScope(): void
@@ -52,7 +53,7 @@ class RoutesGenerator extends AbstractSharedCommand
         } else {
             return;
         }
-        $file = join('', $lines);
+        $file = implode('', $lines);
         file_put_contents($packageRoutesTmp, $file);
     }
 
@@ -68,7 +69,7 @@ class RoutesGenerator extends AbstractSharedCommand
                 $newLine = str_pad($value, strlen($value) + 4, ' ', STR_PAD_LEFT);
             }
             fwrite($tmp, $newLine);
-            ++$counter;
+            $counter++;
         }
         fclose($tmp);
     }

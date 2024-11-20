@@ -10,8 +10,7 @@ class MeterParameterService
 {
     public function __construct(
         private MeterParameter $meterParameter,
-    ) {
-    }
+    ) {}
 
     public function createMeterParameter(
         array $meterParameterData,

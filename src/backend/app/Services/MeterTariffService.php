@@ -14,8 +14,7 @@ class MeterTariffService implements IBaseService
 {
     public function __construct(
         private MeterTariff $meterTariff,
-    ) {
-    }
+    ) {}
 
     public function getById(int $meterTariffId): MeterTariff
     {

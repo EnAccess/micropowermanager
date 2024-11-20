@@ -23,8 +23,6 @@ class PaymentHistoryController
 
     /**
      * PaymentHistoryController constructor.
-     *
-     * @param PaymentHistory $history
      */
     public function __construct(PaymentHistory $history)
     {
@@ -39,11 +37,8 @@ class PaymentHistoryController
      * @urlParam limit integer
      * @urlParam order string
      *
-     * @param int    $payerId
-     * @param string $period
-     * @param null   $limit
-     * @param string $order
-     *
+     * @param  null  $limit
+     * @param  string  $order
      * @return array
      */
     public function show(int $payerId, string $period, $limit = null, $order = 'ASC')
@@ -79,8 +74,7 @@ class PaymentHistoryController
      *
      * @urlParam personId integer required
      *
-     * @param $personId
-     *
+     * @param  $personId
      * @return ApiResource
      *
      * @throws \Exception
@@ -107,10 +101,7 @@ class PaymentHistoryController
      *
      * @urlParam personId integer required
      *
-     * @param int      $personId
-     * @param int|null $year
      *
-     * @return array
      **/
     public function byYear(int $personId, ?int $year = null): array
     {
@@ -130,8 +121,7 @@ class PaymentHistoryController
      * @urlParam personId integer required
      * checks if the person has any debts to the system
      *
-     * @param int $personId
-     *
+     * @param  int  $personId
      * @return ApiResource
      */
     public function debts($personId)
@@ -160,8 +150,6 @@ class PaymentHistoryController
      *
      * @bodyParam begin string
      * @bodyParam end string
-     *
-     * @return ApiResource
      *
      * @throws \Exception
      */

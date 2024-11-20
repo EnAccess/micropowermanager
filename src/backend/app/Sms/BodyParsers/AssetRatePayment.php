@@ -7,6 +7,7 @@ use App\Models\PaymentHistory;
 class AssetRatePayment extends SmsBodyParser
 {
     protected $variables = ['appliance_type_name', 'amount'];
+
     protected $paymentHistory;
 
     public function __construct(PaymentHistory $paymentHistory)

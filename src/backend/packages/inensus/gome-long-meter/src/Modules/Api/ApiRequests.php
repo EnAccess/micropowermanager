@@ -12,8 +12,7 @@ class ApiRequests
 {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
     public function get(GomeLongCredential $credentials, array $params, string $slug)
     {

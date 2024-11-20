@@ -7,9 +7,7 @@ interface IMeterReader
     /**
      * Reads the data for a single meter.
      *
-     * @param     $meterIdentifier
-     * @param int $type            defines what to read from the remote api
-     *
+     * @param  int  $type  defines what to read from the remote api
      * @return mixed
      */
     public function readMeter($meterIdentifier, $type);
@@ -17,10 +15,8 @@ interface IMeterReader
     /**
      * Reads the data for a given meter list.
      *
-     * @param     $meterList
-     * @param int $type      defines what to read from the remote api
-     *                       * @param array $options
-     *
+     * @param  int  $type  defines what to read from the remote api
+     *                     * @param array $options
      * @return mixed
      */
     public function readBatch($meterList, $type, $options);

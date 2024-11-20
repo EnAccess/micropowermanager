@@ -11,12 +11,16 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
-class SwiftaTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
+class SwiftaTransaction extends BaseModel implements FullySupportedTransactionInterface, IRawTransaction
 {
     public const RELATION_NAME = 'swifta_transaction';
+
     public const STATUS_SUCCESS = 1;
+
     public const STATUS_PENDING = 0;
+
     public const STATUS_FAILED = -1;
+
     public const STATUS_REQUESTED = -2;
 
     protected $table = 'swifta_transactions';
@@ -26,9 +30,6 @@ class SwiftaTransaction extends BaseModel implements IRawTransaction, FullySuppo
         return $this->amount;
     }
 
-    /**
-     * @return MorphOne
-     */
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

@@ -11,8 +11,7 @@ class DalyBmsCredentialController extends Controller
 {
     public function __construct(
         private DalyBmsCredentialService $credentialService,
-    ) {
-    }
+    ) {}
 
     public function show(): DalyBmsResource
     {

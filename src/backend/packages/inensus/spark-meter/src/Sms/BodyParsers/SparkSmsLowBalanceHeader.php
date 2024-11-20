@@ -8,6 +8,7 @@ use Inensus\SparkMeter\Models\SmCustomer;
 class SparkSmsLowBalanceHeader extends SmsBodyParser
 {
     protected $variables = ['name', 'surname'];
+
     protected $sparkCustomer;
 
     public function __construct(SmCustomer $sparkCustomer)

@@ -17,15 +17,25 @@ use Inensus\SparkMeter\Models\SyncStatus;
 class SiteService implements ISynchronizeService
 {
     private $site;
+
     private $sparkMeterApiRequests;
+
     private $rootUrl = '/organizations';
+
     private $smTableEncryption;
+
     private $organizationService;
+
     private $cluster;
+
     private $miniGrid;
+
     private $city;
+
     private $geographicalInformation;
+
     private $smSyncSettingService;
+
     private $smSyncActionService;
 
     public function __construct(
@@ -102,8 +112,8 @@ class SiteService implements ISynchronizeService
             }
         )->first();
         $points = explode(',', config('spark.geoLocation'));
-        $latitude = strval(doubleval($points[0]) + (mt_rand(10, 10000) / 10000));
-        $longitude = strval(doubleval($points[1]) + (mt_rand(10, 10000) / 10000));
+        $latitude = strval(floatval($points[0]) + (mt_rand(10, 10000) / 10000));
+        $longitude = strval(floatval($points[1]) + (mt_rand(10, 10000) / 10000));
         $points = $latitude.','.$longitude;
         $geographicalInformation->update([
             'points' => $points,
@@ -132,8 +142,8 @@ class SiteService implements ISynchronizeService
 
             $site->is_authenticated = true;
             $site->is_online = Carbon::parse($system['last_sync_date'])
-                    ->toDateTimeString() > Carbon::now()->utc()
-                    ->subMinutes(15)->toDateTimeString();
+                ->toDateTimeString() > Carbon::now()->utc()
+                ->subMinutes(15)->toDateTimeString();
         } catch (\Exception $e) {
             $site->is_authenticated = false;
             $site->is_online = false;

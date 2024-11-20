@@ -17,6 +17,7 @@ class CreateDummyCompanyWithData extends Command
         'dummy_ticket_data.sql',
         'dummy_transaction_data.sql',
     ];
+
     public const DUMMY_COMPANY_DATA = [
         'name' => 'Dummy Company',
         'address' => 'Dummy Address',
@@ -25,14 +26,17 @@ class CreateDummyCompanyWithData extends Command
         'email' => 'dummy@company.com',
         'protected_page_password' => '123123',
     ];
+
     public const DUMMY_COMPANY_USER = [
         'password' => '123123',
         'email' => 'dummy@user.com',
         'name' => 'Dummy User',
     ];
+
     public const DUMMY_DATABASE_NAME = 'DummyCompany_1';
 
     protected $signature = 'dummy:create-company-with-dummy-data';
+
     protected $description = 'Create a dummy company with dummy data for development environment';
 
     public function __construct(

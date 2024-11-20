@@ -11,8 +11,7 @@ class MeterConsumptionController extends Controller
     public function __construct(
         private MeterService $meterService,
         private MeterConsumptionService $meterConsumptionService,
-    ) {
-    }
+    ) {}
 
     /**
      * Consumption List
@@ -24,12 +23,6 @@ class MeterConsumptionController extends Controller
      * @urlParam     end YYYY-mm-dd format
      *
      * @responseFile responses/meters/meter.consumption.list.json
-     *
-     * @param $serialNumber
-     * @param $start
-     * @param $end
-     *
-     * @return ApiResource
      */
     public function show($serialNumber, $start, $end): ApiResource
     {

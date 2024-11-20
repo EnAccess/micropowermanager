@@ -13,6 +13,7 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
 {
     // --company-id=36
     protected $signature = 'ecosys:shift-data {--company-id=}';
+
     protected $description = 'custom data shifting command for ecosys';
 
     private $assetTypePricePeer = [

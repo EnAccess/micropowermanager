@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 class SubConnectionTypeController extends Controller
 {
-    public function __construct(private SubConnectionTypeService $subConnectionTypeService)
-    {
-    }
+    public function __construct(private SubConnectionTypeService $subConnectionTypeService) {}
 
     public function index(Request $request, $connectionTypeId = null): ApiResource
     {
@@ -27,10 +25,6 @@ class SubConnectionTypeController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @param SubConnectionTypeCreateRequest $request
-     *
-     * @return ApiResource
      */
     public function store(SubConnectionTypeCreateRequest $request): ApiResource
     {
@@ -42,9 +36,7 @@ class SubConnectionTypeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param SubConnectionType $subConnectionType
-     *
-     * @return ApiResource
+     * @param  SubConnectionType  $subConnectionType
      */
     public function update(Request $request, $subConnectionTypeId): ApiResource
     {

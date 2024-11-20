@@ -13,14 +13,11 @@ class AgentReceiptWebController extends Controller
     public function __construct(
         private AgentReceiptService $agentReceiptService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
      *
-     * @param         $agentId
-     * @param Request $request
      *
      * @return ApiResource
      */
@@ -34,7 +31,6 @@ class AgentReceiptWebController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      *
      * @return ApiResource
      */
@@ -48,9 +44,7 @@ class AgentReceiptWebController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param                           $agentId
-     * @param CreateAgentReceiptRequest $request
-     *
+     * @param  $agentId
      * @return ApiResource
      */
     public function store(CreateAgentReceiptRequest $request)

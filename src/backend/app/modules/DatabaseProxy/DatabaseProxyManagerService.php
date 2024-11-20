@@ -16,8 +16,7 @@ class DatabaseProxyManagerService
         private DatabaseProxy $databaseProxy,
         private DatabaseManager $databaseManager,
         private CompanyDatabase $companyDatabase,
-    ) {
-    }
+    ) {}
 
     public function findByEmail(string $email): DatabaseProxy
     {

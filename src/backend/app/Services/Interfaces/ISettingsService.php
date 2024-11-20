@@ -15,8 +15,7 @@ interface ISettingsService
     public function get(): ?Model;
 
     /**
-     * @param T $model
-     *
+     * @param  T  $model
      * @return T
      */
     public function update(Model $model, array $data): Model;

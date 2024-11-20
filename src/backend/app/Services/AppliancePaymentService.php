@@ -21,8 +21,7 @@ class AppliancePaymentService
         private MainSettings $mainSettings,
         private AppliancePersonService $appliancePersonService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
     public function getPaymentForAppliance($request, $appliancePerson)
     {
@@ -131,7 +130,7 @@ class AppliancePaymentService
     {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
-        if (!$device) {
+        if (! $device) {
             throw new ModelNotFoundException("No device found with $deviceSerial");
         }
 

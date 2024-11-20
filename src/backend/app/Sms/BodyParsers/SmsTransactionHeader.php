@@ -7,6 +7,7 @@ use App\Models\Transaction\Transaction;
 class SmsTransactionHeader extends SmsBodyParser
 {
     protected $variables = ['name', 'surname', 'transaction_amount'];
+
     protected $transaction;
 
     public function __construct(Transaction $transaction)

@@ -8,8 +8,7 @@ class AngazaCredentialService
 {
     public function __construct(
         private AngazaCredential $credential,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.

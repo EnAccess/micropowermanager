@@ -32,16 +32,27 @@ class MeterTest extends TestCase
     use WithFaker;
 
     private $user;
+
     private $company;
+
     private $city;
+
     private $connectionType;
+
     private $manufacturer;
+
     private $meterType;
+
     private $meter;
+
     private $meterParameter;
+
     private $meterTariff;
+
     private $person;
+
     private $token;
+
     private $transaction;
 
     public function testUserGetsMeterList()
@@ -64,7 +75,7 @@ class MeterTest extends TestCase
                 'connection_type_id' => $this->connectionType->id,
                 'connection_group_id' => $this->connectionGroup->id,
             ]);
-            --$meterCunt;
+            $meterCunt--;
         }
         $response = $this->actingAs($this->user)->get('/api/meters');
         $response->assertStatus(200);
@@ -263,7 +274,7 @@ class MeterTest extends TestCase
             ]);
             $address->owner()->associate($meterParameter)->save();
             $geographicalInformation->owner()->associate($meterParameter)->save();
-            --$meterCunt;
+            $meterCunt--;
         }
     }
 

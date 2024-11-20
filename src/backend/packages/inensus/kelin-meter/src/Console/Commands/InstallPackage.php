@@ -10,6 +10,7 @@ use Inensus\KelinMeter\Services\PackageInstallationService;
 class InstallPackage extends Command
 {
     protected $signature = 'kelin-meter:install';
+
     protected $description = 'Install KelinMeters Package';
 
     public function __construct(

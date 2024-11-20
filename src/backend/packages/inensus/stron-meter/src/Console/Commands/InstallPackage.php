@@ -9,6 +9,7 @@ use Inensus\StronMeter\Services\StronCredentialService;
 class InstallPackage extends Command
 {
     protected $signature = 'stron-meter:install';
+
     protected $description = 'Install StronMeter Package';
 
     public function __construct(

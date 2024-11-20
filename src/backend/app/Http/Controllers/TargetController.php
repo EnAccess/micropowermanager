@@ -17,8 +17,7 @@ class TargetController extends Controller
         private ClusterService $clusterService,
         private MiniGridService $miniGridService,
         private SubTargetService $subTargetService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): ApiResource
     {

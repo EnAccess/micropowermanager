@@ -15,6 +15,7 @@ class RolesService
      * @var Roles
      */
     private $role;
+
     /**
      * @var RoleDefinition
      */

@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class MpmPluginController extends Controller
 {
-    public function __construct(private MpmPluginService $mpmPluginService)
-    {
-    }
+    public function __construct(private MpmPluginService $mpmPluginService) {}
 
     public function index(Request $request): ApiResource
     {

@@ -12,8 +12,7 @@ class ApiRequests
 {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
     public function authentication($credential): array
     {

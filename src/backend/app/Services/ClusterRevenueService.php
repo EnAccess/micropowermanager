@@ -14,8 +14,7 @@ class ClusterRevenueService
         private PeriodService $periodService,
         private Cluster $cluster,
         private Transaction $transaction,
-    ) {
-    }
+    ) {}
 
     public function getTransactionsForMonthlyPeriodById(
         $clusterId,
@@ -169,10 +168,10 @@ class ClusterRevenueService
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, 0);
 
         foreach ($connectionTypes as $connectionType) {
-            if (!isset($revenueAnalysis[$connectionType->name])) {
+            if (! isset($revenueAnalysis[$connectionType->name])) {
                 $revenueAnalysis[$connectionType->name] = $periods;
             }
-            if (!isset($revenueAnalysis['Total'])) {
+            if (! isset($revenueAnalysis['Total'])) {
                 $revenueAnalysis['Total'] = $periods;
             }
 
@@ -216,11 +215,11 @@ class ClusterRevenueService
         $periods = $this->periodService->generatePeriodicList($startDate, $endDate, $period, 0);
 
         foreach ($connectionTypes as $connectionType) {
-            if (!isset($revenueAnalysis[$connectionType->name])) {
+            if (! isset($revenueAnalysis[$connectionType->name])) {
                 $revenueAnalysis[$connectionType->name] = $periods;
             }
 
-            if (!isset($revenueAnalysis['Total'])) {
+            if (! isset($revenueAnalysis['Total'])) {
                 $revenueAnalysis['Total'] = $periods;
             }
 
@@ -311,8 +310,8 @@ class ClusterRevenueService
 
     public function setDatesForRequest($startDate, $endDate): array
     {
-        if (!$startDate) {
-            $start = new \DateTime();
+        if (! $startDate) {
+            $start = new \DateTime;
             $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
             $start->setTime(0, 0, 0); // Normalize time to midnight
             $start->sub(new \DateInterval('P12M'));

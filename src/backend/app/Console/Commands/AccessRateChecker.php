@@ -8,6 +8,7 @@ use Carbon\Carbon;
 class AccessRateChecker extends AbstractSharedCommand
 {
     protected $signature = 'accessrate:check';
+
     protected $description = 'Updates the "debt" field, based on "due_date" field';
 
     public function runInCompanyScope(): void
@@ -25,7 +26,7 @@ class AccessRateChecker extends AbstractSharedCommand
             // access-rate is defined
             if ($accessRate->amount > 0) {
                 $accessRatePayment->debt += $accessRate->amount;
-                ++$accessRatePayment->unpaid_in_row;
+                $accessRatePayment->unpaid_in_row++;
             }
             $accessRatePayment->save();
 

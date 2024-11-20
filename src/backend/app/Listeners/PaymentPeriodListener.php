@@ -15,6 +15,7 @@ class PaymentPeriodListener
      * @var PaymentProfile
      */
     public $paymentProfile;
+
     /**
      * @var PaymentHistory
      */
@@ -22,9 +23,6 @@ class PaymentPeriodListener
 
     /**
      * Create the event listener.
-     *
-     * @param PaymentProfile $paymentProfile
-     * @param PaymentHistory $history
      */
     public function __construct(PaymentProfile $paymentProfile, PaymentHistory $history)
     {
@@ -40,7 +38,7 @@ class PaymentPeriodListener
             ->groupBy('transaction_id')->get();
         $totalAmount = 0;
         $difference = (new Carbon($transactions[0]->created_at))
-                ->diffInDays(new Carbon($transactions[\count($transactions) - 1]->created_at)) / \count($transactions);
+            ->diffInDays(new Carbon($transactions[\count($transactions) - 1]->created_at)) / \count($transactions);
         foreach ($transactions as $transaction) {
             $totalAmount += $transaction->amount;
         }

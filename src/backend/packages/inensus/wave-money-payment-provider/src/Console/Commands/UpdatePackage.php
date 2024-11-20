@@ -10,6 +10,7 @@ use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 class UpdatePackage extends Command
 {
     protected $signature = 'wave-money-payment-provider:update';
+
     protected $description = 'Update WaveMoney Package';
 
     public function __construct(
@@ -51,7 +52,7 @@ class UpdatePackage extends Command
             '*_create_wave_money_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return false;
         }
 

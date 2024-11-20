@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class MakeMigrationTenant extends Command
 {
     protected $signature = 'make:migration-tenant {migration-name}';
+
     protected $description = 'Create new migration file for tenant database(s)';
 
     public function handle()

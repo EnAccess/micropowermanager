@@ -17,9 +17,13 @@ class ConnectionGroupTest extends TestCase
     use WithFaker;
 
     private $user;
+
     private $company;
+
     private $companyDatabase;
+
     private $person;
+
     private $connectonGroupIds = [];
 
     public function testUserGetsConnectionGroupList()
@@ -81,7 +85,7 @@ class ConnectionGroupTest extends TestCase
         while ($connectionGroupCount > 0) {
             $connectionGroup = ConnectionGroupFactory::new()->create();
             array_push($this->connectonGroupIds, $connectionGroup->id);
-            --$connectionGroupCount;
+            $connectionGroupCount--;
         }
     }
 }

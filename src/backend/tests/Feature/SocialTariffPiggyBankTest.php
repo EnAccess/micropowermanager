@@ -44,11 +44,11 @@ class SocialTariffPiggyBankTest extends TestCase
 
         $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
         $createPiggyBankJob->handle();
-        $job = new SocialTariffPiggyBankManager();
+        $job = new SocialTariffPiggyBankManager;
         $socialTariff = SocialTariff::first();
         $socialBank = SocialTariffPiggyBank::first();
         $savings = $socialBank->savings;
-        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; ++$i) {
+        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; $i++) {
             $job->handle();
             if ($i % ($socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance)) {
                 $this->assertEquals($savings + ($socialTariff->daily_allowance * $i), $socialBank->fresh()->savings);

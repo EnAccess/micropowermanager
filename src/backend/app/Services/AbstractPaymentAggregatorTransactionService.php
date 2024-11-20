@@ -16,10 +16,15 @@ use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 abstract class AbstractPaymentAggregatorTransactionService
 {
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
+
     protected string $payerPhoneNumber;
+
     protected string $meterSerialNumber;
+
     protected float $minimumPurchaseAmount;
+
     protected int $customerId;
+
     protected float $amount;
 
     public function __construct(
@@ -28,22 +33,21 @@ abstract class AbstractPaymentAggregatorTransactionService
         private Transaction $transaction,
         private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
-    ) {
-    }
+    ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
     {
-        if (!$meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
+        if (! $meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
-        if (!$meterTariff = $meter->meterParameter->tariff) {
+        if (! $meterTariff = $meter->meterParameter->tariff) {
             throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 
         $customerId = $meter->MeterParameter->owner_id;
 
-        if (!$customerId) {
+        if (! $customerId) {
             throw new ModelNotFoundException('Customer not found with meter serial number you entered');
         }
 
@@ -94,7 +98,7 @@ abstract class AbstractPaymentAggregatorTransactionService
         $validator = resolve('MinimumPurchaseAmountValidator');
 
         try {
-            if (!$validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
+            if (! $validator->validate($transactionData, $this->getMinimumPurchaseAmount())) {
                 throw new TransactionAmountNotEnoughException('Transaction amount is not enough');
             }
         } catch (TransactionAmountNotEnoughException $e) {

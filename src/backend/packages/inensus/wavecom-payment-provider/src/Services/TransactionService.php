@@ -17,9 +17,7 @@ use ParseCsv\Csv;
 
 class TransactionService extends AbstractPaymentAggregatorTransactionService
 {
-    public function __construct(private Csv $csv)
-    {
-    }
+    public function __construct(private Csv $csv) {}
 
     public function createTransactionsFromFile(UploadedFile $file): array
     {
@@ -30,7 +28,7 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
         foreach ($this->csv->data as $transactionData) {
             try {
                 $this->validateTransaction($transactionData);
-                $transaction = new WaveComTransaction();
+                $transaction = new WaveComTransaction;
 
                 $transaction->setTransactionId($transactionData['transaction_id']);
                 $transaction->setSender($transactionData['sender']);
@@ -46,10 +44,11 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
                 } else {
                     $skippedTransactions[] = $transactionData['transaction_id'].' unkown reason';
                 }
+
                 continue;
             }
 
-            $baseTransaction = new Transaction();
+            $baseTransaction = new Transaction;
             $baseTransaction->setAmount($transaction->getAmount());
             $baseTransaction->setSender($transaction->getSender());
             $baseTransaction->setMessage($transaction->getMessage());
@@ -60,8 +59,8 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
             TransactionDataContainer::initialize($baseTransaction);
 
             ProcessPayment::dispatch($transaction->getId())
-                 ->allOnConnection('redis')
-               ->onQueue(config('services.queues.payment'));
+                ->allOnConnection('redis')
+                ->onQueue(config('services.queues.payment'));
         }
 
         return $skippedTransactions;

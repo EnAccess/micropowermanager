@@ -27,6 +27,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 class DummyDataCreator extends AbstractSharedCommand
 {
     protected $signature = 'dummy:create-data {amount} {--company-id=} {--type=}';
+
     protected $description = 'creates dummy data for demo company';
 
     private $transactionTypes = [
@@ -73,7 +74,7 @@ class DummyDataCreator extends AbstractSharedCommand
             return;
         }
 
-        for ($i = 1; $i <= $amount; ++$i) {
+        for ($i = 1; $i <= $amount; $i++) {
             echo "$type is generating number: $i  \n";
             try {
                 DB::connection('shard')->beginTransaction();

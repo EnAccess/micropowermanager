@@ -13,9 +13,6 @@ class MesombTransaction extends BaseModel implements IRawTransaction
 {
     protected $table = 'mesomb_transactions';
 
-    /**
-     * @return MorphOne
-     */
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

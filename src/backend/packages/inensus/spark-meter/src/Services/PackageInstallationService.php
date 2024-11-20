@@ -5,9 +5,13 @@ namespace Inensus\SparkMeter\Services;
 class PackageInstallationService
 {
     private $smsSettingService;
+
     private $syncSettingService;
+
     private $smsBodyService;
+
     private $defaultValueService;
+
     private $smSmsFeedbackWordService;
 
     public function __construct(

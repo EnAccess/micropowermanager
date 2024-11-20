@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class MeterConsumption.
  *
- * @property int    $id
- * @property int    $meter_id
- * @property float  $total_consumption
- * @property float  $consumption
- * @property float  $credit_on_meter
+ * @property int $id
+ * @property int $meter_id
+ * @property float $total_consumption
+ * @property float $consumption
+ * @property float $credit_on_meter
  * @property string $reading_date
  */
 class MeterConsumption extends BaseModel

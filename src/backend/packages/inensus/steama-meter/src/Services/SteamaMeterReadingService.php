@@ -12,7 +12,9 @@ use Inensus\SteamaMeter\Models\SteamaMeter;
 class SteamaMeterReadingService
 {
     private $steamaMeter;
+
     private $steamaApi;
+
     private $meterConsumtion;
 
     public function __construct(

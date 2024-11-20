@@ -30,7 +30,7 @@ trait RelationsManager
 
     public static function getAllRelations($type = null): array
     {
-        if (!self::$relationsInitialized) {
+        if (! self::$relationsInitialized) {
             self::initAllRelations();
         }
         if ($type) {

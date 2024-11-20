@@ -2,6 +2,4 @@
 
 namespace Inensus\MesombPaymentProvider\Exceptions;
 
-class MesombPayerMustHaveOnlyOneConnectedMeterException extends \Exception
-{
-}
+class MesombPayerMustHaveOnlyOneConnectedMeterException extends \Exception {}

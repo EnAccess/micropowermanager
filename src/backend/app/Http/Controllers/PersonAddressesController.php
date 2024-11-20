@@ -15,8 +15,7 @@ class PersonAddressesController extends Controller
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-    ) {
-    }
+    ) {}
 
     /**
      * Addresses
@@ -25,10 +24,6 @@ class PersonAddressesController extends Controller
      * @bodyParam    person int required the ID of the person. Example: 2
      *
      * @responseFile responses/people/person.addresses.list.json
-     *
-     * @param int $personId
-     *
-     * @return ApiResource
      *
      * @apiResourceModel \App\Models\Person\Person
      */

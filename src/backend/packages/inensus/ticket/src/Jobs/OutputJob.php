@@ -15,6 +15,7 @@ class OutputJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * @var integert
      */

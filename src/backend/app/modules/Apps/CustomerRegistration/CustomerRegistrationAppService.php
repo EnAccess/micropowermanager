@@ -24,8 +24,7 @@ class CustomerRegistrationAppService
         private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
-    ) {
-    }
+    ) {}
 
     public function createCustomer(AndroidAppRequest $request): Person
     {

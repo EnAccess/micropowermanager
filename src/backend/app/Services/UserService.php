@@ -13,9 +13,7 @@ use MPM\User\Events\UserCreatedEvent;
 
 class UserService
 {
-    public function __construct(private User $user, private MailHelperInterface $mailHelper)
-    {
-    }
+    public function __construct(private User $user, private MailHelperInterface $mailHelper) {}
 
     public function create(array $userData, ?int $companyId = null): User
     {

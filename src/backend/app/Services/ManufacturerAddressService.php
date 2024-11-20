@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class ManufacturerAddressService implements IAssignationService
 {
     private Address $address;
+
     private Manufacturer $manufacturer;
 
     public function setAssigned($address): void

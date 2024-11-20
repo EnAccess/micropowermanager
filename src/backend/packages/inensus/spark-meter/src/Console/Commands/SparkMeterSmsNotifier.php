@@ -20,16 +20,23 @@ use Inensus\SparkMeter\Sms\SparkSmsTypes;
 class SparkMeterSmsNotifier extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:smsNotifier';
+
     protected $description = 'Notifies customers on payments and low balance limits';
 
     private $smsSettingsService;
+
     private $sms;
+
     private $smTransactionService;
+
     private $smSmsNotifiedCustomerService;
+
     private $smCustomerService;
+
     private $smsService;
 
     public function __construct(
@@ -67,11 +74,11 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
                     return $customer->customer_id == $smTransaction->customer_id;
                 })->first();
 
-                if (!$notifyCustomer) {
+                if (! $notifyCustomer) {
                     return true;
                 }
                 if (
-                    !$notifyCustomer->mpmPerson->addresses
+                    ! $notifyCustomer->mpmPerson->addresses
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
@@ -107,7 +114,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
                 return true;
             }
             if (
-                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                ! $customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -125,7 +132,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 
@@ -138,14 +145,14 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
             $smsSettings = $this->smsSettingsService->getSmsSettings();
             $transactionsSettings = $smsSettings->where('state', 'Transactions')->first();
 
-            if (!$transactionsSettings) {
+            if (! $transactionsSettings) {
                 throw new CronJobException('Transaction min is not set');
             }
             $transactionMin = $transactionsSettings->not_send_elder_than_mins;
 
             $lowBalanceWarningSetting = $smsSettings->where('state', 'Low Balance Warning')->first();
 
-            if (!$lowBalanceWarningSetting) {
+            if (! $lowBalanceWarningSetting) {
                 throw new CronJobException('Low balance min is not set');
             }
 

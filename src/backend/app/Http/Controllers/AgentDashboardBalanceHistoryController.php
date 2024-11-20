@@ -14,8 +14,7 @@ class AgentDashboardBalanceHistoryController extends Controller
         private AgentService $agentService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentReceiptService $agentReceiptService,
-    ) {
-    }
+    ) {}
 
     public function show(Request $request, Response $response)
     {

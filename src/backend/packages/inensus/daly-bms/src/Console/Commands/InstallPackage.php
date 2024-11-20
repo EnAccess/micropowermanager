@@ -9,6 +9,7 @@ use Inensus\DalyBms\Services\ManufacturerService;
 class InstallPackage extends Command
 {
     protected $signature = 'daly-bms:install';
+
     protected $description = 'Install DalyBms Package';
 
     public function __construct(

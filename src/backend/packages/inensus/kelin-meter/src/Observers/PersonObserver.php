@@ -10,8 +10,11 @@ use Inensus\KelinMeter\Services\KelinCustomerService;
 class PersonObserver
 {
     private $customerService;
+
     private $apiHelpers;
+
     private $person;
+
     private $kelinCustomer;
 
     public function __construct(

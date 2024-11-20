@@ -16,7 +16,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property int status
  * @property string sender
  */
-class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
+class AgentTransaction extends BaseModel implements FullySupportedTransactionInterface, IRawTransaction
 {
     public const RELATION_NAME = 'agent_transaction';
 

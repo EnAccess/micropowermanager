@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class EBikeDeviceService implements IAssignationService
 {
     private Device $device;
+
     protected EBike $eBike;
 
     public function setAssigned($assigned): void

@@ -8,6 +8,7 @@ use Inensus\ViberMessaging\Services\ViberCredentialService;
 class InstallPackage extends Command
 {
     protected $signature = 'viber-messaging:install';
+
     protected $description = 'Install ViberMessaging Package';
 
     public function __construct(

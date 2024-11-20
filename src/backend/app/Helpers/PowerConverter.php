@@ -14,7 +14,7 @@ class PowerConverter
     ];
 
     /**
-     * @param int|string $power
+     * @param  int|string  $power
      */
     public static function convert($power, $powerUnit, string $expectedUnit = 'Wh')
     {

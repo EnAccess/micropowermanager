@@ -14,8 +14,7 @@ class MpmPluginService implements IBaseService
 {
     public function __construct(
         private MpmPlugin $mpmPlugin,
-    ) {
-    }
+    ) {}
 
     public function getById($id): MpmPlugin
     {

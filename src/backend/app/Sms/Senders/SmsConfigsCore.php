@@ -13,6 +13,8 @@ abstract class SmsConfigsCore
         SmsTypes::MANUAL_SMS => 'App\Sms\Senders\ManualSms',
         SmsTypes::RESEND_INFORMATION => 'App\Sms\Senders\ResendInformationNotification',
     ];
+
     public $bodyParsersPath = 'App\\Sms\\BodyParsers\\';
+
     public $servicePath = 'App\Services\SmsBodyService';
 }

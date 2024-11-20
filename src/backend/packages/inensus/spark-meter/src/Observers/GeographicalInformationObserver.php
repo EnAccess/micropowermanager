@@ -18,8 +18,7 @@ class GeographicalInformationObserver
         private Person $person,
         private SmCustomer $smCustomer,
         private PluginsService $pluginsService,
-    ) {
-    }
+    ) {}
 
     public function updated(GeographicalInformation $geographicalInformation)
     {

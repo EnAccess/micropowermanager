@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class AgentTransactionTransactionService implements IAssignationService
 {
     private Transaction $transaction;
+
     private AgentTransaction $agentTransaction;
 
     public function setAssigned($transaction): void

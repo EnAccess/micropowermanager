@@ -16,8 +16,6 @@ class HistoryListener
 
     /**
      * Create the event listener.
-     *
-     * @param $historyModel
      */
     public function __construct(History $historyModel)
     {
@@ -27,10 +25,8 @@ class HistoryListener
     /**
      * Saves a new event in to the histories table.
      *
-     * @param mixed       $data    is an object which should be stored on the histories table
-     * @param string      $content the stringified message about the entry
-     * @param string      $type
-     * @param string|null $field
+     * @param  mixed  $data  is an object which should be stored on the histories table
+     * @param  string  $content  the stringified message about the entry
      */
     public function save($data, string $content, string $type, ?string $field): void
     {

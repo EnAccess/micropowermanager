@@ -10,8 +10,7 @@ class ViberCredentialService
         private ViberCredential $credential,
         private WebhookService $webhookService,
         private AccountService $accountService,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
@@ -44,11 +43,11 @@ class ViberCredentialService
         ]);
         $credential->save();
 
-        if (!$credential->has_webhook_created) {
+        if (! $credential->has_webhook_created) {
             $this->webhookService->createWebHook($credential);
         }
 
-        if (!$credential->deep_link) {
+        if (! $credential->deep_link) {
             $uri = $this->accountService->getAccountInfo($credential);
             $credential->deep_link = "viber://pa?chatURI=$uri&text=register+change_this_with_your_meter_serial_number";
             $credential->save();

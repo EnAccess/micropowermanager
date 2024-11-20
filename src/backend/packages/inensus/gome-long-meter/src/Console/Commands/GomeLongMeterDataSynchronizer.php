@@ -10,6 +10,7 @@ use Inensus\GomeLongMeter\Services\GomeLongTariffService;
 class GomeLongMeterDataSynchronizer extends AbstractSharedCommand
 {
     protected $signature = 'gome-long-meter:dataSync';
+
     protected $description = 'Synchronize data that needs to be updated from GomeLong Meter Meter.';
 
     public function __construct(

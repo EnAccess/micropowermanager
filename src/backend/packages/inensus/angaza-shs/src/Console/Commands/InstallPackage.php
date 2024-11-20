@@ -9,6 +9,7 @@ use Inensus\AngazaSHS\Services\ManufacturerService;
 class InstallPackage extends Command
 {
     protected $signature = 'angaza-shs:install';
+
     protected $description = 'Install AngazaSHS Package';
 
     public function __construct(

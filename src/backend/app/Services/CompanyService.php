@@ -13,8 +13,7 @@ class CompanyService implements IBaseService
 {
     public function __construct(
         private Company $company,
-    ) {
-    }
+    ) {}
 
     public function getByName($name): Company
     {

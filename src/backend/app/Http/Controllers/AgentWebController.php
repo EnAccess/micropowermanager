@@ -25,8 +25,7 @@ class AgentWebController extends Controller
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
         private DatabaseProxyService $databaseProxyService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): ApiResource
     {

@@ -17,7 +17,7 @@ class InsertSparkMeterApi
     public function registerSparkMeterManufacturer()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SparkMeterApi')->first();
-        if (!$api) {
+        if (! $api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Spark Meters',
                 'website' => 'https://www.sparkmeter.io/',

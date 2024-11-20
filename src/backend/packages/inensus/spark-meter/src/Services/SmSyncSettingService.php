@@ -11,7 +11,9 @@ use Inensus\SparkMeter\Models\SmSyncSetting;
 class SmSyncSettingService
 {
     private $syncSetting;
+
     private $setting;
+
     private $syncActionService;
 
     public function __construct(SmSyncSetting $syncSetting, SmSetting $setting, SmSyncActionService $syncActionService)
@@ -28,7 +30,7 @@ class SmSyncSettingService
 
         $syncSite = $this->syncSetting->newQuery()->where('action_name', 'Sites')->first();
 
-        if (!$syncSite) {
+        if (! $syncSite) {
             $now = Carbon::now();
             $siteSetting = $this->setting->newQuery()->make();
             $syncSite = $this->syncSetting->newQuery()->create([
@@ -46,7 +48,7 @@ class SmSyncSettingService
         }
 
         $syncMeterMotel = $this->syncSetting->newQuery()->where('action_name', 'MeterModels')->first();
-        if (!$syncMeterMotel) {
+        if (! $syncMeterMotel) {
             $now = Carbon::now();
             $meterModelSetting = $this->setting->newQuery()->make();
             $syncMeterMotel = $this->syncSetting->newQuery()->create([
@@ -64,7 +66,7 @@ class SmSyncSettingService
         }
 
         $syncTariff = $this->syncSetting->newQuery()->where('action_name', 'Tariffs')->first();
-        if (!$syncTariff) {
+        if (! $syncTariff) {
             $now = Carbon::now();
             $tariffSetting = $this->setting->newQuery()->make();
             $syncTariff = $this->syncSetting->newQuery()->create([
@@ -82,7 +84,7 @@ class SmSyncSettingService
         }
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
-        if (!$syncCustomer) {
+        if (! $syncCustomer) {
             $now = Carbon::now();
             $customerSetting = $this->setting->newQuery()->make();
             $syncCustomer = $this->syncSetting->newQuery()->create([
@@ -100,7 +102,7 @@ class SmSyncSettingService
         }
 
         $syncTransaction = $this->syncSetting->newQuery()->where('action_name', 'Transactions')->first();
-        if (!$syncTransaction) {
+        if (! $syncTransaction) {
             $now = Carbon::now();
             $transactionSetting = $this->setting->newQuery()->make();
             $syncTransaction = $this->syncSetting->newQuery()->create([
@@ -118,7 +120,7 @@ class SmSyncSettingService
         }
 
         $syncSalesAccount = $this->syncSetting->newQuery()->where('action_name', 'SalesAccounts')->first();
-        if (!$syncSalesAccount) {
+        if (! $syncSalesAccount) {
             $now = Carbon::now();
             $salesAccountSetting = $this->setting->newQuery()->make();
             $syncSalesAccount = $this->syncSetting->newQuery()->create([

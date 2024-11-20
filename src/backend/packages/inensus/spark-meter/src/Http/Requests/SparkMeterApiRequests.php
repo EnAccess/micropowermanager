@@ -12,9 +12,13 @@ use Inensus\SparkMeter\Models\SmSite;
 class SparkMeterApiRequests
 {
     private $client;
+
     private $resultStatusChecker;
+
     private $credential;
+
     private $site;
+
     private $smCredentail;
 
     public function __construct(

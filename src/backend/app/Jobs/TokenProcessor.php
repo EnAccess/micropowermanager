@@ -19,8 +19,11 @@ class TokenProcessor extends AbstractJob
     use SerializesModels;
 
     private TransactionDataContainer $transactionContainer;
+
     private bool $reCreate;
+
     private int $counter;
+
     private const MAX_TRIES = 3;
 
     public function __construct(
@@ -90,7 +93,7 @@ class TokenProcessor extends AbstractJob
 
     private function handleTokenGenerationFailure(\Exception $e): void
     {
-        if (self::MAX_TRIES > $this->counter) {
+        if ($this->counter < self::MAX_TRIES) {
             $this->retryTokenGeneration();
 
             return;
@@ -111,7 +114,7 @@ class TokenProcessor extends AbstractJob
 
     private function retryTokenGeneration(): void
     {
-        ++$this->counter;
+        $this->counter++;
         self::dispatch(
             $this->transactionContainer,
             false,

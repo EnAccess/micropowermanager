@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class UserAppliancePersonService implements IAssignationService
 {
     private AssetPerson $appliancePerson;
+
     private User $user;
 
     public function setAssigned($appliancePerson): void

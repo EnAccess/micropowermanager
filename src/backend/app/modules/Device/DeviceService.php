@@ -12,12 +12,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Device>
  * @implements IAssociative<Device>
  */
-class DeviceService implements IBaseService, IAssociative
+class DeviceService implements IAssociative, IBaseService
 {
     public function __construct(
         private Device $device,
-    ) {
-    }
+    ) {}
 
     public function make($deviceData): Device
     {
@@ -48,14 +47,14 @@ class DeviceService implements IBaseService, IAssociative
     {
         throw new \Exception('Method getById() not yet implemented.');
 
-        return new Device();
+        return new Device;
     }
 
     public function create(array $data): Device
     {
         throw new \Exception('Method create() not yet implemented.');
 
-        return new Device();
+        return new Device;
     }
 
     public function update($device, array $deviceData): Device

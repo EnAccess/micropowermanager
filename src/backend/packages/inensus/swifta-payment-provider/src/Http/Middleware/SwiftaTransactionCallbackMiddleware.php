@@ -9,9 +9,7 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaTransactionCallbackMiddleware
 {
-    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
-    {
-    }
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
     public function handle(Request $request, \Closure $next)
     {

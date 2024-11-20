@@ -10,7 +10,9 @@ use Inensus\StronMeter\Models\StronCredential;
 class StronMeterApiRequests
 {
     private $client;
+
     private $apiHelpers;
+
     private $credential;
 
     public function __construct(

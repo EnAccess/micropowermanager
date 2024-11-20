@@ -16,8 +16,7 @@ class UserController extends Controller
         private UserService $userService,
         private DatabaseProxyService $databaseProxyService,
         private CompanyDatabaseService $companyDatabaseService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): ApiResource
     {

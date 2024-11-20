@@ -7,6 +7,7 @@ use App\Models\Person\Person;
 class SmsResendInformationHeader extends SmsBodyParser
 {
     protected $variables = ['name', 'surname'];
+
     protected $data;
 
     public function __construct($data)
@@ -16,7 +17,7 @@ class SmsResendInformationHeader extends SmsBodyParser
 
     protected function getVariableValue($variable)
     {
-        if (!is_array($this->data)) {
+        if (! is_array($this->data)) {
             $person = $this->data->meter->meterParameter->owner()->first();
         } else {
             try {

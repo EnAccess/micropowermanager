@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class MeterTypeMeterController extends Controller
 {
-    public function __construct(private MeterTypeMeterService $meterTypeMeterService)
-    {
-    }
+    public function __construct(private MeterTypeMeterService $meterTypeMeterService) {}
 
     /**
      * List with Meters
@@ -19,9 +17,6 @@ class MeterTypeMeterController extends Controller
      * @urlParam id required
      *
      * @responseFile responses/metertypes/metertypes.meter.list.json
-     *
-     * @param Request $request
-     * @param         $meterTypeId
      *
      * @return ApiResource
      */

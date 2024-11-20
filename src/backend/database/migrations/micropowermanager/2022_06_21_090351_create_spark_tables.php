@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     public function up()
     {
-        if (!Schema::hasTable('sm_api_credentials')) {
+        if (! Schema::hasTable('sm_api_credentials')) {
             Schema::connection('shard')->create('sm_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('https://www.sparkmeter.cloud/api/v0');
@@ -19,7 +20,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_customers')) {
+        if (! Schema::hasTable('sm_customers')) {
             Schema::connection('shard')->create('sm_customers', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('customer_id')->unique(); // Code of the customer, id of corresponding person in MPM
@@ -32,7 +33,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_meter_models')) {
+        if (! Schema::hasTable('sm_meter_models')) {
             Schema::connection('shard')->create('sm_meter_models', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
@@ -45,7 +46,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_organizations')) {
+        if (! Schema::hasTable('sm_organizations')) {
             Schema::connection('shard')->create('sm_organizations', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('organization_id')->unique();
@@ -55,7 +56,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sites')) {
+        if (! Schema::hasTable('sm_sites')) {
             Schema::connection('shard')->create('sm_sites', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id')->unique();
@@ -69,7 +70,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_tariffs')) {
+        if (! Schema::hasTable('sm_tariffs')) {
             Schema::connection('shard')->create('sm_tariffs', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
@@ -83,7 +84,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_transactions')) {
+        if (! Schema::hasTable('sm_transactions')) {
             Schema::connection('shard')->create('sm_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
@@ -96,7 +97,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sync_actions')) {
+        if (! Schema::hasTable('sm_sync_actions')) {
             Schema::connection('shard')->create('sm_sync_actions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sync_setting_id');
@@ -107,7 +108,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_settings')) {
+        if (! Schema::hasTable('sm_settings')) {
             Schema::connection('shard')->create('sm_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('setting_id');
@@ -116,7 +117,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sms_settings')) {
+        if (! Schema::hasTable('sm_sms_settings')) {
             Schema::connection('shard')->create('sm_sms_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('state')->unique();
@@ -126,7 +127,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sync_settings')) {
+        if (! Schema::hasTable('sm_sync_settings')) {
             Schema::connection('shard')->create('sm_sync_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('action_name')->unique();
@@ -137,7 +138,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sms_notified_customers')) {
+        if (! Schema::hasTable('sm_sms_notified_customers')) {
             Schema::connection('shard')->create('sm_sms_notified_customers', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('customer_id');
@@ -147,7 +148,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sms_bodies')) {
+        if (! Schema::hasTable('sm_sms_bodies')) {
             Schema::connection('shard')->create('sm_sms_bodies', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('reference', 50)->unique();
@@ -159,7 +160,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sms_variable_default_values')) {
+        if (! Schema::hasTable('sm_sms_variable_default_values')) {
             Schema::connection('shard')->create('sm_sms_variable_default_values', function (Blueprint $table) {
                 $table->id();
                 $table->string('variable');
@@ -168,7 +169,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sales_accounts')) {
+        if (! Schema::hasTable('sm_sales_accounts')) {
             Schema::connection('shard')->create('sm_sales_accounts', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('sales_account_id');
@@ -183,7 +184,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('sm_sms_feedback_words')) {
+        if (! Schema::hasTable('sm_sms_feedback_words')) {
             Schema::connection('shard')->create('sm_sms_feedback_words', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('meter_reset')->nullable();

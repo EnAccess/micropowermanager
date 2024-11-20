@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class AgentAssignedAppliances extends BaseModel
 {
     public const RELATION_NAME = 'agent_appliance';
+
     protected $guarded = [];
 
     public function agent(): BelongsTo

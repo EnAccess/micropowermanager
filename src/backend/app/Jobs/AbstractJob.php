@@ -19,6 +19,7 @@ abstract class AbstractJob implements ShouldQueue
     use SerializesModels;
 
     protected int $companyId;
+
     protected CompanyJob $companyJob;
 
     public ?string $parentId = null;

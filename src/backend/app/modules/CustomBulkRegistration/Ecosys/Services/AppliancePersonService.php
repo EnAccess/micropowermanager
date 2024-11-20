@@ -16,15 +16,25 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 class AppliancePersonService extends CreatorService
 {
     private $newTarifName;
+
     private ?float $price = null;
+
     private $minimumAmount;
+
     private $meterParameterId;
+
     private $personId;
+
     private $downPayment;
+
     private $applianceId;
+
     private $totalPaid;
+
     private $secondPaymentAmount;
+
     private $createdAt;
+
     private $lastPaymentDate;
 
     public function __construct(AssetPerson $appliancePerson)
@@ -82,7 +92,7 @@ class AppliancePersonService extends CreatorService
 
         while ($rawCost > 0) {
             $rawCost = $rawCost - $minimumPaymentAmount;
-            ++$rateCount;
+            $rateCount++;
         }
 
         return $rateCount;

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 class ReportGenerator extends AbstractSharedCommand
 {
     protected $signature = 'reports:city-revenue {type} {--start-date=} {--company-id=}';
+
     protected $description = 'Creates city revenue reports';
 
     public function __construct(private Reports $reports)

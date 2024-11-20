@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Log;
 class CsvDataProcessor
 {
     public const CONNECTION_GROUP = 1;
+
     private $geographicalLocationFinder;
+
     private $reflections;
+
     private $recentlyCreatedRecords;
 
     public function __construct(GeographicalLocationFinder $geographicalLocationFinder)
@@ -77,7 +80,7 @@ class CsvDataProcessor
                             app()->make($this->reflections['GeographicalInformationService']);
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meterParameter);
 
-                        $address = new Address();
+                        $address = new Address;
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);
@@ -108,7 +111,7 @@ class CsvDataProcessor
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            ++$this->recentlyCreatedRecords[$type];
+            $this->recentlyCreatedRecords[$type]++;
         }
     }
 }

@@ -12,8 +12,7 @@ class MiniGridRevenueController
     public function __construct(
         private MeterService $meterService,
         private MiniGridRevenueService $miniGridRevenueService,
-    ) {
-    }
+    ) {}
 
     public function show($miniGridId, Request $request): ApiResource
     {

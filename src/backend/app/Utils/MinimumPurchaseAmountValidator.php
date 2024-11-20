@@ -7,6 +7,7 @@ use App\Misc\TransactionDataContainer;
 class MinimumPurchaseAmountValidator
 {
     private float $restAmount;
+
     private TransactionDataContainer $transactionData;
 
     public function validate(TransactionDataContainer $transactionData, $minimumPurchaseAmount): bool

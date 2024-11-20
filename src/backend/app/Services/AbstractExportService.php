@@ -17,11 +17,17 @@ use Webpatser\Uuid\Uuid;
 abstract class AbstractExportService
 {
     protected IReader $reader;
+
     protected Worksheet $worksheet;
+
     protected Spreadsheet $spreadsheet;
+
     protected Collection $exportingData;
+
     protected string $currency;
+
     protected string $timeZone;
+
     protected string $recentlyCreatedSpreadSheetId;
 
     abstract public function setExportingData();
@@ -68,7 +74,7 @@ abstract class AbstractExportService
         $amount = strval($amount);
 
         // If the amount is not a valid float, return it as is
-        if (!is_numeric($amount) || floatval($amount) != $amount) {
+        if (! is_numeric($amount) || floatval($amount) != $amount) {
             return $amount;
         }
 

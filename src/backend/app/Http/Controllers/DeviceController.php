@@ -9,9 +9,7 @@ use MPM\Device\DeviceService;
 
 class DeviceController extends Controller
 {
-    public function __construct(private DeviceService $deviceService)
-    {
-    }
+    public function __construct(private DeviceService $deviceService) {}
 
     public function index()
     {

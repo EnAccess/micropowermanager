@@ -10,9 +10,6 @@ class Roles extends BaseModel
 {
     protected $connection = 'micro_power_manager';
 
-    /**
-     * @return BelongsTo
-     */
     public function definitions(): BelongsTo
     {
         return $this->belongsTo(RoleDefinition::class, 'role_definition_id');

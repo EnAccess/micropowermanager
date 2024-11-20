@@ -9,9 +9,7 @@ use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
 
 class MicroStarCredentialController extends Controller
 {
-    public function __construct(private MicroStarCredentialService $credentialService)
-    {
-    }
+    public function __construct(private MicroStarCredentialService $credentialService) {}
 
     public function show(): MicroStarResource
     {

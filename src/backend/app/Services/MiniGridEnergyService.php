@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MiniGridEnergyService
 {
-    public function __construct(private MiniGrid $miniGrid, private Energy $energy)
-    {
-    }
+    public function __construct(private MiniGrid $miniGrid, private Energy $energy) {}
 
     public function getById($miniGridId, $startDate, $endDate): Collection|array
     {

@@ -14,8 +14,7 @@ class CityService implements IBaseService
 {
     public function __construct(
         private City $city,
-    ) {
-    }
+    ) {}
 
     public function getCityIdsByMiniGridId($miniGridId): array
     {

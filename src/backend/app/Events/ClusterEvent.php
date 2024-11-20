@@ -19,10 +19,12 @@ class ClusterEvent
      * @var Cluster
      */
     public $cluster;
+
     /**
      * @var string
      */
     public $type;
+
     /**
      * @var mixed contains geo coordinates array or external url to fetch
      */
@@ -30,10 +32,6 @@ class ClusterEvent
 
     /**
      * Create a new event instance.
-     *
-     * @param Cluster $cluster
-     * @param string  $type
-     * @param         $data
      */
     public function __construct(Cluster $cluster, string $type, $data)
     {
@@ -45,8 +43,6 @@ class ClusterEvent
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel
     {

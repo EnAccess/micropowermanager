@@ -8,6 +8,7 @@ use App\Models\Transaction\Transaction;
 class CashTransactionService
 {
     private $cashTransaction;
+
     private $transaction;
 
     public function __construct(CashTransaction $cashTransaction, Transaction $transaction)

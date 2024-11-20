@@ -9,27 +9,16 @@ class MeterTariffMeterParameterController extends Controller
 {
     public function __construct(
         private MeterTariffMeterParameterService $meterTariffMeterParameterService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a list of meters which using a particular tariff.
-     *
-     * @param $meterTariffId
-     *
-     * @return ApiResource
      */
     public function show($meterTariffId): ApiResource
     {
         return ApiResource::make($this->meterTariffMeterParameterService->getCountById($meterTariffId));
     }
 
-    /**
-     * @param     $meterTariffId
-     * @param int $changeId
-     *
-     * @return ApiResource
-     */
     public function update($meterTariffId, int $changeId): ApiResource
     {
         $result = $this->meterTariffMeterParameterService->changeMetersTariff($meterTariffId, $changeId);

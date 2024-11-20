@@ -13,7 +13,9 @@ use Inensus\KelinMeter\Models\KelinCredential;
 class KelinMeterApiClient
 {
     private $client;
+
     private $apiHelpers;
+
     private $credential;
 
     public function __construct(

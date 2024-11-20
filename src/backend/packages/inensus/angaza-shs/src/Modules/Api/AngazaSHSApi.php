@@ -20,8 +20,7 @@ class AngazaSHSApi implements IManufacturerAPI
         private AngazaCredentialService $credentialService,
         private AngazaTransaction $angazaTransaction,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {
@@ -84,8 +83,6 @@ class AngazaSHSApi implements IManufacturerAPI
     }
 
     /**
-     * @param Meter $meters
-     *
      * @return void
      *
      * @throws ApiCallDoesNotSupportedException

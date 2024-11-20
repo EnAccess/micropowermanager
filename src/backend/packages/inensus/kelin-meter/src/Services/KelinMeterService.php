@@ -25,20 +25,33 @@ use Inensus\KelinMeter\Models\SyncStatus;
 class KelinMeterService implements ISynchronizeService
 {
     private $meter;
+
     private $rootUrl = '/listMeter';
+
     private $kelinMeter;
+
     private $kelinApiClient;
+
     private $apiHelpers;
+
     private $syncSettingService;
+
     private $syncActionService;
+
     private $kelinCustomer;
+
     private $meterParameter;
+
     private $manufacturer;
 
     private $connectionGroup;
+
     private $connectionType;
+
     private $meterTariff;
+
     private $city;
+
     private $earlyRegisteredMeters;
 
     public function __construct(
@@ -228,14 +241,14 @@ class KelinMeterService implements ISynchronizeService
                 $kelinMeter['consNo']
             )->first();
             if ($meter === null) {
-                $meter = new Meter();
-                $meterParameter = new MeterParameter();
-                $geoLocation = new GeographicalInformation();
+                $meter = new Meter;
+                $meterParameter = new MeterParameter;
+                $geoLocation = new GeographicalInformation;
             } else {
                 $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
                 $geoLocation = $meterParameter->geo()->first();
                 if ($geoLocation === null) {
-                    $geoLocation = new GeographicalInformation();
+                    $geoLocation = new GeographicalInformation;
                 }
             }
             $meter->serial_number = $meterSerial;
@@ -254,13 +267,13 @@ class KelinMeterService implements ISynchronizeService
                 $p = $points == null ? ',' : $kelinCustomer->address;
                 $geoLocation->points = $p;
                 $connectionType = $this->connectionType->newQuery()->first();
-                if (!$connectionType) {
+                if (! $connectionType) {
                     $connectionType = $this->connectionType->newQuery()->create([
                         'name' => 'default',
                     ]);
                 }
                 $connectionGroup = $this->connectionGroup->newQuery()->first();
-                if (!$connectionGroup) {
+                if (! $connectionGroup) {
                     $connectionGroup = $this->connectionGroup->newQuery()->create([
                         'name' => 'default',
                     ]);
@@ -283,7 +296,7 @@ class KelinMeterService implements ISynchronizeService
                     })->first();
 
                 $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
-                $address = new Address();
+                $address = new Address;
                 $address = $address->newQuery()->create([
                     'city_id' => $city ? $city->id : 1,
                 ]);
@@ -327,7 +340,7 @@ class KelinMeterService implements ISynchronizeService
     private function findRegisteredMeter($kelinMeter)
     {
         $meter = collect($this->earlyRegisteredMeters)->where('meter_serial', $kelinMeter['meterAddr'])->first();
-        if (!$meter) {
+        if (! $meter) {
             return $meter;
         }
 
@@ -352,7 +365,7 @@ class KelinMeterService implements ISynchronizeService
     {
         $length = strlen($meterAddress);
         $newSerial = $meterAddress[0];
-        for ($i = 0; $i < $length; ++$i) {
+        for ($i = 0; $i < $length; $i++) {
             if ($i != 0) {
                 if ($i % 4 == 0) {
                     $newSerial .= '-'.$meterAddress[$i];

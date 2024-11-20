@@ -11,8 +11,7 @@ class GomeLongCredentialController extends Controller
 {
     public function __construct(
         private GomeLongCredentialService $credentialService,
-    ) {
-    }
+    ) {}
 
     public function show(): GomeLongResource
     {

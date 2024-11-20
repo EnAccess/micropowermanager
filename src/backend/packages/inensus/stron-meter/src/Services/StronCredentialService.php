@@ -10,7 +10,9 @@ use Inensus\StronMeter\Models\StronCredential;
 class StronCredentialService
 {
     private $rootUrl = '/login/';
+
     private $credential;
+
     private $stronApi;
 
     public function __construct(

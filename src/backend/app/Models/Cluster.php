@@ -11,7 +11,7 @@ use MPM\Target\TargetAssignable;
 /**
  * Class Cluster.
  *
- * @property int    $id
+ * @property int $id
  * @property string $name
  * @property int manager_id
  * @property string geo_data

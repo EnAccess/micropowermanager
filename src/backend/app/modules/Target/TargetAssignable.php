@@ -2,6 +2,4 @@
 
 namespace MPM\Target;
 
-interface TargetAssignable
-{
-}
+interface TargetAssignable {}

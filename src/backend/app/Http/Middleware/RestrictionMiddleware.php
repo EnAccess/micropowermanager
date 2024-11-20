@@ -18,16 +18,13 @@ class RestrictionMiddleware
         private RestrictionService $restrictionService,
         private MaintenanceUserService $maintenanceUserService,
         private MiniGridService $miniGridService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
      *
-     * @param Request  $request
-     * @param \Closure $next
-     * @param          $type
-     *
+     * @param  Request  $request
+     * @param  $type
      * @return mixed
      */
     public function handle($request, \Closure $next, $target)
@@ -36,7 +33,7 @@ class RestrictionMiddleware
             $restriction = $this->restrictionService->getRestrictionForTarget($target);
             $restrictionResult = $this->handleRestriction($restriction->limit, $target, $request);
 
-            if (!$restrictionResult) {
+            if (! $restrictionResult) {
                 $baseMessage = 'Your free limit of %s is exceeded. You can order more slots below.';
 
                 if ($target === 'maintenance-user') {

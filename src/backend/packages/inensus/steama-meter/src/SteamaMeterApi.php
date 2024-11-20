@@ -107,7 +107,5 @@ class SteamaMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
-    }
+    public function clearDevice(Device $device) {}
 }

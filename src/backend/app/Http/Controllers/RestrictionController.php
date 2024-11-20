@@ -18,6 +18,7 @@ class RestrictionController extends Controller
      * @var Restriction
      */
     private $restriction;
+
     /**
      * @var Client
      */
@@ -29,9 +30,6 @@ class RestrictionController extends Controller
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * @return Response
-     */
     public function store(Request $request, Response $response): Response
     {
         $productId = $request->input('product_id');
@@ -102,11 +100,6 @@ class RestrictionController extends Controller
     }
 
     /**
-     * @param     $target
-     * @param int $toAdd
-     *
-     * @return void
-     *
      * @throws PurchaseNotProcessable
      */
     private function updateRestriction(string $target, int $toAdd = 1): void

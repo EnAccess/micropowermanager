@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class PersonPaymentHistoryService implements IAssignationService
 {
     private PaymentHistory $paymentHistory;
+
     private Person $person;
 
     public function setAssigned($paymentHistory): void

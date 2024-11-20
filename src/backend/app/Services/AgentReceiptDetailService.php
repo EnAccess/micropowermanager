@@ -13,8 +13,7 @@ class AgentReceiptDetailService implements IBaseService
 {
     public function __construct(
         private AgentReceiptDetail $agentReceiptDetail,
-    ) {
-    }
+    ) {}
 
     public function getSummary($agentId)
     {

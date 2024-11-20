@@ -26,24 +26,43 @@ use Inensus\SteamaMeter\Models\SyncStatus;
 class SteamaCustomerService implements ISynchronizeService
 {
     private $customer;
+
     private $steamaApi;
+
     private $apiHelpers;
+
     private $rootUrl = '/customers';
+
     private $person;
+
     private $customerBasisPaymentPlan;
+
     private $flatRatePaymentPlan;
+
     private $subscriptionPaymentPlan;
+
     private $hybridPaymentPlan;
+
     private $minimumTopUpPaymentPlan;
+
     private $perKwhPaymentPlan;
+
     private $userType;
+
     private $connectionType;
+
     private $steamaSite;
+
     private $bitharvesterService;
+
     private $stmSite;
+
     private $city;
+
     private $steamaSyncSettingService;
+
     private $steamaSyncActionService;
+
     private $steamaSmsNotifiedCustomerService;
 
     public function __construct(

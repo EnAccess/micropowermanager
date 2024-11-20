@@ -16,6 +16,7 @@ class TransactionPaymentProcessor
         SolarHomeSystem::RELATION_NAME => ApplianceTransactionProcessor::class,
         EBike::RELATION_NAME => ApplianceTransactionProcessor::class,
     ];
+
     protected const QUEUE_BY_DEVICE_TYPE = [
         Meter::RELATION_NAME => 'energy',
         SolarHomeSystem::RELATION_NAME => 'payment',

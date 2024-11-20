@@ -8,8 +8,7 @@ class SunKingCredentialService
 {
     public function __construct(
         private SunKingCredential $credential,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.

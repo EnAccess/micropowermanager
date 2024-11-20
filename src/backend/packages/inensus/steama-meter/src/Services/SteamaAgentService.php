@@ -19,16 +19,27 @@ use Inensus\SteamaMeter\Models\SyncStatus;
 class SteamaAgentService implements ISynchronizeService
 {
     private $agentCommission;
+
     private $agent;
+
     private $stmAgent;
+
     private $steamaApi;
+
     private $apiHelpers;
+
     private $rootUrl = '/agents';
+
     private $person;
+
     private $addressService;
+
     private $site;
+
     private $address;
+
     private $steamaSyncSettingService;
+
     private $steamaSyncActionService;
 
     public function __construct(
@@ -75,7 +86,7 @@ class SteamaAgentService implements ISynchronizeService
     public function createSteamaAgentCommission()
     {
         $agentCommission = $this->agentCommission->newQuery()->where('name', 'Steama Agent Comission')->first();
-        if (!$agentCommission) {
+        if (! $agentCommission) {
             $agentCommission = $this->agentCommission->newQuery()->create([
                 'name' => 'Steama Agent Comission',
                 'energy_commission' => 0,

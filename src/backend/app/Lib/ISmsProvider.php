@@ -9,10 +9,6 @@ interface ISmsProvider
     /**
      * Sends the sms to the sms provider.
      *
-     * @param string            $number
-     * @param string            $body
-     * @param string            $callback
-     * @param SmsAndroidSetting $smsAndroidSetting
      *
      * @return mixed
      */

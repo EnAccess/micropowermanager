@@ -13,13 +13,12 @@ use Illuminate\Support\Facades\DB;
  * @implements IBaseService<AgentBalanceHistory>
  * @implements IAssociative<AgentBalanceHistory>
  */
-class AgentBalanceHistoryService implements IBaseService, IAssociative
+class AgentBalanceHistoryService implements IAssociative, IBaseService
 {
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
-    ) {
-    }
+    ) {}
 
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {
@@ -103,7 +102,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
             $period[$history[0]->date]['balance'] = -1 * ($history[0]->due_to_supplier - $history[0]->amount);
             $period[$history[0]->date]['due'] = $history[0]->due_to_supplier - $history[0]->amount;
         } elseif (count($history) === 0) {
-            $date = new \DateTime();
+            $date = new \DateTime;
             $key = $date->format('Y-m-d');
             $period[$key] = [
                 'balance' => 0,
@@ -151,7 +150,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
                 '>=',
                 $date
             )->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
-                ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
+            ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
         $period = [];
         foreach ($days as $key => $item) {

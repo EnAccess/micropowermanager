@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class MeterParameterAddressService implements IAssignationService
 {
     private MeterParameter $meterParameter;
+
     private Address $address;
 
     public function setAssignee($meterParameter): void

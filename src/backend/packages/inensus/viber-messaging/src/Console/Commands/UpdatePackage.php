@@ -10,6 +10,7 @@ use Inensus\ViberMessaging\Services\ViberCredentialService;
 class UpdatePackage extends Command
 {
     protected $signature = 'viber-messaging:update';
+
     protected $description = 'Update ViberMessaging Package';
 
     public function __construct(
@@ -51,7 +52,7 @@ class UpdatePackage extends Command
             '*_create_viber_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return false;
         }
 

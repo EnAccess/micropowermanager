@@ -17,16 +17,12 @@ class MeterTypeController extends Controller
 {
     use SoftDeletes;
 
-    public function __construct(private MeterTypeService $meterTypeService)
-    {
-    }
+    public function __construct(private MeterTypeService $meterTypeService) {}
 
     /**
      * List.
      *
      * @responseFile responses/metertypes/meter.types.list.json
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -43,8 +39,6 @@ class MeterTypeController extends Controller
      * @bodyParam phase int required
      * @bodyParam max_current int required
      *
-     * @param MeterTypeCreateRequest $request
-     *
      * @return ApiResource
      */
     public function store(MeterTypeCreateRequest $request)
@@ -59,9 +53,7 @@ class MeterTypeController extends Controller
      *
      * @bodyParam id int required
      *
-     * @param int $meterTypeId
-     *
-     * @return ApiResource
+     * @param  int  $meterTypeId
      */
     public function show($meterTypeId): ApiResource
     {
@@ -78,10 +70,7 @@ class MeterTypeController extends Controller
      * @bodyParam phase int required
      * @bodyParam max_current int required
      *
-     * @param MeterTypeUpdateRequest $request
-     * @param int                    $meterTypeId
-     *
-     * @return ApiResource
+     * @param  int  $meterTypeId
      */
     public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource
     {

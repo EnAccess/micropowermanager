@@ -9,9 +9,7 @@ use Inensus\Ticket\Services\TicketService;
 
 class AgentCustomerTicketController extends Controller
 {
-    public function __construct(private AgentService $agentService, private TicketService $ticketService)
-    {
-    }
+    public function __construct(private AgentService $agentService, private TicketService $ticketService) {}
 
     public function show($customerId, Request $request): ApiResource
     {

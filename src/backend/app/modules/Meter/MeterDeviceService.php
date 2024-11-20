@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class MeterDeviceService implements IAssignationService
 {
     private Device $device;
+
     private Meter $meter;
 
     public function setAssigned($assigned): void

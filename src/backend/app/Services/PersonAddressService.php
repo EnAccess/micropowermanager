@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class PersonAddressService implements IAssignationService
 {
     private Address $address;
+
     private Person $person;
 
     public function setOldPrimaryAddressToNotPrimary(): Person

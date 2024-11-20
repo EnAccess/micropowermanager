@@ -17,18 +17,20 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 /**
  * Class User.
  *
- * @property int         $id
- * @property int         $company_id
- * @property string      $name
+ * @property int $id
+ * @property int $company_id
+ * @property string $name
  * @property string|null $email
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
     use HasFactory;
+    use Notifiable;
 
     public const RELATION_NAME = 'admin';
+
     public const COL_ID = 'id';
+
     public const COL_COMPANY_ID = 'company_id';
 
     public function __construct(array $attributes = [])

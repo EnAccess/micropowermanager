@@ -7,6 +7,7 @@ use App\Models\PaymentHistory;
 class EnergyConfirmation extends SmsBodyParser
 {
     protected $variables = ['meter', 'token', 'energy', 'amount'];
+
     protected $paymentHistory;
 
     public function __construct(PaymentHistory $paymentHistory)

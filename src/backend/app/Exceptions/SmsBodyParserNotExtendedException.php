@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class SmsBodyParserNotExtendedException extends \Exception
-{
-}
+class SmsBodyParserNotExtendedException extends \Exception {}

@@ -11,8 +11,7 @@ class ApiRequests
 {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
     public function get(AngazaCredential $credentials, array $params, string $slug)
     {

@@ -9,14 +9,15 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Api\RequestMethod;
 class StartTransactionResource extends AbstractApiResource
 {
     public const RESPONSE_SUCCESS = 'success';
+
     public const RESPONSE_KEY_MESSAGE = 'transaction_id';
+
     public const RESPONSE_KEY_TRANSACTION_ID = 'transaction_id';
 
     public function __construct(
         private WaveMoneyCredential $waveMoneyCredential,
         private WaveMoneyTransaction $waveMoneyTransaction,
-    ) {
-    }
+    ) {}
 
     public function getRequestMethod(): string
     {
