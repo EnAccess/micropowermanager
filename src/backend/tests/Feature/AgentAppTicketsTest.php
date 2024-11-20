@@ -54,8 +54,10 @@ class AgentAppTicketsTest extends TestCase
         $this->createTicketCard();
         $ticketCount = 1;
         $this->createTicket($ticketCount, 1, $this->person->id, $this->agent->id);
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/ticket/customer/%s',
-            $this->person->id));
+        $response = $this->actingAs($this->agent)->get(sprintf(
+            '/api/app/agents/ticket/customer/%s',
+            $this->person->id
+        ));
         $response->assertStatus(200);
         $this->assertEquals($this->ticket->id, $response['data']['data'][0]['id']);
         $this->assertEquals($this->agent->id, $response['data']['data'][0]['creator_id']);

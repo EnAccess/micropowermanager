@@ -91,7 +91,8 @@ class KelinMeterServiceProvider extends ServiceProvider
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/kelin-meter'
+            __DIR__.'/../resources/assets' => resource_path(
+                'assets/js/plugins/kelin-meter'
             ),
         ], 'vue-components');
     }
@@ -112,8 +113,10 @@ class KelinMeterServiceProvider extends ServiceProvider
                 if (count($filesystem->glob($path.'*_create_kelin_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_kelin_tables.php')[0];
 
-                    file_put_contents($file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_kelin_tables.php.stub'));
+                    file_put_contents(
+                        $file,
+                        file_get_contents(__DIR__.'/../../database/migrations/create_kelin_tables.php.stub')
+                    );
                 }
 
                 return $filesystem->glob($path.'*_create_kelin_tables.php');

@@ -51,7 +51,6 @@ class KelinMeterService implements ISynchronizeService
         KelinCustomer $kelinCustomer,
         MeterParameter $meterParameter,
         Manufacturer $manufacturer,
-
         ConnectionGroup $connectionGroup,
         ConnectionType $connectionType,
         MeterTariff $meterTariff,
@@ -105,8 +104,10 @@ class KelinMeterService implements ISynchronizeService
             $syncCheck['data']->filter(function ($value) {
                 return $value['syncStatus'] === SyncStatus::EARLY_REGISTERED;
             })->each(function ($meter) {
-                $updatedMeter = $this->updateRelatedMeter($meter,
-                    $meter['relatedMeter']);
+                $updatedMeter = $this->updateRelatedMeter(
+                    $meter,
+                    $meter['relatedMeter']
+                );
                 $this->kelinMeter->newQuery()->create([
                     'meter_name' => $meter['meterName'],
                     'meter_address' => $meter['meterAddr'],

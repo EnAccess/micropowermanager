@@ -18,7 +18,6 @@ class SteamaMeterReadingService
     public function __construct(
         SteamaMeter $steamaMeter,
         SteamaMeterApiClient $steamaApi,
-
         MeterConsumption $meterConsumption,
     ) {
         $this->steamaMeter = $steamaMeter;
@@ -42,7 +41,8 @@ class SteamaMeterReadingService
                                 [
                                     'meter_id' => $meter->mpm_meter_id,
                                     'reading_date' => Carbon::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
-                                ], [
+                                ],
+                                [
                                     'meter_id' => $meter->mpm_meter_id,
                                     'total_consumption' => $reading['reading'],
                                     'consumption' => $reading['usage_amount'],

@@ -76,8 +76,10 @@ class PaymentProcessTests extends TestCase
         $mesombTransaction = $mesombTransactionService->assignIncomingDataToMesombTransaction($validData);
         $transaction = $mesombTransactionService->assignIncomingDataToTransaction($validData);
 
-        return $mesombTransactionService->associateMesombTransactionWithTransaction($mesombTransaction,
-            $transaction);
+        return $mesombTransactionService->associateMesombTransactionWithTransaction(
+            $mesombTransaction,
+            $transaction
+        );
     }
 
     private function initializeData()

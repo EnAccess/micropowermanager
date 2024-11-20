@@ -21,8 +21,14 @@ class VodacomTransactionTest extends TestCase
      */
     public function testTransactionSentFromUnknownIpAddress(): void
     {
-        $request = Request::create(URL::route('vodacomTransaction'), 'POST', [], [], [],
-            ['REMOTE_ADDR' => '127.0.0.2']);
+        $request = Request::create(
+            URL::route('vodacomTransaction'),
+            'POST',
+            [],
+            [],
+            [],
+            ['REMOTE_ADDR' => '127.0.0.2']
+        );
         $middleWare = new Transaction();
 
         $response = $middleWare->handle($request, function () {
@@ -33,8 +39,14 @@ class VodacomTransactionTest extends TestCase
 
     public function testTransactionSentFromWhiteListedIpAddress(): void
     {
-        $request = Request::create(URL::route('vodacomTransaction'), 'POST', [], [], [],
-            ['REMOTE_ADDR' => config('services.vodacom.ips')[0]]);
+        $request = Request::create(
+            URL::route('vodacomTransaction'),
+            'POST',
+            [],
+            [],
+            [],
+            ['REMOTE_ADDR' => config('services.vodacom.ips')[0]]
+        );
 
         $middleWare = new Transaction();
 

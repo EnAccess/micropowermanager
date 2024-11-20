@@ -7,10 +7,11 @@ use Inensus\Ticket\Models\TicketComment;
 
 class TicketCommentService
 {
-    public function __construct(private Person $person,
+    public function __construct(
+        private Person $person,
         private TicketComment $ticketComment,
-        private TicketUserService $ticketUserService)
-    {
+        private TicketUserService $ticketUserService
+    ) {
     }
 
     public function createComment(int $ticketId, string $comment, int $ticketUserId): TicketComment

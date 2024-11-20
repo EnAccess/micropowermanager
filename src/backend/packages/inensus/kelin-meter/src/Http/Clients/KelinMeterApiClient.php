@@ -34,7 +34,8 @@ class KelinMeterApiClient
             throw new KelinApiCredentialsNotFoundException($e->getMessage());
         }
         try {
-            $response = $this->client->request('GET',
+            $response = $this->client->request(
+                'GET',
                 $credential->api_url.$url.'?param='.urlencode(json_encode($queryParams))
             );
         } catch (GuzzleException $exception) {

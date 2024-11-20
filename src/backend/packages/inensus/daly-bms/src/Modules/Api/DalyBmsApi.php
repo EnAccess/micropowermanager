@@ -46,8 +46,10 @@ class DalyBmsApi implements IManufacturerAPI
 
             return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_DEVICES_LIST);
         } catch (DalyBmsApiResponseException $e) {
-            $this->credentialService->updateCredentials($credentials,
-                ['access_token' => null, 'token_expires_in' => null]);
+            $this->credentialService->updateCredentials(
+                $credentials,
+                ['access_token' => null, 'token_expires_in' => null]
+            );
             throw $e;
         }
     }
@@ -67,8 +69,10 @@ class DalyBmsApi implements IManufacturerAPI
 
             return $this->apiRequests->postWithQueryParams($credentials, $params, self::COMMAND_DEVICE_DETAIL);
         } catch (DalyBmsApiResponseException $e) {
-            $this->credentialService->updateCredentials($credentials,
-                ['access_token' => null, 'token_expires_in' => null]);
+            $this->credentialService->updateCredentials(
+                $credentials,
+                ['access_token' => null, 'token_expires_in' => null]
+            );
             throw $e;
         }
     }
@@ -125,7 +129,8 @@ class DalyBmsApi implements IManufacturerAPI
         ];
         $this->eBikeService->update(
             $eBike,
-            $updatingData);
+            $updatingData
+        );
         $creator = User::query()->firstOrCreate([
             'name' => 'System',
         ]);

@@ -55,8 +55,10 @@ class ConnectionTypeTest extends TestCase
         $connectionTypeCount = 1;
         $this->createTestData($connectionTypeCount);
         $connectionTypeData = ['name' => 'Updated Connection Type'];
-        $response = $this->actingAs($this->user)->put(sprintf('/api/connection-types/%s',
-            $this->connectonTypeIds[0]), $connectionTypeData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/connection-types/%s',
+            $this->connectonTypeIds[0]
+        ), $connectionTypeData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $connectionTypeData['name']);
     }

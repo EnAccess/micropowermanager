@@ -50,8 +50,10 @@ class KelinCustomerService implements ISynchronizeService
             $syncCheck['data']->filter(function ($value) {
                 return $value['syncStatus'] === SyncStatus::EARLY_REGISTERED;
             })->each(function ($customer) {
-                $person = $this->updateRelatedPerson($customer,
-                    $customer['relatedPerson']);
+                $person = $this->updateRelatedPerson(
+                    $customer,
+                    $customer['relatedPerson']
+                );
                 try {
                     $this->kelinCustomer->newQuery()->create([
                         'customer_no' => $customer['consNo'],

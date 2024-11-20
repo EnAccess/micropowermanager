@@ -69,8 +69,10 @@ class MeterTariffTest extends TestCase
                 'access_rate_amount' => 100,
             ],
         ];
-        $response = $this->actingAs($this->user)->put(sprintf('/api/tariffs/%s',
-            $this->meterTariffs[0]->id), $tariffData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/tariffs/%s',
+            $this->meterTariffs[0]->id
+        ), $tariffData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $tariffData['name']);
         $this->assertEquals($this->meterTariffs[0]->id, SocialTariff::query()->first()->tariff_id);
@@ -193,8 +195,10 @@ class MeterTariffTest extends TestCase
         $this->createConnectionType();
         $meterCount = 5;
         $this->createMeter($meterCount);
-        $response = $this->actingAs($this->user)->get(sprintf('/api/tariffs/%s/usage-count',
-            $this->meterTariffs[0]->id));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/tariffs/%s/usage-count',
+            $this->meterTariffs[0]->id
+        ));
 
         $response->assertStatus(200);
 

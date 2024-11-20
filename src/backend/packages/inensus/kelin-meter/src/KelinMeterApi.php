@@ -97,10 +97,15 @@ class KelinMeterApi implements IManufacturerAPI
                 'manufacturer_transaction_type' => 'kelin_transaction',
             ]);
 
-            $token = $transactionResult['opType'] === 2 ? sprintf('EnergyToken : %s',
-                $transactionResult['payToken']) :
-                sprintf('OpenToken1 : %s OpenToken2 : %s', $transactionResult['openToken1'],
-                    $transactionResult['openToken2']);
+            $token = $transactionResult['opType'] === 2 ? sprintf(
+                'EnergyToken : %s',
+                $transactionResult['payToken']
+            ) :
+                sprintf(
+                    'OpenToken1 : %s OpenToken2 : %s',
+                    $transactionResult['openToken1'],
+                    $transactionResult['openToken2']
+                );
 
             return [
                 'token' => $token,

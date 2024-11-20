@@ -30,8 +30,10 @@ class SubConnectionTypeTest extends TestCase
         $this->createTestData();
         $this->createMeterTariff($meterTariffCount);
         $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
-        $response = $this->actingAs($this->user)->get(sprintf('/api/sub-connection-types/%s',
-            $this->connectonTypes[0]->id));
+        $response = $this->actingAs($this->user)->get(sprintf(
+            '/api/sub-connection-types/%s',
+            $this->connectonTypes[0]->id
+        ));
         $response->assertStatus(200);
         $this->assertEquals($response['data'][0]['connection_type_id'], $this->connectonTypes[0]->id);
     }
@@ -63,8 +65,10 @@ class SubConnectionTypeTest extends TestCase
         $this->createMeterTariff($meterTariffCount);
         $this->createConnectionType($connectionTypeCount, $subConnectionTypeCount);
         $subConnectionTypeData = ['name' => 'Updated SubConnection Type'];
-        $response = $this->actingAs($this->user)->put(sprintf('/api/sub-connection-types/%s',
-            $this->subConnectionTypes[0]->id), $subConnectionTypeData);
+        $response = $this->actingAs($this->user)->put(sprintf(
+            '/api/sub-connection-types/%s',
+            $this->subConnectionTypes[0]->id
+        ), $subConnectionTypeData);
         $response->assertStatus(200);
         $this->assertEquals($response['data']['name'], $subConnectionTypeData['name']);
     }

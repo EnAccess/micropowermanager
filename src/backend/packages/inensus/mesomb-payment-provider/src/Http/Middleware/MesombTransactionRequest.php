@@ -21,7 +21,8 @@ class MesombTransactionRequest
                 [
                     'message' => $request->input('message'),
                     'pk' => $request->input('pk'),
-                ]);
+                ]
+            );
 
             return response()->json([
                 'errors' => [

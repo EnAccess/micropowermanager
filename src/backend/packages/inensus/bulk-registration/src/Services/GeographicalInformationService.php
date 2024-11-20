@@ -27,8 +27,11 @@ class GeographicalInformationService
         if ($ownerModel instanceof MiniGrid) {
             $this->createMiniGridRelatedGeographicalInformation($ownerModel);
         } else {
-            $geographicalInformationData = $this->createMeterParameterRelatedGeographicalInformation($geographicalInformationData,
-                $csvData, $ownerModel);
+            $geographicalInformationData = $this->createMeterParameterRelatedGeographicalInformation(
+                $geographicalInformationData,
+                $csvData,
+                $ownerModel
+            );
             $this->createRelatedDataIfDoesNotExists($geographicalInformationData, $ownerModel);
         }
     }

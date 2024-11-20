@@ -108,7 +108,8 @@ class SmSmsBodyService
             ],
         ];
         collect($smsBodies)->each(function ($smsBody) {
-            $this->smsBody->newQuery()->firstOrCreate(['reference' => $smsBody['reference']],
+            $this->smsBody->newQuery()->firstOrCreate(
+                ['reference' => $smsBody['reference']],
                 $smsBody
             );
         });

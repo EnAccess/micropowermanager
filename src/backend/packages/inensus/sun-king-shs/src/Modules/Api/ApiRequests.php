@@ -51,13 +51,15 @@ class ApiRequests
             $url .= $key.'='.$value.'&';
         }
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                         'Authorization' => 'Bearer '.$credentials->getApiKey(),
                     ],
-                ]);
+                ]
+            );
 
             return json_decode((string) $request->getBody(), true);
         } catch (GuzzleException $e) {
@@ -91,7 +93,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw new SunKingApiResponseException($e->getMessage());
         }
     }

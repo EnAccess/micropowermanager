@@ -66,8 +66,10 @@ class GomeLongMeterServiceProvider extends ServiceProvider
             ->flatMap(function ($path) use ($filesystem) {
                 if (count($filesystem->glob($path.'*_create_gome_long_tables.php'))) {
                     $file = $filesystem->glob($path.'*_create_gome_long_tables.php')[0];
-                    file_put_contents($file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_gome_long_tables.php.stub'));
+                    file_put_contents(
+                        $file,
+                        file_get_contents(__DIR__.'/../../database/migrations/create_gome_long_tables.php.stub')
+                    );
                 }
 
                 return $filesystem->glob($path.'*_create_gome_long_tables.php');

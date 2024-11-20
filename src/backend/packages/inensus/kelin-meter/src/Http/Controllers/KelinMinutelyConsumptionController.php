@@ -20,7 +20,9 @@ class KelinMinutelyConsumptionController extends Controller
     {
         $perPage = \request()->get('per_page') ?? 15;
 
-        return MinutelyConsumptionResource::collection($this->minutelyConsumptionService->getDailyData($meter->meter_address,
-            $perPage));
+        return MinutelyConsumptionResource::collection($this->minutelyConsumptionService->getDailyData(
+            $meter->meter_address,
+            $perPage
+        ));
     }
 }

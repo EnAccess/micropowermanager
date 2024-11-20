@@ -6,7 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -24,7 +24,8 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('sms_bodies')->insert([
+        DB::connection('shard')->table('sms_bodies')->insert(
+            [
             [
                 'reference' => 'SmsTransactionHeader',
                 'place_holder' => 'Dear [name] [surname], we received your transaction [transaction_amount].',

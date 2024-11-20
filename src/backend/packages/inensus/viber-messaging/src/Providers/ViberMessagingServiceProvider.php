@@ -40,7 +40,8 @@ class ViberMessagingServiceProvider extends ServiceProvider
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/viber-messaging'
+            __DIR__.'/../resources/assets' => resource_path(
+                'assets/js/plugins/viber-messaging'
             ),
         ], 'vue-components');
     }

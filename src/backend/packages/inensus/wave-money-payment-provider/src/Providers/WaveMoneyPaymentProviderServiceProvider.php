@@ -30,8 +30,10 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../../config/wave-money-payment-provider.php',
-            'wave-money-payment-provider');
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/wave-money-payment-provider.php',
+            'wave-money-payment-provider'
+        );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->singleton('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
@@ -48,7 +50,8 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
     public function publishVueFiles()
     {
         $this->publishes([
-            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/wave-money-payment-provider'
+            __DIR__.'/../resources/assets' => resource_path(
+                'assets/js/plugins/wave-money-payment-provider'
             ),
         ], 'vue-components');
     }

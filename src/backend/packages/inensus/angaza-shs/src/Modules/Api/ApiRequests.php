@@ -22,13 +22,15 @@ class ApiRequests
         }
 
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                         'Authorization' => $this->getBasicAuthHeader($credentials),
                     ],
-                ]);
+                ]
+            );
 
             return json_decode((string) $request->getBody(), true);
         } catch (\Exception $e) {
@@ -62,7 +64,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw new AngazaApiResponseException($e->getMessage());
         }
     }

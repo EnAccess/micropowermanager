@@ -77,9 +77,11 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
                 ) {
                     return true;
                 }
-                $this->smsService->sendSms($smTransaction->thirdPartyTransaction->transaction,
+                $this->smsService->sendSms(
+                    $smTransaction->thirdPartyTransaction->transaction,
                     SmsTypes::TRANSACTION_CONFIRMATION,
-                    SmsConfigs::class);
+                    SmsConfigs::class
+                );
                 $this->smSmsNotifiedCustomerService->createTransactionSmsNotify(
                     $notifyCustomer->customer_id,
                     $smTransaction->id
@@ -110,9 +112,11 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
             ) {
                 return true;
             }
-            $this->smsService->sendSms($customer,
+            $this->smsService->sendSms(
+                $customer,
                 SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
-                SparkSmsConfig::class);
+                SparkSmsConfig::class
+            );
             $this->smSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
 
             return true;
