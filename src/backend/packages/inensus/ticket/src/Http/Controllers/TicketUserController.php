@@ -14,8 +14,7 @@ class TicketUserController extends Controller
     public function __construct(
         private TicketUserService $ticketUserService,
         private UserService $userService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): TicketResource
     {

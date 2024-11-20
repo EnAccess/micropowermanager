@@ -17,7 +17,7 @@ class ApiHelpers
     public function registerSparkMeterManufacturer()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SteamaMeterApi')->first();
-        if (!$api) {
+        if (! $api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Steama Meters',
                 'website' => 'https://steama.co/',

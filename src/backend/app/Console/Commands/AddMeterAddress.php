@@ -8,6 +8,7 @@ use App\Models\Meter\MeterParameter;
 class AddMeterAddress extends AbstractSharedCommand
 {
     protected $signature = 'meters:addAddress';
+
     protected $description = 'Creates an address entry for all every registered meter. Sets them all to village 1';
 
     public function __construct(private MeterParameter $meterParameter, private Address $address)

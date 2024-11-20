@@ -15,8 +15,7 @@ class AgentSoldApplianceController extends Controller
     public function __construct(
         private AgentSoldApplianceService $agentSoldApplianceService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -36,7 +35,6 @@ class AgentSoldApplianceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateAgentSoldApplianceRequest $request
      *
      * @return ApiResource
      */

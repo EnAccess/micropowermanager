@@ -10,7 +10,9 @@ use Inensus\KelinMeter\Models\KelinMeterDailyData;
 class DailyConsumptionService
 {
     private $rootUrl = '/getDayData';
+
     private $kelinApi;
+
     private $kelinMeterDailyData;
 
     public function __construct(
@@ -65,7 +67,7 @@ class DailyConsumptionService
                         'reverted_reactive_total_daily_power' => $data['dlFw'],
                     ]);
                 });
-                ++$pageNo;
+                $pageNo++;
             } catch (\Exception $exception) {
                 Log::error('Failed on daily data request .', ['message' => $exception->getMessage()]);
                 $result['dataCount'] = 0;

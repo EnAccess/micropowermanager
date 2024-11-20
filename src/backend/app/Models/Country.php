@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends BaseModel
 {
-    /**
-     * @return string
-     */
     public function getRouteKeyName(): string
     {
         return 'country_code';

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class LoanDataContainer
 {
     private ?Person $meterOwner;
+
     private Transaction $transaction;
 
     public array $paid_rates = [];
@@ -28,7 +29,7 @@ class LoanDataContainer
 
     public function loanCost()
     {
-        if (!$this->meterOwner) {
+        if (! $this->meterOwner) {
             throw new MeterParameterNotFound('loan data container');
         }
         $loans = $this->getCustomerDueRates($this->meterOwner);
@@ -87,8 +88,6 @@ class LoanDataContainer
     }
 
     /**
-     * @param $owner
-     *
      * @return Builder[]|Collection
      *
      * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
@@ -105,8 +104,6 @@ class LoanDataContainer
     }
 
     /**
-     * @param string $serialNumber
-     *
      * @return mixed
      *
      * @throws MeterIsNotInUse
@@ -124,7 +121,7 @@ class LoanDataContainer
         }
 
         // meter is not been used by anyone
-        if (!$meter->in_use) {
+        if (! $meter->in_use) {
             throw new MeterIsNotInUse($serialNumber.' meter is not in use');
         }
 

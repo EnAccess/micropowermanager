@@ -14,8 +14,7 @@ class AccessRatePaymentService implements IBaseService
 {
     public function __construct(
         private AccessRatePayment $accessRatePayment,
-    ) {
-    }
+    ) {}
 
     public function getById(int $id): AccessRatePayment
     {

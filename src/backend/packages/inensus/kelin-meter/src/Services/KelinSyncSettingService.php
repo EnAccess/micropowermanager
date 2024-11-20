@@ -11,7 +11,9 @@ use Inensus\KelinMeter\Models\KelinSyncSetting;
 class KelinSyncSettingService
 {
     private $syncSetting;
+
     private $setting;
+
     private $syncActionService;
 
     public function __construct(
@@ -30,7 +32,7 @@ class KelinSyncSettingService
         $fiveMinInterval = CarbonInterval::make('5minute');
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
-        if (!$syncCustomer) {
+        if (! $syncCustomer) {
             $now = Carbon::now();
             $customerSetting = $this->setting->newQuery()->make();
             $syncCustomer = $this->syncSetting->newQuery()->create([
@@ -48,7 +50,7 @@ class KelinSyncSettingService
         }
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
-        if (!$syncMeter) {
+        if (! $syncMeter) {
             $now = Carbon::now();
             $meterSetting = $this->setting->newQuery()->make();
             $syncMeter = $this->syncSetting->newQuery()->create([

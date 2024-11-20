@@ -13,8 +13,7 @@ class AgentChargeService implements IBaseService
 {
     public function __construct(
         private AgentCharge $agentCharge,
-    ) {
-    }
+    ) {}
 
     public function create(array $agentChargeData): AgentCharge
     {

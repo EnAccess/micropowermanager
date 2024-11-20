@@ -12,12 +12,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<GeographicalInformation>
  * @implements IAssociative<GeographicalInformation>
  */
-class GeographicalInformationService implements IBaseService, IAssociative
+class GeographicalInformationService implements IAssociative, IBaseService
 {
     public function __construct(
         private GeographicalInformation $geographicalInformation,
-    ) {
-    }
+    ) {}
 
     // This function will be removed until devices feature migration is done
     public function changeOwnerWithAddress($meterParameter, $addressId)

@@ -17,16 +17,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * @property int         $id
+ * @property int $id
  * @property MeterTariff $tariff
- * @property bool        $in_use
+ * @property bool $in_use
  */
 class Meter extends BaseModel
 {
     use HasFactory;
 
     public const RELATION_NAME = 'meter';
+
     protected $guarded = [];
+
     public static $rules = [
         'serial_number' => 'required|min:1|unique:meters',
         'meter_type_id' => 'exists:shard.meter_types,id',

@@ -15,8 +15,7 @@ class MeterController extends Controller
 {
     public function __construct(
         private MeterService $meterService,
-    ) {
-    }
+    ) {}
 
     /**
      * List
@@ -27,10 +26,6 @@ class MeterController extends Controller
      * @urlParam     in_use int to list wether used or all meters
      *
      * @responseFile responses/meters/meters.list.json
-     *
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -44,7 +39,6 @@ class MeterController extends Controller
      * Create
      * Stores a new meter.
      *
-     * @param MeterRequest $request
      *
      * @bodyParam serial_number string required
      * @bodyParam meter_type_id int required
@@ -73,10 +67,6 @@ class MeterController extends Controller
      *
      * @urlParam serialNumber string
      *
-     * @param string $serialNumber
-     *
-     * @return ApiResource
-     *
      * @responseFile responses/meters/meter.detail.json
      */
     public function show(string $serialNumber): ApiResource
@@ -91,8 +81,6 @@ class MeterController extends Controller
      * - Serial number.
      *
      * @bodyParam term string required
-     *
-     * @return ApiResource
      *
      * @responseFile responses/meters/meters.search.json
      */
@@ -109,10 +97,6 @@ class MeterController extends Controller
      * Deletes the meter with its all releations.
      *
      * @urlParam meterId. The ID of the meter to be delete
-     *
-     * @param $meterId
-     *
-     * @return JsonResponse
      */
     public function destroy($meterId): JsonResponse
     {

@@ -14,15 +14,14 @@ class SubConnectionTypeService implements IBaseService
 {
     public function __construct(
         private SubConnectionType $subConnectionType,
-    ) {
-    }
+    ) {}
 
     public function getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit = null): LengthAwarePaginator|Collection
     {
         return $limit ? $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
             ->paginate($limit) :
             $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
-            ->get();
+                ->get();
     }
 
     public function getById(int $subConnectionTypeId): SubConnectionType

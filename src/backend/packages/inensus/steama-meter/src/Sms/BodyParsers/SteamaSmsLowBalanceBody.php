@@ -8,6 +8,7 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 class SteamaSmsLowBalanceBody extends SmsBodyParser
 {
     protected $variables = ['low_balance_warning', 'account_balance'];
+
     protected $steamaCustomer;
 
     public function __construct(SteamaCustomer $steamaCustomer)

@@ -27,8 +27,7 @@ class PersonController extends Controller
         private PersonAddressService $personAddressService,
         private MaintenanceUserService $maintenanceUserService,
         private CountryService $countryService,
-    ) {
-    }
+    ) {}
 
     /**
      * List customer/other
@@ -37,8 +36,6 @@ class PersonController extends Controller
      * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
      *
      * @responseFile responses/people/people.list.json
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -56,9 +53,7 @@ class PersonController extends Controller
      * - Role
      * - Meter list.
      *
-     * @param int $personId
      *
-     * @return ApiResource
      *
      * @apiResourceModel App\Models\Person\Person
      *
@@ -71,10 +66,6 @@ class PersonController extends Controller
 
     /**
      * Create.
-     *
-     * @param PersonRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(PersonRequest $request): JsonResponse
     {
@@ -127,10 +118,6 @@ class PersonController extends Controller
      * @bodyParam sex string. The title of the person. Example: Dr.
      * @bodyParam education string. The title of the person. Example: Dr.
      *
-     * @param int $personId
-     *
-     * @return ApiResource
-     *
      * @apiResourceModel App\Models\Person\Person
      *
      * @responseFile     responses/people/person.update.json
@@ -150,9 +137,7 @@ class PersonController extends Controller
      * The list of all transactions(paginated) which belong to that person.
      * Each page contains 7 entries of the last transaction.
      *
-     * @param $personId
      *
-     * @return ApiResource
      *
      * @bodyParam    person_id int required the ID of the person. Example: 2
      *
@@ -178,8 +163,6 @@ class PersonController extends Controller
      * @urlParam term  The ID of the post. Example: John Doe
      * @urlParam paginage int The page number. Example:1
      *
-     * @return ApiResource
-     *
      * @responseFile responses/people/people.search.json
      */
     public function search(
@@ -197,10 +180,6 @@ class PersonController extends Controller
      * That means the orinal record wont be deleted but all mentioned relations will be removed permanently.
      *
      * @urlParam person required The ID of the person. Example:1
-     *
-     * @param int $personId
-     *
-     * @return ApiResource
      *
      * @throws \Exception
      *

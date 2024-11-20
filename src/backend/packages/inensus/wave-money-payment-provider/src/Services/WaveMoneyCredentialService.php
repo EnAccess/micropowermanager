@@ -8,8 +8,7 @@ class WaveMoneyCredentialService
 {
     public function __construct(
         private WaveMoneyCredential $credential,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.

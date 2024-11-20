@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Log;
 class CalinReadMeter implements IMeterReader
 {
     public const READ_DAILY = 1;
+
     /**
      * @var \SoapClient
      */
     private $api;
+
     /**
      * @var MeterConsumption
      */
@@ -23,7 +25,6 @@ class CalinReadMeter implements IMeterReader
     /**
      * CalinReadMeter constructor.
      *
-     * @param MeterConsumption $consumption
      *
      * @throws \SoapFault
      */
@@ -37,9 +38,8 @@ class CalinReadMeter implements IMeterReader
     }
 
     /**
-     * @param string $meterId serial number of the meter
-     * @param string $date    y-m-d format date
-     *
+     * @param  string  $meterId  serial number of the meter
+     * @param  string  $date  y-m-d format date
      * @return mixed
      */
     public function readDailyData($meterId, $date)
@@ -59,28 +59,22 @@ class CalinReadMeter implements IMeterReader
     /**
      * Reads the total consumption of a meter.
      *
-     * @param $meterId
-     * @param $type
      *
      * @return void
      */
-    public function readMeter($meterId, $type)
-    {
-    }
+    public function readMeter($meterId, $type) {}
 
     /**
      * Reads the data for a given meter list.
      *
-     * @param       $meterList
-     * @param int   $type      defines what to read from the remote api
-     * @param array $options
-     *
+     * @param  int  $type  defines what to read from the remote api
+     * @param  array  $options
      * @return void
      */
     public function readBatch($meterList, $type, $options)
     {
         if ($type === self::READ_DAILY) {
-            if (!isset($options['date'])) {
+            if (! isset($options['date'])) {
                 throw new InvalidDateException('Date', 'date is not set. Send date within the options array');
             }
             foreach ($meterList as $meter) {
@@ -96,6 +90,7 @@ class CalinReadMeter implements IMeterReader
                             'Meter Reading, negative consumption ',
                             ['meter_id' => $meter->id, 'consumption' => $meterData[0]]
                         );
+
                         continue;
                     }
 
@@ -118,10 +113,6 @@ class CalinReadMeter implements IMeterReader
 
     /**
      * Calculates the difference of usages with the prev. reading.
-     *
-     * @param MeterConsumption $consumption
-     *
-     * @return MeterConsumption
      */
     private function calculateDifference(MeterConsumption $consumption): MeterConsumption
     {
@@ -136,8 +127,6 @@ class CalinReadMeter implements IMeterReader
     }
 
     /**
-     * @param $data
-     *
      * @return string[]
      *
      * @throws MeterIsNotReadable
@@ -159,12 +148,7 @@ class CalinReadMeter implements IMeterReader
     }
 
     /**
-     * @param string $meterId
-     * @param string $year
-     * @param string $month
-     * @param string $day
-     * @param string $action
-     *
+     * @param  string  $action
      * @return array (\Illuminate\Config\Repository|float|mixed)[]
      */
     private function prepareDailyReq(string $meterId, string $year, string $month, string $day, $action = 'Read'): array

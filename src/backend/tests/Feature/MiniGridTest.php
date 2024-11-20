@@ -21,10 +21,15 @@ class MiniGridTest extends TestCase
     use WithFaker;
 
     private $user;
+
     private $company;
+
     private $companyDatabase;
+
     private $person;
+
     private $clusterIds = [];
+
     private $miniGridIds = [];
 
     public function testUserGetsMiniGridList()
@@ -119,9 +124,9 @@ class MiniGridTest extends TestCase
                     'cluster_id' => $cluster->id,
                 ]);
                 array_push($this->miniGridIds, $miniGrid->id);
-                --$miniGridCount;
+                $miniGridCount--;
             }
-            --$clusterCount;
+            $clusterCount--;
         }
     }
 

@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class AgentAssignedApplianceHistoryBalanceService implements IAssignationService
 {
     private AgentBalanceHistory $agentBalanceHistory;
+
     private AgentAssignedAppliances $agentAssignedAppliance;
 
     public function setAssigned($agentBalanceHistory): void

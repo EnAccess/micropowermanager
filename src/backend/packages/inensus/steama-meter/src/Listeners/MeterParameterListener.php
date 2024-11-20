@@ -15,12 +15,19 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 class MeterParameterListener
 {
     private $apiHelpers;
+
     private $stmCustomerService;
+
     private $stmMeterService;
+
     private $person;
+
     private $meterParameter;
+
     private $stmTariff;
+
     private $stmCustomer;
+
     private $stmMeter;
 
     public function __construct(
@@ -55,7 +62,7 @@ class MeterParameterListener
             $steamaTariff = $this->stmTariff->newQuery()->whereHas('mpmTariff', function ($q) use ($tariffId) {
                 $q->where('mpm_tariff_id', $tariffId);
             })->first();
-            if (!$steamaTariff) {
+            if (! $steamaTariff) {
                 $steamaTariff = $this->stmTariff->newQuery()->with('mpmTariff')->first();
                 $meterInfo->tariff_id = $steamaTariff->mpmTariff->id;
                 $meterInfo->update();
@@ -67,13 +74,13 @@ class MeterParameterListener
                         ->whereHas('mpmPerson', function ($q) use ($customerId) {
                             $q->where('id', $customerId);
                         })->first();
-                    if (!$steamaCustomer) {
+                    if (! $steamaCustomer) {
                         $steamaCustomer = $this->stmCustomerService->createSteamaCustomer($meterInfo);
                     }
                     $steamaMeter = $this->stmMeter->newQuery()->whereHas('mpmMeter', function ($q) use ($meterId) {
                         $q->where('id', $meterId);
                     })->first();
-                    if (!$steamaMeter) {
+                    if (! $steamaMeter) {
                         $this->stmMeterService->creteSteamaMeter($meterInfo, $steamaCustomer);
                     }
                     $steamaMeter->customer_id = $steamaCustomer->customer_id;

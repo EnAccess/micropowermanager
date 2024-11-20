@@ -11,8 +11,7 @@ class TicketCommentService
         private Person $person,
         private TicketComment $ticketComment,
         private TicketUserService $ticketUserService
-    ) {
-    }
+    ) {}
 
     public function createComment(int $ticketId, string $comment, int $ticketUserId): TicketComment
     {
@@ -46,7 +45,7 @@ class TicketCommentService
             ->where('is_customer', 0)
             ->first();
 
-        if ($person && !$person->tickets->isEmpty()) {
+        if ($person && ! $person->tickets->isEmpty()) {
             $ticketUser = $this->ticketUserService->findByPhone($sender);
             $this->createComment($person->tickets[0]->ticket_id, 'Sms Comment'.$message, $ticketUser->getId());
         }

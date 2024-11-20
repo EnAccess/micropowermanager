@@ -8,9 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AgentCustomerService
 {
-    public function __construct(private Agent $agent, private Person $person)
-    {
-    }
+    public function __construct(private Agent $agent, private Person $person) {}
 
     public function list(Agent $agent): LengthAwarePaginator
     {

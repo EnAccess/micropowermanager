@@ -9,9 +9,7 @@ use Inensus\AngazaSHS\Services\AngazaCredentialService;
 
 class AngazaCredentialController extends Controller
 {
-    public function __construct(private AngazaCredentialService $credentialService)
-    {
-    }
+    public function __construct(private AngazaCredentialService $credentialService) {}
 
     public function show(): AngazaResource
     {

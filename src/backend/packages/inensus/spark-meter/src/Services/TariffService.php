@@ -17,15 +17,25 @@ use Inensus\SparkMeter\Models\SyncStatus;
 class TariffService implements ISynchronizeService
 {
     private $sparkMeterApiRequests;
+
     private $rootUrl = '/tariffs';
+
     private $smTableEncryption;
+
     private $smMeterModel;
+
     private $smSite;
+
     private $smTariff;
+
     private $meterTariff;
+
     private $timeOfUsage;
+
     private $accessRate;
+
     private $smSyncSettingService;
+
     private $smSyncActionService;
 
     public function __construct(
@@ -85,10 +95,10 @@ class TariffService implements ISynchronizeService
                 break;
             }
         }
-        if (!$tariffExists) {
+        if (! $tariffExists) {
             $modelTouString = '';
             foreach ($tariff->tou as $key => $value) {
-                $modelTouString .= $value->start.$value->end.doubleval($value->value);
+                $modelTouString .= $value->start.$value->end.floatval($value->value);
                 $tous[$key] = [
                     'start' => $value->start,
                     'end' => $value->end,
@@ -152,7 +162,7 @@ class TariffService implements ISynchronizeService
                 'tariff_id' => $meterTariff->id,
                 'start' => $tou['start'],
                 'end' => $tou['end'],
-                'value' => doubleval($tou['value']),
+                'value' => floatval($tou['value']),
             ]);
         }
         if ($tariff['plan_enabled'] && $tariff['plan_fixed_fee'] > 0) {
@@ -168,7 +178,7 @@ class TariffService implements ISynchronizeService
             foreach ($model['tous'] as $key => $tou) {
                 $tariff->tou[$key]->start = $tou['start'];
                 $tariff->tou[$key]->end = $tou['end'];
-                $tariff->tou[$key]->value = doubleval($tou['value']);
+                $tariff->tou[$key]->value = floatval($tou['value']);
                 $tariff->tou[$key]->update();
             }
         } else {
@@ -180,7 +190,7 @@ class TariffService implements ISynchronizeService
                     'tariff_id' => $tariff->id,
                     'start' => $tou['start'],
                     'end' => $tou['end'],
-                    'value' => doubleval($tou['value']),
+                    'value' => floatval($tou['value']),
                 ]);
             }
         }
@@ -452,7 +462,7 @@ class TariffService implements ISynchronizeService
     {
         $modelTouString = '';
         foreach ($model['tous'] as $item) {
-            $modelTouString .= $item['start'].$item['end'].doubleval($item['value']);
+            $modelTouString .= $item['start'].$item['end'].floatval($item['value']);
         }
 
         return $this->smTableEncryption->makeHash([

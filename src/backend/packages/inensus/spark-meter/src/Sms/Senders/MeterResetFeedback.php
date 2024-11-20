@@ -12,7 +12,9 @@ use Inensus\SparkMeter\Sms\BodyParsers\SparkSmsMeterResetFeedbackBody;
 class MeterResetFeedback extends SmsSender
 {
     protected $data;
+
     public $body = '';
+
     protected $references = [
         'header' => 'SparkSmsMeterResetFeedbackHeader',
         'body' => 'SparkSmsMeterResetFeedbackBody',
@@ -21,7 +23,7 @@ class MeterResetFeedback extends SmsSender
 
     public function prepareBody()
     {
-        if (!is_array($this->data)) {
+        if (! is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('SparkSmsMeterResetFeedbackBody');
             } catch (ModelNotFoundException $exception) {

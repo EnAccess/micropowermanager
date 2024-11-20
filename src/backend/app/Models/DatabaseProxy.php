@@ -14,7 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DatabaseProxy extends BaseModelCore
 {
     public const COL_DATABASE_CONNECTION = 'database_connection';
+
     public const COL_COMPANY_ID = 'fk_company_id';
+
     public const COL_EMAIL = 'email';
 
     private function buildQuery(?int $companyId = null): Builder

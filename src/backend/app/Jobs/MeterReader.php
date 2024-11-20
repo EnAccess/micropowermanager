@@ -20,6 +20,7 @@ class MeterReader extends AbstractJob
      * @var CalinReadMeter
      */
     public $meterReader;
+
     /**
      * @var Meter
      */
@@ -27,9 +28,6 @@ class MeterReader extends AbstractJob
 
     /**
      * Create a new job instance.
-     *
-     * @param CalinReadMeter $meterReader
-     * @param Meter          $meters
      */
     public function __construct(CalinReadMeter $meterReader, Meter $meters)
     {
@@ -40,8 +38,6 @@ class MeterReader extends AbstractJob
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function executeJob(): void
     {

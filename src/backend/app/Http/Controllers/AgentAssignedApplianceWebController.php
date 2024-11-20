@@ -12,8 +12,7 @@ class AgentAssignedApplianceWebController extends Controller
 {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-    ) {
-    }
+    ) {}
 
     /**
      * Store a newly created resource in storage.
@@ -22,8 +21,6 @@ class AgentAssignedApplianceWebController extends Controller
      * @bodyParam user_id integer required
      * @bodyParam appliance_type_id integer required
      * @bodyParam cost integer required
-     *
-     * @param CreateAgentAssignedApplianceRequest $request
      *
      * @return ApiResource
      */
@@ -42,9 +39,7 @@ class AgentAssignedApplianceWebController extends Controller
     /**
      * List for Web interface.
      *
-     * @param Agent   $agent
-     * @param Request $request
-     *
+     * @param  Agent  $agent
      * @return ApiResource
      */
     public function index($agentId, Request $request)

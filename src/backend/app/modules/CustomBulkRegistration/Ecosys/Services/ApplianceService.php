@@ -8,6 +8,7 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 class ApplianceService extends CreatorService
 {
     private $appliance1 = 'SunKing Home 40Plus - Sofala -  Humanitário 2';
+
     private $appliance2 = 'SunKing Home 40Plus - Nacional - COVID PLUS 2';
 
     public function __construct(Asset $asset)

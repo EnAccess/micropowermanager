@@ -27,8 +27,7 @@ class RevenueController extends Controller
         private RevenueService $revenueService,
         private MeterRevenueService $meterRevenueService,
         private Target $target,
-    ) {
-    }
+    ) {}
 
     public function ticketData($id): ApiResource
     {
@@ -78,7 +77,7 @@ class RevenueController extends Controller
         $cities = $this->city::query()->where('mini_grid_id', $id)->get();
         $cityIds = implode(',', $cities->pluck('id')->toArray());
 
-        if (!count($cities)) {
+        if (! count($cities)) {
             $response = ['data' => null, 'message' => 'There is no city for this MiniGrid'];
 
             return ApiResource::make($response);
@@ -117,7 +116,6 @@ class RevenueController extends Controller
     /**
      * Prepares the data for revenue dashboard.
      *
-     * @param Request $request
      *
      * @return array|mixed
      */
@@ -146,7 +144,7 @@ class RevenueController extends Controller
         $formattedTarget = [];
 
         if ($targets === null) { // no target defined for that mini-grid
-            $targets = new \stdClass();
+            $targets = new \stdClass;
             $connections = ConnectionGroup::query()->get();
             foreach ($connections as $connection) {
                 $formattedTarget[$connection->name] = [

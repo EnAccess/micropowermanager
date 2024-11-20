@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class MiniGridGeographicalInformationService implements IAssignationService
 {
     private GeographicalInformation $geographicInformation;
+
     private MiniGrid $miniGrid;
 
     public function setAssigned($assigned): void

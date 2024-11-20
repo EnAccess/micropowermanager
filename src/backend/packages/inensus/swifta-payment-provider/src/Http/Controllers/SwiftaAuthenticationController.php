@@ -8,9 +8,7 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaAuthenticationService;
 
 class SwiftaAuthenticationController extends Controller
 {
-    public function __construct(private SwiftaAuthenticationService $swiftaAuthenticationService)
-    {
-    }
+    public function __construct(private SwiftaAuthenticationService $swiftaAuthenticationService) {}
 
     public function show(): ApiResource
     {

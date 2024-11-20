@@ -13,7 +13,7 @@ class SessionService
     {
         $this->model = $model;
         $databaseName = $model->getConnectionName();
-        if (!$this->checkDatabaseName($databaseName)) {
+        if (! $this->checkDatabaseName($databaseName)) {
             $this->model->setConnection($this->getAuthenticatedUserDatabaseName());
         }
     }

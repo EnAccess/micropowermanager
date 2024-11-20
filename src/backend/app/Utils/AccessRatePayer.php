@@ -10,9 +10,13 @@ use App\Services\AccessRatePaymentService;
 class AccessRatePayer
 {
     public const MINIMUM_AMOUNT = 0;
+
     private AccessRatePayment $accessRatePayment;
+
     private TransactionDataContainer $transactionData;
+
     private Transaction $transaction;
+
     private float $debtAmount;
 
     public function __construct(private AccessRatePaymentService $accessRatePaymentService)

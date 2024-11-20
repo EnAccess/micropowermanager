@@ -53,7 +53,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
                 'status' => SwiftaTransaction::STATUS_FAILED,
             ]);
             $message = 'The transaction that stayed as Unprocessed more than 24 hours, updated to canceled.';
-            $conflict = new TransactionConflicts();
+            $conflict = new TransactionConflicts;
             $conflict->state = $message;
             $conflict->transaction()->associate($transaction);
             $conflict->save();

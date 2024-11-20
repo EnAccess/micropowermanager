@@ -10,6 +10,7 @@ use Inensus\SparkMeter\Services\TransactionService;
 class TransactionListener
 {
     private $transactionService;
+
     private $smTransaction;
 
     public function __construct(
@@ -22,8 +23,6 @@ class TransactionListener
 
     /**
      * Sets the in_use to true.
-     *
-     * @param Transaction $transaction
      */
     public function onTransactionSuccess(Transaction $transaction)
     {

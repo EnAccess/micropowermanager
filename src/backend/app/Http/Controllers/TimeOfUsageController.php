@@ -10,8 +10,7 @@ class TimeOfUsageController extends Controller
     public function __construct(
         private TimeOfUsageService $timeOfUsageService,
         private MeterTariffService $meterTariffService,
-    ) {
-    }
+    ) {}
 
     public function destroy($timeOfUsageId): ?bool
     {

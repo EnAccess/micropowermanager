@@ -5,7 +5,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     public function up()
     {
         DB::table('mpm_plugins')->insert([
@@ -25,7 +26,7 @@ return new class () extends Migration {
     public function down()
     {
         DB::table('mpm_plugins')
-        ->where('id', MpmPlugin::WAVECOM_PAYMENT_PROVIDER)
-        ->delete();
+            ->where('id', MpmPlugin::WAVECOM_PAYMENT_PROVIDER)
+            ->delete();
     }
 };

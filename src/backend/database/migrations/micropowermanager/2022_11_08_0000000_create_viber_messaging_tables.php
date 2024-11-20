@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     public function up()
     {
-        if (!Schema::hasTable('viber_credentials')) {
+        if (! Schema::hasTable('viber_credentials')) {
             Schema::connection('shard')->create('viber_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_token')->nullable();
@@ -17,14 +18,14 @@ return new class () extends Migration {
                 $table->timestamps();
             });
         }
-        if (!Schema::hasTable('viber_messages')) {
+        if (! Schema::hasTable('viber_messages')) {
             Schema::connection('shard')->create('viber_messages', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sms_id');
                 $table->timestamps();
             });
         }
-        if (!Schema::hasTable('viber_contacts')) {
+        if (! Schema::hasTable('viber_contacts')) {
             Schema::connection('shard')->create('viber_contacts', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('person_id');

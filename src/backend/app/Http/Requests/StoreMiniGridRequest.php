@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreMiniGridRequest extends FormRequest
 {
     public const PARAM_CLUSTER_ID = 'cluster_id';
+
     public const PARAM_NAME = 'name';
 
     /**
@@ -36,7 +37,7 @@ class StoreMiniGridRequest extends FormRequest
 
     public function getMiniGrid(): MiniGrid
     {
-        $miniGrid = new MiniGrid();
+        $miniGrid = new MiniGrid;
         $miniGrid->setClusterId($this->input(self::PARAM_CLUSTER_ID));
         $miniGrid->setName($this->input(self::PARAM_NAME));
 

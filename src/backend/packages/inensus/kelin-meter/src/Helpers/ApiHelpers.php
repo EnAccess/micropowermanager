@@ -27,7 +27,7 @@ class ApiHelpers
 
     public function checkApiResult($result)
     {
-        if (!$result) {
+        if (! $result) {
             throw new KelinApiEmtyDataException('Null result returned.');
         }
         if ($result['status'] == -1) {

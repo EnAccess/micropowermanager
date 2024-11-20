@@ -12,8 +12,7 @@ class MeterTariffMeterParameterService
         private MeterTariff $meterTariff,
         private MeterParameter $meterParameter,
         private Meter $meter,
-    ) {
-    }
+    ) {}
 
     public function getCountById($meterTariffId): array
     {

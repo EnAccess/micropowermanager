@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class EBike extends BaseModel
 {
     public const RELATION_NAME = 'e_bike';
+
     protected $table = 'e_bikes';
 
     public function device(): MorphOne

@@ -8,8 +8,11 @@ use App\Models\Transaction\Transaction;
 class PricingDetails extends SmsBodyParser
 {
     public $variables = ['amount', 'vat_energy', 'vat_others'];
+
     protected $transaction;
+
     private $vatEnergy = 0;
+
     private $vatOtherStaffs = 0;
 
     public function __construct(Transaction $transaction)

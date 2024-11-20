@@ -10,7 +10,9 @@ use Inensus\SteamaMeter\Models\SteamaCredential;
 class SteamaCredentialService
 {
     private $rootUrl = '/get-token/';
+
     private $credential;
+
     private $steamaApi;
 
     public function __construct(

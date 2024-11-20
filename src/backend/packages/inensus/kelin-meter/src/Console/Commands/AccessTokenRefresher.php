@@ -10,8 +10,11 @@ use Inensus\KelinMeter\Services\KelinCredentialService;
 class AccessTokenRefresher extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 5;
+
     protected $signature = 'kelin-meter:access-token-refresher';
+
     protected $description = 'Refreshes access token per each one hour.';
 
     public function __construct(private KelinCredentialService $credentialService)
@@ -21,7 +24,7 @@ class AccessTokenRefresher extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

@@ -13,8 +13,7 @@ class MeterTariffController extends Controller
 {
     public function __construct(
         private MeterTariffService $meterTariffService,
-    ) {
-    }
+    ) {}
 
     /**
      * List
@@ -22,8 +21,6 @@ class MeterTariffController extends Controller
      * The list is paginated and each page contains 15 results.
      *
      * @responseFile responses/tariffs/tariffs.list.json
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -39,9 +36,7 @@ class MeterTariffController extends Controller
      *
      * @responseFile responses/tariffs/tariff.detail.json
      *
-     * @param MeterTariff $tariff
-     *
-     * @return ApiResource
+     * @param  MeterTariff  $tariff
      */
     public function show(Request $request, $meterTariffId): ApiResource
     {
@@ -55,8 +50,6 @@ class MeterTariffController extends Controller
      * @bodyParam factor int. The factor between two different sub tariffs. Like day/night sub-tariffs.
      * @bodyParam currency string
      * @bodyParam price int required.
-     *
-     * @param TariffCreateRequest $request
      *
      * @return ApiResource
      */

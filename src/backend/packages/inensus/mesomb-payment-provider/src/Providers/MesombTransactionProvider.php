@@ -20,9 +20,13 @@ use MPM\Transaction\Provider\ITransactionProvider;
 class MesombTransactionProvider implements ITransactionProvider
 {
     private $transaction;
+
     private $mesombTransaction;
+
     private $mesombTransactionService;
+
     private $validData = [];
+
     private $address;
 
     public function __construct(

@@ -12,9 +12,13 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 class GeographicalInformationObserver
 {
     private $stmMeterService;
+
     private $stmMeter;
+
     private $person;
+
     private $stmCustomer;
+
     private $meterParameter;
 
     public function __construct(

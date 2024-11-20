@@ -28,20 +28,20 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * Class Person.
  *
- * @property int    $id
+ * @property int $id
  * @property string $title
  * @property string $education
  * @property string $name
  * @property string $surname
- * @property mixed  $birth_date
- * @property string $sex         TODO: replace with gender
- * @property int    $nationality
- * @property int    $is_customer
+ * @property mixed $birth_date
+ * @property string $sex TODO: replace with gender
+ * @property int $nationality
+ * @property int $is_customer
  */
 class Person extends BaseModel implements HasAddressesInterface, RoleInterface
 {
-    use SoftDeletes;
     use HasFactory;
+    use SoftDeletes;
 
     public const RELATION_NAME = 'person';
 

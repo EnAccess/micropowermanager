@@ -9,6 +9,7 @@ use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
 class InstallPackage extends Command
 {
     protected $signature = 'calin-smart-meter:install';
+
     protected $description = 'Install CalinSmartMeter Package';
 
     public function __construct(

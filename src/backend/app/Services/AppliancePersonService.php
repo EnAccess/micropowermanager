@@ -16,14 +16,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<AssetPerson>
  * @implements IAssociative<AssetPerson>
  */
-class AppliancePersonService implements IBaseService, IAssociative
+class AppliancePersonService implements IAssociative, IBaseService
 {
     public function __construct(
         private MainSettings $mainSettings,
         private AssetPerson $assetPerson,
         private CashTransactionService $cashTransactionService,
-    ) {
-    }
+    ) {}
 
     public function make(array $data): AssetPerson
     {

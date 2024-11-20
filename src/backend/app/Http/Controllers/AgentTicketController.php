@@ -17,6 +17,7 @@ use Inensus\Ticket\Services\TicketUserService;
 class AgentTicketController extends Controller
 {
     private $board;
+
     private $card;
 
     public function __construct(
@@ -56,7 +57,7 @@ class AgentTicketController extends Controller
         $ownerId = $ticketData['owner_id'];
         $owner = $this->personService->getById($ownerId);
 
-        if (!$owner) {
+        if (! $owner) {
             throw new TicketOwnerNotFoundException('Ticket owner with following id not found '.$ownerId);
         }
 

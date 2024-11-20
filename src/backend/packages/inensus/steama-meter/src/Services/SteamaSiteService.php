@@ -16,14 +16,23 @@ use Inensus\SteamaMeter\Models\SyncStatus;
 class SteamaSiteService implements ISynchronizeService
 {
     private $site;
+
     private $steamaApi;
+
     private $apiHelpers;
+
     private $rootUrl = '/sites';
+
     private $miniGrid;
+
     private $cluster;
+
     private $geographicalInformation;
+
     private $city;
+
     private $steamaSyncSettingService;
+
     private $steamaSyncActionService;
 
     public function __construct(

@@ -9,6 +9,7 @@ use Inensus\GomeLongMeter\Services\ManufacturerService;
 class InstallPackage extends Command
 {
     protected $signature = 'gome-long-meter:install';
+
     protected $description = 'Install GomeLongMeter Package';
 
     public function __construct(

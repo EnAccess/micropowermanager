@@ -12,8 +12,7 @@ class DeviceAddressController extends Controller
     public function __construct(
         private DeviceAddressService $deviceAddressService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
     public function update(Request $request)
     {

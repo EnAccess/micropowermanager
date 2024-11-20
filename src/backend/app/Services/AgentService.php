@@ -23,8 +23,7 @@ class AgentService implements IBaseService
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
         private PersonService $personService,
-    ) {
-    }
+    ) {}
 
     public function resetPassword(string $email)
     {

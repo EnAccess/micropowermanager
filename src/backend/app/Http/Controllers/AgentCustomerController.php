@@ -12,13 +12,11 @@ class AgentCustomerController extends Controller
     public function __construct(
         private AgentCustomerService $agentCustomerService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      *
      * @return ApiResource
      */

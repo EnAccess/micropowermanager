@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     public function up()
     {
-        if (!Schema::hasTable('kelin_api_credentials')) {
+        if (! Schema::hasTable('kelin_api_credentials')) {
             Schema::connection('shard')->create('kelin_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->nullable();
@@ -19,7 +20,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_customers')) {
+        if (! Schema::hasTable('kelin_customers')) {
             Schema::connection('shard')->create('kelin_customers', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_customer_id')->unique(); // Code of the customer, id of corresponding person in MPM
@@ -31,7 +32,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_meters')) {
+        if (! Schema::hasTable('kelin_meters')) {
             Schema::connection('shard')->create('kelin_meters', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('mpm_meter_id')->unique();
@@ -44,7 +45,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_transactions')) {
+        if (! Schema::hasTable('kelin_transactions')) {
             Schema::connection('shard')->create('kelin_transactions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('meter_serial');
@@ -59,7 +60,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_sync_actions')) {
+        if (! Schema::hasTable('kelin_sync_actions')) {
             Schema::connection('shard')->create('kelin_sync_actions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sync_setting_id');
@@ -70,7 +71,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_sync_settings')) {
+        if (! Schema::hasTable('kelin_sync_settings')) {
             Schema::connection('shard')->create('kelin_sync_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('action_name')->unique();
@@ -81,7 +82,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_meter_minutely_datas')) {
+        if (! Schema::hasTable('kelin_meter_minutely_datas')) {
             Schema::connection('shard')->create('kelin_meter_minutely_datas', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('id_of_terminal');
@@ -116,7 +117,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_meter_daily_datas')) {
+        if (! Schema::hasTable('kelin_meter_daily_datas')) {
             Schema::connection('shard')->create('kelin_meter_daily_datas', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('id_of_terminal');
@@ -148,7 +149,7 @@ return new class () extends Migration {
             });
         }
 
-        if (!Schema::hasTable('kelin_settings')) {
+        if (! Schema::hasTable('kelin_settings')) {
             Schema::connection('shard')->create('kelin_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('setting_id');

@@ -17,17 +17,11 @@ class HistoryEvent implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param History $historyModel
      */
-    public function __construct(private readonly History $historyModel)
-    {
-    }
+    public function __construct(private readonly History $historyModel) {}
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return PrivateChannel
      */
     public function broadcastOn(): PrivateChannel
     {

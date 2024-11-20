@@ -19,8 +19,8 @@ use Tests\TestCase;
 
 class PaymentTests extends TestCase
 {
-    use RefreshDatabase;
     use CreatesApplication;
+    use RefreshDatabase;
 
     public function testOnlySuccessesPaymentsCanBeProcessed()
     {

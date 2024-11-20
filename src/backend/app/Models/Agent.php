@@ -18,19 +18,19 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 /**
  * Class Agent.
  *
- * @property int    $id
- * @property int    $person_id
- * @property int    $mini_grid_id
- * @property int    $agent_commission_id
+ * @property int $id
+ * @property int $person_id
+ * @property int $mini_grid_id
+ * @property int $agent_commission_id
  * @property string $device_id
  * @property string $name
  * @property string $email
  * @property string $password
  * @property string $fire_base_token
- * @property float  $balance
- * @property float  $available_balance
+ * @property float $balance
+ * @property float $available_balance
  * @property string $remember_token
- * @property int    $company_id
+ * @property int $company_id
  */
 class Agent extends Authenticatable implements JWTSubject
 {

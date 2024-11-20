@@ -24,8 +24,7 @@ class WaveComTransactionProvider implements ITransactionProvider
         private SmsService $smsService,
         private TransactionConflicts $transactionConflicts,
         private WaveComTransaction $waveComTransaction,
-    ) {
-    }
+    ) {}
 
     public function saveTransaction()
     {

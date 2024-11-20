@@ -13,13 +13,11 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionSer
 
 class WaveMoneyTransactionCallbackMiddleware
 {
-    public function __construct(private WaveMoneyTransactionService $transactionService)
-    {
-    }
+    public function __construct(private WaveMoneyTransactionService $transactionService) {}
 
     public function handle(Request $request, \Closure $next)
     {
-        $mapper = new TransactionCallbackRequestMapper();
+        $mapper = new TransactionCallbackRequestMapper;
         $callbackData = $mapper->getMappedObject($request);
         try {
             $waveMoneyTransaction = $this->transactionService->getByOrderId($callbackData->getOrderId());

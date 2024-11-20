@@ -9,14 +9,10 @@ use Illuminate\Http\Request;
 
 class AgentCommissionWebController extends Controller
 {
-    public function __construct(private AgentCommissionService $agentCommissionService)
-    {
-    }
+    public function __construct(private AgentCommissionService $agentCommissionService) {}
 
     /**
      * Display a listing of the resource.
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -28,7 +24,6 @@ class AgentCommissionWebController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateAgentCommissionRequest $request
      *
      * @return ApiResource
      */
@@ -41,11 +36,6 @@ class AgentCommissionWebController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param                              $agentCommissionId
-     * @param CreateAgentCommissionRequest $request
-     *
-     * @return ApiResource
      */
     public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource
     {
@@ -56,10 +46,6 @@ class AgentCommissionWebController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param $agentCommissionId
-     *
-     * @return ApiResource
      */
     public function destroy($agentCommissionId): ApiResource
     {

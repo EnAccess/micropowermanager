@@ -17,7 +17,9 @@ class CompanyDatabase extends BaseModelCore
     use HasFactory;
 
     public const TABLE_NAME = 'company_databases';
+
     public const COL_DATABASE_NAME = 'database_name';
+
     public const COL_COMPANY_ID = 'company_id';
 
     public function company(): BelongsTo

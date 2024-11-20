@@ -7,6 +7,7 @@ use App\Models\SmsAndroidSetting;
 class SmsAndroidSettingService
 {
     private string $fireBaseKey;
+
     private string $callbackUrl;
 
     public function __construct(private SmsAndroidSetting $smsAndroidSetting, private UserService $userService)

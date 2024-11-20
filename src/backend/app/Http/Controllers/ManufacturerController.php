@@ -16,13 +16,10 @@ class ManufacturerController extends Controller
         private ManufacturerService $manufacturerService,
         private ManufacturerAddressService $manufacturerAddressService,
         private AddressesService $addressService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
-     *
-     * @return ApiResource
      */
     public function index(Request $request): ApiResource
     {
@@ -33,10 +30,6 @@ class ManufacturerController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param ManufacturerRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(ManufacturerRequest $request): JsonResponse
     {
@@ -55,9 +48,7 @@ class ManufacturerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $manufacturerId
-     *
-     * @return ApiResource
+     * @param  int  $manufacturerId
      */
     public function show($manufacturerId): ApiResource
     {

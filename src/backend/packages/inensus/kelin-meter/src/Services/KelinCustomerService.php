@@ -17,11 +17,17 @@ use Inensus\KelinMeter\Models\SyncStatus;
 class KelinCustomerService implements ISynchronizeService
 {
     private $rootUrl = '/listCons';
+
     private $kelinCustomer;
+
     private $person;
+
     private $kelinApiClient;
+
     private $apiHelpers;
+
     private $syncSettingService;
+
     private $syncActionService;
 
     public function __construct(

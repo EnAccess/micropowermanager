@@ -25,6 +25,7 @@ use ParseCsv\Csv;
 class CustomerDatabaseParser
 {
     private $path;
+
     private $recentlyCreatedRecords;
 
     public function __construct(private Csv $csv)
@@ -85,7 +86,7 @@ class CustomerDatabaseParser
                 $city = $this->createRecordFromCsv($row, CityService::class);
                 $row['city_id'] = $city->id;
 
-                if (!$isExistingPerson) {
+                if (! $isExistingPerson) {
                     $this->createRecordFromCsv($row, AddressService::class);
                 }
 
@@ -105,7 +106,7 @@ class CustomerDatabaseParser
                 $row['meter_parameter_id'] = $meterParameter->id;
 
                 $this->createRecordFromCsv($row, GeographicalInformationService::class);
-                $meterAddress = new Address();
+                $meterAddress = new Address;
                 $address = $meterAddress->newQuery()->create([
                     'city_id' => $city->id,
                 ]);
@@ -141,7 +142,7 @@ class CustomerDatabaseParser
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            ++$this->recentlyCreatedRecords[$type];
+            $this->recentlyCreatedRecords[$type]++;
         }
     }
 }

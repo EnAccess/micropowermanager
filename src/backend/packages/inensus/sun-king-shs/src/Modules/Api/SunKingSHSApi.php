@@ -14,14 +14,14 @@ use Inensus\SunKingSHS\Services\SunKingCredentialService;
 class SunKingSHSApi implements IManufacturerAPI
 {
     public const API_CALL_TOKEN_GENERATION = '/token';
+
     public const COMMAND_ADD_CREDIT = 'add_credit';
 
     public function __construct(
         private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {

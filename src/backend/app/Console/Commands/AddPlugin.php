@@ -7,6 +7,7 @@ use App\Services\PluginsService;
 class AddPlugin extends AbstractSharedCommand
 {
     protected $signature = 'plugin:add {name} {composer_name} {description}';
+
     protected $description = 'Plugin Details adding to database';
 
     public function __construct(private PluginsService $pluginsService)

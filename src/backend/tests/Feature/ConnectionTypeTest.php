@@ -17,9 +17,13 @@ class ConnectionTypeTest extends TestCase
     use WithFaker;
 
     private $user;
+
     private $company;
+
     private $companyDatabase;
+
     private $person;
+
     private $connectonTypeIds = [];
 
     public function testUserGetsConnectionTypeList()
@@ -81,7 +85,7 @@ class ConnectionTypeTest extends TestCase
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
             array_push($this->connectonTypeIds, $connectionType->id);
-            --$connectionTypeCount;
+            $connectionTypeCount--;
         }
     }
 }

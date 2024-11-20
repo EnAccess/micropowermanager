@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class InstallPackage extends Command
 {
     protected $signature = 'mesomb-payment-provider:install';
+
     protected $description = 'Install MesombPaymentProvider Package';
 
     public function __construct()

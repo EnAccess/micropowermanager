@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class ApplianceRatePaymentHistoryService implements IAssignationService
 {
     private PaymentHistory $paymentHistory;
+
     private AssetRate $assetRate;
 
     public function setAssigned($paymentHistory): void

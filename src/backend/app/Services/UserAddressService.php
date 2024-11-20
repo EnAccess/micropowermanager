@@ -8,6 +8,7 @@ use App\Models\User;
 class UserAddressService
 {
     private $address;
+
     private $user;
 
     public function __construct(Address $address, User $user)
@@ -37,7 +38,7 @@ class UserAddressService
         $user->name = $data['name'];
         $user->update();
         $address = $user->address()->first();
-        if (!$address) {
+        if (! $address) {
             $address = $this->address->newQuery()->create([
                 'email' => $user->email,
                 'phone' => $data['phone'],

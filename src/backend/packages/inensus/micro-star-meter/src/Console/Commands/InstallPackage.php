@@ -9,6 +9,7 @@ use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
 class InstallPackage extends Command
 {
     protected $signature = 'micro-star-meter:install';
+
     protected $description = 'Install MicroStarMeter Package';
 
     public function __construct(

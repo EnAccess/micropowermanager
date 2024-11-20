@@ -31,7 +31,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
 
@@ -75,8 +75,7 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param string $token
-     *
+     * @param  string  $token
      * @return JsonResponse
      */
     protected function respondWithToken($token)

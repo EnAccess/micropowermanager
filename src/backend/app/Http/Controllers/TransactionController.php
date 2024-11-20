@@ -12,8 +12,7 @@ class TransactionController extends Controller
 {
     public function __construct(
         private TransactionService $transactionService,
-    ) {
-    }
+    ) {}
 
     public function index(): ApiResource
     {

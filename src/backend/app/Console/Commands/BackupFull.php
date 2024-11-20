@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 class BackupFull extends Command
 {
     protected $signature = 'backup:full';
+
     protected $description = 'Run the backup for core base database and all tenant databases';
 
     public function handle(): void

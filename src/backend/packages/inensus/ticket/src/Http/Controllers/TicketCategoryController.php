@@ -9,9 +9,7 @@ use Inensus\Ticket\Services\TicketCategoryService;
 
 class TicketCategoryController extends Controller
 {
-    public function __construct(private TicketCategoryService $ticketCategoryService)
-    {
-    }
+    public function __construct(private TicketCategoryService $ticketCategoryService) {}
 
     /**
      * A list of all stored labels/categories.

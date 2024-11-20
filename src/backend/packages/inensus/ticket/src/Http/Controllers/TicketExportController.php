@@ -13,13 +13,10 @@ class TicketExportController
     public function __construct(
         private TicketOutsourceReportService $ticketOutsourceReportService,
         private TicketService $ticketService,
-    ) {
-    }
+    ) {}
 
     /**
      * A list of stored book keeping data.
-     *
-     * @return TicketResource
      */
     public function index(Request $request): TicketResource
     {
@@ -31,9 +28,7 @@ class TicketExportController
     /**
      * Generates a book keeping file and stores it.
      *
-     * @param Request $request
      *
-     * @return TicketResource
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */

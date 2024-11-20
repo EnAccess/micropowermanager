@@ -12,10 +12,13 @@ use MPM\EBike\EBikeService;
 class SyncBikes extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 16;
+
     public const MANUFACTURER_NAME = 'DalyBms';
 
     protected $signature = 'daly-bms:sync-bikes';
+
     protected $description = 'Sync bikes from Daly BMS.';
 
     public function __construct(
@@ -28,7 +31,7 @@ class SyncBikes extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

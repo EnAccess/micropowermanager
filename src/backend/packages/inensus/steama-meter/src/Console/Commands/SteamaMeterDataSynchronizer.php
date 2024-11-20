@@ -23,19 +23,29 @@ use Inensus\SteamaMeter\Services\StemaSyncActionService;
 class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:dataSync';
+
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
 
     private $steamaTransactionsService;
+
     private $steamaSyncSettingservice;
+
     private $stemaMeterService;
+
     private $steamaCustomerService;
+
     private $steamaSiteService;
+
     private $steamaAgentService;
+
     private $steamaSyncActionService;
+
     private $address;
+
     private $cluster;
 
     public function __construct(
@@ -63,7 +73,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 
@@ -77,7 +87,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
         try {
             $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
-                if (!$syncAction) {
+                if (! $syncAction) {
                     return true;
                 }
                 if ($syncAction->attempts >= $syncSetting->max_attempts) {
@@ -85,7 +95,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                     $syncAction->next_sync = $nextSync;
                     $syncAction->save();
                     $cluster = $this->cluster->newQuery()->with('manager')->first();
-                    if (!$cluster) {
+                    if (! $cluster) {
                         return true;
                     }
                     $adminId = $cluster->manager->id;
@@ -96,7 +106,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                             $q->where('id', $adminId);
                         }
                     )->first();
-                    if (!$adminAddress) {
+                    if (! $adminAddress) {
                         return true;
                     }
                     $data = [

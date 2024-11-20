@@ -16,17 +16,19 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $street
- * @property int         $city_id
- * @property int         $is_primary
- * @property int         $owner_id
- * @property string      $owner_type
+ * @property int $city_id
+ * @property int $is_primary
+ * @property int $owner_id
+ * @property string $owner_type
  */
 class Address extends BaseModel
 {
     use HasFactory;
 
     public const RELATION_NAME = 'address';
+
     protected $hidden = ['owner_id', 'owner_type'];
+
     public static $rules = [
         'city_id' => 'required|exists:cities,id',
     ];

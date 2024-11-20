@@ -15,7 +15,9 @@ use Inensus\CalinMeter\Models\CalinTransaction;
 class CalinMeterApi implements IManufacturerAPI
 {
     public const CREDIT_TOKEN = 'CreditToken';
+
     protected $api;
+
     private $rootUrl = '/tokennew';
 
     public function __construct(

@@ -11,9 +11,11 @@ use Inensus\KelinMeter\Services\MinutelyConsumptionService;
 class ReadMinutelyMeterConsumptions extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 5;
 
     protected $signature = 'kelin-meter:read-minutely-consumptions';
+
     protected $description = 'Reads daily meter consumptions.';
 
     public function __construct(
@@ -25,7 +27,7 @@ class ReadMinutelyMeterConsumptions extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

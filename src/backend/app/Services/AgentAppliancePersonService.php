@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class AgentAppliancePersonService implements IAssignationService
 {
     private AssetPerson $appliancePerson;
+
     private Agent $agent;
 
     public function setAssigned($appliancePerson): void

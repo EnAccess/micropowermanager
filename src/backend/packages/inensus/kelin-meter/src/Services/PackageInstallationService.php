@@ -6,8 +6,7 @@ class PackageInstallationService
 {
     public function __construct(
         private KelinSyncSettingService $syncSettingService,
-    ) {
-    }
+    ) {}
 
     public function createDefaultSettingRecords()
     {

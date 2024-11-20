@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class DeviceAddressService implements IAssignationService
 {
     private Address $address;
+
     private Device $device;
 
     public function setAssigned($assigned): void
@@ -41,9 +42,6 @@ class DeviceAddressService implements IAssignationService
         return $result;
     }
 
-    /**
-     * @return Address
-     */
     public function updateDeviceAddress($deviceAddress, $addressData): Address
     {
         $points = $addressData['lat'].','.$addressData['lon'];

@@ -19,8 +19,7 @@ class PackageInstallationService
         private SteamaSmsBodyService $smsBodyService,
         private SteamaSmsVariableDefaultValueService $defaultValueService,
         private SteamaSmsFeedbackWordService $steamaSmsFeedbackWordService,
-    ) {
-    }
+    ) {}
 
     public function createDefaultSettingRecords()
     {

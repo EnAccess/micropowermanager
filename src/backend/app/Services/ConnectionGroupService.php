@@ -13,8 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 {
     public function __construct(
         private ConnectionGroup $connectionGroup,
-    ) {
-    }
+    ) {}
 
     public function create(array $connectionGroupData): ConnectionGroup
     {

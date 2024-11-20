@@ -13,6 +13,7 @@ class MailSettingsController extends Controller
      * @MailSettings
      */
     private $mailSettings;
+
     private $mailSettingsService;
 
     public function __construct(

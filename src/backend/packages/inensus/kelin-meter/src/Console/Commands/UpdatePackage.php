@@ -12,6 +12,7 @@ use Inensus\KelinMeter\Services\PackageInstallationService;
 class UpdatePackage extends Command
 {
     protected $signature = 'kelin-meter:update';
+
     protected $description = 'Update Kelin Meter Package';
 
     public function __construct(
@@ -55,7 +56,7 @@ class UpdatePackage extends Command
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_kelin_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return false;
         }
 

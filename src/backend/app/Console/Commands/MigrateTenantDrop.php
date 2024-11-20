@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class MigrateTenantDrop extends Command
 {
     protected $signature = 'migrate-tenant:drop-demo-company';
+
     protected $description = 'Drop all tables on the Demo tenant database';
 
     public function handle()

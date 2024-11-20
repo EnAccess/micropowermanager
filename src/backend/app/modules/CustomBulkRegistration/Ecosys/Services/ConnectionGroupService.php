@@ -8,6 +8,7 @@ use MPM\CustomBulkRegistration\Abstract\CreatorService;
 class ConnectionGroupService extends CreatorService
 {
     private $group1 = 'SunKing Home 40Plus - Sofala -  Humanitário 2';
+
     private $group2 = 'SunKing Home 40Plus - Nacional - COVID PLUS 2';
 
     public function __construct(ConnectionGroup $connectionGroup)

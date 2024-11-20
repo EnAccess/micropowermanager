@@ -17,8 +17,10 @@ class DalyBmsApi implements IManufacturerAPI
 {
     // works with query params
     public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
+
     // works with query params
     public const COMMAND_DEVICE_DETAIL = '/Monitor/ShowMonitorTips?';
+
     // works with body params
     public const COMMAND_SWITCH = '/Monitor/Send';
 
@@ -27,8 +29,7 @@ class DalyBmsApi implements IManufacturerAPI
         private DalyBmsTransaction $dalyBmsTransaction,
         private EBikeService $eBikeService,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
     public function getDevices(array $deviceSerials)
     {
@@ -39,7 +40,7 @@ class DalyBmsApi implements IManufacturerAPI
         $credentials = $this->credentialService->getCredentials();
 
         try {
-            if (!$this->credentialService->isAccessTokenValid($credentials)) {
+            if (! $this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }
@@ -62,7 +63,7 @@ class DalyBmsApi implements IManufacturerAPI
 
         $credentials = $this->credentialService->getCredentials();
         try {
-            if (!$this->credentialService->isAccessTokenValid($credentials)) {
+            if (! $this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }
@@ -90,7 +91,7 @@ class DalyBmsApi implements IManufacturerAPI
 
         $credentials = $this->credentialService->getCredentials();
         try {
-            if (!$this->credentialService->isAccessTokenValid($credentials)) {
+            if (! $this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }

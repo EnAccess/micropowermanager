@@ -33,8 +33,11 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Reports
 {
     private array $totalSold = [];
+
     private array $connectionTypeCells = [];
+
     private string|int $lastIndex;
+
     private array $subConnectionRows;
 
     public function __construct(
@@ -46,8 +49,7 @@ class Reports
         private City $city,
         private Target $target,
         private Report $report,
-    ) {
-    }
+    ) {}
 
     private function monthlyTargetRibbon(Worksheet $sheet): void
     {
@@ -121,12 +123,12 @@ class Reports
         )->get();
         foreach ($connections as $connection) {
             $sheet->setCellValue($column.$row, $connection->name);
-            ++$row;
+            $row++;
             foreach ($connection->subConnections as $subConnection) {
                 foreach ($subConnection->meterParameters as $meterParameter) {
                     $sheet->setCellValue($subColumn.$row, $meterParameter->connectionGroup()->first()->name);
                     $this->subConnectionRows[$meterParameter->connectionGroup()->first()->name] = $row;
-                    ++$row;
+                    $row++;
                 }
             }
         }
@@ -139,7 +141,7 @@ class Reports
      */
     private function initSheet(): void
     {
-        $this->spreadsheet = new Spreadsheet();
+        $this->spreadsheet = new Spreadsheet;
         $this->totalSold = [];
     }
 
@@ -161,10 +163,6 @@ class Reports
     }
 
     /**
-     * @param Worksheet $sheet
-     * @param string    $coordinate
-     * @param string    $color
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function fillBackground(Worksheet $sheet, string $coordinate, string $color): void
@@ -173,11 +171,6 @@ class Reports
     }
 
     /**
-     * @param Worksheet   $sheet
-     * @param             $column
-     * @param string|null $border
-     * @param string|null $color
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function styleSheet(Worksheet $sheet, string $column, ?string $border, ?string $color): void
@@ -193,11 +186,6 @@ class Reports
     }
 
     /**
-     * @param Worksheet $sheet
-     * @param           $dateRange
-     *
-     * @return void
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function addStaticText(Worksheet $sheet, string $dateRange): void
@@ -247,9 +235,7 @@ class Reports
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param string               $dateRange
-     * @param Builder[]|Collection $transactions
+     * @param  Builder[]|Collection  $transactions
      *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -278,9 +264,8 @@ class Reports
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param bool                 $addPurchaseBreakDown
-     * @param Builder[]|Collection $transactions
+     * @param  bool  $addPurchaseBreakDown
+     * @param  Builder[]|Collection  $transactions
      *
      * @throws CustomerGroupNotFound
      */
@@ -290,7 +275,7 @@ class Reports
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (!$transaction->meter || !$transaction->meter->meterParameter) {
+            if (! $transaction->meter || ! $transaction->meter->meterParameter) {
                 continue;
             }
 
@@ -342,11 +327,6 @@ class Reports
     /**
      * Add the breakdown of the transaction amount into the right place on the spreadsheet.
      *
-     * @param Worksheet $sheet
-     * @param           $paymentHistories
-     * @param int       $index
-     * @param string    $connectionGroupName
-     * @param           $tariff
      *
      * @throws CustomerGroupNotFound
      */
@@ -379,10 +359,6 @@ class Reports
     }
 
     /**
-     * @param string $connectionGroupName
-     *
-     * @return string
-     *
      * @throws CustomerGroupNotFound
      */
     private function getConnectionGroupColumn(string $connectionGroupName): string
@@ -404,11 +380,7 @@ class Reports
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param                      $connectionGroups
-     * @param string               $startingColumn
-     * @param int                  $startingRow
-     * @param Builder[]|Collection $connectionGroups
+     * @param  Builder[]|Collection  $connectionGroups
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -436,23 +408,23 @@ class Reports
                     if ($accessRate) {
                         if ($accessRate->amount > 0) {
                             $nextColumn = $startingColumn;
-                            ++$nextColumn;
+                            $nextColumn++;
                             $sheet->mergeCells($startingColumn.$startingRow.':'.
                                 $nextColumn.$startingRow);
-                            ++$startingColumn;
+                            $startingColumn++;
                             break;
                         }
                     }
                 }
             }
 
-            ++$startingColumn;
+            $startingColumn++;
         }
     }
 
     private function addSoldTotal(string $connectionGroupName, array $amount, $unit = null): void
     {
-        if (!array_key_exists($connectionGroupName, $this->totalSold)) {
+        if (! array_key_exists($connectionGroupName, $this->totalSold)) {
             $this->totalSold[$connectionGroupName] = [
                 'energy' => 0,
                 'access_rate' => 0,
@@ -469,8 +441,6 @@ class Reports
     }
 
     /**
-     * @param Worksheet $sheet
-     *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -510,14 +480,12 @@ class Reports
     }
 
     /**
-     * @return \Generator
-     *
      * @psalm-return Generator<int, mixed, mixed, void>
      */
     private function excelColumnRange(string $lower, string $upper): \Generator
     {
-        ++$upper;
-        for ($i = $lower; $i !== $upper; ++$i) {
+        $upper++;
+        for ($i = $lower; $i !== $upper; $i++) {
             yield $i;
         }
     }
@@ -526,12 +494,6 @@ class Reports
     private $monthlyTargetDatas = [];
 
     /**
-     * @param int $cityId
-     * @param     $cityName
-     * @param     $startDate
-     * @param     $endDate
-     * @param     $reportType
-     *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -576,14 +538,14 @@ class Reports
         $this->generateXls($sheet, $dateRange, $transactions);
 
         if ($reportType === 'weekly') {
-            $sheet2 = new Worksheet();
+            $sheet2 = new Worksheet;
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $this->addStaticText($sheet2, $dateRange);
             $sheet2->setTitle($dateRange);
             // Add transactions, customer name, balances to the sheet
             $this->addTransactions($sheet2, $transactions, false);
         } elseif ($reportType === 'monthly') {
-            $sheet2 = new Worksheet();
+            $sheet2 = new Worksheet;
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $sheet2->setTitle('monthly');
             // Add targets
@@ -598,7 +560,7 @@ class Reports
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
+        if (! file_exists($dirPath) && ! mkdir($dirPath, 0774, true) && ! is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
         }
         try {
@@ -619,10 +581,6 @@ class Reports
 
     /**
      * Total number of customer groups until given date.
-     *
-     * @param string $date
-     *
-     * @return void
      */
     private function getCustomerGroupCountPerMonth(string $date): void
     {
@@ -654,10 +612,10 @@ class Reports
 
                 $tariffPrice = $groupRevenue->tariff_price;
 
-                if (!$tariffPrice || $tariffPrice === 0) {
+                if (! $tariffPrice || $tariffPrice === 0) {
                     continue;
                 }
-                if (!$energyRevenue || $energyRevenue === 0) {
+                if (! $energyRevenue || $energyRevenue === 0) {
                     continue;
                 }
                 $tariffPrice /= 100;
@@ -702,7 +660,7 @@ class Reports
     {
         foreach ($this->monthlyTargetDatas as $subConnection => $monthlyTargetData) {
             $row = $this->subConnectionRows[$subConnection];
-            if (!$row) {
+            if (! $row) {
                 continue;
             }
             $sheet->setCellValue('E'.$row, $monthlyTargetData['connections']);
@@ -720,12 +678,12 @@ class Reports
             ->where('owner_id', $cityId)
             ->orderBy('target_date', 'asc')->first();
 
-        if (!$targetData) { // no target is defined for that mini-grid
+        if (! $targetData) { // no target is defined for that mini-grid
             return;
         }
 
         foreach ($targetData->subTargets as $subTarget) {
-            if (!isset($this->subConnectionRows[$subTarget->connectionType->name])) {
+            if (! isset($this->subConnectionRows[$subTarget->connectionType->name])) {
                 continue;
             }
             $row = $this->subConnectionRows[$subTarget->connectionType->name];

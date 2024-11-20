@@ -36,17 +36,12 @@ class AssetPersonController extends Controller
         private CashTransactionService $cashTransactionService,
         private AssetService $applianceService,
         private ApplianceRateService $applianceRateService,
-    ) {
-    }
+    ) {}
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param AssetType $assetType
-     * @param Person    $person
-     * @param Request   $request
-     *
-     * @return ApiResource
+     * @param  AssetType  $assetType
      */
     public function store(
         Asset $asset,
@@ -109,7 +104,7 @@ class AssetPersonController extends Controller
                 $this->geographicalInformationService->save($geographicalInformation);
             }
             if ($downPayment > 0) {
-                $sender = !isset($addressData) ? '-' : $addressData['phone'];
+                $sender = ! isset($addressData) ? '-' : $addressData['phone'];
                 $transaction = $this->cashTransactionService->createCashTransaction(
                     $user->id,
                     $downPayment,
@@ -141,11 +136,6 @@ class AssetPersonController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param Person  $person
-     * @param Request $request
-     *
-     * @return ApiResource
      */
     public function index(Person $person, Request $request): ApiResource
     {

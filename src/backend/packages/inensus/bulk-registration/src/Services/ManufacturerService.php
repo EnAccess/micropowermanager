@@ -26,7 +26,7 @@ class ManufacturerService extends CreatorService
     {
         $manufacturerConfig = config('bulk-registration.csv_fields.manufacturer');
 
-        if (!in_array($csvData[$manufacturerConfig['name']], $this->manufacturers)) {
+        if (! in_array($csvData[$manufacturerConfig['name']], $this->manufacturers)) {
             $message = 'Manufacturer '.$csvData[$manufacturerConfig['name']].
                 ' is not supported. Supported manufacturers are '.implode(', ', $this->manufacturers);
             throw new ManufacturerNotSupportedException($message);

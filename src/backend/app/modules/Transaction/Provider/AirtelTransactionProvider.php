@@ -17,14 +17,12 @@ class AirtelTransactionProvider implements ITransactionProvider
 {
     private \SimpleXMLElement $validData;
 
-    public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction)
-    {
-    }
+    public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction) {}
 
     public function saveTransaction(): void
     {
-        $this->airtelTransaction = new AirtelTransaction();
-        $this->transaction = new Transaction();
+        $this->airtelTransaction = new AirtelTransaction;
+        $this->transaction = new Transaction;
         // assign data
         $this->assignData($this->validData);
 
@@ -32,10 +30,6 @@ class AirtelTransactionProvider implements ITransactionProvider
         $this->saveData($this->airtelTransaction);
     }
 
-    /**
-     * @param bool        $requestType
-     * @param Transaction $transaction
-     */
     public function sendResult(bool $requestType, Transaction $transaction): void
     {
         // approve transaction : airtel transactions are automatically confirmed thus
@@ -48,7 +42,7 @@ class AirtelTransactionProvider implements ITransactionProvider
         } else { // send cancellation to airtel gateway server and this will send the final request to airtel
             $requestContent = $this->prepareRequest($this->transaction, $this->airtelTransaction);
 
-            $client = new Client();
+            $client = new Client;
             $response = $client->post(
                 config('services.airtel.request_url'),
                 [
@@ -157,8 +151,6 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     /**
      * Saves the airtel transaction.
-     *
-     * @param AirtelTransaction $airtelTransaction
      */
     public function saveData(AirtelTransaction $airtelTransaction): void
     {
@@ -168,7 +160,7 @@ class AirtelTransactionProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts();
+        $conflict = new TransactionConflicts;
         $conflict->state = $message;
         $conflict->transaction()->associate($this->airtelTransaction);
         $conflict->save();

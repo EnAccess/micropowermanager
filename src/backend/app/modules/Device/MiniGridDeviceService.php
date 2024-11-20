@@ -9,9 +9,7 @@ use Illuminate\Support\Collection;
 
 class MiniGridDeviceService
 {
-    public function __construct(private Device $device, private MiniGrid $miniGrid)
-    {
-    }
+    public function __construct(private Device $device, private MiniGrid $miniGrid) {}
 
     public function getMetersByMiniGridId($miniGridId)
     {

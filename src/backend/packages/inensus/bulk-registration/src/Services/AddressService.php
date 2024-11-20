@@ -45,7 +45,7 @@ class AddressService extends CreatorService
 
     public function createForPerson(int $personId, int $cityId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address
     {
-        $address = new Address();
+        $address = new Address;
         $address->setOwner($personId, 'person');
         $address->setCityId($cityId);
         $address->setPhone($phone);

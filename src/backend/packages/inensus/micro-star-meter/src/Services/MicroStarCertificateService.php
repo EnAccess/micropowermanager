@@ -13,7 +13,7 @@ class MicroStarCertificateService
         $file = $request->file('cert');
         $companyId = app()->make(UserService::class)->getCompanyId();
 
-        if (!File::isDirectory(storage_path("/app/certs/companies/$companyId"))) {
+        if (! File::isDirectory(storage_path("/app/certs/companies/$companyId"))) {
             File::makeDirectory(storage_path("/app/certs/companies/$companyId"), 0777, true, true);
         }
 
@@ -30,7 +30,7 @@ class MicroStarCertificateService
 
     public function getUploadedCertificate($credentials)
     {
-        if (!$credentials->certificate_path || !$credentials->certificate_file_name) {
+        if (! $credentials->certificate_path || ! $credentials->certificate_file_name) {
             return '';
         }
 

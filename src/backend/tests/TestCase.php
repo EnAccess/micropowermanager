@@ -16,7 +16,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function headers(?User $user = null)
     {
-        if (!$user) {
+        if (! $user) {
             $user = User::create([
                 'name' => 'John Doe',
                 'email' => 'johndoe@example.com',

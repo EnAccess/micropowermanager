@@ -10,7 +10,7 @@ class CsvFileParser
 
     public function __construct()
     {
-        $this->csv = new Csv();
+        $this->csv = new Csv;
     }
 
     public function parseCsvFromFilePath($path)

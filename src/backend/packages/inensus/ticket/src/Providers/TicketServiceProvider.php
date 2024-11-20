@@ -32,7 +32,7 @@ class TicketServiceProvider extends ServiceProvider
 
     public function publishMigrations()
     {
-        if (!class_exists('CreateTicketingTables')) {
+        if (! class_exists('CreateTicketingTables')) {
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  * Class Token.
  *
  * @property string $token
- * @property float  $energy
+ * @property float $energy
  */
 class MeterToken extends BaseModel
 {
@@ -43,7 +43,7 @@ class MeterToken extends BaseModel
     public function soldEnergyPerPeriod($startDate, $endDate): Builder
     {
         return $this::query()
-        ->select(DB::raw(' SUM( energy) as sold,YEARWEEK(created_at,3) as period'))
+            ->select(DB::raw(' SUM( energy) as sold,YEARWEEK(created_at,3) as period'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(created_at,3)'));
     }

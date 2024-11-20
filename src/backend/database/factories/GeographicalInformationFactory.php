@@ -11,7 +11,7 @@ class GeographicalInformationFactory extends Factory
 
     private function add_random_offset_to_coordinates(string $coord_string, int $distance): string
     {
-        list($lat, $lng) = explode(',', $coord_string);
+        [$lat, $lng] = explode(',', $coord_string);
 
         $lat = (float) $lat;
         $lng = (float) $lng;

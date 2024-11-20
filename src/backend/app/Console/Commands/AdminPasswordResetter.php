@@ -7,6 +7,7 @@ use App\Services\UserService;
 class AdminPasswordResetter extends AbstractSharedCommand
 {
     protected $signature = 'reset:admin-password';
+
     protected $description = 'Reset forgotten password';
 
     public function __construct(private UserService $userService)

@@ -14,11 +14,15 @@ use MPM\EBike\EBikeService;
 class CheckPayments extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 16;
+
     public const E_BIKE = 2;
+
     public const MANUFACTURER_NAME = 'DalyBms';
 
     protected $signature = 'daly-bms:check-payments';
+
     protected $description = 'Checks payments for e-bikes.';
 
     public function __construct(
@@ -33,7 +37,7 @@ class CheckPayments extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

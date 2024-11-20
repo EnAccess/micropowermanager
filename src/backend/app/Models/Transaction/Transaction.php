@@ -20,8 +20,8 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 /**
  * Class Transaction.
  *
- * @property int    $id
- * @property int    $amount
+ * @property int $id
+ * @property int $amount
  * @property string $type
  * @property string $sender
  * @property string $message
@@ -32,6 +32,7 @@ class Transaction extends BaseModel
     use RelationsManager;
 
     public const RELATION_NAME = 'transaction';
+
     public const TYPE_IMPORTED = 'imported';
 
     public function originalTransaction(): MorphTo

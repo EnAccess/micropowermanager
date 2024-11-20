@@ -8,7 +8,7 @@ class CreateWaveMoneyPaymentProviderTables extends Migration
 {
     public function up()
     {
-        if (!Schema::hasTable('wave_money_transactions')) {
+        if (! Schema::hasTable('wave_money_transactions')) {
             Schema::create('wave_money_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('status')->default(-2);
@@ -23,7 +23,7 @@ class CreateWaveMoneyPaymentProviderTables extends Migration
                 $table->timestamps();
             });
         }
-        if (!Schema::hasTable('wave_money_credentials')) {
+        if (! Schema::hasTable('wave_money_credentials')) {
             Schema::create('wave_money_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('merchant_id')->nullable();

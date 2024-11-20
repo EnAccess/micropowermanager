@@ -8,6 +8,7 @@ use Inensus\SteamaMeter\Models\SteamaSmsSetting;
 class SteamaSmsSettingService
 {
     private $smsSetting;
+
     private $setting;
 
     public function __construct(SteamaSmsSetting $smsSetting, SteamaSetting $setting)
@@ -19,7 +20,7 @@ class SteamaSmsSettingService
     public function createDefaultSettings()
     {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();
-        if (!$smsTransaction) {
+        if (! $smsTransaction) {
             $smsSetting = $this->setting->newQuery()->make();
             $smsTransaction = $this->smsSetting->newQuery()->create([
                 'state' => 'Transactions',
@@ -29,7 +30,7 @@ class SteamaSmsSettingService
             $smsSetting->save();
         }
         $smsLowBalanceWarning = $this->smsSetting->newQuery()->where('state', 'Low Balance Warning')->first();
-        if (!$smsLowBalanceWarning) {
+        if (! $smsLowBalanceWarning) {
             $balanceSetting = $this->setting->newQuery()->make();
             $smsLowBalanceWarning = $this->smsSetting->newQuery()->create([
                 'state' => 'Low Balance Warning',

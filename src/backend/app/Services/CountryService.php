@@ -13,8 +13,7 @@ class CountryService implements IBaseService
 {
     public function __construct(
         private Country $country,
-    ) {
-    }
+    ) {}
 
     public function getByCode(?string $countryCode)
     {

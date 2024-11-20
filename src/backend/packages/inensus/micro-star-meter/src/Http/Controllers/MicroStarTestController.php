@@ -7,9 +7,7 @@ use Inensus\MicroStarMeter\Modules\Api\ApiRequests;
 
 class MicroStarTestController extends Controller
 {
-    public function __construct(private ApiRequests $apiRequests)
-    {
-    }
+    public function __construct(private ApiRequests $apiRequests) {}
 
     public function show()
     {

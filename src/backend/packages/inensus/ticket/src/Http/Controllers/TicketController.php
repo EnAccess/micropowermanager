@@ -10,9 +10,7 @@ class TicketController extends Controller
 {
     public const FOR_APP = false;
 
-    public function __construct(private TicketService $ticketService)
-    {
-    }
+    public function __construct(private TicketService $ticketService) {}
 
     public function index(Request $request): TicketResource
     {

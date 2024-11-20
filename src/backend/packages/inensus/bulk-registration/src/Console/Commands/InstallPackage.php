@@ -8,6 +8,7 @@ use Inensus\BulkRegistration\Services\MeterTypeService;
 class InstallPackage extends Command
 {
     protected $signature = 'bulk-registration:install';
+
     protected $description = 'Install Bulk Registration Package';
 
     public function __construct(

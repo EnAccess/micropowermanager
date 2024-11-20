@@ -26,8 +26,7 @@ class SmsController extends Controller
         private MeterParameter $meterParameter,
         private SmsService $smsService,
         private TicketCommentService $commentService,
-    ) {
-    }
+    ) {}
 
     public function index(): ApiResource
     {
@@ -218,9 +217,7 @@ class SmsController extends Controller
     /**
      * Marks the sms as sent.
      *
-     * @param string $uuid
-     *
-     * @return void
+     * @param  string  $uuid
      */
     public function updateForDelivered($uuid): void
     {

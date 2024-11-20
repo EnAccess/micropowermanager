@@ -21,6 +21,7 @@ class WatcherController
      * The Trello action codes which are logged in our system.
      */
     public const INTERESTING_ACTIONS = ['createCard', 'addMemberToCard', 'commentCard', 'updateCard'];
+
     /**
      * @var Ticket
      */
@@ -28,8 +29,6 @@ class WatcherController
 
     /**
      * WatcherController constructor.
-     *
-     * @param Ticket $ticket
      */
     public function __construct(Ticket $ticket)
     {
@@ -49,7 +48,7 @@ class WatcherController
         $action = $content['action'];
         $actionType = $action['type'];
 
-        if (!$this->filterRequest($actionType)) { // there is no interest for that action
+        if (! $this->filterRequest($actionType)) { // there is no interest for that action
             Log::debug('action is not interesting');
 
             return;
@@ -61,9 +60,7 @@ class WatcherController
     /**
      * Checks if the request type is interesting or not.
      *
-     * @param string $type the request type
-     *
-     * @return bool
+     * @param  string  $type  the request type
      */
     private function filterRequest($type): bool
     {
@@ -74,9 +71,7 @@ class WatcherController
      * Tries to match the given ticket id with an entry in the database
      * it should prevent, that any new ticket created directly in Trello.
      *
-     * @param string $ticketId
      *
-     * @return Ticket
      *
      * @throws ModelNotFoundException
      */

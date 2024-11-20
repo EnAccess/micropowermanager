@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class MeterTokenPaymentHistoryService implements IAssignationService
 {
     private PaymentHistory $paymentHistory;
+
     private MeterToken $meterToken;
 
     public function setAssigned($paymentHistory): void

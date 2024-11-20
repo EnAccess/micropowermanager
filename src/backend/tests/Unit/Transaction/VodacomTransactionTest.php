@@ -29,10 +29,9 @@ class VodacomTransactionTest extends TestCase
             [],
             ['REMOTE_ADDR' => '127.0.0.2']
         );
-        $middleWare = new Transaction();
+        $middleWare = new Transaction;
 
-        $response = $middleWare->handle($request, function () {
-        });
+        $response = $middleWare->handle($request, function () {});
 
         self::assertEquals(401, $response->status());
     }
@@ -48,7 +47,7 @@ class VodacomTransactionTest extends TestCase
             ['REMOTE_ADDR' => config('services.vodacom.ips')[0]]
         );
 
-        $middleWare = new Transaction();
+        $middleWare = new Transaction;
 
         $middleWare->handle($request, function ($x) {
             $this->assertInstanceOf(VodacomTransactionProvider::class, $x->attributes->get('transactionProcessor'));

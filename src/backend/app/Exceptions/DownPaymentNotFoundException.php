@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class DownPaymentNotFoundException extends \Exception
-{
-}
+class DownPaymentNotFoundException extends \Exception {}

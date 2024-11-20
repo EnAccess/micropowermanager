@@ -17,6 +17,7 @@ class BelongsToMorph extends BelongsTo
      * @var string
      */
     protected $morphName;
+
     /**
      * The type of the polymorphic relation.
      *
@@ -34,10 +35,9 @@ class BelongsToMorph extends BelongsTo
     /**
      * Add the constraints for a relationship query.
      *
-     * @param Builder     $query
-     * @param Builder     $parent
-     * @param array|mixed $columns
-     *
+     * @param  Builder  $query
+     * @param  Builder  $parent
+     * @param  array|mixed  $columns
      * @return Builder
      */
     /**
@@ -64,11 +64,9 @@ class BelongsToMorph extends BelongsTo
     /**
      * Get the polymorphic relationship columns.
      *
-     * @param string $name
-     * @param string $type
-     * @param string $id
-     *
-     * @return array
+     * @param  string  $name
+     * @param  string  $type
+     * @param  string  $id
      */
     protected static function getMorphs($name, $type, $id): array
     {
@@ -81,15 +79,12 @@ class BelongsToMorph extends BelongsTo
     /**
      * Define an inverse morph relationship.
      *
-     * @param Model  $parent
-     * @param string $related
-     * @param string $name
-     * @param null   $type
-     * @param null   $id
-     * @param null   $otherKey
-     * @param null   $relation
-     *
-     * @return BelongsToMorph
+     * @param  string  $related
+     * @param  string  $name
+     * @param  null  $type
+     * @param  null  $id
+     * @param  null  $otherKey
+     * @param  null  $relation
      */
     public static function build(
         Model $parent,
@@ -104,12 +99,12 @@ class BelongsToMorph extends BelongsTo
         // the calling method's name and use that as the relationship name as most
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation)) {
-            list($current, $caller) = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+            [$current, $caller] = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
             $relation = $caller['function'];
         }
         $morphName = Arr::get(array_flip(Relation::morphMap()), $related, $related);
-        list($type, $id) = self::getMorphs(Str::snake($name), $type, $id);
-        $instance = new $related();
+        [$type, $id] = self::getMorphs(Str::snake($name), $type, $id);
+        $instance = new $related;
         // Once we have the foreign key names, we'll just create a new Eloquent query
         // for the related models and returns the relationship instance which will
         // actually be responsible for retrieving and hydrating every relations.

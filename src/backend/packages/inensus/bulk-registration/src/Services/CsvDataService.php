@@ -10,7 +10,9 @@ use Inensus\BulkRegistration\Models\CsvData;
 class CsvDataService
 {
     private $csvData;
+
     private $csvDataProcessor;
+
     private $csvFileParser;
 
     public function __construct(CsvData $csvData, CsvFileParser $csvFileParser, CsvDataProcessor $csvDataProcessor)

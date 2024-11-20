@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class MiniGridDashboardCacheController extends Controller
 {
-    public function __construct(private MiniGridDashboardCacheDataService $miniGridDashboardCacheDataService)
-    {
-    }
+    public function __construct(private MiniGridDashboardCacheDataService $miniGridDashboardCacheDataService) {}
 
     public function index(): ApiResource
     {

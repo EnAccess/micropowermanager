@@ -16,6 +16,7 @@ use Inensus\Ticket\Services\TicketService;
 class AssetRateChecker extends AbstractSharedCommand
 {
     protected $signature = 'asset-rate:check';
+
     protected $description = 'Checks if any asset rate is due and creates a ticket and reminds the customer';
 
     public function __construct(

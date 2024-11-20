@@ -10,8 +10,11 @@ use Inensus\SparkMeter\Services\CustomerService;
 class PersonObserver
 {
     private $customerService;
+
     private $smTableEncryption;
+
     private $person;
+
     private $smCustomer;
 
     public function __construct(

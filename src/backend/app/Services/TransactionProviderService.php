@@ -10,8 +10,6 @@ class TransactionProviderService
 
     /**
      * TransactionProviderService constructor.
-     *
-     * @param Transaction $transaction
      */
     public function __construct(Transaction $transaction)
     {

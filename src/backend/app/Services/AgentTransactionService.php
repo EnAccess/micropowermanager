@@ -18,8 +18,7 @@ class AgentTransactionService implements IBaseService
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
         private Device $device,
-    ) {
-    }
+    ) {}
 
     public function getAll(
         ?int $limit = null,
@@ -54,7 +53,7 @@ class AgentTransactionService implements IBaseService
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->get()->pluck('device_serial');
 
-        if (!$customerDeviceSerials->count()) {
+        if (! $customerDeviceSerials->count()) {
             return null;
         }
 

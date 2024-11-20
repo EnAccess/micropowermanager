@@ -22,8 +22,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         private Transaction $transaction,
         private WaveMoneyTransactionService $waveMoneyTransactionService,
         private TransactionConflicts $transactionConflicts,
-    ) {
-    }
+    ) {}
 
     public function validateRequest($request)
     {

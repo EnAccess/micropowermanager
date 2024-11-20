@@ -18,6 +18,7 @@ use Viber\Bot;
 class WebhookController extends Controller
 {
     private $bot;
+
     private $botSender;
 
     public function __construct(
@@ -44,7 +45,7 @@ class WebhookController extends Controller
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
             ->onConversation(function ($event) {
-                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText('Can I help you?');
+                return (new \Viber\Api\Message\Text)->setSender($this->botSender)->setText('Can I help you?');
             })
             ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
@@ -60,7 +61,7 @@ class WebhookController extends Controller
 
                 $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
 
-                if (!$meter) {
+                if (! $meter) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setMeterNotFoundMessage());
 
                     return;
@@ -94,13 +95,13 @@ class WebhookController extends Controller
                 }
             })
             ->onText("|$resendInformationKey.*|si", function ($event) use ($bot, $botSender, $resendInformationKey) {
-                if (!$resendInformationKey) {
+                if (! $resendInformationKey) {
                     return;
                 }
                 $meterSerial = $this->viberContactService->getByViberId($event->getSender()
                     ->getId())->registered_meter_serial_number;
 
-                if (!$meterSerial) {
+                if (! $meterSerial) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNotRegisteredMessage());
 
                     return;
@@ -108,7 +109,7 @@ class WebhookController extends Controller
                 $transaction = Transaction::with('paymentHistories')
                     ->where('message', $meterSerial)->latest()->first();
 
-                if (!$transaction) {
+                if (! $transaction) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNoTransactionMessage($meterSerial));
 
                     return;
@@ -156,7 +157,7 @@ class WebhookController extends Controller
     private function answerToCustomer($bot, $botSender, $event, $message)
     {
         $bot->getClient()->sendMessage(
-            (new \Viber\Api\Message\Text())
+            (new \Viber\Api\Message\Text)
                 ->setSender($botSender)
                 ->setReceiver($event->getSender()->getId())
                 ->setText("Hello, {$event->getSender()->getName()}! {$message}")

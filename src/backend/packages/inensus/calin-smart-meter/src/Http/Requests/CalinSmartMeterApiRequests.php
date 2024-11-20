@@ -12,7 +12,9 @@ use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 class CalinSmartMeterApiRequests
 {
     private $client;
+
     private $apiHelpers;
+
     private $credential;
 
     public function __construct(

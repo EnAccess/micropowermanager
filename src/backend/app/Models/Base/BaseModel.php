@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseModel extends Model
 {
     protected $guarded = ['id'];
+
     public static $rules = [];
 
     public function __construct(array $attributes = [])

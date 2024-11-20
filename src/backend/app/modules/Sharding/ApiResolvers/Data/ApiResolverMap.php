@@ -15,12 +15,19 @@ use MPM\Sharding\ApiResolvers\WaveMoneyApiResolver;
 class ApiResolverMap
 {
     public const VIBER_API = 'api/viber-messaging/webhook';
+
     public const TEST_API = 'api/testApi';
+
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
+
     public const ANDROID_GATEWAY_CALLBACK_API = 'api/sms-android-callback';
+
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
+
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
+
     public const DATA_EXPORTING_API = 'api/export';
+
     public const RESOLVABLE_APIS = [
         self::TEST_API,
         self::VIBER_API,

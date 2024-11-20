@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class ApplianceTransactionProcessor extends AbstractJob
 {
     private Transaction $transaction;
+
     protected const TYPE = 'deferred_payment';
 
     public function __construct(private int $transactionId)

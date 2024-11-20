@@ -13,11 +13,17 @@ use Inensus\SparkMeter\Models\SyncStatus;
 class SmSalesAccoutService implements ISynchronizeService
 {
     private $sparkMeterApiRequests;
+
     private $rootUrl = '/sales-accounts';
+
     private $smTableEncryption;
+
     private $smSalesAccount;
+
     private $smSite;
+
     private $smSyncSettingService;
+
     private $smSyncActionService;
 
     public function __construct(

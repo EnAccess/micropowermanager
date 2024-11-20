@@ -10,8 +10,7 @@ class ClustersDashboardCacheDataController extends Controller
 {
     public function __construct(
         private ClustersDashboardCacheDataService $clustersDashboardCacheDataService,
-    ) {
-    }
+    ) {}
 
     public function index()
     {

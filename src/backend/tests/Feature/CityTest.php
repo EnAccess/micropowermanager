@@ -21,11 +21,17 @@ class CityTest extends TestCase
     use WithFaker;
 
     private $user;
+
     private $company;
+
     private $companyDatabase;
+
     private $person;
+
     private $clusterIds = [];
+
     private $miniGridIds = [];
+
     private $cityIds = [];
 
     public function testUserGetsCities()
@@ -112,16 +118,16 @@ class CityTest extends TestCase
                         'cluster_id' => $cluster->id,
                     ]);
                     array_push($this->cityIds, $city->id);
-                    --$cityCount;
+                    $cityCount--;
                 }
 
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();
                 array_push($this->miniGridIds, $miniGrid->id);
-                --$miniGridCount;
+                $miniGridCount--;
             }
 
-            --$clusterCount;
+            $clusterCount--;
         }
     }
 

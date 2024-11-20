@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class TransactionInitializeRequest extends FormRequest
 {
     private const BODY_PARAM_METER_SERIAL = 'meterSerial';
+
     private const BODY_PARAM_AMOUNT = 'amount';
 
     public function rules(): array

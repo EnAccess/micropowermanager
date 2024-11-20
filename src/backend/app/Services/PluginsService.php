@@ -10,8 +10,7 @@ class PluginsService
 {
     public function __construct(
         private Plugins $plugin,
-    ) {
-    }
+    ) {}
 
     public function create(array $pluginData): Plugins
     {

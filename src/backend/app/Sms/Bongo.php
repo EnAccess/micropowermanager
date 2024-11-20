@@ -32,23 +32,18 @@ class Bongo implements ISmsProvider
     /**
      * @var Sms
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public $defer = true;
 
     /**
-     * @param string $number
-     * @param string $body
-     *
      * @return StreamInterface
      *
      * @throws \Exception
      */
     public function sendGetSms(string $number, string $body)
     {
-        $httpClient = new Client();
+        $httpClient = new Client;
         if ($number[0] !== '+') {
             $number = '+'.$number;
         }
@@ -78,17 +73,13 @@ class Bongo implements ISmsProvider
     }
 
     /**
-     * @param string $number
-     * @param string $body
-     * @param string $callback
-     *
      * @return mixed|StreamInterface
      *
      * @throws \Exception
      */
     public function sendSms(string $number, string $body, string $callback, ?SmsAndroidSetting $smsAndroidSetting = null)
     {
-        $httpClient = new Client();
+        $httpClient = new Client;
         if ($number[0] !== '+') {
             $number = '+'.$number;
         }

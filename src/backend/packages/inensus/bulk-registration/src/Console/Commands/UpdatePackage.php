@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class UpdatePackage extends Command
 {
     protected $signature = 'bulk-registration:update';
+
     protected $description = 'Update  Bulk Registration Package';
 
     public function __construct(
@@ -58,7 +59,7 @@ class UpdatePackage extends Command
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_bulk-registration_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return false;
         }
 

@@ -15,9 +15,11 @@ use Illuminate\Support\Collection;
 class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
 {
     private const EMAIL_TEMPLATE = 'templates.mail.non_paying_mail';
+
     private const REPORT_TEMPLATE = 'templates.mail.non_paying_pdf';
 
     protected $signature = 'reports:send-non-paying-customer-mail {--start-date=} {--end-date=}';
+
     protected $description = 'Creates a report that includes a list of customers
         that didnt buy anything in the given period';
 

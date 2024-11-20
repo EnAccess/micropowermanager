@@ -15,8 +15,7 @@ class ViberContactService implements IBaseService
     public function __construct(
         private ViberContact $viberContact,
         private Person $person,
-    ) {
-    }
+    ) {}
 
     public function createContact($personId, $viberId)
     {

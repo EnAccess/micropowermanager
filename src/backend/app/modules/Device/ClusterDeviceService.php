@@ -8,9 +8,7 @@ use App\Models\Meter\Meter;
 
 class ClusterDeviceService
 {
-    public function __construct(private Cluster $cluster, private Device $device)
-    {
-    }
+    public function __construct(private Cluster $cluster, private Device $device) {}
 
     public function getCountByClusterId($clusterId): int
     {

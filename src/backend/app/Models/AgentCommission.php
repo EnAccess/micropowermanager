@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * Class AgentCommission.
  *
- * @property int   $id
+ * @property int $id
  * @property float $energy_commission
  * @property float $appliance_commission
  * @property float $risk_balance

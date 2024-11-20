@@ -12,10 +12,15 @@ use Inensus\SteamaMeter\Services\SteamaMeterService;
 class PersonObserver
 {
     private $apiHelpers;
+
     private $stmCustomerService;
+
     private $stmMeterService;
+
     private $stmCustomer;
+
     private $person;
+
     private $steamaApi;
 
     public function __construct(

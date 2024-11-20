@@ -15,6 +15,7 @@ class AccessRate
      * @var AccessRate
      */
     private $accessRate;
+
     /**
      * @var MeterParameter
      */
@@ -23,17 +24,11 @@ class AccessRate
     /**
      * AccessRatePayment constructor.
      *
-     * @param AccessRate $accessRate
+     * @param  AccessRate  $accessRate
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
-     * @param MeterParameter $meterParameter
-     *
-     * @return AccessRate
-     *
      * @throws NoAccessRateFound
      */
     public static function withMeterParameters(MeterParameter $meterParameter): AccessRate
@@ -41,7 +36,7 @@ class AccessRate
         if ($meterParameter->tariffAccessRate() === null) {
             throw new NoAccessRateFound('Tariff  '.$meterParameter->tariff()->first()->name.' has no access rate');
         }
-        $accessRate = new self();
+        $accessRate = new self;
         $accessRate->accessRate = $meterParameter->tariffAccessRate();
         $accessRate->setMeterParameter($meterParameter);
 
@@ -54,8 +49,6 @@ class AccessRate
     }
 
     /**
-     * @return AccessRatePayment
-     *
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment
@@ -66,7 +59,7 @@ class AccessRate
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period)->toDateString();
         // create accessRatePayment instance and fill with the variables
-        $accessRatePayment = new AccessRatePayment();
+        $accessRatePayment = new AccessRatePayment;
         $accessRatePayment->accessRate()->associate($this->accessRate);
         $accessRatePayment->meter()->associate($this->meterParameter->meter()->first());
         $accessRatePayment->due_date = $nextPaymentDate;
@@ -76,8 +69,6 @@ class AccessRate
     }
 
     /**
-     * @return int
-     *
      * @throws NoAccessRateFound
      */
     private function getDebt(Meter $meter): int
@@ -91,15 +82,13 @@ class AccessRate
     }
 
     /**
-     * @param TransactionDataContainer $transactionData
-     *
      * @return int
      *
      * @deprecated
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer
     {
-        $nonStaticGateway = new self();
+        $nonStaticGateway = new self;
         // get accessRatePayment
         $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
         try {

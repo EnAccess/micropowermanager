@@ -47,7 +47,7 @@ class SteamaMeterServiceProvider extends ServiceProvider
             $app->make(Schedule::class)->command('steama-meter:smsNotifier')->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));
             $app->make(Schedule::class)->command('steama-meter:hourlyReadings')->hourlyAt(1)->withoutOverlapping(50)
-               ->appendOutputTo(storage_path('logs/cron.log'));
+                ->appendOutputTo(storage_path('logs/cron.log'));
         });
         Relation::morphMap(
             [

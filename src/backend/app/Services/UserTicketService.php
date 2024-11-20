@@ -12,6 +12,7 @@ use Inensus\Ticket\Models\Ticket;
 class UserTicketService implements IAssignationService
 {
     private Ticket $ticket;
+
     private User $user;
 
     public function setAssigned($ticket): void

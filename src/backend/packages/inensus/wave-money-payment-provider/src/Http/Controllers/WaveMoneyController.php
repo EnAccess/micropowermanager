@@ -16,8 +16,7 @@ class WaveMoneyController extends Controller
     public function __construct(
         private WaveMoneyTransactionService $transactionService,
         private WaveMoneyApiService $apiService,
-    ) {
-    }
+    ) {}
 
     public function startTransaction(TransactionInitializeRequest $request): WaveMoneyResource
     {

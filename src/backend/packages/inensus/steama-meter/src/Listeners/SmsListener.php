@@ -13,8 +13,11 @@ use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 class SmsListener
 {
     private $smsFeedbackWordService;
+
     private $customerService;
+
     private $meter;
+
     private $smsService;
 
     public function __construct(
@@ -32,7 +35,7 @@ class SmsListener
     public function onSmsStored($sender, $message)
     {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
-        if (!$steamaCustomer) {
+        if (! $steamaCustomer) {
             return;
         }
         $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();

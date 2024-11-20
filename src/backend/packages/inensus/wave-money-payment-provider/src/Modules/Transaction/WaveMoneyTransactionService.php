@@ -22,9 +22,13 @@ use Ramsey\Uuid\Uuid;
 class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
 {
     private Meter $meter;
+
     private Address $address;
+
     private Transaction $transaction;
+
     private MeterParameter $meterParameter;
+
     private WaveMoneyTransaction $waveMoneyTransaction;
 
     public function __construct(

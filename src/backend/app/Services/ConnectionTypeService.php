@@ -16,8 +16,7 @@ class ConnectionTypeService implements IBaseService
 {
     public function __construct(
         private ConnectionType $connectionType,
-    ) {
-    }
+    ) {}
 
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder
     {

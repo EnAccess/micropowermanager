@@ -7,6 +7,7 @@ use App\Sms\BodyParsers\SmsBodyParser;
 class SparkSmsMeterResetFeedbackBody extends SmsBodyParser
 {
     protected $variables = ['meter_serial'];
+
     protected $meter;
 
     public function __construct($meter)

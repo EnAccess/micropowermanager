@@ -35,10 +35,7 @@ class MailHelper implements MailHelperInterface
     }
 
     /**
-     * @param      $to
-     * @param      $title
-     * @param      $body
-     * @param null $attachment
+     * @param  null  $attachment
      *
      * @throws MailNotSentException
      * @throws PHPMailerException
@@ -63,7 +60,7 @@ class MailHelper implements MailHelperInterface
 
         $this->mailer->AltBody = $this->mailSettings['default_message'];
 
-        if (!$this->mailer->send()) {
+        if (! $this->mailer->send()) {
             throw new MailNotSentException($this->mailer->ErrorInfo);
         }
     }
@@ -87,7 +84,7 @@ class MailHelper implements MailHelperInterface
             $this->mailer->addAttachment($attachmentPath);
         }
 
-        if (!$this->mailer->send()) {
+        if (! $this->mailer->send()) {
             throw new MailNotSentException($this->mailer->ErrorInfo);
         }
     }

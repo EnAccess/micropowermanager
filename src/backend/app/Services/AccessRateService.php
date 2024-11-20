@@ -13,8 +13,7 @@ class AccessRateService implements IBaseService
 {
     public function __construct(
         private AccessRate $accessRate,
-    ) {
-    }
+    ) {}
 
     public function getById(int $accessRateId): AccessRate
     {

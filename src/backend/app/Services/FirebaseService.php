@@ -11,7 +11,7 @@ class FirebaseService
     public function sendNotify($firebaseToken, $body): string
     {
         try {
-            $httpClient = new Client();
+            $httpClient = new Client;
             $request = $httpClient->post(
                 config()->get('services.sms.android.url'),
                 [

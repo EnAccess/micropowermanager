@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class UpdatePackage extends Command
 {
     protected $signature = 'micro-star-meter:update';
+
     protected $description = 'Update MicroStarMeter Package';
 
     public function __construct(
@@ -49,7 +50,7 @@ class UpdatePackage extends Command
             .'*_create_micro_star_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (!$migration) {
+        if (! $migration) {
             return false;
         }
 

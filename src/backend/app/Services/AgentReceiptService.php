@@ -14,8 +14,7 @@ class AgentReceiptService implements IBaseService
 {
     public function __construct(
         private AgentReceipt $agentReceipt,
-    ) {
-    }
+    ) {}
 
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
     {

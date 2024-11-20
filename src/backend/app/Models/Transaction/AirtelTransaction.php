@@ -11,20 +11,17 @@ use MPM\Transaction\FullySupportedTransactionInterface;
 /**
  * Class AirtelTransaction.
  *
- * @property int    $id
+ * @property int $id
  * @property string $interface_id
  * @property string $business_number
  * @property string $trans_id
- * @property int    $status
+ * @property int $status
  * @property string $tr_id
  */
-class AirtelTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
+class AirtelTransaction extends BaseModel implements FullySupportedTransactionInterface, IRawTransaction
 {
     public const RELATION_NAME = 'airtel_transaction';
 
-    /**
-     * @return MorphOne
-     */
     public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'original_transaction');

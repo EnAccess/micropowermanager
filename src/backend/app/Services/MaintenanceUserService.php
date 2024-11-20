@@ -13,8 +13,7 @@ class MaintenanceUserService implements IBaseService
 {
     public function __construct(
         private MaintenanceUsers $maintenanceUser,
-    ) {
-    }
+    ) {}
 
     public function getMaintenanceUsersCount()
     {

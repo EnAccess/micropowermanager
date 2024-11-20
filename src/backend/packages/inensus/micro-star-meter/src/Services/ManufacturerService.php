@@ -6,14 +6,12 @@ use App\Models\Manufacturer;
 
 class ManufacturerService
 {
-    public function __construct(private Manufacturer $manufacturer)
-    {
-    }
+    public function __construct(private Manufacturer $manufacturer) {}
 
     public function register()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'MicroStarMeterApi')->first();
-        if (!$api) {
+        if (! $api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'MicroStar Meters',
                 'website' => 'https://www.microstarelectric.com/',

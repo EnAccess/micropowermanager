@@ -14,8 +14,7 @@ class AgentAssignedApplianceService implements IBaseService
 {
     public function __construct(
         private AgentAssignedAppliances $agentAssignedAppliance,
-    ) {
-    }
+    ) {}
 
     public function create(array $applianceData): AgentAssignedAppliances
     {

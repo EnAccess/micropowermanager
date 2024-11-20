@@ -10,9 +10,11 @@ use Inensus\SteamaMeter\Services\SteamaMeterReadingService;
 class ReadHourlyMeterReadings extends AbstractSharedCommand
 {
     use ScheduledPluginCommand;
+
     public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:hourlyReadings';
+
     protected $description = 'Reads hourly meter readings.';
 
     public function __construct(private SteamaMeterReadingService $steamaMeterReadingService)
@@ -22,7 +24,7 @@ class ReadHourlyMeterReadings extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

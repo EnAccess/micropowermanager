@@ -14,8 +14,7 @@ class ClusterRevenueAnalysisController extends Controller
         private ClusterService $clusterService,
         private ClusterRevenueService $clusterRevenueService,
         private ConnectionTypeService $connectionTypeService,
-    ) {
-    }
+    ) {}
 
     public function show($clusterId, Request $request): ApiResource
     {

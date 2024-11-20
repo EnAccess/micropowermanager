@@ -17,12 +17,19 @@ use Webpatser\Uuid\Uuid;
 abstract class SmsSender
 {
     protected $smsBodyService;
+
     protected $data;
+
     protected $references;
+
     public $body = '';
+
     protected $receiver;
+
     protected $callback;
+
     protected $parserSubPath;
+
     private $smsAndroidSettings;
 
     public function __construct($data, $smsBodyService, $parserSubPath, $smsAndroidSettings)
@@ -141,7 +148,7 @@ abstract class SmsSender
                 $this->prepareFooter();
             }
         } catch (MissingSmsReferencesException $exception) {
-            throw new $exception();
+            throw new $exception;
         }
     }
 
@@ -155,7 +162,7 @@ abstract class SmsSender
                 '+'
             ) === 0 ? $this->data->assetPerson->person->addresses->first()->phone
                 : '+'.$this->data->assetPerson->person->addresses->first()->phone;
-        } elseif (!is_array($this->data) && $this->data->mpmPerson) {
+        } elseif (! is_array($this->data) && $this->data->mpmPerson) {
             $this->receiver = strpos(
                 $this->data->mpmPerson->addresses[0]->phone,
                 '+'
@@ -187,7 +194,7 @@ abstract class SmsSender
         if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
             $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
 
-            if (!$viberContact) {
+            if (! $viberContact) {
                 return null;
             }
 

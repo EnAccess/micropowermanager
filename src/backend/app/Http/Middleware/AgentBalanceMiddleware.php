@@ -17,15 +17,12 @@ class AgentBalanceMiddleware
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentTransactionService $agentTransactionService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     public function handle($request, \Closure $next)
@@ -38,11 +35,11 @@ class AgentBalanceMiddleware
         if ($routeName === 'agent-sell-appliance') {
             $assignedApplianceCost = $this->agentAssignedApplianceService->getById($request->input('agent_assigned_appliance_id'));
             $downPayment = $request->input('down_payment');
-            if (!$assignedApplianceCost) {
+            if (! $assignedApplianceCost) {
                 throw new ModelNotFoundException('Assigned Appliance not found');
             }
 
-            if (!isset($downPayment)) {
+            if (! isset($downPayment)) {
                 throw new DownPaymentNotFoundException('DownPayment not found');
             }
 

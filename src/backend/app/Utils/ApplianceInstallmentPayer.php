@@ -16,9 +16,13 @@ use MPM\Device\DeviceService;
 class ApplianceInstallmentPayer
 {
     private Person $customer;
+
     private Transaction $transaction;
+
     public array $paidRates = [];
+
     public ?AssetPerson $shsLoan = null;
+
     public $consumableAmount;
 
     public function __construct(
@@ -26,8 +30,7 @@ class ApplianceInstallmentPayer
         private ApplianceRateService $applianceRateService,
         private AppliancePaymentService $appliancePaymentService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
     public function initialize(TransactionDataContainer $transactionData): void
     {
@@ -80,7 +83,7 @@ class ApplianceInstallmentPayer
     {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
-        if (!$device) {
+        if (! $device) {
             throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
         }
 

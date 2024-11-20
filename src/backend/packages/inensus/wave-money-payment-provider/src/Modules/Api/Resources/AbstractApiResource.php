@@ -7,6 +7,7 @@ namespace Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources;
 abstract class AbstractApiResource
 {
     protected string $body;
+
     protected const REQUEST_TIME_TO_LIVE_IN_SECS = 120;
 
     abstract public function getRequestMethod(): string;

@@ -11,8 +11,7 @@ class SmsApplianceRemindRateService
     public function __construct(
         private SmsApplianceRemindRate $smsApplianceRemindRate,
         private Asset $appliance,
-    ) {
-    }
+    ) {}
 
     public function getApplianceRemindRatesWithAppliances(): Collection
     {

@@ -17,8 +17,6 @@ class SteamaSetting extends BaseModel
 
     /**
      * A work-around for querying the polymorphic relation with whereHas.
-     *
-     * @return BelongsToMorph
      */
     public function settingSms(): BelongsToMorph
     {
@@ -27,8 +25,6 @@ class SteamaSetting extends BaseModel
 
     /**
      * A work-around for querying the polymorphic relation with whereHas.
-     *
-     * @return BelongsToMorph
      */
     public function settingSync(): BelongsToMorph
     {

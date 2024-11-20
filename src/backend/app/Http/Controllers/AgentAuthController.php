@@ -16,8 +16,6 @@ class AgentAuthController extends Controller
 {
     /**
      * Create a new AuthController instance.
-     *
-     * @param AgentService $agentService
      */
     public function __construct(private AgentService $agentService)
     {
@@ -36,7 +34,7 @@ class AgentAuthController extends Controller
     {
         $credentials = $request->only(['email', 'password']);
 
-        if (!$token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
+        if (! $token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
 
@@ -84,8 +82,7 @@ class AgentAuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param string $token
-     *
+     * @param  string  $token
      * @return JsonResponse
      */
     protected function respondWithToken($token)

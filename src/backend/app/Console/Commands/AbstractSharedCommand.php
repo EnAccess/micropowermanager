@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractSharedCommand extends Command
 {
     protected const EXECUTE_FOR_ONE = 1;
+
     protected const EXECUTE_FOR_ALL = 0;
 
     protected int $EXECUTION_TYPE = self::EXECUTE_FOR_ALL;

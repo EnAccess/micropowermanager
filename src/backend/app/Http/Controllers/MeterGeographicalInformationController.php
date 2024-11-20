@@ -17,8 +17,7 @@ class MeterGeographicalInformationController extends Controller
         private PersonMeterService $personMeterService,
         private CityService $cityService,
         private MeterService $meterService,
-    ) {
-    }
+    ) {}
 
     /**
      * List with geo and access rate
@@ -26,8 +25,6 @@ class MeterGeographicalInformationController extends Controller
      * The list is not paginated.
      *
      * @urlParam mini_grid_id
-     *
-     * @return ApiResource
      *
      * @responseFile responses/meters/meters.geo.list.json
      */
@@ -55,9 +52,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @urlParam person required The ID of the person
      *
-     * @param int $person
-     *
-     * @return ApiResource
+     * @param  int  $person
      *
      * @responseFile responses/people/person.meter.list.json
      */
@@ -74,8 +69,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
      *
-     * @param Request $request
-     * @param Meter   $meter
+     * @param  Meter  $meter
      */
     public function update(Request $request): ApiResource
     {

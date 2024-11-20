@@ -12,6 +12,7 @@ use App\Services\Interfaces\IAssignationService;
 class CityGeographicalInformationService implements IAssignationService
 {
     private GeographicalInformation $geographicInformation;
+
     private City $city;
 
     public function setAssigned($assigned): void

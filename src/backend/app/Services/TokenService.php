@@ -14,8 +14,7 @@ class TokenService implements IBaseService
 {
     public function __construct(
         private Token $token,
-    ) {
-    }
+    ) {}
 
     public function getById(int $id): Token
     {
@@ -31,7 +30,7 @@ class TokenService implements IBaseService
     {
         throw new \Exception('Method update() not yet implemented.');
 
-        return new Token();
+        return new Token;
     }
 
     public function delete($model): ?bool

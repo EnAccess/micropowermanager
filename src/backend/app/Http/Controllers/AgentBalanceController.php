@@ -9,8 +9,7 @@ class AgentBalanceController extends Controller
 {
     public function __construct(
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     public function show(Request $request)
     {
