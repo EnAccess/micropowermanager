@@ -20,6 +20,7 @@ RUN rm -rf /var/lib/apt/lists/*
 # install and configure php extensions
 RUN docker-php-ext-install \
     bcmath \
+    exif \
     ftp \
     gd \
     mysqli \
