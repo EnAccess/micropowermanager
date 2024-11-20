@@ -40,7 +40,7 @@ class CustomerSeeder extends Seeder
                             ->state(function (array $attributes, Address $address) {
                                 return ['points' => $address->city->location->points];
                             })
-                            ->randomizePoints(),
+                            ->randomizePointsInVillage(),
                         'geo'
                     )
             )
