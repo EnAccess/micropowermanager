@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class AgentRiskBalanceExceeded extends \Exception {}
+class AgentRiskBalanceExceeded extends \Exception
+{
+}

@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class PurchaseNotProcessable extends \Exception {}
+class PurchaseNotProcessable extends \Exception
+{
+}

@@ -13,13 +13,14 @@ class SubTargetService implements IBaseService
 {
     public function __construct(
         private SubTarget $subTarget,
-    ) {}
+    ) {
+    }
 
     public function getById(int $id): SubTarget
     {
         throw new \Exception('Method getById() not yet implemented.');
 
-        return new SubTarget;
+        return new SubTarget();
     }
 
     public function create(array $subTargetData): SubTarget
@@ -45,7 +46,7 @@ class SubTargetService implements IBaseService
     {
         throw new \Exception('Method update() not yet implemented.');
 
-        return new SubTarget;
+        return new SubTarget();
     }
 
     public function delete($model): ?bool

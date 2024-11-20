@@ -14,7 +14,8 @@ class AgentTransactionsController extends Controller
     public function __construct(
         private AgentTransactionService $agentTransactionService,
         private AgentService $agentService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

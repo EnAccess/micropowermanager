@@ -17,7 +17,8 @@ class MeterGeographicalInformationController extends Controller
         private PersonMeterService $personMeterService,
         private CityService $cityService,
         private MeterService $meterService,
-    ) {}
+    ) {
+    }
 
     /**
      * List with geo and access rate

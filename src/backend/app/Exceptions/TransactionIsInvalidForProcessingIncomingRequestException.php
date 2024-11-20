@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class TransactionIsInvalidForProcessingIncomingRequestException extends \Exception {}
+class TransactionIsInvalidForProcessingIncomingRequestException extends \Exception
+{
+}

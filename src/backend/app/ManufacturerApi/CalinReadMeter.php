@@ -62,7 +62,9 @@ class CalinReadMeter implements IMeterReader
      *
      * @return void
      */
-    public function readMeter($meterId, $type) {}
+    public function readMeter($meterId, $type)
+    {
+    }
 
     /**
      * Reads the data for a given meter list.

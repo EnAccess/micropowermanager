@@ -13,7 +13,8 @@ class MeterTariffController extends Controller
 {
     public function __construct(
         private MeterTariffService $meterTariffService,
-    ) {}
+    ) {
+    }
 
     /**
      * List

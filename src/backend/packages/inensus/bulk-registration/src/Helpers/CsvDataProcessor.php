@@ -80,7 +80,7 @@ class CsvDataProcessor
                             app()->make($this->reflections['GeographicalInformationService']);
                         $geographicalInformationService->resolveCsvDataFromComingRow($row, $meterParameter);
 
-                        $address = new Address;
+                        $address = new Address();
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);

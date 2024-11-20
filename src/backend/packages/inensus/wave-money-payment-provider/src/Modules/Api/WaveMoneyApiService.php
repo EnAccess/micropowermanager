@@ -13,7 +13,8 @@ class WaveMoneyApiService
     public function __construct(
         private WaveMoneyApi $api,
         private WaveMoneyCredentialService $credentialService,
-    ) {}
+    ) {
+    }
 
     public function requestPayment(WaveMoneyTransaction $transaction): array
     {

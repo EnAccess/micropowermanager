@@ -19,7 +19,8 @@ class UserListener
         private TicketUserService $ticketUserService,
         private CompanyService $companyService,
         private MailHelperInterface $mailHelper,
-    ) {}
+    ) {
+    }
 
     public function handle($event): void
     {

@@ -13,12 +13,16 @@ class VodacomServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot() {}
+    public function boot()
+    {
+    }
 
     /**
      * Register services.
      *
      * @return void
      */
-    public function register() {}
+    public function register()
+    {
+    }
 }

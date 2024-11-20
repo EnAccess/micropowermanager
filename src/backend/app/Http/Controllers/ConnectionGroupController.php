@@ -11,7 +11,8 @@ class ConnectionGroupController
 {
     public function __construct(
         private ConnectionGroupService $connectionGroupService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

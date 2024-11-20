@@ -16,7 +16,8 @@ class MeterTariffObserver
     public function __construct(
         private GomeLongTariffService $gomeLongTariffService,
         private GomeLongCredentialService $credentialService,
-    ) {}
+    ) {
+    }
 
     public function created(MeterTariff $tariff)
     {

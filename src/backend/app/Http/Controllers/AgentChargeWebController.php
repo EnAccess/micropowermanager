@@ -10,7 +10,8 @@ class AgentChargeWebController extends Controller
 {
     public function __construct(
         private AgentChargeService $agentChargeService,
-    ) {}
+    ) {
+    }
 
     public function store(CreateAgentChargeRequest $request): ApiResource
     {

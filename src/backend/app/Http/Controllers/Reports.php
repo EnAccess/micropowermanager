@@ -49,7 +49,8 @@ class Reports
         private City $city,
         private Target $target,
         private Report $report,
-    ) {}
+    ) {
+    }
 
     private function monthlyTargetRibbon(Worksheet $sheet): void
     {
@@ -141,7 +142,7 @@ class Reports
      */
     private function initSheet(): void
     {
-        $this->spreadsheet = new Spreadsheet;
+        $this->spreadsheet = new Spreadsheet();
         $this->totalSold = [];
     }
 
@@ -538,14 +539,14 @@ class Reports
         $this->generateXls($sheet, $dateRange, $transactions);
 
         if ($reportType === 'weekly') {
-            $sheet2 = new Worksheet;
+            $sheet2 = new Worksheet();
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $this->addStaticText($sheet2, $dateRange);
             $sheet2->setTitle($dateRange);
             // Add transactions, customer name, balances to the sheet
             $this->addTransactions($sheet2, $transactions, false);
         } elseif ($reportType === 'monthly') {
-            $sheet2 = new Worksheet;
+            $sheet2 = new Worksheet();
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $sheet2->setTitle('monthly');
             // Add targets

@@ -16,7 +16,8 @@ class TicketUserService implements IBaseService
     public function __construct(
         private TicketUser $ticketUser,
         private User $user,
-    ) {}
+    ) {
+    }
 
     public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator
     {

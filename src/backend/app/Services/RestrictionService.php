@@ -13,7 +13,8 @@ class RestrictionService implements IBaseService
 {
     public function __construct(
         private Restriction $restriction,
-    ) {}
+    ) {
+    }
 
     public function getRestrictionForTarget($target)
     {

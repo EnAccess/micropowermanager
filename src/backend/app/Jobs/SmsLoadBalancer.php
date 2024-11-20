@@ -48,7 +48,7 @@ class SmsLoadBalancer extends AbstractJob
     {
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
-        $httpClient = new Client;
+        $httpClient = new Client();
         $request = $httpClient->post(
             $smsCollection[1]['setting']['url'],
             [

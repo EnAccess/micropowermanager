@@ -33,7 +33,8 @@ abstract class AbstractPaymentAggregatorTransactionService
         private Transaction $transaction,
         private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
-    ) {}
+    ) {
+    }
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
     {

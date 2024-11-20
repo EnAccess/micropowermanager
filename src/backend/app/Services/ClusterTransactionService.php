@@ -7,7 +7,9 @@ use App\Models\Transaction\Transaction;
 
 class ClusterTransactionService
 {
-    public function __construct(private Cluster $cluster, private Transaction $transaction) {}
+    public function __construct(private Cluster $cluster, private Transaction $transaction)
+    {
+    }
 
     public function getById($clusterId, array $range)
     {

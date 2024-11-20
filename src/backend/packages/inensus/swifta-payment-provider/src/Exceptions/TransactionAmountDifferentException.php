@@ -2,4 +2,6 @@
 
 namespace Inensus\SwiftaPaymentProvider\Exceptions;
 
-class TransactionAmountDifferentException extends \Exception {}
+class TransactionAmountDifferentException extends \Exception
+{
+}

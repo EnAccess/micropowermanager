@@ -12,7 +12,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class SolarHomeSystemService implements IBaseService
 {
-    public function __construct(private SolarHomeSystem $solarHomeSystem) {}
+    public function __construct(private SolarHomeSystem $solarHomeSystem)
+    {
+    }
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {

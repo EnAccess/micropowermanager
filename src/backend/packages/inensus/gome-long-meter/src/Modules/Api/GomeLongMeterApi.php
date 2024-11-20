@@ -18,7 +18,8 @@ class GomeLongMeterApi implements IManufacturerAPI
         private GomeLongCredentialService $credentialService,
         private GomeLongTransaction $gomeLongTransaction,
         private ApiRequests $apiRequests,
-    ) {}
+    ) {
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {

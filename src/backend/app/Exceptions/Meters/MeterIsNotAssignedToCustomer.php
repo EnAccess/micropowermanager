@@ -2,4 +2,6 @@
 
 namespace App\Exceptions\Meters;
 
-class MeterIsNotAssignedToCustomer extends \Exception {}
+class MeterIsNotAssignedToCustomer extends \Exception
+{
+}

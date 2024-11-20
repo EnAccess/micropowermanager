@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class AgentObserver
 {
-    public function created(Agent $agent): void {}
+    public function created(Agent $agent): void
+    {
+    }
 
     public function updated(Agent $agent): void
     {

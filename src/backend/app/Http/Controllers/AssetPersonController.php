@@ -36,7 +36,8 @@ class AssetPersonController extends Controller
         private CashTransactionService $cashTransactionService,
         private AssetService $applianceService,
         private ApplianceRateService $applianceRateService,
-    ) {}
+    ) {
+    }
 
     /**
      * Store a newly created resource in storage.

@@ -12,7 +12,8 @@ class TicketSettingsService implements ISettingsService
 {
     public function __construct(
         private TicketSettings $ticketSettings,
-    ) {}
+    ) {
+    }
 
     public function update($ticketSettings, array $ticketSettingsData): TicketSettings
     {

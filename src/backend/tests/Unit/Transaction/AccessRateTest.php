@@ -33,7 +33,7 @@ class AccessRateTest extends TestCase
         $meterType = MeterTypeFactory::new()->create();
         $connectionType = ConnectionTypeFactory::new()->create();
         $connectionGroup = ConnectionGroupFactory::new()->create();
-        $meter = new Meter;
+        $meter = new Meter();
         $meter->serial_number = '47000268748';
         $meter->meterType()->associate($meterType);
         $meter->manufacturer()->associate($manufacturer);
@@ -43,7 +43,7 @@ class AccessRateTest extends TestCase
         $accessRate = AccessRateFactory::new()->make();
         $tariff->accessRate()->save($accessRate);
         $customer = PersonFactory::new()->create();
-        $meterParameter = new MeterParameter;
+        $meterParameter = new MeterParameter();
         $meterParameter->tariff()->associate($tariff);
         $meterParameter->meter()->associate($meter);
         $meterParameter->connectionGroup()->associate($connectionGroup);

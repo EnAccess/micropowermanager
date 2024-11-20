@@ -14,7 +14,8 @@ class MeterConsumptionService implements IBaseService
 {
     public function __construct(
         private MeterConsumption $meterConsumption,
-    ) {}
+    ) {
+    }
 
     public function getByMeter(Meter $meter, $start, $end): Collection|array
     {

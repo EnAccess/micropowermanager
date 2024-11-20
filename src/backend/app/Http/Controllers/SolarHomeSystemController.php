@@ -15,7 +15,8 @@ class SolarHomeSystemController extends Controller
         private DeviceService $deviceService,
         private SolarHomeSystemService $solarHomeSystemService,
         private SolarHomeSystemDeviceService $solarHomeSystemDeviceService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

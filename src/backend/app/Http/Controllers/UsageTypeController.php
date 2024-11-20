@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class UsageTypeController extends Controller
 {
-    public function __construct(private UsageTypeService $usageTypeService) {}
+    public function __construct(private UsageTypeService $usageTypeService)
+    {
+    }
 
     public function index(Request $request): ApiResource
     {

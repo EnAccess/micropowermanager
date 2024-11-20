@@ -29,7 +29,8 @@ class DalyBmsApi implements IManufacturerAPI
         private DalyBmsTransaction $dalyBmsTransaction,
         private EBikeService $eBikeService,
         private ApiRequests $apiRequests,
-    ) {}
+    ) {
+    }
 
     public function getDevices(array $deviceSerials)
     {

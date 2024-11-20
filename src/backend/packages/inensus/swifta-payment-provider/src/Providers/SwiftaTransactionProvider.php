@@ -22,7 +22,8 @@ class SwiftaTransactionProvider implements ITransactionProvider
         private Transaction $transaction,
         private SwiftaTransactionService $swiftaTransactionService,
         private TransactionConflicts $transactionConflicts,
-    ) {}
+    ) {
+    }
 
     public function validateRequest($request)
     {

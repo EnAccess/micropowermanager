@@ -14,7 +14,8 @@ class MeterRevenueService
     public function __construct(
         private MeterToken $meterToken,
         private Transaction $transaction,
-    ) {}
+    ) {
+    }
 
     public function getBySerialNumber(string $serialNumber)
     {

@@ -6,7 +6,9 @@ use App\Models\Asset;
 
 class AssetService
 {
-    public function __construct(private Asset $asset) {}
+    public function __construct(private Asset $asset)
+    {
+    }
 
     public function getAssets($request)
     {

@@ -10,7 +10,8 @@ class ClusterMiniGridRevenueController extends Controller
 {
     public function __construct(
         private ClusterRevenueService $clusterRevenueService,
-    ) {}
+    ) {
+    }
 
     public function show($clusterId, Request $request): ApiResource
     {

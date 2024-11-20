@@ -14,7 +14,8 @@ class EBikeService implements IBaseService
 {
     public function __construct(
         private EBike $eBike,
-    ) {}
+    ) {
+    }
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {

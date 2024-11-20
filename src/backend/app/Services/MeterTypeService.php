@@ -12,7 +12,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class MeterTypeService implements IBaseService
 {
-    public function __construct(private MeterType $meterType) {}
+    public function __construct(private MeterType $meterType)
+    {
+    }
 
     public function create(array $meterTypeData): MeterType
     {

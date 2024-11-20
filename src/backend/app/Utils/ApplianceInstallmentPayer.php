@@ -30,7 +30,8 @@ class ApplianceInstallmentPayer
         private ApplianceRateService $applianceRateService,
         private AppliancePaymentService $appliancePaymentService,
         private DeviceService $deviceService,
-    ) {}
+    ) {
+    }
 
     public function initialize(TransactionDataContainer $transactionData): void
     {

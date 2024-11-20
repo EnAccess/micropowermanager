@@ -2,4 +2,6 @@
 
 namespace Inensus\Ticket\Exceptions;
 
-class TicketOwnerNotFoundException extends \Exception {}
+class TicketOwnerNotFoundException extends \Exception
+{
+}

@@ -27,7 +27,8 @@ class CompanyController extends Controller
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
-    ) {}
+    ) {
+    }
 
     public function store(CompanyRegistrationRequest $request): JsonResponse
     {

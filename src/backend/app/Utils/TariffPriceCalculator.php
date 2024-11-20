@@ -16,7 +16,8 @@ class TariffPriceCalculator
         private SocialTariffService $socialTariffService,
         private TimeOfUsageService $timeOfUsageService,
         private TariffPricingComponentService $tariffPricingComponentService,
-    ) {}
+    ) {
+    }
 
     public function calculateTotalPrice(
         MeterTariff $meterTariff,

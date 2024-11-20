@@ -10,7 +10,9 @@ use MPM\Apps\CustomerRegistration\CustomerRegistrationAppService;
 
 class CustomerRegistrationAppController extends Controller
 {
-    public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService) {}
+    public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService)
+    {
+    }
 
     public function store(AndroidAppRequest $request)
     {

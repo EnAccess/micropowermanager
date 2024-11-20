@@ -9,7 +9,8 @@ class MeterPaymentHistoryController
 {
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,
-    ) {}
+    ) {
+    }
 
     public function show(string $serialNumber)
     {

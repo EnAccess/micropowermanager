@@ -2,4 +2,6 @@
 
 namespace Inensus\SteamaMeter\Exceptions;
 
-class SteamaApiResponseException extends \Exception {}
+class SteamaApiResponseException extends \Exception
+{
+}

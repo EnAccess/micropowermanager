@@ -15,7 +15,8 @@ class MeterController extends Controller
 {
     public function __construct(
         private MeterService $meterService,
-    ) {}
+    ) {
+    }
 
     /**
      * List

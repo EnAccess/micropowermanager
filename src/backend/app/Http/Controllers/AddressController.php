@@ -13,7 +13,8 @@ class AddressController extends Controller
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-    ) {}
+    ) {
+    }
 
     public function index(): ApiResource
     {

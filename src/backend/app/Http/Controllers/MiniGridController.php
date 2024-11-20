@@ -17,7 +17,8 @@ class MiniGridController extends Controller
         private MiniGridService $miniGridService,
         private GeographicalInformationService $geographicalInformationService,
         private MiniGridGeographicalInformationService $miniGridGeographicalInformationService,
-    ) {}
+    ) {
+    }
 
     /**
      * List.

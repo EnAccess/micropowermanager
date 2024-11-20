@@ -18,7 +18,8 @@ class AddressesService implements IAssociative, IBaseService
 {
     public function __construct(
         private Address $address,
-    ) {}
+    ) {
+    }
 
     // fills the object and returns it without saving.
     public function instantiate(array $params): Address

@@ -10,7 +10,9 @@ use App\Services\MeterParameterService;
 
 class MeterParameterObserver
 {
-    public function __construct(private MeterParameterService $meterParameterService) {}
+    public function __construct(private MeterParameterService $meterParameterService)
+    {
+    }
 
     /**
      * Handle "deleted" event.

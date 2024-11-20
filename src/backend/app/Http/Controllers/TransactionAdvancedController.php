@@ -10,7 +10,8 @@ class TransactionAdvancedController extends Controller
 {
     public function __construct(
         private TransactionService $transactionService,
-    ) {}
+    ) {
+    }
 
     public function searchAdvanced(Request $request): ApiResource
     {

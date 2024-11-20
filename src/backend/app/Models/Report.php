@@ -13,4 +13,6 @@ use App\Models\Base\BaseModel;
  * @property string $path
  * @property string $type
  */
-class Report extends BaseModel {}
+class Report extends BaseModel
+{
+}

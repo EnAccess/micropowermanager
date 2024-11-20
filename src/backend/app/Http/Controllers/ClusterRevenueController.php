@@ -22,7 +22,8 @@ class ClusterRevenueController extends Controller
         private ClusterTransactionService $clusterTransactionService,
         private ClusterPopulationService $clusterPopulationService,
         private PeriodService $periodService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

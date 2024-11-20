@@ -24,7 +24,8 @@ class SmsService
 
     public function __construct(
         private Sms $sms,
-    ) {}
+    ) {
+    }
 
     public function checkMessageType($message)
     {

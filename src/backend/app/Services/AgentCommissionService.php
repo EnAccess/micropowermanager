@@ -14,7 +14,8 @@ class AgentCommissionService implements IBaseService
 {
     public function __construct(
         private AgentCommission $agentCommission,
-    ) {}
+    ) {
+    }
 
     public function create(array $agentCommissiondata): AgentCommission
     {

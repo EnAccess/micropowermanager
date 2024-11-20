@@ -14,7 +14,8 @@ class SubConnectionTypeService implements IBaseService
 {
     public function __construct(
         private SubConnectionType $subConnectionType,
-    ) {}
+    ) {
+    }
 
     public function getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit = null): LengthAwarePaginator|Collection
     {

@@ -2,4 +2,6 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Api;
 
-class WaveMoneyApi extends AbstractApi {}
+class WaveMoneyApi extends AbstractApi
+{
+}

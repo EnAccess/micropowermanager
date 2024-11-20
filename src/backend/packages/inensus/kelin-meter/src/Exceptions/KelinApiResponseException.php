@@ -2,4 +2,6 @@
 
 namespace Inensus\KelinMeter\Exceptions;
 
-class KelinApiResponseException extends \Exception {}
+class KelinApiResponseException extends \Exception
+{
+}

@@ -22,7 +22,8 @@ class AppliancePersonService implements IAssociative, IBaseService
         private MainSettings $mainSettings,
         private AssetPerson $assetPerson,
         private CashTransactionService $cashTransactionService,
-    ) {}
+    ) {
+    }
 
     public function make(array $data): AssetPerson
     {

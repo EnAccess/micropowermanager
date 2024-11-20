@@ -13,7 +13,8 @@ class AgentReceiptWebController extends Controller
     public function __construct(
         private AgentReceiptService $agentReceiptService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
-    ) {}
+    ) {
+    }
 
     /**
      * Display a listing of the resource.

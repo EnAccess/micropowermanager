@@ -15,7 +15,8 @@ class PersonAddressesController extends Controller
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-    ) {}
+    ) {
+    }
 
     /**
      * Addresses

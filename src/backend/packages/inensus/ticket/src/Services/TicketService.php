@@ -14,7 +14,8 @@ class TicketService implements IAssociative
 {
     public function __construct(
         private Ticket $ticket,
-    ) {}
+    ) {
+    }
 
     public function create(
         string $title,

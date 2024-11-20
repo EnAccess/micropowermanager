@@ -14,12 +14,13 @@ class CashTransactionProvider implements ITransactionProvider
     public function __construct(
         private CashTransaction $cashTransaction,
         private Transaction $transaction,
-    ) {}
+    ) {
+    }
 
     public function saveTransaction(): void
     {
-        $this->cashTransaction = new CashTransaction;
-        $this->transaction = new Transaction;
+        $this->cashTransaction = new CashTransaction();
+        $this->transaction = new Transaction();
 
         // assign data
         $this->assignData($this->validData);
@@ -88,7 +89,7 @@ class CashTransactionProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts;
+        $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->cashTransaction);
         $conflict->save();

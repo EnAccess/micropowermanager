@@ -17,7 +17,8 @@ class PluginController extends Controller
         private MpmPluginService $mpmPluginService,
         private CompanyDatabaseService $companyDatabaseService,
         private RegistrationTailService $registrationTailService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

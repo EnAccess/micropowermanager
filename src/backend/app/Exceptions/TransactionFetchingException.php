@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class TransactionFetchingException extends \Exception {}
+class TransactionFetchingException extends \Exception
+{
+}

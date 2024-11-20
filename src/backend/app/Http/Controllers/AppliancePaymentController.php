@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class AppliancePaymentController extends Controller
 {
-    public function __construct(private AppliancePaymentService $appliancePaymentService) {}
+    public function __construct(private AppliancePaymentService $appliancePaymentService)
+    {
+    }
 
     public function store(AssetPerson $appliancePerson, Request $request): ApiResource
     {

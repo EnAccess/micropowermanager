@@ -9,7 +9,8 @@ class MeterRevenueController extends Controller
 {
     public function __construct(
         private MeterRevenueService $meterRevenueService,
-    ) {}
+    ) {
+    }
 
     /**
      * Revenue

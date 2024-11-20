@@ -2,4 +2,6 @@
 
 namespace Inensus\SteamaMeter\Exceptions;
 
-class ModelNotFoundException extends \Exception {}
+class ModelNotFoundException extends \Exception
+{
+}

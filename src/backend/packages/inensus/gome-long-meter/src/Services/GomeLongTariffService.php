@@ -26,7 +26,8 @@ class GomeLongTariffService
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
         private MainSettings $mainSettings,
-    ) {}
+    ) {
+    }
 
     public function getByMpmTariffId($mpmTariffId)
     {
@@ -156,7 +157,7 @@ class GomeLongTariffService
                         'vat' => $gomeLongTariff['FVAT'],
                     ]);
                 } else {
-                    $IncidentModel = new MeterTariff;
+                    $IncidentModel = new MeterTariff();
                     $IncidentModel->unsetEventDispatcher();
                     $meterTariff = $IncidentModel->create([
                         'name' => $gomeLongTariff['FName'],

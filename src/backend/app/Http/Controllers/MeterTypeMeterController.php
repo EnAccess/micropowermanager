@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class MeterTypeMeterController extends Controller
 {
-    public function __construct(private MeterTypeMeterService $meterTypeMeterService) {}
+    public function __construct(private MeterTypeMeterService $meterTypeMeterService)
+    {
+    }
 
     /**
      * List with Meters

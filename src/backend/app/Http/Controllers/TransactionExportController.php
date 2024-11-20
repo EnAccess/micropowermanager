@@ -12,7 +12,8 @@ class TransactionExportController
     public function __construct(
         private TransactionService $transactionService,
         private TransactionExportService $transactionExportService,
-    ) {}
+    ) {
+    }
 
     public function download(
         Request $request,

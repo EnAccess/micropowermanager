@@ -10,7 +10,8 @@ class ViberCredentialService
         private ViberCredential $credential,
         private WebhookService $webhookService,
         private AccountService $accountService,
-    ) {}
+    ) {
+    }
 
     /**
      * This function uses one time on installation of the package.

@@ -148,7 +148,7 @@ abstract class SmsSender
                 $this->prepareFooter();
             }
         } catch (MissingSmsReferencesException $exception) {
-            throw new $exception;
+            throw new $exception();
         }
     }
 

@@ -106,7 +106,7 @@ class CustomerDatabaseParser
                 $row['meter_parameter_id'] = $meterParameter->id;
 
                 $this->createRecordFromCsv($row, GeographicalInformationService::class);
-                $meterAddress = new Address;
+                $meterAddress = new Address();
                 $address = $meterAddress->newQuery()->create([
                     'city_id' => $city->id,
                 ]);

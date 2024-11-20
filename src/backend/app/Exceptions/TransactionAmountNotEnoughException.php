@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class TransactionAmountNotEnoughException extends \Exception {}
+class TransactionAmountNotEnoughException extends \Exception
+{
+}

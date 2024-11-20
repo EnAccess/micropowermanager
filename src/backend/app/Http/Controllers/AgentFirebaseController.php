@@ -10,7 +10,8 @@ class AgentFirebaseController extends Controller
 {
     public function __construct(
         private AgentService $agentService,
-    ) {}
+    ) {
+    }
 
     public function update(Request $request): ApiResource
     {

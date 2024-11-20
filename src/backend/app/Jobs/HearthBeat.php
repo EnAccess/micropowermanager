@@ -21,7 +21,9 @@ class HearthBeat implements ShouldQueue
      *
      * @return void
      */
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * Execute the job.

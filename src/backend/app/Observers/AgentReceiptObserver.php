@@ -18,7 +18,8 @@ class AgentReceiptObserver
         private AgentReceiptService $agentReceiptService,
         private AgentReceiptDetailService $agentReceiptDetailService,
         private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService,
-    ) {}
+    ) {
+    }
 
     public function created(AgentReceipt $receipt): void
     {

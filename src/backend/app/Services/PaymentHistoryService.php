@@ -16,7 +16,8 @@ class PaymentHistoryService implements IAssociative
 {
     public function __construct(
         private PaymentHistory $paymentHistory,
-    ) {}
+    ) {
+    }
 
     public function findPayingCustomersInRange(
         array $customerIds,

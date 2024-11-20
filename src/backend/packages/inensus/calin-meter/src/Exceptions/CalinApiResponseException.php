@@ -2,4 +2,6 @@
 
 namespace Inensus\CalinMeter\Exceptions;
 
-class CalinApiResponseException extends \Exception {}
+class CalinApiResponseException extends \Exception
+{
+}

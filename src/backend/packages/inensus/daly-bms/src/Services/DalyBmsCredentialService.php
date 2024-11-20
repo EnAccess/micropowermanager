@@ -8,7 +8,8 @@ class DalyBmsCredentialService
 {
     public function __construct(
         private DalyBmsCredential $credential,
-    ) {}
+    ) {
+    }
 
     /**
      * This function uses one time on installation of the package.

@@ -19,7 +19,8 @@ class EBikeController extends Controller
         private EBikeDeviceService $eBikeDeviceService,
         private ManufacturerService $manufacturerService,
         private AppliancePersonService $appliancePersonService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

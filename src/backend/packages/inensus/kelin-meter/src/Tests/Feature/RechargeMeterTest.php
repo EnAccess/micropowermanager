@@ -104,7 +104,7 @@ class RechargeMeterTest extends TestCase
             'connection_type_id' => 1,
             'connection_group_id' => 1,
         ]);
-        $meterParameter = new MeterParameter;
+        $meterParameter = new MeterParameter();
         $meterParameter->tariff()->associate($tariff);
         $meterParameter->owner_type = 'person';
         $meterParameter->owner_id = 1;

@@ -17,7 +17,9 @@ class MeterTypeController extends Controller
 {
     use SoftDeletes;
 
-    public function __construct(private MeterTypeService $meterTypeService) {}
+    public function __construct(private MeterTypeService $meterTypeService)
+    {
+    }
 
     /**
      * List.

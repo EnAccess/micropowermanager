@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    public function __construct(private AssetService $assetService) {}
+    public function __construct(private AssetService $assetService)
+    {
+    }
 
     /**
      * Display a listing of the resource.

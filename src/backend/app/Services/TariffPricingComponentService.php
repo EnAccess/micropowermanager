@@ -13,7 +13,8 @@ class TariffPricingComponentService implements IBaseService
 {
     public function __construct(
         private TariffPricingComponent $tariffPricingComponent,
-    ) {}
+    ) {
+    }
 
     public function make($tariffPricingComponentData)
     {

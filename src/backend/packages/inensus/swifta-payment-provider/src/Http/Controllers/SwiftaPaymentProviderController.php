@@ -11,7 +11,9 @@ use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
 class SwiftaPaymentProviderController extends Controller
 {
-    public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
+    {
+    }
 
     public function validation(SwiftaValidationRequest $request)
     {

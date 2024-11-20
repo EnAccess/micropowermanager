@@ -2,4 +2,6 @@
 
 namespace MPM\Transaction;
 
-class ApplianceTransactionService {}
+class ApplianceTransactionService
+{
+}
