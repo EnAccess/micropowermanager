@@ -1,11 +1,9 @@
 {
-    "preset": "psr12",
-    "rules": {
-        "no_superfluous_phpdoc_tags": false,
-        "yoda_style": false,
-        "no_unused_imports": false
-    },
-    "exclude": [
-        "bootstrap/cache"
-    ]
+  "preset": "psr12",
+  "rules": {
+    "no_superfluous_phpdoc_tags": false,
+    "yoda_style": false,
+    "no_unused_imports": false
+  },
+  "exclude": ["bootstrap/cache"]
 }
