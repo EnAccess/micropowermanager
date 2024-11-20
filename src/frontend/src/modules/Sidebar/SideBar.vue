@@ -28,7 +28,7 @@
             <router-link
               v-if="!hasSubMenu(menu)"
               :to="menu.path"
-              :key="'menu' + menu.path"
+              :key="'menu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item>
                 <md-icon
@@ -50,7 +50,10 @@
             </router-link>
 
             <!-- If the route has children, then it should be a nested, expanbable list with sub menues -->
-            <div v-else :key="'submenu' + menu.path">
+            <div
+              v-else
+              :key="'submenu' + menu.meta?.sidebar?.name ?? menu.path"
+            >
               <md-list-item md-expand>
                 <md-icon
                   v-if="menu.meta?.sidebar?.icon"
