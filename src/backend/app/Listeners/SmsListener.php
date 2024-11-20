@@ -31,11 +31,11 @@ class SmsListener
     public function onSmsStored($sender, $message)
     {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
-        if (! $resendInformationKey) {
+        if (!$resendInformationKey) {
             return;
         }
         $resend = strpos(strtolower($message), strtolower($resendInformationKey));
-        if (! $resend) {
+        if (!$resend) {
             return;
         }
         $wordsInMessage = explode(' ', $message);

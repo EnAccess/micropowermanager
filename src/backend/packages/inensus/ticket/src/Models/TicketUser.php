@@ -7,8 +7,8 @@ namespace Inensus\Ticket\Models;
  *
  * @property string $user_name
  * @property string $user_tag
- * @property int $out_source
- * @property int $id
+ * @property int    $out_source
+ * @property int    $id
  */
 class TicketUser extends BaseModel
 {

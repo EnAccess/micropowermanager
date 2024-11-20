@@ -20,7 +20,7 @@ class ReportController
 
     public function download($id)
     {
-        if (! $id) {
+        if (!$id) {
             return;
         }
         $report = $this->report->find($id);

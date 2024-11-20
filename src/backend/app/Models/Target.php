@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\DB;
 /**
  * Class Target.
  *
- * @property int $id
+ * @property int    $id
  * @property string $start_date
  * @property string $end_date
- * @property int $city_id
+ * @property int    $city_id
  */
 class Target extends BaseModel
 {

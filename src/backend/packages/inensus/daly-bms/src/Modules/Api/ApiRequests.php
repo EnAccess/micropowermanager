@@ -64,7 +64,7 @@ class ApiRequests
             $body = json_decode((string) $response->getBody(), true);
             $status = $body['status'];
 
-            if (($status !== 200 && $status !== 201) || (! is_array($body['response']) && $body['response'] === false)) {
+            if (($status !== 200 && $status !== 201) || (!is_array($body['response']) && $body['response'] === false)) {
                 throw new DalyBmsApiResponseException($body['msg']);
             }
 

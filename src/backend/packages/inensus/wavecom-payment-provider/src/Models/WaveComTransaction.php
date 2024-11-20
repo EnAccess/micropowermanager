@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
- * @property int $id
+ * @property int    $id
  * @property string $transaction_id
  * @property string $sender
  * @property string $message
- * @property int $amount
+ * @property int    $amount
  */
 class WaveComTransaction extends BaseModel implements FullySupportedTransactionInterface, IRawTransaction
 {

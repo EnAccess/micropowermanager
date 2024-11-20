@@ -16,7 +16,8 @@ class SparkMeterCredentialResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
+     *
      * @return Request
      */
     public function toArray($request)

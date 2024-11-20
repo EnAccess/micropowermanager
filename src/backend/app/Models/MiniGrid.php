@@ -14,9 +14,9 @@ use MPM\Target\TargetAssignable;
 /**
  * Class MiniGrid.
  *
- * @property int $id
- * @property string $name
- * @property int $cluster_id
+ * @property int        $id
+ * @property string     $name
+ * @property int        $cluster_id
  * @property Collection $cities
  */
 class MiniGrid extends BaseModel implements TargetAssignable

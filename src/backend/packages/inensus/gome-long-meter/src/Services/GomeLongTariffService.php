@@ -38,7 +38,7 @@ class GomeLongTariffService
     {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-        if (! $gomeLongTariff) {
+        if (!$gomeLongTariff) {
             $credentials = $this->credentialService->getCredentials();
             $vatEnergy = $this->mainSettings->newQuery()->first()->vat_energy;
             $params = [
@@ -65,7 +65,7 @@ class GomeLongTariffService
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
-            if (! $gomeLongTariff) {
+            if (!$gomeLongTariff) {
                 return true;
             }
 
@@ -122,7 +122,7 @@ class GomeLongTariffService
         try {
             $credentials = $this->credentialService->getCredentials();
 
-            if (! $credentials || ($credentials->getUserId() === null
+            if (!$credentials || ($credentials->getUserId() === null
                     || $credentials->getUserPassword() === null)) {
                 return true;
             }

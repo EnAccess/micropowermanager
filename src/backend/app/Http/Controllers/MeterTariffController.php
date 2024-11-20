@@ -37,7 +37,7 @@ class MeterTariffController extends Controller
      *
      * @responseFile responses/tariffs/tariff.detail.json
      *
-     * @param  MeterTariff  $tariff
+     * @param MeterTariff $tariff
      */
     public function show(Request $request, $meterTariffId): ApiResource
     {

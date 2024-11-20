@@ -4,10 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     public function up()
     {
-        if (! Schema::hasTable('daly_bms_api_credentials')) {
+        if (!Schema::hasTable('daly_bms_api_credentials')) {
             Schema::create('daly_bms_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('https://dev.iov18.com/api');
@@ -18,7 +18,7 @@ return new class () extends Migration {
                 $table->timestamps();
             });
         }
-        if (! Schema::hasTable('daly_bms_transactions')) {
+        if (!Schema::hasTable('daly_bms_transactions')) {
             Schema::create('daly_bms_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();

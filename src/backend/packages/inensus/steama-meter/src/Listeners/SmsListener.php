@@ -35,7 +35,7 @@ class SmsListener
     public function onSmsStored($sender, $message)
     {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
-        if (! $steamaCustomer) {
+        if (!$steamaCustomer) {
             return;
         }
         $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();

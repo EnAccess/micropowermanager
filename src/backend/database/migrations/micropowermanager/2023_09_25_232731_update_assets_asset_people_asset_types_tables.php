@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -46,7 +46,7 @@ return new class () extends Migration {
             $table->renameColumn('price', 'default_price');
             $table->integer('default_rate');
         });
-        if (! Type::hasType('double')) {
+        if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('shard')->table('asset_types', function (Blueprint $table) {

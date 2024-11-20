@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class SocialTariffPiggyBank.
  *
- * @property int $owner_id
+ * @property int    $owner_id
  * @property string $owner_type
- * @property int $savings
+ * @property int    $savings
  */
 class SocialTariffPiggyBank extends BaseModel
 {

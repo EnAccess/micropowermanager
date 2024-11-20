@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  * Class Token.
  *
  * @property string $token
- * @property float $energy
+ * @property float  $energy
  */
 class MeterToken extends BaseModel
 {

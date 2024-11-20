@@ -76,7 +76,7 @@ class UpdatePackage extends Command
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_steama_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (! $migration) {
+        if (!$migration) {
             return false;
         }
 

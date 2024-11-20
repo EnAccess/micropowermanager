@@ -38,7 +38,7 @@ class SubConnectionTypeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  SubConnectionType  $subConnectionType
+     * @param SubConnectionType $subConnectionType
      */
     public function update(Request $request, $subConnectionTypeId): ApiResource
     {

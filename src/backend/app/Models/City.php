@@ -12,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * Class City.
  *
- * @property int $id
+ * @property int    $id
  * @property string $name
- * @property int $country_id
- * @property int $cluster_id
- * @property int $mini_grid_id
+ * @property int    $country_id
+ * @property int    $cluster_id
+ * @property int    $mini_grid_id
  */
 class City extends BaseModel
 {

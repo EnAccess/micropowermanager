@@ -20,7 +20,8 @@ interface IBaseService
     public function create(array $data): Model;
 
     /**
-     * @param  T  $model
+     * @param T $model
+     *
      * @return T
      */
     public function update(Model $model, array $data): Model;

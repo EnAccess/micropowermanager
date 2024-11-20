@@ -16,7 +16,8 @@ trait RestExceptionHandler
     /**
      * Creates a new response based on exception type.
      *
-     * @param  \Exception  $e
+     * @param \Exception $e
+     *
      * @return JsonResponse
      */
     protected function getJsonResponseForException(Request $request, \Exception|\Throwable $e)
@@ -44,8 +45,9 @@ trait RestExceptionHandler
     /**
      * returns a json response for all excepion types except modelnotfoundexception.
      *
-     * @param  string  $message
-     * @param  int  $status_code
+     * @param string $message
+     * @param int    $status_code
+     *
      * @return JsonResponse
      */
     protected function badRequest($message = 'Bad request', $status_code = 400)
@@ -62,8 +64,9 @@ trait RestExceptionHandler
     /**
      * Returns a json response for Model not found exception.
      *
-     * @param  string  $message
-     * @param  int  $status_code
+     * @param string $message
+     * @param int    $status_code
+     *
      * @return JsonResponse
      */
     protected function modelNotFound($message = 'Record not found', $status_code = 404)
@@ -80,8 +83,9 @@ trait RestExceptionHandler
     /**
      * Generates validation error response.
      *
-     * @param  string  $message
-     * @param  int  $status_code
+     * @param string $message
+     * @param int    $status_code
+     *
      * @return JsonResponse
      */
     protected function validationError($message = 'Validation failed', $status_code = 422)
@@ -98,7 +102,7 @@ trait RestExceptionHandler
     /**
      * Determines if the exception type is Model not found exception.
      *
-     * @param  \Exception  $e
+     * @param \Exception $e
      */
     protected function isModelNotFoundException($e): bool
     {
@@ -108,7 +112,7 @@ trait RestExceptionHandler
     /**
      * Determines if given Exception is Validation Exception.
      *
-     * @param  \Exception  $e
+     * @param \Exception $e
      */
     protected function isValidationException($e): bool
     {
@@ -117,7 +121,6 @@ trait RestExceptionHandler
 
     /**
      * Generates a json response & returns it.
-     *
      *
      * @return JsonResponse
      */

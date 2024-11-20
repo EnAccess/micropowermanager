@@ -32,7 +32,7 @@ class StemaSyncActionService
 
     public function updateSyncAction($syncAction, $syncSetting, $syncResult)
     {
-        if (! $syncResult) {
+        if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,
                 'last_sync' => Carbon::now(),

@@ -55,8 +55,6 @@ class AssetTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     *
-     *
      * @throws \Exception
      */
     public function destroy(AssetType $assetType): ApiResource

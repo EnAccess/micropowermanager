@@ -174,7 +174,7 @@ class TransactionService
             'desc'
         )->first();
         $organization = $this->sparkOrganization->newQuery()->first();
-        if (! $organization) {
+        if (!$organization) {
             Log::info('Organization not found for Koios API');
 
             return;
@@ -208,14 +208,14 @@ class TransactionService
             if ($count === 1) {
                 break;
             }
-            if (! count($syncCheck)) {
+            if (!count($syncCheck)) {
                 break;
             }
             collect($transactions)->filter(function ($transaction) {
                 return $transaction['type'] === 'transaction';
             })->each(function ($transaction) use ($syncCheck, $sparkCustomers, $sparkTariffs) {
                 $siteTransaction = $syncCheck->firstWhere('site_id', $transaction['site']);
-                if (! $siteTransaction) {
+                if (!$siteTransaction) {
                     return true;
                 }
                 switch ($transaction['state']) {
@@ -237,12 +237,12 @@ class TransactionService
                     $transaction['transaction_id']
                 )->first();
 
-                if (! $transactionRecord) {
-                    if (! array_key_exists('customer', $transaction['to'])) {
+                if (!$transactionRecord) {
+                    if (!array_key_exists('customer', $transaction['to'])) {
                         return true;
                     }
                     $sparkTransaction = $this->createSparkTransaction($transaction);
-                    if (! $transaction['reference_id']) {
+                    if (!$transaction['reference_id']) {
                         $thirdPartyTransaction = $this->createThirdPartyTransaction(
                             $transaction,
                             $sparkTransaction,
@@ -254,7 +254,7 @@ class TransactionService
                             $sparkTransaction->customer_id
                         );
 
-                        if (! $sparkCustomer) {
+                        if (!$sparkCustomer) {
                             return true;
                         }
                         $meterParameter = $sparkCustomer->mpmPerson->meters[0];
@@ -316,7 +316,7 @@ class TransactionService
         $credentials = $this->sparkCredentialService->getCredentials();
         $sparkSites = $this->sparkSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
-        if (! $credentials) {
+        if (!$credentials) {
             $message = 'No Credentials record found.';
             throw new CredentialsNotFoundException($message);
         }
@@ -326,12 +326,12 @@ class TransactionService
         }
         $siteSynchronized = $this->sparkSiteService->syncCheck();
 
-        if (! $siteSynchronized['result']) {
+        if (!$siteSynchronized['result']) {
             $message = 'Site records are not up to date.';
             throw new SitesNotUpToDateException($message);
         }
 
-        if (! $sparkSites->count()) {
+        if (!$sparkSites->count()) {
             $message = 'No online Site record found.';
             throw new NoOnlineSiteRecordException($message);
         }

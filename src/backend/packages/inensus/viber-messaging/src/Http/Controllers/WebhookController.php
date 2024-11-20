@@ -61,7 +61,7 @@ class WebhookController extends Controller
 
                 $meter = Meter::query()->where('serial_number', $meterSerialNumber)->first();
 
-                if (! $meter) {
+                if (!$meter) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setMeterNotFoundMessage());
 
                     return;
@@ -95,13 +95,13 @@ class WebhookController extends Controller
                 }
             })
             ->onText("|$resendInformationKey.*|si", function ($event) use ($bot, $botSender, $resendInformationKey) {
-                if (! $resendInformationKey) {
+                if (!$resendInformationKey) {
                     return;
                 }
                 $meterSerial = $this->viberContactService->getByViberId($event->getSender()
                     ->getId())->registered_meter_serial_number;
 
-                if (! $meterSerial) {
+                if (!$meterSerial) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNotRegisteredMessage());
 
                     return;
@@ -109,7 +109,7 @@ class WebhookController extends Controller
                 $transaction = Transaction::with('paymentHistories')
                     ->where('message', $meterSerial)->latest()->first();
 
-                if (! $transaction) {
+                if (!$transaction) {
                     $this->answerToCustomer($bot, $botSender, $event, $this->setNoTransactionMessage($meterSerial));
 
                     return;

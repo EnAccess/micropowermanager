@@ -77,7 +77,7 @@ class MeterParameterListener
                 $smTariff = $this->smTariff->newQuery()->whereHas('mpmTariff', function ($q) use ($tariffId) {
                     $q->where('mpm_tariff_id', $tariffId);
                 })->first();
-                if (! $smTariff) {
+                if (!$smTariff) {
                     $this->tariffService->createSmTariff($meterInfo->tariff, $smSite->site_id);
                 }
                 if ($meterInfo->owner) {
@@ -89,7 +89,7 @@ class MeterParameterListener
                                 $q->where('mpm_customer_id', $customerId);
                             }
                         )->first();
-                        if (! $smCustomer) {
+                        if (!$smCustomer) {
                             $this->customerService->createCustomer($meterInfo, $smSite->site_id);
                         }
                     }

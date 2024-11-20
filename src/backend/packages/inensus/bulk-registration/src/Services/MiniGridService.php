@@ -16,13 +16,13 @@ class MiniGridService extends CreatorService
     {
         $miniGridConfig = config('bulk-registration.csv_fields.mini_grid');
 
-        if (! $csvData[$miniGridConfig['name']]) {
+        if (!$csvData[$miniGridConfig['name']]) {
             throw new MiniGridNotFoundException('Mini Grid Name is required');
         }
 
         $registeredMiniGrid = MiniGrid::query()->where('name', $csvData[$miniGridConfig['name']])->first();
 
-        if (! $registeredMiniGrid) {
+        if (!$registeredMiniGrid) {
             $message = 'There is no registered Mini Grid for '.$csvData[$miniGridConfig['name']].
                 '. Please add the Mini Grid first.';
             throw new MiniGridNotFoundException($message);

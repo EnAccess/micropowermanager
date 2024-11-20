@@ -67,7 +67,7 @@ class UpdatePackage extends Command
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_swifta_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
-        if (! $migration) {
+        if (!$migration) {
             return;
         }
         DB::table('migrations')
@@ -116,7 +116,7 @@ class UpdatePackage extends Command
     {
         $length = random_int(1, 10);
         $number = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $number .= random_int(0, 9);
         }
         $number = ltrim($number, '0');

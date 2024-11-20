@@ -114,7 +114,7 @@ class TokenProcessor extends AbstractJob
 
     private function retryTokenGeneration(): void
     {
-        $this->counter++;
+        ++$this->counter;
         self::dispatch(
             $this->transactionContainer,
             false,

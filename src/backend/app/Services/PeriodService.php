@@ -5,7 +5,7 @@ namespace App\Services;
 class PeriodService
 {
     /**
-     * @param  (int|int[])[]|int  $initialData
+     * @param (int|int[])[]|int $initialData
      *
      * @throws \Exception
      */

@@ -42,7 +42,7 @@ class AssetPersonController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  AssetType  $assetType
+     * @param AssetType $assetType
      */
     public function store(
         Asset $asset,
@@ -105,7 +105,7 @@ class AssetPersonController extends Controller
                 $this->geographicalInformationService->save($geographicalInformation);
             }
             if ($downPayment > 0) {
-                $sender = ! isset($addressData) ? '-' : $addressData['phone'];
+                $sender = !isset($addressData) ? '-' : $addressData['phone'];
                 $transaction = $this->cashTransactionService->createCashTransaction(
                     $user->id,
                     $downPayment,

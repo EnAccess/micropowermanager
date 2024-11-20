@@ -7,7 +7,7 @@ use App\Models\Base\BaseModel;
 /**
  * Class MapSettings.
  *
- * @property int $id
+ * @property int   $id
  * @property float $zoom
  * @property float $latitude
  * @property float $longitude

@@ -124,12 +124,12 @@ class Reports
         )->get();
         foreach ($connections as $connection) {
             $sheet->setCellValue($column.$row, $connection->name);
-            $row++;
+            ++$row;
             foreach ($connection->subConnections as $subConnection) {
                 foreach ($subConnection->meterParameters as $meterParameter) {
                     $sheet->setCellValue($subColumn.$row, $meterParameter->connectionGroup()->first()->name);
                     $this->subConnectionRows[$meterParameter->connectionGroup()->first()->name] = $row;
-                    $row++;
+                    ++$row;
                 }
             }
         }
@@ -236,7 +236,7 @@ class Reports
     }
 
     /**
-     * @param  Builder[]|Collection  $transactions
+     * @param Builder[]|Collection $transactions
      *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -265,8 +265,8 @@ class Reports
     }
 
     /**
-     * @param  bool  $addPurchaseBreakDown
-     * @param  Builder[]|Collection  $transactions
+     * @param bool                 $addPurchaseBreakDown
+     * @param Builder[]|Collection $transactions
      *
      * @throws CustomerGroupNotFound
      */
@@ -276,7 +276,7 @@ class Reports
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (! $transaction->meter || ! $transaction->meter->meterParameter) {
+            if (!$transaction->meter || !$transaction->meter->meterParameter) {
                 continue;
             }
 
@@ -327,7 +327,6 @@ class Reports
 
     /**
      * Add the breakdown of the transaction amount into the right place on the spreadsheet.
-     *
      *
      * @throws CustomerGroupNotFound
      */
@@ -381,7 +380,7 @@ class Reports
     }
 
     /**
-     * @param  Builder[]|Collection  $connectionGroups
+     * @param Builder[]|Collection $connectionGroups
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -409,23 +408,23 @@ class Reports
                     if ($accessRate) {
                         if ($accessRate->amount > 0) {
                             $nextColumn = $startingColumn;
-                            $nextColumn++;
+                            ++$nextColumn;
                             $sheet->mergeCells($startingColumn.$startingRow.':'.
                                 $nextColumn.$startingRow);
-                            $startingColumn++;
+                            ++$startingColumn;
                             break;
                         }
                     }
                 }
             }
 
-            $startingColumn++;
+            ++$startingColumn;
         }
     }
 
     private function addSoldTotal(string $connectionGroupName, array $amount, $unit = null): void
     {
-        if (! array_key_exists($connectionGroupName, $this->totalSold)) {
+        if (!array_key_exists($connectionGroupName, $this->totalSold)) {
             $this->totalSold[$connectionGroupName] = [
                 'energy' => 0,
                 'access_rate' => 0,
@@ -485,8 +484,8 @@ class Reports
      */
     private function excelColumnRange(string $lower, string $upper): \Generator
     {
-        $upper++;
-        for ($i = $lower; $i !== $upper; $i++) {
+        ++$upper;
+        for ($i = $lower; $i !== $upper; ++$i) {
             yield $i;
         }
     }
@@ -561,7 +560,7 @@ class Reports
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
-        if (! file_exists($dirPath) && ! mkdir($dirPath, 0774, true) && ! is_dir($dirPath)) {
+        if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
         }
         try {
@@ -613,10 +612,10 @@ class Reports
 
                 $tariffPrice = $groupRevenue->tariff_price;
 
-                if (! $tariffPrice || $tariffPrice === 0) {
+                if (!$tariffPrice || $tariffPrice === 0) {
                     continue;
                 }
-                if (! $energyRevenue || $energyRevenue === 0) {
+                if (!$energyRevenue || $energyRevenue === 0) {
                     continue;
                 }
                 $tariffPrice /= 100;
@@ -661,7 +660,7 @@ class Reports
     {
         foreach ($this->monthlyTargetDatas as $subConnection => $monthlyTargetData) {
             $row = $this->subConnectionRows[$subConnection];
-            if (! $row) {
+            if (!$row) {
                 continue;
             }
             $sheet->setCellValue('E'.$row, $monthlyTargetData['connections']);
@@ -679,12 +678,12 @@ class Reports
             ->where('owner_id', $cityId)
             ->orderBy('target_date', 'asc')->first();
 
-        if (! $targetData) { // no target is defined for that mini-grid
+        if (!$targetData) { // no target is defined for that mini-grid
             return;
         }
 
         foreach ($targetData->subTargets as $subTarget) {
-            if (! isset($this->subConnectionRows[$subTarget->connectionType->name])) {
+            if (!isset($this->subConnectionRows[$subTarget->connectionType->name])) {
                 continue;
             }
             $row = $this->subConnectionRows[$subTarget->connectionType->name];

@@ -27,7 +27,7 @@ trait RefreshMultipleDatabases
 
     protected function refreshTestDatabase()
     {
-        if (! RefreshDatabaseState::$migrated) {
+        if (!RefreshDatabaseState::$migrated) {
             Artisan::call(
                 'migrate:fresh',
                 ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']

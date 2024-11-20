@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,7 +14,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        if (! Type::hasType('double')) {
+        if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('shard')->table('social_tariffs', function (Blueprint $table) {

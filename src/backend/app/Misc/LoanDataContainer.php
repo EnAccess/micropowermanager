@@ -29,7 +29,7 @@ class LoanDataContainer
 
     public function loanCost()
     {
-        if (! $this->meterOwner) {
+        if (!$this->meterOwner) {
             throw new MeterParameterNotFound('loan data container');
         }
         $loans = $this->getCustomerDueRates($this->meterOwner);
@@ -121,7 +121,7 @@ class LoanDataContainer
         }
 
         // meter is not been used by anyone
-        if (! $meter->in_use) {
+        if (!$meter->in_use) {
             throw new MeterIsNotInUse($serialNumber.' meter is not in use');
         }
 

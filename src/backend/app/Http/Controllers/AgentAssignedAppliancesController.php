@@ -23,7 +23,6 @@ class AgentAssignedAppliancesController extends Controller
     /**
      * List for Android-APP.
      *
-     *
      * @return ApiResource
      */
     public function index(Request $request)

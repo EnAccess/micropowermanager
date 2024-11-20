@@ -121,7 +121,7 @@ class CustomerService implements ISynchronizeService
                 'hash' => $smCustomerHash,
             ]);
         }
-        if (! $customerExists) {
+        if (!$customerExists) {
             $rootUrl = '/system-info';
             $result = $this->sparkMeterApiRequests->get($rootUrl, $siteId);
             $grid = $result['grids'][0];

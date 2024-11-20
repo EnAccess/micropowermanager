@@ -17,9 +17,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * @property int $id
+ * @property int         $id
  * @property MeterTariff $tariff
- * @property bool $in_use
+ * @property bool        $in_use
  */
 class Meter extends BaseModel
 {

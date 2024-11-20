@@ -37,8 +37,9 @@ class PaymentHistoryController
      * @urlParam limit integer
      * @urlParam order string
      *
-     * @param  null  $limit
-     * @param  string  $order
+     * @param null   $limit
+     * @param string $order
+     *
      * @return array
      */
     public function show(int $payerId, string $period, $limit = null, $order = 'ASC')
@@ -74,7 +75,8 @@ class PaymentHistoryController
      *
      * @urlParam personId integer required
      *
-     * @param  $personId
+     * @param $personId
+     *
      * @return ApiResource
      *
      * @throws \Exception
@@ -121,7 +123,8 @@ class PaymentHistoryController
      * @urlParam personId integer required
      * checks if the person has any debts to the system
      *
-     * @param  int  $personId
+     * @param int $personId
+     *
      * @return ApiResource
      */
     public function debts($personId)

@@ -55,7 +55,7 @@ class MeterTypeController extends Controller
      *
      * @bodyParam id int required
      *
-     * @param  int  $meterTypeId
+     * @param int $meterTypeId
      */
     public function show($meterTypeId): ApiResource
     {
@@ -72,7 +72,7 @@ class MeterTypeController extends Controller
      * @bodyParam phase int required
      * @bodyParam max_current int required
      *
-     * @param  int  $meterTypeId
+     * @param int $meterTypeId
      */
     public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource
     {

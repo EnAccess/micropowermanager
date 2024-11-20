@@ -94,7 +94,7 @@ class CompanyController extends Controller
                             '-',
                             $mpmPlugin->tail_tag
                         ) : null,
-                        'adjusted' => ! isset($mpmPlugin->tail_tag),
+                        'adjusted' => !isset($mpmPlugin->tail_tag),
                     ];
                     Artisan::call($mpmPlugin->installation_command);
                 }

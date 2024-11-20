@@ -23,7 +23,7 @@ class MeterResetFeedback extends SmsSender
 
     public function prepareBody()
     {
-        if (! is_array($this->data)) {
+        if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('SparkSmsMeterResetFeedbackBody');
             } catch (ModelNotFoundException $exception) {

@@ -71,12 +71,12 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                     return $customer->customer_id == $steamaTransaction->customer_id;
                 })->first();
 
-                if (! $notifyCustomer) {
+                if (!$notifyCustomer) {
                     return true;
                 }
 
                 if (
-                    ! $notifyCustomer->mpmPerson->addresses
+                    !$notifyCustomer->mpmPerson->addresses
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
                 ) {
@@ -113,7 +113,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 return true;
             }
             if (
-                ! $customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
+                !$customer->mpmPerson->addresses || $customer->mpmPerson->addresses[0]->phone === null
                 || $customer->mpmPerson->addresses[0]->phone === ''
             ) {
                 return true;
@@ -132,7 +132,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

@@ -84,8 +84,8 @@ class PaymentHistory extends BaseModel
     }
 
     /**
-     * @param  Request|array|string  $begin
-     * @param  Request|array|string  $end
+     * @param Request|array|string $begin
+     * @param Request|array|string $end
      */
     public function getOverview($begin, $end)
     {

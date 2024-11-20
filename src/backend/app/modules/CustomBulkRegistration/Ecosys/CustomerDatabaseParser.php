@@ -86,7 +86,7 @@ class CustomerDatabaseParser
                 $city = $this->createRecordFromCsv($row, CityService::class);
                 $row['city_id'] = $city->id;
 
-                if (! $isExistingPerson) {
+                if (!$isExistingPerson) {
                     $this->createRecordFromCsv($row, AddressService::class);
                 }
 
@@ -142,7 +142,7 @@ class CustomerDatabaseParser
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            $this->recentlyCreatedRecords[$type]++;
+            ++$this->recentlyCreatedRecords[$type];
         }
     }
 }

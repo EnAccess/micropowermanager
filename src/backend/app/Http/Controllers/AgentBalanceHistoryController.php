@@ -38,7 +38,6 @@ class AgentBalanceHistoryController extends Controller
     /**
      * Display the specified resource.
      *
-     *
      * @return void
      */
     public function show(AgentBalanceHistory $agent_balance_history)
@@ -48,7 +47,6 @@ class AgentBalanceHistoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     *
      * @return void
      */
     public function update(Request $request, AgentBalanceHistory $agent_balance_history)
@@ -57,7 +55,6 @@ class AgentBalanceHistoryController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
      *
      * @return void
      */

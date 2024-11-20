@@ -74,7 +74,7 @@ class DummyDataCreator extends AbstractSharedCommand
             return;
         }
 
-        for ($i = 1; $i <= $amount; $i++) {
+        for ($i = 1; $i <= $amount; ++$i) {
             echo "$type is generating number: $i  \n";
             try {
                 DB::connection('shard')->beginTransaction();

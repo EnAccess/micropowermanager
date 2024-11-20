@@ -75,7 +75,7 @@ class MeterTest extends TestCase
                 'connection_type_id' => $this->connectionType->id,
                 'connection_group_id' => $this->connectionGroup->id,
             ]);
-            $meterCunt--;
+            --$meterCunt;
         }
         $response = $this->actingAs($this->user)->get('/api/meters');
         $response->assertStatus(200);
@@ -274,7 +274,7 @@ class MeterTest extends TestCase
             ]);
             $address->owner()->associate($meterParameter)->save();
             $geographicalInformation->owner()->associate($meterParameter)->save();
-            $meterCunt--;
+            --$meterCunt;
         }
     }
 

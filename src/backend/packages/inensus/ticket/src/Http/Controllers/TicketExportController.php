@@ -29,8 +29,6 @@ class TicketExportController
     /**
      * Generates a book keeping file and stores it.
      *
-     *
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function outsource(Request $request): TicketResource

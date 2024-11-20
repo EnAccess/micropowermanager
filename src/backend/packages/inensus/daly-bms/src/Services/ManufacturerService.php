@@ -13,7 +13,7 @@ class ManufacturerService
     public function register()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'DalyBmsApi')->first();
-        if (! $api) {
+        if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'DalyBms',
                 'type' => 'e-bike',

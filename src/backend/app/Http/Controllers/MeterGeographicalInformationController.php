@@ -53,7 +53,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @urlParam person required The ID of the person
      *
-     * @param  int  $person
+     * @param int $person
      *
      * @responseFile responses/people/person.meter.list.json
      */
@@ -70,7 +70,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @bodyParam points string. Comma seperated latitude and longitude. Example 1,2
      *
-     * @param  Meter  $meter
+     * @param Meter $meter
      */
     public function update(Request $request): ApiResource
     {

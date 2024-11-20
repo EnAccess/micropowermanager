@@ -218,7 +218,7 @@ class SmsController extends Controller
     /**
      * Marks the sms as sent.
      *
-     * @param  string  $uuid
+     * @param string $uuid
      */
     public function updateForDelivered($uuid): void
     {

@@ -19,7 +19,6 @@ class AgentReceiptWebController extends Controller
     /**
      * Display a listing of the resource.
      *
-     *
      * @return ApiResource
      */
     public function show($agentId, Request $request)
@@ -31,7 +30,6 @@ class AgentReceiptWebController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
      *
      * @return ApiResource
      */
@@ -45,7 +43,8 @@ class AgentReceiptWebController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  $agentId
+     * @param $agentId
+     *
      * @return ApiResource
      */
     public function store(CreateAgentReceiptRequest $request)

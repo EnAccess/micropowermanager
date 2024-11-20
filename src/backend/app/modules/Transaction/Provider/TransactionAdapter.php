@@ -12,7 +12,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 class TransactionAdapter
 {
     /**
-     * @param  ITransactionProvider  $transactionProvider
+     * @param ITransactionProvider $transactionProvider
      */
     public static function getTransaction($transactionProvider): ?ITransactionProvider
     {

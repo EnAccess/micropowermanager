@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int $id
+ * @property int    $id
  * @property string $name;
  */
 class Company extends BaseModelCore

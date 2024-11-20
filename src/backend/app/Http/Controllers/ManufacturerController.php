@@ -49,7 +49,7 @@ class ManufacturerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $manufacturerId
+     * @param int $manufacturerId
      */
     public function show($manufacturerId): ApiResource
     {

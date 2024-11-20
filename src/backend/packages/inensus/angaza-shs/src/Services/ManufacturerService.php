@@ -13,7 +13,7 @@ class ManufacturerService
     public function register()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'AngazaSHSApi')->first();
-        if (! $api) {
+        if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Angaza SHS',
                 'type' => 'shs',

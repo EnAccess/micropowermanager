@@ -26,7 +26,7 @@ class AccessRateChecker extends AbstractSharedCommand
             // access-rate is defined
             if ($accessRate->amount > 0) {
                 $accessRatePayment->debt += $accessRate->amount;
-                $accessRatePayment->unpaid_in_row++;
+                ++$accessRatePayment->unpaid_in_row;
             }
             $accessRatePayment->save();
 

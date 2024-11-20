@@ -41,7 +41,7 @@ class DalyBmsApi implements IManufacturerAPI
         $credentials = $this->credentialService->getCredentials();
 
         try {
-            if (! $this->credentialService->isAccessTokenValid($credentials)) {
+            if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }
@@ -64,7 +64,7 @@ class DalyBmsApi implements IManufacturerAPI
 
         $credentials = $this->credentialService->getCredentials();
         try {
-            if (! $this->credentialService->isAccessTokenValid($credentials)) {
+            if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }
@@ -92,7 +92,7 @@ class DalyBmsApi implements IManufacturerAPI
 
         $credentials = $this->credentialService->getCredentials();
         try {
-            if (! $this->credentialService->isAccessTokenValid($credentials)) {
+            if (!$this->credentialService->isAccessTokenValid($credentials)) {
                 $authResponse = $this->apiRequests->authentication($credentials);
                 $this->credentialService->updateCredentials($credentials, $authResponse);
             }

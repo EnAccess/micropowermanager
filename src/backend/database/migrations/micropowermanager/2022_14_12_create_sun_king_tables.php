@@ -4,10 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     public function up()
     {
-        if (! Schema::connection('shard')->hasTable('sun_king_api_credentials')) {
+        if (!Schema::connection('shard')->hasTable('sun_king_api_credentials')) {
             Schema::connection('shard')->create('sun_king_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('auth_url')->default('https://auth.central.glpapps.com/auth/realms/glp-dev/protocol/openid-connect/token');
@@ -19,7 +19,7 @@ return new class () extends Migration {
                 $table->timestamps();
             });
         }
-        if (! Schema::connection('shard')->hasTable('sun_king_transactions')) {
+        if (!Schema::connection('shard')->hasTable('sun_king_transactions')) {
             Schema::connection('shard')->create('sun_king_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();

@@ -92,7 +92,7 @@ class AppliancePersonService extends CreatorService
 
         while ($rawCost > 0) {
             $rawCost = $rawCost - $minimumPaymentAmount;
-            $rateCount++;
+            ++$rateCount;
         }
 
         return $rateCount;
