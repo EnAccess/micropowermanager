@@ -474,7 +474,6 @@ import { currency, notify } from "@/mixins"
 import { ApplianceService } from "@/services/ApplianceService"
 import { AssetPersonService } from "@/services/AssetPersonService"
 import { DeviceService } from "@/services/DeviceService"
-import { getGeoDataFromAddress } from "@/repositories/Client/OpenCageData"
 import { mapGetters } from "vuex"
 import Loader from "@/shared/Loader.vue"
 
@@ -580,22 +579,8 @@ export default {
       const address = this.person.addresses.find(
         (x) => x.id === this.selectedAddressId,
       )
-      const addressStr =
-        address.street !== null
-          ? `${address.street}, ${address.city.name}, ${this.settings.country}`
-          : `${address.city.name}, ${this.settings.country}`
-      try {
-        const results = await getGeoDataFromAddress(addressStr)
-        const result = results.reduce((prev, current) => {
-          if (address.street) {
-            return prev.confidence > current.confidence ? prev : current
-          }
-          return prev.confidence < current.confidence ? prev : current
-        })
-        return `${result.geometry.lat},${result.geometry.lng}`
-      } catch (e) {
-        return address.city.location.points
-      }
+
+      return address.geo?.points || address.city?.location?.points
     },
     getRate(index, rateCount, cost) {
       if (index === parseInt(rateCount)) {
