@@ -16,7 +16,8 @@ class ApplianceRateService
     public function __construct(
         private AssetRate $applianceRate,
         private MainSettings $mainSettings,
-    ) {}
+    ) {
+    }
 
     public function getCurrencyFromMainSettings(): string
     {

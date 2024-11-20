@@ -2,4 +2,6 @@
 
 namespace Inensus\SparkMeter\Exceptions;
 
-class WrongCredentialsException extends \Exception {}
+class WrongCredentialsException extends \Exception
+{
+}

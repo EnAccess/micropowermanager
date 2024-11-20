@@ -11,13 +11,15 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class DatabaseProxyService implements IBaseService
 {
-    public function __construct(private DatabaseProxy $databaseProxy) {}
+    public function __construct(private DatabaseProxy $databaseProxy)
+    {
+    }
 
     public function getById($id): DatabaseProxy
     {
         throw new \Exception('Method getById() not yet implemented.');
 
-        return new DatabaseProxy;
+        return new DatabaseProxy();
     }
 
     public function create(array $databaseProxyData): DatabaseProxy

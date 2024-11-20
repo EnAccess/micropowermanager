@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class TicketSettingsController extends Controller
 {
-    public function __construct(private TicketSettings $ticketSettings) {}
+    public function __construct(private TicketSettings $ticketSettings)
+    {
+    }
 
     public function index(): ApiResource
     {

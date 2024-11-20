@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class NotificationSendFailedException extends \Exception {}
+class NotificationSendFailedException extends \Exception
+{
+}

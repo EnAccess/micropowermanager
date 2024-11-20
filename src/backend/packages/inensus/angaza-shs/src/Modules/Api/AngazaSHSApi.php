@@ -20,7 +20,8 @@ class AngazaSHSApi implements IManufacturerAPI
         private AngazaCredentialService $credentialService,
         private AngazaTransaction $angazaTransaction,
         private ApiRequests $apiRequests,
-    ) {}
+    ) {
+    }
 
     public function chargeMeter(TransactionDataContainer $transactionContainer): array
     {

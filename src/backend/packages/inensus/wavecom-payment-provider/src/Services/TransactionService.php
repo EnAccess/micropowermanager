@@ -17,7 +17,9 @@ use ParseCsv\Csv;
 
 class TransactionService extends AbstractPaymentAggregatorTransactionService
 {
-    public function __construct(private Csv $csv) {}
+    public function __construct(private Csv $csv)
+    {
+    }
 
     public function createTransactionsFromFile(UploadedFile $file): array
     {
@@ -28,7 +30,7 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
         foreach ($this->csv->data as $transactionData) {
             try {
                 $this->validateTransaction($transactionData);
-                $transaction = new WaveComTransaction;
+                $transaction = new WaveComTransaction();
 
                 $transaction->setTransactionId($transactionData['transaction_id']);
                 $transaction->setSender($transactionData['sender']);
@@ -48,7 +50,7 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
                 continue;
             }
 
-            $baseTransaction = new Transaction;
+            $baseTransaction = new Transaction();
             $baseTransaction->setAmount($transaction->getAmount());
             $baseTransaction->setSender($transaction->getSender());
             $baseTransaction->setMessage($transaction->getMessage());

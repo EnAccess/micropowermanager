@@ -15,7 +15,8 @@ class RegistrationTailService implements IBaseService
 {
     public function __construct(
         private RegistrationTail $registrationTail,
-    ) {}
+    ) {
+    }
 
     public function getById(int $id): RegistrationTail
     {

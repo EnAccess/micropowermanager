@@ -33,7 +33,8 @@ class TransactionService implements IAssociative, IBaseService
         private SolarHomeSystemTransactionService $solarHomeSystemTransactionService,
         private ApplianceTransactionService $applianceTransactionService,
         private EBikeTransactionService $eBikeTransactionService,
-    ) {}
+    ) {
+    }
 
     private function getTotalAmountOfConfirmedTransaction($transactionIds)
     {
@@ -96,12 +97,12 @@ class TransactionService implements IAssociative, IBaseService
                 $duration = new \DateInterval('P1D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime)->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime)->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
@@ -109,12 +110,12 @@ class TransactionService implements IAssociative, IBaseService
                 $duration = new \DateInterval('P7D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->format('Y-m-d 23:59:59'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime)->sub($duration)->format('Y-m-d 00:00:00'),
-                        'ends' => (new \DateTime)->sub($duration)->format('Y-m-d 23:59:59'),
+                        'begins' => (new \DateTime())->sub($duration)->format('Y-m-d 00:00:00'),
+                        'ends' => (new \DateTime())->sub($duration)->format('Y-m-d 23:59:59'),
                     ],
                 ];
                 break;
@@ -123,12 +124,12 @@ class TransactionService implements IAssociative, IBaseService
                 $lastDuration = new \DateInterval('P14D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime)->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime)->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime)->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;
@@ -137,12 +138,12 @@ class TransactionService implements IAssociative, IBaseService
                 $lastDuration = new \DateInterval('P60D');
                 $comparisonPeriod = [
                     'currentPeriod' => [
-                        'begins' => (new \DateTime)->sub($currentDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->format('Y-m-d'),
                     ],
                     'lastPeriod' => [
-                        'begins' => (new \DateTime)->sub($lastDuration)->format('Y-m-d'),
-                        'ends' => (new \DateTime)->sub($currentDuration)->format('Y-m-d'),
+                        'begins' => (new \DateTime())->sub($lastDuration)->format('Y-m-d'),
+                        'ends' => (new \DateTime())->sub($currentDuration)->format('Y-m-d'),
                     ],
                 ];
                 break;

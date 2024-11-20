@@ -14,7 +14,8 @@ class ClusterRevenueService
         private PeriodService $periodService,
         private Cluster $cluster,
         private Transaction $transaction,
-    ) {}
+    ) {
+    }
 
     public function getTransactionsForMonthlyPeriodById(
         $clusterId,
@@ -311,7 +312,7 @@ class ClusterRevenueService
     public function setDatesForRequest($startDate, $endDate): array
     {
         if (! $startDate) {
-            $start = new \DateTime;
+            $start = new \DateTime();
             $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
             $start->setTime(0, 0, 0); // Normalize time to midnight
             $start->sub(new \DateInterval('P12M'));

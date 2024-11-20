@@ -17,7 +17,8 @@ class AgentAssignedAppliancesController extends Controller
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentService $agentService,
-    ) {}
+    ) {
+    }
 
     /**
      * List for Android-APP.

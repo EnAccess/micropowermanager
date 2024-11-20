@@ -17,7 +17,8 @@ class AgentBalanceMiddleware
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentTransactionService $agentTransactionService,
-    ) {}
+    ) {
+    }
 
     /**
      * Handle an incoming request.

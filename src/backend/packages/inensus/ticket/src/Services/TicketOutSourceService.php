@@ -13,7 +13,8 @@ class TicketOutSourceService implements IBaseService
 {
     public function __construct(
         private TicketOutsource $ticketOutsource,
-    ) {}
+    ) {
+    }
 
     public function getById(int $ticketOutsourceId): TicketOutsource
     {

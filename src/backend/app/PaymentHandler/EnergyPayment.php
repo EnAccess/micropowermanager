@@ -2,4 +2,6 @@
 
 namespace App\PaymentHandler;
 
-class EnergyPayment {}
+class EnergyPayment
+{
+}

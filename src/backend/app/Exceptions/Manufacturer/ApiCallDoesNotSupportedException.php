@@ -2,4 +2,6 @@
 
 namespace App\Exceptions\Manufacturer;
 
-class ApiCallDoesNotSupportedException extends \Exception {}
+class ApiCallDoesNotSupportedException extends \Exception
+{
+}

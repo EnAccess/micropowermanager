@@ -13,7 +13,8 @@ class TicketExportController
     public function __construct(
         private TicketOutsourceReportService $ticketOutsourceReportService,
         private TicketService $ticketService,
-    ) {}
+    ) {
+    }
 
     /**
      * A list of stored book keeping data.

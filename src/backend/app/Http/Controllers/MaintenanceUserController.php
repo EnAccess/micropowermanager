@@ -20,7 +20,8 @@ class MaintenanceUserController extends Controller
         private Person $person,
         private PersonService $personService,
         private AddressService $addressService,
-    ) {}
+    ) {
+    }
 
     public function index(): ApiResource
     {

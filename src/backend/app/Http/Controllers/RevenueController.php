@@ -27,7 +27,8 @@ class RevenueController extends Controller
         private RevenueService $revenueService,
         private MeterRevenueService $meterRevenueService,
         private Target $target,
-    ) {}
+    ) {
+    }
 
     public function ticketData($id): ApiResource
     {
@@ -144,7 +145,7 @@ class RevenueController extends Controller
         $formattedTarget = [];
 
         if ($targets === null) { // no target defined for that mini-grid
-            $targets = new \stdClass;
+            $targets = new \stdClass();
             $connections = ConnectionGroup::query()->get();
             foreach ($connections as $connection) {
                 $formattedTarget[$connection->name] = [

@@ -26,7 +26,8 @@ class SmsController extends Controller
         private MeterParameter $meterParameter,
         private SmsService $smsService,
         private TicketCommentService $commentService,
-    ) {}
+    ) {
+    }
 
     public function index(): ApiResource
     {

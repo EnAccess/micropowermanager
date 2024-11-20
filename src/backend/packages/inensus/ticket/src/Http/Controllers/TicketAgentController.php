@@ -8,7 +8,9 @@ use Inensus\Ticket\Services\TicketService;
 
 class TicketAgentController extends Controller
 {
-    public function __construct(private TicketService $ticketService) {}
+    public function __construct(private TicketService $ticketService)
+    {
+    }
 
     public function index($agentId, Request $request): TicketResource
     {

@@ -44,7 +44,7 @@ class SocialTariffPiggyBankTest extends TestCase
 
         $createPiggyBankJob = new CreatePiggyBankEntry(Person::first()->meters()->first());
         $createPiggyBankJob->handle();
-        $job = new SocialTariffPiggyBankManager;
+        $job = new SocialTariffPiggyBankManager();
         $socialTariff = SocialTariff::first();
         $socialBank = SocialTariffPiggyBank::first();
         $savings = $socialBank->savings;

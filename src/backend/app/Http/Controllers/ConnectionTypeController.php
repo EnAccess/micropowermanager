@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class ConnectionTypeController extends Controller
 {
-    public function __construct(private ConnectionTypeService $connectionTypeService) {}
+    public function __construct(private ConnectionTypeService $connectionTypeService)
+    {
+    }
 
     public function index(Request $request): ApiResource
     {

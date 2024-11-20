@@ -18,7 +18,8 @@ class RestrictionMiddleware
         private RestrictionService $restrictionService,
         private MaintenanceUserService $maintenanceUserService,
         private MiniGridService $miniGridService,
-    ) {}
+    ) {
+    }
 
     /**
      * Handle an incoming request.

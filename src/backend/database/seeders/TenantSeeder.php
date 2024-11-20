@@ -38,7 +38,8 @@ class TenantSeeder extends Seeder
         private DatabaseProxyManagerService $databaseProxyManagerService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
-    ) {}
+    ) {
+    }
 
     /**
      * Run the database seeds.

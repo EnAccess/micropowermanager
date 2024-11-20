@@ -18,7 +18,8 @@ class MicroStarMeterApi implements IManufacturerAPI
         private MicroStarCredentialService $credentialService,
         private MicroStarTransaction $microStarTransaction,
         private ApiRequests $apiRequests,
-    ) {}
+    ) {
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {

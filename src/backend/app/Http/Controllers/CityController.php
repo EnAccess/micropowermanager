@@ -15,7 +15,8 @@ class CityController extends Controller
         private CityService $cityService,
         private GeographicalInformationService $geographicalInformationService,
         private CityGeographicalInformationService $cityGeographicalInformationService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request): ApiResource
     {

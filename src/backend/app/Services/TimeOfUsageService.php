@@ -13,7 +13,8 @@ class TimeOfUsageService implements IBaseService
 {
     public function __construct(
         private TimeOfUsage $timeOfUsage,
-    ) {}
+    ) {
+    }
 
     public function create(array $timeOfUsageData): TimeOfUsage
     {

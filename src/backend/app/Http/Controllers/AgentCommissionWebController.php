@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 
 class AgentCommissionWebController extends Controller
 {
-    public function __construct(private AgentCommissionService $agentCommissionService) {}
+    public function __construct(private AgentCommissionService $agentCommissionService)
+    {
+    }
 
     /**
      * Display a listing of the resource.

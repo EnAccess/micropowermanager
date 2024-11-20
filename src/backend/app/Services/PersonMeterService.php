@@ -10,7 +10,8 @@ class PersonMeterService
     public function __construct(
         private Person $person,
         private Meter $meter,
-    ) {}
+    ) {
+    }
 
     public function getPersonMeters(int $personId)
     {

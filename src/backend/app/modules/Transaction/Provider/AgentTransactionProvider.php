@@ -20,12 +20,13 @@ class AgentTransactionProvider implements ITransactionProvider
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
         private FirebaseService $fireBaseService,
-    ) {}
+    ) {
+    }
 
     public function saveTransaction(): void
     {
-        $this->agentTransaction = new AgentTransactionModel;
-        $this->transaction = new Transaction;
+        $this->agentTransaction = new AgentTransactionModel();
+        $this->transaction = new Transaction();
         // assign data
         $this->assignData($this->validData);
         // save transaction
@@ -183,7 +184,7 @@ class AgentTransactionProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts;
+        $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->agentTransaction);
         $conflict->save();

@@ -14,7 +14,8 @@ class ClusterService implements IBaseService
 {
     public function __construct(
         private Cluster $cluster,
-    ) {}
+    ) {
+    }
 
     protected function setClusterMeterCount(Cluster $cluster, int $meterCount)
     {
@@ -97,7 +98,7 @@ class ClusterService implements IBaseService
     {
         throw new \Exception('Method update() not yet implemented.');
 
-        return new Cluster;
+        return new Cluster();
     }
 
     public function delete($model): ?bool

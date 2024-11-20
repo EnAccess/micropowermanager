@@ -36,7 +36,7 @@ class CityRequest extends FormRequest
 
     public function getCity(): City
     {
-        $city = new City;
+        $city = new City();
         $city->setName($this->input(self::PARAM_NAME));
         $city->setCountryId($this->input(self::PARAM_COUNTRY_ID, 0));
         $city->setClusterId($this->input(self::PARAM_CLUSTER_ID));

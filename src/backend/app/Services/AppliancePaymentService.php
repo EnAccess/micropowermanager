@@ -21,7 +21,8 @@ class AppliancePaymentService
         private MainSettings $mainSettings,
         private AppliancePersonService $appliancePersonService,
         private DeviceService $deviceService,
-    ) {}
+    ) {
+    }
 
     public function getPaymentForAppliance($request, $appliancePerson)
     {

@@ -37,7 +37,7 @@ class StoreMiniGridRequest extends FormRequest
 
     public function getMiniGrid(): MiniGrid
     {
-        $miniGrid = new MiniGrid;
+        $miniGrid = new MiniGrid();
         $miniGrid->setClusterId($this->input(self::PARAM_CLUSTER_ID));
         $miniGrid->setName($this->input(self::PARAM_NAME));
 

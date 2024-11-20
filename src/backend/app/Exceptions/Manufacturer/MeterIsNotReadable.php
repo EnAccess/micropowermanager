@@ -2,4 +2,6 @@
 
 namespace App\Exceptions\Manufacturer;
 
-class MeterIsNotReadable extends \Exception {}
+class MeterIsNotReadable extends \Exception
+{
+}

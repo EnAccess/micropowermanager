@@ -14,7 +14,8 @@ class ApiRequests
     public function __construct(
         private Client $httpClient,
         private ResponseResolver $responseResolver,
-    ) {}
+    ) {
+    }
 
     public function get(MicroStarCredential $credentials, array $params, string $slug)
     {

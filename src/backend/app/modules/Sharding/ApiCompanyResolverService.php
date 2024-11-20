@@ -12,7 +12,9 @@ use MPM\Sharding\ApiResolvers\Data\ApiResolverMap;
 
 class ApiCompanyResolverService
 {
-    public function __construct(private ApiResolverMap $apiResolverMap) {}
+    public function __construct(private ApiResolverMap $apiResolverMap)
+    {
+    }
 
     public function resolve(Request $request): int
     {

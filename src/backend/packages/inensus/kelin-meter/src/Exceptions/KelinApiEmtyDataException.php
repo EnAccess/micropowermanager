@@ -2,4 +2,6 @@
 
 namespace Inensus\KelinMeter\Exceptions;
 
-class KelinApiEmtyDataException extends \Exception {}
+class KelinApiEmtyDataException extends \Exception
+{
+}

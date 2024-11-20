@@ -8,7 +8,8 @@ class GomeLongCredentialService
 {
     public function __construct(
         private GomeLongCredential $credential,
-    ) {}
+    ) {
+    }
 
     /**
      * This function uses one time on installation of the package.

@@ -2,4 +2,6 @@
 
 namespace App\Exceptions\MeterParameter;
 
-class MeterParameterNotFound extends \Exception {}
+class MeterParameterNotFound extends \Exception
+{
+}

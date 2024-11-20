@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class AgentSoldApplianceWebController extends Controller
 {
-    public function __construct(private AgentSoldApplianceService $agentSoldApplianceService) {}
+    public function __construct(private AgentSoldApplianceService $agentSoldApplianceService)
+    {
+    }
 
     public function index($agentId, Request $request): ApiResource
     {

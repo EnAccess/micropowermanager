@@ -26,7 +26,9 @@ class AccessRate
      *
      * @param  AccessRate  $accessRate
      */
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * @throws NoAccessRateFound
@@ -36,7 +38,7 @@ class AccessRate
         if ($meterParameter->tariffAccessRate() === null) {
             throw new NoAccessRateFound('Tariff  '.$meterParameter->tariff()->first()->name.' has no access rate');
         }
-        $accessRate = new self;
+        $accessRate = new self();
         $accessRate->accessRate = $meterParameter->tariffAccessRate();
         $accessRate->setMeterParameter($meterParameter);
 
@@ -59,7 +61,7 @@ class AccessRate
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period)->toDateString();
         // create accessRatePayment instance and fill with the variables
-        $accessRatePayment = new AccessRatePayment;
+        $accessRatePayment = new AccessRatePayment();
         $accessRatePayment->accessRate()->associate($this->accessRate);
         $accessRatePayment->meter()->associate($this->meterParameter->meter()->first());
         $accessRatePayment->due_date = $nextPaymentDate;
@@ -88,7 +90,7 @@ class AccessRate
      */
     public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer
     {
-        $nonStaticGateway = new self;
+        $nonStaticGateway = new self();
         // get accessRatePayment
         $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
         try {

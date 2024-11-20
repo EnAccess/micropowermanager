@@ -41,7 +41,8 @@ class TransactionCallbackData
         private ?string $additional3,
         private ?string $additional4,
         private ?string $additional5,
-    ) {}
+    ) {
+    }
 
     public function getStatus(): string
     {

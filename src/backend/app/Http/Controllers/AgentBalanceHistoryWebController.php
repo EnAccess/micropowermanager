@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 
 class AgentBalanceHistoryWebController extends Controller
 {
-    public function __construct(private AgentBalanceHistoryService $agentBalanceHistoryService) {}
+    public function __construct(private AgentBalanceHistoryService $agentBalanceHistoryService)
+    {
+    }
 
     public function index($agentId, Request $request)
     {

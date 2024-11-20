@@ -241,14 +241,14 @@ class KelinMeterService implements ISynchronizeService
                 $kelinMeter['consNo']
             )->first();
             if ($meter === null) {
-                $meter = new Meter;
-                $meterParameter = new MeterParameter;
-                $geoLocation = new GeographicalInformation;
+                $meter = new Meter();
+                $meterParameter = new MeterParameter();
+                $geoLocation = new GeographicalInformation();
             } else {
                 $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
                 $geoLocation = $meterParameter->geo()->first();
                 if ($geoLocation === null) {
-                    $geoLocation = new GeographicalInformation;
+                    $geoLocation = new GeographicalInformation();
                 }
             }
             $meter->serial_number = $meterSerial;
@@ -296,7 +296,7 @@ class KelinMeterService implements ISynchronizeService
                     })->first();
 
                 $city = $kelinCustomerAddress->addresses[0]->city()->first() ?? null;
-                $address = new Address;
+                $address = new Address();
                 $address = $address->newQuery()->create([
                     'city_id' => $city ? $city->id : 1,
                 ]);

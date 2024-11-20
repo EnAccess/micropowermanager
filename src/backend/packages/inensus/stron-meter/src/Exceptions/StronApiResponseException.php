@@ -2,4 +2,6 @@
 
 namespace Inensus\StronMeter\Exceptions;
 
-class StronApiResponseException extends \Exception {}
+class StronApiResponseException extends \Exception
+{
+}

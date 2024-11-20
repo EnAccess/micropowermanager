@@ -14,7 +14,8 @@ class TicketCategoryService implements IBaseService
 {
     public function __construct(
         private TicketCategory $ticketCategory,
-    ) {}
+    ) {
+    }
 
     public function getById(int $categoryId): TicketCategory
     {

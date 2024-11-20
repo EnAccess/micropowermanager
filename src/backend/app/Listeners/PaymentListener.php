@@ -25,7 +25,8 @@ class PaymentListener
         private ApplianceRatePaymentHistoryService $applianceRatePaymentHistoryService,
         private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
         private TransactionPaymentHistoryService $transactionPaymentHistoryService,
-    ) {}
+    ) {
+    }
 
     public function onEnergyPayment(ITransactionProvider $transactionProvider): void
     {
@@ -39,7 +40,9 @@ class PaymentListener
         }
     }
 
-    public function onLoanPayment(string $customer_id, int $amount): void {}
+    public function onLoanPayment(string $customer_id, int $amount): void
+    {
+    }
 
     public function onPaymentFailed(): void
     {

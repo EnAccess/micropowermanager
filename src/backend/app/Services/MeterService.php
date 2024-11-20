@@ -14,7 +14,8 @@ class MeterService implements IBaseService
 {
     public function __construct(
         private Meter $meter,
-    ) {}
+    ) {
+    }
 
     public function getBySerialNumber($serialNumber)
     {

@@ -7,4 +7,6 @@ use App\Models\Base\BaseModel;
 /**
  * Class MailSettings.
  */
-class MailSettings extends BaseModel {}
+class MailSettings extends BaseModel
+{
+}

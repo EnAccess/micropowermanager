@@ -21,7 +21,8 @@ class SunKingSHSApi implements IManufacturerAPI
         private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
         private ApiRequests $apiRequests,
-    ) {}
+    ) {
+    }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array
     {

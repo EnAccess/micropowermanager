@@ -27,7 +27,8 @@ class PersonController extends Controller
         private PersonAddressService $personAddressService,
         private MaintenanceUserService $maintenanceUserService,
         private CountryService $countryService,
-    ) {}
+    ) {
+    }
 
     /**
      * List customer/other

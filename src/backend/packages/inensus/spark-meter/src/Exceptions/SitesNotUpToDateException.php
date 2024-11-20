@@ -2,4 +2,6 @@
 
 namespace Inensus\SparkMeter\Exceptions;
 
-class SitesNotUpToDateException extends \Exception {}
+class SitesNotUpToDateException extends \Exception
+{
+}

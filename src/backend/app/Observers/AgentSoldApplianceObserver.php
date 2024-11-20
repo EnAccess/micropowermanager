@@ -29,7 +29,8 @@ class AgentSoldApplianceObserver
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
-    ) {}
+    ) {
+    }
 
     public function created(AgentSoldAppliance $agentSoldAppliance): void
     {

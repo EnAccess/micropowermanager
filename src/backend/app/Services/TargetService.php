@@ -12,7 +12,9 @@ use MPM\Target\TargetAssignable;
 
 class TargetService
 {
-    public function __construct(private Target $target) {}
+    public function __construct(private Target $target)
+    {
+    }
 
     public function getById($targetId): Target
     {

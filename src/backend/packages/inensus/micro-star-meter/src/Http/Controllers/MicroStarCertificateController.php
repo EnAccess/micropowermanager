@@ -14,7 +14,8 @@ class MicroStarCertificateController extends Controller
     public function __construct(
         private MicroStarCertificateService $certificateService,
         private MicroStarCredentialService $credentialService,
-    ) {}
+    ) {
+    }
 
     public function store(ImportCertificateRequest $request)
     {

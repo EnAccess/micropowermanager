@@ -14,7 +14,8 @@ class AgentBalanceHistoryObserver
 {
     public function __construct(
         private AgentService $agentService,
-    ) {}
+    ) {
+    }
 
     /**
      * Handle the asset person "updated" event.

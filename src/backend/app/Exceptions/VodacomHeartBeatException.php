@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class VodacomHeartBeatException extends \Exception {}
+class VodacomHeartBeatException extends \Exception
+{
+}

@@ -2,4 +2,6 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class ManufacturerNotSupportedException extends MissingDataException {}
+class ManufacturerNotSupportedException extends MissingDataException
+{
+}

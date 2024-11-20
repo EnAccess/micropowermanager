@@ -9,7 +9,8 @@ class MeterTariffMeterParameterController extends Controller
 {
     public function __construct(
         private MeterTariffMeterParameterService $meterTariffMeterParameterService,
-    ) {}
+    ) {
+    }
 
     /**
      * Display a list of meters which using a particular tariff.

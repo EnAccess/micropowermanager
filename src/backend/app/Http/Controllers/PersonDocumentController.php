@@ -2,4 +2,6 @@
 
 namespace App\Http\Controllers;
 
-class PersonDocumentController extends Controller {}
+class PersonDocumentController extends Controller
+{
+}

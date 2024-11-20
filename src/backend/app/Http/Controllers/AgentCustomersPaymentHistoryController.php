@@ -10,7 +10,8 @@ class AgentCustomersPaymentHistoryController extends Controller
     public function __construct(
         private AgentService $agentService,
         private AgentCustomersPaymentHistoryService $agentCustomersPaymentHistoryService,
-    ) {}
+    ) {
+    }
 
     public function show(int $customerId, string $period, $limit = null, $order = 'ASC')
     {

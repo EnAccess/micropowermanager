@@ -29,9 +29,9 @@ class VodacomTransactionProvider implements ITransactionProvider
     public function saveTransaction(): void
     {
         // initializes needed model
-        $this->vodacomTransaction = new VodacomTransaction;
+        $this->vodacomTransaction = new VodacomTransaction();
 
-        $this->transaction = new Transaction;
+        $this->transaction = new Transaction();
 
         // assign data
         $this->assignData($this->valid_data);
@@ -49,7 +49,7 @@ class VodacomTransactionProvider implements ITransactionProvider
         }
         $requestContent = $this->prepareRequest($requestType);
 
-        $request = new Client;
+        $request = new Client();
 
         try {
             $response = $request->post(
@@ -347,7 +347,7 @@ class VodacomTransactionProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts;
+        $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->vodacomTransaction);
         $conflict->save();

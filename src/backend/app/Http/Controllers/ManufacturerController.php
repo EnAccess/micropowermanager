@@ -16,7 +16,8 @@ class ManufacturerController extends Controller
         private ManufacturerService $manufacturerService,
         private ManufacturerAddressService $manufacturerAddressService,
         private AddressesService $addressService,
-    ) {}
+    ) {
+    }
 
     /**
      * Display a listing of the resource.

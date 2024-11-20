@@ -8,7 +8,8 @@ class MicroStarCredentialService
 {
     public function __construct(
         private MicroStarCredential $credential,
-    ) {}
+    ) {
+    }
 
     /**
      * This function uses one time on installation of the package.

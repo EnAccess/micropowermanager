@@ -6,7 +6,9 @@ use App\Models\Meter\MeterType;
 
 class MeterTypeMeterService
 {
-    public function __construct(private MeterType $meterType) {}
+    public function __construct(private MeterType $meterType)
+    {
+    }
 
     public function getByIdWithMeters($meterTypeId)
     {

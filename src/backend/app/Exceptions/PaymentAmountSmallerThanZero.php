@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class PaymentAmountSmallerThanZero extends \Exception {}
+class PaymentAmountSmallerThanZero extends \Exception
+{
+}

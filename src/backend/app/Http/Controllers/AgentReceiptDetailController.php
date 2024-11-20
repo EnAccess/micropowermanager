@@ -2,4 +2,6 @@
 
 namespace App\Http\Controllers;
 
-class AgentReceiptDetailController extends Controller {}
+class AgentReceiptDetailController extends Controller
+{
+}

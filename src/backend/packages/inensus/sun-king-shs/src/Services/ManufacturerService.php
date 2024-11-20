@@ -6,7 +6,9 @@ use App\Models\Manufacturer;
 
 class ManufacturerService
 {
-    public function __construct(private Manufacturer $manufacturer) {}
+    public function __construct(private Manufacturer $manufacturer)
+    {
+    }
 
     public function register()
     {

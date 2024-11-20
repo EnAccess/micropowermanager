@@ -21,7 +21,8 @@ class KelinMeterApi implements IManufacturerAPI
         private KelinMeter $kelinMeter,
         private KelinTransaction $kelinTransaction,
         private KelinMeterApiClient $kelinApi,
-    ) {}
+    ) {
+    }
 
     public function chargeDevice($transactionContainer): array
     {
@@ -113,5 +114,7 @@ class KelinMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device) {}
+    public function clearDevice(Device $device)
+    {
+    }
 }

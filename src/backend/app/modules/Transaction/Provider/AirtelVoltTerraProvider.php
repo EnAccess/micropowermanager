@@ -26,12 +26,13 @@ class AirtelVoltTerraProvider implements ITransactionProvider
     public function __construct(
         private AirtelTransaction $airtelTransaction,
         private Transaction $transaction,
-    ) {}
+    ) {
+    }
 
     public function saveTransaction(): void
     {
-        $this->airtelTransaction = new AirtelTransaction;
-        $this->transaction = new Transaction;
+        $this->airtelTransaction = new AirtelTransaction();
+        $this->transaction = new Transaction();
         // assign data
         $this->assignData();
 
@@ -73,7 +74,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
             throw new \Exception($validator->errors()->first());
         }
 
-        $meterModel = new Meter;
+        $meterModel = new Meter();
 
         if (! $meter = $meterModel->findBySerialNumber($meterSerial)) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
@@ -164,7 +165,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
 
     public function addConflict(?string $message): void
     {
-        $conflict = new TransactionConflicts;
+        $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->airtelTransaction);
         $conflict->save();

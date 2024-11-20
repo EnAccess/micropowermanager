@@ -18,7 +18,8 @@ class AgentTransactionService implements IBaseService
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
         private Device $device,
-    ) {}
+    ) {
+    }
 
     public function getAll(
         ?int $limit = null,

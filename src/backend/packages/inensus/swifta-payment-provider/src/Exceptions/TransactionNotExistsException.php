@@ -2,4 +2,6 @@
 
 namespace Inensus\SwiftaPaymentProvider\Exceptions;
 
-class TransactionNotExistsException extends \Exception {}
+class TransactionNotExistsException extends \Exception
+{
+}

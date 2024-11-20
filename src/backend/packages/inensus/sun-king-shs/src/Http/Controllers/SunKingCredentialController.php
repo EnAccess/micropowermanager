@@ -9,7 +9,9 @@ use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
 class SunKingCredentialController extends Controller
 {
-    public function __construct(private SunKingCredentialService $credentialService) {}
+    public function __construct(private SunKingCredentialService $credentialService)
+    {
+    }
 
     public function show(): SunKingResource
     {

@@ -7,7 +7,9 @@ use Inensus\SteamaMeter\Models\SteamaTariff;
 
 class SteamaTariffService
 {
-    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff) {}
+    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff)
+    {
+    }
 
     /**
      * This function uses one time on installation of the package.

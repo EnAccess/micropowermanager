@@ -2,4 +2,6 @@
 
 namespace Inensus\Ticket\Exceptions;
 
-class ApiUserNotFound extends \Exception {}
+class ApiUserNotFound extends \Exception
+{
+}

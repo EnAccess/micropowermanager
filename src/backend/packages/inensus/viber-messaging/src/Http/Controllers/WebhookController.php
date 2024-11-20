@@ -45,7 +45,7 @@ class WebhookController extends Controller
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first()->key;
         $this->bot
             ->onConversation(function ($event) {
-                return (new \Viber\Api\Message\Text)->setSender($this->botSender)->setText('Can I help you?');
+                return (new \Viber\Api\Message\Text())->setSender($this->botSender)->setText('Can I help you?');
             })
             ->onText('|register+.*|si', function ($event) use ($bot, $botSender) {
                 $message = $event->getMessage()->getText();
@@ -157,7 +157,7 @@ class WebhookController extends Controller
     private function answerToCustomer($bot, $botSender, $event, $message)
     {
         $bot->getClient()->sendMessage(
-            (new \Viber\Api\Message\Text)
+            (new \Viber\Api\Message\Text())
                 ->setSender($botSender)
                 ->setReceiver($event->getSender()->getId())
                 ->setText("Hello, {$event->getSender()->getName()}! {$message}")

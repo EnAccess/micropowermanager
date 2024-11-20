@@ -21,7 +21,8 @@ class UserDefaultDatabaseConnectionMiddleware
         private DatabaseProxyManagerService $databaseProxyManager,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
-    ) {}
+    ) {
+    }
 
     public function handle($request, \Closure $next)
     {

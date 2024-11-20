@@ -2,4 +2,6 @@
 
 namespace App\Exceptions;
 
-class PaymentProviderNotIdentified extends \Exception {}
+class PaymentProviderNotIdentified extends \Exception
+{
+}

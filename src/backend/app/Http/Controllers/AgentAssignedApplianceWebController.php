@@ -12,7 +12,8 @@ class AgentAssignedApplianceWebController extends Controller
 {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-    ) {}
+    ) {
+    }
 
     /**
      * Store a newly created resource in storage.

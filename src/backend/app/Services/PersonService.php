@@ -19,7 +19,8 @@ class PersonService implements IBaseService
 {
     public function __construct(
         private Person $person,
-    ) {}
+    ) {
+    }
 
     public function getAllRegisteredPeople(): Collection|array
     {

@@ -18,7 +18,8 @@ class TicketOutsourceReportService implements IBaseService
     public function __construct(
         private TicketOutsourceReport $ticketOutsourceReport,
         private Spreadsheet $spreadsheet
-    ) {}
+    ) {
+    }
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator
     {

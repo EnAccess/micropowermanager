@@ -19,7 +19,7 @@ class AccessRateListener
                 throw new NoAccessRateFound('Access Rate is not set');
             }
             $nextPaymentDate = Carbon::now()->addDays($accessRate->period)->toDateString();
-            $accessRatePayment = new AccessRatePayment;
+            $accessRatePayment = new AccessRatePayment();
             $accessRatePayment->accessRate()->associate($accessRate);
             $accessRatePayment->meter()->associate($meter);
             $accessRatePayment->due_date = $nextPaymentDate;

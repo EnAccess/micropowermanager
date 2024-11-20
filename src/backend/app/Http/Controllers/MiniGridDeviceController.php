@@ -10,7 +10,8 @@ class MiniGridDeviceController extends Controller
 {
     public function __construct(
         private MiniGridDeviceService $miniGridDeviceService,
-    ) {}
+    ) {
+    }
 
     public function index(Request $request, $miniGridId): ApiResource
     {

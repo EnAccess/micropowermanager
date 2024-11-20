@@ -11,7 +11,8 @@ class TicketCommentService
         private Person $person,
         private TicketComment $ticketComment,
         private TicketUserService $ticketUserService
-    ) {}
+    ) {
+    }
 
     public function createComment(int $ticketId, string $comment, int $ticketUserId): TicketComment
     {
