@@ -146,7 +146,7 @@ export default {
           case "e_bike":
             markerType = MARKER_TYPE.E_BIKE
             break
-          case "shs":
+          case "solar_home_system":
             markerType = MARKER_TYPE.SHS
             break
           default:

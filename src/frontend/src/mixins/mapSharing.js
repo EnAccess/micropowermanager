@@ -123,7 +123,7 @@ export const sharedMap = {
       }
       this.markersLayer = new L.markerClusterGroup({
         chunkedLoading: true,
-        spiderfyOnMaxZoom: false,
+        spiderfyOnMaxZoom: true,
       })
       const drawControl = new L.Control.Draw(drawingOptions)
       this.map.addLayer(drawingOptions.edit.featureGroup)
