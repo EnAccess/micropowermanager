@@ -95,7 +95,7 @@ class TariffService implements ISynchronizeService
                 break;
             }
         }
-        if (! $tariffExists) {
+        if (!$tariffExists) {
             $modelTouString = '';
             foreach ($tariff->tou as $key => $value) {
                 $modelTouString .= $value->start.$value->end.floatval($value->value);

@@ -73,7 +73,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
     }
 
     /**
-     * @param  Meter  $meter
+     * @param Meter $meter
      *
      * @throws GuzzleException
      *

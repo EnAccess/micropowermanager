@@ -5,7 +5,7 @@ namespace Inensus\Ticket\Models;
 /**
  * Class OutsourceReport.
  *
- * @property int $id
+ * @property int    $id
  * @property string $date
  * @property string $path
  */

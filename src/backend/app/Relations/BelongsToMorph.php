@@ -35,9 +35,10 @@ class BelongsToMorph extends BelongsTo
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  Builder  $query
-     * @param  Builder  $parent
-     * @param  array|mixed  $columns
+     * @param Builder     $query
+     * @param Builder     $parent
+     * @param array|mixed $columns
+     *
      * @return Builder
      */
     /**
@@ -64,9 +65,9 @@ class BelongsToMorph extends BelongsTo
     /**
      * Get the polymorphic relationship columns.
      *
-     * @param  string  $name
-     * @param  string  $type
-     * @param  string  $id
+     * @param string $name
+     * @param string $type
+     * @param string $id
      */
     protected static function getMorphs($name, $type, $id): array
     {
@@ -79,12 +80,12 @@ class BelongsToMorph extends BelongsTo
     /**
      * Define an inverse morph relationship.
      *
-     * @param  string  $related
-     * @param  string  $name
-     * @param  null  $type
-     * @param  null  $id
-     * @param  null  $otherKey
-     * @param  null  $relation
+     * @param string $related
+     * @param string $name
+     * @param null   $type
+     * @param null   $id
+     * @param null   $otherKey
+     * @param null   $relation
      */
     public static function build(
         Model $parent,

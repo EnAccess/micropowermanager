@@ -36,14 +36,14 @@ class PluginController extends Controller
             'status' => $request->input('checked'),
         ];
 
-        if (! $plugin && ! $request->input('checked')) {
+        if (!$plugin && !$request->input('checked')) {
             throw new \Exception('Plugin not found');
         }
 
         if ($request->input('checked')) {
             // Check if this is the first time we are installing the plugin.
             // In that case we also need to run install commands, if present
-            if (! $plugin) {
+            if (!$plugin) {
                 $createdPlugin = $this->pluginsService->create($pluginData);
                 $this->registrationTailService->addMpmPluginToRegistrationTail($registrationTail, $mpmPlugin);
 

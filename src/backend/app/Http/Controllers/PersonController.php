@@ -54,8 +54,6 @@ class PersonController extends Controller
      * - Role
      * - Meter list.
      *
-     *
-     *
      * @apiResourceModel App\Models\Person\Person
      *
      * @responseFile     responses/people/people.detail.json
@@ -137,8 +135,6 @@ class PersonController extends Controller
      * Transactions
      * The list of all transactions(paginated) which belong to that person.
      * Each page contains 7 entries of the last transaction.
-     *
-     *
      *
      * @bodyParam    person_id int required the ID of the person. Example: 2
      *

@@ -124,9 +124,9 @@ class MiniGridTest extends TestCase
                     'cluster_id' => $cluster->id,
                 ]);
                 array_push($this->miniGridIds, $miniGrid->id);
-                $miniGridCount--;
+                --$miniGridCount;
             }
-            $clusterCount--;
+            --$clusterCount;
         }
     }
 

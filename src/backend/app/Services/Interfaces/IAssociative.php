@@ -14,7 +14,7 @@ interface IAssociative
     public function make(array $data): Model;
 
     /**
-     * @param  T  $model
+     * @param T $model
      */
     public function save(Model $model): bool;
 }

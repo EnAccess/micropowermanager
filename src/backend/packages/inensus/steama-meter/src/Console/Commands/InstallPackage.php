@@ -59,7 +59,7 @@ class InstallPackage extends Command
         // $this->call('routes:generate');
         // $this->call('sidebar:generate');
         // $this->info('Package installed successfully..');
-        if (! $this->siteService->checkLocationAvailability()) {
+        if (!$this->siteService->checkLocationAvailability()) {
             $this->warn('------------------------------');
             $this->warn('Steamaco Meter package needs least one registered Cluster.');
             $this->warn('If you have no Cluster, please navigate to #Locations# section and register your locations.');

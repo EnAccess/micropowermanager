@@ -69,7 +69,7 @@ class RoutesGenerator extends AbstractSharedCommand
                 $newLine = str_pad($value, strlen($value) + 4, ' ', STR_PAD_LEFT);
             }
             fwrite($tmp, $newLine);
-            $counter++;
+            ++$counter;
         }
         fclose($tmp);
     }

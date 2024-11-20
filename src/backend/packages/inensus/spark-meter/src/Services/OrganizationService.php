@@ -22,7 +22,7 @@ class OrganizationService
     public function createOrganization($organizationData)
     {
         $organization = $this->organization->newQuery()->first();
-        if (! $organization) {
+        if (!$organization) {
             return $this->organization->newQuery()->create([
                 'organization_id' => $organizationData['id'],
                 'code' => $organizationData['code'],

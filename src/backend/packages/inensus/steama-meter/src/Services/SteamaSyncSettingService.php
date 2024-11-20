@@ -33,7 +33,7 @@ class SteamaSyncSettingService
 
         $syncSite = $this->syncSetting->newQuery()->where('action_name', 'Sites')->first();
 
-        if (! $syncSite) {
+        if (!$syncSite) {
             $now = Carbon::now();
             $siteSetting = $this->setting->newQuery()->make();
             $syncSite = $this->syncSetting->newQuery()->create([
@@ -51,7 +51,7 @@ class SteamaSyncSettingService
         }
 
         $syncCustomer = $this->syncSetting->newQuery()->where('action_name', 'Customers')->first();
-        if (! $syncCustomer) {
+        if (!$syncCustomer) {
             $now = Carbon::now();
             $customerSetting = $this->setting->newQuery()->make();
             $syncCustomer = $this->syncSetting->newQuery()->create([
@@ -69,7 +69,7 @@ class SteamaSyncSettingService
         }
 
         $syncMeter = $this->syncSetting->newQuery()->where('action_name', 'Meters')->first();
-        if (! $syncMeter) {
+        if (!$syncMeter) {
             $now = Carbon::now();
             $meterSetting = $this->setting->newQuery()->make();
             $syncMeter = $this->syncSetting->newQuery()->create([
@@ -87,7 +87,7 @@ class SteamaSyncSettingService
         }
 
         $syncAgent = $this->syncSetting->newQuery()->where('action_name', 'Agents')->first();
-        if (! $syncAgent) {
+        if (!$syncAgent) {
             $now = Carbon::now();
             $agentSetting = $this->setting->newQuery()->make();
             $syncAgent = $this->syncSetting->newQuery()->create([
@@ -105,7 +105,7 @@ class SteamaSyncSettingService
         }
 
         $syncTransaction = $this->syncSetting->newQuery()->where('action_name', 'Transactions')->first();
-        if (! $syncTransaction) {
+        if (!$syncTransaction) {
             $now = Carbon::now();
             $transactionSetting = $this->setting->newQuery()->make();
             $syncTransaction = $this->syncSetting->newQuery()->create([

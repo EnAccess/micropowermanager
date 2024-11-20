@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class Subscription.
  *
- * @property int $id
- * @property int $upgrade_id
+ * @property int    $id
+ * @property int    $upgrade_id
  * @property string $expires
  * @property string $transaction_id
  */

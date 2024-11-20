@@ -111,7 +111,7 @@ class CsvDataProcessor
     private function checkRecordWasRecentlyCreated($record, $type)
     {
         if ($record->wasRecentlyCreated) {
-            $this->recentlyCreatedRecords[$type]++;
+            ++$this->recentlyCreatedRecords[$type];
         }
     }
 }

@@ -131,7 +131,7 @@ class AppliancePaymentService
     {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
-        if (! $device) {
+        if (!$device) {
             throw new ModelNotFoundException("No device found with $deviceSerial");
         }
 

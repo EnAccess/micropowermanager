@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 interface MailHelperInterface
 {
     /**
-     * @param  null  $attachment
+     * @param null $attachment
      *
      * @throws MailNotSentException
      * @throws PHPMailerException

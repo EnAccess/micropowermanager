@@ -50,10 +50,10 @@ class PaymentListener
     }
 
     /**
-     * @param  int  $amount
-     * @param  string  $paymentService  the name of the Payment gateway
-     * @param  mixed  $sender  : The number or person who sent the money
-     * @param  mixed  $paidFor  the identifier for the payment. Ex; { LoanID, TokenID }
+     * @param int    $amount
+     * @param string $paymentService the name of the Payment gateway
+     * @param mixed  $sender         : The number or person who sent the money
+     * @param mixed  $paidFor        the identifier for the payment. Ex; { LoanID, TokenID }
      */
     public function onPaymentSuccess(
         $amount,

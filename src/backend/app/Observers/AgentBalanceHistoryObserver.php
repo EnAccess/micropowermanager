@@ -20,7 +20,6 @@ class AgentBalanceHistoryObserver
     /**
      * Handle the asset person "updated" event.
      *
-     *
      * @return void
      */
     public function created(AgentBalanceHistory $agentBalanceHistory)

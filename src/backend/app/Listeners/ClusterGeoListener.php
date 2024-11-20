@@ -53,7 +53,6 @@ class ClusterGeoListener
     /**
      * External geojson resource has lon,lat format. Change order to lat,lon.
      *
-     *
      * @return array[]
      *
      * @throws GeoFormatException
@@ -63,15 +62,15 @@ class ClusterGeoListener
     public function reformatExternalData($data): array
     {
         $formatted = [];
-        if (is_array($data) && ! array_key_exists('geojson', $data)) {
+        if (is_array($data) && !array_key_exists('geojson', $data)) {
             $data = $data[0];
         }
 
-        if (! array_key_exists('geojson', $data)) {
+        if (!array_key_exists('geojson', $data)) {
             throw new GeoFormatException('external resource should contain a geojson key');
         }
 
-        if (! array_key_exists('coordinates', $data['geojson'])) {
+        if (!array_key_exists('coordinates', $data['geojson'])) {
             throw new GeoFormatException('geojson key has not coordinates key');
         }
 

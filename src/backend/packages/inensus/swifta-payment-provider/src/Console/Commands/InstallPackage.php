@@ -103,7 +103,7 @@ class InstallPackage extends Command
     {
         $length = random_int(1, 10);
         $number = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $number .= random_int(0, 9);
         }
         $number = ltrim($number, '0');

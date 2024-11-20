@@ -133,7 +133,7 @@ class ClusterTest extends TestCase
                 'mini_grid_id' => $miniGrid->id,
                 'cluster_id' => $cluster->id,
             ]);
-            $clusterCount--;
+            --$clusterCount;
 
             while ($meterCount > 0) {
                 $meter = MeterFactory::new()->create([
@@ -179,7 +179,7 @@ class ClusterTest extends TestCase
                 ]);
                 $personAddress->owner()->associate($person);
                 $personAddress->save();
-                $meterCount--;
+                --$meterCount;
 
                 while ($transactionCount > 0) {
                     $vodacomTransaction =
@@ -217,7 +217,7 @@ class ClusterTest extends TestCase
                         'payer_type' => 'person',
                         'payer_id' => $person->id,
                     ]);
-                    $transactionCount--;
+                    --$transactionCount;
                 }
             }
         }

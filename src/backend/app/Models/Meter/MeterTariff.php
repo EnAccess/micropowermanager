@@ -17,11 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Tariff.
  *
- * @property string $name
- * @property int $price (100 times the price. Allows to play with .00 decimals)
- * @property int $total_price (100 times the price. Allows to play with .00 decimals)
- * @property string $currency
- * @property int|null $factor
+ * @property string     $name
+ * @property int        $price       (100 times the price. Allows to play with .00 decimals)
+ * @property int        $total_price (100 times the price. Allows to play with .00 decimals)
+ * @property string     $currency
+ * @property int|null   $factor
  * @property AccessRate $accessRate
  */
 class MeterTariff extends BaseModel

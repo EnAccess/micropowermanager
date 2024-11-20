@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 class MailHelperMock implements MailHelperInterface
 {
     /**
-     * @param  null  $attachment
+     * @param null $attachment
      *
      * @throws MailNotSentException
      * @throws PHPMailerException

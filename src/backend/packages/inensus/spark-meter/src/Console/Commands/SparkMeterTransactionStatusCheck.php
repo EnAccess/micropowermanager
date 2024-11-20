@@ -25,7 +25,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (! $this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 

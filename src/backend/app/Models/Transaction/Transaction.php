@@ -20,8 +20,8 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 /**
  * Class Transaction.
  *
- * @property int $id
- * @property int $amount
+ * @property int    $id
+ * @property int    $amount
  * @property string $type
  * @property string $sender
  * @property string $message

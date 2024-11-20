@@ -13,8 +13,9 @@ class AssetRateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
-     * @param  AssetRate  $assetRate
+     * @param Request   $request
+     * @param AssetRate $assetRate
+     *
      * @return ApiResource
      */
     private $cashTransactionService;
@@ -41,7 +42,7 @@ class AssetRateController extends Controller
         if ($newCost === 0) {
             $this->applianceRateService
                 ->deleteUpdatedApplianceRateIfCostZero($applianceRate, $creatorId, $cost, $newCost);
-            $appliancePerson->rate_count--;
+            --$appliancePerson->rate_count;
         } else {
             $this->applianceRateService->updateApplianceRateCost($applianceRate, $creatorId, $cost, $newCost);
         }

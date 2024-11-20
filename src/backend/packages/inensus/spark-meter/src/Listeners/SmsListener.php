@@ -36,7 +36,7 @@ class SmsListener
     public function onSmsStored($sender, $message)
     {
         $sparkCustomer = $this->customerService->getSparkCustomerWithPhone($sender);
-        if (! $sparkCustomer) {
+        if (!$sparkCustomer) {
             return;
         }
         $smsFeedbackWords = $this->smsFeedbackWordService->getSmsFeedbackWords();

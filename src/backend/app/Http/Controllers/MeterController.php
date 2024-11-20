@@ -40,7 +40,6 @@ class MeterController extends Controller
      * Create
      * Stores a new meter.
      *
-     *
      * @bodyParam serial_number string required
      * @bodyParam meter_type_id int required
      * @bodyParam manufacturer_id int required

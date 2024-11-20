@@ -86,7 +86,7 @@ class SteamaAgentService implements ISynchronizeService
     public function createSteamaAgentCommission()
     {
         $agentCommission = $this->agentCommission->newQuery()->where('name', 'Steama Agent Comission')->first();
-        if (! $agentCommission) {
+        if (!$agentCommission) {
             $agentCommission = $this->agentCommission->newQuery()->create([
                 'name' => 'Steama Agent Comission',
                 'energy_commission' => 0,

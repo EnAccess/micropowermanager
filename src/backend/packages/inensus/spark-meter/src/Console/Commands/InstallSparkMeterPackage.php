@@ -45,12 +45,12 @@ class InstallSparkMeterPackage extends Command
         $this->credentialService->createSmCredentials();
         $this->info('Package installed successfully..');
         $connections = $this->customerService->checkConnectionAvailability();
-        if (! $this->siteService->checkLocationAvailability()) {
+        if (!$this->siteService->checkLocationAvailability()) {
             $this->warn('------------------------------');
             $this->warn('Spark Meter package needs least one registered Cluster.');
             $this->warn('If you have no Cluster, please navigate to #Locations# section and register your locations.');
         }
-        if (! $connections['type'] || ! $connections['group']) {
+        if (!$connections['type'] || !$connections['group']) {
             $this->warn('------------------------------');
             $this->warn('Spark Meter package needs least one Connection Group and one Connection Type.');
             $this->warn('Before you get Customers from Spark Meter please check them in #Connection# section.');

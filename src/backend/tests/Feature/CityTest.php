@@ -118,16 +118,16 @@ class CityTest extends TestCase
                         'cluster_id' => $cluster->id,
                     ]);
                     array_push($this->cityIds, $city->id);
-                    $cityCount--;
+                    --$cityCount;
                 }
 
                 $geographicalInformation->owner()->associate($miniGrid);
                 $geographicalInformation->save();
                 array_push($this->miniGridIds, $miniGrid->id);
-                $miniGridCount--;
+                --$miniGridCount;
             }
 
-            $clusterCount--;
+            --$clusterCount;
         }
     }
 

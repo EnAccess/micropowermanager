@@ -22,7 +22,7 @@ class ResendInformationNotification extends SmsSender
 
     public function prepareBody()
     {
-        if (! is_array($this->data)) {
+        if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('ResendInformation');
             } catch (ModelNotFoundException $exception) {

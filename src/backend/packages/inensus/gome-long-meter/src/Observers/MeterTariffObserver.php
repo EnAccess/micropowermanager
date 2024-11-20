@@ -21,7 +21,7 @@ class MeterTariffObserver
 
     public function created(MeterTariff $tariff)
     {
-        if (! $this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();
@@ -32,7 +32,7 @@ class MeterTariffObserver
 
     public function updated(MeterTariff $tariff)
     {
-        if (! $this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();
@@ -44,7 +44,7 @@ class MeterTariffObserver
 
     public function deleted(MeterTariff $tariff)
     {
-        if (! $this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();

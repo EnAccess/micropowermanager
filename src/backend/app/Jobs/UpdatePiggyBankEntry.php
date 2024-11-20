@@ -39,7 +39,7 @@ class UpdatePiggyBankEntry extends AbstractJob
     public function executeJob()
     {
         $socialTariff = $this->meterParameter->tariff()->first()->socialTariff;
-        if (! $socialTariff) {
+        if (!$socialTariff) {
             echo "meter has no social tariff should be deleted \n";
             // meter parameter has no social tariff
 

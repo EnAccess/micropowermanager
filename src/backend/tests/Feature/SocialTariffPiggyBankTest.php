@@ -48,7 +48,7 @@ class SocialTariffPiggyBankTest extends TestCase
         $socialTariff = SocialTariff::first();
         $socialBank = SocialTariffPiggyBank::first();
         $savings = $socialBank->savings;
-        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; $i++) {
+        for ($i = 1; $i <= $socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance; ++$i) {
             $job->handle();
             if ($i % ($socialTariff->maximum_stacked_energy / $socialTariff->daily_allowance)) {
                 $this->assertEquals($savings + ($socialTariff->daily_allowance * $i), $socialBank->fresh()->savings);

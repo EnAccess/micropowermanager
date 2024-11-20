@@ -24,7 +24,7 @@ class AccessRate
     /**
      * AccessRatePayment constructor.
      *
-     * @param  AccessRate  $accessRate
+     * @param AccessRate $accessRate
      */
     public function __construct()
     {

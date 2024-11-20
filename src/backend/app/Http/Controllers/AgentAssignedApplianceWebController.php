@@ -40,7 +40,8 @@ class AgentAssignedApplianceWebController extends Controller
     /**
      * List for Web interface.
      *
-     * @param  Agent  $agent
+     * @param Agent $agent
+     *
      * @return ApiResource
      */
     public function index($agentId, Request $request)

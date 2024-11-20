@@ -84,7 +84,7 @@ class ApplianceInstallmentPayer
     {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
-        if (! $device) {
+        if (!$device) {
             throw new DeviceIsNotAssignedToCustomer('Device is not assigned to customer');
         }
 

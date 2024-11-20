@@ -73,7 +73,7 @@ class MinutelyConsumptionService
                         'flow_velocity' => $data['sPEED'],
                     ]);
                 });
-                $pageNo++;
+                ++$pageNo;
             } catch (\Exception $exception) {
                 Log::error('Failed on minutely data request .', ['message' => $exception->getMessage()]);
                 $result['data']['dataCount'] = 0;

@@ -17,7 +17,7 @@ class TicketOutsourceReportService implements IBaseService
 {
     public function __construct(
         private TicketOutsourceReport $ticketOutsourceReport,
-        private Spreadsheet $spreadsheet
+        private Spreadsheet $spreadsheet,
     ) {
     }
 
@@ -51,7 +51,7 @@ class TicketOutsourceReportService implements IBaseService
         }
         $writer = new Xlsx($this->spreadsheet);
         $dirPath = storage_path('./outsourcing');
-        if (! file_exists($dirPath)) {
+        if (!file_exists($dirPath)) {
             mkdir($dirPath, 0774, true);
         }
         try {

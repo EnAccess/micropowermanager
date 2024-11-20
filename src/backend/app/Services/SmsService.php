@@ -96,13 +96,13 @@ class SmsService
     private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings)
     {
         $configs = resolve($smsConfigs);
-        if (! array_key_exists($smsType, $configs->smsTypes)) {
+        if (!array_key_exists($smsType, $configs->smsTypes)) {
             throw new SmsTypeNotFoundException('SmsType could not resolve.');
         }
         $smsBodyService = resolve($configs->servicePath);
         $reflection = new \ReflectionClass($configs->smsTypes[$smsType]);
 
-        if (! $reflection->isSubclassOf(SmsSender::class)) {
+        if (!$reflection->isSubclassOf(SmsSender::class)) {
             throw new SmsBodyParserNotExtendedException('SmsBodyParser has not extended.');
         }
 
@@ -116,7 +116,7 @@ class SmsService
 
     private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings)
     {
-        if (! ($smsType instanceof ManualSms)) {
+        if (!($smsType instanceof ManualSms)) {
             $sms = Sms::query()->make([
                 'uuid' => $uuid,
                 'body' => $smsType->body,

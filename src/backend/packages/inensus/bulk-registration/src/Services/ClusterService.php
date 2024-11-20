@@ -17,12 +17,12 @@ class ClusterService extends CreatorService
     {
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
 
-        if (! $csvData[$clusterConfig['name']]) {
+        if (!$csvData[$clusterConfig['name']]) {
             throw new ClusterNotFoundException('Cluster Name is required');
         }
         $registeredCluster = Cluster::query()->where('name', $csvData[$clusterConfig['name']])->first();
 
-        if (! $registeredCluster) {
+        if (!$registeredCluster) {
             $message = 'There is no cluster registered for '.$csvData[$clusterConfig['name']].
                 '. Please add the Cluster first.';
 

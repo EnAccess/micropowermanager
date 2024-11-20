@@ -267,13 +267,13 @@ class KelinMeterService implements ISynchronizeService
                 $p = $points == null ? ',' : $kelinCustomer->address;
                 $geoLocation->points = $p;
                 $connectionType = $this->connectionType->newQuery()->first();
-                if (! $connectionType) {
+                if (!$connectionType) {
                     $connectionType = $this->connectionType->newQuery()->create([
                         'name' => 'default',
                     ]);
                 }
                 $connectionGroup = $this->connectionGroup->newQuery()->first();
-                if (! $connectionGroup) {
+                if (!$connectionGroup) {
                     $connectionGroup = $this->connectionGroup->newQuery()->create([
                         'name' => 'default',
                     ]);
@@ -340,7 +340,7 @@ class KelinMeterService implements ISynchronizeService
     private function findRegisteredMeter($kelinMeter)
     {
         $meter = collect($this->earlyRegisteredMeters)->where('meter_serial', $kelinMeter['meterAddr'])->first();
-        if (! $meter) {
+        if (!$meter) {
             return $meter;
         }
 
@@ -365,7 +365,7 @@ class KelinMeterService implements ISynchronizeService
     {
         $length = strlen($meterAddress);
         $newSerial = $meterAddress[0];
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             if ($i != 0) {
                 if ($i % 4 == 0) {
                     $newSerial .= '-'.$meterAddress[$i];

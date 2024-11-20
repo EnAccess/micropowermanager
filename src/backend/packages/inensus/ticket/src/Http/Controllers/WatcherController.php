@@ -48,7 +48,7 @@ class WatcherController
         $action = $content['action'];
         $actionType = $action['type'];
 
-        if (! $this->filterRequest($actionType)) { // there is no interest for that action
+        if (!$this->filterRequest($actionType)) { // there is no interest for that action
             Log::debug('action is not interesting');
 
             return;
@@ -60,7 +60,7 @@ class WatcherController
     /**
      * Checks if the request type is interesting or not.
      *
-     * @param  string  $type  the request type
+     * @param string $type the request type
      */
     private function filterRequest($type): bool
     {
@@ -70,8 +70,6 @@ class WatcherController
     /**
      * Tries to match the given ticket id with an entry in the database
      * it should prevent, that any new ticket created directly in Trello.
-     *
-     *
      *
      * @throws ModelNotFoundException
      */

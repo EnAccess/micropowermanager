@@ -80,7 +80,7 @@ class KelinCredentialService
     public function refreshAccessToken()
     {
         $credential = $this->getCredentials();
-        if (! $credential->username && ! $credential->password) {
+        if (!$credential->username && !$credential->password) {
             Log::debug('KelinMeter credentials is not registered yet.');
 
             return;

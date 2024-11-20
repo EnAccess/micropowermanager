@@ -39,7 +39,7 @@ class DataSynchronizer extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 
@@ -53,18 +53,18 @@ class DataSynchronizer extends AbstractSharedCommand
         try {
             $this->syncSettingService->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
-                if (! $syncAction) {
+                if (!$syncAction) {
                     return true;
                 }
                 if ($syncAction->attempts >= $syncSetting->max_attempts) {
                     $nextSync = Carbon::parse($syncAction->next_sync)->addHours(2);
                     $syncAction->next_sync = $nextSync;
                     $cluster = $this->cluster->newQuery()->with('manager')->first();
-                    if (! $cluster) {
+                    if (!$cluster) {
                         return true;
                     }
                     $adminAddress = $this->address->whereHasMorph('owner', [$cluster->manager])->first();
-                    if (! $adminAddress) {
+                    if (!$adminAddress) {
                         return true;
                     }
                     $data = [

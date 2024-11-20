@@ -58,7 +58,7 @@ class SolarHomeSystemSeeder extends Seeder
             ->create();
 
         // Create not-yet-sold SHS such that we can "sell" them in the Demo
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')
                 ->for(Manufacturer::where('type', 'shs')->get()->random())

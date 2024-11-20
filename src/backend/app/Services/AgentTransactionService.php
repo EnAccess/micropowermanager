@@ -54,7 +54,7 @@ class AgentTransactionService implements IBaseService
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->get()->pluck('device_serial');
 
-        if (! $customerDeviceSerials->count()) {
+        if (!$customerDeviceSerials->count()) {
             return null;
         }
 

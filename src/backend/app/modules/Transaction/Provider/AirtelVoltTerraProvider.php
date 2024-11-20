@@ -76,17 +76,17 @@ class AirtelVoltTerraProvider implements ITransactionProvider
 
         $meterModel = new Meter();
 
-        if (! $meter = $meterModel->findBySerialNumber($meterSerial)) {
+        if (!$meter = $meterModel->findBySerialNumber($meterSerial)) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
-        if (! $meterTariff = $meter->meterParameter->tariff) {
+        if (!$meterTariff = $meter->meterParameter->tariff) {
             throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 
         $customerId = $meter->MeterParameter->owner_id;
 
-        if (! $customerId) {
+        if (!$customerId) {
             throw new ModelNotFoundException('Customer not found with meter serial number you entered');
         }
         $minimumPurchaseAmount = $meterTariff->minimum_purchase_amount ?? 0;

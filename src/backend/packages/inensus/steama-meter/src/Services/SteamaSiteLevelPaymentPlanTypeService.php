@@ -26,7 +26,7 @@ class SteamaSiteLevelPaymentPlanTypeService
         ];
         foreach ($paymentPlans as $value) {
             $paymentPlanType = $this->paymentPlanType->newQuery()->where('name', $value)->first();
-            if (! $paymentPlanType) {
+            if (!$paymentPlanType) {
                 $this->paymentPlanType->newQuery()->create([
                     'name' => $value,
                 ]);

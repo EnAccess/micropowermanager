@@ -35,7 +35,7 @@ class PersonService implements IBaseService
 
     public function getDetails(int $personID, bool $allRelations = false)
     {
-        if (! $allRelations) {
+        if (!$allRelations) {
             return $this->getById($personID);
         }
 
@@ -54,8 +54,9 @@ class PersonService implements IBaseService
     }
 
     /**
-     * @param  string  $searchTerm  could either phone, name or surname
-     * @param  Request|array|int|string  $paginate
+     * @param string                   $searchTerm could either phone, name or surname
+     * @param Request|array|int|string $paginate
+     *
      * @return Builder[]|Collection|LengthAwarePaginator
      *
      * @psalm-return Collection|LengthAwarePaginator|array<array-key, Builder>

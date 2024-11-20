@@ -4,10 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration {
     public function up()
     {
-        if (! Schema::hasTable('swifta_transactions')) {
+        if (!Schema::hasTable('swifta_transactions')) {
             Schema::connection('shard')->create('swifta_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('transaction_reference')->nullable();
@@ -20,7 +20,7 @@ return new class () extends Migration {
                 $table->timestamps();
             });
         }
-        if (! Schema::hasTable('swifta_authentication')) {
+        if (!Schema::hasTable('swifta_authentication')) {
             Schema::connection('shard')->create('swifta_authentication', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('token')->nullable();

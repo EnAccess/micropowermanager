@@ -25,7 +25,6 @@ class CalinReadMeter implements IMeterReader
     /**
      * CalinReadMeter constructor.
      *
-     *
      * @throws \SoapFault
      */
     public function __construct(MeterConsumption $consumption)
@@ -38,8 +37,9 @@ class CalinReadMeter implements IMeterReader
     }
 
     /**
-     * @param  string  $meterId  serial number of the meter
-     * @param  string  $date  y-m-d format date
+     * @param string $meterId serial number of the meter
+     * @param string $date    y-m-d format date
+     *
      * @return mixed
      */
     public function readDailyData($meterId, $date)
@@ -59,7 +59,6 @@ class CalinReadMeter implements IMeterReader
     /**
      * Reads the total consumption of a meter.
      *
-     *
      * @return void
      */
     public function readMeter($meterId, $type)
@@ -69,14 +68,15 @@ class CalinReadMeter implements IMeterReader
     /**
      * Reads the data for a given meter list.
      *
-     * @param  int  $type  defines what to read from the remote api
-     * @param  array  $options
+     * @param int   $type    defines what to read from the remote api
+     * @param array $options
+     *
      * @return void
      */
     public function readBatch($meterList, $type, $options)
     {
         if ($type === self::READ_DAILY) {
-            if (! isset($options['date'])) {
+            if (!isset($options['date'])) {
                 throw new InvalidDateException('Date', 'date is not set. Send date within the options array');
             }
             foreach ($meterList as $meter) {
@@ -150,7 +150,8 @@ class CalinReadMeter implements IMeterReader
     }
 
     /**
-     * @param  string  $action
+     * @param string $action
+     *
      * @return array (\Illuminate\Config\Repository|float|mixed)[]
      */
     private function prepareDailyReq(string $meterId, string $year, string $month, string $day, $action = 'Read'): array

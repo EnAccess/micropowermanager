@@ -7,9 +7,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 
 /**
- * @property int $id
- * @property string $name
- * @property string $surname
+ * @property int        $id
+ * @property string     $name
+ * @property string     $surname
  * @property Collection $addresses
  */
 class SmsSearchResultResource extends JsonResource
@@ -17,7 +17,7 @@ class SmsSearchResultResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      */
     public function toArray($request): array
     {

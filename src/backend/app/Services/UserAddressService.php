@@ -38,7 +38,7 @@ class UserAddressService
         $user->name = $data['name'];
         $user->update();
         $address = $user->address()->first();
-        if (! $address) {
+        if (!$address) {
             $address = $this->address->newQuery()->create([
                 'email' => $user->email,
                 'phone' => $data['phone'],

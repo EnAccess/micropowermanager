@@ -37,7 +37,7 @@ class CheckPayments extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 

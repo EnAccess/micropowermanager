@@ -17,7 +17,7 @@ class ApiHelpers
     public function registerCalinMeterManufacturer()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'CalinMeterApi')->first();
-        if (! $api) {
+        if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Calin Meters',
                 'website' => 'http://www.calinmeter.com/',

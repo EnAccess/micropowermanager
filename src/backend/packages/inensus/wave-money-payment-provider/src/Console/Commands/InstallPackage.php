@@ -12,7 +12,7 @@ class InstallPackage extends Command
     protected $description = 'Install WaveMoneyPaymentProvider Package';
 
     public function __construct(
-        private WaveMoneyCredentialService $credentialService
+        private WaveMoneyCredentialService $credentialService,
     ) {
         parent::__construct();
     }

@@ -76,7 +76,7 @@ class UserDefaultDatabaseConnectionMiddleware
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
             $companyId = auth('agent_api')->payload()->get('companyId');
-            if (! is_numeric($companyId)) {
+            if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
         } elseif ($this->resolveThirdPartyApi($request->path())) {
@@ -87,7 +87,7 @@ class UserDefaultDatabaseConnectionMiddleware
         } else { // web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
 
-            if (! is_numeric($companyId)) {
+            if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
         }

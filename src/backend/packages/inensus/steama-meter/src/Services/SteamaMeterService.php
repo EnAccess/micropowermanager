@@ -197,7 +197,7 @@ class SteamaMeterService implements ISynchronizeService
 
                 $connectionType = $stmCustomer->userType->mpmConnectionType;
                 $connectionGroup = $this->connectionGroup->newQuery()->first();
-                if (! $connectionGroup) {
+                if (!$connectionGroup) {
                     $connectionGroup = $this->connectionGroup->newQuery()->create([
                         'name' => 'default',
                     ]);

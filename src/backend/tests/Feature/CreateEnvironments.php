@@ -192,7 +192,7 @@ trait CreateEnvironments
                 'manager_id' => $this->user->id,
             ]);
             $this->clusters[] = $cluster;
-            $clusterCount--;
+            --$clusterCount;
         }
 
         if (count($this->clusters) > 0) {
@@ -208,7 +208,7 @@ trait CreateEnvironments
                 'name' => $this->faker->unique()->companySuffix,
             ]);
             $this->miniGrids[] = $miniGrid;
-            $miniGridCount--;
+            --$miniGridCount;
         }
 
         if (count($this->miniGrids) > 0) {
@@ -226,7 +226,7 @@ trait CreateEnvironments
                 'cluster_id' => $this->getRandomIdFromList($this->clusters),
             ]);
             $this->cities[] = $city;
-            $cityCount--;
+            --$cityCount;
         }
 
         if (count($this->cities) > 0) {
@@ -292,7 +292,7 @@ trait CreateEnvironments
             ]);
             $address->owner()->associate($meterParameter)->save();
             $geographicalInformation->owner()->associate($meterParameter)->save();
-            $meterCunt--;
+            --$meterCunt;
         }
     }
 
@@ -347,9 +347,9 @@ trait CreateEnvironments
                     'connection_type_id' => $this->connectionType->id,
                     'connection_group_id' => $this->connectionGroup->id,
                 ]);
-                $meterCountPerMeterType--;
+                --$meterCountPerMeterType;
             }
-            $meterTypeCount--;
+            --$meterTypeCount;
         }
     }
 
@@ -368,7 +368,7 @@ trait CreateEnvironments
 
             $this->manufacturers[] = $manufacturer;
 
-            $manufacturerCount--;
+            --$manufacturerCount;
         }
         if (count($this->manufacturers) > 0) {
             $this->manufacturer = $this->manufacturers[0];
@@ -390,7 +390,7 @@ trait CreateEnvironments
                 ]);
             }
 
-            $meterTariffCount--;
+            --$meterTariffCount;
         }
         if (count($this->meterTariffs) > 0) {
             $this->meterTariff = $this->meterTariffs[0];
@@ -411,12 +411,12 @@ trait CreateEnvironments
                     ]);
                 $this->subConnectionTypes[] = $subConnectionType;
 
-                $subConnectionTypeCount--;
+                --$subConnectionTypeCount;
             }
             if (count($this->subConnectionTypes) > 0) {
                 $this->subConnectionType = $this->subConnectionTypes[0];
             }
-            $connectionTypeCount--;
+            --$connectionTypeCount;
         }
         if (count($this->connectonTypes) > 0) {
             $this->connectionType = $this->connectonTypes[0];
@@ -428,7 +428,7 @@ trait CreateEnvironments
         while ($connectionGroupCount > 0) {
             $connectionGroup = ConnectionGroupFactory::new()->create();
             $this->connectionGroups[] = $connectionGroup;
-            $connectionGroupCount--;
+            --$connectionGroupCount;
         }
         if (count($this->connectionGroups) > 0) {
             $this->connectionGroup = $this->connectionGroups[0];
@@ -441,7 +441,7 @@ trait CreateEnvironments
             $meterType = MeterTypeFactory::new()->create();
             $this->meterTypes[] = $meterType;
 
-            $meterTypeCount--;
+            --$meterTypeCount;
         }
 
         if (count($this->meterTypes) > 0) {
@@ -483,7 +483,7 @@ trait CreateEnvironments
             $address->owner()->associate($meterParameter)->save();
             $geographicalInformation->owner()->associate($meterParameter)->save();
 
-            $meterCount--;
+            --$meterCount;
         }
     }
 
@@ -492,7 +492,7 @@ trait CreateEnvironments
         while ($targetCount > 0) {
             $target = TargetFactory::new()->create();
             $this->targets[] = $target;
-            $targetCount--;
+            --$targetCount;
         }
         if (count($this->targets) > 0) {
             $this->target = $this->targets[0];
@@ -507,7 +507,7 @@ trait CreateEnvironments
                 'connection_id' => $this->getRandomIdFromList($this->connectionGroups),
             ]);
             $this->subTargets[] = $subTarget;
-            $subTargetCount--;
+            --$subTargetCount;
         }
         if (count($this->subTargets) > 0) {
             $this->subTarget = $this->subTargets[0];
@@ -530,7 +530,7 @@ trait CreateEnvironments
             $address->owner()->associate($person)->save();
             $address->save();
 
-            $personCount--;
+            --$personCount;
         }
         if (count($this->people) > 0) {
             $this->person = $this->people[0];
@@ -562,7 +562,7 @@ trait CreateEnvironments
             $agentCommission = AgentCommissionFactory::new()->create();
             $this->agentCommissions[] = $agentCommission;
 
-            $agentCommissionCount--;
+            --$agentCommissionCount;
         }
         if (count($this->agentCommissions) > 0) {
             $this->agentCommission = $this->agentCommissions[0];
@@ -575,7 +575,7 @@ trait CreateEnvironments
             $assetType = AssetTypeFactory::new()->create();
             $this->assetTypes[] = $assetType;
 
-            $assetTypeCount--;
+            --$assetTypeCount;
         }
         if (count($this->assetTypes) > 0) {
             $this->assetType = $this->assetTypes[0];
@@ -594,7 +594,7 @@ trait CreateEnvironments
             ]);
             $this->assignedAppliances[] = $assignedAppliance;
 
-            $applianceCount--;
+            --$applianceCount;
         }
         if (count($this->assignedAppliances) > 0) {
             $this->assignedAppliance = $this->assignedAppliances[0];
@@ -624,7 +624,7 @@ trait CreateEnvironments
                 'creator_id' => $assignedAppliance->agent_id,
             ]);
 
-            $soldApplianceCount--;
+            --$soldApplianceCount;
         }
         if (count($this->soldAppliances) > 0) {
             $this->soldAppliance = $this->soldAppliances[0];
@@ -642,7 +642,7 @@ trait CreateEnvironments
             ]);
             $this->agentReceipts[] = $agentReceipt;
 
-            $agentReceiptCount--;
+            --$agentReceiptCount;
         }
         if (count($this->agentReceipts) > 0) {
             $this->agentReceipt = $this->agentReceipts[0];
@@ -663,7 +663,7 @@ trait CreateEnvironments
             ]);
             $this->agentBalanceHistories[] = $agentBalanceHistory;
 
-            $agentBalanceHistoryCount--;
+            --$agentBalanceHistoryCount;
         }
         if (count($this->agentBalanceHistories) > 0) {
             $this->agentBalanceHistory = $this->agentBalanceHistories[0];
@@ -681,7 +681,7 @@ trait CreateEnvironments
                 'message' => $meter->serial_number,
             ]);
 
-            if (! $agentId) {
+            if (!$agentId) {
                 $agentId = $this->getRandomIdFromList($this->agents);
             }
 
@@ -743,7 +743,7 @@ trait CreateEnvironments
             ]);
             $this->agentBalanceHistories[] = $agentBalanceHistory;
 
-            $agentTransactionCount--;
+            --$agentTransactionCount;
         }
         if (count($this->agentTransactions) > 0) {
             $this->agentTransaction = $this->agentTransactions[0];
@@ -766,7 +766,7 @@ trait CreateEnvironments
                 'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
             ]);
 
-            if (! $agentId) {
+            if (!$agentId) {
                 $agentId = $this->getRandomIdFromList($this->agents);
             }
 
@@ -785,7 +785,7 @@ trait CreateEnvironments
             ]);
             $this->agentBalanceHistories[] = $agentBalanceHistory;
 
-            $paymentHistoryCount--;
+            --$paymentHistoryCount;
         }
         if (count($this->paymentHistories) > 0) {
             $this->paymentHistory = $this->paymentHistories[0];
@@ -798,7 +798,7 @@ trait CreateEnvironments
             $ticketCategory = TicketCategoryFactory::new()->create();
             $this->ticketCategories[] = $ticketCategory;
 
-            $ticketCategoryCount--;
+            --$ticketCategoryCount;
         }
         if (count($this->ticketCategories) > 0) {
             $this->ticketCategory = $this->ticketCategories[0];
@@ -831,7 +831,7 @@ trait CreateEnvironments
             ]);
             $this->tickets[] = $ticket;
 
-            $ticketCount--;
+            --$ticketCount;
         }
         if (count($this->tickets) > 0) {
             $this->ticket = $this->tickets[0];
@@ -868,7 +868,7 @@ trait CreateEnvironments
             ]);
             $this->ticketUsers[] = $ticketUser;
 
-            $ticketUserCount--;
+            --$ticketUserCount;
         }
         if (count($this->ticketUsers) > 0) {
             $this->ticketUser = $this->ticketUsers[0];

@@ -18,7 +18,6 @@ class AgentCustomerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     *
      * @return ApiResource
      */
     public function index(Request $request)

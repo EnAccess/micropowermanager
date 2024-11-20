@@ -57,7 +57,7 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->agentTransaction->update(['status' => $requestType === true ? 1 : -1]);
         $agent = $this->agentTransaction->agent;
 
-        if (! $requestType) {
+        if (!$requestType) {
             $body = $this->prepareBodyFail($transaction);
             $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
 

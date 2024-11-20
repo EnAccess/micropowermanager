@@ -24,7 +24,7 @@ class ProcessPayment extends AbstractJob
     /**
      * Create a new job instance.
      *
-     * @param  int  $transaction_id
+     * @param int $transaction_id
      */
     public function __construct(int $transactionId)
     {

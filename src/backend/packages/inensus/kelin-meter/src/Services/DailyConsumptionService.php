@@ -67,7 +67,7 @@ class DailyConsumptionService
                         'reverted_reactive_total_daily_power' => $data['dlFw'],
                     ]);
                 });
-                $pageNo++;
+                ++$pageNo;
             } catch (\Exception $exception) {
                 Log::error('Failed on daily data request .', ['message' => $exception->getMessage()]);
                 $result['dataCount'] = 0;

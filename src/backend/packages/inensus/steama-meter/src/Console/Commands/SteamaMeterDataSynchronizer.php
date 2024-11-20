@@ -73,7 +73,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
 
     public function handle(): void
     {
-        if (! $this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
 
@@ -87,7 +87,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
         try {
             $this->steamaSyncSettingservice->getSyncSettings()->each(function ($syncSetting) use ($syncActions) {
                 $syncAction = $syncActions->where('sync_setting_id', $syncSetting->id)->first();
-                if (! $syncAction) {
+                if (!$syncAction) {
                     return true;
                 }
                 if ($syncAction->attempts >= $syncSetting->max_attempts) {
@@ -95,7 +95,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                     $syncAction->next_sync = $nextSync;
                     $syncAction->save();
                     $cluster = $this->cluster->newQuery()->with('manager')->first();
-                    if (! $cluster) {
+                    if (!$cluster) {
                         return true;
                     }
                     $adminId = $cluster->manager->id;
@@ -106,7 +106,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                             $q->where('id', $adminId);
                         }
                     )->first();
-                    if (! $adminAddress) {
+                    if (!$adminAddress) {
                         return true;
                     }
                     $data = [

@@ -17,7 +17,7 @@ class ApiHelpers
     public function registerStronMeterManufacturer()
     {
         $api = $this->manufacturer->newQuery()->where('api_name', 'StronMeterApi')->first();
-        if (! $api) {
+        if (!$api) {
             $this->manufacturer->newQuery()->create([
                 'name' => 'Stron Meters',
                 'website' => 'http://www.stronsmart.com/',
