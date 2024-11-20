@@ -247,7 +247,11 @@ export default {
             icon: deviceMarkerIcon,
           })
           deviceMarker.bindTooltip(
-            "<strong>Device:</strong> " + markingInfo.serialNumber,
+            "<strong>Device:</strong> " +
+              markingInfo.serialNumber +
+              "<br>" +
+              "<strong>Type:</strong> " +
+              markingInfo.deviceType,
             { sticky: true, offset: [10, 10] },
           )
 
@@ -343,12 +347,13 @@ export default {
         }
         const lat = parseFloat(points[0])
         const lon = parseFloat(points[1])
+
         let markerType = ""
         switch (device.device_type) {
           case "e_bike":
             markerType = MARKER_TYPE.E_BIKE
             break
-          case "shs":
+          case "solar_home_system":
             markerType = MARKER_TYPE.SHS
             break
           default:
