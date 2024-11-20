@@ -148,9 +148,12 @@ class MeterSeeder extends Seeder
                         ->has(
                             GeographicalInformation::factory()
                                 ->state(function (array $attributes, Address $address) {
-                                    return ['points' => $address->city->location->points];
+                                    /** @var Device $device */
+                                    $device = $address->owner()->first();
+
+                                    return ['points' => $device->person->addresses->first()->geo->points];
                                 })
-                                ->randomizePoints(),
+                                ->randomizePointsInHousehold(),
                             'geo'
                         )
                 )
