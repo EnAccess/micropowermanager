@@ -12,7 +12,6 @@ Route::group(['prefix' => 'meters'], function () {
     Route::delete('/{meterId}', 'MeterController@destroy');
     Route::get('/{meterId}/all', 'MeterController@allRelations');
     Route::put('/', 'MeterGeographicalInformationController@update');
-    Route::put('/{serialNumber}/parameters', 'MeterParameterController@update');
     Route::get('/{serialNumber}/transactions', 'MeterPaymentHistoryController@show');
     Route::get('/{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
     Route::get('/{serialNumber}/revenue', 'MeterRevenueController@show');
