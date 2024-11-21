@@ -65,13 +65,6 @@ return [
         'password_vend' => env('CALIN_SMART_PASSWORD_VENT'),
     ],
     'sms' => [
-        'bongo' => [
-            'url' => 'http://www.bongolive.co.tz/api/sendSMS.php',
-            'sender' => 'SENDER_NUMBER',
-            'username' => 'USER NAME',
-            'password' => 'PASSWORD',
-            'key' => 'KEY',
-        ],
         'android' => [
             'url' => 'https://fcm.googleapis.com/fcm/send',
             'key' => 'AAAARAca1HM:APA91bHTTU2ksDRKWf7O7zsN5KZebDHVdnM_GeTAmFWtZp3R4__n0g8b3s9Vu7hWEEBfYpOq5_CmMMfJlLmW5FjNatp__4G3m1Mim7fRp-3CFs2ByKnvzXC8X9V1kxKZuBT_UK_bmQYO',

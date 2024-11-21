@@ -191,5 +191,4 @@ return [
 
 There are currently two supported SMS-Gateways.
 
-1. Bongo Live Tanzania
-2. Inhouse SMS-Gateway Application
+1. Inhouse SMS-Gateway Application
