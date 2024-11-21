@@ -34,7 +34,7 @@
     "beyondcode/laravel-dump-server": "^1.8",
     "filp/whoops": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.64",
-    "fzaninotto/faker": "^1.9.1",
+    "knuckleswtf/scribe": "^4.38",
     "larastan/larastan": "^2.0",
     "mockery/mockery": "^1.0",
     "nunomaduro/collision": "^6.1",
