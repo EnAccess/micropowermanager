@@ -75,7 +75,11 @@ docker exec -it backend-dev bash
 php artisan scribe:generate
 ```
 
-The output will be generated at [OpenAPI docs](http://localhost:8000/docs/).
+Run (from the host)
+
+```sh
+cp -r src/backend/storage/framework/cache/scribe/ docs/.public/openapi/
+```
 
 ## Further Read
 
