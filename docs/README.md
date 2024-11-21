@@ -64,6 +64,19 @@ docs/development/images/schema_central_database.png
 docs/development/images/schema_central_database.png
 ```
 
+## Generate OpenAPI docs
+
+Currently, OpenAPI docs generation is a (semi-)manual process.
+
+Assumping you have a local development setup running, run
+
+```sh
+docker exec -it backend-dev bash
+php artisan scribe:generate
+```
+
+The output will be generated at [OpenAPI docs](http://localhost:8000/docs/).
+
 ## Further Read
 
 - [Markdown Features](https://vitepress.dev/guide/markdown)
