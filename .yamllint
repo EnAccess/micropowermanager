@@ -1,6 +1,8 @@
 extends: default
 
-ignore-from-file: .gitignore
+ignore-from-file:
+  - .yamllintignore
+  - .gitignore
 
 rules:
   document-start: disable
