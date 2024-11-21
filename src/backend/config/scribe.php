@@ -4,14 +4,29 @@ use Knuckles\Scribe\Extracting\Strategies;
 
 return [
     // The HTML <title> for the generated documentation. If this is empty, Scribe will infer it from config('app.name').
-    'title' => null,
+    'title' => 'MicroPowerManager API docs',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => '',
+    'description' => <<<DESC
+
+![MPM Logo](https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png)
+
+<p align="center">
+    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>
+</p>
+
+---
+
+# 💫 Overview
+This documentation will provide all the information you need to work with our API.
+
+As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
+You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).
+DESC,
 
     // The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url') at generation time.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
-    'base_url' => null,
+    'base_url' => 'https://backend-demo.micropowermanager.io',
 
     'routes' => [
         [
@@ -44,7 +59,7 @@ return [
     // - "laravel" will generate the documentation as a Blade view, so you can add routing and authentication.
     // - "external_static" and "external_laravel" do the same as above, but generate a basic template,
     // passing the OpenAPI spec as a URL, allowing you to easily use the docs with an external generator
-    'type' => 'static',
+    'type' => 'external_static',
 
     // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
     'theme' => 'elements',
@@ -52,7 +67,7 @@ return [
     'static' => [
         // HTML documentation, assets and Postman collection will be generated to this folder.
         // Source Markdown will still be in resources/docs.
-        'output_path' => 'public/docs',
+        'output_path' => 'storage/framework/cache/scribe',
     ],
 
     'laravel' => [
@@ -96,7 +111,7 @@ return [
     // How is your API authenticated? This information will be used in the displayed docs, generated examples and response calls.
     'auth' => [
         // Set this to true if ANY endpoints in your API use authentication.
-        'enabled' => false,
+        'enabled' => true,
 
         // Set this to true if your API should be authenticated by default. If so, you must also set `enabled` (above) to true.
         // You can then use @unauthenticated or @authenticated on individual endpoints to change their status from the default.
