@@ -46,4 +46,4 @@ check the [Laravel documentation](https://laravel.com/docs/9.x/structure).
 ## API docs
 
 <!-- prettier-ignore -->
-OpenAPI documentation for MPM can be found here: [OpenAPI docs](http://localhost:5173/openapi/index.html){target="_self"}
+OpenAPI documentation for MPM can be found here: [OpenAPI docs](/openapi/index.html){target="_self"}
