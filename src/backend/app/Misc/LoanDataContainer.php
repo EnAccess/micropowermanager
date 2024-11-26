@@ -2,7 +2,6 @@
 
 namespace App\Misc;
 
-use App\Exceptions\MeterParameter\MeterParameterNotFound;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
 use App\Models\AssetPerson;
@@ -29,7 +28,7 @@ class LoanDataContainer
     public function loanCost()
     {
         if (!$this->meterOwner) {
-            throw new MeterParameterNotFound('loan data container');
+            throw new \Exception('loan data container');
         }
         $loans = $this->getCustomerDueRates($this->meterOwner);
 
