@@ -4,10 +4,8 @@ namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class KelinSettingResource extends JsonResource
-{
-    public function toArray($request)
-    {
+class KelinSettingResource extends JsonResource {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'setting',

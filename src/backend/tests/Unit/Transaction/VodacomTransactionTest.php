@@ -11,16 +11,14 @@ use Illuminate\Support\Facades\URL;
 use MPM\Transaction\Provider\VodacomTransactionProvider;
 use Tests\TestCase;
 
-class VodacomTransactionTest extends TestCase
-{
+class VodacomTransactionTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
     /**
      * @var Response
      */
-    public function testTransactionSentFromUnknownIpAddress(): void
-    {
+    public function testTransactionSentFromUnknownIpAddress(): void {
         $request = Request::create(
             URL::route('vodacomTransaction'),
             'POST',
@@ -36,8 +34,7 @@ class VodacomTransactionTest extends TestCase
         self::assertEquals(401, $response->status());
     }
 
-    public function testTransactionSentFromWhiteListedIpAddress(): void
-    {
+    public function testTransactionSentFromWhiteListedIpAddress(): void {
         $request = Request::create(
             URL::route('vodacomTransaction'),
             'POST',

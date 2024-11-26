@@ -12,6 +12,4 @@ use App\Models\Base\BaseModel;
  * @property float $latitude
  * @property float $longitude
  */
-class MapSettings extends BaseModel
-{
-}
+class MapSettings extends BaseModel {}

@@ -8,22 +8,18 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Models\SmSmsFeedbackWord;
 use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
 
-class SmSmsFeedbackController extends Controller
-{
+class SmSmsFeedbackController extends Controller {
     private $smsFeedbackWorkService;
 
-    public function __construct(SmSmsFeedbackWordService $smsFeedbackWordService)
-    {
+    public function __construct(SmSmsFeedbackWordService $smsFeedbackWordService) {
         $this->smsFeedbackWorkService = $smsFeedbackWordService;
     }
 
-    public function index(): SparkResource
-    {
+    public function index(): SparkResource {
         return new SparkResource($this->smsFeedbackWorkService->getSmsFeedbackWords());
     }
 
-    public function update(SmSmsFeedbackWord $smsFeedbackWord, Request $request): SparkResource
-    {
+    public function update(SmSmsFeedbackWord $smsFeedbackWord, Request $request): SparkResource {
         return new SparkResource($this->smsFeedbackWorkService->updateSmsFeedbackWord($smsFeedbackWord, $request->all()));
     }
 }

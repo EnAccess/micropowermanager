@@ -2,6 +2,4 @@
 
 namespace Inensus\CalinSmartMeter\Exceptions;
 
-class CalinSmartApiResponseException extends \Exception
-{
-}
+class CalinSmartApiResponseException extends \Exception {}

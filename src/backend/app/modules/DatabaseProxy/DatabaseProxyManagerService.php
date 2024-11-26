@@ -10,40 +10,33 @@ use App\Utils\DummyCompany;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 
-class DatabaseProxyManagerService
-{
+class DatabaseProxyManagerService {
     public function __construct(
         private DatabaseProxy $databaseProxy,
         private DatabaseManager $databaseManager,
         private CompanyDatabase $companyDatabase,
-    ) {
-    }
+    ) {}
 
-    public function findByEmail(string $email): DatabaseProxy
-    {
+    public function findByEmail(string $email): DatabaseProxy {
         return $this->databaseProxy->findByEmail($email);
     }
 
-    public function runForCompany(int $companyId, callable $callable)
-    {
+    public function runForCompany(int $companyId, callable $callable) {
         $database = $this->companyDatabase->findByCompanyId($companyId);
         $this->buildDatabaseConnection($database->getDatabaseName());
 
         return $callable();
     }
 
-    public function queryAllConnections(): Builder
-    {
+    public function queryAllConnections(): Builder {
         return $this->companyDatabase->newQuery();
     }
 
-    public function buildDatabaseConnectionDummyCompany(): void
-    {
+    public function buildDatabaseConnectionDummyCompany(): void {
         $this->buildDatabaseConnection(DummyCompany::DUMMY_COMPANY_DATABASE_NAME);
     }
 
-    private function buildDatabaseConnection(string $databaseName): void
-    {
+    private function buildDatabaseConnection(string $databaseName): void {
         $databaseConnections = config()->get('database.connections');
         $databaseConnections['shard'] = [
             'driver' => 'mysql',

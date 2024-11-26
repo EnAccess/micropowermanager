@@ -8,14 +8,10 @@ use GuzzleHttp\Client;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Exceptions\ApiRequestFailedException;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources\AbstractApiResource;
 
-abstract class AbstractApi
-{
-    public function __construct(private Client $client)
-    {
-    }
+abstract class AbstractApi {
+    public function __construct(private Client $client) {}
 
-    public function doRequest(AbstractApiResource $resource): AbstractApiResource
-    {
+    public function doRequest(AbstractApiResource $resource): AbstractApiResource {
         if ($resource->getRequestMethod() === RequestMethod::POST) {
             $response = $this->client->post($resource->getPaymentUri(), [
                 'form_params' => $resource->getBodyData(),

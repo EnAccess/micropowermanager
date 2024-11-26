@@ -13,19 +13,16 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinTransaction;
 
-class KelinMeterApi implements IManufacturerAPI
-{
+class KelinMeterApi implements IManufacturerAPI {
     private $rootUrl = '/recharge';
 
     public function __construct(
         private KelinMeter $kelinMeter,
         private KelinTransaction $kelinTransaction,
         private KelinMeterApiClient $kelinApi,
-    ) {
-    }
+    ) {}
 
-    public function chargeDevice($transactionContainer): array
-    {
+    public function chargeDevice($transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -114,7 +111,5 @@ class KelinMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
-    }
+    public function clearDevice(Device $device) {}
 }

@@ -6,20 +6,17 @@ use App\Http\Resources\ApiResource;
 use App\Models\Report;
 use Illuminate\Http\Request;
 
-class ReportController
-{
+class ReportController {
     /**
      * @var Report
      */
     private $report;
 
-    public function __construct(Report $report)
-    {
+    public function __construct(Report $report) {
         $this->report = $report;
     }
 
-    public function download($id)
-    {
+    public function download($id) {
         if (!$id) {
             return;
         }
@@ -28,8 +25,7 @@ class ReportController
         return response()->download(explode('*', $report->path)[0]);
     }
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $type = $request->get('type');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
@@ -43,19 +39,16 @@ class ReportController
         return new ApiResource($reports);
     }
 
-    private function getWeeklyReports($startDate, $endDate)
-    {
+    private function getWeeklyReports($startDate, $endDate) {
         return $this->report->where('type', 'weekly')->paginate(15);
     }
 
-    private function getMonthlyReports($startDate, $endDate)
-    {
+    private function getMonthlyReports($startDate, $endDate) {
         return $this->report->where('type', 'monthly')
             ->paginate(15);
     }
 
-    private function getAllReports($startDate, $endDate)
-    {
+    private function getAllReports($startDate, $endDate) {
         return $this->report->paginate(15);
     }
 }

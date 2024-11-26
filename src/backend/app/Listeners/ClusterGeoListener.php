@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 
-class ClusterGeoListener
-{
+class ClusterGeoListener {
     /**
      * Handle the event.
      */
-    public function handle(ClusterEvent $event): void
-    {
+    public function handle(ClusterEvent $event): void {
         $cluster = $event->cluster;
         $type = $event->type;
         if ($type === 'external') {
@@ -45,8 +43,7 @@ class ClusterGeoListener
     /**
      * Creates a json file which has the same name as the cluster.
      */
-    private function storeData(Cluster $cluster, $data): void
-    {
+    private function storeData(Cluster $cluster, $data): void {
         Storage::disk('local')->put($cluster->name.'.json', json_encode($data));
     }
 
@@ -59,8 +56,7 @@ class ClusterGeoListener
      *
      * @psalm-return list<array{0: mixed, 1: mixed}>
      */
-    public function reformatExternalData($data): array
-    {
+    public function reformatExternalData($data): array {
         $formatted = [];
         if (is_array($data) && !array_key_exists('geojson', $data)) {
             $data = $data[0];

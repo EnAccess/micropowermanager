@@ -9,8 +9,7 @@ use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 
-class SteamaMeterReadingService
-{
+class SteamaMeterReadingService {
     private $steamaMeter;
 
     private $steamaApi;
@@ -27,8 +26,7 @@ class SteamaMeterReadingService
         $this->meterConsumtion = $meterConsumption;
     }
 
-    public function getMeterReadingsThroughHourlyWorkingJob()
-    {
+    public function getMeterReadingsThroughHourlyWorkingJob() {
         $now = Carbon::now()->toIso8601ZuluString();
         $oneHourEarlier = Carbon::now()->subHours(10)->toIso8601ZuluString();
         $this->steamaMeter->newQuery()->get()->each(function ($meter) use ($now, $oneHourEarlier) {

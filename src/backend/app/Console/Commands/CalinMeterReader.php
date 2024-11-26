@@ -9,17 +9,14 @@ use App\Models\Meter\Meter;
  * Reads the daily consumptions of meters
  * Class CalinMeterReader.
  */
-class CalinMeterReader extends AbstractSharedCommand
-{
+class CalinMeterReader extends AbstractSharedCommand {
     protected $signature = 'calinMeters:readOnline';
 
-    public function __construct(private Meter $meter, private CalinReadMeter $calinReadMeter)
-    {
+    public function __construct(private Meter $meter, private CalinReadMeter $calinReadMeter) {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         $meters = $this->meter::whereHas(
             'meterType',
             function ($q) {

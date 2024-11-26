@@ -8,8 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AssetPersonCreated
-{
+class AssetPersonCreated {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
@@ -19,16 +18,14 @@ class AssetPersonCreated
      */
     private $assetPerson;
 
-    public function __construct(AssetPerson $assetPerson)
-    {
+    public function __construct(AssetPerson $assetPerson) {
         $this->assetPerson = $assetPerson;
     }
 
     /**
      * Get the channels the event should broadcast on.
      */
-    public function broadcastOn(): PrivateChannel
-    {
+    public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('assetPerson.created');
     }
 }

@@ -11,8 +11,7 @@ use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
 use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
-class SmsListener
-{
+class SmsListener {
     private $smsFeedbackWordService;
 
     private $customerService;
@@ -33,8 +32,7 @@ class SmsListener
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message)
-    {
+    public function onSmsStored($sender, $message) {
         $sparkCustomer = $this->customerService->getSparkCustomerWithPhone($sender);
         if (!$sparkCustomer) {
             return;
@@ -72,8 +70,7 @@ class SmsListener
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen('sms.stored', 'Inensus\SparkMeter\Listeners\SmsListener@onSmsStored');
     }
 }

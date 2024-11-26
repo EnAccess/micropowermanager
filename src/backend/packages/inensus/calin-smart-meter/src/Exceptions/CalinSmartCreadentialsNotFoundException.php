@@ -2,6 +2,4 @@
 
 namespace Inensus\CalinSmartMeter\Exceptions;
 
-class CalinSmartCreadentialsNotFoundException extends \Exception
-{
-}
+class CalinSmartCreadentialsNotFoundException extends \Exception {}

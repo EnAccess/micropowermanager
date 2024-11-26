@@ -9,8 +9,7 @@ use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Helpers\ApiHelpers;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
-class SteamaMeterApiClient
-{
+class SteamaMeterApiClient {
     private $client;
 
     private $apiHelpers;
@@ -27,8 +26,7 @@ class SteamaMeterApiClient
         $this->credential = $credentialModel;
     }
 
-    public function get($url)
-    {
+    public function get($url) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -51,8 +49,7 @@ class SteamaMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function token($url, $postParams)
-    {
+    public function token($url, $postParams) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -75,8 +72,7 @@ class SteamaMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function post($url, $postParams)
-    {
+    public function post($url, $postParams) {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
@@ -100,8 +96,7 @@ class SteamaMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function put($url, $putParams)
-    {
+    public function put($url, $putParams) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -126,8 +121,7 @@ class SteamaMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function patch($url, $putParams)
-    {
+    public function patch($url, $putParams) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -151,8 +145,7 @@ class SteamaMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getByParams($url, $params)
-    {
+    public function getByParams($url, $params) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -181,8 +174,7 @@ class SteamaMeterApiClient
         return json_decode((string) $request->getBody(), true);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

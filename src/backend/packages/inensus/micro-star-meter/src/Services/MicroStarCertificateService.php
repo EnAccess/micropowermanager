@@ -6,10 +6,8 @@ use App\Services\UserService;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class MicroStarCertificateService
-{
-    public function upload($request, $credentials)
-    {
+class MicroStarCertificateService {
+    public function upload($request, $credentials) {
         $file = $request->file('cert');
         $companyId = app()->make(UserService::class)->getCompanyId();
 
@@ -28,8 +26,7 @@ class MicroStarCertificateService
         return $credentials;
     }
 
-    public function getUploadedCertificate($credentials)
-    {
+    public function getUploadedCertificate($credentials) {
         if (!$credentials->certificate_path || !$credentials->certificate_file_name) {
             return '';
         }

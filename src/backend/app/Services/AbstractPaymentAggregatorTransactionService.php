@@ -13,8 +13,7 @@ use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 
-abstract class AbstractPaymentAggregatorTransactionService
-{
+abstract class AbstractPaymentAggregatorTransactionService {
     private const MINIMUM_TRANSACTION_AMOUNT = 0;
 
     protected string $payerPhoneNumber;
@@ -33,11 +32,9 @@ abstract class AbstractPaymentAggregatorTransactionService
         private Transaction $transaction,
         private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
-    ) {
-    }
+    ) {}
 
-    public function validatePaymentOwner(string $meterSerialNumber, float $amount): void
-    {
+    public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
         if (!$meter = $this->meter->findBySerialNumber($meterSerialNumber)) {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
@@ -68,8 +65,7 @@ abstract class AbstractPaymentAggregatorTransactionService
      * @throws TransactionIsInvalidForProcessingIncomingRequestException
      * @throws TransactionAmountNotEnoughException
      */
-    public function imitateTransactionForValidation(array $transactionData)
-    {
+    public function imitateTransactionForValidation(array $transactionData) {
         $this->paymentAggregatorTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
@@ -82,14 +78,12 @@ abstract class AbstractPaymentAggregatorTransactionService
         $this->isImitationTransactionValid($this->transaction);
     }
 
-    public function saveTransaction()
-    {
+    public function saveTransaction() {
         $this->paymentAggregatorTransaction->save();
         $this->transaction->originalTransaction()->associate($this->paymentAggregatorTransaction)->save();
     }
 
-    private function isImitationTransactionValid($transaction)
-    {
+    private function isImitationTransactionValid($transaction) {
         try {
             $transactionData = TransactionDataContainer::initialize($transaction);
         } catch (\Exception $e) {
@@ -109,8 +103,7 @@ abstract class AbstractPaymentAggregatorTransactionService
         }
     }
 
-    private function getTransactionSender($meterSerialNumber)
-    {
+    private function getTransactionSender($meterSerialNumber) {
         $meterParameter = $this->meterParameter->newQuery()
             ->whereHas(
                 'meter',
@@ -136,28 +129,23 @@ abstract class AbstractPaymentAggregatorTransactionService
         }
     }
 
-    public function getCustomerId(): int
-    {
+    public function getCustomerId(): int {
         return $this->customerId;
     }
 
-    public function getMeterSerialNumber()
-    {
+    public function getMeterSerialNumber() {
         return $this->meterSerialNumber;
     }
 
-    public function getAmount()
-    {
+    public function getAmount() {
         return $this->amount;
     }
 
-    public function getMinimumPurchaseAmount()
-    {
+    public function getMinimumPurchaseAmount() {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): IRawTransaction
-    {
+    public function getPaymentAggregatorTransaction(): IRawTransaction {
         return $this->paymentAggregatorTransaction;
     }
 }

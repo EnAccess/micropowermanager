@@ -5,21 +5,18 @@ namespace App\Observers;
 use App\Models\Person\Person;
 use Illuminate\Support\Facades\Log;
 
-class PersonObserver
-{
+class PersonObserver {
     /**
      * Handle the Person "updated" event.
      */
-    public function updated(Person $person): void
-    {
+    public function updated(Person $person): void {
         Log::debug($person->id.'updated');
     }
 
     /**
      * Handle the User "deleted" event.
      */
-    public function deleted(Person $person): void
-    {
+    public function deleted(Person $person): void {
         // delete all associated roles
         $person->roleOwner()->get();
 

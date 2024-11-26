@@ -12,15 +12,13 @@ use Illuminate\Foundation\Http\FormRequest;
  * @bodyParam customer_id int required
  * @bodyParam geo_points string required
  */
-class MeterParameterRequest extends FormRequest
-{
+class MeterParameterRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -29,8 +27,7 @@ class MeterParameterRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'meter_id' => 'required',
             'tariff_id' => 'required',

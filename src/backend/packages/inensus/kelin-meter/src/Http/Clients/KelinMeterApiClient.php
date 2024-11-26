@@ -10,8 +10,7 @@ use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCredential;
 
-class KelinMeterApiClient
-{
+class KelinMeterApiClient {
     private $client;
 
     private $apiHelpers;
@@ -28,8 +27,7 @@ class KelinMeterApiClient
         $this->credential = $credential;
     }
 
-    public function token($url, $queryParams)
-    {
+    public function token($url, $queryParams) {
         try {
             $credential = $this->getCredentials();
         } catch (\Exception $e) {
@@ -47,8 +45,7 @@ class KelinMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
     }
 
-    public function get($url, $queryParams = null)
-    {
+    public function get($url, $queryParams = null) {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
@@ -71,8 +68,7 @@ class KelinMeterApiClient
         return $this->apiHelpers->checkApiResult(json_decode((string) $response->getBody(), true));
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

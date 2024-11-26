@@ -13,8 +13,7 @@ use Inensus\Ticket\Models\Ticket;
  * The reason to storing the actions, is to make a timeline.
  * Class WatcherController.
  */
-class WatcherController
-{
+class WatcherController {
     // TODO: fix for Saas.
 
     /**
@@ -30,13 +29,11 @@ class WatcherController
     /**
      * WatcherController constructor.
      */
-    public function __construct(Ticket $ticket)
-    {
+    public function __construct(Ticket $ticket) {
         $this->ticket = $ticket;
     }
 
-    public function store(): void
-    {
+    public function store(): void {
         // convert the json string
         $content = json_decode(request()->getContent(), true);
         if ($content === null) { // request body is not a valid json string.
@@ -62,8 +59,7 @@ class WatcherController
      *
      * @param string $type the request type
      */
-    private function filterRequest($type): bool
-    {
+    private function filterRequest($type): bool {
         return \in_array($type, self::INTERESTING_ACTIONS, false);
     }
 
@@ -73,13 +69,11 @@ class WatcherController
      *
      * @throws ModelNotFoundException
      */
-    private function ticketMatcher(string $ticketId): Ticket
-    {
+    private function ticketMatcher(string $ticketId): Ticket {
         return $this->ticket->where('ticket_id', $ticketId)->firstOrFail();
     }
 
-    private function fetchAndStore($type, $action): void
-    {
+    private function fetchAndStore($type, $action): void {
         $text = ''; // initialize text
         $ticketId = $action['data']['card']['id']; // the affected card.
         $actionType = null;

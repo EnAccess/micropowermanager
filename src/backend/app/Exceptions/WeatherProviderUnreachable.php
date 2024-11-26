@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class WeatherProviderUnreachable extends \Exception
-{
-}
+class WeatherProviderUnreachable extends \Exception {}

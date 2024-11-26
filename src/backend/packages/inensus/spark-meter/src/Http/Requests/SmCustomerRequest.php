@@ -4,15 +4,13 @@ namespace Inensus\SparkMeter\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SmCustomerRequest extends FormRequest
-{
+class SmCustomerRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -21,8 +19,7 @@ class SmCustomerRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'low_balance_limit' => 'required',
         ];

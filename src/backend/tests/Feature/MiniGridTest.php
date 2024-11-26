@@ -15,8 +15,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class MiniGridTest extends TestCase
-{
+class MiniGridTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -32,8 +31,7 @@ class MiniGridTest extends TestCase
 
     private $miniGridIds = [];
 
-    public function testUserGetsMiniGridList()
-    {
+    public function testUserGetsMiniGridList() {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -42,8 +40,7 @@ class MiniGridTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->miniGridIds));
     }
 
-    public function testUserGetsMiniGridById()
-    {
+    public function testUserGetsMiniGridById() {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -52,8 +49,7 @@ class MiniGridTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->miniGridIds[0]);
     }
 
-    public function testUserGetsMiniGridByIdWithGeographicalInformation()
-    {
+    public function testUserGetsMiniGridByIdWithGeographicalInformation() {
         $clusterCount = 1;
         $miniGridCount = 2;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -62,8 +58,7 @@ class MiniGridTest extends TestCase
         $this->assertEquals(array_key_exists('location', $response['data']), true);
     }
 
-    public function testUserCreatesNewMiniGrid()
-    {
+    public function testUserCreatesNewMiniGrid() {
         $clusterCount = 1;
         $miniGridCount = 0;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -81,8 +76,7 @@ class MiniGridTest extends TestCase
         $this->assertEquals(count(MiniGrid::query()->get()), 1);
     }
 
-    public function testUserUpdatesAMiniGrid()
-    {
+    public function testUserUpdatesAMiniGrid() {
         $clusterCount = 1;
         $miniGridCount = 1;
         $this->createTestData($clusterCount, $miniGridCount);
@@ -95,8 +89,7 @@ class MiniGridTest extends TestCase
         $this->assertEquals($response['data']['name'], $miGridData['name']);
     }
 
-    protected function createTestData($clusterCount = 1, $miniGridCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $miniGridCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
@@ -130,8 +123,7 @@ class MiniGridTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -139,8 +131,7 @@ class MiniGridTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
     }

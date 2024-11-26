@@ -11,16 +11,13 @@ use Inensus\Ticket\Models\TicketUser;
 /**
  * @implements IBaseService<TicketUser>
  */
-class TicketUserService implements IBaseService
-{
+class TicketUserService implements IBaseService {
     public function __construct(
         private TicketUser $ticketUser,
         private User $user,
-    ) {
-    }
+    ) {}
 
-    public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null, ?bool $outsource = null): Collection|LengthAwarePaginator {
         $ticketUsers = $this->user::with('relationTicketUser');
 
         if ($outsource) {
@@ -34,28 +31,23 @@ class TicketUserService implements IBaseService
         return $ticketUsers->get();
     }
 
-    public function getById(int $externId): TicketUser
-    {
+    public function getById(int $externId): TicketUser {
         return $this->ticketUser->newQuery()->where('extern_id', $externId)->first();
     }
 
-    public function create($ticketUserData): TicketUser
-    {
+    public function create($ticketUserData): TicketUser {
         return $this->ticketUser->newQuery()->create($ticketUserData);
     }
 
-    public function update($model, array $data): TicketUser
-    {
+    public function update($model, array $data): TicketUser {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function findByPhone(string $phone): TicketUser
-    {
+    public function findByPhone(string $phone): TicketUser {
         /** @var TicketUser $result */
         $result = $this->ticketUser->newQuery()->where('phone', '=', $phone)
             ->firstOrFail();
@@ -63,8 +55,7 @@ class TicketUserService implements IBaseService
         return $result;
     }
 
-    public function findOrCreateByUser(User $user): TicketUser
-    {
+    public function findOrCreateByUser(User $user): TicketUser {
         try {
             /** @var TicketUser $result */
             $result = $this->ticketUser->newQuery()->where('user_id', '=', $user->getId())

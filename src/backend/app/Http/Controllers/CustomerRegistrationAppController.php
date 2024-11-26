@@ -8,14 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use MPM\Apps\CustomerRegistration\CustomerRegistrationAppService;
 
-class CustomerRegistrationAppController extends Controller
-{
-    public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService)
-    {
-    }
+class CustomerRegistrationAppController extends Controller {
+    public function __construct(private CustomerRegistrationAppService $customerRegistrationAppService) {}
 
-    public function store(AndroidAppRequest $request)
-    {
+    public function store(AndroidAppRequest $request) {
         try {
             DB::connection('shard')->beginTransaction();
             $person = $this->customerRegistrationAppService->createCustomer($request);

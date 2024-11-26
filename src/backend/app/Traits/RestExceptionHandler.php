@@ -11,8 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
-trait RestExceptionHandler
-{
+trait RestExceptionHandler {
     /**
      * Creates a new response based on exception type.
      *
@@ -20,8 +19,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function getJsonResponseForException(Request $request, \Exception|\Throwable $e)
-    {
+    protected function getJsonResponseForException(Request $request, \Exception|\Throwable $e) {
         switch (true) {
             case $e instanceof TokenExpiredException:
                 return response()->json(['error' => 'Token is expired'], 401);
@@ -50,8 +48,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function badRequest($message = 'Bad request', $status_code = 400)
-    {
+    protected function badRequest($message = 'Bad request', $status_code = 400) {
         return $this->jsonResponse(
             [
                 'message' => $message,
@@ -69,8 +66,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function modelNotFound($message = 'Record not found', $status_code = 404)
-    {
+    protected function modelNotFound($message = 'Record not found', $status_code = 404) {
         return $this->jsonResponse(
             [
                 'message' => $message,
@@ -88,8 +84,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function validationError($message = 'Validation failed', $status_code = 422)
-    {
+    protected function validationError($message = 'Validation failed', $status_code = 422) {
         return $this->jsonResponse(
             [
                 'message' => $message,
@@ -104,8 +99,7 @@ trait RestExceptionHandler
      *
      * @param \Exception $e
      */
-    protected function isModelNotFoundException($e): bool
-    {
+    protected function isModelNotFoundException($e): bool {
         return $e instanceof ModelNotFoundException;
     }
 
@@ -114,8 +108,7 @@ trait RestExceptionHandler
      *
      * @param \Exception $e
      */
-    protected function isValidationException($e): bool
-    {
+    protected function isValidationException($e): bool {
         return $e instanceof ValidationException;
     }
 
@@ -124,8 +117,7 @@ trait RestExceptionHandler
      *
      * @return JsonResponse
      */
-    protected function jsonResponse(?array $payload, $status_code)
-    {
+    protected function jsonResponse(?array $payload, $status_code) {
         $payload = $payload ?: [];
 
         return response()->json(

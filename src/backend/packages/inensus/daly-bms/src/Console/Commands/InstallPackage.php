@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\DalyBms\Services\DalyBmsCredentialService;
 use Inensus\DalyBms\Services\ManufacturerService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'daly-bms:install';
 
     protected $description = 'Install DalyBms Package';
@@ -19,8 +18,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing DalyBms Integration Package\n');
         $this->manufacturerService->register();
         $this->credentialService->createCredentials();

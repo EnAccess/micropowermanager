@@ -11,20 +11,17 @@ use App\Services\MiniGridGeographicalInformationService;
 use App\Services\MiniGridService;
 use Illuminate\Http\Request;
 
-class MiniGridController extends Controller
-{
+class MiniGridController extends Controller {
     public function __construct(
         private MiniGridService $miniGridService,
         private GeographicalInformationService $geographicalInformationService,
         private MiniGridGeographicalInformationService $miniGridGeographicalInformationService,
-    ) {
-    }
+    ) {}
 
     /**
      * List.
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->miniGridService->getAll($limit));
@@ -37,8 +34,7 @@ class MiniGridController extends Controller
      *
      * @param int $id
      */
-    public function show($miniGridId, Request $request): ApiResource
-    {
+    public function show($miniGridId, Request $request): ApiResource {
         $relation = $request->get('relation');
 
         if ((int) $relation === 1) {
@@ -48,8 +44,7 @@ class MiniGridController extends Controller
         }
     }
 
-    public function store(StoreMiniGridRequest $request): ApiResource
-    {
+    public function store(StoreMiniGridRequest $request): ApiResource {
         $data = $request->validationData();
         $miniGrid = $this->miniGridService->create($request->only(['name', 'cluster_id']));
         $geographicalInformation = $this->geographicalInformationService->make(['points' => $data['geo_data']]);
@@ -68,8 +63,7 @@ class MiniGridController extends Controller
      *
      * @param MiniGrid $miniGrid
      */
-    public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource
-    {
+    public function update($miniGridId, UpdateMiniGridRequest $request): ApiResource {
         $miniGrid = $this->miniGridService->getById($miniGridId);
 
         return ApiResource::make($this->miniGridService->getById($miniGridId));

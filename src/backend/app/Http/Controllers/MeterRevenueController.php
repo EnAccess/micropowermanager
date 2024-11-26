@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\MeterRevenueService;
 
-class MeterRevenueController extends Controller
-{
+class MeterRevenueController extends Controller {
     public function __construct(
         private MeterRevenueService $meterRevenueService,
-    ) {
-    }
+    ) {}
 
     /**
      * Revenue
@@ -22,8 +20,7 @@ class MeterRevenueController extends Controller
      *
      * @responseFile responses/meters/meter.revenue.json
      */
-    public function show(string $serialNumber): ApiResource
-    {
+    public function show(string $serialNumber): ApiResource {
         $revenue = $this->meterRevenueService->getBySerialNumber($serialNumber);
 
         return ApiResource::make(['revenue' => $revenue]);

@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-trait RelationsManager
-{
+trait RelationsManager {
     protected static $relationsList = [];
 
     protected static $relationsInitialized = false;
@@ -28,8 +27,7 @@ trait RelationsManager
         'morphmany' => MorphMany::class,
     ];
 
-    public static function getAllRelations($type = null): array
-    {
+    public static function getAllRelations($type = null): array {
         if (!self::$relationsInitialized) {
             self::initAllRelations();
         }
@@ -40,8 +38,7 @@ trait RelationsManager
         }
     }
 
-    protected static function initAllRelations(): void
-    {
+    protected static function initAllRelations(): void {
         self::$relationsInitialized = true;
 
         $reflect = new \ReflectionClass(static::class);
@@ -57,8 +54,7 @@ trait RelationsManager
         }
     }
 
-    public static function withAll($type = null): array
-    {
+    public static function withAll($type = null): array {
         $relations = array_flatten(static::getAllRelations($type));
 
         return $relations;

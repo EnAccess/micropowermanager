@@ -5,18 +5,15 @@ namespace App\Listeners;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-class MeterListener
-{
+class MeterListener {
     /**
      * Sets the in_use to true.
      */
-    public function onParameterSaved(int $meter_id): void
-    {
+    public function onParameterSaved(int $meter_id): void {
         Log::debug('listener Core', []);
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('meterparameter.saved', 'App\Listeners\MeterListener@onParameterSaved');
     }
 }

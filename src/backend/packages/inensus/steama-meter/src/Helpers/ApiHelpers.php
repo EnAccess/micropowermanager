@@ -5,17 +5,14 @@ namespace Inensus\SteamaMeter\Helpers;
 use App\Models\Manufacturer;
 use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 
-class ApiHelpers
-{
+class ApiHelpers {
     private $manufacturer;
 
-    public function __construct(Manufacturer $manufacturerModel)
-    {
+    public function __construct(Manufacturer $manufacturerModel) {
         $this->manufacturer = $manufacturerModel;
     }
 
-    public function registerSparkMeterManufacturer()
-    {
+    public function registerSparkMeterManufacturer() {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SteamaMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
@@ -26,8 +23,7 @@ class ApiHelpers
         }
     }
 
-    public function checkApiResult($result)
-    {
+    public function checkApiResult($result) {
         if (array_key_exists('detail', $result)) {
             throw new SteamaApiResponseException($result['detail']);
         }
@@ -38,8 +34,7 @@ class ApiHelpers
         return $result;
     }
 
-    public function makeHash($data)
-    {
+    public function makeHash($data) {
         return md5(implode('', $data));
     }
 }

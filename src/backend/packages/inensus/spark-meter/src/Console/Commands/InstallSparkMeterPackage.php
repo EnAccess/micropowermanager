@@ -15,8 +15,7 @@ use Inensus\SparkMeter\Services\SmSmsSettingService;
 use Inensus\SparkMeter\Services\SmSmsVariableDefaultValueService;
 use Inensus\SparkMeter\Services\SmSyncSettingService;
 
-class InstallSparkMeterPackage extends Command
-{
+class InstallSparkMeterPackage extends Command {
     protected $signature = 'spark-meter:install';
 
     protected $description = 'Install the Spark Meter Integration Package';
@@ -37,8 +36,7 @@ class InstallSparkMeterPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing Spark Meter Integration Package\n');
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->insertSparkMeterApi->registerSparkMeterManufacturer();
@@ -57,8 +55,7 @@ class InstallSparkMeterPackage extends Command
         }
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
@@ -66,14 +63,12 @@ class InstallSparkMeterPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
@@ -82,8 +77,7 @@ class InstallSparkMeterPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'SparkMeter',
             'composer_name' => 'inensus/spark-meter',

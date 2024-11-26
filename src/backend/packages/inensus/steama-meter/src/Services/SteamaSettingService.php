@@ -4,17 +4,14 @@ namespace Inensus\SteamaMeter\Services;
 
 use Inensus\SteamaMeter\Models\SteamaSetting;
 
-class SteamaSettingService
-{
+class SteamaSettingService {
     private $steamaSetting;
 
-    public function __construct(SteamaSetting $steamaSetting)
-    {
+    public function __construct(SteamaSetting $steamaSetting) {
         $this->steamaSetting = $steamaSetting;
     }
 
-    public function getSettings()
-    {
+    public function getSettings() {
         return $this->steamaSetting->newQuery()->with(['settingSms', 'settingSync'])->whereHasMorph('setting', '*')->get();
     }
 }

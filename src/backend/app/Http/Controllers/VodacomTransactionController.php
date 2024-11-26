@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Http\Request;
 
-class VodacomTransactionController extends Controller
-{
+class VodacomTransactionController extends Controller {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): void
-    {
+    public function store(Request $request): void {
         // get Transaction object
         $transactionData = request('transaction')->transaction;
 

@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    public function up()
-    {
+    public function up() {
         DB::table('mpm_plugins')->insert([
             [
                 'id' => MpmPlugin::AGAZA_SHS,
@@ -22,8 +21,7 @@ return new class extends Migration {
         ]);
     }
 
-    public function down()
-    {
+    public function down() {
         DB::table('mpm_plugins')
             ->where('id', MpmPlugin::AGAZA_SHS)
             ->delete();

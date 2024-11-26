@@ -15,8 +15,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class VodacomTransactionProvider implements ITransactionProvider
-{
+class VodacomTransactionProvider implements ITransactionProvider {
     private VodacomTransaction $vodacomTransaction;
 
     private Transaction $transaction;
@@ -26,8 +25,7 @@ class VodacomTransactionProvider implements ITransactionProvider
     /**
      * Is responsible for the whole incoming Transaction process.
      */
-    public function saveTransaction(): void
-    {
+    public function saveTransaction(): void {
         // initializes needed model
         $this->vodacomTransaction = new VodacomTransaction();
 
@@ -42,8 +40,7 @@ class VodacomTransactionProvider implements ITransactionProvider
     /**
      * Sends the final state of the transaction based on resultType.
      */
-    public function sendResult(bool $requestType, Transaction $transaction): void
-    {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         if (!app()->environment('production')) {
             return;
         }
@@ -126,8 +123,7 @@ class VodacomTransactionProvider implements ITransactionProvider
      *
      * @throws \Exception
      */
-    public function validateRequest($request): void
-    {
+    public function validateRequest($request): void {
         if ($request === '<FailSafe>JUMEME</FailSafe>') {
             throw new VodacomHeartBeatException('heartbeat');
         }
@@ -162,8 +158,7 @@ class VodacomTransactionProvider implements ITransactionProvider
      * Send a confirmation (output for incoming api request) that the transaction passed validation and will be
      * processed.
      */
-    public function confirm(): void
-    {
+    public function confirm(): void {
         echo $xmlResponse =
             '<?xml version="1.0" encoding="UTF-8"?>'.
             '<mpesaBroker xmlns="http://infowise.co.tz/broker/" version="2.0">'.
@@ -182,24 +177,21 @@ class VodacomTransactionProvider implements ITransactionProvider
     /**
      * The message which is been typed by the user.
      */
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return $this->transaction->message;
     }
 
     /**
      * The amount sent by the user.
      */
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->transaction->amount;
     }
 
     /**
      * The number, which sent money.
      */
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->transaction->sender;
     }
 
@@ -208,16 +200,14 @@ class VodacomTransactionProvider implements ITransactionProvider
      *
      * @return Transaction
      */
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         return $this->vodacomTransaction->transaction()->save($this->transaction);
     }
 
     /**
      * Assign request data to model.
      */
-    private function assignData(\SimpleXMLElement $data): void
-    {
+    private function assignData(\SimpleXMLElement $data): void {
         $transaction_data = $data->request->transaction;
         $this->vodacomTransaction->conversation_id = (string) $transaction_data->conversationID;
         $this->vodacomTransaction->originator_conversation_id = (string) $transaction_data->originatorConversationID;
@@ -230,15 +220,13 @@ class VodacomTransactionProvider implements ITransactionProvider
         $this->transaction->message = (string) $transaction_data->accountReference;
     }
 
-    public function saveData(VodacomTransaction $vodacomTransaction): void
-    {
+    public function saveData(VodacomTransaction $vodacomTransaction): void {
         $vodacomTransaction->save();
         // confirm transaction with
         event('transaction.confirm', $this);
     }
 
-    private function prepareRequest(bool $requestType): string
-    {
+    private function prepareRequest(bool $requestType): string {
         $time = date('YmdHis');
         $providerPassword = $this->encryptProviderPassword($time);
         $phonePassword = $this->encryptPhonePassword();
@@ -307,8 +295,7 @@ class VodacomTransactionProvider implements ITransactionProvider
         </mpesaBroker >';
     }
 
-    private function encryptProviderPassword(string $time): string
-    {
+    private function encryptProviderPassword(string $time): string {
         $password = strtoupper(
             hash(
                 'sha256',
@@ -328,8 +315,7 @@ class VodacomTransactionProvider implements ITransactionProvider
     /**
      * @return string
      */
-    private function encryptPhonePassword()
-    {
+    private function encryptPhonePassword() {
         $keyFile = fopen(\config()->get('services.vodacom.certs.broker'), 'rb');
         $publicKey = fread($keyFile, 8192);
         fclose($keyFile);
@@ -338,22 +324,19 @@ class VodacomTransactionProvider implements ITransactionProvider
         return base64_encode($encrypted);
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->vodacomTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->vodacomTransaction);
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 }

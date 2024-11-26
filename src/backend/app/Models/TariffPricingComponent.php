@@ -14,12 +14,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $owner_id
  * @property string $owner_type
  */
-class TariffPricingComponent extends BaseModel
-{
+class TariffPricingComponent extends BaseModel {
     protected $guarded = [];
 
-    public function owner(): MorphTo
-    {
+    public function owner(): MorphTo {
         return $this->morphTo();
     }
 }

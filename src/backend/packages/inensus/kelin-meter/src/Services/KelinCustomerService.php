@@ -14,8 +14,7 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Models\SyncStatus;
 
-class KelinCustomerService implements ISynchronizeService
-{
+class KelinCustomerService implements ISynchronizeService {
     private $rootUrl = '/listCons';
 
     private $kelinCustomer;
@@ -46,8 +45,7 @@ class KelinCustomerService implements ISynchronizeService
         $this->syncSettingService = $syncSettingService;
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->syncSettingService->getSyncSettingsByActionName('Customers');
         $syncAction = $this->syncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -122,8 +120,7 @@ class KelinCustomerService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         try {
             $url = $this->rootUrl;
             $result = $this->kelinApiClient->get($url);
@@ -181,8 +178,7 @@ class KelinCustomerService implements ISynchronizeService
         return $returnData ? ['data' => $customersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedPerson($customer)
-    {
+    public function createRelatedPerson($customer) {
         $names = explode(' ', $customer['consName']);
         $phone = ltrim($customer['mobile'], $customer['mobile'][0]);
 
@@ -221,8 +217,7 @@ class KelinCustomerService implements ISynchronizeService
         return $person;
     }
 
-    public function updateRelatedPerson($customer, $person)
-    {
+    public function updateRelatedPerson($customer, $person) {
         $names = explode(' ', $customer['consName']);
         if (count($names) == 1) {
             $name = $customer['consName'];
@@ -248,15 +243,13 @@ class KelinCustomerService implements ISynchronizeService
         return $person;
     }
 
-    public function getCustomers($request)
-    {
+    public function getCustomers($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->kelinCustomer->newQuery()->with(['mpmPerson.addresses'])->paginate($perPage);
     }
 
-    private function kelinCustomerHasher($kelinCustomer)
-    {
+    private function kelinCustomerHasher($kelinCustomer) {
         $phone = ltrim($kelinCustomer['mobile'], $kelinCustomer['mobile'][0]);
 
         return $this->apiHelpers->makeHash([
@@ -267,8 +260,7 @@ class KelinCustomerService implements ISynchronizeService
         ]);
     }
 
-    private function findRegisteredCustomer($customer)
-    {
+    private function findRegisteredCustomer($customer) {
         return $this->person->newQuery()->where('title', $customer['consNo'])->first();
     }
 }

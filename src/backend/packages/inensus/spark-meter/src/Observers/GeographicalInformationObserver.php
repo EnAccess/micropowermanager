@@ -10,19 +10,16 @@ use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
-class GeographicalInformationObserver
-{
+class GeographicalInformationObserver {
     public function __construct(
         private CustomerService $customerService,
         private SmTableEncryption $smTableEncryption,
         private Person $person,
         private SmCustomer $smCustomer,
         private PluginsService $pluginsService,
-    ) {
-    }
+    ) {}
 
-    public function updated(GeographicalInformation $geographicalInformation)
-    {
+    public function updated(GeographicalInformation $geographicalInformation) {
         if ($this->pluginsService->isPluginActive(MpmPlugin::SPARK_METER) && $geographicalInformation->owner_type === 'meter_parameter') {
             $meterParameterId = $geographicalInformation->owner_id;
             $customer = $this->person->newQuery()->with(['meters.tariff', 'meters.geo', 'meters.meter'])

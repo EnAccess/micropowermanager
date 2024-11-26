@@ -9,8 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-class PaymentPeriodListener
-{
+class PaymentPeriodListener {
     /**
      * @var PaymentProfile
      */
@@ -24,14 +23,12 @@ class PaymentPeriodListener
     /**
      * Create the event listener.
      */
-    public function __construct(PaymentProfile $paymentProfile, PaymentHistory $history)
-    {
+    public function __construct(PaymentProfile $paymentProfile, PaymentHistory $history) {
         $this->paymentProfile = $paymentProfile;
         $this->history = $history;
     }
 
-    public function recalculate(Person $person): void
-    {
+    public function recalculate(Person $person): void {
         $transactions = $person->payments()
             ->with('transaction')
             ->latest()->take(10)
@@ -50,8 +47,7 @@ class PaymentPeriodListener
         //   $this->history->
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('payment.period.recalculate', '\App\Listeners\PaymentPeriodListener@recalculate');
     }
 }

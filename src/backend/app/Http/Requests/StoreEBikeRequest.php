@@ -4,13 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEBikeRequest extends FormRequest
-{
+class StoreEBikeRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -19,8 +17,7 @@ class StoreEBikeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'serial_number' => 'required|min:8|max:15|unique:shard.devices,device_serial',
             'manufacturer_id' => 'required|exists:shard.manufacturers,id',

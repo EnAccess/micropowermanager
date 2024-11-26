@@ -5,15 +5,12 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\GeographicalInformation;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class GeographicalInformationService extends CreatorService
-{
-    public function __construct(GeographicalInformation $geo)
-    {
+class GeographicalInformationService extends CreatorService {
+    public function __construct(GeographicalInformation $geo) {
         parent::__construct($geo);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $geoConfig = [
             'owner_type' => 'meter_parameter',
             'owner_id' => 'meter_parameter_id',

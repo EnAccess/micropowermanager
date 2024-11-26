@@ -4,15 +4,12 @@ namespace Inensus\BulkRegistration\Services;
 
 use App\Models\Meter\MeterParameter;
 
-class MeterParameterService extends CreatorService
-{
-    public function __construct(MeterParameter $meterParameter)
-    {
+class MeterParameterService extends CreatorService {
+    public function __construct(MeterParameter $meterParameter) {
         parent::__construct($meterParameter);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $meterParameterConfig = config('bulk-registration.csv_fields.meter_parameter');
         $meterParameterData = [
             'owner_type' => $meterParameterConfig['owner_type'],

@@ -14,8 +14,7 @@ use Carbon\CarbonInterval;
  * @group   Payment-History
  * Class PaymentHistoryController
  */
-class PaymentHistoryController
-{
+class PaymentHistoryController {
     /**
      * @var PaymentHistory
      */
@@ -24,8 +23,7 @@ class PaymentHistoryController
     /**
      * PaymentHistoryController constructor.
      */
-    public function __construct(PaymentHistory $history)
-    {
+    public function __construct(PaymentHistory $history) {
         $this->history = $history;
     }
 
@@ -42,8 +40,7 @@ class PaymentHistoryController
      *
      * @return array
      */
-    public function show(int $payerId, string $period, $limit = null, $order = 'ASC')
-    {
+    public function show(int $payerId, string $period, $limit = null, $order = 'ASC') {
         $period = strtoupper($period);
         switch ($period) {
             case 'D':
@@ -81,8 +78,7 @@ class PaymentHistoryController
      *
      * @throws \Exception
      */
-    public function getPaymentPeriod(Person $person)
-    {
+    public function getPaymentPeriod(Person $person) {
         $payments = $person->payments()->latest()->take(10)->get();
 
         $difference = 'no data available';
@@ -105,8 +101,7 @@ class PaymentHistoryController
      *
      *
      **/
-    public function byYear(int $personId, ?int $year = null): array
-    {
+    public function byYear(int $personId, ?int $year = null): array {
         $year = $year ?? (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
         $paymentFlow = array_fill(0, 11, 0);
@@ -127,8 +122,7 @@ class PaymentHistoryController
      *
      * @return ApiResource
      */
-    public function debts($personId)
-    {
+    public function debts($personId) {
         $accessRateDebt = 0;
         $meters = Device::query()->with('device')
             ->whereHasMorph(
@@ -156,8 +150,7 @@ class PaymentHistoryController
      *
      * @throws \Exception
      */
-    public function getPaymentRange(): ApiResource
-    {
+    public function getPaymentRange(): ApiResource {
         $begin = request('begin'); // Y-m-d
         $end = request('end'); // Y-m- d
         // create a sequence of dates
@@ -183,8 +176,7 @@ class PaymentHistoryController
      *
      * @psalm-return array<array-key, array>
      */
-    public function preparePaymentFlow($payments): array
-    {
+    public function preparePaymentFlow($payments): array {
         $flowList = [];
         foreach ($payments as $payment) {
             $flowList[$payment['aperiod']][$payment['payment_type']] = $payment['amount'];

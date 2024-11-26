@@ -9,8 +9,7 @@ use Inensus\DalyBms\Modules\Api\DalyBmsApi;
 use MPM\Device\DeviceAddressService;
 use MPM\EBike\EBikeService;
 
-class SyncBikes extends AbstractSharedCommand
-{
+class SyncBikes extends AbstractSharedCommand {
     use ScheduledPluginCommand;
 
     public const MPM_PLUGIN_ID = 16;
@@ -29,8 +28,7 @@ class SyncBikes extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
@@ -59,8 +57,7 @@ class SyncBikes extends AbstractSharedCommand
         $this->info('#############################');
     }
 
-    private function updateBike($deviceData)
-    {
+    private function updateBike($deviceData) {
         $updatingData = [
             'receive_time' => $deviceData['ReceiveTime'],
             'lat' => strval($deviceData['Lat']),

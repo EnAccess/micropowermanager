@@ -11,16 +11,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $fk_company_id
  */
-class DatabaseProxy extends BaseModelCore
-{
+class DatabaseProxy extends BaseModelCore {
     public const COL_DATABASE_CONNECTION = 'database_connection';
 
     public const COL_COMPANY_ID = 'fk_company_id';
 
     public const COL_EMAIL = 'email';
 
-    private function buildQuery(?int $companyId = null): Builder
-    {
+    private function buildQuery(?int $companyId = null): Builder {
         $query = $this->newQuery();
 
         if ($companyId) {
@@ -30,8 +28,7 @@ class DatabaseProxy extends BaseModelCore
         return $query;
     }
 
-    public function findByEmail(string $email): DatabaseProxy
-    {
+    public function findByEmail(string $email): DatabaseProxy {
         /** @var DatabaseProxy $result */
         $result = $this->buildQuery()
             ->join(CompanyDatabase::TABLE_NAME, CompanyDatabase::COL_COMPANY_ID, '=', self::COL_COMPANY_ID)
@@ -41,8 +38,7 @@ class DatabaseProxy extends BaseModelCore
         return $result;
     }
 
-    public function findByCompanyId(int $companyId): DatabaseProxy
-    {
+    public function findByCompanyId(int $companyId): DatabaseProxy {
         /** @var DatabaseProxy $result */
         $result = $this->buildQuery($companyId)
             ->select(CompanyDatabase::COL_DATABASE_NAME)
@@ -51,18 +47,15 @@ class DatabaseProxy extends BaseModelCore
         return $result;
     }
 
-    public function getCompanyId(): int
-    {
+    public function getCompanyId(): int {
         return $this->fk_company_id;
     }
 
-    public function company(): BelongsTo
-    {
+    public function company(): BelongsTo {
         return $this->belongsTo(Company::class, 'fk_company_id');
     }
 
-    public function companyDatabase(): BelongsTo
-    {
+    public function companyDatabase(): BelongsTo {
         return $this->belongsTo(CompanyDatabase::class, 'fk_company_database_id');
     }
 }

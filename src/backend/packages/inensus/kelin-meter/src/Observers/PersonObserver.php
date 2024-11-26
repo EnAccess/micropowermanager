@@ -7,8 +7,7 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Models\KelinCustomer;
 use Inensus\KelinMeter\Services\KelinCustomerService;
 
-class PersonObserver
-{
+class PersonObserver {
     private $customerService;
 
     private $apiHelpers;
@@ -29,8 +28,7 @@ class PersonObserver
         $this->kelinCustomer = $kelinCustomer;
     }
 
-    public function updated(Person $person)
-    {
+    public function updated(Person $person) {
         $kelinCustomer = $this->kelinCustomer->newQuery()->where('mpm_customer_id', $person->id)->first();
 
         if ($kelinCustomer) {

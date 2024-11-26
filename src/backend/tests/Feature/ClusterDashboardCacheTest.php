@@ -28,8 +28,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ClusterDashboardCacheTest extends TestCase
-{
+class ClusterDashboardCacheTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -59,8 +58,7 @@ class ClusterDashboardCacheTest extends TestCase
 
     private $clusterIds = [];
 
-    public function testUserUpdatesClusterDataInCache()
-    {
+    public function testUserUpdatesClusterDataInCache() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 3;
@@ -70,8 +68,7 @@ class ClusterDashboardCacheTest extends TestCase
         $this->assertEquals(count(Cache::get('ClustersList')), count($this->clusterIds));
     }
 
-    public function testUserGetsClusterDataFromCacheById()
-    {
+    public function testUserGetsClusterDataFromCacheById() {
         $clusterCount = 2;
         $meterCount = 2;
         $transactionCount = 3;
@@ -81,8 +78,7 @@ class ClusterDashboardCacheTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->clusterIds[0]);
     }
 
-    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->city = CityFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
@@ -200,8 +196,7 @@ class ClusterDashboardCacheTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -209,8 +204,7 @@ class ClusterDashboardCacheTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
     }

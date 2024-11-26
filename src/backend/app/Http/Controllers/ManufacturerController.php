@@ -10,20 +10,17 @@ use App\Services\ManufacturerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ManufacturerController extends Controller
-{
+class ManufacturerController extends Controller {
     public function __construct(
         private ManufacturerService $manufacturerService,
         private ManufacturerAddressService $manufacturerAddressService,
         private AddressesService $addressService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->manufacturerService->getAll($limit));
@@ -32,8 +29,7 @@ class ManufacturerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ManufacturerRequest $request): JsonResponse
-    {
+    public function store(ManufacturerRequest $request): JsonResponse {
         $manufacturerData = $this->manufacturerService->createManufacturerDataFromRequest($request);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $manufacturer = $this->manufacturerService->create($manufacturerData);
@@ -51,8 +47,7 @@ class ManufacturerController extends Controller
      *
      * @param int $manufacturerId
      */
-    public function show($manufacturerId): ApiResource
-    {
+    public function show($manufacturerId): ApiResource {
         return ApiResource::make($this->manufacturerService->getById($manufacturerId));
     }
 }

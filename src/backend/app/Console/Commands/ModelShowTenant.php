@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class ModelShowTenant extends Command
-{
+class ModelShowTenant extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -38,8 +37,7 @@ class ModelShowTenant extends Command
      *
      * @return int
      */
-    public function handle()
-    {
+    public function handle() {
         $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
 
         $this->call('model:show', [

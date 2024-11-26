@@ -13,8 +13,7 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Models\SteamaTransaction;
 
-class SteamaTransactionsService implements ISynchronizeService
-{
+class SteamaTransactionsService implements ISynchronizeService {
     private $stemaMeterService;
 
     private $steamaCustomerService;
@@ -77,8 +76,7 @@ class SteamaTransactionsService implements ISynchronizeService
         $this->steamaSyncActionService = $steamaSyncActionService;
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Transactions');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         $syncCheck = $this->syncCheck();
@@ -146,8 +144,7 @@ class SteamaTransactionsService implements ISynchronizeService
         return $syncCheck['message'];
     }
 
-    public function syncCheck()
-    {
+    public function syncCheck() {
         $credentials = $this->steamaCredentialService->getCredentials();
         if ($credentials) {
             if ($credentials->is_authenticated) {
@@ -183,15 +180,13 @@ class SteamaTransactionsService implements ISynchronizeService
         }
     }
 
-    public function getTransactionsByCustomer($customer, $request)
-    {
+    public function getTransactionsByCustomer($customer, $request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->steamaTransaction->newQuery()->where('customer_id', $customer)->paginate($perPage);
     }
 
-    public function getSteamaTransactions($transactionMin)
-    {
+    public function getSteamaTransactions($transactionMin) {
         return $this->steamaTransaction->newQuery()->with(['thirdPartyTransaction.transaction'])->where(
             'timestamp',
             '>=',
@@ -199,8 +194,7 @@ class SteamaTransactionsService implements ISynchronizeService
         )->where('category', 'PAY')->get();
     }
 
-    private function createSteamaTransaction($transaction)
-    {
+    private function createSteamaTransaction($transaction) {
         return $this->steamaTransaction->newQuery()->create([
             'transaction_id' => $transaction['id'],
             'site_id' => $transaction['site_id'],
@@ -213,8 +207,7 @@ class SteamaTransactionsService implements ISynchronizeService
         ]);
     }
 
-    private function createThirdPartyTransaction($transaction, $steamaTransaction)
-    {
+    private function createThirdPartyTransaction($transaction, $steamaTransaction) {
         $thirdPartyTransaction = $this->thirdPartyTransaction->newQuery()->make([
             'transaction_id' => $transaction['id'],
             'status' => $transaction['reversed_by_id'] !== null ? -1 : 1,
@@ -227,8 +220,7 @@ class SteamaTransactionsService implements ISynchronizeService
         return $thirdPartyTransaction;
     }
 
-    private function createTransaction($transaction, $thirdPartyTransaction, $steamaMeter)
-    {
+    private function createTransaction($transaction, $thirdPartyTransaction, $steamaMeter) {
         $transaction = $this->transaction->newQuery()->make([
             'amount' => (int) $transaction['amount'],
             'sender' => $transaction['customer_telephone'],
@@ -243,8 +235,7 @@ class SteamaTransactionsService implements ISynchronizeService
         return $transaction;
     }
 
-    private function createToken($steamaMeter, $mainTransaction, $transaction)
-    {
+    private function createToken($steamaMeter, $mainTransaction, $transaction) {
         $stmCustomer = $steamaMeter->stmCustomer->first();
         $customerEnergyPrice = $stmCustomer->energy_price;
         $chargedEnergy = $mainTransaction->amount / $customerEnergyPrice;
@@ -266,8 +257,7 @@ class SteamaTransactionsService implements ISynchronizeService
         return $token;
     }
 
-    private function createPayment($steamaMeter, $mainTransaction, $token)
-    {
+    private function createPayment($steamaMeter, $mainTransaction, $token) {
         $owner = $steamaMeter->mpmMeter->meterParameter->owner;
 
         if ($owner) {

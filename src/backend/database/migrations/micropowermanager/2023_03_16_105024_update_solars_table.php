@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('solars', function (Blueprint $table) {
             $table->renameColumn('storage_file_name', 'storage_folder')->change();
         });
@@ -22,8 +21,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->table('solars', function (Blueprint $table) {
             $table->renameColumn('storage_folder', 'storage_file_name')->change();
         });

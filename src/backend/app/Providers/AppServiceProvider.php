@@ -48,15 +48,13 @@ use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\Transaction\Provider\AirtelVoltTerraProvider;
 use MPM\Transaction\Provider\VodacomTransactionProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         // Maria DB work-around
         Schema::defaultStringLength(191);
 
@@ -100,8 +98,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void
-    {
+    public function register(): void {
         if ($this->app->environment('development') || $this->app->environment('local')) {
             $this->app->singleton(MailHelperInterface::class, MailHelperMock::class);
         } else {

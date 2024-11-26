@@ -14,21 +14,18 @@ use Illuminate\Foundation\Http\FormRequest;
  * @bodyParam cities array[int] required. The id's of the cities which belong to the cluster.
  * @bodyParam manager_id int required. The id of the user who is responsible for the cluster.
  */
-class ClusterRequest extends FormRequest
-{
+class ClusterRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             'name' => 'required',
             'geo_type' => 'required',

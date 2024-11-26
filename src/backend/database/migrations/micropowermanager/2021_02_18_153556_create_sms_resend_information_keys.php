@@ -12,8 +12,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('sms_resend_information_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->default('Resend');
@@ -32,8 +31,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('sms_resend_information_keys');
     }
 };

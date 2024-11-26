@@ -2,8 +2,7 @@
 
 namespace App\Models\Transaction;
 
-interface IRawTransaction
-{
+interface IRawTransaction {
     // returns the filtered transaction
     // which is been used by the system
     // to process the payment

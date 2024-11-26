@@ -10,19 +10,16 @@ use Illuminate\Support\Facades\Log;
 use Inensus\MicroStarMeter\Models\MicroStarTransaction;
 use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
 
-class MicroStarMeterApi implements IManufacturerAPI
-{
+class MicroStarMeterApi implements IManufacturerAPI {
     public const API_CALL_CHARGE_METER = '/getStsVendingToken?';
 
     public function __construct(
         private MicroStarCredentialService $credentialService,
         private MicroStarTransaction $microStarTransaction,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -53,8 +50,7 @@ class MicroStarMeterApi implements IManufacturerAPI
         ];
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

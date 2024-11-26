@@ -13,8 +13,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->enum('usage_type', [
                 'mini-grid',
@@ -57,8 +56,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->dropColumn('usage_type');
         });

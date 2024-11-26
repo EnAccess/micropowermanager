@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('subscriptions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('upgrade_id');
@@ -26,8 +25,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('subscriptions');
     }
 };

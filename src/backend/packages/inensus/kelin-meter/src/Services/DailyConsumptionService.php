@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeterDailyData;
 
-class DailyConsumptionService
-{
+class DailyConsumptionService {
     private $rootUrl = '/getDayData';
 
     private $kelinApi;
@@ -23,8 +22,7 @@ class DailyConsumptionService
         $this->kelinMeterDailyData = $kelinMeterDailyData;
     }
 
-    public function getDailyDataFromAPI()
-    {
+    public function getDailyDataFromAPI() {
         $startDay = Carbon::now()->subDays(1)->format('Ymd');
         $endDay = Carbon::now()->format('His');
         $pageNo = 1;
@@ -75,8 +73,7 @@ class DailyConsumptionService
         } while ($result['dataCount'] > 0);
     }
 
-    public function getDailyData($meterAddress, $perPage)
-    {
+    public function getDailyData($meterAddress, $perPage) {
         return $this->kelinMeterDailyData->newQuery()->where('address_of_meter', $meterAddress)->orderByDesc('id')->paginate($perPage);
     }
 }

@@ -2,8 +2,7 @@
 
 namespace App\Models\Transaction;
 
-interface ISubTransaction
-{
+interface ISubTransaction {
     public function vodacomTransaction();
 
     public function airtelTransaction();

@@ -7,17 +7,13 @@ use App\Http\Resources\ApiResource;
 use App\Services\AgentCommissionService;
 use Illuminate\Http\Request;
 
-class AgentCommissionWebController extends Controller
-{
-    public function __construct(private AgentCommissionService $agentCommissionService)
-    {
-    }
+class AgentCommissionWebController extends Controller {
+    public function __construct(private AgentCommissionService $agentCommissionService) {}
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentCommissionService->getAll($limit));
@@ -28,8 +24,7 @@ class AgentCommissionWebController extends Controller
      *
      * @return ApiResource
      */
-    public function store(CreateAgentCommissionRequest $request)
-    {
+    public function store(CreateAgentCommissionRequest $request) {
         $commissionData = $request->only(['name', 'energy_commission', 'appliance_commission', 'risk_balance']);
 
         return ApiResource::make($this->agentCommissionService->create($commissionData));
@@ -38,8 +33,7 @@ class AgentCommissionWebController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource
-    {
+    public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
         return ApiResource::make($this->agentCommissionService->update($agentCommission, $request->all()));
@@ -48,8 +42,7 @@ class AgentCommissionWebController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($agentCommissionId): ApiResource
-    {
+    public function destroy($agentCommissionId): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
         return ApiResource::make($this->agentCommissionService->delete($agentCommission));

@@ -5,16 +5,13 @@ namespace App\Http\Controllers;
 use App\Services\MeterTariffService;
 use App\Services\TimeOfUsageService;
 
-class TimeOfUsageController extends Controller
-{
+class TimeOfUsageController extends Controller {
     public function __construct(
         private TimeOfUsageService $timeOfUsageService,
         private MeterTariffService $meterTariffService,
-    ) {
-    }
+    ) {}
 
-    public function destroy($timeOfUsageId): ?bool
-    {
+    public function destroy($timeOfUsageId): ?bool {
         $timeOfUsage = $this->timeOfUsageService->getById($timeOfUsageId);
         $result = $this->timeOfUsageService->delete($timeOfUsage);
 

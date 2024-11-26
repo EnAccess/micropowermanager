@@ -7,15 +7,12 @@ use Illuminate\Support\Facades\Log;
 use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
 use Inensus\AngazaSHS\Models\AngazaCredential;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
-    public function get(AngazaCredential $credentials, array $params, string $slug)
-    {
+    public function get(AngazaCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -41,8 +38,7 @@ class ApiRequests
         }
     }
 
-    public function put(AngazaCredential $credentials, array $params, string $slug)
-    {
+    public function put(AngazaCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->put(
@@ -70,8 +66,7 @@ class ApiRequests
         }
     }
 
-    private function getBasicAuthHeader($credentials)
-    {
+    private function getBasicAuthHeader($credentials) {
         $username = $credentials->getClientId();
         $password = $credentials->getClientSecret();
         $credentials = $username.':'.$password;

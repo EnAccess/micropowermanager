@@ -2,6 +2,4 @@
 
 namespace App\Exceptions\AccessRates;
 
-class NoAccessRateFound extends \Exception
-{
-}
+class NoAccessRateFound extends \Exception {}

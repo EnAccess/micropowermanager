@@ -9,18 +9,15 @@ use App\Traits\ScheduledPluginCommand;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
 use Inensus\GomeLongMeter\Services\GomeLongTariffService;
 
-class MeterTariffObserver
-{
+class MeterTariffObserver {
     use ScheduledPluginCommand;
 
     public function __construct(
         private GomeLongTariffService $gomeLongTariffService,
         private GomeLongCredentialService $credentialService,
-    ) {
-    }
+    ) {}
 
-    public function created(MeterTariff $tariff)
-    {
+    public function created(MeterTariff $tariff) {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
@@ -30,8 +27,7 @@ class MeterTariffObserver
         }
     }
 
-    public function updated(MeterTariff $tariff)
-    {
+    public function updated(MeterTariff $tariff) {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }
@@ -42,8 +38,7 @@ class MeterTariffObserver
         }
     }
 
-    public function deleted(MeterTariff $tariff)
-    {
+    public function deleted(MeterTariff $tariff) {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::GOME_LONG_METERS)) {
             return;
         }

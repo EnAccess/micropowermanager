@@ -8,14 +8,10 @@ use App\Models\SubConnectionType;
 use App\Services\SubConnectionTypeService;
 use Illuminate\Http\Request;
 
-class SubConnectionTypeController extends Controller
-{
-    public function __construct(private SubConnectionTypeService $subConnectionTypeService)
-    {
-    }
+class SubConnectionTypeController extends Controller {
+    public function __construct(private SubConnectionTypeService $subConnectionTypeService) {}
 
-    public function index(Request $request, $connectionTypeId = null): ApiResource
-    {
+    public function index(Request $request, $connectionTypeId = null): ApiResource {
         $limit = $request->get('limit');
 
         if ($connectionTypeId !== null) {
@@ -28,8 +24,7 @@ class SubConnectionTypeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function store(SubConnectionTypeCreateRequest $request): ApiResource
-    {
+    public function store(SubConnectionTypeCreateRequest $request): ApiResource {
         $subConnectionTypeData = $request->only(['name', 'connection_type_id', 'tariff_id']);
 
         return ApiResource::make($this->subConnectionTypeService->create($subConnectionTypeData));
@@ -40,8 +35,7 @@ class SubConnectionTypeController extends Controller
      *
      * @param SubConnectionType $subConnectionType
      */
-    public function update(Request $request, $subConnectionTypeId): ApiResource
-    {
+    public function update(Request $request, $subConnectionTypeId): ApiResource {
         $subConnectionType = $this->subConnectionTypeService->getById($subConnectionTypeId);
         $subConnectionTypeData = $request->only(['name', 'tariff_id']);
 

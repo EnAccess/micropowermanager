@@ -6,12 +6,10 @@ use App\Models\MainSettings as MainSettingsAlias;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MainSettingsFactory extends Factory
-{
+class MainSettingsFactory extends Factory {
     protected $model = MainSettingsAlias::class;
 
-    public function definition(): array
-    {
+    public function definition(): array {
         return [
             'site_title' => 'MPM - The easiest way to manage your Mini-Grid',
             'company_name' => 'MicroPowerManager',

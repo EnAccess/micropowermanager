@@ -14,15 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $revenue
  * @property int new_connections
  */
-class SubTarget extends BaseModel
-{
-    public function target(): BelongsTo
-    {
+class SubTarget extends BaseModel {
+    public function target(): BelongsTo {
         return $this->belongsTo(Target::class);
     }
 
-    public function connectionType(): BelongsTo
-    {
+    public function connectionType(): BelongsTo {
         return $this->belongsTo(ConnectionGroup::class, 'connection_id');
     }
 }

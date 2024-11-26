@@ -5,10 +5,8 @@ namespace Inensus\WaveMoneyPaymentProvider\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class WaveMoneyTransactionMiddleware
-{
-    public function handle(Request $request, \Closure $next)
-    {
+class WaveMoneyTransactionMiddleware {
+    public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve('WaveMoneyPaymentProvider');
 
         try {

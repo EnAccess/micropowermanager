@@ -12,21 +12,18 @@ use Illuminate\Http\Request;
  * @group   Agent-Appliances
  * Class AgentAssignedApplianceController
  */
-class AgentAssignedAppliancesController extends Controller
-{
+class AgentAssignedAppliancesController extends Controller {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     /**
      * List for Android-APP.
      *
      * @return ApiResource
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $agent = $this->agentService->getByAuthenticatedUser();
         $limit = $request->input('per_page');
 

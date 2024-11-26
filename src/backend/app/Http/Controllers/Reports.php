@@ -30,8 +30,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  *
  * @group Export
  */
-class Reports
-{
+class Reports {
     private array $totalSold = [];
 
     private array $connectionTypeCells = [];
@@ -49,11 +48,9 @@ class Reports
         private City $city,
         private Target $target,
         private Report $report,
-    ) {
-    }
+    ) {}
 
-    private function monthlyTargetRibbon(Worksheet $sheet): void
-    {
+    private function monthlyTargetRibbon(Worksheet $sheet): void {
         $sheet->setCellValue('a5', 'Category');
         $sheet->mergeCells('c5:e5');
         $sheet->setCellValue('c5', 'No. of CUSTOMERS connected');
@@ -110,8 +107,7 @@ class Reports
         }
     }
 
-    private function addTargetConnectionGroups(Worksheet $sheet): void
-    {
+    private function addTargetConnectionGroups(Worksheet $sheet): void {
         $column = 'A';
         $subColumn = 'B';
         $row = 7;
@@ -140,14 +136,12 @@ class Reports
     /**
      * Re-create the spreadsheet.
      */
-    private function initSheet(): void
-    {
+    private function initSheet(): void {
         $this->spreadsheet = new Spreadsheet();
         $this->totalSold = [];
     }
 
-    public function generateWithJob($startDate, $endDate, $reportType): void
-    {
+    public function generateWithJob($startDate, $endDate, $reportType): void {
         try {
             $cities = $this->city->newQuery()->get();
             foreach ($cities as $city) {
@@ -166,16 +160,14 @@ class Reports
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function fillBackground(Worksheet $sheet, string $coordinate, string $color): void
-    {
+    private function fillBackground(Worksheet $sheet, string $coordinate, string $color): void {
         $sheet->getStyle($coordinate)->getFill()->setFillType(Fill::FILL_SOLID)->setStartColor(new Color($color));
     }
 
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function styleSheet(Worksheet $sheet, string $column, ?string $border, ?string $color): void
-    {
+    private function styleSheet(Worksheet $sheet, string $column, ?string $border, ?string $color): void {
         $style = $sheet->getStyle($column);
 
         if ($border !== null) {
@@ -189,8 +181,7 @@ class Reports
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function addStaticText(Worksheet $sheet, string $dateRange): void
-    {
+    private function addStaticText(Worksheet $sheet, string $dateRange): void {
         $this->styleSheet($sheet, 'A1:L4', Border::BORDER_THIN, null);
         $this->fillBackground($sheet, 'A1:A5', 'FFFABF8F');
         $this->fillBackground($sheet, 'A3:L3', 'FFFABF8F');
@@ -270,8 +261,7 @@ class Reports
      *
      * @throws CustomerGroupNotFound
      */
-    private function addTransactions(Worksheet $sheet, $transactions, $addPurchaseBreakDown = true): void
-    {
+    private function addTransactions(Worksheet $sheet, $transactions, $addPurchaseBreakDown = true): void {
         $sheetIndex = 0;
         $balance = 0;
 
@@ -361,8 +351,7 @@ class Reports
     /**
      * @throws CustomerGroupNotFound
      */
-    private function getConnectionGroupColumn(string $connectionGroupName): string
-    {
+    private function getConnectionGroupColumn(string $connectionGroupName): string {
         if (
             array_key_exists(
                 $connectionGroupName,
@@ -374,8 +363,7 @@ class Reports
         throw new CustomerGroupNotFound($connectionGroupName.' not found');
     }
 
-    private function storeConnectionGroupColumn(string $connectionGroup, string $column): void
-    {
+    private function storeConnectionGroupColumn(string $connectionGroup, string $column): void {
         $this->connectionTypeCells[$connectionGroup] = $column;
     }
 
@@ -422,8 +410,7 @@ class Reports
         }
     }
 
-    private function addSoldTotal(string $connectionGroupName, array $amount, $unit = null): void
-    {
+    private function addSoldTotal(string $connectionGroupName, array $amount, $unit = null): void {
         if (!array_key_exists($connectionGroupName, $this->totalSold)) {
             $this->totalSold[$connectionGroupName] = [
                 'energy' => 0,
@@ -444,8 +431,7 @@ class Reports
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function addSoldSummary(Worksheet $sheet): void
-    {
+    private function addSoldSummary(Worksheet $sheet): void {
         // place total sold 1 row below the last transaction
         $index = $this->lastIndex + 1;
         if (\count($this->totalSold) === 0) {
@@ -482,8 +468,7 @@ class Reports
     /**
      * @psalm-return Generator<int, mixed, mixed, void>
      */
-    private function excelColumnRange(string $lower, string $upper): \Generator
-    {
+    private function excelColumnRange(string $lower, string $upper): \Generator {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {
             yield $i;
@@ -582,8 +567,7 @@ class Reports
     /**
      * Total number of customer groups until given date.
      */
-    private function getCustomerGroupCountPerMonth(string $date): void
-    {
+    private function getCustomerGroupCountPerMonth(string $date): void {
         $connectionGroupsCount = MeterParameter::query()
             ->selectRaw('Count(id) as total, connection_group_id')
             ->with('connectionGroup')
@@ -601,8 +585,7 @@ class Reports
         }
     }
 
-    private function getCustomerGroupEnergyUsagePerMonth(array $dates): void
-    {
+    private function getCustomerGroupEnergyUsagePerMonth(array $dates): void {
         foreach ($this->monthlyTargetDatas as $connectionName => $targetData) {
             $customerGroupRevenue = $this->sumOfTransactions($targetData['connection_id'], $dates);
             foreach ($customerGroupRevenue as $groupRevenue) {
@@ -629,8 +612,7 @@ class Reports
         }
     }
 
-    public function sumOfTransactions($connectionGroupId, array $dateRange): array
-    {
+    public function sumOfTransactions($connectionGroupId, array $dateRange): array {
         return Transaction::query()
             ->selectRaw('
         meter_parameters.connection_group_id,
@@ -656,8 +638,7 @@ class Reports
             ->get()->toArray();
     }
 
-    private function addTargetsToXls(Worksheet $sheet): void
-    {
+    private function addTargetsToXls(Worksheet $sheet): void {
         foreach ($this->monthlyTargetDatas as $subConnection => $monthlyTargetData) {
             $row = $this->subConnectionRows[$subConnection];
             if (!$row) {
@@ -670,8 +651,7 @@ class Reports
         }
     }
 
-    private function addStoredTargets(Worksheet $sheet, int $cityId, $endDate): void
-    {
+    private function addStoredTargets(Worksheet $sheet, int $cityId, $endDate): void {
         $targetData = $this->target::with('subTargets.connectionType')
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')

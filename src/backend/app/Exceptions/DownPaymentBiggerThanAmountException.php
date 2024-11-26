@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class DownPaymentBiggerThanAmountException extends \Exception
-{
-}
+class DownPaymentBiggerThanAmountException extends \Exception {}

@@ -11,12 +11,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class MeterController extends Controller
-{
+class MeterController extends Controller {
     public function __construct(
         private MeterService $meterService,
-    ) {
-    }
+    ) {}
 
     /**
      * List
@@ -28,8 +26,7 @@ class MeterController extends Controller
      *
      * @responseFile responses/meters/meters.list.json
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $inUse = $request->input('in_use');
         $limit = $request->input('limit', config('settings.paginate'));
 
@@ -48,8 +45,7 @@ class MeterController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(MeterRequest $request)
-    {
+    public function store(MeterRequest $request) {
         $meterData = (array) $request->all();
 
         return ApiResource::make($this->meterService->create($meterData));
@@ -69,8 +65,7 @@ class MeterController extends Controller
      *
      * @responseFile responses/meters/meter.detail.json
      */
-    public function show(string $serialNumber): ApiResource
-    {
+    public function show(string $serialNumber): ApiResource {
         return ApiResource::make($this->meterService->getBySerialNumber($serialNumber));
     }
 
@@ -84,8 +79,7 @@ class MeterController extends Controller
      *
      * @responseFile responses/meters/meters.search.json
      */
-    public function search(): ApiResource
-    {
+    public function search(): ApiResource {
         $term = request('term');
         $paginate = request('paginate') ?? 1;
 
@@ -98,15 +92,13 @@ class MeterController extends Controller
      *
      * @urlParam meterId. The ID of the meter to be delete
      */
-    public function destroy($meterId): JsonResponse
-    {
+    public function destroy($meterId): JsonResponse {
         $this->meterService->getById($meterId);
 
         return response()->json(null, 204);
     }
 
-    public function update(UpdateMeterRequest $request, Meter $meter): ApiResource
-    {
+    public function update(UpdateMeterRequest $request, Meter $meter): ApiResource {
         $creatorId = auth('api')->user()->id;
         $previousDataOfMeter = json_encode($meter->toArray());
         $updatedMeter = $this->meterService->update($meter, $request->validated());

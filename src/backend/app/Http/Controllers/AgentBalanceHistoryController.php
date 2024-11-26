@@ -9,20 +9,17 @@ use App\Models\AgentBalanceHistory;
 use App\Services\AgentBalanceHistoryService;
 use Illuminate\Http\Request;
 
-class AgentBalanceHistoryController extends Controller
-{
+class AgentBalanceHistoryController extends Controller {
     private $agentBalanceHistoryService;
 
-    public function __construct(AgentBalanceHistoryService $agentBalanceHistoryService)
-    {
+    public function __construct(AgentBalanceHistoryService $agentBalanceHistoryService) {
         $this->agentBalanceHistoryService = $agentBalanceHistoryService;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Agent $agent, CreateAgentBalanceHistoryRequest $request): ApiResource
-    {
+    public function store(Agent $agent, CreateAgentBalanceHistoryRequest $request): ApiResource {
         $agentBalanceHistory = $this->agentBalanceHistoryService->create(
             $agent,
             $request->only(
@@ -40,25 +37,19 @@ class AgentBalanceHistoryController extends Controller
      *
      * @return void
      */
-    public function show(AgentBalanceHistory $agent_balance_history)
-    {
-    }
+    public function show(AgentBalanceHistory $agent_balance_history) {}
 
     /**
      * Update the specified resource in storage.
      *
      * @return void
      */
-    public function update(Request $request, AgentBalanceHistory $agent_balance_history)
-    {
-    }
+    public function update(Request $request, AgentBalanceHistory $agent_balance_history) {}
 
     /**
      * Remove the specified resource from storage.
      *
      * @return void
      */
-    public function destroy(AgentBalanceHistory $agent_balance_history)
-    {
-    }
+    public function destroy(AgentBalanceHistory $agent_balance_history) {}
 }

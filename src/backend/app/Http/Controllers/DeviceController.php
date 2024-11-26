@@ -7,19 +7,14 @@ use App\Http\Resources\ApiResource;
 use App\Models\Device;
 use MPM\Device\DeviceService;
 
-class DeviceController extends Controller
-{
-    public function __construct(private DeviceService $deviceService)
-    {
-    }
+class DeviceController extends Controller {
+    public function __construct(private DeviceService $deviceService) {}
 
-    public function index()
-    {
+    public function index() {
         return ApiResource::make($this->deviceService->getAll());
     }
 
-    public function update(Device $device, UpdateDeviceRequest $request): ApiResource
-    {
+    public function update(Device $device, UpdateDeviceRequest $request): ApiResource {
         $creatorId = auth('api')->user()->id;
         $previousOwner = $device->person_id;
         $newOwner = $request->input('person_id');

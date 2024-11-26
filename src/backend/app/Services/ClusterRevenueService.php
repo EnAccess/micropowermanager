@@ -8,14 +8,12 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class ClusterRevenueService
-{
+class ClusterRevenueService {
     public function __construct(
         private PeriodService $periodService,
         private Cluster $cluster,
         private Transaction $transaction,
-    ) {
-    }
+    ) {}
 
     public function getTransactionsForMonthlyPeriodById(
         $clusterId,
@@ -63,8 +61,7 @@ class ClusterRevenueService
             ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\')'))->get();
     }
 
-    public function getTransactionsForWeeklyPeriod($clusterId, $period, $connectionType = null)
-    {
+    public function getTransactionsForWeeklyPeriod($clusterId, $period, $connectionType = null) {
         return $this->transaction->newQuery()
             ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
             ->whereHas(
@@ -240,8 +237,7 @@ class ClusterRevenueService
     /**
      * @throws \Exception
      */
-    public function getMonthlyMiniGridBasedRevenueById($clusterId)
-    {
+    public function getMonthlyMiniGridBasedRevenueById($clusterId) {
         $startDate = date('Y-01-01');
         $endDate = date('Y-m-t');
         $period = 'monthly';
@@ -309,8 +305,7 @@ class ClusterRevenueService
         return $miniGrids;
     }
 
-    public function setDatesForRequest($startDate, $endDate): array
-    {
+    public function setDatesForRequest($startDate, $endDate): array {
         if (!$startDate) {
             $start = new \DateTime();
             $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
@@ -323,8 +318,7 @@ class ClusterRevenueService
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }
 
-    public function setDateRangeForRequest($startDate, $endDate): array
-    {
+    public function setDateRangeForRequest($startDate, $endDate): array {
         $dateRange = [];
         if ($startDate !== null && $endDate !== null) {
             $dateRange[0] = $startDate;

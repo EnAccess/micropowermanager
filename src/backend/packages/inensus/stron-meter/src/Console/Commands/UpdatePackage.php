@@ -7,8 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Inensus\StronMeter\Services\StronCredentialService;
 
-class UpdatePackage extends Command
-{
+class UpdatePackage extends Command {
     protected $signature = 'stron-meter:update';
 
     protected $description = 'Update StronMeter Package';
@@ -20,8 +19,7 @@ class UpdatePackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Stron Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
@@ -33,20 +31,17 @@ class UpdatePackage extends Command
         $this->info('Package updated successfully..');
     }
 
-    private function removeOldVersionOfPackage()
-    {
+    private function removeOldVersionOfPackage() {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/stron-meter');
     }
 
-    private function installNewVersionOfPackage()
-    {
+    private function installNewVersionOfPackage() {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/stron-meter');
     }
 
-    private function deleteMigration(Filesystem $filesystem)
-    {
+    private function deleteMigration(Filesystem $filesystem) {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_calin_smart_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -58,8 +53,7 @@ class UpdatePackage extends Command
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain()
-    {
+    private function publishMigrationsAgain() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",
@@ -67,14 +61,12 @@ class UpdatePackage extends Command
         ]);
     }
 
-    private function updateDatabase()
-    {
+    private function updateDatabase() {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFilesAgain()
-    {
+    private function publishVueFilesAgain() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\StronMeter\Providers\StronMeterServiceProvider",

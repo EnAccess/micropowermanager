@@ -12,14 +12,12 @@ use Illuminate\Http\Request;
 /**
  * Class RestrictionMiddleware.
  */
-class RestrictionMiddleware
-{
+class RestrictionMiddleware {
     public function __construct(
         private RestrictionService $restrictionService,
         private MaintenanceUserService $maintenanceUserService,
         private MiniGridService $miniGridService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
@@ -29,8 +27,7 @@ class RestrictionMiddleware
      *
      * @return mixed
      */
-    public function handle($request, \Closure $next, $target)
-    {
+    public function handle($request, \Closure $next, $target) {
         try {
             $restriction = $this->restrictionService->getRestrictionForTarget($target);
             $restrictionResult = $this->handleRestriction($restriction->limit, $target, $request);
@@ -55,8 +52,7 @@ class RestrictionMiddleware
         return $next($request);
     }
 
-    private function handleRestriction(int $limit, $target, Request $request): bool
-    {
+    private function handleRestriction(int $limit, $target, Request $request): bool {
         if ($target === 'maintenance-user') {
             if ($this->maintenanceUserService->getMaintenanceUsersCount() >= $limit) {
                 return false;

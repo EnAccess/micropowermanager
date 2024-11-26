@@ -5,17 +5,14 @@ namespace App\Services;
 use Illuminate\Mail\MailManager;
 use Illuminate\Mail\Message;
 
-class MailService
-{
+class MailService {
     private MailManager $mailManager;
 
-    public function __construct(MailManager $mailManager)
-    {
+    public function __construct(MailManager $mailManager) {
         $this->mailManager = $mailManager;
     }
 
-    public function sendWithAttachment(string $view, array $viewData, array $mailMeta, array $attachments)
-    {
+    public function sendWithAttachment(string $view, array $viewData, array $mailMeta, array $attachments) {
         $this->mailManager->send($view, $viewData, function (Message $message) use ($attachments, $mailMeta) {
             $message->to($mailMeta['to'])
                 ->from($mailMeta['from'])

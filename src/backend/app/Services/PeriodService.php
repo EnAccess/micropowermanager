@@ -2,15 +2,13 @@
 
 namespace App\Services;
 
-class PeriodService
-{
+class PeriodService {
     /**
      * @param (int|int[])[]|int $initialData
      *
      * @throws \Exception
      */
-    public function generatePeriodicList(string $startDate, string $endDate, string $interval, $initialData): array
-    {
+    public function generatePeriodicList(string $startDate, string $endDate, string $interval, $initialData): array {
         $result = [];
         $begin = date_create($startDate);
         $end = date_create($endDate);

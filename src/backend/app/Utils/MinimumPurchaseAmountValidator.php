@@ -4,14 +4,12 @@ namespace App\Utils;
 
 use App\Misc\TransactionDataContainer;
 
-class MinimumPurchaseAmountValidator
-{
+class MinimumPurchaseAmountValidator {
     private float $restAmount;
 
     private TransactionDataContainer $transactionData;
 
-    public function validate(TransactionDataContainer $transactionData, $minimumPurchaseAmount): bool
-    {
+    public function validate(TransactionDataContainer $transactionData, $minimumPurchaseAmount): bool {
         $this->transactionData = $transactionData;
         $this->restAmount = $this->transactionData->transaction->amount;
 

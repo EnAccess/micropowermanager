@@ -9,16 +9,13 @@ use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 use Inensus\MicroStarMeter\Modules\Api\Utils\ResponseResolver;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
         private ResponseResolver $responseResolver,
-    ) {
-    }
+    ) {}
 
-    public function get(MicroStarCredential $credentials, array $params, string $slug)
-    {
+    public function get(MicroStarCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -45,8 +42,7 @@ class ApiRequests
         }
     }
 
-    public function testGet()
-    {
+    public function testGet() {
         // ti1 = 1 phase 2 = 3 phase
 
         $url = 'https://ympt.microstarelectric.com';

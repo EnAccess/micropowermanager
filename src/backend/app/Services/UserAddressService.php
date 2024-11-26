@@ -5,20 +5,17 @@ namespace App\Services;
 use App\Models\Address\Address;
 use App\Models\User;
 
-class UserAddressService
-{
+class UserAddressService {
     private $address;
 
     private $user;
 
-    public function __construct(Address $address, User $user)
-    {
+    public function __construct(Address $address, User $user) {
         $this->address = $address;
         $this->user = $user;
     }
 
-    public function create(User $user, $data)
-    {
+    public function create(User $user, $data) {
         $address = $this->address->newQuery()->create([
             'email' => $data['email'] ?? '',
             'phone' => $data['phone'] ?? '',
@@ -33,8 +30,7 @@ class UserAddressService
         return $address->with(['city']);
     }
 
-    public function update(User $user, $data)
-    {
+    public function update(User $user, $data) {
         $user->name = $data['name'];
         $user->update();
         $address = $user->address()->first();

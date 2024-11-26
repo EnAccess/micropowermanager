@@ -4,14 +4,12 @@ namespace MPM\Transaction\Export;
 
 use App\Services\AbstractExportService;
 
-class TransactionExportService extends AbstractExportService
-{
+class TransactionExportService extends AbstractExportService {
     private $path = __DIR__.'/export_transactions_template.xlsx';
 
     private $transactionData;
 
-    public function writeTransactionData(): void
-    {
+    public function writeTransactionData(): void {
         $this->setActivatedSheet('Sheet1');
 
         foreach ($this->exportingData as $key => $value) {
@@ -29,8 +27,7 @@ class TransactionExportService extends AbstractExportService
         }
     }
 
-    public function setExportingData(): void
-    {
+    public function setExportingData(): void {
         $this->exportingData = $this->transactionData->map(function ($transaction) {
             $status = $transaction->originalTransaction->status == 1 ? 'Success' : ($transaction->status == 0 ? 'Pending' : 'Failed');
             $readableAmount = $this->readable($transaction->amount);
@@ -47,18 +44,15 @@ class TransactionExportService extends AbstractExportService
         });
     }
 
-    public function setTransactionData($transactionData): void
-    {
+    public function setTransactionData($transactionData): void {
         $this->transactionData = $transactionData;
     }
 
-    public function getTemplatePath(): string
-    {
+    public function getTemplatePath(): string {
         return storage_path('transaction/export_transactions_template.xlsx');
     }
 
-    public function getPrefix(): string
-    {
+    public function getPrefix(): string {
         return 'TransactionExport';
     }
 }

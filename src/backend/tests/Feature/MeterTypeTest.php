@@ -5,12 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class MeterTypeTest extends TestCase
-{
+class MeterTypeTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsMeterTypeList()
-    {
+    public function testUserGetsMeterTypeList() {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
         $meterTypeCount = 5;
@@ -24,8 +22,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->meterTypes));
     }
 
-    public function testUserGetsMeterTypeById()
-    {
+    public function testUserGetsMeterTypeById() {
         $connectionTypeCount = 1;
         $subConnectionTypeCount = 1;
         $meterTypeCount = 5;
@@ -40,8 +37,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $this->meterTypes[0]->phase);
     }
 
-    public function testUserCreatesNewMeterType()
-    {
+    public function testUserCreatesNewMeterType() {
         $connectionTypeCount = 0;
         $subConnectionTypeCount = 0;
         $meterTypeCount = 0;
@@ -61,8 +57,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $meterTypeData['phase']);
     }
 
-    public function testUserUpdatesAMeterType()
-    {
+    public function testUserUpdatesAMeterType() {
         $meterTypeCount = 1;
         $meterTariffCount = 1;
         $this->createTestData();
@@ -81,8 +76,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals($response['data']['phase'], $meterTypeData['phase']);
     }
 
-    public function testUserGetsMeterTypesWithMeterRelationByMeterTypeId()
-    {
+    public function testUserGetsMeterTypesWithMeterRelationByMeterTypeId() {
         $connectionTypeCount = 2;
         $this->createTestData();
         $this->createMeterTariff();
@@ -100,8 +94,7 @@ class MeterTypeTest extends TestCase
         $this->assertEquals(count($response['data']['meters']), 1);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

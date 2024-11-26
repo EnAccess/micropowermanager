@@ -13,10 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $expires
  * @property string $transaction_id
  */
-class Subscription extends BaseModel
-{
-    public function upgrade(): BelongsTo
-    {
+class Subscription extends BaseModel {
+    public function upgrade(): BelongsTo {
         return $this->belongsTo(Upgrade::class);
     }
 }

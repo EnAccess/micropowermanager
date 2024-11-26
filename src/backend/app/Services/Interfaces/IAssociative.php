@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @template T of Model
  */
-interface IAssociative
-{
+interface IAssociative {
     public function make(array $data): Model;
 
     /**

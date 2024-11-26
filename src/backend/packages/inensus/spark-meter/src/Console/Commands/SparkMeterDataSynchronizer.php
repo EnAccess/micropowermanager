@@ -20,8 +20,7 @@ use Inensus\SparkMeter\Services\SmSyncSettingService;
 use Inensus\SparkMeter\Services\TariffService;
 use Inensus\SparkMeter\Services\TransactionService;
 
-class SparkMeterDataSynchronizer extends AbstractSharedCommand
-{
+class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
 
     public const MPM_PLUGIN_ID = 2;
@@ -44,8 +43,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

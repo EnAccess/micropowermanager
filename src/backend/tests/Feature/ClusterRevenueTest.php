@@ -28,8 +28,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ClusterRevenueTest extends TestCase
-{
+class ClusterRevenueTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -59,8 +58,7 @@ class ClusterRevenueTest extends TestCase
 
     private $clusterIds = [];
 
-    public function testUserGetsClustersRevenueMonthly()
-    {
+    public function testUserGetsClustersRevenueMonthly() {
         $clusterCount = 2;
         $meterCount = 3;
         $transactionCount = 4;
@@ -73,8 +71,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function testUserGetsClustersRevenueWeekly()
-    {
+    public function testUserGetsClustersRevenueWeekly() {
         $clusterCount = 1;
         $meterCount = 5;
         $transactionCount = 2;
@@ -87,8 +84,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function testUserGetsRevenueInConnectionTypesAnalysisForCluster()
-    {
+    public function testUserGetsRevenueInConnectionTypesAnalysisForCluster() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 1;
@@ -100,8 +96,7 @@ class ClusterRevenueTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testUserGetsMiniGridRevenueMonthlyForCluster()
-    {
+    public function testUserGetsMiniGridRevenueMonthlyForCluster() {
         $clusterCount = 1;
         $meterCount = 1;
         $transactionCount = 1;
@@ -117,8 +112,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    public function testUserGetsMiniGridRevenueWeeklyForCluster()
-    {
+    public function testUserGetsMiniGridRevenueWeeklyForCluster() {
         $clusterCount = 1;
         $meterCount = 1;
         $transactionCount = 1;
@@ -134,8 +128,7 @@ class ClusterRevenueTest extends TestCase
         $this->assertEquals($totalRevenue, $this->getTotalTransactionAmount());
     }
 
-    protected function getTotalTransactionAmount()
-    {
+    protected function getTotalTransactionAmount() {
         $clusterIds = $this->clusterIds;
 
         return Transaction::query()
@@ -168,8 +161,7 @@ class ClusterRevenueTest extends TestCase
             )->get()->pluck('amount')->sum();
     }
 
-    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->city = CityFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
@@ -292,8 +284,7 @@ class ClusterRevenueTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -301,8 +292,7 @@ class ClusterRevenueTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber();
     }

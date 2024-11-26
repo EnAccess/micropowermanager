@@ -17,8 +17,7 @@ use Inensus\SparkMeter\Services\TransactionService;
 use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
-class SparkMeterSmsNotifier extends AbstractSharedCommand
-{
+class SparkMeterSmsNotifier extends AbstractSharedCommand {
     use ScheduledPluginCommand;
 
     public const MPM_PLUGIN_ID = 2;
@@ -56,8 +55,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         $this->smsService = $smsService;
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
-    {
+    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
         $this->smTransactionService->getSparkTransactions($transactionMin)
             ->each(function ($smTransaction) use (
                 $smsNotifiedCustomers,
@@ -98,8 +96,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin)
-    {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin) {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
@@ -130,8 +127,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         });
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

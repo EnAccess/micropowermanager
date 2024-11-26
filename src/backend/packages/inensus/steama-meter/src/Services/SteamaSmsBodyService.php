@@ -4,27 +4,22 @@ namespace Inensus\SteamaMeter\Services;
 
 use Inensus\SteamaMeter\Models\SteamaSmsBody;
 
-class SteamaSmsBodyService
-{
+class SteamaSmsBodyService {
     private $smsBody;
 
-    public function __construct(SteamaSmsBody $smsBody)
-    {
+    public function __construct(SteamaSmsBody $smsBody) {
         $this->smsBody = $smsBody;
     }
 
-    public function getSmsBodyByReference($reference)
-    {
+    public function getSmsBodyByReference($reference) {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
-    public function getSmsBodies()
-    {
+    public function getSmsBodies() {
         return $this->smsBody->newQuery()->get();
     }
 
-    public function updateSmsBodies($smsBodiesData)
-    {
+    public function updateSmsBodies($smsBodiesData) {
         $smsBodies = $this->smsBody->newQuery()->get();
         collect($smsBodiesData)->each(function ($smsBody) use ($smsBodies) {
             $smsBodies->filter(function ($body) use ($smsBody) {
@@ -37,13 +32,11 @@ class SteamaSmsBodyService
         return $smsBodies;
     }
 
-    public function getNullBodies()
-    {
+    public function getNullBodies() {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
 
-    public function createSmsBodies()
-    {
+    public function createSmsBodies() {
         $smsBodies = [
             [
                 'reference' => 'SteamaSmsLowBalanceHeader',

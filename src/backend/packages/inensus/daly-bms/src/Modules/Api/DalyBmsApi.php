@@ -13,8 +13,7 @@ use Inensus\DalyBms\Models\DalyBmsTransaction;
 use Inensus\DalyBms\Services\DalyBmsCredentialService;
 use MPM\EBike\EBikeService;
 
-class DalyBmsApi implements IManufacturerAPI
-{
+class DalyBmsApi implements IManufacturerAPI {
     // works with query params
     public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
 
@@ -29,11 +28,9 @@ class DalyBmsApi implements IManufacturerAPI
         private DalyBmsTransaction $dalyBmsTransaction,
         private EBikeService $eBikeService,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
-    public function getDevices(array $deviceSerials)
-    {
+    public function getDevices(array $deviceSerials) {
         $params = [
             'codes' => $deviceSerials,
         ];
@@ -56,8 +53,7 @@ class DalyBmsApi implements IManufacturerAPI
         }
     }
 
-    public function getDevice(string $code)
-    {
+    public function getDevice(string $code) {
         $params = [
             'Code' => $code,
         ];
@@ -79,8 +75,7 @@ class DalyBmsApi implements IManufacturerAPI
         }
     }
 
-    public function switchDevice(string $code, bool $isOn)
-    {
+    public function switchDevice(string $code, bool $isOn) {
         $params = [
             'cmdKey' => '8500_004',
             'data' => [
@@ -103,8 +98,7 @@ class DalyBmsApi implements IManufacturerAPI
         }
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $transactionId = $transactionContainer->transaction->id;
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
@@ -153,8 +147,7 @@ class DalyBmsApi implements IManufacturerAPI
         ];
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

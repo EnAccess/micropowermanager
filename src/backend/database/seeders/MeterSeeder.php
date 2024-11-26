@@ -16,8 +16,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class MeterSeeder extends Seeder
-{
+class MeterSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -29,8 +28,7 @@ class MeterSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         // Manufacturer
         // Here, we adding some dummy Manufacturers for seeding.
         // Additional (actual) manufacturers can be added by

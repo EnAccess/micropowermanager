@@ -2,15 +2,12 @@
 
 namespace Inensus\KelinMeter\Services;
 
-class PackageInstallationService
-{
+class PackageInstallationService {
     public function __construct(
         private KelinSyncSettingService $syncSettingService,
-    ) {
-    }
+    ) {}
 
-    public function createDefaultSettingRecords()
-    {
+    public function createDefaultSettingRecords() {
         $this->syncSettingService->createDefaultSettings();
     }
 }

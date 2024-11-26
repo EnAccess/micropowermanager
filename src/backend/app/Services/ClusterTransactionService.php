@@ -5,14 +5,10 @@ namespace App\Services;
 use App\Models\Cluster;
 use App\Models\Transaction\Transaction;
 
-class ClusterTransactionService
-{
-    public function __construct(private Cluster $cluster, private Transaction $transaction)
-    {
-    }
+class ClusterTransactionService {
+    public function __construct(private Cluster $cluster, private Transaction $transaction) {}
 
-    public function getById($clusterId, array $range)
-    {
+    public function getById($clusterId, array $range) {
         return $this->transaction->newQuery()->whereHas(
             'device',
             function ($q) use ($clusterId) {

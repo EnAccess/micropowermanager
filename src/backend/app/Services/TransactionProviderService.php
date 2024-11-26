@@ -4,20 +4,17 @@ namespace App\Services;
 
 use App\Models\Transaction\Transaction;
 
-class TransactionProviderService
-{
+class TransactionProviderService {
     private $transaction;
 
     /**
      * TransactionProviderService constructor.
      */
-    public function __construct(Transaction $transaction)
-    {
+    public function __construct(Transaction $transaction) {
         $this->transaction = $transaction;
     }
 
-    public function getTransactionProviders()
-    {
+    public function getTransactionProviders() {
         return $this->transaction->withAll('BelongsToMorph');
     }
 }

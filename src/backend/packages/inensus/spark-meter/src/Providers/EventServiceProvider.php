@@ -7,8 +7,7 @@ use Inensus\SparkMeter\Listeners\MeterParameterListener;
 use Inensus\SparkMeter\Listeners\SmsListener;
 use Inensus\SparkMeter\Listeners\TransactionListener;
 
-class EventServiceProvider extends ServiceProvider
-{
+class EventServiceProvider extends ServiceProvider {
     protected $subscribe = [
         //  MeterParameterListener::class,
         //  TransactionListener::class,
@@ -20,8 +19,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
     }
 }

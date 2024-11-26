@@ -5,8 +5,7 @@ namespace Inensus\MesombPaymentProvider\Services;
 use App\Models\Transaction\Transaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 
-class MesomTransactionService
-{
+class MesomTransactionService {
     private $mesombTransaction;
 
     private $transaction;
@@ -19,8 +18,7 @@ class MesomTransactionService
         $this->transaction = $transaction;
     }
 
-    public function assignIncomingDataToMesombTransaction(array $data)
-    {
+    public function assignIncomingDataToMesombTransaction(array $data) {
         return $this->mesombTransaction->newQuery()->create([
             'pk' => $data['pk'],
             'type' => $data['type'],
@@ -33,8 +31,7 @@ class MesomTransactionService
         ]);
     }
 
-    public function assignIncomingDataToTransaction(array $data)
-    {
+    public function assignIncomingDataToTransaction(array $data) {
         return $this->transaction->newQuery()->make([
             'amount' => (int) $data['amount'],
             'sender' => $data['b_party'],
@@ -44,8 +41,7 @@ class MesomTransactionService
         ]);
     }
 
-    public function associateMesombTransactionWithTransaction($mesombTransaction, $transaction)
-    {
+    public function associateMesombTransactionWithTransaction($mesombTransaction, $transaction) {
         return $mesombTransaction->transaction()->save($transaction);
     }
 }

@@ -5,15 +5,13 @@ namespace App\Http\Requests;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTargetRequest extends FormRequest
-{
+class CreateTargetRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'data' => 'required',
             'period' => 'required',
@@ -22,23 +20,19 @@ class CreateTargetRequest extends FormRequest
         ];
     }
 
-    public function getTargetForType(): string
-    {
+    public function getTargetForType(): string {
         return $this->input('targetForType');
     }
 
-    public function getTargetForId(): int
-    {
+    public function getTargetForId(): int {
         return $this->input('targetForId');
     }
 
-    public function getData(): array
-    {
+    public function getData(): array {
         return $this->input('data');
     }
 
-    public function getPeriod(): CarbonImmutable
-    {
+    public function getPeriod(): CarbonImmutable {
         return CarbonImmutable::parse($this->input('period'));
     }
 }

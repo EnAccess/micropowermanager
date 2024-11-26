@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inensus\StronMeter\Helpers\ApiHelpers;
 use Inensus\StronMeter\Models\StronCredential;
 
-class StronMeterApiRequests
-{
+class StronMeterApiRequests {
     private $client;
 
     private $apiHelpers;
@@ -25,8 +24,7 @@ class StronMeterApiRequests
         $this->credential = $credentialModel;
     }
 
-    public function token($url, $postParams)
-    {
+    public function token($url, $postParams) {
         try {
             $credential = $this->getCredentials();
         } catch (ModelNotFoundException $e) {
@@ -45,8 +43,7 @@ class StronMeterApiRequests
         return $this->apiHelpers->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class MeterTariffTest extends TestCase
-{
+class MeterTariffTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsMeterTariffList()
-    {
+    public function testUserGetsMeterTariffList() {
         $this->createTestData();
         $meterTariffCount = 5;
         $this->createMeterTariff($meterTariffCount);
@@ -25,8 +23,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->meterTariffs));
     }
 
-    public function testUserGetsMeterTariffById()
-    {
+    public function testUserGetsMeterTariffById() {
         $this->createTestData();
         $this->createMeterTariff();
         $response = $this->actingAs($this->user)->get(sprintf('/api/tariffs/%s', $this->meterTariffs[0]->id));
@@ -34,8 +31,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->meterTariffs[0]->id);
     }
 
-    public function testUserUpdatesAMeterTariff()
-    {
+    public function testUserUpdatesAMeterTariff() {
         Queue::fake();
         $this->createTestData();
         $this->createMeterTariff();
@@ -80,8 +76,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($this->meterTariffs[0]->id, AccessRate::query()->first()->tariff_id);
     }
 
-    public function testUserCreatesBasicTariff(): void
-    {
+    public function testUserCreatesBasicTariff(): void {
         $this->createTestData();
         $tariffData = [
             'name' => 'Tariff',
@@ -95,8 +90,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(10000, MeterTariff::first()->total_price);
     }
 
-    public function testUserCreatesTariffWithPriceComponents(): void
-    {
+    public function testUserCreatesTariffWithPriceComponents(): void {
         Queue::fake();
         $this->createTestData();
         $tariffData = [
@@ -116,8 +110,7 @@ class MeterTariffTest extends TestCase
         $this->assertCount(1, MeterTariff::all());
     }
 
-    public function testUserCreatesTariffWithSocialInputs(): void
-    {
+    public function testUserCreatesTariffWithSocialInputs(): void {
         $this->createTestData();
         $tariffData = [
             'name' => 'Tariff',
@@ -137,8 +130,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, SocialTariff::query()->first()->tariff_id);
     }
 
-    public function testUserCreatesTariffWithTimeOfUsages(): void
-    {
+    public function testUserCreatesTariffWithTimeOfUsages(): void {
         $this->createTestData();
         $tariffData = [
             'name' => 'Test Tariff',
@@ -166,8 +158,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, TimeOfUsage::query()->first()->tariff_id);
     }
 
-    public function testUserCreatesTariffWithAccessRate(): void
-    {
+    public function testUserCreatesTariffWithAccessRate(): void {
         $this->createTestData();
         $tariffData = [
             'name' => 'Test Tariff',
@@ -185,8 +176,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals(MeterTariff::query()->first()->id, AccessRate::query()->first()->tariff_id);
     }
 
-    public function testUserGetsMeterListForATariff(): void
-    {
+    public function testUserGetsMeterListForATariff(): void {
         $this->createTestData();
         $this->createMeterManufacturer();
         $this->createMeterType();
@@ -205,8 +195,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($response['data']['count'], $meterCount);
     }
 
-    public function testComponentPriceChangesTotalPrice(): void
-    {
+    public function testComponentPriceChangesTotalPrice(): void {
         $this->createTestData();
         $this->createMeterTariff();
         $tariff = $this->meterTariff;
@@ -224,8 +213,7 @@ class MeterTariffTest extends TestCase
         $this->assertEquals($tariffPrice + 200000, $updatedTariff->total_price);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

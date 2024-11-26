@@ -7,8 +7,7 @@ use App\Models\History;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-class HistoryListener
-{
+class HistoryListener {
     /**
      * @var History
      */
@@ -17,8 +16,7 @@ class HistoryListener
     /**
      * Create the event listener.
      */
-    public function __construct(History $historyModel)
-    {
+    public function __construct(History $historyModel) {
         $this->historyModel = $historyModel;
     }
 
@@ -28,8 +26,7 @@ class HistoryListener
      * @param mixed  $data    is an object which should be stored on the histories table
      * @param string $content the stringified message about the entry
      */
-    public function save($data, string $content, string $type, ?string $field): void
-    {
+    public function save($data, string $content, string $type, ?string $field): void {
         $this->historyModel->target()->associate($data);
         $this->historyModel->content = $content;
         $this->historyModel->action = $type;
@@ -39,8 +36,7 @@ class HistoryListener
         broadcast(new HistoryEvent($this->historyModel));
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('history.create', 'App\Listeners\HistoryListener@save');
         $events->listen(
             'history.hearth.beat',

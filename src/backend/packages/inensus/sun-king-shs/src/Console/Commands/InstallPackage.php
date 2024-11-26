@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\SunKingSHS\Services\ManufacturerService;
 use Inensus\SunKingSHS\Services\SunKingCredentialService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'sun-king-shs:install';
 
     protected $description = 'Install SunKingSHS Package';
@@ -19,8 +18,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing SunKingSHS Integration Package\n');
 
         $this->manufacturerService->register();
@@ -28,8 +26,7 @@ class InstallPackage extends Command
         $this->info('Package installed successfully..');
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
@@ -37,14 +34,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SunKingSHS\Providers\SunKingSHSServiceProvider",
@@ -52,8 +47,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'SunKingSHS',
             'composer_name' => 'inensus/sun-king-shs',

@@ -23,13 +23,11 @@ use Inensus\KelinMeter\Models\KelinCredential;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Tests\TestCase;
 
-class RechargeMeterTest extends TestCase
-{
+class RechargeMeterTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function testTokenGeneration()
-    {
+    public function testTokenGeneration() {
         Queue::fake();
         $this->initData();
         $t = Transaction::create([
@@ -47,8 +45,7 @@ class RechargeMeterTest extends TestCase
         $this->assertEquals(1, MeterToken::query()->get()->count());
     }
 
-    private function initData()
-    {
+    private function initData() {
         KelinCredential::query()->create([
             'id' => 1,
             'api_url' => 'http://222.222.60.178:62189/EI',

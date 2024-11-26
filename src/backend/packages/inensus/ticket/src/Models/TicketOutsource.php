@@ -2,12 +2,10 @@
 
 namespace Inensus\Ticket\Models;
 
-class TicketOutsource extends BaseModel
-{
+class TicketOutsource extends BaseModel {
     protected $table = 'ticket_outsources';
 
-    public function ticket()
-    {
+    public function ticket() {
         return $this->belongsTo(Ticket::class);
     }
 }

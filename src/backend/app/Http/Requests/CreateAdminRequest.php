@@ -7,15 +7,13 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * Class CreateUserRequest.
  */
-class CreateAdminRequest extends FormRequest
-{
+class CreateAdminRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -24,8 +22,7 @@ class CreateAdminRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'email' => 'required',
             'name' => 'required|min:3',

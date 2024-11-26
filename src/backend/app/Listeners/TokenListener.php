@@ -10,8 +10,7 @@ use App\Sms\SmsTypes;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-class TokenListener
-{
+class TokenListener {
     private $token;
 
     protected $tokenData;
@@ -21,13 +20,11 @@ class TokenListener
      *
      * @return void
      */
-    public function __construct(MeterToken $token)
-    {
+    public function __construct(MeterToken $token) {
         $this->token = $token;
     }
 
-    public function generateToken(TransactionDataContainer $transactionContainer): void
-    {
+    public function generateToken(TransactionDataContainer $transactionContainer): void {
         $api = null;
         // get Manufacturer APi
         try {
@@ -87,8 +84,7 @@ class TokenListener
         );
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('token.generate', '\App\Listeners\TokenListener@generateToken');
     }
 }

@@ -18,8 +18,7 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 /**
  * @implements IBaseService<SwiftaTransaction>
  */
-class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
-{
+class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
     public function __construct(
         private Meter $meter,
         private Address $address,
@@ -36,8 +35,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         );
     }
 
-    public function initializeTransactionData($data): array
-    {
+    public function initializeTransactionData($data): array {
         return [
             'amount' => $data['amount'],
             'cipher' => $data['cipher'],
@@ -46,8 +44,7 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         ];
     }
 
-    public function setRequestedTransactionsStatusFailed()
-    {
+    public function setRequestedTransactionsStatusFailed() {
         $this->swiftaTransaction->newQuery()->where('status', SwiftaTransaction::STATUS_REQUESTED)->get()->each(function ($transaction) {
             $transaction->update([
                 'status' => SwiftaTransaction::STATUS_FAILED,
@@ -61,13 +58,11 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         });
     }
 
-    public function getSwiftaTransaction()
-    {
+    public function getSwiftaTransaction() {
         return $this->getPaymentAggregatorTransaction();
     }
 
-    public function getTransactionById($transactionId)
-    {
+    public function getTransactionById($transactionId) {
         try {
             return $this->transaction->newQuery()->findOrFail($transactionId);
         } catch (ModelNotFoundException $exception) {
@@ -75,38 +70,32 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         }
     }
 
-    public function checkAmountIsSame($amount, $transaction)
-    {
+    public function checkAmountIsSame($amount, $transaction) {
         if ($amount != (int) $transaction->amount) {
             throw new \Exception('amount validation field.');
         }
     }
 
-    public function getById(?int $id): SwiftaTransaction
-    {
+    public function getById(?int $id): SwiftaTransaction {
         return $this->swiftaTransaction->newQuery()->find($id);
     }
 
-    public function update($swiftaTransaction, $swiftaTransactionData): SwiftaTransaction
-    {
+    public function update($swiftaTransaction, $swiftaTransactionData): SwiftaTransaction {
         $swiftaTransaction->update($swiftaTransactionData);
         $swiftaTransaction->fresh();
 
         return $swiftaTransaction;
     }
 
-    public function create(array $swiftaTransactionData): SwiftaTransaction
-    {
+    public function create(array $swiftaTransactionData): SwiftaTransaction {
         return $this->swiftaTransaction->newQuery()->create($swiftaTransactionData);
     }
 
-    public function delete($swiftaTransaction): ?bool
-    {
+    public function delete($swiftaTransaction): ?bool {
         return $swiftaTransaction->delete();
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->swiftaTransaction->newQuery();
 
         if ($limit) {

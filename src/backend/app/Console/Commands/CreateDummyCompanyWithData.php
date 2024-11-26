@@ -7,8 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class CreateDummyCompanyWithData extends Command
-{
+class CreateDummyCompanyWithData extends Command {
     public const SQL_DUMMY_DATA_FILE_NAMES = [
         'dummy_agent_data.sql',
         'dummy_data.sql',
@@ -46,8 +45,7 @@ class CreateDummyCompanyWithData extends Command
         parent::__construct();
     }
 
-    public function handle()
-    {
+    public function handle() {
         try {
             foreach (self::SQL_DUMMY_DATA_FILE_NAMES as $sqlFile) {
                 $path = __DIR__.'/../../../database/dummyData/'.$sqlFile;
@@ -67,8 +65,7 @@ class CreateDummyCompanyWithData extends Command
         }
     }
 
-    private function importSqlDump($path, $databaseName)
-    {
+    private function importSqlDump($path, $databaseName) {
         try {
             DB::select("USE $databaseName");
             $sql = file_get_contents($path);

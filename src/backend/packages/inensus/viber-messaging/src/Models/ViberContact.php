@@ -5,12 +5,10 @@ namespace Inensus\ViberMessaging\Models;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 
-class ViberContact extends BaseModel
-{
+class ViberContact extends BaseModel {
     protected $table = 'viber_contacts';
 
-    public function mpmPerson()
-    {
+    public function mpmPerson() {
         return $this->belongsTo(Person::class, 'person_id');
     }
 }

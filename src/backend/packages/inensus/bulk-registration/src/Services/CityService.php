@@ -5,15 +5,12 @@ namespace Inensus\BulkRegistration\Services;
 use App\Models\City;
 use Inensus\BulkRegistration\Exceptions\VillageNotFoundException;
 
-class CityService extends CreatorService
-{
-    public function __construct(City $city)
-    {
+class CityService extends CreatorService {
+    public function __construct(City $city) {
         parent::__construct($city);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $cityConfig = config('bulk-registration.csv_fields.city');
 
         if (!$csvData[$cityConfig['name']]) {

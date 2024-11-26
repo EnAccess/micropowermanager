@@ -10,8 +10,7 @@ use App\Models\SolarHomeSystem;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class SolarHomeSystemSeeder extends Seeder
-{
+class SolarHomeSystemSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -23,8 +22,7 @@ class SolarHomeSystemSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         // Manufacturer
         // Here, we adding some dummy Manufacturers for seeding.
         // Additional (actual) manufacturers can be added by

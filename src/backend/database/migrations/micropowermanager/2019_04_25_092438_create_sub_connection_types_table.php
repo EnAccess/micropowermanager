@@ -10,8 +10,7 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::connection('shard')->create('sub_connection_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -32,8 +31,7 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::connection('shard')->dropIfExists('sub_connection_types');
     }
 };

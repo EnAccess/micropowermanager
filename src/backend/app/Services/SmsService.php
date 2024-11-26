@@ -14,8 +14,7 @@ use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
 
-class SmsService
-{
+class SmsService {
     public const TICKET = 1;
 
     public const FEEDBACK = 2;
@@ -24,11 +23,9 @@ class SmsService
 
     public function __construct(
         private Sms $sms,
-    ) {
-    }
+    ) {}
 
-    public function checkMessageType($message)
-    {
+    public function checkMessageType($message) {
         $wordsInMessage = explode(' ', $message);
         $firstWord = $wordsInMessage[0];
         switch (strtolower($firstWord)) {
@@ -39,8 +36,7 @@ class SmsService
         }
     }
 
-    public function createAndSendSms($smsData): Sms
-    {
+    public function createAndSendSms($smsData): Sms {
         $sms = $this->createSms($smsData);
 
         $data = [
@@ -52,16 +48,14 @@ class SmsService
         return $sms;
     }
 
-    public function createSms($smsData): Sms
-    {
+    public function createSms($smsData): Sms {
         /** @var Sms $sms */
         $sms = $this->sms->newQuery()->create($smsData);
 
         return $sms;
     }
 
-    private function getSmsAndroidSettings()
-    {
+    private function getSmsAndroidSettings() {
         try {
             return SmsAndroidSetting::getResponsible();
         } catch (SmsAndroidSettingNotExistingException $exception) {
@@ -69,8 +63,7 @@ class SmsService
         }
     }
 
-    public function sendSms($data, $smsType, $smsConfigs)
-    {
+    public function sendSms($data, $smsType, $smsConfigs) {
         try {
             $smsAndroidSettings = $this->getSmsAndroidSettings();
             $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
@@ -93,8 +86,7 @@ class SmsService
         $this->associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings);
     }
 
-    private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings)
-    {
+    private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings) {
         $configs = resolve($smsConfigs);
         if (!array_key_exists($smsType, $configs->smsTypes)) {
             throw new SmsTypeNotFoundException('SmsType could not resolve.');
@@ -114,8 +106,7 @@ class SmsService
         ]);
     }
 
-    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings)
-    {
+    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings) {
         if (!($smsType instanceof ManualSms)) {
             $sms = Sms::query()->make([
                 'uuid' => $uuid,

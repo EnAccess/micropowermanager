@@ -17,8 +17,7 @@ use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
 use Inensus\SteamaMeter\Services\SteamaTariffService;
 use Inensus\SteamaMeter\Services\SteamaUserTypeService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'steama-meter:install';
 
     protected $description = 'Install Steamaco Meter Package';
@@ -41,8 +40,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing Steamaco Meter Integration Package\n');
 
         // $this->publishMigrations();
@@ -66,8 +64,7 @@ class InstallPackage extends Command
         }
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
@@ -75,14 +72,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider",
@@ -91,8 +86,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'SteamaMeter',
             'composer_name' => 'inensus/steama-meter',

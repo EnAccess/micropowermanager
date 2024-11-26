@@ -2,6 +2,4 @@
 
 namespace Inensus\ViberMessaging\Exceptions;
 
-class WebhookNotCreatedException extends \Exception
-{
-}
+class WebhookNotCreatedException extends \Exception {}

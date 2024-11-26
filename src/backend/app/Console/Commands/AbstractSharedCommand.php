@@ -9,8 +9,7 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractSharedCommand extends Command
-{
+abstract class AbstractSharedCommand extends Command {
     protected const EXECUTE_FOR_ONE = 1;
 
     protected const EXECUTE_FOR_ALL = 0;
@@ -20,8 +19,7 @@ abstract class AbstractSharedCommand extends Command
     /**
      * Configure the command.
      */
-    protected function configure(): void
-    {
+    protected function configure(): void {
         parent::configure();
 
         $this->addOption(
@@ -32,8 +30,7 @@ abstract class AbstractSharedCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         /** @var DatabaseProxyManagerService $databaseProxyManagerService */
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 

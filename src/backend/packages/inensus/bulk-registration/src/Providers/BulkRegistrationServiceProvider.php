@@ -8,10 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Inensus\BulkRegistration\Console\Commands\InstallPackage;
 use Inensus\BulkRegistration\Console\Commands\UpdatePackage;
 
-class BulkRegistrationServiceProvider extends ServiceProvider
-{
-    public function boot(Filesystem $filesystem)
-    {
+class BulkRegistrationServiceProvider extends ServiceProvider {
+    public function boot(Filesystem $filesystem) {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -21,8 +19,7 @@ class BulkRegistrationServiceProvider extends ServiceProvider
         }
     }
 
-    public function register()
-    {
+    public function register() {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/bulk-registration.php',
             'bulk-registration'
@@ -34,15 +31,13 @@ class BulkRegistrationServiceProvider extends ServiceProvider
              });*/
     }
 
-    public function publishConfigFiles()
-    {
+    public function publishConfigFiles() {
         $this->publishes([
             __DIR__.'/../../config/bulk-registration.php' => config_path('bulk-registration.php'),
         ], 'configurations');
     }
 
-    public function publishVueFiles()
-    {
+    public function publishVueFiles() {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path(
                 'assets/js/plugins/bulk-registration'
@@ -50,15 +45,13 @@ class BulkRegistrationServiceProvider extends ServiceProvider
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem)
-    {
+    public function publishMigrations($filesystem) {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_bulk_registration_tables.php' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
-    protected function getMigrationFileName(Filesystem $filesystem): string
-    {
+    protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)

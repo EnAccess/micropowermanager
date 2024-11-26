@@ -5,8 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketOutsourceReport;
 
-class TicketOutsourceReportFactory extends Factory
-{
+class TicketOutsourceReportFactory extends Factory {
     protected $model = TicketOutsourceReport::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketOutsourceReportFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'date' => $this->faker->date(),
             'path' => $this->faker->url,

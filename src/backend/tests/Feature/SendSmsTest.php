@@ -23,12 +23,10 @@ use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class SendSmsTest extends TestCase
-{
+class SendSmsTest extends TestCase {
     use RefreshDatabase;
 
-    public function testStoreAndSend()
-    {
+    public function testStoreAndSend() {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData();
@@ -40,8 +38,7 @@ class SendSmsTest extends TestCase
         $this->assertEquals(1, $smsCount);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',
@@ -202,8 +199,7 @@ class SendSmsTest extends TestCase
         return $p;
     }
 
-    private function getData($person, $user): array
-    {
+    private function getData($person, $user): array {
         $data = [
             'person_id' => $person->id,
             'message' => 'Its a dummy message',
@@ -213,8 +209,7 @@ class SendSmsTest extends TestCase
         return $data;
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -222,8 +217,7 @@ class SendSmsTest extends TestCase
         return $this;
     }
 
-    public function testStoreSms()
-    {
+    public function testStoreSms() {
         Queue::fake();
         $this->withoutExceptionHandling();
         $person = $this->initializeData();

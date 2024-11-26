@@ -7,12 +7,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Support\Facades\Artisan;
 
-trait RefreshMultipleDatabases
-{
+trait RefreshMultipleDatabases {
     use RefreshDatabase;
 
-    protected function refreshInMemoryDatabase()
-    {
+    protected function refreshInMemoryDatabase() {
         Artisan::call(
             'migrate:fresh',
             ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']
@@ -25,8 +23,7 @@ trait RefreshMultipleDatabases
         $this->app[Kernel::class]->setArtisan(null);
     }
 
-    protected function refreshTestDatabase()
-    {
+    protected function refreshTestDatabase() {
         if (!RefreshDatabaseState::$migrated) {
             Artisan::call(
                 'migrate:fresh',

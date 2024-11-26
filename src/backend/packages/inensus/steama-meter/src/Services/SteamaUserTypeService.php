@@ -6,8 +6,7 @@ use App\Models\ConnectionType;
 use App\Models\SubConnectionType;
 use Inensus\SteamaMeter\Models\SteamaUserType;
 
-class SteamaUserTypeService
-{
+class SteamaUserTypeService {
     private $connectionType;
 
     private $userType;
@@ -27,8 +26,7 @@ class SteamaUserTypeService
     /**
      * This function uses one time on installation of the package.
      */
-    public function createUserTypes($tariff)
-    {
+    public function createUserTypes($tariff) {
         $connectionTypes = [
             'NA' => 'Not Specified',
             'RES' => 'Residential',

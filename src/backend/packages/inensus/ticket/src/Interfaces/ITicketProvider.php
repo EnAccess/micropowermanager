@@ -2,8 +2,7 @@
 
 namespace Inensus\Ticket\Interfaces;
 
-interface ITicketProvider
-{
+interface ITicketProvider {
     // initializes the ticketing system
     public function initialize();
 

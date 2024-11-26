@@ -33,13 +33,11 @@ use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 use Tests\TestCase;
 
-class SmsNotifyTest extends TestCase
-{
+class SmsNotifyTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isLowBalanceNotifySend()
-    {
+    public function isLowBalanceNotifySend() {
         Queue::fake();
         $this->initializeData();
         $lowBalanceMin = SteamaSmsSetting::query()->where(
@@ -91,8 +89,7 @@ class SmsNotifyTest extends TestCase
     }
 
     /** @test */
-    public function isTransactionNotifySend()
-    {
+    public function isTransactionNotifySend() {
         Queue::fake();
         $data = $this->initializeData();
         $this->initializeSteamaTransaction($data['customer'], $data['meter']);
@@ -148,8 +145,7 @@ class SmsNotifyTest extends TestCase
     }
 
     /** @test */
-    public function isMaxAttemptNotifySend()
-    {
+    public function isMaxAttemptNotifySend() {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
@@ -191,8 +187,7 @@ class SmsNotifyTest extends TestCase
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
@@ -262,8 +257,7 @@ class SmsNotifyTest extends TestCase
         return ['customer' => $p, 'meter' => $steamaMeter];
     }
 
-    private function initializeSteamaTransaction($customer, $steamaMeter)
-    {
+    private function initializeSteamaTransaction($customer, $steamaMeter) {
         $steamaTransaction = SteamaTransaction::query()->create([
             'transaction_id' => '1111',
             'site_id' => 1,
@@ -295,8 +289,7 @@ class SmsNotifyTest extends TestCase
         $transaction->save();
     }
 
-    private function initializeAdminData()
-    {
+    private function initializeAdminData() {
         $user = factory(User::class)->create();
         $address = Address::query()->make([
             'phone' => '+905396398161',
@@ -307,8 +300,7 @@ class SmsNotifyTest extends TestCase
         $address->save();
     }
 
-    private function addSmsSettings()
-    {
+    private function addSmsSettings() {
         $smsSetting = SteamaSetting::query()->make();
 
         $smsTransaction = SteamaSmsSetting::query()->create([
@@ -332,8 +324,7 @@ class SmsNotifyTest extends TestCase
         $balanceSetting->save();
     }
 
-    private function addSyncSettings()
-    {
+    private function addSyncSettings() {
         $minInterval = CarbonInterval::make('1minute');
         $now = Carbon::now();
         $siteSetting = SteamaSetting::query()->make();
@@ -353,8 +344,7 @@ class SmsNotifyTest extends TestCase
         SteamaSyncAction::query()->create($syncAction);
     }
 
-    private function addSmsBodies()
-    {
+    private function addSmsBodies() {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',

@@ -6,12 +6,10 @@ use App\Models\AgentCommission;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AgentCommissionTest extends TestCase
-{
+class AgentCommissionTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsAgentCommissionList()
-    {
+    public function testUserGetsAgentCommissionList() {
         $this->createTestData();
         $agentCommissionCount = 5;
         $this->createAgentCommission($agentCommissionCount);
@@ -20,8 +18,7 @@ class AgentCommissionTest extends TestCase
         $this->assertEquals(count($response['data']), $agentCommissionCount);
     }
 
-    public function testUserCreatesAgentCommission()
-    {
+    public function testUserCreatesAgentCommission() {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -39,8 +36,7 @@ class AgentCommissionTest extends TestCase
         $this->assertEquals($lastCreatedAgentCommission->name, $response['data']['name']);
     }
 
-    public function testUserCanUpdateAnAgentCommission()
-    {
+    public function testUserCanUpdateAnAgentCommission() {
         $this->createTestData();
         $this->createAgentCommission();
         $putData = [
@@ -61,8 +57,7 @@ class AgentCommissionTest extends TestCase
         $this->assertEquals($putData['risk_balance'], $response['data']['risk_balance']);
     }
 
-    public function testUserCanDeleteAnAgent()
-    {
+    public function testUserCanDeleteAnAgent() {
         $this->createTestData();
         $this->createAgentCommission();
         $response = $this->actingAs($this->user)->delete(sprintf('/api/agents/commissions/%s', $this->agentCommissions[0]->id));
@@ -70,8 +65,7 @@ class AgentCommissionTest extends TestCase
         $this->assertEquals(0, $agentsCount);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

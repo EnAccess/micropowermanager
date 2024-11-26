@@ -5,8 +5,7 @@ namespace Inensus\StronMeter\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StronResource extends JsonResource
-{
+class StronResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -14,8 +13,7 @@ class StronResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return parent::toArray($request);
     }
 }

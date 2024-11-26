@@ -25,13 +25,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class SmsProcessorTest extends TestCase
-{
+class SmsProcessorTest extends TestCase {
     /*    ./vendor/bin/phpunit --filter   sms_sending_with_transaction */
     use RefreshDatabase;
 
-    public function testTokenCreationWithValidTransaction()
-    {
+    public function testTokenCreationWithValidTransaction() {
         Queue::fake();
         $transaction = $this->initializeData();
         $transactionContainer = TransactionDataContainer::initialize($transaction);
@@ -43,8 +41,7 @@ class SmsProcessorTest extends TestCase
         Queue::assertPushed(TokenProcessor::class);
     }
 
-    public function testSmsSendingWithTransaction()
-    {
+    public function testSmsSendingWithTransaction() {
         Queue::fake();
         $transaction = $this->initializeData();
         $transaction->sender = '905494322161';
@@ -56,8 +53,7 @@ class SmsProcessorTest extends TestCase
         Queue::assertPushed(SmsProcessor::class);
     }
 
-    public function testSmsSendingWithResendInformationWithNoTransaction()
-    {
+    public function testSmsSendingWithResendInformationWithNoTransaction() {
         Queue::fake();
         $transaction = $this->initializeData();
         $transaction->sender = '905494322161';
@@ -74,8 +70,7 @@ class SmsProcessorTest extends TestCase
         Queue::assertPushed(SmsProcessor::class);
     }
 
-    private function addSmsBodies()
-    {
+    private function addSmsBodies() {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',
@@ -175,8 +170,7 @@ class SmsProcessorTest extends TestCase
         return SmsBody::query()->get();
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         MainSettingsFactory::new()->create();
 

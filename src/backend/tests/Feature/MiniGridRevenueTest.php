@@ -29,8 +29,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class MiniGridRevenueTest extends TestCase
-{
+class MiniGridRevenueTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -64,8 +63,7 @@ class MiniGridRevenueTest extends TestCase
 
     private $soldEnergy;
 
-    public function testUserGetsSoldEnergyOfAMiniGridWithDefaultPeriod()
-    {
+    public function testUserGetsSoldEnergyOfAMiniGridWithDefaultPeriod() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 1;
@@ -77,8 +75,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($soldEnergy, round($this->soldEnergy, 3));
     }
 
-    public function testUserGetsSoldEnergyOfAMiniGridWithPeriod()
-    {
+    public function testUserGetsSoldEnergyOfAMiniGridWithPeriod() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 1;
@@ -94,8 +91,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($soldEnergy, round($this->soldEnergy, 3));
     }
 
-    public function testUserGetsTransactionRevenuesOfAMiniGridWithDefaultPeriod()
-    {
+    public function testUserGetsTransactionRevenuesOfAMiniGridWithDefaultPeriod() {
         $this->withExceptionHandling();
         $clusterCount = 1;
         $meterCount = 2;
@@ -108,8 +104,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($revenue, $this->getTotalTransactionAmount());
     }
 
-    public function testUserGetsTransactionRevenuesOfAMiniGridWithPeriod()
-    {
+    public function testUserGetsTransactionRevenuesOfAMiniGridWithPeriod() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 1;
@@ -126,8 +121,7 @@ class MiniGridRevenueTest extends TestCase
         $this->assertEquals($revenue, $this->getTotalTransactionAmount());
     }
 
-    protected function getTotalTransactionAmount()
-    {
+    protected function getTotalTransactionAmount() {
         $clusterIds = $this->clusterIds;
 
         return Transaction::query()
@@ -160,8 +154,7 @@ class MiniGridRevenueTest extends TestCase
             )->get()->pluck('amount')->sum();
     }
 
-    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->city = CityFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
@@ -285,8 +278,7 @@ class MiniGridRevenueTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -294,8 +286,7 @@ class MiniGridRevenueTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();

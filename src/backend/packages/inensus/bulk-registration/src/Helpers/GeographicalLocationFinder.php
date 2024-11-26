@@ -4,10 +4,8 @@ namespace Inensus\BulkRegistration\Helpers;
 
 use Spatie\Geocoder\Geocoder;
 
-class GeographicalLocationFinder
-{
-    public function getCoordinatesGivenAddress($address)
-    {
+class GeographicalLocationFinder {
+    public function getCoordinatesGivenAddress($address) {
         $client = new \GuzzleHttp\Client();
         $geocoder = new Geocoder($client);
         $geocoder->setApiKey(config('bulk-registration.geocoder.key'));

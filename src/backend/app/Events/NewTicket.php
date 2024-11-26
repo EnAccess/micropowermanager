@@ -9,8 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Inensus\Ticket\Models\Ticket;
 
-class NewTicket implements ShouldBroadcast
-{
+class NewTicket implements ShouldBroadcast {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
@@ -18,8 +17,7 @@ class NewTicket implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(private Ticket $ticket)
-    {
+    public function __construct(private Ticket $ticket) {
         $this->ticket = $ticket;
     }
 
@@ -28,8 +26,7 @@ class NewTicket implements ShouldBroadcast
      *
      * @return PrivateChannel
      */
-    public function broadcastOn()
-    {
+    public function broadcastOn() {
         return new PrivateChannel('ticketcreated');
     }
 }

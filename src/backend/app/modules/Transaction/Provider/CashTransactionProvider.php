@@ -7,18 +7,15 @@ use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
 
-class CashTransactionProvider implements ITransactionProvider
-{
+class CashTransactionProvider implements ITransactionProvider {
     private array $validData;
 
     public function __construct(
         private CashTransaction $cashTransaction,
         private Transaction $transaction,
-    ) {
-    }
+    ) {}
 
-    public function saveTransaction(): void
-    {
+    public function saveTransaction(): void {
         $this->cashTransaction = new CashTransaction();
         $this->transaction = new Transaction();
 
@@ -29,8 +26,7 @@ class CashTransactionProvider implements ITransactionProvider
         $this->saveData($this->cashTransaction);
     }
 
-    private function assignData(array $data): void
-    {
+    private function assignData(array $data): void {
         // provider specific data
         $this->cashTransaction->user_id = (int) $data['user_id'];
 
@@ -41,62 +37,51 @@ class CashTransactionProvider implements ITransactionProvider
         $this->transaction->original_transaction_type = 'cash_transaction';
     }
 
-    public function saveData(CashTransaction $cashTransaction): void
-    {
+    public function saveData(CashTransaction $cashTransaction): void {
         $cashTransaction->save();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction)
-    {
+    public function sendResult(bool $requestType, Transaction $transaction) {
         // TODO: Implement sendResult() method.
     }
 
-    public function validateRequest($request)
-    {
+    public function validateRequest($request) {
         // TODO: Implement validateRequest() method.
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         // TODO: Implement confirm() method.
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return '';
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->transaction->amount;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->transaction->sender;
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         return $this->cashTransaction->transaction()->save($this->transaction);
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->cashTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->cashTransaction);
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 }

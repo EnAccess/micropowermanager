@@ -11,15 +11,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<Manufacturer>
  */
-class ManufacturerService implements IBaseService
-{
+class ManufacturerService implements IBaseService {
     public function __construct(
         private Manufacturer $manufacturer,
-    ) {
-    }
+    ) {}
 
-    public function createManufacturerDataFromRequest(Request $request): array
-    {
+    public function createManufacturerDataFromRequest(Request $request): array {
         return [
             'name' => $request->get('name'),
             'contact_person' => $request->get('contact_person'),
@@ -28,18 +25,15 @@ class ManufacturerService implements IBaseService
         ];
     }
 
-    public function getById(int $manufacturerId): Manufacturer
-    {
+    public function getById(int $manufacturerId): Manufacturer {
         return $this->manufacturer->newQuery()->with(['address.city.country'])->findOrFail($manufacturerId);
     }
 
-    public function create(array $manufacturerData): Manufacturer
-    {
+    public function create(array $manufacturerData): Manufacturer {
         return $this->manufacturer->newQuery()->create($manufacturerData);
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->manufacturer->newQuery()->paginate($limit);
         }
@@ -47,18 +41,15 @@ class ManufacturerService implements IBaseService
         return $this->manufacturer->newQuery()->get();
     }
 
-    public function getByName($manufacturerName)
-    {
+    public function getByName($manufacturerName) {
         return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
     }
 
-    public function update($model, array $data): Manufacturer
-    {
+    public function update($model, array $data): Manufacturer {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

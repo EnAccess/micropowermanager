@@ -9,8 +9,7 @@ use Inensus\CalinMeter\Exceptions\CalinApiResponseException;
 use Inensus\CalinMeter\Helpers\ApiHelpers;
 use Inensus\CalinMeter\Models\CalinCredential;
 
-class CalinMeterApiRequests
-{
+class CalinMeterApiRequests {
     private $client;
 
     private $apiHelpers;
@@ -27,8 +26,7 @@ class CalinMeterApiRequests
         $this->credential = $credentialModel;
     }
 
-    public function post($url, $postParams)
-    {
+    public function post($url, $postParams) {
         try {
             $request = $this->client->post(
                 $url,
@@ -55,8 +53,7 @@ class CalinMeterApiRequests
         }
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->firstOrFail();
     }
 }

@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class BelongsToMorph extends BelongsTo
-{
+class BelongsToMorph extends BelongsTo {
     /**
      * The name of the polymorphic relation.
      *
@@ -25,8 +24,7 @@ class BelongsToMorph extends BelongsTo
      */
     protected $morphType;
 
-    public function __construct(Builder $query, Model $parent, $name, $type, $id, $otherKey, $relation)
-    {
+    public function __construct(Builder $query, Model $parent, $name, $type, $id, $otherKey, $relation) {
         $this->morphName = $name;
         $this->morphType = $type;
         parent::__construct($query, $parent, $id, $otherKey, $relation);
@@ -53,8 +51,7 @@ class BelongsToMorph extends BelongsTo
      *
      * @return mixed
      */
-    public function getResults()
-    {
+    public function getResults() {
         if ($this->getParent()->{$this->morphType} === $this->morphName) {
             return $this->query->first();
         }
@@ -69,8 +66,7 @@ class BelongsToMorph extends BelongsTo
      * @param string $type
      * @param string $id
      */
-    protected static function getMorphs($name, $type, $id): array
-    {
+    protected static function getMorphs($name, $type, $id): array {
         $type = $type ?: $name.'_type';
         $id = $id ?: $name.'_id';
 

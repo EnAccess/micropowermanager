@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
  *
  * @group Export
  */
-class DailyTransactions extends Controller
-{
+class DailyTransactions extends Controller {
     /**
      * The used transaction model.
      *
@@ -19,13 +18,11 @@ class DailyTransactions extends Controller
      */
     private $transaction;
 
-    public function __construct(Transaction $transaction)
-    {
+    public function __construct(Transaction $transaction) {
         $this->transaction = $transaction;
     }
 
-    public function getDailyReport(Request $request)
-    {
+    public function getDailyReport(Request $request) {
         $date = $request->get('date') ?? date('Y-m-d');
 
         $transactions = $this->transaction::with('originalTransaction')->whereDate('created_at', $date)->get();
@@ -77,8 +74,7 @@ class DailyTransactions extends Controller
         return $this->downloadCSV($transactionOutput, $date.'-transactions');
     }
 
-    private function downloadCSV(array $transactionData, string $fileName)
-    {
+    private function downloadCSV(array $transactionData, string $fileName) {
         if (count($transactionData) === 0) { // to prevent to download an empty file
             return null;
         }

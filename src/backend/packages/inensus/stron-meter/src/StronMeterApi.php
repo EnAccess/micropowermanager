@@ -13,8 +13,7 @@ use Inensus\StronMeter\Exceptions\StronApiResponseException;
 use Inensus\StronMeter\Models\StronCredential;
 use Inensus\StronMeter\Models\StronTransaction;
 
-class StronMeterApi implements IManufacturerAPI
-{
+class StronMeterApi implements IManufacturerAPI {
     protected $api;
 
     private $rootUrl = '/vending/';
@@ -28,8 +27,7 @@ class StronMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
@@ -94,8 +92,7 @@ class StronMeterApi implements IManufacturerAPI
         ];
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         // TODO: Implement clearDevice() method.
     }
 }

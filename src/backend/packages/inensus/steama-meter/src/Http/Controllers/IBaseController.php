@@ -2,8 +2,7 @@
 
 namespace Inensus\SteamaMeter\Http\Controllers;
 
-interface IBaseController
-{
+interface IBaseController {
     public function sync();
 
     public function checkSync();

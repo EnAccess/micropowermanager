@@ -8,8 +8,7 @@ use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 use Inensus\SteamaMeter\Models\SteamaSetting;
 use Inensus\SteamaMeter\Models\SteamaSyncSetting;
 
-class SteamaSyncSettingService
-{
+class SteamaSyncSettingService {
     private $syncSetting;
 
     private $setting;
@@ -26,8 +25,7 @@ class SteamaSyncSettingService
         $this->syncActionService = $syncActionService;
     }
 
-    public function createDefaultSettings()
-    {
+    public function createDefaultSettings() {
         $dayInterval = CarbonInterval::make('1day');
         $fiveMinInterval = CarbonInterval::make('5minute');
 
@@ -123,8 +121,7 @@ class SteamaSyncSettingService
         }
     }
 
-    public function updateSyncSettings($syncSettings)
-    {
+    public function updateSyncSettings($syncSettings) {
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
             $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
@@ -149,13 +146,11 @@ class SteamaSyncSettingService
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettings()
-    {
+    public function getSyncSettings() {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName($actionName)
-    {
+    public function getSyncSettingsByActionName($actionName) {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (\Exception $exception) {

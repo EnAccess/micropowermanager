@@ -6,19 +6,14 @@ use App\Http\Resources\ApiResource;
 use App\Models\TicketSettings;
 use Illuminate\Http\Request;
 
-class TicketSettingsController extends Controller
-{
-    public function __construct(private TicketSettings $ticketSettings)
-    {
-    }
+class TicketSettingsController extends Controller {
+    public function __construct(private TicketSettings $ticketSettings) {}
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         return new ApiResource(TicketSettings::all());
     }
 
-    public function update(Request $request): ApiResource
-    {
+    public function update(Request $request): ApiResource {
         $ticketSettings = $this->ticketSettings::query()->updateOrCreate(
             [
                 'id' => $request->input('id'),

@@ -10,8 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class ClusterSeeder extends Seeder
-{
+class ClusterSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -23,8 +22,7 @@ class ClusterSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $clusterAdmin = User::factory()
             ->clusterAdmin()
             ->create();

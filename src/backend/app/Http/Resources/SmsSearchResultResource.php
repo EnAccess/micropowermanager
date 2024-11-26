@@ -12,15 +12,13 @@ use Illuminate\Support\Collection;
  * @property string     $surname
  * @property Collection $addresses
  */
-class SmsSearchResultResource extends JsonResource
-{
+class SmsSearchResultResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
      * @param Request $request
      */
-    public function toArray($request): array
-    {
+    public function toArray($request): array {
         return [
             'id' => $this->id,
             'display' => $this->name.' '.$this->surname,

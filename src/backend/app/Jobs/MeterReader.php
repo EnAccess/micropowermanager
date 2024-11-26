@@ -9,8 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class MeterReader extends AbstractJob
-{
+class MeterReader extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -29,8 +28,7 @@ class MeterReader extends AbstractJob
     /**
      * Create a new job instance.
      */
-    public function __construct(CalinReadMeter $meterReader, Meter $meters)
-    {
+    public function __construct(CalinReadMeter $meterReader, Meter $meters) {
         $this->meterReader = $meterReader;
         $this->meters = $meters;
         parent::__construct(get_class($this));
@@ -39,8 +37,7 @@ class MeterReader extends AbstractJob
     /**
      * Execute the job.
      */
-    public function executeJob(): void
-    {
+    public function executeJob(): void {
         $this->meterReader->readBatch($this->meters->get(), $this->meterReader::READ_DAILY, ['date' => date('Y-m-d')]);
     }
 }

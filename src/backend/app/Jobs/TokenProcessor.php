@@ -11,8 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class TokenProcessor extends AbstractJob
-{
+class TokenProcessor extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -37,8 +36,7 @@ class TokenProcessor extends AbstractJob
         parent::__construct(static::class);
     }
 
-    public function executeJob(): void
-    {
+    public function executeJob(): void {
         try {
             $api = resolve($this->transactionContainer->manufacturer->api_name);
         } catch (\Exception $e) {
@@ -57,8 +55,7 @@ class TokenProcessor extends AbstractJob
         }
     }
 
-    private function handleApiException(\Exception $e): void
-    {
+    private function handleApiException(\Exception $e): void {
         Log::critical(
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
@@ -66,8 +63,7 @@ class TokenProcessor extends AbstractJob
         event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
     }
 
-    private function handleExistingToken()
-    {
+    private function handleExistingToken() {
         $token = $this->transactionContainer->transaction->token()->first();
 
         if ($token !== null && $this->reCreate === true) {
@@ -78,8 +74,7 @@ class TokenProcessor extends AbstractJob
         return $token;
     }
 
-    private function generateToken($api): void
-    {
+    private function generateToken($api): void {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (\Exception $e) {
@@ -91,8 +86,7 @@ class TokenProcessor extends AbstractJob
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(\Exception $e): void
-    {
+    private function handleTokenGenerationFailure(\Exception $e): void {
         if ($this->counter < self::MAX_TRIES) {
             $this->retryTokenGeneration();
 
@@ -112,8 +106,7 @@ class TokenProcessor extends AbstractJob
         ]);
     }
 
-    private function retryTokenGeneration(): void
-    {
+    private function retryTokenGeneration(): void {
         ++$this->counter;
         self::dispatch(
             $this->transactionContainer,
@@ -122,8 +115,7 @@ class TokenProcessor extends AbstractJob
         )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
     }
 
-    private function saveToken(array $tokenData): void
-    {
+    private function saveToken(array $tokenData): void {
         $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
         $token->transaction()->associate($this->transactionContainer->transaction);
         $token->save();
@@ -131,8 +123,7 @@ class TokenProcessor extends AbstractJob
         $this->handlePaymentEvents($token);
     }
 
-    private function handlePaymentEvents($token): void
-    {
+    private function handlePaymentEvents($token): void {
         $owner = $this->transactionContainer->device->person;
 
         event('payment.successful', [
@@ -148,8 +139,7 @@ class TokenProcessor extends AbstractJob
         event('transaction.successful', [$this->transactionContainer->transaction]);
     }
 
-    private function handleRollbackInFailure()
-    {
+    private function handleRollbackInFailure() {
         $paidRates = $this->transactionContainer->paidRates;
         collect($paidRates)->map(function ($paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);

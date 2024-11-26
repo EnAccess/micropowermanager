@@ -7,17 +7,14 @@ use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentChargeHistoryBalanceService;
 use App\Services\AgentService;
 
-class AgentChargeObserver
-{
+class AgentChargeObserver {
     public function __construct(
         private AgentChargeHistoryBalanceService $agentChargeHistoryBalanceService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
-    public function created(AgentCharge $agentCharge): void
-    {
+    public function created(AgentCharge $agentCharge): void {
         $agent = $this->agentService->getById($agentCharge->agent_id);
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,

@@ -10,19 +10,16 @@ use App\Services\AgentReceiptService;
 use App\Services\AgentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AgentReceiptObserver
-{
+class AgentReceiptObserver {
     public function __construct(
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentService $agentService,
         private AgentReceiptService $agentReceiptService,
         private AgentReceiptDetailService $agentReceiptDetailService,
         private AgentReceiptHistoryBalanceService $agentReceiptHistoryBalanceService,
-    ) {
-    }
+    ) {}
 
-    public function created(AgentReceipt $receipt): void
-    {
+    public function created(AgentReceipt $receipt): void {
         $agentId = $receipt->agent_id;
         $agent = $this->agentService->getById($agentId);
         $due = $agent->due_to_energy_supplier;

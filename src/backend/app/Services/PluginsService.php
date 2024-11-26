@@ -6,31 +6,26 @@ use App\Models\Plugins;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PluginsService
-{
+class PluginsService {
     public function __construct(
         private Plugins $plugin,
-    ) {
-    }
+    ) {}
 
-    public function create(array $pluginData): Plugins
-    {
+    public function create(array $pluginData): Plugins {
         /** @var Plugins $plugin */
         $plugin = $this->plugin->newQuery()->create($pluginData);
 
         return $plugin;
     }
 
-    public function update($model, array $data): Plugins
-    {
+    public function update($model, array $data): Plugins {
         $model->update($data);
         $model->fresh();
 
         return $model;
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->plugin->newQuery()->paginate($limit);
         }
@@ -38,13 +33,11 @@ class PluginsService
         return $this->plugin->newQuery()->get();
     }
 
-    public function getByMpmPluginId($mpmPluginId)
-    {
+    public function getByMpmPluginId($mpmPluginId) {
         return $this->plugin->newQuery()->where('mpm_plugin_id', $mpmPluginId)->first();
     }
 
-    public function isPluginActive(int $pluginId): bool
-    {
+    public function isPluginActive(int $pluginId): bool {
         return $this->plugin->newQuery()
             ->where('mpm_plugin_id', '=', $pluginId)
             ->exists();

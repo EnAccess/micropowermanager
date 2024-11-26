@@ -8,8 +8,7 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::connection('shard')->create('histories', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('target'); // it contains a the target information
@@ -23,8 +22,7 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::connection('shard')->dropIfExists('histories');
     }
 };

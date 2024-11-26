@@ -14,8 +14,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Webpatser\Uuid\Uuid;
 
-abstract class AbstractExportService
-{
+abstract class AbstractExportService {
     protected IReader $reader;
 
     protected Worksheet $worksheet;
@@ -36,8 +35,7 @@ abstract class AbstractExportService
 
     abstract public function getPrefix();
 
-    public function createSpreadSheetFromTemplate(string $path): Spreadsheet
-    {
+    public function createSpreadSheetFromTemplate(string $path): Spreadsheet {
         try {
             $this->reader = IOFactory::createReader('Xlsx');
             $this->spreadsheet =
@@ -53,18 +51,15 @@ abstract class AbstractExportService
         }
     }
 
-    public function setCurrency($currency)
-    {
+    public function setCurrency($currency) {
         $this->currency = $currency;
     }
 
-    public function setTimeZone($timeZone)
-    {
+    public function setTimeZone($timeZone) {
         $this->timeZone = $timeZone;
     }
 
-    public function readable($amount, $separator = ',')
-    {
+    public function readable($amount, $separator = ',') {
         // Check for null or undefined amount and return '0'
         if ($amount === null || $amount === 'undefined') {
             return '0';
@@ -89,8 +84,7 @@ abstract class AbstractExportService
         return $decimal ? "$whole.$decimal" : $whole;
     }
 
-    public function convertUtcDateToTimezone($utcDate): string
-    {
+    public function convertUtcDateToTimezone($utcDate): string {
         // Create a DateTime object with the UTC-based date
         $dateTimeUtc = Carbon::parse($utcDate)->setTimezone('UTC');
 
@@ -101,13 +95,11 @@ abstract class AbstractExportService
         return $dateTimeUtc->format('Y-m-d H:i:s');
     }
 
-    public function setRecentlyCreatedSpreadSheetId(string $id): void
-    {
+    public function setRecentlyCreatedSpreadSheetId(string $id): void {
         $this->recentlyCreatedSpreadSheetId = $id;
     }
 
-    public function setActivatedSheet($sheetName): void
-    {
+    public function setActivatedSheet($sheetName): void {
         try {
             $this->worksheet = $this->spreadsheet->setActiveSheetIndexByName($sheetName);
         } catch (\Exception $e) {
@@ -118,8 +110,7 @@ abstract class AbstractExportService
         }
     }
 
-    public function saveSpreadSheet(): string
-    {
+    public function saveSpreadSheet(): string {
         try {
             $uuid = (string) Uuid::generate(4);
             $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';

@@ -17,14 +17,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class SocialTariffPiggyBankTest extends TestCase
-{
+class SocialTariffPiggyBankTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
     /** @test */
-    public function testAddPiggyBankBalance()
-    {
+    public function testAddPiggyBankBalance() {
         MeterTariffFactory::new()->create();
         MeterTariff::first()->socialTariff()->create([
             'tariff_id' => 1,
@@ -59,8 +57,7 @@ class SocialTariffPiggyBankTest extends TestCase
     }
 
     /** @test */
-    public function changeTariffAndResetSavings()
-    {
+    public function changeTariffAndResetSavings() {
         Queue::fake();
         // create tariff
         MeterTariffFactory::new()->times(2)->create();

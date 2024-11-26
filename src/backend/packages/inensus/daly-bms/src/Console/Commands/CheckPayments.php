@@ -11,8 +11,7 @@ use Carbon\Carbon;
 use Inensus\DalyBms\Modules\Api\DalyBmsApi;
 use MPM\EBike\EBikeService;
 
-class CheckPayments extends AbstractSharedCommand
-{
+class CheckPayments extends AbstractSharedCommand {
     use ScheduledPluginCommand;
 
     public const MPM_PLUGIN_ID = 16;
@@ -35,8 +34,7 @@ class CheckPayments extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
@@ -70,8 +68,7 @@ class CheckPayments extends AbstractSharedCommand
         $this->info('#############################');
     }
 
-    private function lockTheBike($installment): bool
-    {
+    private function lockTheBike($installment): bool {
         $eBike = $this->eBikeService->getBySerialNumber($installment->assetPerson->device_serial);
 
         if ($eBike->manufacturer->name != self::MANUFACTURER_NAME) {

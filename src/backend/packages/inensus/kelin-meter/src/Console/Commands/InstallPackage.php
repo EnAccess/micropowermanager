@@ -7,8 +7,7 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'kelin-meter:install';
 
     protected $description = 'Install KelinMeters Package';
@@ -21,8 +20,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing KelinMeters Integration Package\n');
         $this->packageInstallationService->createDefaultSettingRecords();
         $this->apiHelpers->registerMeterManufacturer();
@@ -30,8 +28,7 @@ class InstallPackage extends Command
         $this->info('Package installed successfully..');
     }
 
-    private function publishConfigurations()
-    {
+    private function publishConfigurations() {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
@@ -39,8 +36,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
@@ -48,14 +44,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
@@ -63,8 +57,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'KelinMeters',
             'composer_name' => 'inensus/kelin-meter',

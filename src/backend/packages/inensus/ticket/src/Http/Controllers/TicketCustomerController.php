@@ -14,8 +14,7 @@ use Inensus\Ticket\Services\TicketCategoryService;
 use Inensus\Ticket\Services\TicketOutSourceService;
 use Inensus\Ticket\Services\TicketService;
 
-class TicketCustomerController extends Controller
-{
+class TicketCustomerController extends Controller {
     public function __construct(
         private TicketService $ticketService,
         private UserTicketService $userTicketService,
@@ -25,11 +24,9 @@ class TicketCustomerController extends Controller
         private TicketOutSourceService $ticketOutSourceService,
         private MaintenanceUserService $maintenanceUserService,
         private MaintenanceUserTicketService $maintenanceUserTicketService,
-    ) {
-    }
+    ) {}
 
-    public function store(UserTicketCreateRequest $request): TicketResource
-    {
+    public function store(UserTicketCreateRequest $request): TicketResource {
         $ticketData = $request->getMappedArray();
         $user = auth('api')->user();
         $ticket = $this->ticketService->make($ticketData);
@@ -62,8 +59,7 @@ class TicketCustomerController extends Controller
         return TicketResource::make($ticket);
     }
 
-    public function index($customerId, Request $request)
-    {
+    public function index($customerId, Request $request) {
         $limit = 5;
         $agentId = null;
         $status = null;

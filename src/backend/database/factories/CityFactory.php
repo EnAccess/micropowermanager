@@ -6,8 +6,7 @@ use App\Models\City;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CityFactory extends Factory
-{
+class CityFactory extends Factory {
     protected $model = City::class;
 
     public function __construct(
@@ -21,8 +20,7 @@ class CityFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => $this->faker->city,
             'country_id' => 1,

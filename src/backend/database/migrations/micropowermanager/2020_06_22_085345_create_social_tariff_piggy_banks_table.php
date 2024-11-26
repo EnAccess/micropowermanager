@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('social_tariff_piggy_banks', function (Blueprint $table) {
             $table->id();
             $table->integer('savings');
@@ -26,8 +25,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('social_tariff_piggy_banks');
     }
 };

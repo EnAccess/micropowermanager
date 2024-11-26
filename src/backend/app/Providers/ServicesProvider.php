@@ -26,13 +26,11 @@ use App\Services\RolesService;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Horizon\Horizon;
 
-class ServicesProvider extends ServiceProvider
-{
+class ServicesProvider extends ServiceProvider {
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
+    public function boot(): void {
         Person::observe(PersonObserver::class);
         Address::observe(AddressesObserver::class);
         MeterParameter::observe(MeterParameterObserver::class);
@@ -51,8 +49,7 @@ class ServicesProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
+    public function register(): void {
         $this->app->bind(
             RolesService::class,
             function ($app) {

@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Inensus\BulkRegistration\Services\AddressService;
 
-class MaintenanceUserController extends Controller
-{
+class MaintenanceUserController extends Controller {
     private $roles;
 
     public function __construct(
@@ -20,18 +19,15 @@ class MaintenanceUserController extends Controller
         private Person $person,
         private PersonService $personService,
         private AddressService $addressService,
-    ) {
-    }
+    ) {}
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         $maintenance_user_list = $this->maintenanceUsers::with('person')->get();
 
         return new ApiResource($maintenance_user_list);
     }
 
-    public function store(MaintenanceRequest $request): JsonResponse
-    {
+    public function store(MaintenanceRequest $request): JsonResponse {
         $phone = $request->get('phone');
 
         try {

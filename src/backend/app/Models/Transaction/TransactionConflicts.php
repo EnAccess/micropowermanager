@@ -11,10 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int id
  * @property string state
  */
-class TransactionConflicts extends BaseModel
-{
-    public function transaction(): MorphTo
-    {
+class TransactionConflicts extends BaseModel {
+    public function transaction(): MorphTo {
         return $this->morphTo();
     }
 }

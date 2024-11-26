@@ -10,25 +10,20 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<Cluster>
  */
-class ClusterService implements IBaseService
-{
+class ClusterService implements IBaseService {
     public function __construct(
         private Cluster $cluster,
-    ) {
-    }
+    ) {}
 
-    protected function setClusterMeterCount(Cluster $cluster, int $meterCount)
-    {
+    protected function setClusterMeterCount(Cluster $cluster, int $meterCount) {
         $cluster->meterCount = $meterCount;
     }
 
-    protected function setRevenue(Cluster $cluster, int $totalTransactionsAmount)
-    {
+    protected function setRevenue(Cluster $cluster, int $totalTransactionsAmount) {
         $cluster->revenue = $totalTransactionsAmount;
     }
 
-    protected function setPopulation(Cluster $cluster, int $populationCount)
-    {
+    protected function setPopulation(Cluster $cluster, int $populationCount) {
         $cluster->population = $populationCount;
     }
 
@@ -45,23 +40,19 @@ class ClusterService implements IBaseService
         return $cluster;
     }
 
-    public function getClusterCities($clusterId)
-    {
+    public function getClusterCities($clusterId) {
         return Cluster::query()->with('cities')->find($clusterId);
     }
 
-    public function getClusterMiniGrids($clusterId)
-    {
+    public function getClusterMiniGrids($clusterId) {
         return Cluster::query()->with('miniGrids')->find($clusterId);
     }
 
-    public function getGeoLocationById($clusterId)
-    {
+    public function getGeoLocationById($clusterId) {
         return $this->cluster->newQuery()->select('geo_data')->find($clusterId)->geo_data;
     }
 
-    public function getDateRangeFromRequest($startDate, $endDate): array
-    {
+    public function getDateRangeFromRequest($startDate, $endDate): array {
         $dateRange = [];
 
         if ($startDate !== null && $endDate !== null) {
@@ -75,18 +66,15 @@ class ClusterService implements IBaseService
         return $dateRange;
     }
 
-    public function getById($clusterId): Cluster
-    {
+    public function getById($clusterId): Cluster {
         return $this->cluster->newQuery()->with(['miniGrids.location', 'cities'])->find($clusterId);
     }
 
-    public function create(array $clusterData): Cluster
-    {
+    public function create(array $clusterData): Cluster {
         return $this->cluster->newQuery()->create($clusterData);
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit !== null) {
             return $this->cluster->newQuery()->with('miniGrids')->limit($limit)->get();
         }
@@ -94,15 +82,13 @@ class ClusterService implements IBaseService
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
 
-    public function update($model, array $data): Cluster
-    {
+    public function update($model, array $data): Cluster {
         throw new \Exception('Method update() not yet implemented.');
 
         return new Cluster();
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }
