@@ -29,7 +29,9 @@ kubectl apply -f .
 ```
 kubectl get pvc 
 ```
-### Delete the database pvx
+### Delete the database pvc 
+
+```
 kubectl delete pvc maria_db
 
 ```
