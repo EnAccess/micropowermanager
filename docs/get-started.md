@@ -9,10 +9,10 @@ order: 1
 > Use this rendered documentation with caution.
 
 <p align="center">
-  <a href="https://github.com/EnAccess/micropowermanager-cloud">
+  <a href="https://github.com/EnAccess/micropowermanager">
     <img
       src="https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png"
-      alt="OpenSmartMeter"
+      alt="MicroPowerManager"
       width="320"
     >
   </a>
@@ -27,12 +27,12 @@ order: 1
   >
   <img
     alt="GitHub Workflow Status"
-    src="https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager-cloud/check-generic.yaml"
+    src="https://img.shields.io/github/actions/workflow/status/EnAccess/micropowermanager/check-generic.yaml"
   >
-  <a href="https://github.com/EnAccess/micropowermanager-cloud/blob/main/LICENSE" target="_blank">
+  <a href="https://github.com/EnAccess/micropowermanager/blob/main/LICENSE" target="_blank">
     <img
       alt="License"
-      src="https://img.shields.io/github/license/EnAccess/micropowermanager-cloud"
+      src="https://img.shields.io/github/license/EnAccess/micropowermanager"
     >
   </a>
 </p>
