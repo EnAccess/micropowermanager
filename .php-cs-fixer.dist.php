@@ -1,12 +1,9 @@
 <?php
 
-// The main file that governs the PHP code style for this project is
-// `src/backend/.php-cs-fixer.dist.php`
-// This is file is essentially a convienience copy of the same file for
-// easier editor integration at the root of the repository.
+// The is the main file that governs the PHP code style for this project.
 
-// We disabled some disruptive rules for the editor integration that might
-// intefer with a development flow.
+// When updating this file, please make sure to also update the
+// convienience copy for easier editor integration at the root of the repository.
 
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
@@ -18,11 +15,23 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
-        // customisation
         'no_superfluous_phpdoc_tags' => false,
         'yoda_style' => false,
-        // disabled for editor integration
-        'no_unused_imports' => false,
+        'method_chaining_indentation' => true,
+        'braces_position' => [
+            'control_structures_opening_brace' => 'same_line',
+            'functions_opening_brace' => 'same_line',
+            'anonymous_functions_opening_brace' => 'same_line',
+            'classes_opening_brace' => 'same_line',
+            'anonymous_classes_opening_brace' => 'same_line',
+            'allow_single_line_empty_anonymous_classes' => true,
+            'allow_single_line_anonymous_functions' => true,
+        ],
+        'method_argument_space' => [
+            'on_multiline' => 'ensure_fully_multiline',
+        ],
+        'single_line_empty_body' => true,
+
     ])
     ->setFinder($finder)
 ;
