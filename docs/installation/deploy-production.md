@@ -4,9 +4,13 @@ order: 4
 
 # Deploy for Production
 
-The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/).
+The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
 
 For running a self-hosted version of MicroPowerManager multiple options exists as explained in the following.
+
+> [!INFO]
+> This page covers deployment related information for MicroPowerManager.
+> An installation of MicroPowerManager can be customised using environment variables which is explained in detail [here](environment-variables.md).
 
 ## Docker Compose
 
