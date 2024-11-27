@@ -6,8 +6,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\RequestMethod;
 
-class StartTransactionResource extends AbstractApiResource
-{
+class StartTransactionResource extends AbstractApiResource {
     public const RESPONSE_SUCCESS = 'success';
     public const RESPONSE_KEY_MESSAGE = 'transaction_id';
     public const RESPONSE_KEY_TRANSACTION_ID = 'transaction_id';
@@ -15,16 +14,13 @@ class StartTransactionResource extends AbstractApiResource
     public function __construct(
         private WaveMoneyCredential $waveMoneyCredential,
         private WaveMoneyTransaction $waveMoneyTransaction,
-    ) {
-    }
+    ) {}
 
-    public function getRequestMethod(): string
-    {
+    public function getRequestMethod(): string {
         return RequestMethod::POST;
     }
 
-    public function getBodyData(): array
-    {
+    public function getBodyData(): array {
         return [
             'merchant_id' => $this->waveMoneyCredential->getMerchantId(),
             'order_id' => $this->waveMoneyTransaction->getOrderId(),
@@ -43,13 +39,11 @@ class StartTransactionResource extends AbstractApiResource
         ];
     }
 
-    public function getQueryParams(): array
-    {
+    public function getQueryParams(): array {
         return [];
     }
 
-    private function generatePayloadHash(): string
-    {
+    private function generatePayloadHash(): string {
         return hash_hmac('sha256', implode('', [
             self::REQUEST_TIME_TO_LIVE_IN_SECS,
             $this->waveMoneyCredential->getMerchantId(),
@@ -60,18 +54,15 @@ class StartTransactionResource extends AbstractApiResource
         ]), $this->waveMoneyCredential->getSecretKey());
     }
 
-    public function getBackendCallback(): string
-    {
+    public function getBackendCallback(): string {
         return $this->waveMoneyCredential->getCallbackUrl();
     }
 
-    public function getFrontendCallback(): string
-    {
+    public function getFrontendCallback(): string {
         return $this->waveMoneyCredential->getResultUrl();
     }
 
-    public function getMerchantName(): string
-    {
+    public function getMerchantName(): string {
         return $this->waveMoneyCredential->getMerchantName();
     }
 }

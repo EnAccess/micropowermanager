@@ -6,8 +6,7 @@ use App\Models\Manufacturer;
 use Doctrine\Inflector\InflectorFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ManufacturerFactory extends Factory
-{
+class ManufacturerFactory extends Factory {
     protected $model = Manufacturer::class;
 
     /**
@@ -15,8 +14,7 @@ class ManufacturerFactory extends Factory
      *
      * @return Factory
      */
-    public function isMeterManufacturer()
-    {
+    public function isMeterManufacturer() {
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'meter',
@@ -29,8 +27,7 @@ class ManufacturerFactory extends Factory
      *
      * @return Factory
      */
-    public function isShsManufacturer()
-    {
+    public function isShsManufacturer() {
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'shs',
@@ -38,8 +35,7 @@ class ManufacturerFactory extends Factory
         });
     }
 
-    public function definition(): array
-    {
+    public function definition(): array {
         $inflector = InflectorFactory::create()->build();
 
         $companyName = $this->faker->company;

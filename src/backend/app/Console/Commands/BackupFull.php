@@ -6,13 +6,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class BackupFull extends Command
-{
+class BackupFull extends Command {
     protected $signature = 'backup:full';
     protected $description = 'Run the backup for core base database and all tenant databases';
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Starting backup for core database');
         config(['database.connections.mysql' => config('database.connections.micro_power_manager')]);
         $this->call('backup:run', [

@@ -2,6 +2,4 @@
 
 namespace Inensus\Ticket\Models;
 
-class BaseModel extends \App\Models\Base\BaseModel
-{
-}
+class BaseModel extends \App\Models\Base\BaseModel {}

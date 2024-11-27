@@ -11,8 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  *
  * @template T of Model
  */
-interface IBaseService
-{
+interface IBaseService {
     /** @return T|null */
     public function getById(int $id): ?Model;
 

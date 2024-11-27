@@ -6,16 +6,14 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-abstract class TestCase extends BaseTestCase
-{
+abstract class TestCase extends BaseTestCase {
     use CreatesApplication;
 
     /**
      * generates an jwt for the given user
      * if user is not present it tries to generate a token for the first user.
      */
-    protected function headers(?User $user = null)
-    {
+    protected function headers(?User $user = null) {
         if (!$user) {
             $user = User::create([
                 'name' => 'John Doe',

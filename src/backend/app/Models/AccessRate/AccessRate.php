@@ -18,29 +18,24 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property int tariff_id
  * @property int period when the payment repeats itself
  */
-class AccessRate extends BaseModel
-{
+class AccessRate extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'access_rate';
 
-    public function tariff(): BelongsTo
-    {
+    public function tariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class, 'tariff_id', 'id');
     }
 
-    public function accessRatePayments(): HasMany
-    {
+    public function accessRatePayments(): HasMany {
         return $this->hasMany(AccessRatePayment::class);
     }
 
-    public function __toString()
-    {
+    public function __toString() {
         return sprintf('For tariff : %s', $this->tariff()->first()->name);
     }
 
-    public function paymentHistories(): MorphMany
-    {
+    public function paymentHistories(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'paid_for');
     }
 }

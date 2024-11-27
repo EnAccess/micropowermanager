@@ -17,30 +17,25 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property string transaction_date
  * @property int status
  */
-class VodacomTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
-{
+class VodacomTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
     public const RELATION_NAME = 'vodacom_transaction';
 
     /**
      * @return MorphOne
      */
-    public function transaction()
-    {
+    public function transaction() {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction(): MorphTo
-    {
+    public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 
-    public function conflicts(): MorphMany
-    {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
-    public static function getTransactionName(): string
-    {
+    public static function getTransactionName(): string {
         return self::RELATION_NAME;
     }
 }

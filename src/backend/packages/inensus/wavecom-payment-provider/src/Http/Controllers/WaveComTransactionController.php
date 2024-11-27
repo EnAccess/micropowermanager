@@ -9,14 +9,10 @@ use App\Http\Resources\ApiResource;
 use Inensus\WavecomPaymentProvider\Http\Requests\UploadTransactionRequest;
 use Inensus\WavecomPaymentProvider\Services\TransactionService;
 
-class WaveComTransactionController extends Controller
-{
-    public function __construct(private TransactionService $transactionService)
-    {
-    }
+class WaveComTransactionController extends Controller {
+    public function __construct(private TransactionService $transactionService) {}
 
-    public function uploadTransaction(UploadTransactionRequest $request): ApiResource
-    {
+    public function uploadTransaction(UploadTransactionRequest $request): ApiResource {
         $file = $request->getFile();
         $result = $this->transactionService->createTransactionsFromFile($file);
 

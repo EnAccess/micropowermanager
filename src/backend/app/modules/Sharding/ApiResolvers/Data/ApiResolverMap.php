@@ -12,8 +12,7 @@ use MPM\Sharding\ApiResolvers\TestApiResolver;
 use MPM\Sharding\ApiResolvers\ViberMessagingApiResolver;
 use MPM\Sharding\ApiResolvers\WaveMoneyApiResolver;
 
-class ApiResolverMap
-{
+class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';
     public const TEST_API = 'api/testApi';
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
@@ -41,13 +40,11 @@ class ApiResolverMap
         self::DATA_EXPORTING_API => DataExportResolver::class,
     ];
 
-    public function getResolvableApis(): array
-    {
+    public function getResolvableApis(): array {
         return self::RESOLVABLE_APIS;
     }
 
-    public function getApiResolver(string $api): string
-    {
+    public function getApiResolver(string $api): string {
         return self::API_RESOLVER[$api];
     }
 }

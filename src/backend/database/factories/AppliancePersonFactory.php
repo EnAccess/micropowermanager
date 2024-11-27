@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\AssetPerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AppliancePersonFactory extends Factory
-{
+class AppliancePersonFactory extends Factory {
     protected $model = AssetPerson::class;
 
     /**
@@ -14,8 +13,7 @@ class AppliancePersonFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'person_id' => $this->faker->numberBetween(1, 10),
             'first_payment_date' => $this->faker->date(),

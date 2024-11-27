@@ -44,8 +44,7 @@ use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 
-trait CreateEnvironments
-{
+trait CreateEnvironments {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -115,15 +114,13 @@ trait CreateEnvironments
     private $ticketUsers = [];
     private $tickets = [];
 
-    protected function createTestData()
-    {
+    protected function createTestData() {
         $this->user = UserFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
     }
 
-    protected function createCluster($clusterCount = 1)
-    {
+    protected function createCluster($clusterCount = 1) {
         while ($clusterCount > 0) {
             $cluster = ClusterFactory::new()->create([
                 'name' => $this->faker->unique()->companySuffix,
@@ -138,8 +135,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMiniGrid($miniGridCount = 1)
-    {
+    protected function createMiniGrid($miniGridCount = 1) {
         while ($miniGridCount > 0) {
             $miniGrid = MiniGridFactory::new()->create([
                 'cluster_id' => $this->getRandomIdFromList($this->clusters),
@@ -154,8 +150,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createCity($cityCount = 1)
-    {
+    protected function createCity($cityCount = 1) {
         while ($cityCount > 0) {
             $city = CityFactory::new()->create([
                 'name' => $this->faker->unique()->citySuffix,
@@ -172,8 +167,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function getMeter(): mixed
-    {
+    protected function getMeter(): mixed {
         $this->createTestData();
         $meter = MeterFactory::new()->create([
             'meter_type_id' => $this->meterType->id,
@@ -194,8 +188,7 @@ trait CreateEnvironments
         return $meter;
     }
 
-    protected function createMeterWithGeo(): void
-    {
+    protected function createMeterWithGeo(): void {
         $this->createTestData();
         $meterCunt = 2;
         while ($meterCunt > 0) {
@@ -234,8 +227,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMeterWithTransaction()
-    {
+    protected function createMeterWithTransaction() {
         $meter = $this->getMeter();
         $this->transaction = TransactionFactory::new()->create([
             'id' => 1,
@@ -264,8 +256,7 @@ trait CreateEnvironments
         return $meter;
     }
 
-    protected function createMetersWithDifferentMeterTypes($meterCountPerMeterType = 1): void
-    {
+    protected function createMetersWithDifferentMeterTypes($meterCountPerMeterType = 1): void {
         $meterTypeCount = count($this->meterTypes);
 
         while ($meterTypeCount > 0) {
@@ -291,8 +282,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMeterManufacturer($manufacturerCount = 1): void
-    {
+    protected function createMeterManufacturer($manufacturerCount = 1): void {
         while ($manufacturerCount > 0) {
             $manufacturer = ManufacturerFactory::new()->create();
             $address = Address::query()->make([
@@ -313,8 +303,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void
-    {
+    protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {
         while ($meterTariffCount > 0) {
             $meterTariff = MeterTariffFactory::new()->create();
             $this->meterTariffs[] = $meterTariff;
@@ -335,8 +324,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createConnectionType($connectionTypeCount = 1, $subConnectionTypeCount = 1): void
-    {
+    protected function createConnectionType($connectionTypeCount = 1, $subConnectionTypeCount = 1): void {
         while ($connectionTypeCount > 0) {
             $connectionType = ConnectionTypeFactory::new()->create();
             $this->connectonTypes[] = $connectionType;
@@ -361,8 +349,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createConnectionGroup($connectionGroupCount = 1): void
-    {
+    protected function createConnectionGroup($connectionGroupCount = 1): void {
         while ($connectionGroupCount > 0) {
             $connectionGroup = ConnectionGroupFactory::new()->create();
             $this->connectionGroups[] = $connectionGroup;
@@ -373,8 +360,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMeterType($meterTypeCount = 1): void
-    {
+    protected function createMeterType($meterTypeCount = 1): void {
         while ($meterTypeCount > 0) {
             $meterType = MeterTypeFactory::new()->create();
             $this->meterTypes[] = $meterType;
@@ -387,8 +373,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createMeter($meterCount = 1): void
-    {
+    protected function createMeter($meterCount = 1): void {
         while ($meterCount > 0) {
             $meter = MeterFactory::new()->create([
                 'meter_type_id' => $this->meterType->id,
@@ -425,8 +410,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createTarget($targetCount = 1): void
-    {
+    protected function createTarget($targetCount = 1): void {
         while ($targetCount > 0) {
             $target = TargetFactory::new()->create();
             $this->targets[] = $target;
@@ -437,8 +421,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createSubTarget($subTargetCount = 1): void
-    {
+    protected function createSubTarget($subTargetCount = 1): void {
         while ($subTargetCount > 0) {
             $subTarget = SubTargetFactory::new()->create([
                 'target_id' => $this->getRandomIdFromList($this->targets),
@@ -452,8 +435,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createPerson($personCount = 1, $isCustomer = 1)
-    {
+    protected function createPerson($personCount = 1, $isCustomer = 1) {
         while ($personCount > 0) {
             $person = PersonFactory::new()->create(['is_customer' => $isCustomer]);
             $this->people[] = $person;
@@ -475,8 +457,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgent($agentCount = 1)
-    {
+    protected function createAgent($agentCount = 1) {
         $this->createPerson($agentCount, 0);
 
         foreach ($this->people as $person) {
@@ -494,8 +475,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentCommission($agentCommissionCount = 1)
-    {
+    protected function createAgentCommission($agentCommissionCount = 1) {
         while ($agentCommissionCount > 0) {
             $agentCommission = AgentCommissionFactory::new()->create();
             $this->agentCommissions[] = $agentCommission;
@@ -507,8 +487,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAssetType($assetTypeCount = 1)
-    {
+    protected function createAssetType($assetTypeCount = 1) {
         while ($assetTypeCount > 0) {
             $assetType = AssetTypeFactory::new()->create();
             $this->assetTypes[] = $assetType;
@@ -520,8 +499,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAssignedAppliances($applianceCount = 1)
-    {
+    protected function createAssignedAppliances($applianceCount = 1) {
         $this->createAssetType($applianceCount);
         while ($applianceCount > 0) {
             $assignedAppliance = AgentAssignedApplianceFactory::new()->create([
@@ -539,8 +517,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentSoldAppliance($soldApplianceCount = 1)
-    {
+    protected function createAgentSoldAppliance($soldApplianceCount = 1) {
         while ($soldApplianceCount > 0) {
             $assignedApplianceId = $this->getRandomIdFromList($this->assignedAppliances);
             $assignedAppliance = collect($this->assignedAppliances)->where('id', $assignedApplianceId)->first();
@@ -569,8 +546,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentReceipt($agentReceiptCount = 1, $amount = 50)
-    {
+    protected function createAgentReceipt($agentReceiptCount = 1, $amount = 50) {
         while ($agentReceiptCount > 0) {
             $agentReceipt = AgentReceiptFactory::new()->create([
                 'user_id' => 1,
@@ -587,8 +563,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentBalanceHistory($agentBalanceHistoryCount = 1)
-    {
+    protected function createAgentBalanceHistory($agentBalanceHistoryCount = 1) {
         while ($agentBalanceHistoryCount > 0) {
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $this->getRandomIdFromList($this->agents),
@@ -608,8 +583,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createAgentTransaction($agentTransactionCount = 1, $amount = 100, $agentId = null)
-    {
+    protected function createAgentTransaction($agentTransactionCount = 1, $amount = 100, $agentId = null) {
         while ($agentTransactionCount > 0) {
             $meter = $this->getMeter();
 
@@ -688,8 +662,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createPaymentHistory($paymentHistoryCount = 1, $amount = 100, $agentId = null)
-    {
+    protected function createPaymentHistory($paymentHistoryCount = 1, $amount = 100, $agentId = null) {
         while ($paymentHistoryCount > 0) {
             $paymentHistory = PaymentHistoryFactory::new()->make([
                 'id' => 1,
@@ -730,8 +703,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createTicketCategory($ticketCategoryCount = 1)
-    {
+    protected function createTicketCategory($ticketCategoryCount = 1) {
         while ($ticketCategoryCount > 0) {
             $ticketCategory = TicketCategoryFactory::new()->create();
             $this->ticketCategories[] = $ticketCategory;
@@ -743,8 +715,7 @@ trait CreateEnvironments
         }
     }
 
-    protected function createTicket($ticketCount = 1, $status = 0, $customerId = null, $agentId = null)
-    {
+    protected function createTicket($ticketCount = 1, $status = 0, $customerId = null, $agentId = null) {
         while ($ticketCount > 0) {
             $trelloParams = [
                 'idList' => $this->ticketCard->card_id,
@@ -776,24 +747,20 @@ trait CreateEnvironments
         }
     }
 
-    protected function createTicketBoard()
-    {
+    protected function createTicketBoard() {
         $this->ticketBoard = TicketBoardFactory::new()->create();
     }
 
-    protected function createTicketCard()
-    {
+    protected function createTicketCard() {
         $this->ticketCard = TicketCardFactory::new()->create();
     }
 
-    protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1)
-    {
+    protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1) {
         while ($ticketOutSourceReportCount > 0) {
         }
     }
 
-    protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus')
-    {
+    protected function createTicketUser($ticketUserCount = 1, $tag = 'inensusinensus') {
         $ticketUserService = app()->make(TicketUserService::class);
         $externalUser = $ticketUserService->getByTag($tag);
 
@@ -813,8 +780,7 @@ trait CreateEnvironments
         }
     }
 
-    private function getRandomIdFromList(array $list, $startIndex = 1, $endIndex = null): int
-    {
+    private function getRandomIdFromList(array $list, $startIndex = 1, $endIndex = null): int {
         $ids = collect($list)->pluck('id')->toArray();
 
         if ($endIndex === null) {

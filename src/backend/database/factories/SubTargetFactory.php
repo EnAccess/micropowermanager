@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\SubTarget;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SubTargetFactory extends Factory
-{
+class SubTargetFactory extends Factory {
     protected $model = SubTarget::class;
 
     /**
@@ -14,8 +13,7 @@ class SubTargetFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'target_id' => $this->faker->randomNumber(1, 10),
             'connection_id' => $this->faker->randomNumber(1, 10),

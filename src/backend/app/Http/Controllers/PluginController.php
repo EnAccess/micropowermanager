@@ -10,23 +10,19 @@ use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-class PluginController extends Controller
-{
+class PluginController extends Controller {
     public function __construct(
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
         private CompanyDatabaseService $companyDatabaseService,
         private RegistrationTailService $registrationTailService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         return ApiResource::make($this->pluginsService->getAll());
     }
 
-    public function update(Request $request, $mpmPluginId): ApiResource
-    {
+    public function update(Request $request, $mpmPluginId): ApiResource {
         $plugin = $this->pluginsService->getByMpmPluginId($mpmPluginId);
         $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
         $registrationTail = $this->registrationTailService->getFirst();

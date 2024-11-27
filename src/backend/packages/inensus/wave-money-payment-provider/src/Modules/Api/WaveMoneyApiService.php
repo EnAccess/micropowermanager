@@ -8,16 +8,13 @@ use Inensus\WaveMoneyPaymentProvider\Modules\Api\Exceptions\ApiRequestFailedExce
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Resources\StartTransactionResource;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
 
-class WaveMoneyApiService
-{
+class WaveMoneyApiService {
     public function __construct(
         private WaveMoneyApi $api,
         private WaveMoneyCredentialService $credentialService,
-    ) {
-    }
+    ) {}
 
-    public function requestPayment(WaveMoneyTransaction $transaction): array
-    {
+    public function requestPayment(WaveMoneyTransaction $transaction): array {
         $credential = $this->credentialService->getCredentials();
         $transactionResource = new StartTransactionResource($credential, $transaction);
         try {

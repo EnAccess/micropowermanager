@@ -10,15 +10,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<Meter>
  */
-class MeterService implements IBaseService
-{
+class MeterService implements IBaseService {
     public function __construct(
         private Meter $meter,
-    ) {
-    }
+    ) {}
 
-    public function getBySerialNumber($serialNumber)
-    {
+    public function getBySerialNumber($serialNumber) {
         return $this->meter->newQuery()->with([
             'tariff',
             'device.person',
@@ -30,8 +27,7 @@ class MeterService implements IBaseService
         ])->where('serial_number', $serialNumber)->first();
     }
 
-    public function search($term, $paginate): LengthAwarePaginator
-    {
+    public function search($term, $paginate): LengthAwarePaginator {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
             ->whereHas('tariff', fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%'))
             ->orWhere(
@@ -41,8 +37,7 @@ class MeterService implements IBaseService
             )->paginate($paginate);
     }
 
-    public function getMeterWithAllRelations(int $meterId)
-    {
+    public function getMeterWithAllRelations(int $meterId) {
         return $this->meter->newQuery()->with([
             'tariff',
             'device.geo',
@@ -50,13 +45,11 @@ class MeterService implements IBaseService
         ])->find($meterId);
     }
 
-    public function getUsedMetersGeoWithAccessRatePayments(): Collection|array
-    {
+    public function getUsedMetersGeoWithAccessRatePayments(): Collection|array {
         return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])->where('in_use', 1)->get();
     }
 
-    public function getUsedMetersGeoWithAccessRatePaymentsInCities($cities): Collection|array
-    {
+    public function getUsedMetersGeoWithAccessRatePaymentsInCities($cities): Collection|array {
         return $this->meter->newQuery()->with(['device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
@@ -70,8 +63,7 @@ class MeterService implements IBaseService
             ->where('in_use', 1)->get();
     }
 
-    public function create(array $meterData): Meter
-    {
+    public function create(array $meterData): Meter {
         return $this->meter->newQuery()->create([
             'serial_number' => $meterData['serial_number'],
             'meter_type_id' => $meterData['meter_type_id'],
@@ -83,8 +75,7 @@ class MeterService implements IBaseService
         ]);
     }
 
-    public function getById(int $meterId): Meter
-    {
+    public function getById(int $meterId): Meter {
         return $this->meter->newQuery()->with([
             'tariff',
             'device',
@@ -95,13 +86,11 @@ class MeterService implements IBaseService
         ])->find($meterId);
     }
 
-    public function delete($meter): ?bool
-    {
+    public function delete($meter): ?bool {
         return $meter->delete();
     }
 
-    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator {
         if (isset($inUse)) {
             return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
                 'in_use',
@@ -112,8 +101,7 @@ class MeterService implements IBaseService
         return $this->meter->newQuery()->with(['meterType', 'tariff'])->paginate($limit);
     }
 
-    public function update($meter, array $meterData): Meter
-    {
+    public function update($meter, array $meterData): Meter {
         $meter->update($meterData);
         $meter->fresh();
 

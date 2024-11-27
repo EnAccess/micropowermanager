@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\StronMeter\Http\Requests\StronMeterApiRequests;
 use Inensus\StronMeter\Models\StronCredential;
 
-class StronCredentialService
-{
+class StronCredentialService {
     private $rootUrl = '/login/';
     private $credential;
     private $stronApi;
@@ -24,8 +23,7 @@ class StronCredentialService
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'username' => null,
             'password' => null,
@@ -35,13 +33,11 @@ class StronCredentialService
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->firstOrFail();
 
         $credential->update([

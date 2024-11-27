@@ -14,8 +14,7 @@ use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 
-class AgentTicketController extends Controller
-{
+class AgentTicketController extends Controller {
     private $board;
     private $card;
 
@@ -31,20 +30,17 @@ class AgentTicketController extends Controller
         // $this->card = $this->cardService->initalizeList($this->board);
     }
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->ticketService->getForAgent($agent->id));
     }
 
-    public function show($ticketId, Request $request): ApiResource
-    {
+    public function show($ticketId, Request $request): ApiResource {
         return ApiResource::make($this->ticketService->getById($ticketId));
     }
 
-    public function store(CreateAgentTicketRequest $request): TicketResource
-    {
+    public function store(CreateAgentTicketRequest $request): TicketResource {
         $ticketData = $request->only([
             'owner_id',
             'due_date',

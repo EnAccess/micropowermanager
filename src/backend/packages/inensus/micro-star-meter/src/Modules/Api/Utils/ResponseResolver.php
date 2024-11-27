@@ -4,13 +4,11 @@ namespace Inensus\MicroStarMeter\Modules\Api\Utils;
 
 use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
 
-class ResponseResolver
-{
+class ResponseResolver {
     /**
      * @throws MicroStarApiResponseException
      */
-    public function checkResponse($result)
-    {
+    public function checkResponse($result) {
         if (isset($result['errorCode'])) {
             if ($result['errorCode'] == 1000) {
                 return $result;
@@ -24,8 +22,7 @@ class ResponseResolver
         return $result;
     }
 
-    public function getMessage($statusCode): string
-    {
+    public function getMessage($statusCode): string {
         switch ($statusCode) {
             case 1000:
                 return 'Success';

@@ -4,8 +4,7 @@ namespace Inensus\MesombPaymentProvider\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MesombTransactionProcessingResource extends JsonResource
-{
+class MesombTransactionProcessingResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -13,8 +12,7 @@ class MesombTransactionProcessingResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'mesomb_transaction',

@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('sms_appliance_remind_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('appliance_type_id');
@@ -26,8 +25,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('sms_appliance_remind_rates');
     }
 };

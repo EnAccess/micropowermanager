@@ -6,32 +6,26 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Inensus\KelinMeter\Models\KelinSyncAction;
 
-class KelinSyncActionService
-{
+class KelinSyncActionService {
     private $syncAction;
 
-    public function __construct(KelinSyncAction $syncAction)
-    {
+    public function __construct(KelinSyncAction $syncAction) {
         $this->syncAction = $syncAction;
     }
 
-    public function createSyncAction($syncAction)
-    {
+    public function createSyncAction($syncAction) {
         return $this->syncAction->newQuery()->create($syncAction);
     }
 
-    public function getSyncActionBySynSettingId($settingId)
-    {
+    public function getSyncActionBySynSettingId($settingId) {
         return $this->syncAction->newQuery()->where('sync_setting_id', $settingId)->first();
     }
 
-    public function getActionsNeedsToSync()
-    {
+    public function getActionsNeedsToSync() {
         return $this->syncAction->newQuery()->where('next_sync', '<=', Carbon::now())->orderBy('next_sync')->get();
     }
 
-    public function updateSyncAction($syncAction, $syncSetting, $syncResult)
-    {
+    public function updateSyncAction($syncAction, $syncSetting, $syncResult) {
         if (!$syncResult) {
             return $syncAction->update([
                 'attempts' => $syncAction->attempts + 1,

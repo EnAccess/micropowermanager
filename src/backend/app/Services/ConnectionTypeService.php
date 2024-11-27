@@ -12,39 +12,32 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<ConnectionType>
  */
-class ConnectionTypeService implements IBaseService
-{
+class ConnectionTypeService implements IBaseService {
     public function __construct(
         private ConnectionType $connectionType,
-    ) {
-    }
+    ) {}
 
-    public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder
-    {
+    public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder {
         return $this->connectionType->newQuery()->withCount('meterParameters')->where('id', $connectionTypeId)
             ->firstOrFail();
     }
 
-    public function getById(int $connectionTypeId): ConnectionType
-    {
+    public function getById(int $connectionTypeId): ConnectionType {
         return $this->connectionType->newQuery()->findOrFail($connectionTypeId);
     }
 
-    public function create(array $connectionServiceData): ConnectionType
-    {
+    public function create(array $connectionServiceData): ConnectionType {
         return $this->connectionType->newQuery()->create($connectionServiceData);
     }
 
-    public function update($connectionType, array $connectionTypeData): ConnectionType
-    {
+    public function update($connectionType, array $connectionTypeData): ConnectionType {
         $connectionType->update($connectionTypeData);
         $connectionType->fresh();
 
         return $connectionType;
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->connectionType->newQuery()->paginate($limit);
         }
@@ -52,8 +45,7 @@ class ConnectionTypeService implements IBaseService
         return $this->connectionType->newQuery()->get();
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

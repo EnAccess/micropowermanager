@@ -14,8 +14,7 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TariffService;
 
-class SparkMeterApi implements IManufacturerAPI
-{
+class SparkMeterApi implements IManufacturerAPI {
     protected $api;
     private $rootUrl = '/transaction/';
 
@@ -30,8 +29,7 @@ class SparkMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeDevice($transactionContainer): array
-    {
+    public function chargeDevice($transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $owner = $transactionContainer->device->person;
@@ -131,8 +129,7 @@ class SparkMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         // TODO: Implement clearDevice() method.
     }
 }

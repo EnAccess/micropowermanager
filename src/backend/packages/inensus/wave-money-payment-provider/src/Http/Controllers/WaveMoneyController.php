@@ -11,23 +11,19 @@ use Inensus\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\WaveMoneyApiService;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 
-class WaveMoneyController extends Controller
-{
+class WaveMoneyController extends Controller {
     public function __construct(
         private WaveMoneyTransactionService $transactionService,
         private WaveMoneyApiService $apiService,
-    ) {
-    }
+    ) {}
 
-    public function startTransaction(TransactionInitializeRequest $request): WaveMoneyResource
-    {
+    public function startTransaction(TransactionInitializeRequest $request): WaveMoneyResource {
         $transaction = $request->get('waveMoneyTransaction');
 
         return WaveMoneyResource::make($this->apiService->requestPayment($transaction));
     }
 
-    public function transactionCallBack(Request $request)
-    {
+    public function transactionCallBack(Request $request) {
         $transaction = $request->get('waveMoneyTransaction');
         $status = $request->get('status');
 

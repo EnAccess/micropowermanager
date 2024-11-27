@@ -8,26 +8,25 @@ use Illuminate\Support\Facades\Log;
 use Inensus\GomeLongMeter\Exceptions\GomeLongApiResponseException;
 use Inensus\GomeLongMeter\Models\GomeLongCredential;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
-    public function get(GomeLongCredential $credentials, array $params, string $slug)
-    {
+    public function get(GomeLongCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
-                ]);
+                ]
+            );
             $result = json_decode((string) $request->getBody(), true);
 
             if ($result['ReturnCode'] !== 0) {
@@ -43,8 +42,7 @@ class ApiRequests
         }
     }
 
-    public function post(GomeLongCredential $credentials, array $params, string $slug)
-    {
+    public function post(GomeLongCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->post(

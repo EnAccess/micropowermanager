@@ -8,22 +8,18 @@ use Inensus\SteamaMeter\Http\Resources\SteamaCredentialResource;
 use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Services\SteamaCredentialService;
 
-class SteamaCredentialController extends Controller
-{
+class SteamaCredentialController extends Controller {
     private $credentialService;
 
-    public function __construct(SteamaCredentialService $credentialService)
-    {
+    public function __construct(SteamaCredentialService $credentialService) {
         $this->credentialService = $credentialService;
     }
 
-    public function show(): SteamaResource
-    {
+    public function show(): SteamaResource {
         return new SteamaResource($this->credentialService->getCredentials());
     }
 
-    public function update(SteamaCredentialRequest $request): SteamaCredentialResource
-    {
+    public function update(SteamaCredentialRequest $request): SteamaCredentialResource {
         $credentials = $this->credentialService->updateCredentials($request->only([
             'id',
             'username',

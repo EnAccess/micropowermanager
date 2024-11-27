@@ -7,8 +7,7 @@ use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Manufacturer extends BaseModel
-{
+class Manufacturer extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'manufacturer';
@@ -16,8 +15,7 @@ class Manufacturer extends BaseModel
     protected $hidden = ['api_name'];
     protected $guarded = [];
 
-    public function address(): MorphMany
-    {
+    public function address(): MorphMany {
         return $this->morphMany(Address::class, 'owner');
     }
 }

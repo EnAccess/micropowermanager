@@ -21,13 +21,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class EnergyTransactionProcessorTest extends TestCase
-{
+class EnergyTransactionProcessorTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function testWithValidData()
-    {
+    public function testWithValidData() {
         Queue::fake();
         PersonFactory::new()->create();
         MeterTariffFactory::new()->create();

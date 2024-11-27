@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class GeoFormatException extends \Exception
-{
-}
+class GeoFormatException extends \Exception {}

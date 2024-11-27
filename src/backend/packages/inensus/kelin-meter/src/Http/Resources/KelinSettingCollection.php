@@ -4,8 +4,7 @@ namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class KelinSettingCollection extends ResourceCollection
-{
+class KelinSettingCollection extends ResourceCollection {
     /**
      * Transform the resource collection into an array.
      *
@@ -13,8 +12,7 @@ class KelinSettingCollection extends ResourceCollection
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return [
             'data' => $this->collection,
         ];

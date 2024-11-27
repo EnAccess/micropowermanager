@@ -2,6 +2,4 @@
 
 namespace Inensus\MesombPaymentProvider\Exceptions;
 
-class MesombPaymentPhoneNumberNotFoundException extends \Exception
-{
-}
+class MesombPaymentPhoneNumberNotFoundException extends \Exception {}

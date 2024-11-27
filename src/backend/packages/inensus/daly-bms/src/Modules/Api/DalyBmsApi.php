@@ -13,8 +13,7 @@ use Inensus\DalyBms\Models\DalyBmsTransaction;
 use Inensus\DalyBms\Services\DalyBmsCredentialService;
 use MPM\EBike\EBikeService;
 
-class DalyBmsApi implements IManufacturerAPI
-{
+class DalyBmsApi implements IManufacturerAPI {
     // works with query params
     public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
     // works with query params
@@ -27,11 +26,9 @@ class DalyBmsApi implements IManufacturerAPI
         private DalyBmsTransaction $dalyBmsTransaction,
         private EBikeService $eBikeService,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
-    public function getDevices(array $deviceSerials)
-    {
+    public function getDevices(array $deviceSerials) {
         $params = [
             'codes' => $deviceSerials,
         ];
@@ -46,14 +43,15 @@ class DalyBmsApi implements IManufacturerAPI
 
             return $this->apiRequests->postWithBodyParams($credentials, $params, self::COMMAND_DEVICES_LIST);
         } catch (DalyBmsApiResponseException $e) {
-            $this->credentialService->updateCredentials($credentials,
-                ['access_token' => null, 'token_expires_in' => null]);
+            $this->credentialService->updateCredentials(
+                $credentials,
+                ['access_token' => null, 'token_expires_in' => null]
+            );
             throw $e;
         }
     }
 
-    public function getDevice(string $code)
-    {
+    public function getDevice(string $code) {
         $params = [
             'Code' => $code,
         ];
@@ -67,14 +65,15 @@ class DalyBmsApi implements IManufacturerAPI
 
             return $this->apiRequests->postWithQueryParams($credentials, $params, self::COMMAND_DEVICE_DETAIL);
         } catch (DalyBmsApiResponseException $e) {
-            $this->credentialService->updateCredentials($credentials,
-                ['access_token' => null, 'token_expires_in' => null]);
+            $this->credentialService->updateCredentials(
+                $credentials,
+                ['access_token' => null, 'token_expires_in' => null]
+            );
             throw $e;
         }
     }
 
-    public function switchDevice(string $code, bool $isOn)
-    {
+    public function switchDevice(string $code, bool $isOn) {
         $params = [
             'cmdKey' => '8500_004',
             'data' => [
@@ -97,8 +96,7 @@ class DalyBmsApi implements IManufacturerAPI
         }
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $transactionId = $transactionContainer->transaction->id;
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
@@ -125,7 +123,8 @@ class DalyBmsApi implements IManufacturerAPI
         ];
         $this->eBikeService->update(
             $eBike,
-            $updatingData);
+            $updatingData
+        );
         $creator = User::query()->firstOrCreate([
             'name' => 'System',
         ]);
@@ -146,8 +145,7 @@ class DalyBmsApi implements IManufacturerAPI
         ];
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

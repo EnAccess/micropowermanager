@@ -10,8 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class SmsLoadBalancer extends AbstractJob
-{
+class SmsLoadBalancer extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -23,14 +22,12 @@ class SmsLoadBalancer extends AbstractJob
 
     public $smsBody;
 
-    public function __construct($smsBody)
-    {
+    public function __construct($smsBody) {
         $this->smsBody = $smsBody;
         parent::__construct(get_class($this));
     }
 
-    public function executeJob(): void
-    {
+    public function executeJob(): void {
         Redis::throttle('smsgateway')->allow(10)->every(1)->block(1)->then(
             function () {
                 $fireBaseResult = $this->sendSms($this->smsBody);
@@ -42,8 +39,7 @@ class SmsLoadBalancer extends AbstractJob
         );
     }
 
-    private function sendSms($data): string
-    {
+    private function sendSms($data): string {
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
         $httpClient = new Client();

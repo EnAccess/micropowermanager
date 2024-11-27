@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTicketingTables extends Migration
-{
+class CreateTicketingTables extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         $tableNames = config('tickets.table_names');
 
         Schema::connection('shard')->create($tableNames['ticket'], function (Blueprint $table) {
@@ -73,8 +71,7 @@ class CreateTicketingTables extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         $tableNames = config('tickets.table_names');
         Schema::connection('shard')->drop($tableNames['ticket']);
         Schema::connection('shard')->drop($tableNames['user']);

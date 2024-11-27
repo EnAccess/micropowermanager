@@ -5,8 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketUser;
 
-class TicketUserFactory extends Factory
-{
+class TicketUserFactory extends Factory {
     protected $model = TicketUser::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketUserFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'user_name' => $this->faker->name,
             'user_tag' => $this->faker->word,

@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\AssetType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AssetTypeFactory extends Factory
-{
+class AssetTypeFactory extends Factory {
     protected $model = AssetType::class;
 
     /**
@@ -14,8 +13,7 @@ class AssetTypeFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => $this->faker->word,
         ];

@@ -8,15 +8,13 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Inensus\SteamaMeter\Observers\GeographicalInformationObserver;
 use Inensus\SteamaMeter\Observers\PersonObserver;
 
-class ObserverServiceProvider extends ServiceProvider
-{
+class ObserverServiceProvider extends ServiceProvider {
     /**
      * Register any events for your application.
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
         Person::observe(PersonObserver::class);
         GeographicalInformation::observe(GeographicalInformationObserver::class);

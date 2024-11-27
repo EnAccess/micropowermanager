@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class TrelloAPIException extends \Exception
-{
-}
+class TrelloAPIException extends \Exception {}

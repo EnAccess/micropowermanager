@@ -15,8 +15,7 @@ use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WavecomPaymentProvider\Services\TransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class WaveComTransactionProvider implements ITransactionProvider
-{
+class WaveComTransactionProvider implements ITransactionProvider {
     private Transaction $transaction;
 
     public function __construct(
@@ -24,16 +23,13 @@ class WaveComTransactionProvider implements ITransactionProvider
         private SmsService $smsService,
         private TransactionConflicts $transactionConflicts,
         private WaveComTransaction $waveComTransaction,
-    ) {
-    }
+    ) {}
 
-    public function saveTransaction()
-    {
+    public function saveTransaction() {
         $this->transactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction)
-    {
+    public function sendResult(bool $requestType, Transaction $transaction) {
         /** @var WaveComTransaction $waveComTransaction */
         $waveComTransaction = $transaction->originalTransaction()->first();
         $this->transactionService->setStatus($waveComTransaction, $requestType);
@@ -46,44 +42,36 @@ class WaveComTransactionProvider implements ITransactionProvider
         }
     }
 
-    public function validateRequest($request)
-    {
+    public function validateRequest($request) {
         // no need as the transaction initialized by uploading a separate file
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         // TODO: Implement confirm() method.
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return $this->getTransaction()->getMessage();
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->getTransaction()->getAmount();
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->getTransaction()->getSender();
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         // TODO: Implement saveCommonData() method.
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->waveComTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = $this->transactionConflicts->newQuery()->make([
             'state' => $message,
         ]);
@@ -91,8 +79,7 @@ class WaveComTransactionProvider implements ITransactionProvider
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 }

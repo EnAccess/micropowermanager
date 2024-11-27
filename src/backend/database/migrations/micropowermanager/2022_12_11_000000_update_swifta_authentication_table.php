@@ -12,8 +12,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         if (!Type::hasType('token')) {
             Type::addType('token', FloatType::class);
         }
@@ -27,9 +26,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::connection('shard')->table('swifta_authentication', function (Blueprint $table) {
-        });
+    public function down() {
+        Schema::connection('shard')->table('swifta_authentication', function (Blueprint $table) {});
     }
 };

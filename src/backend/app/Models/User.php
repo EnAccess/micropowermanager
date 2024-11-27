@@ -22,8 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string      $name
  * @property string|null $email
  */
-class User extends Authenticatable implements JWTSubject
-{
+class User extends Authenticatable implements JWTSubject {
     use Notifiable;
     use HasFactory;
 
@@ -31,15 +30,13 @@ class User extends Authenticatable implements JWTSubject
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         $this->setConnection('shard');
 
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute($password): void
-    {
+    public function setPasswordAttribute($password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 
@@ -70,67 +67,55 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
-    {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
     // we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
-    public function getJWTCustomClaims(): array
-    {
+    public function getJWTCustomClaims(): array {
         return [
             'companyId' => $this->getCompanyId(),
         ];
     }
 
-    public function address(): MorphOne
-    {
+    public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
-    public function addressDetails(): MorphOne
-    {
+    public function addressDetails(): MorphOne {
         return $this->address()->with('city');
     }
 
-    public function balanceHistory(): HasMany
-    {
+    public function balanceHistory(): HasMany {
         return $this->hasMany(AgentBalanceHistory::class);
     }
 
-    public function assignedAppliance(): HasMany
-    {
+    public function assignedAppliance(): HasMany {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
 
     // belongsTo company
-    public function company(): BelongsTo
-    {
+    public function company(): BelongsTo {
         return $this->BelongsTo(Company::class, 'company_id');
     }
 
-    public function getCompanyId(): int
-    {
+    public function getCompanyId(): int {
         return $this->company_id;
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function getName(): string
-    {
+    public function getName(): string {
         return $this->name;
     }
 
-    public function getEmail(): string
-    {
+    public function getEmail(): string {
         return $this->email;
     }
 
-    public function relationTicketUser(): HasOne
-    {
+    public function relationTicketUser(): HasOne {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
     }
 }

@@ -5,15 +5,12 @@ namespace App\Services;
 use App\Models\PaymentHistory;
 use Illuminate\Support\Facades\DB;
 
-class AgentCustomersPaymentHistoryService
-{
+class AgentCustomersPaymentHistoryService {
     public function __construct(
         private PaymentHistory $paymentHistory,
-    ) {
-    }
+    ) {}
 
-    public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC')
-    {
+    public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC') {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
@@ -52,8 +49,7 @@ class AgentCustomersPaymentHistoryService
         return $this->preparePaymentFlow($payments);
     }
 
-    public function getPaymentFlows($period, $agentId, $limit, $order = 'ASC')
-    {
+    public function getPaymentFlows($period, $agentId, $limit, $order = 'ASC') {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
@@ -96,8 +92,7 @@ class AgentCustomersPaymentHistoryService
         return $this->preparePaymentFlow($payments);
     }
 
-    private function preparePaymentFlow($payments): array
-    {
+    private function preparePaymentFlow($payments): array {
         $flowList = [];
         foreach ($payments as $payment) {
             $flowList[$payment['period']][$payment['payment_type']] = $payment['amount'];
@@ -106,8 +101,7 @@ class AgentCustomersPaymentHistoryService
         return $flowList;
     }
 
-    private function executeSqlCommand(string $sql, $payerId, $agentId, $payerType)
-    {
+    private function executeSqlCommand(string $sql, $payerId, $agentId, $payerType) {
         $sth = DB::connection($this->paymentHistory->getConnectionName())->getPdo()->prepare($sql);
 
         if ($payerId) {

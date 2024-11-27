@@ -5,8 +5,7 @@ namespace Inensus\BulkRegistration\Console\Commands;
 use Illuminate\Console\Command;
 use Inensus\BulkRegistration\Services\MeterTypeService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'bulk-registration:install';
     protected $description = 'Install Bulk Registration Package';
 
@@ -16,8 +15,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing BulkRegistration Integration Package\n');
 
         $this->meterTypeService->createDefaultMeterTypeIfDoesNotExistAny();
@@ -25,8 +23,7 @@ class InstallPackage extends Command
         $this->info('Package installed successfully..');
     }
 
-    private function publishConfigurations()
-    {
+    private function publishConfigurations() {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
@@ -34,8 +31,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\BulkRegistration\Providers\BulkRegistrationServiceProvider",
@@ -43,14 +39,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
 
         $this->call('vendor:publish', [
@@ -60,8 +54,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'BulkRegistration',
             'composer_name' => 'inensus/bulk-registration',

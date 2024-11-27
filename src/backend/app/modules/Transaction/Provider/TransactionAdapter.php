@@ -9,15 +9,13 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class TransactionAdapter
-{
+class TransactionAdapter {
     /**
      * @param ITransactionProvider $transactionProvider
      *
      * @return ITransactionProvider
      */
-    public static function getTransaction($transactionProvider): ?ITransactionProvider
-    {
+    public static function getTransaction($transactionProvider): ?ITransactionProvider {
         if ($transactionProvider instanceof VodacomTransaction) {
             $baseTransaction = resolve('VodacomPaymentProvider');
             $baseTransaction->init($transactionProvider);

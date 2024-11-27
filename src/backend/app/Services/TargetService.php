@@ -10,22 +10,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use MPM\Target\TargetAssignable;
 
-class TargetService
-{
-    public function __construct(private Target $target)
-    {
-    }
+class TargetService {
+    public function __construct(private Target $target) {}
 
-    public function getById($targetId): Target
-    {
+    public function getById($targetId): Target {
         /** @var Target $model */
         $model = $this->target->newQuery()->with(['subTargets', 'city'])->find($targetId);
 
         return $model;
     }
 
-    public function create(CarbonImmutable $period, string $targetForType, TargetAssignable $targetOwner): Target
-    {
+    public function create(CarbonImmutable $period, string $targetForType, TargetAssignable $targetOwner): Target {
         /** @var Target $target */
         $target = $this->target->newQuery()->make([
             'target_date' => $period->format('Y-m-d'),
@@ -40,8 +35,7 @@ class TargetService
         return $target;
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->target->newQuery()->with(['owner', 'subTargets.connectionType'])->orderBy(
                 'target_date',
@@ -55,8 +49,7 @@ class TargetService
         )->get();
     }
 
-    public function getTakenSlots($targetDate): Collection
-    {
+    public function getTakenSlots($targetDate): Collection {
         return $this->target->newQuery()->whereBetween('target_date', $targetDate)->get();
     }
 }

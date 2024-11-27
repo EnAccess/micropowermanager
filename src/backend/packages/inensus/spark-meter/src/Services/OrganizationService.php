@@ -4,8 +4,7 @@ namespace Inensus\SparkMeter\Services;
 
 use Inensus\SparkMeter\Models\SmOrganization;
 
-class OrganizationService
-{
+class OrganizationService {
     private $organization;
 
     public function __construct(
@@ -14,13 +13,11 @@ class OrganizationService
         $this->organization = $organization;
     }
 
-    public function getOrganizations()
-    {
+    public function getOrganizations() {
         return $this->organization->newQuery()->where('id', '>', 0)->get();
     }
 
-    public function createOrganization($organizationData)
-    {
+    public function createOrganization($organizationData) {
         $organization = $this->organization->newQuery()->first();
         if (!$organization) {
             return $this->organization->newQuery()->create([
@@ -39,8 +36,7 @@ class OrganizationService
         }
     }
 
-    public function deleteOrganization()
-    {
+    public function deleteOrganization() {
         $organization = $this->organization->newQuery()->first();
         $organization->delete();
     }

@@ -11,8 +11,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('upgrades', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('restriction_id');
@@ -28,14 +27,12 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('upgrades');
     }
 
     // TODO : add to seeders
-    public function addDefault()
-    {
+    public function addDefault() {
         DB::table('upgrades')->insert([
             'restriction_id' => 1,
             'cost' => 36000,

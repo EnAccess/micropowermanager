@@ -4,18 +4,15 @@ namespace Inensus\WaveMoneyPaymentProvider\Services;
 
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyCredential;
 
-class WaveMoneyCredentialService
-{
+class WaveMoneyCredentialService {
     public function __construct(
         private WaveMoneyCredential $credential,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'merchant_id' => null,
             'secret_key' => null,
@@ -26,13 +23,11 @@ class WaveMoneyCredentialService
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

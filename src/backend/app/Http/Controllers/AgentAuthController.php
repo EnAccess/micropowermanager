@@ -12,15 +12,13 @@ use Illuminate\Http\Request;
  * Class AgentAuthController
  * Responsible for AgentAPP-API-Call authentications.
  */
-class AgentAuthController extends Controller
-{
+class AgentAuthController extends Controller {
     /**
      * Create a new AuthController instance.
      *
      * @param AgentService $agentService
      */
-    public function __construct(private AgentService $agentService)
-    {
+    public function __construct(private AgentService $agentService) {
         $this->middleware('auth:agent_api', ['except' => ['login']]);
     }
 
@@ -32,8 +30,7 @@ class AgentAuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function login(Request $request)
-    {
+    public function login(Request $request) {
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
@@ -53,8 +50,7 @@ class AgentAuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function me()
-    {
+    public function me() {
         return response()->json(auth('agent_api')->user());
     }
 
@@ -63,8 +59,7 @@ class AgentAuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function logout()
-    {
+    public function logout() {
         auth('agent_api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -76,8 +71,7 @@ class AgentAuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function refresh()
-    {
+    public function refresh() {
         return $this->respondWithToken(auth('agent_api')->refresh());
     }
 
@@ -88,8 +82,7 @@ class AgentAuthController extends Controller
      *
      * @return JsonResponse
      */
-    protected function respondWithToken($token)
-    {
+    protected function respondWithToken($token) {
         return response()->json(
             [
                 'access_token' => $token,

@@ -16,8 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class CompanyController extends Controller
-{
+class CompanyController extends Controller {
     public function __construct(
         private CompanyService $companyService,
         private CompanyDatabaseService $companyDatabaseService,
@@ -27,11 +26,9 @@ class CompanyController extends Controller
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
-    ) {
-    }
+    ) {}
 
-    public function store(CompanyRegistrationRequest $request): JsonResponse
-    {
+    public function store(CompanyRegistrationRequest $request): JsonResponse {
         $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id', 'protected_page_password']);
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
@@ -109,8 +106,7 @@ class CompanyController extends Controller
         );
     }
 
-    public function get($email): ApiResource
-    {
+    public function get($email): ApiResource {
         $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
 
         return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));

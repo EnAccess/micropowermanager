@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UpdatePackage extends Command
-{
+class UpdatePackage extends Command {
     protected $signature = 'swifta-payment-provider:update';
     protected $description = 'Update the Swifta Payment Provider Integration Package';
 
@@ -26,8 +25,7 @@ class UpdatePackage extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Swifta Payment Provider Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
@@ -40,8 +38,7 @@ class UpdatePackage extends Command
         $this->info('Package updated successfully..');
     }
 
-    private function publishConfigurations()
-    {
+    private function publishConfigurations() {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
@@ -49,20 +46,17 @@ class UpdatePackage extends Command
         ]);
     }
 
-    private function removeOldVersionOfPackage()
-    {
+    private function removeOldVersionOfPackage() {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/swifta-payment-provider');
     }
 
-    private function installNewVersionOfPackage()
-    {
+    private function installNewVersionOfPackage() {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/swifta-payment-provider');
     }
 
-    private function deleteMigration(Filesystem $filesystem)
-    {
+    private function deleteMigration(Filesystem $filesystem) {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_swifta_payment_provider_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -73,8 +67,7 @@ class UpdatePackage extends Command
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain()
-    {
+    private function publishMigrationsAgain() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
@@ -82,14 +75,12 @@ class UpdatePackage extends Command
         ]);
     }
 
-    private function updateDatabase()
-    {
+    private function updateDatabase() {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function generateAuthenticationTokenAgain()
-    {
+    private function generateAuthenticationTokenAgain() {
         $password = $this->generateRandomNumber();
         $user = $this->user->newQuery()->firstOrCreate([
             'email' => 'swifta-user',
@@ -111,8 +102,7 @@ class UpdatePackage extends Command
         return $token;
     }
 
-    private function generateRandomNumber(): string
-    {
+    private function generateRandomNumber(): string {
         $length = random_int(1, 10);
         $number = '';
         for ($i = 0; $i < $length; ++$i) {

@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string|null $tail_tag
  * @property string|null $installation_command
  */
-class MpmPlugin extends BaseModelCore
-{
+class MpmPlugin extends BaseModelCore {
     use HasFactory;
 
     public const SPARK_METER = 1;
@@ -33,8 +32,7 @@ class MpmPlugin extends BaseModelCore
 
     protected $table = 'mpm_plugins';
 
-    public function plugins()
-    {
+    public function plugins() {
         return $this->hasMany(Plugins::class);
     }
 }

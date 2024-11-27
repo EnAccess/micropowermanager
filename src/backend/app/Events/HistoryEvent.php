@@ -9,8 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class HistoryEvent implements ShouldBroadcast
-{
+class HistoryEvent implements ShouldBroadcast {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
@@ -20,17 +19,14 @@ class HistoryEvent implements ShouldBroadcast
      *
      * @param History $historyModel
      */
-    public function __construct(private readonly History $historyModel)
-    {
-    }
+    public function __construct(private readonly History $historyModel) {}
 
     /**
      * Get the channels the event should broadcast on.
      *
      * @return PrivateChannel
      */
-    public function broadcastOn(): PrivateChannel
-    {
+    public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('histories');
     }
 }

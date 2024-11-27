@@ -5,17 +5,13 @@ namespace Inensus\SteamaMeter\Services;
 use App\Models\Meter\MeterTariff;
 use Inensus\SteamaMeter\Models\SteamaTariff;
 
-class SteamaTariffService
-{
-    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff)
-    {
-    }
+class SteamaTariffService {
+    public function __construct(private readonly SteamaTariff $tariff, private readonly MeterTariff $meterTariff) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createTariff()
-    {
+    public function createTariff() {
         $meterTariff = $this->meterTariff->newQuery()->where('name', 'Steama External Tariff')->first();
         if (!$meterTariff) {
             $meterTariff = $this->meterTariff->newQuery()->create([

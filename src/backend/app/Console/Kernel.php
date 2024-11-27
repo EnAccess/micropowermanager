@@ -23,8 +23,7 @@ use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessag
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 
-class Kernel extends ConsoleKernel
-{
+class Kernel extends ConsoleKernel {
     /**
      * The Artisan commands provided by your application.
      *
@@ -58,8 +57,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
+    protected function schedule(Schedule $schedule) {
         $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
         $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
@@ -77,8 +75,7 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function commands()
-    {
+    protected function commands() {
         $this->load(__DIR__.'/Commands');
 
         include base_path('routes/console.php');

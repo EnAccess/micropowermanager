@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class SmsTypeNotFoundException extends \Exception
-{
-}
+class SmsTypeNotFoundException extends \Exception {}

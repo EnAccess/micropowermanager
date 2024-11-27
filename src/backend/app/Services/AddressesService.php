@@ -14,16 +14,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Address>
  * @implements IAssociative<Address>
  */
-class AddressesService implements IBaseService, IAssociative
-{
+class AddressesService implements IBaseService, IAssociative {
     public function __construct(
         private Address $address,
-    ) {
-    }
+    ) {}
 
     // fills the object and returns it without saving.
-    public function instantiate(array $params): Address
-    {
+    public function instantiate(array $params): Address {
         return $this->address->fill([
             'city_id' => $params['city_id'] ?? null,
             'email' => $params['email'] ?? null,
@@ -33,18 +30,15 @@ class AddressesService implements IBaseService, IAssociative
         ]);
     }
 
-    public function assignAddressToOwner(HasAddressesInterface $owner, Address $address)
-    {
+    public function assignAddressToOwner(HasAddressesInterface $owner, Address $address) {
         return $owner->addresses()->save($address);
     }
 
-    public function getStoredAddressWithCityRelation(int $id): Address
-    {
+    public function getStoredAddressWithCityRelation(int $id): Address {
         return $this->address::with('city')->findOrFail($id);
     }
 
-    public function createAddressDataFromRequest(Request $request): array
-    {
+    public function createAddressDataFromRequest(Request $request): array {
         return [
             'email' => $request->get('email') ?? '',
             'phone' => $request->get('phone') ?? '',
@@ -54,13 +48,11 @@ class AddressesService implements IBaseService, IAssociative
         ];
     }
 
-    public function getById(int $id): Address
-    {
+    public function getById(int $id): Address {
         return $this->address->newQuery()->findOrFail($id);
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->address->newQuery()->paginate($limit);
         }
@@ -68,25 +60,21 @@ class AddressesService implements IBaseService, IAssociative
         return $this->address->newQuery()->get();
     }
 
-    public function create(array $data): Address
-    {
+    public function create(array $data): Address {
         throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function update($address, array $addressData): Address
-    {
+    public function update($address, array $addressData): Address {
         $address->update($addressData);
 
         return $address;
     }
 
-    public function make($addressData): Address
-    {
+    public function make($addressData): Address {
         return $this->address->newQuery()->make([
             'email' => $addressData['email'] ?? null,
             'phone' => $addressData['phone'] ?? null,
@@ -97,8 +85,7 @@ class AddressesService implements IBaseService, IAssociative
         ]);
     }
 
-    public function save($address): bool
-    {
+    public function save($address): bool {
         return $address->save();
     }
 }

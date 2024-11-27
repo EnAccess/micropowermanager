@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('access_rate_payments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('meter_id');
@@ -28,8 +27,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('access_rate_payments');
     }
 };

@@ -7,12 +7,10 @@ use Inensus\Ticket\Models\TicketUser;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class TicketTest extends TestCase
-{
+class TicketTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsTicketUserList()
-    {
+    public function testUserGetsTicketUserList() {
         $this->createTestData();
         $this->createTicketUser();
         $response = $this->actingAs($this->user)->get('/tickets/api/users');
@@ -20,8 +18,7 @@ class TicketTest extends TestCase
         $this->assertEquals(1, count($response['data']));
     }
 
-    public function testUserCreatesATicketUser()
-    {
+    public function testUserCreatesATicketUser() {
         $this->createTestData();
         $postData = [
             'username' => 'test',
@@ -34,8 +31,7 @@ class TicketTest extends TestCase
         $this->assertEquals($ticketUser->user_name, $postData['username']);
     }
 
-    public function testUserCreatesATicket()
-    {
+    public function testUserCreatesATicket() {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -56,8 +52,7 @@ class TicketTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testUserGetsTicketList()
-    {
+    public function testUserGetsTicketList() {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -70,8 +65,7 @@ class TicketTest extends TestCase
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function testUserGetsTicketByTrelloId()
-    {
+    public function testUserGetsTicketByTrelloId() {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -86,8 +80,7 @@ class TicketTest extends TestCase
         $this->assertEquals($this->person->id, $response['data']['owner_id']);
     }
 
-    public function testUserClosesATicket()
-    {
+    public function testUserClosesATicket() {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -102,8 +95,7 @@ class TicketTest extends TestCase
         $this->assertEquals($trelloId, $response['data']['id']);
     }
 
-    public function testUserGetsAgentsTicketList()
-    {
+    public function testUserGetsAgentsTicketList() {
         $this->createTestData();
         $this->createPerson();
         $this->createAgentCommission();
@@ -118,8 +110,7 @@ class TicketTest extends TestCase
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function testUserCreatesATicketCategory()
-    {
+    public function testUserCreatesATicketCategory() {
         $this->createTestData();
         $postData = [
             'labelName' => 'test category',
@@ -133,8 +124,7 @@ class TicketTest extends TestCase
         $this->assertEquals($ticketCategory->label_name, $postData['labelName']);
     }
 
-    public function testUserGetsTicketCategoryList()
-    {
+    public function testUserGetsTicketCategoryList() {
         $this->createTestData();
         $ticketCategoryCount = 5;
         $this->createTicketCategory($ticketCategoryCount);
@@ -144,8 +134,7 @@ class TicketTest extends TestCase
         $this->assertEquals($ticketCategoryCount, TicketCategory::query()->count());
     }
 
-    public function testUserGetsTicketListForACustomer()
-    {
+    public function testUserGetsTicketListForACustomer() {
         $this->createTestData();
         $this->createPerson();
         $this->createAgentCommission();
@@ -160,8 +149,7 @@ class TicketTest extends TestCase
         $this->assertEquals(1, count($response['data']['data']));
     }
 
-    public function testUserAddsCommentToTicketByTrelloId()
-    {
+    public function testUserAddsCommentToTicketByTrelloId() {
         $this->createTestData();
         $this->createPerson();
         $this->createTicketCategory();
@@ -180,8 +168,7 @@ class TicketTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

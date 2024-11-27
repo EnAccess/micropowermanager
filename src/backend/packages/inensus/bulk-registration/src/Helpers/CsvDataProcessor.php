@@ -6,15 +6,13 @@ use App\Models\Address\Address;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CsvDataProcessor
-{
+class CsvDataProcessor {
     public const CONNECTION_GROUP = 1;
     private $geographicalLocationFinder;
     private $reflections;
     private $recentlyCreatedRecords;
 
-    public function __construct(GeographicalLocationFinder $geographicalLocationFinder)
-    {
+    public function __construct(GeographicalLocationFinder $geographicalLocationFinder) {
         $this->geographicalLocationFinder = $geographicalLocationFinder;
         $this->reflections = config('bulk-registration.reflections');
         $this->recentlyCreatedRecords = [
@@ -29,8 +27,7 @@ class CsvDataProcessor
         ];
     }
 
-    public function processParsedCsvData($csvData)
-    {
+    public function processParsedCsvData($csvData) {
         Collect($csvData)->each(function ($row) {
             try {
                 DB::connection('shard')->beginTransaction();
@@ -98,15 +95,13 @@ class CsvDataProcessor
         return $this->recentlyCreatedRecords;
     }
 
-    private function createRecordFromCsv($row, $serviceName)
-    {
+    private function createRecordFromCsv($row, $serviceName) {
         $service = app()->make($serviceName);
 
         return $service->resolveCsvDataFromComingRow($row);
     }
 
-    private function checkRecordWasRecentlyCreated($record, $type)
-    {
+    private function checkRecordWasRecentlyCreated($record, $type) {
         if ($record->wasRecentlyCreated) {
             ++$this->recentlyCreatedRecords[$type];
         }

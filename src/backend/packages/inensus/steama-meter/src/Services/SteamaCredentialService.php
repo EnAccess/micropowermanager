@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
-class SteamaCredentialService
-{
+class SteamaCredentialService {
     private $rootUrl = '/get-token/';
     private $credential;
     private $steamaApi;
@@ -24,8 +23,7 @@ class SteamaCredentialService
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'username' => null,
             'password' => null,
@@ -35,13 +33,11 @@ class SteamaCredentialService
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

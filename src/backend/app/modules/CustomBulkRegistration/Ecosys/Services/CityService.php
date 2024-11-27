@@ -5,15 +5,12 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\City;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class CityService extends CreatorService
-{
-    public function __construct(City $city)
-    {
+class CityService extends CreatorService {
+    public function __construct(City $city) {
         parent::__construct($city);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $cityConfig = [
             'cluster_id' => 'cluster_id',
             'mini_grid_id' => 'mini_grid_id',

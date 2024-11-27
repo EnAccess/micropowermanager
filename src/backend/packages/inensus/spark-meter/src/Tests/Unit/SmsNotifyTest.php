@@ -32,13 +32,11 @@ use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 use Tests\TestCase;
 
-class SmsNotifyTest extends TestCase
-{
+class SmsNotifyTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isLowBalanceNotifySend()
-    {
+    public function isLowBalanceNotifySend() {
         Queue::fake();
         $this->initializeData();
         $lowBalanceMin = SmSmsSetting::query()->where(
@@ -91,8 +89,7 @@ class SmsNotifyTest extends TestCase
     }
 
     /** @test */
-    public function isTransactionNotifySend()
-    {
+    public function isTransactionNotifySend() {
         Queue::fake();
         $data = $this->initializeData();
         $this->initializeSparkTransaction($data['customer']);
@@ -148,8 +145,7 @@ class SmsNotifyTest extends TestCase
     }
 
     /** @test */
-    public function isMaxAttemptNotifySend()
-    {
+    public function isMaxAttemptNotifySend() {
         Queue::fake();
         $this->addSyncSettings();
         $this->initializeAdminData();
@@ -188,8 +184,7 @@ class SmsNotifyTest extends TestCase
         $this->assertLessThan($oldNextSync, $newNextSync);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         $this->addSmsSettings();
         $this->addSmsBodies();
         // create person
@@ -251,8 +246,7 @@ class SmsNotifyTest extends TestCase
         return ['customer' => $p];
     }
 
-    private function initializeSparkTransaction($customer)
-    {
+    private function initializeSparkTransaction($customer) {
         $sparkTransaction = SmTransaction::query()->create([
             'site_id' => 1,
             'customer_id' => $customer->id,
@@ -282,8 +276,7 @@ class SmsNotifyTest extends TestCase
         $transaction->save();
     }
 
-    private function initializeAdminData()
-    {
+    private function initializeAdminData() {
         $user = factory(User::class)->create();
         $address = Address::query()->make([
             'phone' => '+905494322161',
@@ -294,8 +287,7 @@ class SmsNotifyTest extends TestCase
         $address->save();
     }
 
-    private function addSmsSettings()
-    {
+    private function addSmsSettings() {
         $smsSetting = SmSetting::query()->make();
 
         $smsTransaction = SmSmsSetting::query()->create([
@@ -319,8 +311,7 @@ class SmsNotifyTest extends TestCase
         $balanceSetting->save();
     }
 
-    private function addSyncSettings()
-    {
+    private function addSyncSettings() {
         $minInterval = CarbonInterval::make('1minute');
         $now = Carbon::now();
         $siteSetting = SmSetting::query()->make();
@@ -340,8 +331,7 @@ class SmsNotifyTest extends TestCase
         SmSyncAction::query()->create($syncAction);
     }
 
-    private function addSmsBodies()
-    {
+    private function addSmsBodies() {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',

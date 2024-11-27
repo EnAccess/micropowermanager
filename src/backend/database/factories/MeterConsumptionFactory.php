@@ -6,8 +6,7 @@ use App\Models\Meter\MeterConsumption;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MeterConsumptionFactory extends Factory
-{
+class MeterConsumptionFactory extends Factory {
     protected $model = MeterConsumption::class;
 
     /**
@@ -15,8 +14,7 @@ class MeterConsumptionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'meter_id' => 1,
             'total_consumption' => $this->faker->randomFloat(2, 0, 100),

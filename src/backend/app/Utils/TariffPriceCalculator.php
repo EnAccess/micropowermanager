@@ -9,15 +9,13 @@ use App\Services\SocialTariffService;
 use App\Services\TariffPricingComponentService;
 use App\Services\TimeOfUsageService;
 
-class TariffPriceCalculator
-{
+class TariffPriceCalculator {
     public function __construct(
         private AccessRateService $accessRateService,
         private SocialTariffService $socialTariffService,
         private TimeOfUsageService $timeOfUsageService,
         private TariffPricingComponentService $tariffPricingComponentService,
-    ) {
-    }
+    ) {}
 
     public function calculateTotalPrice(
         MeterTariff $meterTariff,
@@ -37,8 +35,7 @@ class TariffPriceCalculator
         $this->setAdditionalComponents($additionalComponents, $meterTariff);
     }
 
-    private function setAccessRate($accessRate, $meterTariff)
-    {
+    private function setAccessRate($accessRate, $meterTariff) {
         if ($accessRate) {
             if (isset($accessRate['id'])) {
                 $updatedAccessRate = $this->accessRateService->getById($accessRate['id']);
@@ -62,8 +59,7 @@ class TariffPriceCalculator
         }
     }
 
-    private function setSocialTariff($socialTariff, $meterTariff)
-    {
+    private function setSocialTariff($socialTariff, $meterTariff) {
         if ($socialTariff) {
             if (isset($socialTariff['id'])) {
                 $updatedSocialTariff = $this->socialTariffService->getById($socialTariff['id']);
@@ -91,8 +87,7 @@ class TariffPriceCalculator
         }
     }
 
-    private function setTimeOfUsages($timeOfUsage, $meterTariff)
-    {
+    private function setTimeOfUsages($timeOfUsage, $meterTariff) {
         if ($timeOfUsage) {
             foreach ($timeOfUsage as $key => $value) {
                 $tou = isset($timeOfUsage[$key]['id']) ? $this->timeOfUsageService->getById($timeOfUsage[$key]['id']) :
@@ -118,8 +113,7 @@ class TariffPriceCalculator
         }
     }
 
-    private function setAdditionalComponents($additionalComponents, $meterTariff)
-    {
+    private function setAdditionalComponents($additionalComponents, $meterTariff) {
         $this->tariffPricingComponentService->deleteByTariffId($meterTariff->id);
 
         if ($additionalComponents) {

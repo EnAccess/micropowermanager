@@ -4,18 +4,15 @@ namespace App\Sms\BodyParsers;
 
 use App\Models\Person\Person;
 
-class SmsResendInformationHeader extends SmsBodyParser
-{
+class SmsResendInformationHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
     protected $data;
 
-    public function __construct($data)
-    {
+    public function __construct($data) {
         $this->data = $data;
     }
 
-    protected function getVariableValue($variable)
-    {
+    protected function getVariableValue($variable) {
         if (!is_array($this->data)) {
             $person = $this->data->meter->meterParameter->owner()->first();
         } else {

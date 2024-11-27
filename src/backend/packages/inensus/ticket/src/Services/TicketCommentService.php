@@ -5,16 +5,14 @@ namespace Inensus\Ticket\Services;
 use App\Models\Person\Person;
 use Inensus\Ticket\Models\TicketComment;
 
-class TicketCommentService
-{
-    public function __construct(private Person $person,
+class TicketCommentService {
+    public function __construct(
+        private Person $person,
         private TicketComment $ticketComment,
-        private TicketUserService $ticketUserService)
-    {
-    }
+        private TicketUserService $ticketUserService,
+    ) {}
 
-    public function createComment(int $ticketId, string $comment, int $ticketUserId): TicketComment
-    {
+    public function createComment(int $ticketId, string $comment, int $ticketUserId): TicketComment {
         $commentData = [
             'comment' => $comment,
             'ticket_id' => $ticketId,
@@ -28,8 +26,7 @@ class TicketCommentService
     }
 
     // store a comment if the sender is an maintenance guy  and responds with sms to an open ticket.
-    public function storeComment($sender, $message)
-    {
+    public function storeComment($sender, $message) {
         $person = $this->person::with([
             'addresses',
             'tickets' => static function ($q) {

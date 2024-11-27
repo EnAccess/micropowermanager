@@ -4,22 +4,18 @@ namespace Inensus\BulkRegistration\Services;
 
 use App\Models\Address\Address;
 
-class AddressService extends CreatorService
-{
-    public function __construct(Address $address)
-    {
+class AddressService extends CreatorService {
+    public function __construct(Address $address) {
         parent::__construct($address);
     }
 
-    public function createRelatedDataIfDoesNotExists($addresses)
-    {
+    public function createRelatedDataIfDoesNotExists($addresses) {
         foreach ($addresses as $address) {
             Address::query()->firstOrCreate($address, $address);
         }
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $addressConfig = config('bulk-registration.csv_fields.address');
         $returnAddresses = [];
         $firstAddressData = [
@@ -43,8 +39,7 @@ class AddressService extends CreatorService
         $this->createRelatedDataIfDoesNotExists($returnAddresses);
     }
 
-    public function createForPerson(int $personId, int $cityId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address
-    {
+    public function createForPerson(int $personId, int $cityId, ?string $phone, ?string $email, ?string $street, bool $isPrimary): Address {
         $address = new Address();
         $address->setOwner($personId, 'person');
         $address->setCityId($cityId);

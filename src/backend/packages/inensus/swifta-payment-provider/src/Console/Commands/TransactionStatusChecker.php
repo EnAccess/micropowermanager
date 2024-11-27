@@ -7,21 +7,18 @@ use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
-class TransactionStatusChecker extends AbstractSharedCommand
-{
+class TransactionStatusChecker extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 7;
 
     protected $signature = 'swifta-payment-provider:transactionStatusCheck';
     protected $description = 'Update the Swifta Transaction status if still REQUESTED at 00:00';
 
-    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
-    {
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService) {
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

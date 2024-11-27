@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\MeterTariffMeterParameterService;
 
-class MeterTariffMeterParameterController extends Controller
-{
+class MeterTariffMeterParameterController extends Controller {
     public function __construct(
         private MeterTariffMeterParameterService $meterTariffMeterParameterService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a list of meters which using a particular tariff.
@@ -19,8 +17,7 @@ class MeterTariffMeterParameterController extends Controller
      *
      * @return ApiResource
      */
-    public function show($meterTariffId): ApiResource
-    {
+    public function show($meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffMeterParameterService->getCountById($meterTariffId));
     }
 
@@ -30,15 +27,13 @@ class MeterTariffMeterParameterController extends Controller
      *
      * @return ApiResource
      */
-    public function update($meterTariffId, int $changeId): ApiResource
-    {
+    public function update($meterTariffId, int $changeId): ApiResource {
         $result = $this->meterTariffMeterParameterService->changeMetersTariff($meterTariffId, $changeId);
 
         return ApiResource::make($result);
     }
 
-    public function updateForMeter($meterSerial, $tariffId): ApiResource
-    {
+    public function updateForMeter($meterSerial, $tariffId): ApiResource {
         $result = $this->meterTariffMeterParameterService->changeMeterTariff($meterSerial, $tariffId);
 
         return ApiResource::make($result);

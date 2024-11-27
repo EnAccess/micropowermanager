@@ -19,13 +19,11 @@ use Illuminate\Support\Facades\Queue;
 use Inensus\CalinMeter\Models\CalinCredential;
 use Tests\TestCase;
 
-class TokenGenerationTest extends TestCase
-{
+class TokenGenerationTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isTokenGenerated()
-    {
+    public function isTokenGenerated() {
         Queue::fake();
         Config::set('app.debug', false);
         $transaction = $this->initializeData();
@@ -38,8 +36,7 @@ class TokenGenerationTest extends TestCase
         Queue::assertPushed(TokenProcessor::class);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         factory(MainSettings::class)->create();
 

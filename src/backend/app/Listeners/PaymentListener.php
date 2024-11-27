@@ -17,19 +17,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class PaymentListener
-{
+class PaymentListener {
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,
         private PersonPaymentHistoryService $personPaymentHistoryService,
         private ApplianceRatePaymentHistoryService $applianceRatePaymentHistoryService,
         private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
         private TransactionPaymentHistoryService $transactionPaymentHistoryService,
-    ) {
-    }
+    ) {}
 
-    public function onEnergyPayment(ITransactionProvider $transactionProvider): void
-    {
+    public function onEnergyPayment(ITransactionProvider $transactionProvider): void {
         $transaction = $transactionProvider->getTransaction();
         // get meter preferences
         try {
@@ -40,12 +37,9 @@ class PaymentListener
         }
     }
 
-    public function onLoanPayment(string $customer_id, int $amount): void
-    {
-    }
+    public function onLoanPayment(string $customer_id, int $amount): void {}
 
-    public function onPaymentFailed(): void
-    {
+    public function onPaymentFailed(): void {
         Log::debug('payment failed event');
     }
 
@@ -107,8 +101,7 @@ class PaymentListener
         $this->paymentHistoryService->save($paymentHistory);
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('payment.energy', 'App\Listeners\PaymentListener@onEnergyPayment');
         $events->listen('payment.failed', 'App\Listeners\PaymentListener@onPaymentFailed');
         $events->listen('payment.successful', 'App\Listeners\PaymentListener@onPaymentSuccess');

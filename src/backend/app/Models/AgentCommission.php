@@ -15,19 +15,16 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property float $appliance_commission
  * @property float $risk_balance
  */
-class AgentCommission extends BaseModel
-{
+class AgentCommission extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'agent_commission';
 
-    public function agent(): HasMany
-    {
+    public function agent(): HasMany {
         return $this->hasMany(Agent::class);
     }
 
-    public function history(): MorphOne
-    {
+    public function history(): MorphOne {
         return $this->morphOne(AgentBalanceHistory::class, 'trigger');
     }
 }

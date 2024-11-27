@@ -11,8 +11,7 @@ use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
 use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
-class SmsListener
-{
+class SmsListener {
     private $smsFeedbackWordService;
     private $customerService;
     private $meter;
@@ -30,8 +29,7 @@ class SmsListener
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message)
-    {
+    public function onSmsStored($sender, $message) {
         $sparkCustomer = $this->customerService->getSparkCustomerWithPhone($sender);
         if (!$sparkCustomer) {
             return;
@@ -42,29 +40,34 @@ class SmsListener
         if ($meterReset !== false) {
             try {
                 $this->customerService->resetMeter($sparkCustomer);
-                $this->smsService->sendSms($meter,
+                $this->smsService->sendSms(
+                    $meter,
                     SparkSmsTypes::METER_RESET_FEEDBACK,
-                    SparkSmsConfig::class);
+                    SparkSmsConfig::class
+                );
 
                 return;
             } catch (SparkAPIResponseException $exception) {
-                $this->smsService->sendSms(['meter' => $meter['serial_number'], 'phone' => $sender],
+                $this->smsService->sendSms(
+                    ['meter' => $meter['serial_number'], 'phone' => $sender],
                     SparkSmsTypes::METER_RESET_FEEDBACK,
-                    SparkSmsConfig::class);
+                    SparkSmsConfig::class
+                );
             }
         }
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
-            $this->smsService->sendSms($sparkCustomer,
+            $this->smsService->sendSms(
+                $sparkCustomer,
                 SparkSmsTypes::BALANCE_FEEDBACK,
-                SparkSmsConfig::class);
+                SparkSmsConfig::class
+            );
 
             return;
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen('sms.stored', 'Inensus\SparkMeter\Listeners\SmsListener@onSmsStored');
     }
 }

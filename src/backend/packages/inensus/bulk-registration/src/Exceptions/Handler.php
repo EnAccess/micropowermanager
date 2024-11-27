@@ -5,8 +5,7 @@ namespace Inensus\BulkRegistration\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\Geocoder\Exceptions\CouldNotGeocode;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
@@ -34,8 +33,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
-    public function report(\Throwable $exception)
-    {
+    public function report(\Throwable $exception) {
         parent::report($exception);
     }
 
@@ -49,8 +47,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, \Throwable $exception)
-    {
+    public function render($request, \Throwable $exception) {
         if ($exception instanceof CouldNotGeocode) {
             new GoogleMapsApiException(json_encode($exception->errors()));
         }

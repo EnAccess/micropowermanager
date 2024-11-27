@@ -6,14 +6,10 @@ use Illuminate\Http\Request;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketService;
 
-class TicketAgentController extends Controller
-{
-    public function __construct(private TicketService $ticketService)
-    {
-    }
+class TicketAgentController extends Controller {
+    public function __construct(private TicketService $ticketService) {}
 
-    public function index($agentId, Request $request): TicketResource
-    {
+    public function index($agentId, Request $request): TicketResource {
         $limit = 5;
         $status = null;
 

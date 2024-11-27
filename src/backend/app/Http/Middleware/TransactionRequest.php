@@ -6,8 +6,7 @@ use App\Exceptions\VodacomHeartBeatException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class TransactionRequest
-{
+class TransactionRequest {
     /**
      * Handle an incoming request.
      *
@@ -16,8 +15,7 @@ class TransactionRequest
      *
      * @return mixed
      */
-    public function handle($request, \Closure $next)
-    {
+    public function handle($request, \Closure $next) {
         $transactionProvider = $request->attributes->get('transactionProcessor');
         try {
             $transactionProvider->validateRequest($request->getContent());

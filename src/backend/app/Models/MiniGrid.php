@@ -19,45 +19,37 @@ use MPM\Target\TargetAssignable;
  * @property int        $cluster_id
  * @property Collection $cities
  */
-class MiniGrid extends BaseModel implements TargetAssignable
-{
+class MiniGrid extends BaseModel implements TargetAssignable {
     use HasFactory;
 
     public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];
 
-    public function cities(): HasMany
-    {
+    public function cities(): HasMany {
         return $this->hasMany(City::class);
     }
 
-    public function cluster(): BelongsTo
-    {
+    public function cluster(): BelongsTo {
         return $this->belongsTo(Cluster::class);
     }
 
-    public function location(): MorphOne
-    {
+    public function location(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 
-    public function agent(): HasOne
-    {
+    public function agent(): HasOne {
         return $this->hasOne(Agent::class);
     }
 
-    public function setClusterId(int $clusterId): void
-    {
+    public function setClusterId(int $clusterId): void {
         $this->cluster_id = $clusterId;
     }
 
-    public function setName(string $name): void
-    {
+    public function setName(string $name): void {
         $this->name = $name;
     }
 
-    public function getClusterId(): int
-    {
+    public function getClusterId(): int {
         return $this->cluster_id;
     }
 }

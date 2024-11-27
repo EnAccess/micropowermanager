@@ -9,8 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SocialTariffPiggyBankManager extends AbstractJob
-{
+class SocialTariffPiggyBankManager extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -21,8 +20,7 @@ class SocialTariffPiggyBankManager extends AbstractJob
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct(get_class($this));
     }
 
@@ -31,8 +29,7 @@ class SocialTariffPiggyBankManager extends AbstractJob
      *
      * @return void
      */
-    public function executeJob()
-    {
+    public function executeJob() {
         // get all social tariffs
         $socialTariffs = SocialTariff::all();
 
@@ -41,8 +38,7 @@ class SocialTariffPiggyBankManager extends AbstractJob
         }
     }
 
-    private function chargeClients(SocialTariff $socialTariff): void
-    {
+    private function chargeClients(SocialTariff $socialTariff): void {
         SocialTariffPiggyBank::query()->
         where('social_tariff_id', $socialTariff->id)
             ->where('savings', '<=', $socialTariff->maximum_stacked_energy)

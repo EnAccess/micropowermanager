@@ -14,8 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
 use Webpatser\Uuid\Uuid;
 
-abstract class SmsSender
-{
+abstract class SmsSender {
     protected $smsBodyService;
     protected $data;
     protected $references;
@@ -25,16 +24,14 @@ abstract class SmsSender
     protected $parserSubPath;
     private $smsAndroidSettings;
 
-    public function __construct($data, $smsBodyService, $parserSubPath, $smsAndroidSettings)
-    {
+    public function __construct($data, $smsBodyService, $parserSubPath, $smsAndroidSettings) {
         $this->smsBodyService = $smsBodyService;
         $this->data = $data;
         $this->parserSubPath = $parserSubPath;
         $this->smsAndroidSettings = $smsAndroidSettings;
     }
 
-    public function sendSms()
-    {
+    public function sendSms() {
         $viberId = $this->checkForViberIdOfReceiverIfPluginIsActive();
         if ($viberId) {
             resolve('ViberGateway')
@@ -61,8 +58,7 @@ abstract class SmsSender
         }
     }
 
-    public function prepareHeader()
-    {
+    public function prepareHeader() {
         try {
             $smsBody = $this->getSmsBody('header');
         } catch (MissingSmsReferencesException $exception) {
@@ -81,8 +77,7 @@ abstract class SmsSender
         }
     }
 
-    public function prepareBody()
-    {
+    public function prepareBody() {
         try {
             $smsBody = $this->getSmsBody('body');
         } catch (MissingSmsReferencesException $exception) {
@@ -99,8 +94,7 @@ abstract class SmsSender
         }
     }
 
-    public function prepareFooter()
-    {
+    public function prepareFooter() {
         try {
             $smsBody = $this->getSmsBody('footer');
             $this->body .= ' '.$smsBody->body;
@@ -110,8 +104,7 @@ abstract class SmsSender
         }
     }
 
-    private function getSmsBody($reference)
-    {
+    private function getSmsBody($reference) {
         try {
             $smsBody = $this->smsBodyService->getSmsBodyByReference($this->references[$reference]);
         } catch (ModelNotFoundException $e) {
@@ -121,8 +114,7 @@ abstract class SmsSender
         return $smsBody;
     }
 
-    public function validateReferences()
-    {
+    public function validateReferences() {
         if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
             $nullSmsBodies = $this->smsBodyService->getNullBodies();
             if (count($nullSmsBodies)) {
@@ -145,8 +137,7 @@ abstract class SmsSender
         }
     }
 
-    public function getReceiver()
-    {
+    public function getReceiver() {
         if ($this->data instanceof Transaction) {
             $this->receiver = strpos($this->data->sender, '+') === 0 ? $this->data->sender : '+'.$this->data->sender;
         } elseif ($this->data instanceof AssetRate) {
@@ -170,16 +161,14 @@ abstract class SmsSender
         return $this->receiver;
     }
 
-    public function generateCallbackAndGetUuid($callback)
-    {
+    public function generateCallbackAndGetUuid($callback) {
         $uuid = (string) Uuid::generate(4);
         $this->callback = sprintf($callback, $uuid);
 
         return $uuid;
     }
 
-    private function checkForViberIdOfReceiverIfPluginIsActive()
-    {
+    private function checkForViberIdOfReceiverIfPluginIsActive() {
         $pluginsService = app()->make(PluginsService::class);
         $viberContactService = app()->make(ViberContactService::class);
         $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);

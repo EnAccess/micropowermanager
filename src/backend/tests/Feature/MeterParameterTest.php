@@ -20,13 +20,11 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class MeterParameterTest extends TestCase
-{
+class MeterParameterTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function testUserAssignsAMeterParameterToAMeter()
-    {
+    public function testUserAssignsAMeterParameterToAMeter() {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -62,8 +60,7 @@ class MeterParameterTest extends TestCase
         $this->assertEquals($geographicalInformation->points, $meterParameterData['geo_points']);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

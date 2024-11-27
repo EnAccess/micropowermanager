@@ -5,15 +5,12 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\Address\Address;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class AddressService extends CreatorService
-{
-    public function __construct(Address $address)
-    {
+class AddressService extends CreatorService {
+    public function __construct(Address $address) {
         parent::__construct($address);
     }
 
-    public function resolveCsvDataFromComingRow($csvData): void
-    {
+    public function resolveCsvDataFromComingRow($csvData): void {
         $addressConfig = [
             'person_id' => 'person_id',
             'city_id' => 'city_id',
@@ -44,8 +41,7 @@ class AddressService extends CreatorService
         $this->createRelatedDataIfDoesNotExists($returnAddresses);
     }
 
-    public function createRelatedDataIfDoesNotExists($addresses): void
-    {
+    public function createRelatedDataIfDoesNotExists($addresses): void {
         foreach ($addresses as $address) {
             Address::query()->firstOrCreate($address, $address);
         }

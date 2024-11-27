@@ -9,8 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use MPM\Transaction\TransactionPaymentProcessor;
 
-class ProcessPayment extends AbstractJob
-{
+class ProcessPayment extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -26,8 +25,7 @@ class ProcessPayment extends AbstractJob
      *
      * @param int $transaction_id
      */
-    public function __construct(int $transactionId)
-    {
+    public function __construct(int $transactionId) {
         $this->transactionId = $transactionId;
 
         parent::__construct(get_class($this));
@@ -38,8 +36,7 @@ class ProcessPayment extends AbstractJob
      *
      * @return void
      */
-    public function executeJob(): void
-    {
+    public function executeJob(): void {
         TransactionPaymentProcessor::process($this->transactionId);
     }
 }

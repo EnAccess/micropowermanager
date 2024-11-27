@@ -2,6 +2,4 @@
 
 namespace App\Exceptions\Tariffs;
 
-class TariffNotFound extends \Exception
-{
-}
+class TariffNotFound extends \Exception {}

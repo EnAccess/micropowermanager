@@ -17,13 +17,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AgentSellApplianceTest extends TestCase
-{
+class AgentSellApplianceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -36,8 +34,7 @@ class AgentSellApplianceTest extends TestCase
      *
      * @return void
      */
-    public function testAgentSellAppliance()
-    {
+    public function testAgentSellAppliance() {
         $this->initData();
         $data = [
             'agent_assigned_appliance_id' => 2,
@@ -61,8 +58,7 @@ class AgentSellApplianceTest extends TestCase
         $this->assertEquals($data['down_payment'], $paymentHistory->amount);
     }
 
-    public function initData()
-    {
+    public function initData() {
         $user = UserFactory::new()->create();
         $this->actingAs($user);
         PersonFactory::new()->create();

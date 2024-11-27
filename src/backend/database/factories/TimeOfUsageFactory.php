@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\TimeOfUsage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TimeOfUsageFactory extends Factory
-{
+class TimeOfUsageFactory extends Factory {
     protected $model = TimeOfUsage::class;
 
     /**
@@ -14,8 +13,7 @@ class TimeOfUsageFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'tariff_id' => 1,
             'start' => '00:00',

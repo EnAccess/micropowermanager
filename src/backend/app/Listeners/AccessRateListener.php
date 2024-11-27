@@ -9,10 +9,8 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class AccessRateListener
-{
-    public function initializeAccessRatePayment(Meter $meter): void
-    {
+class AccessRateListener {
+    public function initializeAccessRatePayment(Meter $meter): void {
         try {
             $accessRate = $meter->tariff()->first()->accessRate;
             if (!$accessRate) {
@@ -29,8 +27,7 @@ class AccessRateListener
         }
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen(
             'accessRatePayment.initialize',
             '\App\Listeners\AccessRateListener@initializeAccessRatePayment'

@@ -2,8 +2,7 @@
 
 namespace App\Lib;
 
-interface IMeterReader
-{
+interface IMeterReader {
     /**
      * Reads the data for a single meter.
      *

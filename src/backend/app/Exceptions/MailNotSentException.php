@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class MailNotSentException extends \Exception
-{
-}
+class MailNotSentException extends \Exception {}

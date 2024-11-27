@@ -9,23 +9,19 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<AgentBalanceHistory, AgentCommission>
  */
-class AgentCommissionHistoryBalanceService implements IAssignationService
-{
+class AgentCommissionHistoryBalanceService implements IAssignationService {
     private AgentBalanceHistory $agentBalanceHistory;
     private AgentCommission $agentCommission;
 
-    public function setAssigned($agentBalanceHistory): void
-    {
+    public function setAssigned($agentBalanceHistory): void {
         $this->agentBalanceHistory = $agentBalanceHistory;
     }
 
-    public function setAssignee($agentCommission): void
-    {
+    public function setAssignee($agentCommission): void {
         $this->agentCommission = $agentCommission;
     }
 
-    public function assign(): AgentBalanceHistory
-    {
+    public function assign(): AgentBalanceHistory {
         $this->agentBalanceHistory->trigger()->associate($this->agentCommission);
 
         return $this->agentBalanceHistory;

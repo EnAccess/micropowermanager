@@ -5,12 +5,10 @@ namespace Inensus\SparkMeter\Models;
 use App\Relations\BelongsToMorph;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class SmSetting extends BaseModel
-{
+class SmSetting extends BaseModel {
     protected $table = 'sm_settings';
 
-    public function setting(): MorphTo
-    {
+    public function setting(): MorphTo {
         return $this->morphTo();
     }
 
@@ -19,8 +17,7 @@ class SmSetting extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function settingSms(): BelongsToMorph
-    {
+    public function settingSms(): BelongsToMorph {
         return BelongsToMorph::build($this, SmSmsSetting::class, 'setting');
     }
 
@@ -29,8 +26,7 @@ class SmSetting extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function settingSync(): BelongsToMorph
-    {
+    public function settingSync(): BelongsToMorph {
         return BelongsToMorph::build($this, SmSyncSetting::class, 'setting');
     }
 }

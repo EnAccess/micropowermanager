@@ -4,10 +4,8 @@ namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class KelinMeterStatusResource extends JsonResource
-{
-    public function toArray($request)
-    {
+class KelinMeterStatusResource extends JsonResource {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'meter-status',

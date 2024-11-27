@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
-class HorizonServiceProvider extends HorizonApplicationServiceProvider
-{
+class HorizonServiceProvider extends HorizonApplicationServiceProvider {
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
 
         // Horizon::routeSmsNotificationsTo('15556667777');
@@ -31,8 +29,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      *
      * @return void
      */
-    protected function gate()
-    {
+    protected function gate() {
         Gate::define(
             'viewHorizon',
             function ($user) {

@@ -4,8 +4,7 @@ namespace Inensus\SteamaMeter\Services;
 
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 
-class SteamaBitharvesterService
-{
+class SteamaBitharvesterService {
     private $steamaApi;
     private $rootUrl = '/bitharvesters';
 
@@ -15,8 +14,7 @@ class SteamaBitharvesterService
         $this->steamaApi = $steamaApi;
     }
 
-    public function getBitharvester($siteId)
-    {
+    public function getBitharvester($siteId) {
         $result = $this->steamaApi->get($this->rootUrl);
         $bitHarvesters = $result['results'];
 

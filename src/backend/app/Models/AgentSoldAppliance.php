@@ -6,17 +6,14 @@ use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AgentSoldAppliance extends BaseModel
-{
+class AgentSoldAppliance extends BaseModel {
     protected $guarded = [];
 
-    public function assignedAppliance(): BelongsTo
-    {
+    public function assignedAppliance(): BelongsTo {
         return $this->belongsTo(AgentAssignedAppliances::class, 'agent_assigned_appliance_id', 'id');
     }
 
-    public function person(): BelongsTo
-    {
+    public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 }

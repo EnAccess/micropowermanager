@@ -10,14 +10,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<SolarHomeSystem>
  */
-class SolarHomeSystemService implements IBaseService
-{
-    public function __construct(private SolarHomeSystem $solarHomeSystem)
-    {
-    }
+class SolarHomeSystemService implements IBaseService {
+    public function __construct(private SolarHomeSystem $solarHomeSystem) {}
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
         }
@@ -25,8 +21,7 @@ class SolarHomeSystemService implements IBaseService
         return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->get();
     }
 
-    public function getById(int $id): SolarHomeSystem
-    {
+    public function getById(int $id): SolarHomeSystem {
         /** @var SolarHomeSystem|null $result */
         $result = $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
@@ -35,16 +30,14 @@ class SolarHomeSystemService implements IBaseService
         return $result;
     }
 
-    public function create(array $data): SolarHomeSystem
-    {
+    public function create(array $data): SolarHomeSystem {
         /** @var SolarHomeSystem $result */
         $result = $this->solarHomeSystem->newQuery()->create($data);
 
         return $result;
     }
 
-    public function search($term, $paginate): LengthAwarePaginator
-    {
+    public function search($term, $paginate): LengthAwarePaginator {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
             ->whereHas(
@@ -62,13 +55,11 @@ class SolarHomeSystemService implements IBaseService
             )->paginate($paginate);
     }
 
-    public function update($model, array $data): SolarHomeSystem
-    {
+    public function update($model, array $data): SolarHomeSystem {
         throw new \Exception('not implemented');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('not implemented');
     }
 }

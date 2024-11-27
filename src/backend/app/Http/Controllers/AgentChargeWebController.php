@@ -6,15 +6,12 @@ use App\Http\Requests\CreateAgentChargeRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AgentChargeService;
 
-class AgentChargeWebController extends Controller
-{
+class AgentChargeWebController extends Controller {
     public function __construct(
         private AgentChargeService $agentChargeService,
-    ) {
-    }
+    ) {}
 
-    public function store(CreateAgentChargeRequest $request): ApiResource
-    {
+    public function store(CreateAgentChargeRequest $request): ApiResource {
         $userId = auth('api')->user()->id;
 
         $agentChargeData = [

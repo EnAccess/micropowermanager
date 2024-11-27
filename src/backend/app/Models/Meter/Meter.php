@@ -21,8 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property MeterTariff $tariff
  * @property bool        $in_use
  */
-class Meter extends BaseModel
-{
+class Meter extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'meter';
@@ -33,71 +32,58 @@ class Meter extends BaseModel
         'manufacturer_id' => 'exists:shard.manufacturers,id',
     ];
 
-    public function meterType(): BelongsTo
-    {
+    public function meterType(): BelongsTo {
         return $this->belongsTo(MeterType::class);
     }
 
-    public function device(): MorphOne
-    {
+    public function device(): MorphOne {
         return $this->morphOne(Device::class, 'device');
     }
 
-    public function manufacturer(): BelongsTo
-    {
+    public function manufacturer(): BelongsTo {
         return $this->belongsTo(Manufacturer::class);
     }
 
-    public function tariff(): BelongsTo
-    {
+    public function tariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class);
     }
 
-    public function connectionType(): BelongsTo
-    {
+    public function connectionType(): BelongsTo {
         return $this->belongsTo(ConnectionType::class, 'connection_type_id', 'id');
     }
 
-    public function connectionGroup(): BelongsTo
-    {
+    public function connectionGroup(): BelongsTo {
         return $this->belongsTo(ConnectionGroup::class);
     }
 
-    public function accessRatePayment(): HasOne
-    {
+    public function accessRatePayment(): HasOne {
         return $this->hasOne(AccessRatePayment::class);
     }
 
-    public function accessRate(): AccessRate
-    {
+    public function accessRate(): AccessRate {
         return $this->tariff->accessRate;
     }
 
-    public function tokens(): HasMany
-    {
+    public function tokens(): HasMany {
         return $this->hasMany(MeterToken::class);
     }
 
-    public function consumptions(): HasMany
-    {
+    public function consumptions(): HasMany {
         return $this->hasMany(MeterConsumption::class);
     }
 
-    public function transactions(): HasMany
-    {
+    public function transactions(): HasMany {
         return $this->hasMany(Transaction::class, 'message', 'serial_number');
     }
 
-    public function findBySerialNumber(string $meterSerialNumber): ?self
-    {
+    public function findBySerialNumber(string $meterSerialNumber): ?self {
         /** @var Meter|null $result */
         $result = $this->newQuery()->where('serial_number', '=', $meterSerialNumber)->first();
 
         return $result;
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 }

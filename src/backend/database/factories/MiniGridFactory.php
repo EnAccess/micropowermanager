@@ -6,8 +6,7 @@ use App\Models\MiniGrid;
 use Faker\Provider\en_NG\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MiniGridFactory extends Factory
-{
+class MiniGridFactory extends Factory {
     protected $model = MiniGrid::class;
 
     public function __construct(
@@ -21,8 +20,7 @@ class MiniGridFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => 'MiniGrid '.$this->faker->region,
         ];

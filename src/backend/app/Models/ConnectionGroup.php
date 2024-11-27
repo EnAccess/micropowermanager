@@ -9,15 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Class ConnectionGroup.
  */
-class ConnectionGroup extends BaseModel
-{
-    public function meterParameters(): HasMany
-    {
+class ConnectionGroup extends BaseModel {
+    public function meterParameters(): HasMany {
         return $this->hasMany(MeterParameter::class);
     }
 
-    public function meterParametersCount($till)
-    {
+    public function meterParametersCount($till) {
         return $this->meterParameters()
             ->selectRaw('connection_group_id, count(*) as aggregate')
             ->where('created_at', '<=', $till)

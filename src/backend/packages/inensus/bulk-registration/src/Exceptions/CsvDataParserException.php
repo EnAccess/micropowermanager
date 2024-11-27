@@ -2,6 +2,4 @@
 
 namespace Inensus\BulkRegistration\Exceptions;
 
-class CsvDataParserException extends \Exception
-{
-}
+class CsvDataParserException extends \Exception {}

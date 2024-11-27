@@ -11,8 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-abstract class AbstractJob implements ShouldQueue
-{
+abstract class AbstractJob implements ShouldQueue {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -25,8 +24,7 @@ abstract class AbstractJob implements ShouldQueue
 
     abstract public function executeJob();
 
-    public function __construct($jobName)
-    {
+    public function __construct($jobName) {
         $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();
 
@@ -40,8 +38,7 @@ abstract class AbstractJob implements ShouldQueue
         );
     }
 
-    public function handle()
-    {
+    public function handle() {
         $this->setJobUuid($this->job->uuid());
         $databaseProxyManager = app()->make(DatabaseProxyManagerService::class);
         $databaseProxyManager->runForCompany($this->companyId, function () {
@@ -51,20 +48,17 @@ abstract class AbstractJob implements ShouldQueue
         $this->setJobStatus(CompanyJob::STATUS_SUCCESS);
     }
 
-    public function failed(?\Throwable $t = null)
-    {
+    public function failed(?\Throwable $t = null) {
         $trace = $t !== null ? explode('#15', $t->getTraceAsString(), 1000)[0] : null;
         $this->setJobStatus(CompanyJob::STATUS_FAILED, $t?->getMessage(), $trace);
     }
 
-    protected function setJobUuid($jobUuid)
-    {
+    protected function setJobUuid($jobUuid) {
         $this->companyJob->job_uuid = $jobUuid;
         $this->companyJob->save();
     }
 
-    protected function setJobStatus($status, ?string $message = null, ?string $trace = null)
-    {
+    protected function setJobStatus($status, ?string $message = null, ?string $trace = null) {
         $this->companyJob->status = $status;
         $this->companyJob->message = $message;
         $this->companyJob->trace = $trace;

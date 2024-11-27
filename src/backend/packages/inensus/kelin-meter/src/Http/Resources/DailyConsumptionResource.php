@@ -4,10 +4,8 @@ namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DailyConsumptionResource extends JsonResource
-{
-    public function toArray($request)
-    {
+class DailyConsumptionResource extends JsonResource {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'daily_consumption',

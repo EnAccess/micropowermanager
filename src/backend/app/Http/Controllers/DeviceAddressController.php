@@ -7,16 +7,13 @@ use Illuminate\Http\Request;
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
 
-class DeviceAddressController extends Controller
-{
+class DeviceAddressController extends Controller {
     public function __construct(
         private DeviceAddressService $deviceAddressService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $creatorId = auth('api')->user()->id;
         $devices = $request->all();
         foreach ($devices as $deviceData) {

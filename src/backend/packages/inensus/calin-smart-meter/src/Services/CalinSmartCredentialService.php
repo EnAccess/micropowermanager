@@ -4,8 +4,7 @@ namespace Inensus\CalinSmartMeter\Services;
 
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
-class CalinSmartCredentialService
-{
+class CalinSmartCredentialService {
     private $credential;
 
     public function __construct(
@@ -17,8 +16,7 @@ class CalinSmartCredentialService
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'company_name' => null,
             'user_name' => null,
@@ -27,13 +25,11 @@ class CalinSmartCredentialService
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->find($data['id']);
         $credential->update([
             'company_name' => $data['company_name'],

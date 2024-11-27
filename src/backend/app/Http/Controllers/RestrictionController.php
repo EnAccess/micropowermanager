@@ -12,8 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class RestrictionController extends Controller
-{
+class RestrictionController extends Controller {
     /**
      * @var Restriction
      */
@@ -23,8 +22,7 @@ class RestrictionController extends Controller
      */
     private $httpClient;
 
-    public function __construct(Restriction $restriction, Client $httpClient)
-    {
+    public function __construct(Restriction $restriction, Client $httpClient) {
         $this->restriction = $restriction;
         $this->httpClient = $httpClient;
     }
@@ -32,8 +30,7 @@ class RestrictionController extends Controller
     /**
      * @return Response
      */
-    public function store(Request $request, Response $response): Response
-    {
+    public function store(Request $request, Response $response): Response {
         $productId = $request->input('product_id');
         $token = $request->input('token');
         $type = $request->input('type');
@@ -109,8 +106,7 @@ class RestrictionController extends Controller
      *
      * @throws PurchaseNotProcessable
      */
-    private function updateRestriction(string $target, int $toAdd = 1): void
-    {
+    private function updateRestriction(string $target, int $toAdd = 1): void {
         try {
             $restriction = $this->restriction->where('target', $target)->firstOrFail();
             $restriction->limit += $toAdd;

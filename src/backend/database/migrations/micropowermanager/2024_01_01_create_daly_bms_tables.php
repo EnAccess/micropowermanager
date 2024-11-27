@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
-    {
+    public function up() {
         if (!Schema::hasTable('daly_bms_api_credentials')) {
             Schema::create('daly_bms_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
@@ -26,8 +25,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('daly_bms_api_credentials');
         Schema::dropIfExists('daly_bms_transactions');
     }

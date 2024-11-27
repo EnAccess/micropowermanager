@@ -12,14 +12,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<AgentTransaction>
  */
-class AgentTransactionService implements IBaseService
-{
+class AgentTransactionService implements IBaseService {
     public function __construct(
         private AgentTransaction $agentTransaction,
         private Transaction $transaction,
         private Device $device,
-    ) {
-    }
+    ) {}
 
     public function getAll(
         ?int $limit = null,
@@ -49,8 +47,7 @@ class AgentTransactionService implements IBaseService
         return $query->get();
     }
 
-    public function getById(int $agentId, ?int $customerId = null): AgentTransaction
-    {
+    public function getById(int $agentId, ?int $customerId = null): AgentTransaction {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->get()->pluck('device_serial');
 
@@ -73,18 +70,15 @@ class AgentTransactionService implements IBaseService
             ->first();
     }
 
-    public function create(array $transactionData): AgentTransaction
-    {
+    public function create(array $transactionData): AgentTransaction {
         return $this->agentTransaction->newQuery()->create($transactionData);
     }
 
-    public function update($model, array $data): AgentTransaction
-    {
+    public function update($model, array $data): AgentTransaction {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

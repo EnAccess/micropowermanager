@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     private const TABLE_NAME = 'wavecom_transactions';
 
-    public function up()
-    {
+    public function up() {
         if (!Schema::hasTable(self::TABLE_NAME)) {
             Schema::create(self::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
@@ -22,8 +21,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists(self::TABLE_NAME);
     }
 };

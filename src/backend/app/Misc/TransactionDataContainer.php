@@ -12,8 +12,7 @@ use App\Services\AppliancePaymentService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use MPM\Device\DeviceService;
 
-class TransactionDataContainer
-{
+class TransactionDataContainer {
     public int $accessRateDebt;
     public Transaction $transaction;
     public Device $device;
@@ -29,8 +28,7 @@ class TransactionDataContainer
     public float $installmentCost;
     public string $dayDifferenceBetweenTwoInstallments;
 
-    public static function initialize(Transaction $transaction): TransactionDataContainer
-    {
+    public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
         $deviceService = app()->make(DeviceService::class);
         $container->chargedEnergy = 0;

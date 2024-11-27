@@ -4,22 +4,18 @@ namespace Inensus\SparkMeter\Services;
 
 use Inensus\SparkMeter\Models\SmSmsVariableDefaultValue;
 
-class SmSmsVariableDefaultValueService
-{
+class SmSmsVariableDefaultValueService {
     private $smsVariableDefaultValue;
 
-    public function __construct(SmSmsVariableDefaultValue $smsVariableDefaultValue)
-    {
+    public function __construct(SmSmsVariableDefaultValue $smsVariableDefaultValue) {
         $this->smsVariableDefaultValue = $smsVariableDefaultValue;
     }
 
-    public function getSmsVariableDefaultValues()
-    {
+    public function getSmsVariableDefaultValues() {
         return $this->smsVariableDefaultValue->newQuery()->get();
     }
 
-    public function createSmsVariableDefaultValues()
-    {
+    public function createSmsVariableDefaultValues() {
         $smsVariableDefaultValues = [
             [
                 'variable' => 'name',
@@ -43,7 +39,8 @@ class SmSmsVariableDefaultValueService
             ],
         ];
         collect($smsVariableDefaultValues)->each(function ($variable) {
-            $this->smsVariableDefaultValue->newQuery()->firstOrCreate(['variable' => $variable['variable']],
+            $this->smsVariableDefaultValue->newQuery()->firstOrCreate(
+                ['variable' => $variable['variable']],
                 $variable
             );
         });

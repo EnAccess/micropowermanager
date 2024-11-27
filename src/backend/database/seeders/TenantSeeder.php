@@ -29,8 +29,7 @@ const DUMMY_COMPANY_ADMIN = [
     'name' => 'Dummy Company Admin',
 ];
 
-class TenantSeeder extends Seeder
-{
+class TenantSeeder extends Seeder {
     public function __construct(
         private CompanyDatabaseService $companyDatabaseService,
         private CompanyService $companyService,
@@ -38,16 +37,14 @@ class TenantSeeder extends Seeder
         private DatabaseProxyManagerService $databaseProxyManagerService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
-    ) {
-    }
+    ) {}
 
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         // Only proceed if database is empty.
         // In some seeders we rely on the DummyCompany having id=1.
         $companies = $this->companyService->getAll();

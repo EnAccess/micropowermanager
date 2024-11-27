@@ -8,14 +8,10 @@ use App\Services\AppliancePaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AppliancePaymentController extends Controller
-{
-    public function __construct(private AppliancePaymentService $appliancePaymentService)
-    {
-    }
+class AppliancePaymentController extends Controller {
+    public function __construct(private AppliancePaymentService $appliancePaymentService) {}
 
-    public function store(AssetPerson $appliancePerson, Request $request): ApiResource
-    {
+    public function store(AssetPerson $appliancePerson, Request $request): ApiResource {
         try {
             DB::connection('shard')->beginTransaction();
             $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);

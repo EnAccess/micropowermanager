@@ -11,14 +11,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *
  * @property string $points
  */
-class GeographicalInformation extends BaseModel
-{
+class GeographicalInformation extends BaseModel {
     use HasFactory;
 
     protected $table = 'geographical_informations';
 
-    public function owner(): MorphTo
-    {
+    public function owner(): MorphTo {
         return $this->morphTo();
     }
 }

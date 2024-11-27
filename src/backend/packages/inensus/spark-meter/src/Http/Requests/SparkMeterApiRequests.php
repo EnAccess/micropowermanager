@@ -9,8 +9,7 @@ use Inensus\SparkMeter\Helpers\ResultStatusChecker;
 use Inensus\SparkMeter\Models\SmCredential;
 use Inensus\SparkMeter\Models\SmSite;
 
-class SparkMeterApiRequests
-{
+class SparkMeterApiRequests {
     private $client;
     private $resultStatusChecker;
     private $credential;
@@ -31,8 +30,7 @@ class SparkMeterApiRequests
         $this->smCredentail = $smCredential;
     }
 
-    public function get($url, $siteId)
-    {
+    public function get($url, $siteId) {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->get(
@@ -51,8 +49,7 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function post($url, $postParams, $siteId)
-    {
+    public function post($url, $postParams, $siteId) {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->post(
@@ -72,8 +69,7 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function put($url, $putParams, $siteId)
-    {
+    public function put($url, $putParams, $siteId) {
         $smSite = $this->getThunderCloudInformation($siteId);
         try {
             $request = $this->client->put(
@@ -93,8 +89,7 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getByParams($url, $params, $siteId)
-    {
+    public function getByParams($url, $params, $siteId) {
         try {
             $smSite = $this->getThunderCloudInformation($siteId);
             $apiUrl = $smSite->thundercloud_url.$url.'?';
@@ -121,8 +116,7 @@ class SparkMeterApiRequests
         }
     }
 
-    public function getInfo($url, $id, $siteId)
-    {
+    public function getInfo($url, $id, $siteId) {
         $smSite = $this->getThunderCloudInformation($siteId);
         $apiUrl = $smSite->thundercloud_url.$url.$id;
         try {
@@ -142,8 +136,7 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function getFromKoios($url)
-    {
+    public function getFromKoios($url) {
         $smCredential = $this->getCredentials();
         try {
             $request = $this->client->get(
@@ -163,8 +156,7 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    public function postToKoios($url, $postParams)
-    {
+    public function postToKoios($url, $postParams) {
         $smCredential = $this->getCredentials();
         try {
             $request = $this->client->post(
@@ -185,13 +177,11 @@ class SparkMeterApiRequests
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    private function getCredentials()
-    {
+    private function getCredentials() {
         return $this->smCredentail->newQuery()->first();
     }
 
-    private function getThunderCloudInformation($siteId)
-    {
+    private function getThunderCloudInformation($siteId) {
         return $this->site->newQuery()->where('site_id', $siteId)->first();
     }
 }

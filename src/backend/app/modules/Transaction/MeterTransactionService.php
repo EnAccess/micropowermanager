@@ -5,11 +5,8 @@ namespace MPM\Transaction;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 
-class MeterTransactionService
-{
-    public function __construct(private Transaction $transaction)
-    {
-    }
+class MeterTransactionService {
+    public function __construct(private Transaction $transaction) {}
 
     public function search(
         ?string $serialNumber = null,

@@ -5,8 +5,7 @@ namespace App\Http\Requests;
 use App\Models\MiniGrid;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMiniGridRequest extends FormRequest
-{
+class StoreMiniGridRequest extends FormRequest {
     public const PARAM_CLUSTER_ID = 'cluster_id';
     public const PARAM_NAME = 'name';
 
@@ -15,8 +14,7 @@ class StoreMiniGridRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -25,8 +23,7 @@ class StoreMiniGridRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'name' => 'required|min:3',
             'cluster_id' => 'required',
@@ -34,8 +31,7 @@ class StoreMiniGridRequest extends FormRequest
         ];
     }
 
-    public function getMiniGrid(): MiniGrid
-    {
+    public function getMiniGrid(): MiniGrid {
         $miniGrid = new MiniGrid();
         $miniGrid->setClusterId($this->input(self::PARAM_CLUSTER_ID));
         $miniGrid->setName($this->input(self::PARAM_NAME));

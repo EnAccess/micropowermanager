@@ -9,24 +9,20 @@ use Inensus\Ticket\Http\Requests\TicketingUserRequest;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketUserService;
 
-class TicketUserController extends Controller
-{
+class TicketUserController extends Controller {
     public function __construct(
         private TicketUserService $ticketUserService,
         private UserService $userService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): TicketResource
-    {
+    public function index(Request $request): TicketResource {
         $limit = $request->input('per_page');
         $outSource = $request->input('outsource');
 
         return TicketResource::make($this->ticketUserService->getAll($limit, $outSource));
     }
 
-    public function storeExternal(TicketingUserExternalRequest $request)
-    {
+    public function storeExternal(TicketingUserExternalRequest $request) {
         $ticketUserData = [
             'user_name' => $request->getUserName(),
             'phone' => $request->getPhone(),
@@ -37,8 +33,7 @@ class TicketUserController extends Controller
         $this->ticketUserService->create($ticketUserData);
     }
 
-    public function store(TicketingUserRequest $request): TicketResource
-    {
+    public function store(TicketingUserRequest $request): TicketResource {
         $user = $this->userService->get($request->getUserId());
 
         $ticketUserData = [

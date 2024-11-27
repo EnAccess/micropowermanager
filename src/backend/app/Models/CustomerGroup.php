@@ -8,15 +8,12 @@ use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CustomerGroup extends BaseModel
-{
-    public function tariff(): BelongsTo
-    {
+class CustomerGroup extends BaseModel {
+    public function tariff(): BelongsTo {
         return $this->belongsTo(MeterTariff::class);
     }
 
-    public function customers(): HasMany
-    {
+    public function customers(): HasMany {
         return $this->hasMany(Person::class);
     }
 }

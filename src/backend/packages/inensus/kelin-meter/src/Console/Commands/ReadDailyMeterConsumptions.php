@@ -8,8 +8,7 @@ use Carbon\Carbon;
 use Inensus\KelinMeter\Services\DailyConsumptionService;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 
-class ReadDailyMeterConsumptions extends AbstractSharedCommand
-{
+class ReadDailyMeterConsumptions extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 5;
 
@@ -23,8 +22,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

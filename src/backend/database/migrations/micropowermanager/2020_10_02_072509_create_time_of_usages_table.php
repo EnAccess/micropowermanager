@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('time_of_usages', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('tariff_id');
@@ -27,8 +26,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('time_of_usages');
     }
 };

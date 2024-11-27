@@ -26,8 +26,7 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SyncStatus;
 
-class CustomerService implements ISynchronizeService
-{
+class CustomerService implements ISynchronizeService {
     private $sparkMeterApiRequests;
     private $rootUrl = '/customer/';
     private $smTableEncryption;
@@ -85,8 +84,7 @@ class CustomerService implements ISynchronizeService
         $this->smSmsNotifiedCustomerService = $smSmsNotifiedCustomerService;
     }
 
-    public function createCustomer($meterInfo, $siteId)
-    {
+    public function createCustomer($meterInfo, $siteId) {
         $params = [
             'meter_serial' => $meterInfo->meter->serial_number,
         ];
@@ -132,28 +130,24 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function getSmCustomers($request)
-    {
+    public function getSmCustomers($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->smCustomer->newQuery()->with(['mpmPerson', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmCustomersCount()
-    {
+    public function getSmCustomersCount() {
         return count($this->smCustomer->newQuery()->get());
     }
 
-    public function getSmCustomerByCustomerId($customerId)
-    {
+    public function getSmCustomerByCustomerId($customerId) {
         return $this->smCustomer->newQuery()->with([
             'mpmPerson.meters.meter',
             'mpmPerson.addresses',
         ])->where('customer_id', $customerId)->first();
     }
 
-    public function updateSparkCustomerInfo($customerData, $siteId)
-    {
+    public function updateSparkCustomerInfo($customerData, $siteId) {
         try {
             $customerId = $customerData['id'];
             $putParams = [
@@ -175,8 +169,7 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function createRelatedPerson($customer, $site_id)
-    {
+    public function createRelatedPerson($customer, $site_id) {
         try {
             DB::connection('shard')->beginTransaction();
             $sparkCustomerMeterSerial = $customer['meters'][0]['serial'];
@@ -261,8 +254,7 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function createPerson($data)
-    {
+    public function createPerson($data) {
         $person = $this->person->newQuery()->create([
             'name' => $data['name'],
             'is_customer' => 1,
@@ -280,8 +272,7 @@ class CustomerService implements ISynchronizeService
         return $person;
     }
 
-    public function updateRelatedPerson($customer, $person, $site_id)
-    {
+    public function updateRelatedPerson($customer, $person, $site_id) {
         $sparkCustomerMeterSerial = $customer['meters'][0]['serial'];
         $currentTariffName = $customer['meters'][0]['current_tariff_name'];
         $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
@@ -328,8 +319,7 @@ class CustomerService implements ISynchronizeService
         ]);
     }
 
-    public function checkConnectionAvailability()
-    {
+    public function checkConnectionAvailability() {
         $connectionType = $this->connectionType->newQuery()->first();
 
         $connectionGroup = $this->connectionGroup->newQuery()->first();
@@ -345,8 +335,7 @@ class CustomerService implements ISynchronizeService
         return $result;
     }
 
-    public function hashCustomerWithMeterSerial($meterSerial, $siteId)
-    {
+    public function hashCustomerWithMeterSerial($meterSerial, $siteId) {
         try {
             $params = [
                 'meter_serial' => $meterSerial,
@@ -360,8 +349,7 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function updateCustomerLowBalanceLimit($customerId, $data)
-    {
+    public function updateCustomerLowBalanceLimit($customerId, $data) {
         $customer = $this->smCustomer->newQuery()->find($customerId);
         $customer->update([
             'low_balance_limit' => $data['low_balance_limit'],
@@ -370,8 +358,7 @@ class CustomerService implements ISynchronizeService
         return $customer->fresh();
     }
 
-    public function searchCustomer($searchTerm, $paginate)
-    {
+    public function searchCustomer($searchTerm, $paginate) {
         if ($paginate === 1) {
             return $this->smCustomer->newQuery()->with(['mpmPerson', 'site.mpmMiniGrid'])
                 ->WhereHas('site.mpmMiniGrid', function ($q) use ($searchTerm) {
@@ -389,8 +376,7 @@ class CustomerService implements ISynchronizeService
             })->get();
     }
 
-    public function getLowBalancedCustomers()
-    {
+    public function getLowBalancedCustomers() {
         return $this->smCustomer->newQuery()->with([
             'mpmPerson.addresses' => function ($q) {
                 return $q->where('is_primary', 1);
@@ -401,8 +387,7 @@ class CustomerService implements ISynchronizeService
             ->where('low_balance_limit', '>', 'credit_balance')->get();
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Customers');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -455,8 +440,7 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
         foreach ($sites as $key => $site) {
@@ -519,8 +503,7 @@ class CustomerService implements ISynchronizeService
         return $returnArray;
     }
 
-    public function modelHasher($model, ...$params): string
-    {
+    public function modelHasher($model, ...$params): string {
         return $this->smTableEncryption->makeHash([
             trim($model['name']),
             $params[0],
@@ -530,8 +513,7 @@ class CustomerService implements ISynchronizeService
         ]);
     }
 
-    public function getSparkCustomersWithAddress()
-    {
+    public function getSparkCustomersWithAddress() {
         return $this->smCustomer->newQuery()->with([
             'mpmPerson.addresses',
         ])->whereHas('mpmPerson.addresses', function ($q) {
@@ -539,8 +521,7 @@ class CustomerService implements ISynchronizeService
         })->get();
     }
 
-    public function syncCheckBySite($siteId)
-    {
+    public function syncCheckBySite($siteId) {
         try {
             $sparkCustomers = $this->sparkMeterApiRequests->get('/customers', $siteId);
         } catch (SparkAPIResponseException $e) {
@@ -581,8 +562,7 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function resetMeter($customer)
-    {
+    public function resetMeter($customer) {
         $rootUrl = '/customers/'.$customer->customer_id.'/reset-meter';
         try {
             $this->sparkMeterApiRequests->post($rootUrl, null, $customer->site->site_id);
@@ -592,15 +572,18 @@ class CustomerService implements ISynchronizeService
         }
     }
 
-    public function getSparkCustomerWithPhone($phoneNumber)
-    {
+    public function getSparkCustomerWithPhone($phoneNumber) {
         $person = $this->person::with(['addresses'])
-            ->whereHas('addresses', static function ($q) use ($phoneNumber) {
-                $q->where('phone', $phoneNumber);
-            }
+            ->whereHas(
+                'addresses',
+                static function ($q) use ($phoneNumber) {
+                    $q->where('phone', $phoneNumber);
+                }
             )->first();
 
-        return $this->smCustomer->newQuery()->with(['site', 'mpmPerson.meters.meter'])->where('mpm_customer_id',
-            $person->id)->first();
+        return $this->smCustomer->newQuery()->with(['site', 'mpmPerson.meters.meter'])->where(
+            'mpm_customer_id',
+            $person->id
+        )->first();
     }
 }

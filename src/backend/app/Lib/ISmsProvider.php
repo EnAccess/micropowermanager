@@ -4,8 +4,7 @@ namespace App\Lib;
 
 use App\Models\SmsAndroidSetting;
 
-interface ISmsProvider
-{
+interface ISmsProvider {
     /**
      * Sends the sms to the sms provider.
      *

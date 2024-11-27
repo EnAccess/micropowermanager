@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('wave_money_transactions', function (Blueprint $table) {
             $table->string('manufacturer_transaction_type')->nullable();
             $table->integer('manufacturer_transaction_id')->nullable();
@@ -28,7 +27,5 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-    }
+    public function down() {}
 };

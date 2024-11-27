@@ -5,12 +5,10 @@ namespace Database\Factories;
 use App\Models\GeographicalInformation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class GeographicalInformationFactory extends Factory
-{
+class GeographicalInformationFactory extends Factory {
     protected $model = GeographicalInformation::class;
 
-    private function add_random_offset_to_coordinates(string $coord_string, int $distance): string
-    {
+    private function add_random_offset_to_coordinates(string $coord_string, int $distance): string {
         list($lat, $lng) = explode(',', $coord_string);
 
         $lat = (float) $lat;
@@ -28,8 +26,7 @@ class GeographicalInformationFactory extends Factory
      *
      * @return Factory
      */
-    public function randomizePointsInVillage()
-    {
+    public function randomizePointsInVillage() {
         return $this->state(function (array $attributes) {
             return [
                 'points' => $this->add_random_offset_to_coordinates($attributes['points'], 1000),
@@ -42,8 +39,7 @@ class GeographicalInformationFactory extends Factory
      *
      * @return Factory
      */
-    public function randomizePointsInHousehold()
-    {
+    public function randomizePointsInHousehold() {
         return $this->state(function (array $attributes) {
             return [
                 'points' => $this->add_random_offset_to_coordinates($attributes['points'], 10),
@@ -51,8 +47,7 @@ class GeographicalInformationFactory extends Factory
         });
     }
 
-    public function definition()
-    {
+    public function definition() {
         return [
             'points' => '0.000000,0.000000',
         ];

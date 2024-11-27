@@ -5,8 +5,7 @@ namespace MPM\Transaction\Provider;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Model;
 
-interface ITransactionProvider
-{
+interface ITransactionProvider {
     // saves the main transaction
     public function saveTransaction();
 

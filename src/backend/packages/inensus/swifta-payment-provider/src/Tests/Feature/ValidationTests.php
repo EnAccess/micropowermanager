@@ -18,12 +18,10 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ValidationTests extends TestCase
-{
+class ValidationTests extends TestCase {
     use RefreshDatabase;
 
-    public function testOnlyAuthenticatedSwiftaUserSendsTransaction()
-    {
+    public function testOnlyAuthenticatedSwiftaUserSendsTransaction() {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
@@ -42,8 +40,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    public function testWithoutInvalidCipher()
-    {
+    public function testWithoutInvalidCipher() {
         $data = [
             'meter_number' => '478881899',
             'amount' => 1000,
@@ -62,8 +59,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    public function testWithoutNonExistingMeterNumber()
-    {
+    public function testWithoutNonExistingMeterNumber() {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005610',
@@ -84,8 +80,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    public function testWithNonSenderAddress()
-    {
+    public function testWithNonSenderAddress() {
         $this->initializeData();
         Address::query()->first()->delete();
         $data = [
@@ -108,8 +103,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    public function testWithInvalidTransactionAmount()
-    {
+    public function testWithInvalidTransactionAmount() {
         $this->initializeData();
         AccessRate::query()->where('id', 1)->update([
             'tariff_id' => 1,
@@ -140,8 +134,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    public function testWithValidTransactionAmount()
-    {
+    public function testWithValidTransactionAmount() {
         $this->initializeData();
         $data = [
             'meter_number' => '4700005646',
@@ -169,8 +162,7 @@ class ValidationTests extends TestCase
         ]);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         factory(Person::class)->create();
         // create meter-tariff
@@ -221,8 +213,7 @@ class ValidationTests extends TestCase
         $address->save();
     }
 
-    public function actingAsWrong($user, $driver = null)
-    {
+    public function actingAsWrong($user, $driver = null) {
         $customClaims = ['usr' => 'swifta-token-wrong', 'exp' => Carbon::now()->addYears(1)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
@@ -231,8 +222,7 @@ class ValidationTests extends TestCase
         return $this;
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");

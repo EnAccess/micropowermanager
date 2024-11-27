@@ -17,8 +17,7 @@ use Illuminate\Support\Carbon;
 use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
 
-class RevenueController extends Controller
-{
+class RevenueController extends Controller {
     public function __construct(
         private Ticket $ticket,
         private TicketCategory $label,
@@ -27,11 +26,9 @@ class RevenueController extends Controller
         private RevenueService $revenueService,
         private MeterRevenueService $meterRevenueService,
         private Target $target,
-    ) {
-    }
+    ) {}
 
-    public function ticketData($id): ApiResource
-    {
+    public function ticketData($id): ApiResource {
         $begin = date_create('2018-08-01');
         $end = date_create();
         $end->add(new \DateInterval('P1D'));
@@ -68,8 +65,7 @@ class RevenueController extends Controller
         return ApiResource::make($result);
     }
 
-    public function trending($id, Request $request): ApiResource
-    {
+    public function trending($id, Request $request): ApiResource {
         // the array which holds the final response
         $startDate = $request->input('startDate') ?? date('Y-01-01');
         $end = $request->input('endDate') ?? date('Y-m-d');
@@ -121,8 +117,7 @@ class RevenueController extends Controller
      *
      * @return array|mixed
      */
-    public function revenueData(Request $request): ApiResource
-    {
+    public function revenueData(Request $request): ApiResource {
         $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
         $endDate = Carbon::parse(date('Y-m-d', strtotime($request->get('end_date') ?? '2018-12-31')))->endOfDay();
         $targetTypeId = $request->get('target_type_id'); // cluster or mini-grid id
@@ -240,8 +235,7 @@ class RevenueController extends Controller
         );
     }
 
-    private function reformatPeriod($period): string
-    {
+    private function reformatPeriod($period): string {
         return substr_replace($period, '-', 4, 0);
     }
 }

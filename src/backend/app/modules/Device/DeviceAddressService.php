@@ -9,30 +9,25 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<Address, Device>
  */
-class DeviceAddressService implements IAssignationService
-{
+class DeviceAddressService implements IAssignationService {
     private Address $address;
     private Device $device;
 
-    public function setAssigned($assigned): void
-    {
+    public function setAssigned($assigned): void {
         $this->address = $assigned;
     }
 
-    public function setAssignee($assignee): void
-    {
+    public function setAssignee($assignee): void {
         $this->device = $assignee;
     }
 
-    public function assign(): Address
-    {
+    public function assign(): Address {
         $this->address->owner()->associate($this->device);
 
         return $this->address;
     }
 
-    public function getAddressByDevice(Device $device): ?Address
-    {
+    public function getAddressByDevice(Device $device): ?Address {
         $result = Address::query()->with('geo')
             ->where('owner_id', $device->id)
             ->where('owner_type', 'device')
@@ -44,8 +39,7 @@ class DeviceAddressService implements IAssignationService
     /**
      * @return Address
      */
-    public function updateDeviceAddress($deviceAddress, $addressData): Address
-    {
+    public function updateDeviceAddress($deviceAddress, $addressData): Address {
         $points = $addressData['lat'].','.$addressData['lon'];
         $deviceAddress->geo()->update([
             'points' => $points,

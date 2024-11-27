@@ -12,12 +12,10 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @implements IAssociative<PaymentHistory>
  */
-class PaymentHistoryService implements IAssociative
-{
+class PaymentHistoryService implements IAssociative {
     public function __construct(
         private PaymentHistory $paymentHistory,
-    ) {
-    }
+    ) {}
 
     public function findPayingCustomersInRange(
         array $customerIds,
@@ -27,16 +25,14 @@ class PaymentHistoryService implements IAssociative
         return $this->paymentHistory->findCustomersPaidInRange($customerIds, $startDate, $endDate);
     }
 
-    public function findCustomerLastPayment(int $customerId): PaymentHistory
-    {
+    public function findCustomerLastPayment(int $customerId): PaymentHistory {
         return $this->paymentHistory
             ->whereHasMorph('owner', [Person::class], fn (Builder $q) => $q->where('id', $customerId))
             ->latest('created_at')
             ->first();
     }
 
-    public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator
-    {
+    public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator {
         return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])
             ->whereHas(
                 'transaction',
@@ -46,13 +42,11 @@ class PaymentHistoryService implements IAssociative
             )->latest()->paginate($paginate);
     }
 
-    public function make(array $paymentHistoryData): PaymentHistory
-    {
+    public function make(array $paymentHistoryData): PaymentHistory {
         return $this->paymentHistory->newQuery()->make($paymentHistoryData);
     }
 
-    public function save($paymentHistory): bool
-    {
+    public function save($paymentHistory): bool {
         return $paymentHistory->save();
     }
 }

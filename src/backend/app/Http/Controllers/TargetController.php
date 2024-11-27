@@ -10,30 +10,25 @@ use App\Services\SubTargetService;
 use App\Services\TargetService;
 use Illuminate\Http\Request;
 
-class TargetController extends Controller
-{
+class TargetController extends Controller {
     public function __construct(
         private TargetService $targetService,
         private ClusterService $clusterService,
         private MiniGridService $miniGridService,
         private SubTargetService $subTargetService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->input('limit', 15);
 
         return ApiResource::make($this->targetService->getAll($limit));
     }
 
-    public function show($targetId): ApiResource
-    {
+    public function show($targetId): ApiResource {
         return ApiResource::make($this->targetService->getById($targetId));
     }
 
-    public function getSlotsForDate(Request $request): ApiResource
-    {
+    public function getSlotsForDate(Request $request): ApiResource {
         $date = $request->input('date');
         $lastDayOfMonth = date('Y-m-t', strtotime($date));
         $firstDayOfMonth = date('Y-m-1', strtotime($date));
@@ -42,8 +37,7 @@ class TargetController extends Controller
         return ApiResource::make($this->targetService->getTakenSlots($targetData));
     }
 
-    public function store(CreateTargetRequest $request): ApiResource
-    {
+    public function store(CreateTargetRequest $request): ApiResource {
         $targetData = [
             'period' => $request->getPeriod(),
             'targetForType' => $request->getTargetForType(),

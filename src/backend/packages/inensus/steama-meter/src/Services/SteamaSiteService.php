@@ -13,8 +13,7 @@ use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaSite;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
-class SteamaSiteService implements ISynchronizeService
-{
+class SteamaSiteService implements ISynchronizeService {
     private $site;
     private $steamaApi;
     private $apiHelpers;
@@ -48,20 +47,17 @@ class SteamaSiteService implements ISynchronizeService
         $this->steamaSyncActionService = $steamaSyncActionService;
     }
 
-    public function getSites($request)
-    {
+    public function getSites($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->site->newQuery()->with('mpmMiniGrid.location')->paginate($perPage);
     }
 
-    public function getSitesCount()
-    {
+    public function getSitesCount() {
         return count($this->site->newQuery()->get());
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Sites');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -100,8 +96,7 @@ class SteamaSiteService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -151,8 +146,7 @@ class SteamaSiteService implements ISynchronizeService
         return $returnData ? ['data' => $sitesCollection, 'result' => true] : ['result' => true];
     }
 
-    public function creteRelatedMiniGrid($site)
-    {
+    public function creteRelatedMiniGrid($site) {
         $cluster = $this->cluster->newQuery()->latest('created_at')->first();
         $miniGrid = $this->miniGrid->newQuery()->create([
             'name' => $site['name'],
@@ -167,8 +161,7 @@ class SteamaSiteService implements ISynchronizeService
         return $miniGrid;
     }
 
-    public function updateRelatedMiniGrid($site, $miniGrid)
-    {
+    public function updateRelatedMiniGrid($site, $miniGrid) {
         $miniGrid->update([
             'name' => $site['name'],
         ]);
@@ -176,8 +169,7 @@ class SteamaSiteService implements ISynchronizeService
         return $miniGrid->fresh();
     }
 
-    public function createOrUpdateGeographicalInformation($miniGridId, $site)
-    {
+    public function createOrUpdateGeographicalInformation($miniGridId, $site) {
         $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
             'owner',
             [MiniGrid::class],
@@ -201,13 +193,11 @@ class SteamaSiteService implements ISynchronizeService
         }
     }
 
-    public function checkLocationAvailability()
-    {
+    public function checkLocationAvailability() {
         return $this->cluster->newQuery()->latest('created_at')->first();
     }
 
-    private function steamaSiteHasher($steamaSite)
-    {
+    private function steamaSiteHasher($steamaSite) {
         return $this->apiHelpers->makeHash([
             $steamaSite['name'],
             $steamaSite['latitude'],

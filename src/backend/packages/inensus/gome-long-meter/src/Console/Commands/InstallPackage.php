@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
 use Inensus\GomeLongMeter\Services\ManufacturerService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'gome-long-meter:install';
     protected $description = 'Install GomeLongMeter Package';
 
@@ -18,8 +17,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing GomeLongMeter Integration Package\n');
 
         $this->manufacturerService->register();

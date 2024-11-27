@@ -8,12 +8,10 @@ use App\Models\Agent;
 use App\Services\AgentAssignedApplianceService;
 use Illuminate\Http\Request;
 
-class AgentAssignedApplianceWebController extends Controller
-{
+class AgentAssignedApplianceWebController extends Controller {
     public function __construct(
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-    ) {
-    }
+    ) {}
 
     /**
      * Store a newly created resource in storage.
@@ -27,8 +25,7 @@ class AgentAssignedApplianceWebController extends Controller
      *
      * @return ApiResource
      */
-    public function store(CreateAgentAssignedApplianceRequest $request)
-    {
+    public function store(CreateAgentAssignedApplianceRequest $request) {
         $assignedApplianceData = $request->only([
             'agent_id',
             'user_id',
@@ -47,8 +44,7 @@ class AgentAssignedApplianceWebController extends Controller
      *
      * @return ApiResource
      */
-    public function index($agentId, Request $request)
-    {
+    public function index($agentId, Request $request) {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agentId));

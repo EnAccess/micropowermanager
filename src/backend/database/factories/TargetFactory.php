@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\Target;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TargetFactory extends Factory
-{
+class TargetFactory extends Factory {
     protected $model = Target::class;
 
     /**
@@ -14,8 +13,7 @@ class TargetFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'target_date' => $this->faker->date('Y-m-d'),
             'type' => $this->faker->randomElement(['mini-grid', 'cluster']),

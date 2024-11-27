@@ -8,8 +8,7 @@ use App\Models\Meter\MeterConsumption;
 use Carbon\Exceptions\InvalidDateException;
 use Illuminate\Support\Facades\Log;
 
-class CalinReadMeter implements IMeterReader
-{
+class CalinReadMeter implements IMeterReader {
     public const READ_DAILY = 1;
     /**
      * @var \SoapClient
@@ -27,8 +26,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @throws \SoapFault
      */
-    public function __construct(MeterConsumption $consumption)
-    {
+    public function __construct(MeterConsumption $consumption) {
         try {
             $this->api = new \SoapClient(\config('services.calin.meter.api'), ['keep_alive' => false]);
         } catch (\Exception $exception) {
@@ -42,8 +40,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @return mixed
      */
-    public function readDailyData($meterId, $date)
-    {
+    public function readDailyData($meterId, $date) {
         if ($this->api === null) {
             return;
         }
@@ -64,9 +61,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @return void
      */
-    public function readMeter($meterId, $type)
-    {
-    }
+    public function readMeter($meterId, $type) {}
 
     /**
      * Reads the data for a given meter list.
@@ -77,8 +72,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @return void
      */
-    public function readBatch($meterList, $type, $options)
-    {
+    public function readBatch($meterList, $type, $options) {
         if ($type === self::READ_DAILY) {
             if (!isset($options['date'])) {
                 throw new InvalidDateException('Date', 'date is not set. Send date within the options array');
@@ -123,8 +117,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @return MeterConsumption
      */
-    private function calculateDifference(MeterConsumption $consumption): MeterConsumption
-    {
+    private function calculateDifference(MeterConsumption $consumption): MeterConsumption {
         $prevReading = $this->consumption->where('meter_id', $consumption->meter_id)->latest()->first();
         if ($prevReading !== null) {
             $consumption->consumption = $consumption->total_consumption - $prevReading->total_consumption;
@@ -144,8 +137,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @psalm-return non-empty-list<string>
      */
-    private function fetchResponseData($data): array
-    {
+    private function fetchResponseData($data): array {
         $out = [];
         /*fetch information out of the response.
         successful response : 00^total_power,rest_energy
@@ -167,8 +159,7 @@ class CalinReadMeter implements IMeterReader
      *
      * @return array (\Illuminate\Config\Repository|float|mixed)[]
      */
-    private function prepareDailyReq(string $meterId, string $year, string $month, string $day, $action = 'Read'): array
-    {
+    private function prepareDailyReq(string $meterId, string $year, string $month, string $day, $action = 'Read'): array {
         [$t1, $t2] = explode(' ', microtime());
         $timestamp = (float) sprintf('%.0f', ((float) $t1 + (float) $t2) * 1000);
 
@@ -186,8 +177,7 @@ class CalinReadMeter implements IMeterReader
         return $params;
     }
 
-    private function generateCipher($meterId, float $timestamp, $dataWay): string
-    {
+    private function generateCipher($meterId, float $timestamp, $dataWay): string {
         return md5(
             sprintf(
                 '%s%s%s%s%s',

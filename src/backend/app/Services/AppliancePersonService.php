@@ -16,34 +16,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<AssetPerson>
  * @implements IAssociative<AssetPerson>
  */
-class AppliancePersonService implements IBaseService, IAssociative
-{
+class AppliancePersonService implements IBaseService, IAssociative {
     public function __construct(
         private MainSettings $mainSettings,
         private AssetPerson $assetPerson,
         private CashTransactionService $cashTransactionService,
-    ) {
-    }
+    ) {}
 
-    public function make(array $data): AssetPerson
-    {
+    public function make(array $data): AssetPerson {
         return $this->assetPerson->newQuery()->make($data);
     }
 
-    public function save($appliancePerson): bool
-    {
+    public function save($appliancePerson): bool {
         return $appliancePerson->save();
     }
 
-    private function checkDownPaymentIsBigger($downPayment, $cost)
-    {
+    private function checkDownPaymentIsBigger($downPayment, $cost) {
         if ($downPayment > $cost) {
             throw new DownPaymentBiggerThanAppliancePriceException('Down payment is not bigger than appliance sold cost ');
         }
     }
 
-    public function createFromRequest($request, $person, $asset)
-    {
+    public function createFromRequest($request, $person, $asset) {
         $this->checkDownPaymentIsBigger($request->input('down_payment'), $request->input('cost'));
         $assetPerson = $this->assetPerson::query()->make(
             [
@@ -102,8 +96,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $assetPerson;
     }
 
-    public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction)
-    {
+    public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction) {
         $soldApplianceDataContainer = app()->makeWith(
             SoldApplianceDataContainer::class,
             [
@@ -116,8 +109,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         event('appliance.sold', $soldApplianceDataContainer);
     }
 
-    public function createLogForSoldAppliance($assetPerson, $cost, $preferredPrice)
-    {
+    public function createLogForSoldAppliance($assetPerson, $cost, $preferredPrice) {
         $currency = $this->getCurrencyFromMainSettings();
 
         event(
@@ -133,15 +125,13 @@ class AppliancePersonService implements IBaseService, IAssociative
         );
     }
 
-    public function getCurrencyFromMainSettings()
-    {
+    public function getCurrencyFromMainSettings() {
         $mainSettings = $this->mainSettings->newQuery()->first();
 
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function getApplianceDetails($applianceId)
-    {
+    public function getApplianceDetails($applianceId) {
         $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
             ->where('id', '=', $applianceId)
             ->first();
@@ -149,8 +139,7 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $this->sumTotalPaymentsAndTotalRemainingAmount($appliance);
     }
 
-    private function sumTotalPaymentsAndTotalRemainingAmount($appliance)
-    {
+    private function sumTotalPaymentsAndTotalRemainingAmount($appliance) {
         $rates = Collect($appliance->rates);
         $appliance['totalRemainingAmount'] = 0;
         $appliance['totalPayments'] = 0;
@@ -165,33 +154,27 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $appliance;
     }
 
-    public function getLoansForCustomerId($customerId)
-    {
+    public function getLoansForCustomerId($customerId) {
         return $this->assetPerson->newQuery()->where('person_id', $customerId);
     }
 
-    public function getById(int $id): AssetPerson
-    {
+    public function getById(int $id): AssetPerson {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create(array $data): AssetPerson
-    {
+    public function create(array $data): AssetPerson {
         throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, array $data): AssetPerson
-    {
+    public function update($model, array $data): AssetPerson {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);
         }
@@ -199,16 +182,14 @@ class AppliancePersonService implements IBaseService, IAssociative
         return $this->assetPerson->newQuery()->with(['person.devices'])->get();
     }
 
-    public function getLoanIdsForCustomerId($customerId)
-    {
+    public function getLoanIdsForCustomerId($customerId) {
         return $this->assetPerson->newQuery()
             ->where('person_id', $customerId)
             ->where('device_serial', null)
             ->orWhere('device_serial', '')->pluck('id');
     }
 
-    public function getBySerialNumber($serialNumber)
-    {
+    public function getBySerialNumber($serialNumber) {
         return $this->assetPerson->newQuery()->where('device_serial', $serialNumber)->first();
     }
 }

@@ -13,14 +13,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $field    the affected field. Only required for the update action
  * @property string $content;
  */
-class History extends BaseModel
-{
+class History extends BaseModel {
     public const ACTION_CREATED = 'create';
     public const ACTION_UPDATE = 'update';
     public const ACTION_DELETE = 'delete';
 
-    public function target(): MorphTo
-    {
+    public function target(): MorphTo {
         return $this->morphTo();
     }
 }

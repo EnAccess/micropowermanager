@@ -7,17 +7,14 @@ use Inensus\KelinMeter\Exceptions\KelinApiAuthenticationException;
 use Inensus\KelinMeter\Exceptions\KelinApiEmtyDataException;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 
-class ApiHelpers
-{
+class ApiHelpers {
     private $manufacturer;
 
-    public function __construct(Manufacturer $manufacturerModel)
-    {
+    public function __construct(Manufacturer $manufacturerModel) {
         $this->manufacturer = $manufacturerModel;
     }
 
-    public function registerMeterManufacturer()
-    {
+    public function registerMeterManufacturer() {
         $this->manufacturer->newQuery()->firstOrCreate(['api_name' => 'KelinMeterApi'], [
             'name' => 'Kelin Meters',
             'website' => '-',
@@ -25,8 +22,7 @@ class ApiHelpers
         ]);
     }
 
-    public function checkApiResult($result)
-    {
+    public function checkApiResult($result) {
         if (!$result) {
             throw new KelinApiEmtyDataException('Null result returned.');
         }
@@ -43,8 +39,7 @@ class ApiHelpers
         return $result;
     }
 
-    public function makeHash($data)
-    {
+    public function makeHash($data) {
         return md5(implode('', $data));
     }
 }

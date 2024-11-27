@@ -5,8 +5,7 @@ namespace Database\Factories\Person;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PersonFactory extends Factory
-{
+class PersonFactory extends Factory {
     protected $model = Person::class;
 
     /**
@@ -14,8 +13,7 @@ class PersonFactory extends Factory
      *
      * @return Factory
      */
-    public function isCustomer()
-    {
+    public function isCustomer() {
         return $this->state(function (array $attributes) {
             return [
                 'is_customer' => true,
@@ -28,8 +26,7 @@ class PersonFactory extends Factory
      *
      * @return Factory
      */
-    public function isAgent($village_name = 'Demo')
-    {
+    public function isAgent($village_name = 'Demo') {
         return $this->state(function (array $attributes) use ($village_name) {
             return [
                 'is_customer' => false,
@@ -44,8 +41,7 @@ class PersonFactory extends Factory
      *
      * @return array
      */
-    public function definition(): array
-    {
+    public function definition(): array {
         $sex = fake()->randomKey(['male', 'female']);
         $gender = $sex === 0
             ? 'male'

@@ -12,8 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $phase
  * @property int    $max_current
  */
-class MeterType extends BaseModel
-{
+class MeterType extends BaseModel {
     use HasFactory;
 
     public static $rules = [
@@ -22,13 +21,11 @@ class MeterType extends BaseModel
         'max_current' => 'required',
     ];
 
-    public function meters(): HasMany
-    {
+    public function meters(): HasMany {
         return $this->hasMany(Meter::class);
     }
 
-    public function __toString()
-    {
+    public function __toString() {
         return sprintf(
             '%s Phase, %s Amper, Online: %s',
             $this->phase,

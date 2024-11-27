@@ -12,21 +12,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<AgentSoldAppliance>
  */
-class AgentSoldApplianceService implements IBaseService
-{
+class AgentSoldApplianceService implements IBaseService {
     public function __construct(
         private AgentSoldAppliance $agentSoldAppliance,
         private AssetPerson $assetPerson,
-    ) {
-    }
+    ) {}
 
-    public function create($applianceData): AgentSoldAppliance
-    {
+    public function create($applianceData): AgentSoldAppliance {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance
-    {
+    public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance {
         return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
             ->whereHasMorph(
                 'creator',
@@ -43,13 +39,11 @@ class AgentSoldApplianceService implements IBaseService
             ->first();
     }
 
-    public function update($model, array $data): AgentSoldAppliance
-    {
+    public function update($model, array $data): AgentSoldAppliance {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
@@ -92,8 +86,7 @@ class AgentSoldApplianceService implements IBaseService
         }
     }
 
-    public function list($agentId)
-    {
+    public function list($agentId) {
         return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
             ->whereHasMorph(
                 'creator',

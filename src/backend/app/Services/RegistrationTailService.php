@@ -11,25 +11,20 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<RegistrationTail>
  */
-class RegistrationTailService implements IBaseService
-{
+class RegistrationTailService implements IBaseService {
     public function __construct(
         private RegistrationTail $registrationTail,
-    ) {
-    }
+    ) {}
 
-    public function getById(int $id): RegistrationTail
-    {
+    public function getById(int $id): RegistrationTail {
         return $this->registrationTail->newQuery()->find($id);
     }
 
-    public function create(array $registrationTailData): RegistrationTail
-    {
+    public function create(array $registrationTailData): RegistrationTail {
         return $this->registrationTail->newQuery()->create($registrationTailData);
     }
 
-    public function update($registrationTail, array $registrationTailData): RegistrationTail
-    {
+    public function update($registrationTail, array $registrationTailData): RegistrationTail {
         if (array_key_exists('tail', $registrationTailData)) {
             $registrationTail->update($registrationTailData);
         } else {
@@ -41,23 +36,19 @@ class RegistrationTailService implements IBaseService
         return $registrationTail;
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->registrationTail->newQuery()->get();
     }
 
-    public function getFirst($limit = null)
-    {
+    public function getFirst($limit = null) {
         return $this->registrationTail->newQuery()->firstOrCreate();
     }
 
-    public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail
-    {
+    public function addMpmPluginToRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
 
         array_push($tail, [
@@ -76,8 +67,7 @@ class RegistrationTailService implements IBaseService
         );
     }
 
-    public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail
-    {
+    public function removeMpmPluginFromRegistrationTail(RegistrationTail $registrationTail, MpmPlugin $mpmPlugin): RegistrationTail {
         $tail = !empty($registrationTail->tail) ? json_decode($registrationTail->tail, true) : [];
 
         $updatedTail = array_filter($tail, function ($item) use ($mpmPlugin) {

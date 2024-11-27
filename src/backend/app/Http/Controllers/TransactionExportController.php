@@ -7,13 +7,11 @@ use MPM\Transaction\Export\TransactionExportService;
 use MPM\Transaction\TransactionService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class TransactionExportController
-{
+class TransactionExportController {
     public function __construct(
         private TransactionService $transactionService,
         private TransactionExportService $transactionExportService,
-    ) {
-    }
+    ) {}
 
     public function download(
         Request $request,

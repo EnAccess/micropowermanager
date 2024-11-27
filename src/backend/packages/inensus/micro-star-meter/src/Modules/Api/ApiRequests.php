@@ -9,16 +9,13 @@ use Inensus\MicroStarMeter\Exceptions\MicroStarApiResponseException;
 use Inensus\MicroStarMeter\Models\MicroStarCredential;
 use Inensus\MicroStarMeter\Modules\Api\Utils\ResponseResolver;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
         private ResponseResolver $responseResolver,
-    ) {
-    }
+    ) {}
 
-    public function get(MicroStarCredential $credentials, array $params, string $slug)
-    {
+    public function get(MicroStarCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
@@ -26,13 +23,15 @@ class ApiRequests
         $certificatePath = storage_path('app'.$credentials->certificate_path.'/'.
             $credentials->certificate_file_name);
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
                     'cert' => [$certificatePath, $credentials->certificate_password],
-                ]);
+                ]
+            );
 
             return $this->responseResolver->checkResponse(json_decode((string) $request->getBody(), true));
         } catch (GuzzleException|MicroStarApiResponseException $exception) {
@@ -43,8 +42,7 @@ class ApiRequests
         }
     }
 
-    public function testGet()
-    {
+    public function testGet() {
         // ti1 = 1 phase 2 = 3 phase
 
         $url = 'https://ympt.microstarelectric.com';
@@ -59,13 +57,15 @@ class ApiRequests
         $t = '/TMRDataService/getStsVendingToken?deviceNo=0101189000116&sgc=600415&ti=2&rechargeAmount=1';
 
         try {
-            $request = $this->httpClient->get($url.$t,
+            $request = $this->httpClient->get(
+                $url.$t,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                     ],
                     'cert' => [__DIR__.'/Certs/client.ympt.p12', 'U7i8o9p0'],
-                ]);
+                ]
+            );
 
             return $this->responseResolver->checkResponse(json_decode((string) $request->getBody(), true));
         } catch (GuzzleException|MicroStarApiResponseException $exception) {

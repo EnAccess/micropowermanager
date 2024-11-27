@@ -11,8 +11,7 @@ use Inensus\SparkMeter\Models\SmMeterModel;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
-class MeterModelService implements ISynchronizeService
-{
+class MeterModelService implements ISynchronizeService {
     private $sparkMeterApiRequests;
     private $rootUrl = '/meters';
     private $smTableEncryption;
@@ -40,20 +39,17 @@ class MeterModelService implements ISynchronizeService
         $this->smSyncActionService = $smSyncActionService;
     }
 
-    public function getSmMeterModels($request)
-    {
+    public function getSmMeterModels($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->smMeterModel->newQuery()->with(['meterType', 'site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmMeterModelsCount()
-    {
+    public function getSmMeterModelsCount() {
         return count($this->smMeterModel->newQuery()->get());
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('MeterModels');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -108,8 +104,7 @@ class MeterModelService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
         foreach ($sites as $key => $site) {
@@ -170,8 +165,7 @@ class MeterModelService implements ISynchronizeService
         return $returnArray;
     }
 
-    public function modelHasher($model, ...$params): string
-    {
+    public function modelHasher($model, ...$params): string {
         return $smModelHash = $this->smTableEncryption->makeHash([
             $model['name'],
             $model['phase_count'],
@@ -180,8 +174,7 @@ class MeterModelService implements ISynchronizeService
         ]);
     }
 
-    public function syncCheckBySite($siteId)
-    {
+    public function syncCheckBySite($siteId) {
         try {
             $url = $this->rootUrl.'/models';
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -221,8 +214,7 @@ class MeterModelService implements ISynchronizeService
         }
     }
 
-    public function createRelatedMeterModel($meterModel)
-    {
+    public function createRelatedMeterModel($meterModel) {
         return $this->meterType->newQuery()->create([
             'online' => 1,
             'phase' => $meterModel['phase_count'],
@@ -230,8 +222,7 @@ class MeterModelService implements ISynchronizeService
         ]);
     }
 
-    public function updateRelatedMeterModel($meterModel, $relatedMeterModel)
-    {
+    public function updateRelatedMeterModel($meterModel, $relatedMeterModel) {
         return $meterModel['relatedMeterModel']->update([
             'phase' => $meterModel['phase_count'],
             'max_current' => $meterModel['continuous_limit'],

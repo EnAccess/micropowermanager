@@ -6,15 +6,12 @@ use App\Models\Cluster;
 use App\Models\User;
 use Inensus\BulkRegistration\Exceptions\ClusterNotFoundException;
 
-class ClusterService extends CreatorService
-{
-    public function __construct(Cluster $cluster)
-    {
+class ClusterService extends CreatorService {
+    public function __construct(Cluster $cluster) {
         parent::__construct($cluster);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $clusterConfig = config('bulk-registration.csv_fields.cluster');
 
         if (!$csvData[$clusterConfig['name']]) {

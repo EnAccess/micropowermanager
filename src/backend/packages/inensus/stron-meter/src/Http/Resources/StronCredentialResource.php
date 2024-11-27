@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inensus\StronMeter\Models\StronCredential;
 
-class StronCredentialResource extends JsonResource
-{
-    public function __construct(StronCredential $stronCredential)
-    {
+class StronCredentialResource extends JsonResource {
+    public function __construct(StronCredential $stronCredential) {
         parent::__construct($stronCredential);
     }
 
@@ -20,16 +18,14 @@ class StronCredentialResource extends JsonResource
      *
      * @return Request
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         $credentials = $this->resource->toArray();
         $credentials['alert'] = $this->alertType($this->resource->is_authenticated);
 
         return $credentials;
     }
 
-    private function alertType($authenticationStatus)
-    {
+    private function alertType($authenticationStatus) {
         switch ($authenticationStatus) {
             case true:
                 return [

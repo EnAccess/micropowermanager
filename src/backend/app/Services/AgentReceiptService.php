@@ -10,15 +10,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<AgentReceipt>
  */
-class AgentReceiptService implements IBaseService
-{
+class AgentReceiptService implements IBaseService {
     public function __construct(
         private AgentReceipt $agentReceipt,
-    ) {
-    }
+    ) {}
 
-    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentReceipt->newQuery()
             ->with(['user', 'agent', 'history']);
 
@@ -37,34 +34,28 @@ class AgentReceiptService implements IBaseService
         }
     }
 
-    public function create(array $receiptData): AgentReceipt
-    {
+    public function create(array $receiptData): AgentReceipt {
         return $this->agentReceipt->newQuery()->create($receiptData);
     }
 
-    public function getById(int $id): AgentReceipt
-    {
+    public function getById(int $id): AgentReceipt {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function update($model, array $data): AgentReceipt
-    {
+    public function update($model, array $data): AgentReceipt {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getLastReceipt($agentId)
-    {
+    public function getLastReceipt($agentId) {
         return $this->agentReceipt->newQuery()->where('agent_id', $agentId)
             ->latest('id')->first();
     }
 
-    public function getLastReceiptDate($agent)
-    {
+    public function getLastReceiptDate($agent) {
         $lastReceiptDate = $this->agentReceipt->newQuery()->where('agent_id', $agent->id)->get()->last();
 
         if ($lastReceiptDate) {

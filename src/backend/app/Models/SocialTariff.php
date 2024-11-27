@@ -14,7 +14,6 @@ use App\Models\Base\BaseModel;
  * @property int $initial_energy_budget
  * @property int $maximum_stacked_energy
  */
-class SocialTariff extends BaseModel
-{
+class SocialTariff extends BaseModel {
     protected $guarded = [];
 }

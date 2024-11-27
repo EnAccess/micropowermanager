@@ -5,18 +5,15 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\Asset;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class ApplianceService extends CreatorService
-{
+class ApplianceService extends CreatorService {
     private $appliance1 = 'SunKing Home 40Plus - Sofala -  Humanitário 2';
     private $appliance2 = 'SunKing Home 40Plus - Nacional - COVID PLUS 2';
 
-    public function __construct(Asset $asset)
-    {
+    public function __construct(Asset $asset) {
         parent::__construct($asset);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $applianceConfig = [
             'price' => 'price',
         ];

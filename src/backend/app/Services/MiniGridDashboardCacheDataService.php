@@ -11,8 +11,7 @@ use Inensus\Ticket\Models\TicketCategory;
 use MPM\Device\MiniGridDeviceService;
 use Nette\Utils\DateTime;
 
-class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataService
-{
+class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataService {
     private const CACHE_KEY_MINI_GRIDS_DATA = 'MiniGridsData';
 
     public function __construct(
@@ -32,8 +31,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         parent::__construct(self::CACHE_KEY_MINI_GRIDS_DATA);
     }
 
-    public function setData($dateRange = [])
-    {
+    public function setData($dateRange = []) {
         if (empty($dateRange)) {
             $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));

@@ -5,8 +5,7 @@ namespace Inensus\KelinMeter\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class KelinResource extends JsonResource
-{
+class KelinResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -14,8 +13,7 @@ class KelinResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return parent::toArray($request);
     }
 }

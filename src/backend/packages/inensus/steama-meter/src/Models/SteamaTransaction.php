@@ -11,47 +11,38 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class SteamaTransaction extends BaseModel implements ISubTransaction
-{
+class SteamaTransaction extends BaseModel implements ISubTransaction {
     protected $table = 'steama_transactions';
 
-    public function site()
-    {
+    public function site() {
         return $this->belongsTo(SteamaSite::class, 'site_id', 'site_id');
     }
 
-    public function agentTransaction()
-    {
+    public function agentTransaction() {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
     }
 
-    public function vodacomTransaction()
-    {
+    public function vodacomTransaction() {
         return $this->morphOne(VodacomTransaction::class, 'manufacturer_transaction');
     }
 
-    public function airtelTransaction()
-    {
+    public function airtelTransaction() {
         return $this->morphOne(AirtelTransaction::class, 'manufacturer_transaction');
     }
 
-    public function thirdPartyTransaction()
-    {
+    public function thirdPartyTransaction() {
         return $this->morphOne(ThirdPartyTransaction::class, 'manufacturer_transaction');
     }
 
-    public function mesombTransaction()
-    {
+    public function mesombTransaction() {
         return $this->morphOne(MesombTransaction::class, 'manufacturer_transaction');
     }
 
-    public function swiftaTransaction()
-    {
+    public function swiftaTransaction() {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
 
-    public function waveMoneyTransaction()
-    {
+    public function waveMoneyTransaction() {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
     }
 }

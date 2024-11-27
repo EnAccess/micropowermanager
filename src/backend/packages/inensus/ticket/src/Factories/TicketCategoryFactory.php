@@ -5,8 +5,7 @@ namespace Inensus\Ticket\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketCategory;
 
-class TicketCategoryFactory extends Factory
-{
+class TicketCategoryFactory extends Factory {
     protected $model = TicketCategory::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketCategoryFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'label_name' => $this->faker->word,
             'label_color' => $this->faker->colorName,

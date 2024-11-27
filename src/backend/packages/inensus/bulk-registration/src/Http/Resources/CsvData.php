@@ -4,10 +4,8 @@ namespace Inensus\BulkRegistration\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CsvData extends JsonResource
-{
-    public function toArray($request)
-    {
+class CsvData extends JsonResource {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'csv_data',

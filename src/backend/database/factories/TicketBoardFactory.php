@@ -5,8 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketBoard;
 
-class TicketBoardFactory extends Factory
-{
+class TicketBoardFactory extends Factory {
     protected $model = TicketBoard::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketBoardFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         // includes existing board id in trello for testing
         return [
             'board_id' => '6291424c4e11631cfad78a37',

@@ -7,18 +7,15 @@ use Inensus\Ticket\Http\Controllers\TicketExportController;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class OutsourceReportGenerator extends AbstractSharedCommand
-{
+class OutsourceReportGenerator extends AbstractSharedCommand {
     protected $signature = 'reports:outsource {--start-date=}';
     protected $description = 'Create outsources reports';
 
-    public function __construct(private TicketExportController $reports)
-    {
+    public function __construct(private TicketExportController $reports) {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         if ($this->option('start-date') !== '') {
             $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
         } else {

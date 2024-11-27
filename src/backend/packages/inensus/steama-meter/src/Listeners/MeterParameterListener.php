@@ -12,8 +12,7 @@ use Inensus\SteamaMeter\Models\SteamaTariff;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
 
-class MeterParameterListener
-{
+class MeterParameterListener {
     private $apiHelpers;
     private $stmCustomerService;
     private $stmMeterService;
@@ -43,8 +42,7 @@ class MeterParameterListener
         $this->stmMeter = $stmMeter;
     }
 
-    public function onParameterSaved(int $meterId)
-    {
+    public function onParameterSaved(int $meterId) {
         $meterInfo = $this->meterParameter->newQuery()->with(['meter.manufacturer', 'geo', 'owner.addresses' => static function ($q) {
             $q->where('is_primary', 1);
         }])->whereHas('meter', function ($q) use ($meterId) {
@@ -83,8 +81,7 @@ class MeterParameterListener
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen(
             'meterparameter.saved',
             'Inensus\SteamaMeter\Listeners\MeterParameterListener@onParameterSaved'

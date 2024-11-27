@@ -2,7 +2,6 @@
 
 namespace App\Models\Loan;
 
-interface LoanableInterface
-{
+interface LoanableInterface {
     public function loans();
 }

@@ -16,6 +16,4 @@ use App\Models\Base\BaseModel;
  * @property float  $vat_energy
  * @property float  $vat_appliance
  * */
-class MainSettings extends BaseModel
-{
-}
+class MainSettings extends BaseModel {}

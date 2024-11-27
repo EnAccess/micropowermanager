@@ -2,8 +2,7 @@
 
 namespace Inensus\SparkMeter\Http\Controllers;
 
-interface IBaseController
-{
+interface IBaseController {
     public function sync();
 
     public function checkSync();

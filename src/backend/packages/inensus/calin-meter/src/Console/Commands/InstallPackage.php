@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\CalinMeter\Helpers\ApiHelpers;
 use Inensus\CalinMeter\Services\CalinCredentialService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'calin-meter:install';
     protected $description = 'Install CalinMeter Package';
 
@@ -18,16 +17,14 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing CalinMeter Integration Package\n');
         $this->apiHelpers->registerCalinMeterManufacturer();
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => 'qq',
@@ -35,14 +32,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\CalinMeter\Providers\CalinMeterServiceProvider",
@@ -50,8 +45,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'CalinMeter',
             'composer_name' => 'inensus/calin-meter',

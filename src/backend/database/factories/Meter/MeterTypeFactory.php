@@ -5,8 +5,7 @@ namespace Database\Factories\Meter;
 use App\Models\Meter\MeterType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MeterTypeFactory extends Factory
-{
+class MeterTypeFactory extends Factory {
     protected $model = MeterType::class;
 
     /**
@@ -14,8 +13,7 @@ class MeterTypeFactory extends Factory
      *
      * @return Factory
      */
-    public function isOnline()
-    {
+    public function isOnline() {
         return $this->state(function (array $attributes) {
             return [
                 'online' => 1,
@@ -23,8 +21,7 @@ class MeterTypeFactory extends Factory
         });
     }
 
-    public function definition(): array
-    {
+    public function definition(): array {
         return [
             'online' => 0,
             'phase' => 1,

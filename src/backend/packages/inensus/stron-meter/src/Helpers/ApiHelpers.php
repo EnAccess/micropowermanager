@@ -5,17 +5,14 @@ namespace Inensus\StronMeter\Helpers;
 use App\Models\Manufacturer;
 use Inensus\StronMeter\Exceptions\StronApiResponseException;
 
-class ApiHelpers
-{
+class ApiHelpers {
     private $manufacturer;
 
-    public function __construct(Manufacturer $manufacturerModel)
-    {
+    public function __construct(Manufacturer $manufacturerModel) {
         $this->manufacturer = $manufacturerModel;
     }
 
-    public function registerStronMeterManufacturer()
-    {
+    public function registerStronMeterManufacturer() {
         $api = $this->manufacturer->newQuery()->where('api_name', 'StronMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
@@ -26,8 +23,7 @@ class ApiHelpers
         }
     }
 
-    public function checkApiResult($result)
-    {
+    public function checkApiResult($result) {
         if (is_array($result) && array_key_exists('Message', $result)) {
             throw new StronApiResponseException($result['Message']);
         }
@@ -38,8 +34,7 @@ class ApiHelpers
         return $result;
     }
 
-    public function makeHash($data)
-    {
+    public function makeHash($data) {
         return md5(implode($data, ''));
     }
 }

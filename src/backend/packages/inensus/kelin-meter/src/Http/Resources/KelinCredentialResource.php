@@ -4,10 +4,8 @@ namespace Inensus\KelinMeter\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class KelinCredentialResource extends JsonResource
-{
-    public function toArray($request)
-    {
+class KelinCredentialResource extends JsonResource {
+    public function toArray($request) {
         return [
             'data' => [
                 'type' => 'credentials',
@@ -22,8 +20,7 @@ class KelinCredentialResource extends JsonResource
         ];
     }
 
-    private function alertType($authenticationStatus)
-    {
+    private function alertType($authenticationStatus) {
         switch ($authenticationStatus) {
             case true:
                 return [

@@ -4,13 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class PackageGenerator extends Command
-{
+class PackageGenerator extends Command {
     protected $signature = 'micropowermanager:new-package {package-name}';
     protected $description = 'Clones package development starter pack';
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $packageNameArg = $this->argument('package-name');
         $packageName = strtolower($packageNameArg);
         $nameSpace = '';

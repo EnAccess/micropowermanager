@@ -12,8 +12,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class AgentSeeder extends Seeder
-{
+class AgentSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -25,8 +24,7 @@ class AgentSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $agentCommission = AgentCommission::factory()
             ->create();
 
@@ -38,20 +36,20 @@ class AgentSeeder extends Seeder
             $village = $minigrid->cities()->get()->random();
 
             $person = Person::factory()
-            ->isAgent($village->name)
-            ->has(
-                Address::factory()
-                    ->for($village)
-                    ->has(
-                        GeographicalInformation::factory()
-                            ->state(function (array $attributes, Address $address) {
-                                return ['points' => $address->city->location->points];
-                            })
-                            ->randomizePointsInVillage(),
-                        'geo'
-                    )
-            )
-            ->create();
+                ->isAgent($village->name)
+                ->has(
+                    Address::factory()
+                        ->for($village)
+                        ->has(
+                            GeographicalInformation::factory()
+                                ->state(function (array $attributes, Address $address) {
+                                    return ['points' => $address->city->location->points];
+                                })
+                                ->randomizePointsInVillage(),
+                            'geo'
+                        )
+                )
+                ->create();
 
             $agent = Agent::factory()
                 ->for($minigrid)

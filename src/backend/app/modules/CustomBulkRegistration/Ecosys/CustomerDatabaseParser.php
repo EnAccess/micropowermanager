@@ -22,13 +22,11 @@ use MPM\CustomBulkRegistration\Ecosys\Services\MeterService;
 use MPM\CustomBulkRegistration\Ecosys\Services\PersonService;
 use ParseCsv\Csv;
 
-class CustomerDatabaseParser
-{
+class CustomerDatabaseParser {
     private $path;
     private $recentlyCreatedRecords;
 
-    public function __construct(private Csv $csv)
-    {
+    public function __construct(private Csv $csv) {
         $this->path = __DIR__.'/CustomerDb/customer_db.csv';
         $this->recentlyCreatedRecords = [
             'customer' => 0,
@@ -39,15 +37,13 @@ class CustomerDatabaseParser
         ];
     }
 
-    private function parseCsvFromFilePath()
-    {
+    private function parseCsvFromFilePath() {
         $this->csv->auto($this->path);
 
         return $this->csv->data;
     }
 
-    public function insertFromCsv()
-    {
+    public function insertFromCsv() {
         $parsedCsvData = $this->parseCsvFromFilePath();
         $cluster = Cluster::query()->first();
         $miniGrid = MiniGrid::query()->first();
@@ -131,15 +127,13 @@ class CustomerDatabaseParser
         return $this->recentlyCreatedRecords;
     }
 
-    private function createRecordFromCsv($row, $service)
-    {
+    private function createRecordFromCsv($row, $service) {
         $service = app()->make($service);
 
         return $service->resolveCsvDataFromComingRow($row);
     }
 
-    private function checkRecordWasRecentlyCreated($record, $type)
-    {
+    private function checkRecordWasRecentlyCreated($record, $type) {
         if ($record->wasRecentlyCreated) {
             ++$this->recentlyCreatedRecords[$type];
         }

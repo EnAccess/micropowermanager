@@ -8,29 +8,24 @@ use Illuminate\Http\Request;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\TransactionService;
 
-class TransactionController extends Controller
-{
+class TransactionController extends Controller {
     public function __construct(
         private TransactionService $transactionService,
-    ) {
-    }
+    ) {}
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         $limit = \request()->get('per_page') ?? 15;
 
         return ApiResource::make($this->transactionService->getAll($limit));
     }
 
-    public function show(int $id): ApiResource
-    {
+    public function show(int $id): ApiResource {
         $transaction = $this->transactionService->getById($id);
 
         return ApiResource::make($transaction);
     }
 
-    public function store(Request $request): void
-    {
+    public function store(Request $request): void {
         /**
          * @var ITransactionProvider $transactionProvider
          */

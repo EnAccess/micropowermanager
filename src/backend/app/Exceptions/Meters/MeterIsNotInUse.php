@@ -2,6 +2,4 @@
 
 namespace App\Exceptions\Meters;
 
-class MeterIsNotInUse extends \Exception
-{
-}
+class MeterIsNotInUse extends \Exception {}

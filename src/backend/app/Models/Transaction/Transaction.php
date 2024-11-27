@@ -27,45 +27,37 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property string $message
  * @property string $original_transaction_type
  */
-class Transaction extends BaseModel
-{
+class Transaction extends BaseModel {
     use RelationsManager;
 
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
-    public function originalTransaction(): MorphTo
-    {
+    public function originalTransaction(): MorphTo {
         return $this->morphTo();
     }
 
-    public function token(): HasOne
-    {
+    public function token(): HasOne {
         return $this->hasOne(Token::class);
     }
 
-    public function sms(): MorphOne
-    {
+    public function sms(): MorphOne {
         return $this->morphOne(Sms::class, 'trigger');
     }
 
-    public function paymentHistories(): HasMany
-    {
+    public function paymentHistories(): HasMany {
         return $this->hasMany(PaymentHistory::class);
     }
 
-    public function device(): HasOne
-    {
+    public function device(): HasOne {
         return $this->hasOne(Device::class, 'device_serial', 'message');
     }
 
-    public function appliance(): HasOne
-    {
+    public function appliance(): HasOne {
         return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
     }
 
-    public function periodTargetAlternative($cityId, $startDate, $endDate)
-    {
+    public function periodTargetAlternative($cityId, $startDate, $endDate) {
         $sql = 'SELECT sum(transactions.amount) as revenue,'.
             ' count(transactions.id) as total,'.
             ' AVG(transactions.amount) as average,'.
@@ -99,68 +91,55 @@ class Transaction extends BaseModel
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->amount;
     }
 
-    public function getOriginalTransactionType(): string
-    {
+    public function getOriginalTransactionType(): string {
         return $this->original_transaction_type;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->sender;
     }
 
-    public function setAmount(int $amount): void
-    {
+    public function setAmount(int $amount): void {
         $this->amount = $amount;
     }
 
-    public function setSender(string $sender): void
-    {
+    public function setSender(string $sender): void {
         $this->sender = $sender;
     }
 
-    public function setMessage(string $message): void
-    {
+    public function setMessage(string $message): void {
         $this->message = $message;
     }
 
-    public function setOriginalTransactionType(string $originalTransaction): void
-    {
+    public function setOriginalTransactionType(string $originalTransaction): void {
         $this->original_transaction_type = $originalTransaction;
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function setType(string $type)
-    {
+    public function setType(string $type) {
         $this->type = $type;
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return $this->message;
     }
 
-    public function originalAgent(): BelongsToMorph
-    {
+    public function originalAgent(): BelongsToMorph {
         return BelongsToMorph::build($this, AgentTransaction::class, 'originalTransaction');
     }
 
-    public function originalCash(): BelongsToMorph
-    {
+    public function originalCash(): BelongsToMorph {
         return BelongsToMorph::build($this, CashTransaction::class, 'originalTransaction');
     }
 
-    public function originalWaveMoney(): BelongsToMorph
-    {
+    public function originalWaveMoney(): BelongsToMorph {
         return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
     }
 }

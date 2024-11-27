@@ -5,12 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AgentAssignedApplianceWebTest extends TestCase
-{
+class AgentAssignedApplianceWebTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsAgentsAssignedApplianceList()
-    {
+    public function testUserGetsAgentsAssignedApplianceList() {
         $this->createTestData();
         $agentCount = 1;
         $this->createAgent($agentCount);
@@ -21,8 +19,7 @@ class AgentAssignedApplianceWebTest extends TestCase
         $this->assertEquals(count($response['data']), $applianceCount);
     }
 
-    public function testUserAssignsAnAssignedApplianceToAgent()
-    {
+    public function testUserAssignsAnAssignedApplianceToAgent() {
         $this->createTestData();
         $agentCount = 1;
         $this->createAgent($agentCount);
@@ -42,8 +39,7 @@ class AgentAssignedApplianceWebTest extends TestCase
         $this->assertEquals($response['data']['cost'], $postData['cost']);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

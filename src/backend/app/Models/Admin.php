@@ -2,6 +2,4 @@
 
 namespace App\Models;
 
-class Admin extends BaseModel
-{
-}
+class Admin extends BaseModel {}

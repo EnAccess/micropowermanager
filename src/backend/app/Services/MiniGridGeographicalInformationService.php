@@ -9,23 +9,19 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<GeographicalInformation, MiniGrid>
  */
-class MiniGridGeographicalInformationService implements IAssignationService
-{
+class MiniGridGeographicalInformationService implements IAssignationService {
     private GeographicalInformation $geographicInformation;
     private MiniGrid $miniGrid;
 
-    public function setAssigned($assigned): void
-    {
+    public function setAssigned($assigned): void {
         $this->geographicInformation = $assigned;
     }
 
-    public function setAssignee($assignee): void
-    {
+    public function setAssignee($assignee): void {
         $this->miniGrid = $assignee;
     }
 
-    public function assign(): GeographicalInformation
-    {
+    public function assign(): GeographicalInformation {
         $this->geographicInformation->owner()->associate($this->miniGrid);
 
         return $this->geographicInformation;

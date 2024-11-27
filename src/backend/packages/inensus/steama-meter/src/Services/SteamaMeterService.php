@@ -23,8 +23,7 @@ use Inensus\SteamaMeter\Models\SteamaMeterType;
 use Inensus\SteamaMeter\Models\SteamaTariff;
 use Inensus\SteamaMeter\Models\SyncStatus;
 
-class SteamaMeterService implements ISynchronizeService
-{
+class SteamaMeterService implements ISynchronizeService {
     private $rootUrl = '/meters';
 
     public function __construct(
@@ -43,11 +42,9 @@ class SteamaMeterService implements ISynchronizeService
         private SteamaTariff $tariff,
         private SteamaSyncSettingService $steamaSyncSettingService,
         private StemaSyncActionService $steamaSyncActionService,
-    ) {
-    }
+    ) {}
 
-    public function getMeters($request)
-    {
+    public function getMeters($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->stmMeter->newQuery()->with([
@@ -57,13 +54,11 @@ class SteamaMeterService implements ISynchronizeService
         ])->paginate($perPage);
     }
 
-    public function getMetersCount()
-    {
+    public function getMetersCount() {
         return count($this->stmMeter->newQuery()->get());
     }
 
-    public function sync(): LengthAwarePaginator
-    {
+    public function sync(): LengthAwarePaginator {
         $synSetting = $this->steamaSyncSettingService->getSyncSettingsByActionName('Meters');
         $syncAction = $this->steamaSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -107,8 +102,7 @@ class SteamaMeterService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         try {
             $url = $this->rootUrl.'?page=1&page_size=100';
             $result = $this->steamaApi->get($url);
@@ -156,8 +150,7 @@ class SteamaMeterService implements ISynchronizeService
         return $returnData ? ['data' => $metersCollection, 'result' => true] : ['result' => true];
     }
 
-    public function createRelatedMeter($stmMeter)
-    {
+    public function createRelatedMeter($stmMeter) {
         try {
             DB::connection('shard')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
@@ -236,8 +229,7 @@ class SteamaMeterService implements ISynchronizeService
         }
     }
 
-    public function updateRelatedMeter($stmMeter, $meter)
-    {
+    public function updateRelatedMeter($stmMeter, $meter) {
         $meterSerial = $stmMeter['reference'];
         $meter->serial_number = $meterSerial;
         $meter->meterType()->associate($this->getMeterType($stmMeter));
@@ -260,8 +252,7 @@ class SteamaMeterService implements ISynchronizeService
         return $meter;
     }
 
-    public function getMeterType($stmMeter)
-    {
+    public function getMeterType($stmMeter) {
         $version = $stmMeter['version'];
         $usageSpikeThreshold = $stmMeter['usage_spike_threshold'];
         $stmMeterType = $this->stmMeterType->newQuery()->with('mpmMeterType')->where(
@@ -294,8 +285,7 @@ class SteamaMeterService implements ISynchronizeService
         }
     }
 
-    public function creteSteamaMeter($meterInfo, $stmCustomer)
-    {
+    public function creteSteamaMeter($meterInfo, $stmCustomer) {
         $geographicalInformation = $meterInfo->address->geo;
         $points = explode(',', $geographicalInformation);
         $postParams = [
@@ -316,8 +306,7 @@ class SteamaMeterService implements ISynchronizeService
         ]);
     }
 
-    public function updateSteamaMeterInfo($stmMeter, $putParams)
-    {
+    public function updateSteamaMeterInfo($stmMeter, $putParams) {
         $url = '/bitharvesters/'.$stmMeter->bit_harvester_id.$this->rootUrl.'/'.$stmMeter->meter_id.'/';
         $meter = $this->steamaApi->patch($url, $putParams);
         $stmMeterHash = $this->steamaMeterHasher($meter);
@@ -328,8 +317,7 @@ class SteamaMeterService implements ISynchronizeService
         return $stmMeter->fresh();
     }
 
-    private function steamaMeterHasher($steamaMeter)
-    {
+    private function steamaMeterHasher($steamaMeter) {
         return $this->apiHelpers->makeHash([
             $steamaMeter['reference'],
             $steamaMeter['version'],

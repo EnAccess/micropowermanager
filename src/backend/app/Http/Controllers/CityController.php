@@ -9,24 +9,20 @@ use App\Services\CityService;
 use App\Services\GeographicalInformationService;
 use Illuminate\Http\Request;
 
-class CityController extends Controller
-{
+class CityController extends Controller {
     public function __construct(
         private CityService $cityService,
         private GeographicalInformationService $geographicalInformationService,
         private CityGeographicalInformationService $cityGeographicalInformationService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
 
         return ApiResource::make($this->cityService->getAll($limit));
     }
 
-    public function show($cityId, Request $request): ApiResource
-    {
+    public function show($cityId, Request $request): ApiResource {
         $relation = $request->get('relation');
 
         if ($relation) {
@@ -36,16 +32,14 @@ class CityController extends Controller
         return ApiResource::make($this->cityService->getById($cityId));
     }
 
-    public function update($cityId, CityRequest $request): ApiResource
-    {
+    public function update($cityId, CityRequest $request): ApiResource {
         $city = $this->cityService->getById($cityId);
         $cityData = $request->only(['name', 'mini_grid_id', 'cluster_id', 'country_id']);
 
         return ApiResource::make($this->cityService->update($city, $cityData));
     }
 
-    public function store(CityRequest $request): ApiResource
-    {
+    public function store(CityRequest $request): ApiResource {
         $data = $request->validationData();
         $city = $this->cityService->create($data);
         $geographicalInformation = $this->geographicalInformationService->make($data);

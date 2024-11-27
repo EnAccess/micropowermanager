@@ -6,12 +6,10 @@ use App\Models\GeographicalInformation;
 use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 
-class MeterParameterService
-{
+class MeterParameterService {
     public function __construct(
         private MeterParameter $meterParameter,
-    ) {
-    }
+    ) {}
 
     public function createMeterParameter(
         array $meterParameterData,
@@ -36,13 +34,11 @@ class MeterParameterService
         return $meterParameter;
     }
 
-    public function getAll()
-    {
+    public function getAll() {
         return $this->meterParameter->newQuery()->get();
     }
 
-    public function delete($meterParameter)
-    {
+    public function delete($meterParameter) {
         return $meterParameter->delete();
     }
 }

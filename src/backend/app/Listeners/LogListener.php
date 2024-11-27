@@ -5,20 +5,17 @@ namespace App\Listeners;
 use App\Models\Log;
 use Illuminate\Events\Dispatcher;
 
-class LogListener
-{
+class LogListener {
     /**
      * @var Log
      */
     private $log;
 
-    public function __construct(Log $log)
-    {
+    public function __construct(Log $log) {
         $this->log = $log;
     }
 
-    public function storeLog($logData): void
-    {
+    public function storeLog($logData): void {
         $this->log->user_id = $logData['user_id'];
         $this->log->affected()->associate($logData['affected']);
         $this->log->action = $logData['action'];
@@ -26,8 +23,7 @@ class LogListener
         $this->log->save();
     }
 
-    public function subscribe(Dispatcher $event): void
-    {
+    public function subscribe(Dispatcher $event): void {
         $event->listen('new.log', '\App\Listeners\LogListener@storeLog');
     }
 }

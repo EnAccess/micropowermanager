@@ -5,8 +5,7 @@ namespace App\Lib;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
 
-interface IManufacturerAPI
-{
+interface IManufacturerAPI {
     /**
      * @param TransactionDataContainer $transactionContainer
      *

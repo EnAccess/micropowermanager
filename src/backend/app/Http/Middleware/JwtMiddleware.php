@@ -13,8 +13,7 @@ use Tymon\JWTAuth\Exceptions\UserNotDefinedException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class JwtMiddleware extends BaseMiddleware
-{
+class JwtMiddleware extends BaseMiddleware {
     /**
      * Handle an incoming request.
      *
@@ -24,8 +23,7 @@ class JwtMiddleware extends BaseMiddleware
      *
      * @return mixed
      */
-    public function handle(Request $request, \Closure $next, string $type = 'user'): mixed
-    {
+    public function handle(Request $request, \Closure $next, string $type = 'user'): mixed {
         try {
             // @phpstan-ignore-next-line as no methods are defined on the facade its failing to resolve the function
             $id = JWTAuth::parseToken()->getPayload()->get('sub');
@@ -59,8 +57,7 @@ class JwtMiddleware extends BaseMiddleware
         return $next($request);
     }
 
-    private function generateResponse(string $message, $status = 400): JsonResponse
-    {
+    private function generateResponse(string $message, $status = 400): JsonResponse {
         return response()->json(['data' => ['message' => $message, 'status' => $status]]);
     }
 }

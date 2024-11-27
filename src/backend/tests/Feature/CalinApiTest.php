@@ -15,8 +15,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
-class CalinApiTest extends TestCase
-{
+class CalinApiTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
@@ -25,8 +24,7 @@ class CalinApiTest extends TestCase
      * for security reasons we can not provide a meter to perfom the test
      * This test passed on 28.06.2020 with a valid meter.
      */
-    public function testGenerateTokenForAValidMeter(): void
-    {
+    public function testGenerateTokenForAValidMeter(): void {
         Bus::fake();
         $this->withoutExceptionHandling();
 

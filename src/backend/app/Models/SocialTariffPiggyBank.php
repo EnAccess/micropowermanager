@@ -13,17 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $owner_type
  * @property int    $savings
  */
-class SocialTariffPiggyBank extends BaseModel
-{
+class SocialTariffPiggyBank extends BaseModel {
     protected $guarded = [];
 
-    public function meter(): BelongsTo
-    {
+    public function meter(): BelongsTo {
         return $this->belongsTo(MeterParameter::class);
     }
 
-    public function socialTariff(): BelongsTo
-    {
+    public function socialTariff(): BelongsTo {
         return $this->belongsTo(SocialTariff::class);
     }
 }

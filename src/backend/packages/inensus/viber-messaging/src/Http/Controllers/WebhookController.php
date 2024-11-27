@@ -15,8 +15,7 @@ use Inensus\ViberMessaging\Services\ViberCredentialService;
 use Viber\Api\Sender;
 use Viber\Bot;
 
-class WebhookController extends Controller
-{
+class WebhookController extends Controller {
     private $bot;
     private $botSender;
 
@@ -32,8 +31,7 @@ class WebhookController extends Controller
         ]);
     }
 
-    public function index(string $slug)
-    {
+    public function index(string $slug) {
         Log::info('Webhook called');
 
         $credential = $this->credentialService->getCredentials();
@@ -69,8 +67,12 @@ class WebhookController extends Controller
                 $viberContact = $this->viberContactService->getByRegisteredMeterSerialNumber($meterSerialNumber);
 
                 if ($viberContact) {
-                    $this->answerToCustomer($bot, $botSender, $event,
-                        $this->setAlreadyRegisteredMessage($meterSerialNumber));
+                    $this->answerToCustomer(
+                        $bot,
+                        $botSender,
+                        $event,
+                        $this->setAlreadyRegisteredMessage($meterSerialNumber)
+                    );
 
                     return;
                 }
@@ -124,33 +126,27 @@ class WebhookController extends Controller
         return response()->json(['success' => 'success'], 200);
     }
 
-    private function setWrongFormatMessage(): string
-    {
+    private function setWrongFormatMessage(): string {
         return 'Please enter your meter serial number after register+';
     }
 
-    private function setMeterNotFoundMessage(): string
-    {
+    private function setMeterNotFoundMessage(): string {
         return "We couldn't find your meter. Please check your meter serial number and try again.";
     }
 
-    private function setSuccessMessage(): string
-    {
+    private function setSuccessMessage(): string {
         return 'You have successfully registered with MicroPowerManager.';
     }
 
-    private function setAlreadyRegisteredMessage($meterSerialNumber)
-    {
+    private function setAlreadyRegisteredMessage($meterSerialNumber) {
         return "$meterSerialNumber has already registered with MicroPowerManager.";
     }
 
-    private function setNoTransactionMessage($meterSerial)
-    {
+    private function setNoTransactionMessage($meterSerial) {
         return "No transaction found for meter serial: $meterSerial";
     }
 
-    private function answerToCustomer($bot, $botSender, $event, $message)
-    {
+    private function answerToCustomer($bot, $botSender, $event, $message) {
         $bot->getClient()->sendMessage(
             (new \Viber\Api\Message\Text())
                 ->setSender($botSender)

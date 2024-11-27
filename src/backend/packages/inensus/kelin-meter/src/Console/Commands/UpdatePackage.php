@@ -9,8 +9,7 @@ use Inensus\KelinMeter\Helpers\ApiHelpers;
 use Inensus\KelinMeter\Services\KelinCredentialService;
 use Inensus\KelinMeter\Services\PackageInstallationService;
 
-class UpdatePackage extends Command
-{
+class UpdatePackage extends Command {
     protected $signature = 'kelin-meter:update';
     protected $description = 'Update Kelin Meter Package';
 
@@ -23,8 +22,7 @@ class UpdatePackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Kelin Meter Integration Updating Started\n');
 
         $this->removeOldVersionOfPackage();
@@ -38,20 +36,17 @@ class UpdatePackage extends Command
         $this->info('Package updated successfully..');
     }
 
-    private function removeOldVersionOfPackage()
-    {
+    private function removeOldVersionOfPackage() {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/kelin-meter');
     }
 
-    private function installNewVersionOfPackage()
-    {
+    private function installNewVersionOfPackage() {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/kelin-meter');
     }
 
-    private function deleteMigration(Filesystem $filesystem)
-    {
+    private function deleteMigration(Filesystem $filesystem) {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_kelin_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -63,8 +58,7 @@ class UpdatePackage extends Command
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain()
-    {
+    private function publishMigrationsAgain() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",
@@ -72,14 +66,12 @@ class UpdatePackage extends Command
         ]);
     }
 
-    private function updateDatabase()
-    {
+    private function updateDatabase() {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFilesAgain()
-    {
+    private function publishVueFilesAgain() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\KelinMeter\Providers\KelinMeterServiceProvider",

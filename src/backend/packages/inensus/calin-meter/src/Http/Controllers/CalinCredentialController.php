@@ -7,22 +7,18 @@ use Inensus\CalinMeter\Http\Requests\CalinCredentialRequest;
 use Inensus\CalinMeter\Http\Resources\CalinResource;
 use Inensus\CalinMeter\Services\CalinCredentialService;
 
-class CalinCredentialController extends Controller
-{
+class CalinCredentialController extends Controller {
     private $credentialService;
 
-    public function __construct(CalinCredentialService $credentialService)
-    {
+    public function __construct(CalinCredentialService $credentialService) {
         $this->credentialService = $credentialService;
     }
 
-    public function show(): CalinResource
-    {
+    public function show(): CalinResource {
         return new CalinResource($this->credentialService->getCredentials());
     }
 
-    public function update(CalinCredentialRequest $request): CalinResource
-    {
+    public function update(CalinCredentialRequest $request): CalinResource {
         $credentials = $this->credentialService->updateCredentials($request->only([
             'user_id',
             'api_key',

@@ -13,8 +13,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('mpm_plugins', function (Blueprint $table) {
             $table->text('description')->change();
         });
@@ -37,8 +36,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         $mpm_plugins_mapping = [
             MpmPlugin::STEAMACO_METER => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
             MpmPlugin::BULK_REGISTRATION => 'This plugin provides bulk registration of the company\'s existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.',

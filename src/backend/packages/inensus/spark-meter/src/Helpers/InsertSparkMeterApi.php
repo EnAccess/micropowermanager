@@ -4,8 +4,7 @@ namespace Inensus\SparkMeter\Helpers;
 
 use App\Models\Manufacturer;
 
-class InsertSparkMeterApi
-{
+class InsertSparkMeterApi {
     private $manufacturer;
 
     public function __construct(
@@ -14,8 +13,7 @@ class InsertSparkMeterApi
         $this->manufacturer = $manufacturer;
     }
 
-    public function registerSparkMeterManufacturer()
-    {
+    public function registerSparkMeterManufacturer() {
         $api = $this->manufacturer->newQuery()->where('api_name', 'SparkMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([

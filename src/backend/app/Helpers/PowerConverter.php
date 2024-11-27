@@ -2,8 +2,7 @@
 
 namespace App\Helpers;
 
-class PowerConverter
-{
+class PowerConverter {
     private static $powerUnits = [
         'W' => 1,
         'kW' => 1000,
@@ -16,8 +15,7 @@ class PowerConverter
     /**
      * @param int|string $power
      */
-    public static function convert($power, $powerUnit, string $expectedUnit = 'Wh')
-    {
+    public static function convert($power, $powerUnit, string $expectedUnit = 'Wh') {
         return $power * self::$powerUnits[$powerUnit] / self::$powerUnits[$expectedUnit];
     }
 }

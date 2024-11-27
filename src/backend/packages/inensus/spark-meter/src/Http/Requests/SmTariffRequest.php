@@ -6,15 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Inensus\SparkMeter\Models\SmTariff;
 
-class SmTariffRequest extends FormRequest
-{
+class SmTariffRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -23,8 +21,7 @@ class SmTariffRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         $meterTariff = SmTariff::with('mpmTariff')->where('tariff_id', $this->id)->firstOrFail();
 
         return [

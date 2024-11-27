@@ -17,15 +17,13 @@ use Illuminate\Foundation\Http\FormRequest;
  * @bodyParam phone string. Example: +1111
  * @bodyParam nationality string. Example: Earth Citizen
  */
-class PersonRequest extends FormRequest
-{
+class PersonRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -34,8 +32,7 @@ class PersonRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'title' => 'sometimes|string',
             'name' => 'required|min:3',

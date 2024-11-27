@@ -17,8 +17,7 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class MesombTransactionProvider implements ITransactionProvider
-{
+class MesombTransactionProvider implements ITransactionProvider {
     private $transaction;
     private $mesombTransaction;
     private $mesombTransactionService;
@@ -37,8 +36,7 @@ class MesombTransactionProvider implements ITransactionProvider
         $this->address = $address;
     }
 
-    public function validateRequest($request)
-    {
+    public function validateRequest($request) {
         $requestData = $request->all();
         if ($requestData['status'] === 'FAILED') {
             throw new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']);
@@ -49,20 +47,19 @@ class MesombTransactionProvider implements ITransactionProvider
         $this->validData = array_merge($this->validData, $requestData);
     }
 
-    public function saveTransaction()
-    {
+    public function saveTransaction() {
         $this->mesombTransaction = $this->mesombTransactionService->assignIncomingDataToMesombTransaction($this->validData);
         $this->transaction = $this->mesombTransactionService->assignIncomingDataToTransaction($this->validData);
     }
 
-    public function saveCommonData(): Model
-    {
-        return $this->mesombTransactionService->associateMesombTransactionWithTransaction($this->mesombTransaction,
-            $this->transaction);
+    public function saveCommonData(): Model {
+        return $this->mesombTransactionService->associateMesombTransactionWithTransaction(
+            $this->mesombTransaction,
+            $this->transaction
+        );
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction)
-    {
+    public function sendResult(bool $requestType, Transaction $transaction) {
         $this->mesombTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $this->mesombTransaction->status = 1;
@@ -76,8 +73,7 @@ class MesombTransactionProvider implements ITransactionProvider
         }
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         echo $xmlResponse =
             '<?xml version="1.0" encoding="UTF-8"?>'.
             '<Response>'.
@@ -91,8 +87,7 @@ class MesombTransactionProvider implements ITransactionProvider
             '</Response>';
     }
 
-    private function checkPhoneIsExists($requestData): Model
-    {
+    private function checkPhoneIsExists($requestData): Model {
         $personAddresses = $this->address->newQuery()
             ->where('phone', $requestData['b_party'])
             ->orWhere('phone', '+'.$requestData['b_party'])->get();
@@ -104,10 +99,11 @@ class MesombTransactionProvider implements ITransactionProvider
         return $personAddresses->first();
     }
 
-    private function checkSenderHasOnlyOneMeterRegistered($senderAddress): void
-    {
+    private function checkSenderHasOnlyOneMeterRegistered($senderAddress): void {
         $senderMeters = $senderAddress->newQuery()->whereHasMorph(
-            'owner', [Person::class])
+            'owner',
+            [Person::class]
+        )
             ->first()->owner()->first()->meters();
         $senderMetersCount = $senderMeters->count();
         if ($senderMetersCount > 1 || $senderMetersCount == 0) {
@@ -117,33 +113,27 @@ class MesombTransactionProvider implements ITransactionProvider
         $this->validData['meter'] = $senderMeters->first()->meter()->first()->serial_number;
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         // TODO: Implement init() method.
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         // TODO: Implement addConflict() method.
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         // TODO: Implement getTransaction() method.
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         // TODO: Implement getMessage() method.
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         // TODO: Implement getAmount() method.
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         // TODO: Implement getSender() method.
     }
 }

@@ -9,8 +9,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown','imported','3rd party api sync')");
     }
 
@@ -19,8 +18,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         DB::statement("ALTER TABLE transactions MODIFY COLUMN type ENUM('energy','deferred_payment','unknown')");
     }
 };

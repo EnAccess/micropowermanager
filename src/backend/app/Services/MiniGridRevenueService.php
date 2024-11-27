@@ -6,16 +6,13 @@ use App\Models\Meter\MeterToken;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Carbon;
 
-class MiniGridRevenueService
-{
+class MiniGridRevenueService {
     public function __construct(
         private Transaction $transaction,
         private MeterToken $meterToken,
-    ) {
-    }
+    ) {}
 
-    public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService)
-    {
+    public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService) {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
@@ -33,8 +30,7 @@ class MiniGridRevenueService
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
     }
 
-    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $miniGridDeviceService)
-    {
+    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $miniGridDeviceService) {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);

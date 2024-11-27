@@ -7,18 +7,15 @@ use Illuminate\Support\Facades\Log;
 use Inensus\KelinMeter\Exceptions\KelinApiResponseException;
 use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 
-class KelinMeterStatusService
-{
+class KelinMeterStatusService {
     private $rootUrl = '/getMeterStatus';
     private $kelinApiClient;
 
-    public function __construct(KelinMeterApiClient $kelinApiClient)
-    {
+    public function __construct(KelinMeterApiClient $kelinApiClient) {
         $this->kelinApiClient = $kelinApiClient;
     }
 
-    public function getStatusOfMeter($meter)
-    {
+    public function getStatusOfMeter($meter) {
         try {
             $queryParams = [
                 'meterType' => 1,
@@ -40,8 +37,7 @@ class KelinMeterStatusService
         }
     }
 
-    public function changeStatusOfMeter($meterAddress, $status)
-    {
+    public function changeStatusOfMeter($meterAddress, $status) {
         try {
             $rootUrl = '/meterRemoteControl';
             $queryParams = [

@@ -15,8 +15,7 @@ use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class AgentWebController extends Controller
-{
+class AgentWebController extends Controller {
     public function __construct(
         private AgentService $agentService,
         private AddressesService $addressService,
@@ -25,23 +24,19 @@ class AgentWebController extends Controller
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
         private DatabaseProxyService $databaseProxyService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentService->getAll($limit));
     }
 
-    public function show($agentId, Request $request): ApiResource
-    {
+    public function show($agentId, Request $request): ApiResource {
         return ApiResource::make($this->agentService->getById($agentId));
     }
 
-    public function store(CreateAgentRequest $request): ApiResource
-    {
+    public function store(CreateAgentRequest $request): ApiResource {
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $personData = $this->personService->createPersonDataFromRequest($request);
         $country = $this->countryService->getByCode($request->get('nationality'));
@@ -75,23 +70,20 @@ class AgentWebController extends Controller
         ));
     }
 
-    public function update($agentId, Request $request): ApiResource
-    {
+    public function update($agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
         $agentData = $request->all();
 
         return ApiResource::make($this->agentService->update($agent, $agentData, $this->personService));
     }
 
-    public function destroy($agentId, Request $request): ApiResource
-    {
+    public function destroy($agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
 
         return ApiResource::make($this->agentService->delete($agent));
     }
 
-    public function search(Request $request): ApiResource
-    {
+    public function search(Request $request): ApiResource {
         $term = $request->input('term');
         $paginate = $request->input('paginate', 1);
 
@@ -101,8 +93,7 @@ class AgentWebController extends Controller
     /**
      * @return Response
      */
-    public function resetPassword(Request $request, Response $response)
-    {
+    public function resetPassword(Request $request, Response $response) {
         $responseMessage = $this->agentService->resetPassword($request->input('email'));
 
         if ($responseMessage === 'Invalid email.') {

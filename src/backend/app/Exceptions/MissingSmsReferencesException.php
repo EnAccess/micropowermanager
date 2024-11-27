@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class MissingSmsReferencesException extends \Exception
-{
-}
+class MissingSmsReferencesException extends \Exception {}

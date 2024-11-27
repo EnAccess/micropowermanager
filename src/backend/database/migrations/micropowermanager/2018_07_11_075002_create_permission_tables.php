@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         $tableNames = config('permission.table_names');
 
         Schema::connection('shard')->create($tableNames['permissions'], function (Blueprint $table) {
@@ -77,8 +76,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         $tableNames = config('permission.table_names');
 
         Schema::connection('shard')->drop($tableNames['role_has_permissions']);

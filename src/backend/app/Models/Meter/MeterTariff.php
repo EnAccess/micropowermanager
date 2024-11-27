@@ -24,8 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null   $factor
  * @property AccessRate $accessRate
  */
-class MeterTariff extends BaseModel
-{
+class MeterTariff extends BaseModel {
     use SoftDeletes;
     use HasFactory;
 
@@ -36,40 +35,33 @@ class MeterTariff extends BaseModel
     protected $table = 'meter_tariffs';
     protected $guarded = [];
 
-    public function meterParameter(): HasMany
-    {
+    public function meterParameter(): HasMany {
         return $this->hasMany(MeterParameter::class, 'tariff_id');
     }
 
-    public function meterParametersCount()
-    {
+    public function meterParametersCount() {
         return $this->meterParameter()
             ->selectRaw('tariff_id, count(*) as aggregate')
             ->groupBy('tariff_id');
     }
 
-    public function customerGroups(): HasMany
-    {
+    public function customerGroups(): HasMany {
         return $this->hasMany(CustomerGroup::class, 'tariff_id');
     }
 
-    public function accessRate(): HasOne
-    {
+    public function accessRate(): HasOne {
         return $this->hasOne(AccessRate::class, 'tariff_id');
     }
 
-    public function pricingComponent(): MorphMany
-    {
+    public function pricingComponent(): MorphMany {
         return $this->morphMany(TariffPricingComponent::class, 'owner');
     }
 
-    public function socialTariff(): HasOne
-    {
+    public function socialTariff(): HasOne {
         return $this->hasOne(SocialTariff::class, 'tariff_id');
     }
 
-    public function tou(): HasMany
-    {
+    public function tou(): HasMany {
         return $this->hasMany(TimeOfUsage::class, 'tariff_id');
     }
 }

@@ -9,23 +9,19 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<AssetPerson, Agent>
  */
-class AgentAppliancePersonService implements IAssignationService
-{
+class AgentAppliancePersonService implements IAssignationService {
     private AssetPerson $appliancePerson;
     private Agent $agent;
 
-    public function setAssigned($appliancePerson): void
-    {
+    public function setAssigned($appliancePerson): void {
         $this->appliancePerson = $appliancePerson;
     }
 
-    public function setAssignee($agent): void
-    {
+    public function setAssignee($agent): void {
         $this->agent = $agent;
     }
 
-    public function assign(): AssetPerson
-    {
+    public function assign(): AssetPerson {
         $this->appliancePerson->creator()->associate($this->agent);
 
         return $this->appliancePerson;

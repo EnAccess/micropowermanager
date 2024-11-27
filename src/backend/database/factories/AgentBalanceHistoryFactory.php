@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\AgentBalanceHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AgentBalanceHistoryFactory extends Factory
-{
+class AgentBalanceHistoryFactory extends Factory {
     protected $model = AgentBalanceHistory::class;
 
     /**
@@ -14,8 +13,7 @@ class AgentBalanceHistoryFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'agent_id' => $this->faker->numberBetween(1, 10),
             'amount' => $this->faker->randomFloat(2, 1, 100),

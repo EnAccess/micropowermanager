@@ -7,22 +7,18 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class AgentBalanceHistory extends BaseModel
-{
+class AgentBalanceHistory extends BaseModel {
     protected $guarded = [];
 
-    public function agent(): void
-    {
+    public function agent(): void {
         $this->belongsTo(Agent::class);
     }
 
-    public function trigger(): MorphTo
-    {
+    public function trigger(): MorphTo {
         return $this->morphTo();
     }
 
-    public function transaction(): BelongsTo
-    {
+    public function transaction(): BelongsTo {
         return $this->belongsTo(Transaction::class);
     }
 }

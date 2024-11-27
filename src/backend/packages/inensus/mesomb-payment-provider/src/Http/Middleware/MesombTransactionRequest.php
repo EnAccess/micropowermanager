@@ -8,10 +8,8 @@ use Inensus\MesombPaymentProvider\Exceptions\MesombPayerMustHaveOnlyOneConnected
 use Inensus\MesombPaymentProvider\Exceptions\MesombPaymentPhoneNumberNotFoundException;
 use Inensus\MesombPaymentProvider\Exceptions\MesombStatusFailedException;
 
-class MesombTransactionRequest
-{
-    public function handle(Request $request, \Closure $next)
-    {
+class MesombTransactionRequest {
+    public function handle(Request $request, \Closure $next) {
         $transactionProvider = resolve('MesombPaymentProvider');
         try {
             $transactionProvider->validateRequest($request);
@@ -21,7 +19,8 @@ class MesombTransactionRequest
                 [
                     'message' => $request->input('message'),
                     'pk' => $request->input('pk'),
-                ]);
+                ]
+            );
 
             return response()->json([
                 'errors' => [

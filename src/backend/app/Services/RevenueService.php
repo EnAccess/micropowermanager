@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-class RevenueService
-{
-    public function fetchTargets($targetData): array
-    {
+class RevenueService {
+    public function fetchTargets($targetData): array {
         $formattedTarget = [];
         if (is_object($targetData) && count($targetData) >= 1) {
             foreach ($targetData as $targets) {

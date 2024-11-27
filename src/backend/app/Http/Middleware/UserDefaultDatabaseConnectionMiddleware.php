@@ -15,25 +15,21 @@ use MPM\Sharding\ApiResolvers\Data\ApiResolverMap;
  * The goal is to have the database connection on each incomming http request.
  * This will save querying in each model the correct database connection string.
  */
-class UserDefaultDatabaseConnectionMiddleware
-{
+class UserDefaultDatabaseConnectionMiddleware {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManager,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
-    ) {
-    }
+    ) {}
 
-    public function handle($request, \Closure $next)
-    {
+    public function handle($request, \Closure $next) {
         if ($request instanceof Request) {
             return $this->handleApiRequest($request, $next);
         }
         throw new ValidationException('was not able to handle the request');
     }
 
-    private function handleApiRequest(Request $request, \Closure $next)
-    {
+    private function handleApiRequest(Request $request, \Closure $next) {
         // REMOVE THIS WHEN THE TESTS ARE FIXED
         if ($request->path() === 'api/micro-star-meters/test' && $request->isMethod('get')) {
             return $next($request);
@@ -97,8 +93,7 @@ class UserDefaultDatabaseConnectionMiddleware
         });
     }
 
-    private function resolveThirdPartyApi(string $requestPath): bool
-    {
+    private function resolveThirdPartyApi(string $requestPath): bool {
         foreach ($this->apiResolverMap->getResolvableApis() as $apiPath) {
             if (Str::startsWith(Str::lower($requestPath), Str::lower($apiPath))) {
                 return true;
@@ -108,8 +103,7 @@ class UserDefaultDatabaseConnectionMiddleware
         return false;
     }
 
-    private function isAgentApp(string $path): bool
-    {
+    private function isAgentApp(string $path): bool {
         return Str::startsWith($path, 'api/app/');
     }
 }

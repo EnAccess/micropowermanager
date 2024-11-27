@@ -14,20 +14,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class LoanDataContainer
-{
+class LoanDataContainer {
     private ?Person $meterOwner;
     private Transaction $transaction;
 
     public array $paid_rates = [];
 
-    public function initialize(Transaction $transaction): void
-    {
+    public function initialize(Transaction $transaction): void {
         $this->meterOwner = $this->getMeterOwner($transaction->message);
     }
 
-    public function loanCost()
-    {
+    public function loanCost() {
         if (!$this->meterOwner) {
             throw new MeterParameterNotFound('loan data container');
         }
@@ -93,8 +90,7 @@ class LoanDataContainer
      *
      * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
      */
-    private function getCustomerDueRates($owner): Collection
-    {
+    private function getCustomerDueRates($owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
 
         return AssetRate::with('assetPerson.assetType')
@@ -112,8 +108,7 @@ class LoanDataContainer
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer
      */
-    private function getMeterOwner(string $serialNumber): ?Person
-    {
+    private function getMeterOwner(string $serialNumber): ?Person {
         try {
             /** @var Meter $meter */
             $meter = Meter::with('meterParameter.owner')

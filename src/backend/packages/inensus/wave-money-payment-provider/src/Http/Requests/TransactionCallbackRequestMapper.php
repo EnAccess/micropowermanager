@@ -7,8 +7,7 @@ namespace Inensus\WaveMoneyPaymentProvider\Http\Requests;
 use Illuminate\Http\Request;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Data\TransactionCallbackData;
 
-class TransactionCallbackRequestMapper
-{
+class TransactionCallbackRequestMapper {
     private const BODY_PARAM_STATUS = 'status';
     private const BODY_PARAM_MERCHANT_ID = 'merchantId';
     private const BODY_PARAM_ORDER_ID = 'orderId';
@@ -30,8 +29,7 @@ class TransactionCallbackRequestMapper
     private const BODY_PARAM_ADDITIONAL_FIELD_4 = 'additionalField4';
     private const BODY_PARAM_ADDITIONAL_FIELD_5 = 'additionalField5';
 
-    public function getMappedObject(Request $request): TransactionCallbackData
-    {
+    public function getMappedObject(Request $request): TransactionCallbackData {
         return new TransactionCallbackData(
             $request->input(self::BODY_PARAM_STATUS),
             $request->input(self::BODY_PARAM_MERCHANT_ID),

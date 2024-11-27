@@ -7,8 +7,7 @@ use App\Http\Resources\ApiResource;
 use App\Models\MailSettings;
 use App\Services\MailSettingsService;
 
-class MailSettingsController extends Controller
-{
+class MailSettingsController extends Controller {
     /**
      * @MailSettings
      */
@@ -23,18 +22,15 @@ class MailSettingsController extends Controller
         $this->mailSettingsService = $mailSettingsService;
     }
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         return new ApiResource($this->mailSettingsService->list());
     }
 
-    public function update(MailSettingsRequest $request, MailSettings $mailSettings): ApiResource
-    {
+    public function update(MailSettingsRequest $request, MailSettings $mailSettings): ApiResource {
         return new ApiResource($this->mailSettingsService->update($request, $mailSettings));
     }
 
-    public function store(MailSettingsRequest $request): ApiResource
-    {
+    public function store(MailSettingsRequest $request): ApiResource {
         return new ApiResource($this->mailSettingsService->create($request));
     }
 }

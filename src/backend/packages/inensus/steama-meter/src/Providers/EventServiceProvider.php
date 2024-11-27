@@ -6,8 +6,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Inensus\SteamaMeter\Listeners\MeterParameterListener;
 use Inensus\SteamaMeter\Listeners\SmsListener;
 
-class EventServiceProvider extends ServiceProvider
-{
+class EventServiceProvider extends ServiceProvider {
     protected $subscribe = [
         //  MeterParameterListener::class,
         SmsListener::class,
@@ -18,8 +17,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
     }
 }

@@ -12,8 +12,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
@@ -28,9 +27,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::connection('shard')->table('access_rate_payments', function (Blueprint $table) {
-        });
+    public function down() {
+        Schema::connection('shard')->table('access_rate_payments', function (Blueprint $table) {});
     }
 };

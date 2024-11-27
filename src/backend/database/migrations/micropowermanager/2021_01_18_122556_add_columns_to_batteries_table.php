@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('batteries', function (Blueprint $table) {
             $table->boolean('active')->default(0);
             $table->double('c_total')->default(0);
@@ -30,9 +29,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::connection('shard')->table('batteries', function (Blueprint $table) {
-        });
+    public function down() {
+        Schema::connection('shard')->table('batteries', function (Blueprint $table) {});
     }
 };

@@ -10,8 +10,7 @@ use Inensus\SparkMeter\Models\SmSalesAccount;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SyncStatus;
 
-class SmSalesAccoutService implements ISynchronizeService
-{
+class SmSalesAccoutService implements ISynchronizeService {
     private $sparkMeterApiRequests;
     private $rootUrl = '/sales-accounts';
     private $smTableEncryption;
@@ -36,20 +35,17 @@ class SmSalesAccoutService implements ISynchronizeService
         $this->smSyncActionService = $smSyncActionService;
     }
 
-    public function getSmSalesAccounts($request)
-    {
+    public function getSmSalesAccounts($request) {
         $perPage = $request->input('per_page') ?? 15;
 
         return $this->smSalesAccount->newQuery()->with(['site.mpmMiniGrid'])->paginate($perPage);
     }
 
-    public function getSmSalesAccountsCount()
-    {
+    public function getSmSalesAccountsCount() {
         return count($this->smSalesAccount->newQuery()->get());
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('SalesAccounts');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         try {
@@ -97,8 +93,7 @@ class SmSalesAccoutService implements ISynchronizeService
         }
     }
 
-    public function syncCheck($returnData = false)
-    {
+    public function syncCheck($returnData = false) {
         $returnArray = ['available_site_count' => 0];
         $sites = $this->smSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
@@ -153,8 +148,7 @@ class SmSalesAccoutService implements ISynchronizeService
         return $returnArray;
     }
 
-    public function syncCheckBySite($siteId)
-    {
+    public function syncCheckBySite($siteId) {
         try {
             $url = $this->rootUrl;
             $sparkMeterModels = $this->sparkMeterApiRequests->get($url, $siteId);
@@ -190,8 +184,7 @@ class SmSalesAccoutService implements ISynchronizeService
         }
     }
 
-    public function modelHasher($model, ...$params): string
-    {
+    public function modelHasher($model, ...$params): string {
         return $smModelHash = $this->smTableEncryption->makeHash([
             $model['account_type'],
             $model['active'],

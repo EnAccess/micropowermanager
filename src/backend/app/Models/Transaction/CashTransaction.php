@@ -15,27 +15,22 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int manufacturer_transaction_id
  * @property string manufacturer_transaction_type
  */
-class CashTransaction extends BaseModel implements IRawTransaction
-{
+class CashTransaction extends BaseModel implements IRawTransaction {
     public const RELATION_NAME = 'cash_transaction';
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    public function transaction(): MorphOne
-    {
+    public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction(): MorphTo
-    {
+    public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 
-    public function conflicts(): MorphMany
-    {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 }

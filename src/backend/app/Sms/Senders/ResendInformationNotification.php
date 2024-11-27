@@ -8,8 +8,7 @@ use App\Sms\BodyParsers\ResendInformationLastTransactionNotFound;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class ResendInformationNotification extends SmsSender
-{
+class ResendInformationNotification extends SmsSender {
     protected $data;
     public $body = '';
     protected $references = [
@@ -18,8 +17,7 @@ class ResendInformationNotification extends SmsSender
         'body' => 'ResendInformation',
     ];
 
-    public function prepareBody()
-    {
+    public function prepareBody() {
         if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('ResendInformation');

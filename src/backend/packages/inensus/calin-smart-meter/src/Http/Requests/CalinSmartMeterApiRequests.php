@@ -9,8 +9,7 @@ use Inensus\CalinSmartMeter\Exceptions\CalinSmartApiResponseException;
 use Inensus\CalinSmartMeter\Helpers\ApiHelpers;
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 
-class CalinSmartMeterApiRequests
-{
+class CalinSmartMeterApiRequests {
     private $client;
     private $apiHelpers;
     private $credential;
@@ -25,8 +24,7 @@ class CalinSmartMeterApiRequests
         $this->credential = $credentialModel;
     }
 
-    public function post($url, $postParams)
-    {
+    public function post($url, $postParams) {
         try {
             $request = $this->client->post(
                 $url,

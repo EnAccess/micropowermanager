@@ -6,8 +6,7 @@ use Illuminate\Database\Seeder;
 use Inensus\Ticket\Models\TicketCategory;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class TicketSeeder extends Seeder
-{
+class TicketSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -19,8 +18,7 @@ class TicketSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         // Create Ticket categories
         TicketCategory::newFactory()
             ->count(2)

@@ -6,8 +6,7 @@ use App\Models\DatabaseProxy;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
-abstract class AbstractDashboardCacheDataService
-{
+abstract class AbstractDashboardCacheDataService {
     protected string $cacheDataKey;
 
     public function __construct(
@@ -18,13 +17,11 @@ abstract class AbstractDashboardCacheDataService
 
     abstract public function setData($dateRange = []);
 
-    public function getData()
-    {
+    public function getData() {
         return Cache::get(self::cacheKeyGenerator()) ? Cache::get(self::cacheKeyGenerator())->toArray() : [];
     }
 
-    public function getDataById($id)
-    {
+    public function getDataById($id) {
         $cachedData = Cache::get(self::cacheKeyGenerator());
 
         return $cachedData ? collect($cachedData)->filter(function ($data) use ($id) {
@@ -32,8 +29,7 @@ abstract class AbstractDashboardCacheDataService
         })->first() : [];
     }
 
-    protected function cacheKeyGenerator(): string
-    {
+    protected function cacheKeyGenerator(): string {
         $user = User::query()->first();
         $databaseProxy = app()->make(DatabaseProxy::class);
         $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
@@ -41,8 +37,7 @@ abstract class AbstractDashboardCacheDataService
         return $this->cacheDataKey.'-'.$companyId;
     }
 
-    protected function reformatPeriod($period): string
-    {
+    protected function reformatPeriod($period): string {
         return substr_replace($period, '-', 4, 0);
     }
 }

@@ -2,6 +2,4 @@
 
 namespace Inensus\SwiftaPaymentProvider\Exceptions;
 
-class SwiftaValidationFailedException extends \Exception
-{
-}
+class SwiftaValidationFailedException extends \Exception {}

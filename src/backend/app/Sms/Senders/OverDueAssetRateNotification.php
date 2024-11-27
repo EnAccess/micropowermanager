@@ -2,8 +2,7 @@
 
 namespace App\Sms\Senders;
 
-class OverDueAssetRateNotification extends SmsSender
-{
+class OverDueAssetRateNotification extends SmsSender {
     protected $references = [
         'header' => 'SmsReminderHeader',
         'body' => 'OverDueAssetRateReminder',

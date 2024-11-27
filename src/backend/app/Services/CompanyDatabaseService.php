@@ -12,23 +12,19 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 /**
  * @implements IBaseService<CompanyDatabase>
  */
-class CompanyDatabaseService implements IBaseService
-{
+class CompanyDatabaseService implements IBaseService {
     public function __construct(
         private CompanyDatabase $companyDatabase,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-    ) {
-    }
+    ) {}
 
-    public function getById(int $id): CompanyDatabase
-    {
+    public function getById(int $id): CompanyDatabase {
         $result = $this->companyDatabase->newQuery()->find($id);
 
         return $result;
     }
 
-    public function create(array $data): CompanyDatabase
-    {
+    public function create(array $data): CompanyDatabase {
         /** @var CompanyDatabase $result */
         $company_database = $this->companyDatabase->newQuery()->create($data);
         $database_name = $company_database->database_name;
@@ -55,23 +51,19 @@ class CompanyDatabaseService implements IBaseService
         return $company_database;
     }
 
-    public function update($model, array $data): CompanyDatabase
-    {
+    public function update($model, array $data): CompanyDatabase {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection
-    {
+    public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function findByCompanyId(int $companyId): CompanyDatabase
-    {
+    public function findByCompanyId(int $companyId): CompanyDatabase {
         /** @var CompanyDatabase $result */
         $result = $this->companyDatabase->newQuery()
             ->where(CompanyDatabase::COL_COMPANY_ID, '=', $companyId)

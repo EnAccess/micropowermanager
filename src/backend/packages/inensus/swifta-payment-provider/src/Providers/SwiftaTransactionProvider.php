@@ -13,8 +13,7 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class SwiftaTransactionProvider implements ITransactionProvider
-{
+class SwiftaTransactionProvider implements ITransactionProvider {
     private $validData = [];
 
     public function __construct(
@@ -22,11 +21,9 @@ class SwiftaTransactionProvider implements ITransactionProvider
         private Transaction $transaction,
         private SwiftaTransactionService $swiftaTransactionService,
         private TransactionConflicts $transactionConflicts,
-    ) {
-    }
+    ) {}
 
-    public function validateRequest($request)
-    {
+    public function validateRequest($request) {
         $meterSerial = $request->input('meter_number');
         $amount = $request->input('amount');
 
@@ -43,13 +40,11 @@ class SwiftaTransactionProvider implements ITransactionProvider
         $this->setValidData($swiftaTransactionData);
     }
 
-    public function saveTransaction()
-    {
+    public function saveTransaction() {
         $this->swiftaTransactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction)
-    {
+    public function sendResult(bool $requestType, Transaction $transaction) {
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $updateData = [
@@ -63,8 +58,7 @@ class SwiftaTransactionProvider implements ITransactionProvider
         }
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = $this->transactionConflicts->newQuery()->make([
             'state' => $message,
         ]);
@@ -72,49 +66,40 @@ class SwiftaTransactionProvider implements ITransactionProvider
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 
-    public function setValidData($swiftaTransactionData)
-    {
+    public function setValidData($swiftaTransactionData) {
         $this->validData = $swiftaTransactionData;
     }
 
-    public function getSubTransaction()
-    {
+    public function getSubTransaction() {
         return $this->swiftaTransactionService->getSwiftaTransaction();
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->swiftaTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         // TODO: Implement getMessage() method.
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         // TODO: Implement getMessage() method.
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->getTransaction()->amount;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->getTransaction()->message;
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         // TODO: Implement getSender() method.
     }
 }

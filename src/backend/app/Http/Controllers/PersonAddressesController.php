@@ -9,14 +9,12 @@ use App\Services\AddressesService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 
-class PersonAddressesController extends Controller
-{
+class PersonAddressesController extends Controller {
     public function __construct(
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
-    ) {
-    }
+    ) {}
 
     /**
      * Addresses
@@ -32,15 +30,13 @@ class PersonAddressesController extends Controller
      *
      * @apiResourceModel \App\Models\Person\Person
      */
-    public function show(int $personId): ApiResource
-    {
+    public function show(int $personId): ApiResource {
         $person = $this->personService->getById($personId);
 
         return ApiResource::make($this->personAddressService->getPersonAddresses($person));
     }
 
-    public function store(int $personId, CreateAddressRequest $request): ApiResource
-    {
+    public function store(int $personId, CreateAddressRequest $request): ApiResource {
         $person = $this->personService->getById($personId);
         $addressData = $this->addressService->createAddressDataFromRequest($request);
         $address = $this->addressService->make($addressData);
@@ -57,8 +53,7 @@ class PersonAddressesController extends Controller
         return new ApiResource($this->addressService->getStoredAddressWithCityRelation($address->id));
     }
 
-    public function update(int $personId, CreateAddressRequest $request): ApiResource
-    {
+    public function update(int $personId, CreateAddressRequest $request): ApiResource {
         $person = $this->personService->getById($personId);
         $address = $this->addressService->getById($request->input('id') ?? -1);
         $addressData = $this->addressService->createAddressDataFromRequest($request);

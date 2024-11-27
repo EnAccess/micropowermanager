@@ -5,18 +5,15 @@ namespace Inensus\SparkMeter\Sms\BodyParsers;
 use App\Models\Person\Person;
 use App\Sms\BodyParsers\SmsBodyParser;
 
-class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser
-{
+class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser {
     protected $variables = ['name', 'surname'];
     protected $data;
 
-    public function __construct($data)
-    {
+    public function __construct($data) {
         $this->data = $data;
     }
 
-    protected function getVariableValue($variable)
-    {
+    protected function getVariableValue($variable) {
         if (!is_array($this->data)) {
             $person = $this->data->meterParameter->whereHasMorph('owner', [Person::class])->first()->owner()->first();
         } else {

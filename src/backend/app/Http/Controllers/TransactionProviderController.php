@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\TransactionProviderService;
 
-class TransactionProviderController extends Controller
-{
+class TransactionProviderController extends Controller {
     private $transactionProviderService;
 
-    public function __construct(TransactionProviderService $transactionProviderService)
-    {
+    public function __construct(TransactionProviderService $transactionProviderService) {
         $this->transactionProviderService = $transactionProviderService;
     }
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         return new ApiResource($this->transactionProviderService->getTransactionProviders());
     }
 }

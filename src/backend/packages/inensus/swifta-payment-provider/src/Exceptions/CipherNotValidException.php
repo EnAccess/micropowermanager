@@ -2,6 +2,4 @@
 
 namespace Inensus\SwiftaPaymentProvider\Exceptions;
 
-class CipherNotValidException extends \Exception
-{
-}
+class CipherNotValidException extends \Exception {}

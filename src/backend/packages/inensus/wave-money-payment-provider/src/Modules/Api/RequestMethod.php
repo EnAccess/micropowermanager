@@ -2,8 +2,7 @@
 
 namespace Inensus\WaveMoneyPaymentProvider\Modules\Api;
 
-class RequestMethod
-{
+class RequestMethod {
     public const POST = 'post';
     public const GET = 'get';
     public const PUT = 'put';

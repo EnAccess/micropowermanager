@@ -5,15 +5,12 @@ namespace Inensus\BulkRegistration\Services;
 use App\Models\MiniGrid;
 use Inensus\BulkRegistration\Exceptions\MiniGridNotFoundException;
 
-class MiniGridService extends CreatorService
-{
-    public function __construct(MiniGrid $miniGrid)
-    {
+class MiniGridService extends CreatorService {
+    public function __construct(MiniGrid $miniGrid) {
         parent::__construct($miniGrid);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $miniGridConfig = config('bulk-registration.csv_fields.mini_grid');
 
         if (!$csvData[$miniGridConfig['name']]) {

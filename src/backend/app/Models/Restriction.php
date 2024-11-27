@@ -13,10 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int    $default
  * @property int    $limit
  */
-class Restriction extends BaseModel
-{
-    public function upgrades(): HasMany
-    {
+class Restriction extends BaseModel {
+    public function upgrades(): HasMany {
         return $this->hasMany(Upgrade::class);
     }
 }

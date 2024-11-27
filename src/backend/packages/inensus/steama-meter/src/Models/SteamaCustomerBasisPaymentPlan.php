@@ -5,17 +5,14 @@ namespace Inensus\SteamaMeter\Models;
 use App\Relations\BelongsToMorph;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SteamaCustomerBasisPaymentPlan extends BaseModel
-{
+class SteamaCustomerBasisPaymentPlan extends BaseModel {
     protected $table = 'steama_customer_basis_payment_plans';
 
-    public function customer()
-    {
+    public function customer() {
         return $this->belongsTo(SteamaCustomer::class, 'customer_id');
     }
 
-    public function paymentPlan()
-    {
+    public function paymentPlan() {
         return $this->morphTo();
     }
 
@@ -24,8 +21,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanFlatRate()
-    {
+    public function paymentPlanFlatRate() {
         return BelongsToMorph::build($this, SteamaFlatRatePaymentPlan::class, 'paymentPlan');
     }
 
@@ -34,8 +30,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanHybrid()
-    {
+    public function paymentPlanHybrid() {
         return BelongsToMorph::build($this, SteamaHybridPaymentPlan::class, 'paymentPlan');
     }
 
@@ -44,8 +39,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanSubscription()
-    {
+    public function paymentPlanSubscription() {
         return BelongsToMorph::build($this, SteamaSubscriptionPaymentPlan::class, 'paymentPlan');
     }
 
@@ -54,8 +48,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanMinimumTopUp()
-    {
+    public function paymentPlanMinimumTopUp() {
         return BelongsToMorph::build($this, SteamaMinimumTopUpRequirementsPaymentPlan::class, 'paymentPlan');
     }
 
@@ -64,8 +57,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanAssetRates()
-    {
+    public function paymentPlanAssetRates() {
         return BelongsToMorph::build($this, SteamaAssetRatesPaymentPlan::class, 'paymentPlan');
     }
 
@@ -74,8 +66,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanPerKwh()
-    {
+    public function paymentPlanPerKwh() {
         return BelongsToMorph::build($this, SteamaPerKwhPaymentPlan::class, 'paymentPlan');
     }
 
@@ -84,8 +75,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanTariffOverride()
-    {
+    public function paymentPlanTariffOverride() {
         return BelongsToMorph::build($this, SteamaTariffOverridePaymentPlan::class, 'paymentPlan');
     }
 
@@ -94,8 +84,7 @@ class SteamaCustomerBasisPaymentPlan extends BaseModel
      *
      * @return BelongsTo
      */
-    public function paymentPlanCustomerBasisTimeOfUsage()
-    {
+    public function paymentPlanCustomerBasisTimeOfUsage() {
         return BelongsToMorph::build($this, SteamaCustomerBasisTimeOfUsage::class, 'paymentPlan');
     }
 }

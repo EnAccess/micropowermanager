@@ -4,7 +4,6 @@ namespace MPM\Sharding\ApiResolvers;
 
 use Illuminate\Http\Request;
 
-interface ApiResolverInterface
-{
+interface ApiResolverInterface {
     public function resolveCompanyId(Request $request): int;
 }

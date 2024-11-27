@@ -15,14 +15,10 @@ use Illuminate\Validation\ValidationException;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use ParseCsv\Csv;
 
-class TransactionService extends AbstractPaymentAggregatorTransactionService
-{
-    public function __construct(private Csv $csv)
-    {
-    }
+class TransactionService extends AbstractPaymentAggregatorTransactionService {
+    public function __construct(private Csv $csv) {}
 
-    public function createTransactionsFromFile(UploadedFile $file): array
-    {
+    public function createTransactionsFromFile(UploadedFile $file): array {
         $this->csv->auto($file);
 
         $skippedTransactions = [];
@@ -60,22 +56,20 @@ class TransactionService extends AbstractPaymentAggregatorTransactionService
             TransactionDataContainer::initialize($baseTransaction);
 
             ProcessPayment::dispatch($transaction->getId())
-                 ->allOnConnection('redis')
-               ->onQueue(config('services.queues.payment'));
+                ->allOnConnection('redis')
+                ->onQueue(config('services.queues.payment'));
         }
 
         return $skippedTransactions;
     }
 
-    public function setStatus(WaveComTransaction $transaction, bool $status): void
-    {
+    public function setStatus(WaveComTransaction $transaction, bool $status): void {
         $mappedStatus = $status ? WaveComTransaction::STATUS_SUCCESS : WaveComTransaction::STATUS_CANCELLED;
         $transaction->setStatus($mappedStatus);
         $transaction->save();
     }
 
-    private function validateTransaction(array $transaction)
-    {
+    private function validateTransaction(array $transaction) {
         $rules = [
             'transaction_id' => 'required',
             'sender' => 'required',

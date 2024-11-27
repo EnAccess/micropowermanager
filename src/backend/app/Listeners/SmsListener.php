@@ -10,8 +10,7 @@ use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Events\Dispatcher;
 
-class SmsListener
-{
+class SmsListener {
     private $smsResendInformationKeyService;
     private $transaction;
     private $smsService;
@@ -26,8 +25,7 @@ class SmsListener
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message)
-    {
+    public function onSmsStored($sender, $message) {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
         if (!$resendInformationKey) {
             return;
@@ -51,8 +49,7 @@ class SmsListener
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen('sms.stored', 'App\Listeners\SmsListener@onSmsStored');
     }
 }

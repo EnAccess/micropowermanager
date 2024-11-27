@@ -7,16 +7,13 @@ use App\Services\ApplianceRateService;
 use App\Services\PersonService;
 use Illuminate\Events\Dispatcher;
 
-class SoldApplianceListener
-{
+class SoldApplianceListener {
     public function __construct(
         private ApplianceRateService $applianceRateService,
         private PersonService $personService,
-    ) {
-    }
+    ) {}
 
-    public function initializeApplianceRates(SoldApplianceDataContainer $soldAppliance): void
-    {
+    public function initializeApplianceRates(SoldApplianceDataContainer $soldAppliance): void {
         $assetPerson = $soldAppliance->getAssetPerson();
         $assetType = $soldAppliance->getAssetType();
         $transaction = $soldAppliance->getTransaction();
@@ -42,8 +39,7 @@ class SoldApplianceListener
         }
     }
 
-    public function subscribe(Dispatcher $events): void
-    {
+    public function subscribe(Dispatcher $events): void {
         $events->listen('appliance.sold', 'App\Listeners\SoldApplianceListener@initializeApplianceRates');
     }
 }

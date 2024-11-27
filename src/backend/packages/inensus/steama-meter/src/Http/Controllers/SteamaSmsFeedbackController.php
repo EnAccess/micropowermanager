@@ -8,22 +8,18 @@ use Inensus\SteamaMeter\Http\Resources\SteamaResource;
 use Inensus\SteamaMeter\Models\SteamaSmsFeedbackWord;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 
-class SteamaSmsFeedbackController extends Controller
-{
+class SteamaSmsFeedbackController extends Controller {
     private $smsFeedbackWorkService;
 
-    public function __construct(SteamaSmsFeedbackWordService $smsFeedbackWordService)
-    {
+    public function __construct(SteamaSmsFeedbackWordService $smsFeedbackWordService) {
         $this->smsFeedbackWorkService = $smsFeedbackWordService;
     }
 
-    public function index(): SteamaResource
-    {
+    public function index(): SteamaResource {
         return new SteamaResource($this->smsFeedbackWorkService->getSmsFeedbackWords());
     }
 
-    public function update(SteamaSmsFeedbackWord $smsFeedbackWord, Request $request): SteamaResource
-    {
+    public function update(SteamaSmsFeedbackWord $smsFeedbackWord, Request $request): SteamaResource {
         return new SteamaResource($this->smsFeedbackWorkService->updateSmsFeedbackWord($smsFeedbackWord, $request->all()));
     }
 }

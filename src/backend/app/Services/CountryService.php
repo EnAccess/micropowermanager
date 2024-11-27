@@ -9,40 +9,32 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @implements IBaseService<Country>
  */
-class CountryService implements IBaseService
-{
+class CountryService implements IBaseService {
     public function __construct(
         private Country $country,
-    ) {
-    }
+    ) {}
 
-    public function getByCode(?string $countryCode)
-    {
+    public function getByCode(?string $countryCode) {
         return $countryCode !== null ? $this->country->where('country_code', $countryCode)->first() : $countryCode;
     }
 
-    public function getById(int $id): Country
-    {
+    public function getById(int $id): Country {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create(array $data): Country
-    {
+    public function create(array $data): Country {
         throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, array $data): Country
-    {
+    public function update($model, array $data): Country {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection
-    {
+    public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 }

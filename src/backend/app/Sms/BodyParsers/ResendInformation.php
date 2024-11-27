@@ -4,18 +4,15 @@ namespace App\Sms\BodyParsers;
 
 use App\Models\PaymentHistory;
 
-class ResendInformation extends SmsBodyParser
-{
+class ResendInformation extends SmsBodyParser {
     protected $variables = ['meter', 'token', 'energy', 'amount'];
     protected $paymentHistory;
 
-    public function __construct(PaymentHistory $paymentHistory)
-    {
+    public function __construct(PaymentHistory $paymentHistory) {
         $this->paymentHistory = $paymentHistory;
     }
 
-    protected function getVariableValue($variable)
-    {
+    protected function getVariableValue($variable) {
         $token = $this->paymentHistory->paidFor()->first();
         $transaction = $this->paymentHistory->transaction()->first();
         switch ($variable) {

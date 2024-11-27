@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class Transaction
-{
-    public function handle(Request $request, \Closure $next): mixed
-    {
+class Transaction {
+    public function handle(Request $request, \Closure $next): mixed {
         try {
             $request->attributes->add(['transactionProcessor' => $this->determineSender($request)]);
         } catch (PaymentProviderNotIdentified $e) {
@@ -21,8 +19,7 @@ class Transaction
         return $next($request);
     }
 
-    private function determineSender(Request $request): ITransactionProvider
-    {
+    private function determineSender(Request $request): ITransactionProvider {
         if (
             preg_match('/\/vodacom/', $request->url())
             && \in_array($request->ip(), Config::get('services.vodacom.ips'))

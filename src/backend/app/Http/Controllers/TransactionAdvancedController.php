@@ -6,15 +6,12 @@ use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
 use MPM\Transaction\TransactionService;
 
-class TransactionAdvancedController extends Controller
-{
+class TransactionAdvancedController extends Controller {
     public function __construct(
         private TransactionService $transactionService,
-    ) {
-    }
+    ) {}
 
-    public function searchAdvanced(Request $request): ApiResource
-    {
+    public function searchAdvanced(Request $request): ApiResource {
         $type = $request->input('deviceType') ?: 'meter';
         $serialNumber = $request->input('serial_number');
         $tariffId = $request->input('tariff');
@@ -36,8 +33,7 @@ class TransactionAdvancedController extends Controller
         ));
     }
 
-    public function compare($period): array
-    {
+    public function compare($period): array {
         $comparisonPeriod = $this->transactionService->determinePeriod($period);
         // get transactions for both current and previous periods
         $transactions = $this->transactionService->getByComparisonPeriod($comparisonPeriod);

@@ -5,8 +5,7 @@ namespace Inensus\ViberMessaging\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ViberResource extends JsonResource
-{
+class ViberResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -14,8 +13,7 @@ class ViberResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return parent::toArray($request);
     }
 }

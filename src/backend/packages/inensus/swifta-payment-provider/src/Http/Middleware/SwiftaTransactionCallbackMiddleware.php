@@ -7,14 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Inensus\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 
-class SwiftaTransactionCallbackMiddleware
-{
-    public function __construct(private SwiftaTransactionService $swiftaTransactionService)
-    {
-    }
+class SwiftaTransactionCallbackMiddleware {
+    public function __construct(private SwiftaTransactionService $swiftaTransactionService) {}
 
-    public function handle(Request $request, \Closure $next)
-    {
+    public function handle(Request $request, \Closure $next) {
         try {
             $transactionId = $request->input('transaction_id');
             $amount = $request->input('amount');

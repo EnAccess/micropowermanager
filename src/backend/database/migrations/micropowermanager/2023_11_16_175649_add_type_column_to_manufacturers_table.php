@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('manufacturers', function (Blueprint $table) {
             $table->enum('type', ['meter', 'shs', 'e-bike'])->default('meter')->after('id');
         });
@@ -22,9 +21,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::connection('shard')->table('manufacturers', function (Blueprint $table) {
-        });
+    public function down() {
+        Schema::connection('shard')->table('manufacturers', function (Blueprint $table) {});
     }
 };

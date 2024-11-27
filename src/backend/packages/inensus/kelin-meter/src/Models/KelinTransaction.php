@@ -12,42 +12,34 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use MPM\Transaction\Provider\VodacomTransactionProvider;
 
-class KelinTransaction extends BaseModel implements ISubTransaction
-{
+class KelinTransaction extends BaseModel implements ISubTransaction {
     protected $table = 'kelin_transactions';
 
-    public function agentTransaction()
-    {
+    public function agentTransaction() {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
     }
 
-    public function vodacomTransaction()
-    {
+    public function vodacomTransaction() {
         return $this->morphOne(VodacomTransactionProvider::class, 'manufacturer_transaction');
     }
 
-    public function airtelTransaction()
-    {
+    public function airtelTransaction() {
         return $this->morphOne(AirtelTransaction::class, 'manufacturer_transaction');
     }
 
-    public function thirdPartyTransaction()
-    {
+    public function thirdPartyTransaction() {
         return $this->morphOne(ThirdPartyTransaction::class, 'manufacturer_transaction');
     }
 
-    public function mesombTransaction()
-    {
+    public function mesombTransaction() {
         return $this->morphOne(MesombTransaction::class, 'manufacturer_transaction');
     }
 
-    public function swiftaTransaction()
-    {
+    public function swiftaTransaction() {
         return $this->morphOne(SwiftaTransaction::class, 'manufacturer_transaction');
     }
 
-    public function waveMoneyTransaction()
-    {
+    public function waveMoneyTransaction() {
         return $this->morphOne(WaveMoneyTransaction::class, 'manufacturer_transaction');
     }
 }

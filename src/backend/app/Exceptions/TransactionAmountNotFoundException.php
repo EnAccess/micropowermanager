@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class TransactionAmountNotFoundException extends \Exception
-{
-}
+class TransactionAmountNotFoundException extends \Exception {}

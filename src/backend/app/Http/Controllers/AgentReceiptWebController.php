@@ -8,13 +8,11 @@ use App\Services\AgentBalanceHistoryService;
 use App\Services\AgentReceiptService;
 use Illuminate\Http\Request;
 
-class AgentReceiptWebController extends Controller
-{
+class AgentReceiptWebController extends Controller {
     public function __construct(
         private AgentReceiptService $agentReceiptService,
         private AgentBalanceHistoryService $agentBalanceHistoryService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -24,8 +22,7 @@ class AgentReceiptWebController extends Controller
      *
      * @return ApiResource
      */
-    public function show($agentId, Request $request)
-    {
+    public function show($agentId, Request $request) {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentReceiptService->getAll($limit, $agentId));
@@ -38,8 +35,7 @@ class AgentReceiptWebController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentReceiptService->getAll($limit));
@@ -53,8 +49,7 @@ class AgentReceiptWebController extends Controller
      *
      * @return ApiResource
      */
-    public function store(CreateAgentReceiptRequest $request)
-    {
+    public function store(CreateAgentReceiptRequest $request) {
         $userId = auth('api')->user()->id;
         $agentId = $request->input('agent_id');
         $lastBalanceHistory = $this->agentBalanceHistoryService->getLastAgentBalanceHistory($agentId);

@@ -18,8 +18,7 @@ use MPM\Target\TargetAssignable;
  * @property string $updated_at
  * @property string $created_at
  */
-class Cluster extends BaseModel implements TargetAssignable
-{
+class Cluster extends BaseModel implements TargetAssignable {
     use HasFactory;
 
     public const RELATION_NAME = 'cluster';
@@ -28,18 +27,15 @@ class Cluster extends BaseModel implements TargetAssignable
         'geo_data' => 'array',
     ];
 
-    public function manager(): BelongsTo
-    {
+    public function manager(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    public function cities(): HasMany
-    {
+    public function cities(): HasMany {
         return $this->hasMany(City::class);
     }
 
-    public function miniGrids(): HasMany
-    {
+    public function miniGrids(): HasMany {
         return $this->hasMany(MiniGrid::class);
     }
 }

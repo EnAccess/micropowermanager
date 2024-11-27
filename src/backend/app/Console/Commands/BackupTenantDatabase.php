@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-class BackupTenantDatabase extends AbstractSharedCommand
-{
+class BackupTenantDatabase extends AbstractSharedCommand {
     protected $signature = 'backup-tenant:run';
     protected $description = 'Run the backup for provided tenant database(s)';
 
-    public function handle()
-    {
+    public function handle() {
         $databaseName = config('database.connections.shard');
         $this->info('Starting backup for tenant databases');
         dump($this->arguments());

@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\GomeLongMeter\Models\GomeLongTariff;
 use Inensus\GomeLongMeter\Modules\Api\ApiRequests;
 
-class GomeLongTariffService
-{
+class GomeLongTariffService {
     public const API_CALL_TARIFF_LIST = '/UTSearch';
     public const API_CALL_TARIFF_CREATE = '/UTAdd';
     public const API_CALL_TARIFF_UPDATE = '/UTUpdate';
@@ -22,16 +21,13 @@ class GomeLongTariffService
         private GomeLongTariff $gomeLongTariff,
         private GomeLongCredentialService $credentialService,
         private MainSettings $mainSettings,
-    ) {
-    }
+    ) {}
 
-    public function getByMpmTariffId($mpmTariffId)
-    {
+    public function getByMpmTariffId($mpmTariffId) {
         return $this->gomeLongTariff->where('mpm_tariff_id', $mpmTariffId)->first();
     }
 
-    public function createGomeLongTariff($tariff)
-    {
+    public function createGomeLongTariff($tariff) {
         $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
         if (!$gomeLongTariff) {
@@ -56,8 +52,7 @@ class GomeLongTariffService
         }
     }
 
-    public function updateGomeLongTariff($tariff)
-    {
+    public function updateGomeLongTariff($tariff) {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -86,8 +81,7 @@ class GomeLongTariffService
         }
     }
 
-    public function deleteGomeLongTariff($tariff)
-    {
+    public function deleteGomeLongTariff($tariff) {
         try {
             $gomeLongTariff = $this->getByMpmTariffId($tariff->id);
 
@@ -113,8 +107,7 @@ class GomeLongTariffService
         }
     }
 
-    public function sync()
-    {
+    public function sync() {
         try {
             $credentials = $this->credentialService->getCredentials();
 

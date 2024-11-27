@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class SmsAndroidSettingNotExistingException extends \Exception
-{
-}
+class SmsAndroidSettingNotExistingException extends \Exception {}

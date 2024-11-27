@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
-    {
+    public function up() {
         if (!Schema::hasTable('stron_api_credentials')) {
             Schema::connection('shard')->create('stron_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
@@ -27,8 +26,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('stron_api_credentials');
         Schema::connection('shard')->dropIfExists('stron_transactions');
     }

@@ -5,8 +5,7 @@ namespace Inensus\MesombPaymentProvider\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Inensus\MesombPaymentProvider\Listeners\TransactionListener;
 
-class EventServiceProvider extends ServiceProvider
-{
+class EventServiceProvider extends ServiceProvider {
     protected $subscribe = [
         //   TransactionListener::class
     ];
@@ -16,8 +15,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
     }
 }

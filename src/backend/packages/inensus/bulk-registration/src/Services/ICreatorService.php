@@ -2,7 +2,6 @@
 
 namespace Inensus\BulkRegistration\Services;
 
-interface ICreatorService
-{
+interface ICreatorService {
     public function createRelatedDataIfDoesNotExists($resolvedCsvData);
 }

@@ -4,15 +4,13 @@ namespace Inensus\SparkMeter\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SmSiteRequest extends FormRequest
-{
+class SmSiteRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -21,8 +19,7 @@ class SmSiteRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'thundercloud_url' => 'required',
             'thundercloud_token' => 'required',

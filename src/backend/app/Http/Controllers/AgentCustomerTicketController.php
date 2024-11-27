@@ -7,14 +7,10 @@ use App\Services\AgentService;
 use Illuminate\Http\Request;
 use Inensus\Ticket\Services\TicketService;
 
-class AgentCustomerTicketController extends Controller
-{
-    public function __construct(private AgentService $agentService, private TicketService $ticketService)
-    {
-    }
+class AgentCustomerTicketController extends Controller {
+    public function __construct(private AgentService $agentService, private TicketService $ticketService) {}
 
-    public function show($customerId, Request $request): ApiResource
-    {
+    public function show($customerId, Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
         $limit = $request->input('per_page');
         $status = null;

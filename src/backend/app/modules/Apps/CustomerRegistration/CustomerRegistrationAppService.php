@@ -13,8 +13,7 @@ use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
 use MPM\Meter\MeterDeviceService;
 
-class CustomerRegistrationAppService
-{
+class CustomerRegistrationAppService {
     public function __construct(
         private PersonService $personService,
         private MeterService $meterService,
@@ -24,11 +23,9 @@ class CustomerRegistrationAppService
         private DeviceAddressService $deviceAddressService,
         private GeographicalInformationService $geographicalInformationService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
-    ) {
-    }
+    ) {}
 
-    public function createCustomer(AndroidAppRequest $request): Person
-    {
+    public function createCustomer(AndroidAppRequest $request): Person {
         $serialNumber = $request->input('serial_number');
         $meter = $this->meterService->getBySerialNumber($serialNumber);
         $phone = $request->input('phone');

@@ -7,21 +7,18 @@ use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
 
-class AccessRatePayer
-{
+class AccessRatePayer {
     public const MINIMUM_AMOUNT = 0;
     private AccessRatePayment $accessRatePayment;
     private TransactionDataContainer $transactionData;
     private Transaction $transaction;
     private float $debtAmount;
 
-    public function __construct(private AccessRatePaymentService $accessRatePaymentService)
-    {
+    public function __construct(private AccessRatePaymentService $accessRatePaymentService) {
         $this->debtAmount = self::MINIMUM_AMOUNT;
     }
 
-    public function initialize(TransactionDataContainer $container)
-    {
+    public function initialize(TransactionDataContainer $container) {
         $meter = $container->device->device;
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
@@ -34,8 +31,7 @@ class AccessRatePayer
         $this->transaction = $container->transaction;
     }
 
-    public function pay()
-    {
+    public function pay() {
         $meter = $this->transactionData->device->device;
         $owner = $this->transactionData->device->person;
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { // there is unpaid amount
@@ -64,8 +60,7 @@ class AccessRatePayer
         return $this->transactionData;
     }
 
-    public function consumeAmount()
-    {
+    public function consumeAmount() {
         $this->transaction->amount -= $this->debtAmount;
 
         return $this->transaction->amount;

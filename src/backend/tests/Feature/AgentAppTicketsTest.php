@@ -5,12 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AgentAppTicketsTest extends TestCase
-{
+class AgentAppTicketsTest extends TestCase {
     use CreateEnvironments;
 
-    public function testAgentGetsTicketList()
-    {
+    public function testAgentGetsTicketList() {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -25,8 +23,7 @@ class AgentAppTicketsTest extends TestCase
         $this->assertEquals($ticketCount, count($response['data']['data']));
     }
 
-    public function testAgentGetsTicketById()
-    {
+    public function testAgentGetsTicketById() {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -43,8 +40,7 @@ class AgentAppTicketsTest extends TestCase
         $this->assertEquals($this->agent->id, $response['data']['creator_id']);
     }
 
-    public function testAgentGetsTicketCustomerId()
-    {
+    public function testAgentGetsTicketCustomerId() {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -54,15 +50,16 @@ class AgentAppTicketsTest extends TestCase
         $this->createTicketCard();
         $ticketCount = 1;
         $this->createTicket($ticketCount, 1, $this->person->id, $this->agent->id);
-        $response = $this->actingAs($this->agent)->get(sprintf('/api/app/agents/ticket/customer/%s',
-            $this->person->id));
+        $response = $this->actingAs($this->agent)->get(sprintf(
+            '/api/app/agents/ticket/customer/%s',
+            $this->person->id
+        ));
         $response->assertStatus(200);
         $this->assertEquals($this->ticket->id, $response['data']['data'][0]['id']);
         $this->assertEquals($this->agent->id, $response['data']['data'][0]['creator_id']);
     }
 
-    public function testAgentCreatesATicket()
-    {
+    public function testAgentCreatesATicket() {
         $this->createTestData();
         $this->createAgentCommission();
         $this->createAgent();
@@ -87,8 +84,7 @@ class AgentAppTicketsTest extends TestCase
         $this->assertEquals('agent', $response['data'][0]['creator_type']);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

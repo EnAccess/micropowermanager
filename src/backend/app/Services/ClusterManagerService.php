@@ -4,17 +4,14 @@ namespace App\Services;
 
 use App\Models\User;
 
-class ClusterManagerService
-{
+class ClusterManagerService {
     private User $user;
 
-    public function __construct(User $user)
-    {
+    public function __construct(User $user) {
         $this->user = $user;
     }
 
-    public function findManagerById(int $managerId): User
-    {
+    public function findManagerById(int $managerId): User {
         return $this->user->find($managerId);
     }
 }

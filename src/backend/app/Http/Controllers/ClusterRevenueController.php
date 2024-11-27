@@ -12,8 +12,7 @@ use App\Services\ClusterTransactionService;
 use App\Services\PeriodService;
 use Illuminate\Http\Request;
 
-class ClusterRevenueController extends Controller
-{
+class ClusterRevenueController extends Controller {
     public function __construct(
         private ClusterService $clusterService,
         private ClusterRevenueService $clusterRevenueService,
@@ -22,11 +21,9 @@ class ClusterRevenueController extends Controller
         private ClusterTransactionService $clusterTransactionService,
         private ClusterPopulationService $clusterPopulationService,
         private PeriodService $periodService,
-    ) {
-    }
+    ) {}
 
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $dates =
             $this->clusterRevenueService->setDatesForRequest($request->get('startDate'), $request->get('endDate'));
         $startDate = $dates['startDate'];
@@ -46,8 +43,7 @@ class ClusterRevenueController extends Controller
         );
     }
 
-    public function show($clusterId, Request $request): ApiResource
-    {
+    public function show($clusterId, Request $request): ApiResource {
         $dateRange =
             $this->clusterRevenueService->setDateRangeForRequest($request->get('startDate'), $request->get('endDate'));
         $cluster = $this->clusterService->getById($clusterId);

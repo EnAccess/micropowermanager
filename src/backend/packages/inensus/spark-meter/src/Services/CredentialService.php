@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use Inensus\SparkMeter\Models\SmCredential;
 
-class CredentialService
-{
+class CredentialService {
     private $sparkMeterApiRequests;
     private $smCredential;
     private $smTableEncryption;
@@ -25,13 +24,11 @@ class CredentialService
         $this->organizationService = $organizationService;
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->smCredential->newQuery()->latest()->take(1)->get()->first();
     }
 
-    public function createSmCredentials()
-    {
+    public function createSmCredentials() {
         return $this->smCredential->newQuery()->firstOrCreate(['id' => 1], [
             'api_key' => null,
             'api_secret' => null,
@@ -39,8 +36,7 @@ class CredentialService
         ]);
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
         $smCredentials->update([
             'api_key' => $data['api_key'],

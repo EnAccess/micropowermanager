@@ -12,15 +12,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Device>
  * @implements IAssociative<Device>
  */
-class DeviceService implements IBaseService, IAssociative
-{
+class DeviceService implements IBaseService, IAssociative {
     public function __construct(
         private Device $device,
-    ) {
-    }
+    ) {}
 
-    public function make($deviceData): Device
-    {
+    public function make($deviceData): Device {
         $result = $this->device->newQuery()->create([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
@@ -29,8 +26,7 @@ class DeviceService implements IBaseService, IAssociative
         return $result;
     }
 
-    public function getBySerialNumber($serialNumber): ?Device
-    {
+    public function getBySerialNumber($serialNumber): ?Device {
         $result = $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
@@ -39,40 +35,34 @@ class DeviceService implements IBaseService, IAssociative
         return $result;
     }
 
-    public function save($device): bool
-    {
+    public function save($device): bool {
         return $device->save();
     }
 
-    public function getById(int $id): Device
-    {
+    public function getById(int $id): Device {
         throw new \Exception('Method getById() not yet implemented.');
 
         return new Device();
     }
 
-    public function create(array $data): Device
-    {
+    public function create(array $data): Device {
         throw new \Exception('Method create() not yet implemented.');
 
         return new Device();
     }
 
-    public function update($device, array $deviceData): Device
-    {
+    public function update($device, array $deviceData): Device {
         $device->update($deviceData);
         $device->fresh();
 
         return $device;
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->device->newQuery()->with(['person', 'device'])->paginate($limit);
         }

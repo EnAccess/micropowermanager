@@ -4,22 +4,18 @@ namespace Inensus\SteamaMeter\Services;
 
 use Inensus\SteamaMeter\Models\SteamaSmsVariableDefaultValue;
 
-class SteamaSmsVariableDefaultValueService
-{
+class SteamaSmsVariableDefaultValueService {
     private $smsVariableDefaultValue;
 
-    public function __construct(SteamaSmsVariableDefaultValue $smsVariableDefaultValue)
-    {
+    public function __construct(SteamaSmsVariableDefaultValue $smsVariableDefaultValue) {
         $this->smsVariableDefaultValue = $smsVariableDefaultValue;
     }
 
-    public function getSmsVariableDefaultValues()
-    {
+    public function getSmsVariableDefaultValues() {
         return $this->smsVariableDefaultValue->newQuery()->get();
     }
 
-    public function createSmsVariableDefaultValues()
-    {
+    public function createSmsVariableDefaultValues() {
         $smsVariableDefaultValues = [
             [
                 'variable' => 'name',
@@ -40,8 +36,10 @@ class SteamaSmsVariableDefaultValueService
         ];
         collect($smsVariableDefaultValues)->each(function ($variable) {
             $this->smsVariableDefaultValue->newQuery()
-                ->firstOrCreate(['variable' => $variable['variable']],
-                    $variable);
+                ->firstOrCreate(
+                    ['variable' => $variable['variable']],
+                    $variable
+                );
         });
     }
 }

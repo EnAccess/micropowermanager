@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int    $id
  * @property string $name;
  */
-class Company extends BaseModelCore
-{
+class Company extends BaseModelCore {
     use HasFactory;
 
     public const COL_ID = 'id';
@@ -23,28 +22,23 @@ class Company extends BaseModelCore
     //     return $this->hasMany(User::class);
     // }
 
-    public function database(): HasOne
-    {
+    public function database(): HasOne {
         return $this->hasOne(CompanyDatabase::class);
     }
 
-    public function databaseProxies(): HasMany
-    {
+    public function databaseProxies(): HasMany {
         return $this->hasMany(DatabaseProxy::class);
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function getName(): string
-    {
+    public function getName(): string {
         return $this->name;
     }
 
-    public function jobs()
-    {
+    public function jobs() {
         return $this->hasMany(CompanyJob::class);
     }
 }

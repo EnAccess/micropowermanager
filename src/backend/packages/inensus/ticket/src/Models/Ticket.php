@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 
-class Ticket extends BaseModel
-{
+class Ticket extends BaseModel {
     protected $table = 'tickets';
 
     public const STATUS = [
@@ -18,53 +17,44 @@ class Ticket extends BaseModel
         'waiting' => 2,
     ];
 
-    public function card()
-    {
+    public function card() {
         return $this->belongsTo(TicketCard::class);
     }
 
-    public function category(): BelongsTo
-    {
+    public function category(): BelongsTo {
         return $this->belongsTo(TicketCategory::class, 'category_id');
     }
 
-    public function owner(): MorphTo
-    {
+    public function owner(): MorphTo {
         return $this->morphTo();
     }
 
-    public function outsource(): HasOne
-    {
+    public function outsource(): HasOne {
         return $this->hasOne(TicketOutsource::class);
     }
 
-    public function assignedTo(): BelongsTo
-    {
+    public function assignedTo(): BelongsTo {
         return $this->belongsTo(TicketUser::class, 'assigned_id');
     }
 
-    public function ticketsOpenedInPeriod($startDate, $endDate)
-    {
+    public function ticketsOpenedInPeriod($startDate, $endDate) {
         return $this->select(DB::raw('COUNT(id) as amount, YEARWEEK(created_at,3) as period'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(created_at,3)'));
     }
 
-    public function ticketsClosedInPeriod($startDate, $endDate)
-    {
+    public function ticketsClosedInPeriod($startDate, $endDate) {
         return $this->select(DB::raw('COUNT(id) as amount, YEARWEEK(updated_at,3) as period,avg(timestampdiff(SECOND, created_at, updated_at)) as avgdiff'))
             ->where('status', 1)
             ->whereBetween('updated_at', [$startDate, $endDate])
             ->groupBy(DB::raw('YEARWEEK(updated_at,3)'));
     }
 
-    public function creator()
-    {
+    public function creator() {
         return $this->morphTo('creator');
     }
 
-    public function ticketsOpenedWithCategories($miniGridId): bool|array
-    {
+    public function ticketsOpenedWithCategories($miniGridId): bool|array {
         $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as new_tickets, YEARWEEK(tickets.created_at,3) as period FROM `tickets` '.
             'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
             'left join addresses on addresses.owner_id = tickets.owner_id '.
@@ -79,8 +69,7 @@ class Ticket extends BaseModel
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function ticketsClosedWithCategories($miniGridId): bool|array
-    {
+    public function ticketsClosedWithCategories($miniGridId): bool|array {
         $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as closed_tickets, YEARWEEK(tickets.updated_at,3) as period FROM `tickets` '.
             'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
             'left join addresses on addresses.owner_id = tickets.owner_id '.
@@ -95,8 +84,7 @@ class Ticket extends BaseModel
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function comments(): HasMany
-    {
+    public function comments(): HasMany {
         return $this->hasMany(TicketComment::class, 'ticket_id', 'id');
     }
 }

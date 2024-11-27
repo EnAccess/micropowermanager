@@ -16,8 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 
-class AirtelVoltTerraProvider implements ITransactionProvider
-{
+class AirtelVoltTerraProvider implements ITransactionProvider {
     private $validData;
 
     /**
@@ -29,11 +28,9 @@ class AirtelVoltTerraProvider implements ITransactionProvider
     public function __construct(
         private AirtelTransaction $airtelTransaction,
         private Transaction $transaction,
-    ) {
-    }
+    ) {}
 
-    public function saveTransaction(): void
-    {
+    public function saveTransaction(): void {
         $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
         // assign data
@@ -47,8 +44,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
      * @param bool        $requestType
      * @param Transaction $transaction
      */
-    public function sendResult(bool $requestType, Transaction $transaction): void
-    {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         if ($requestType) {
             $this->airtelTransaction->status = 1;
             $this->airtelTransaction->save();
@@ -60,14 +56,12 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         }
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->airtelTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function validateRequest($request): bool
-    {
+    public function validateRequest($request): bool {
         $meterSerial = $request['meterSerial'];
         $amount = $request['amount'];
         $validator = Validator::make([
@@ -119,8 +113,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         return true;
     }
 
-    private function getTransactionSender($meterSerial)
-    {
+    private function getTransactionSender($meterSerial) {
         $meterParameter = MeterParameter::query()
             ->whereHas(
                 'meter',
@@ -146,8 +139,7 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         }
     }
 
-    private function assignData(): void
-    {
+    private function assignData(): void {
         // provider specific data
         $this->airtelTransaction->interface_id = 'Airtel Transactions Email Interface';
         $this->airtelTransaction->business_number = 'Airtel Transactions Email Interface';
@@ -159,47 +151,39 @@ class AirtelVoltTerraProvider implements ITransactionProvider
         $this->transaction->message = $this->validData['meterSerial'];
     }
 
-    public function saveData(AirtelTransaction $airtelTransaction): void
-    {
+    public function saveData(AirtelTransaction $airtelTransaction): void {
         $airtelTransaction->save();
         event('transaction.confirm');
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         return $this->airtelTransaction->transaction()->save($this->transaction);
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->airtelTransaction);
         $conflict->save();
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         throw new \Exception('not implemented');
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         throw new \Exception('not implemented');
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         throw new \Exception('not implemented');
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         throw new \Exception('not implemented');
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         throw new \Exception('not implemented');
     }
 }

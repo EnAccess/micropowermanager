@@ -13,16 +13,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 /**
  * @implements IBaseService<TicketOutsourceReport>
  */
-class TicketOutsourceReportService implements IBaseService
-{
+class TicketOutsourceReportService implements IBaseService {
     public function __construct(
         private TicketOutsourceReport $ticketOutsourceReport,
-        private Spreadsheet $spreadsheet)
-    {
-    }
+        private Spreadsheet $spreadsheet,
+    ) {}
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->ticketOutsourceReport->newQuery()->paginate($limit);
         }
@@ -30,8 +27,7 @@ class TicketOutsourceReportService implements IBaseService
         return $this->ticketOutsourceReport->newQuery()->get();
     }
 
-    public function createExcelSheet($startDate, $endDate, $tickets)
-    {
+    public function createExcelSheet($startDate, $endDate, $tickets) {
         $fileName = 'Outsourcing-'.$startDate.'-'.$endDate.'.xlsx';
 
         $sheet = $this->spreadsheet->getActiveSheet();
@@ -63,23 +59,19 @@ class TicketOutsourceReportService implements IBaseService
         return $fileName;
     }
 
-    public function create(array $ticketOutsourceReportData): TicketOutsourceReport
-    {
+    public function create(array $ticketOutsourceReportData): TicketOutsourceReport {
         return $this->ticketOutsourceReport->newQuery()->create($ticketOutsourceReportData);
     }
 
-    public function getById(int $outsourceReportId): TicketOutsourceReport
-    {
+    public function getById(int $outsourceReportId): TicketOutsourceReport {
         return $this->ticketOutsourceReport->newQuery()->find($outsourceReportId);
     }
 
-    public function update($model, array $data): TicketOutsourceReport
-    {
+    public function update($model, array $data): TicketOutsourceReport {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

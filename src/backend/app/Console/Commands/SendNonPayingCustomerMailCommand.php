@@ -12,8 +12,7 @@ use App\Services\PersonService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
-class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
-{
+class SendNonPayingCustomerMailCommand extends AbstractSharedCommand {
     private const EMAIL_TEMPLATE = 'templates.mail.non_paying_mail';
     private const REPORT_TEMPLATE = 'templates.mail.non_paying_pdf';
 
@@ -32,8 +31,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         $startDate = $this->option('start-date') ? CarbonImmutable::make(
             $this->option('start-date')
         ) : CarbonImmutable::make('first day of last month');

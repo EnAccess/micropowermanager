@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @template TAssigned of Model
  * @template TAssignee of Model
  */
-interface IAssignationService
-{
+interface IAssignationService {
     /** @param TAssigned $assigned */
     public function setAssigned($assigned): void;
 

@@ -17,8 +17,7 @@ use Inensus\SparkMeter\Services\SmSmsSettingService;
 use Inensus\SparkMeter\Services\SmSmsVariableDefaultValueService;
 use Inensus\SparkMeter\Services\SmSyncSettingService;
 
-class UpdateSparkMeterPackage extends Command
-{
+class UpdateSparkMeterPackage extends Command {
     protected $signature = 'spark-meter:update';
     protected $description = 'Update the Spark Meter Integration Package';
 
@@ -42,8 +41,7 @@ class UpdateSparkMeterPackage extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Spark Meter Integration Updating Started\n');
         $this->removeOldVersionOfPackage();
         $this->installNewVersionOfPackage();
@@ -56,20 +54,17 @@ class UpdateSparkMeterPackage extends Command
         $this->info('Package updated successfully..');
     }
 
-    private function removeOldVersionOfPackage()
-    {
+    private function removeOldVersionOfPackage() {
         $this->info('Removing former version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  remove inensus/spark-meter');
     }
 
-    private function installNewVersionOfPackage()
-    {
+    private function installNewVersionOfPackage() {
         $this->info('Installing last version of package\n');
         echo shell_exec('COMPOSER_MEMORY_LIMIT=-1 ../composer.phar  require inensus/spark-meter');
     }
 
-    private function deleteMigration(Filesystem $filesystem)
-    {
+    private function deleteMigration(Filesystem $filesystem) {
         $migrationFile = $filesystem->glob(database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.'*_create_spark_tables.php')[0];
         $migration = DB::table('migrations')
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->first();
@@ -81,8 +76,7 @@ class UpdateSparkMeterPackage extends Command
             ->where('migration', substr(explode('/migrations/', $migrationFile)[1], 0, -4))->delete();
     }
 
-    private function publishMigrationsAgain()
-    {
+    private function publishMigrationsAgain() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",
@@ -90,14 +84,12 @@ class UpdateSparkMeterPackage extends Command
         ]);
     }
 
-    private function updateDatabase()
-    {
+    private function updateDatabase() {
         $this->info('Updating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFilesAgain()
-    {
+    private function publishVueFilesAgain() {
         $this->info('Updating vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SparkMeter\Providers\SparkMeterServiceProvider",

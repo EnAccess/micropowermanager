@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @template T of Model
  */
-interface ISettingsService
-{
+interface ISettingsService {
     /** @return T|null */
     public function get(): ?Model;
 

@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PaymentHistoryFactory extends Factory
-{
+class PaymentHistoryFactory extends Factory {
     protected $model = PaymentHistory::class;
 
     /**
@@ -14,8 +13,7 @@ class PaymentHistoryFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'id' => 1,
             'transaction_id' => 1,

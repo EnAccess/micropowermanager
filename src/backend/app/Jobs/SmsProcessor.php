@@ -12,8 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SmsProcessor extends AbstractJob
-{
+class SmsProcessor extends AbstractJob {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -26,8 +25,7 @@ class SmsProcessor extends AbstractJob
      * @param int $smsType
      * @param     $smsConfigs
      */
-    public function __construct(private SmsSender $smsSender)
-    {
+    public function __construct(private SmsSender $smsSender) {
         parent::__construct(get_class($this));
     }
 
@@ -36,8 +34,7 @@ class SmsProcessor extends AbstractJob
      *
      * @return void
      */
-    public function executeJob()
-    {
+    public function executeJob() {
         try {
             $this->smsSender->sendSms();
         } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {

@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\AgentCommission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AgentCommissionFactory extends Factory
-{
+class AgentCommissionFactory extends Factory {
     protected $model = AgentCommission::class;
 
     /**
@@ -14,8 +13,7 @@ class AgentCommissionFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => 'Sample Commission',
             'energy_commission' => 0.05,

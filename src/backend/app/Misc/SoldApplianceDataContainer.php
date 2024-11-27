@@ -7,33 +7,27 @@ use App\Models\AssetPerson;
 use App\Models\AssetType;
 use App\Models\Transaction\Transaction;
 
-class SoldApplianceDataContainer
-{
+class SoldApplianceDataContainer {
     public function __construct(
         private Asset $asset,
         private AssetType $assetType,
         private AssetPerson $assetPerson,
         private ?Transaction $transaction = null,
-    ) {
-    }
+    ) {}
 
-    public function getAsset()
-    {
+    public function getAsset() {
         return $this->asset;
     }
 
-    public function getAssetType()
-    {
+    public function getAssetType() {
         return $this->assetType;
     }
 
-    public function getAssetPerson()
-    {
+    public function getAssetPerson() {
         return $this->assetPerson;
     }
 
-    public function getTransaction()
-    {
+    public function getTransaction() {
         return $this->transaction;
     }
 }

@@ -8,13 +8,11 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Log;
 
-class ApplianceTransactionProcessor extends AbstractJob
-{
+class ApplianceTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'deferred_payment';
 
-    public function __construct(private int $transactionId)
-    {
+    public function __construct(private int $transactionId) {
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
@@ -22,8 +20,7 @@ class ApplianceTransactionProcessor extends AbstractJob
     /**
      * @throws TransactionNotInitializedException
      */
-    public function executeJob()
-    {
+    public function executeJob() {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
@@ -37,15 +34,13 @@ class ApplianceTransactionProcessor extends AbstractJob
         }
     }
 
-    private function initializeTransaction()
-    {
+    private function initializeTransaction() {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'deferred_payment';
         $this->transaction->save();
     }
 
-    private function initializeTransactionDataContainer(): TransactionDataContainer
-    {
+    private function initializeTransactionDataContainer(): TransactionDataContainer {
         try {
             return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
@@ -54,16 +49,14 @@ class ApplianceTransactionProcessor extends AbstractJob
         }
     }
 
-    private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void
-    {
+    private function checkForMinimumPurchaseAmount(TransactionDataContainer $container): void {
         $minimumPurchaseAmount = $container->installmentCost;
         if ($container->amount < $minimumPurchaseAmount) {
             throw new TransactionAmountNotEnoughException("Minimum purchase amount not reached for {$container->device->device_serial}");
         }
     }
 
-    private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer
-    {
+    private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
@@ -72,8 +65,7 @@ class ApplianceTransactionProcessor extends AbstractJob
         return $container;
     }
 
-    private function processToken(TransactionDataContainer $transactionData): void
-    {
+    private function processToken(TransactionDataContainer $transactionData): void {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 

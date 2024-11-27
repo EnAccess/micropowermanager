@@ -6,12 +6,10 @@ use App\Models\Base\BaseModel;
 use App\Relations\BelongsToMorph;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class SteamaSetting extends BaseModel
-{
+class SteamaSetting extends BaseModel {
     protected $table = 'steama_settings';
 
-    public function setting(): MorphTo
-    {
+    public function setting(): MorphTo {
         return $this->morphTo();
     }
 
@@ -20,8 +18,7 @@ class SteamaSetting extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function settingSms(): BelongsToMorph
-    {
+    public function settingSms(): BelongsToMorph {
         return BelongsToMorph::build($this, SteamaSmsSetting::class, 'setting');
     }
 
@@ -30,8 +27,7 @@ class SteamaSetting extends BaseModel
      *
      * @return BelongsToMorph
      */
-    public function settingSync(): BelongsToMorph
-    {
+    public function settingSync(): BelongsToMorph {
         return BelongsToMorph::build($this, SteamaSyncSetting::class, 'setting');
     }
 }

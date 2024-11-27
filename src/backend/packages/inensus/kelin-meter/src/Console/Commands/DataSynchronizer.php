@@ -16,8 +16,7 @@ use Inensus\KelinMeter\Services\KelinMeterService;
 use Inensus\KelinMeter\Services\KelinSyncActionService;
 use Inensus\KelinMeter\Services\KelinSyncSettingService;
 
-class DataSynchronizer extends AbstractSharedCommand
-{
+class DataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 5;
 
@@ -35,8 +34,7 @@ class DataSynchronizer extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

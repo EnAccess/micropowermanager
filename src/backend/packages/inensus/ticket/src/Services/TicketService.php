@@ -10,12 +10,10 @@ use Inensus\Ticket\Models\Ticket;
 /**
  * @implements IAssociative<Ticket>
  */
-class TicketService implements IAssociative
-{
+class TicketService implements IAssociative {
     public function __construct(
         private Ticket $ticket,
-    ) {
-    }
+    ) {}
 
     public function create(
         string $title,
@@ -41,8 +39,7 @@ class TicketService implements IAssociative
         return $ticket;
     }
 
-    public function close($ticketId): Ticket
-    {
+    public function close($ticketId): Ticket {
         $ticket = $this->getById($ticketId);
         $ticketData = ['status' => 1];
         $this->update($ticket, $ticketData);
@@ -50,8 +47,7 @@ class TicketService implements IAssociative
         return $ticket->fresh();
     }
 
-    public function getBatch($tickets)
-    {
+    public function getBatch($tickets) {
         foreach ($tickets as $index => $ticket) {
             $tickets[$index]['comments'] = $ticket->comments()->with('ticketUser')->get();
         }
@@ -59,13 +55,11 @@ class TicketService implements IAssociative
         return $tickets;
     }
 
-    public function getById($ticketId)
-    {
+    public function getById($ticketId) {
         return $this->ticket->newQuery()->with(['category', 'owner'])->where('id', $ticketId)->first();
     }
 
-    public function update($ticket, $ticketData)
-    {
+    public function update($ticket, $ticketData) {
         $ticket->update($ticketData);
         $ticket->fresh();
 
@@ -120,18 +114,15 @@ class TicketService implements IAssociative
         return $tickets;
     }
 
-    public function make(array $ticketData): Ticket
-    {
+    public function make(array $ticketData): Ticket {
         return $this->ticket->newQuery()->make($ticketData);
     }
 
-    public function save($ticket): bool
-    {
+    public function save($ticket): bool {
         return $ticket->save();
     }
 
-    public function getForOutsourceReport($startDate, $endDate)
-    {
+    public function getForOutsourceReport($startDate, $endDate) {
         return $this->ticket->newQuery()->with(['outsource', 'assignedTo', 'category'])
             ->whereHas('category', static function ($q) {
                 $q->where('out_source', 1);
@@ -143,8 +134,7 @@ class TicketService implements IAssociative
             ->get();
     }
 
-    public function getForAgent($agentId, $customerId = null)
-    {
+    public function getForAgent($agentId, $customerId = null) {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 
         if ($agentId) {
