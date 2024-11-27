@@ -1,0 +1,27 @@
+apiVersion: v1
+data:
+  mapRoles: |
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::905418087090:role/eksctl-mpm-nodegroup-standard-work-NodeInstanceRole-u9O9QvFivBjm
+      username: system:node:{{EC2PrivateDNSName}}
+  mapUsers: |
+    - userarn: arn:aws:iam::905418087090:user/daniel
+      username: daniel
+      groups:
+        - system:masters
+    - userarn: arn:aws:iam::905418087090:user/yannick
+      username: yannick
+      groups:
+        - system:masters
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"mapRoles":"- groups:\n  - system:bootstrappers\n  - system:nodes\n  rolearn: arn:aws:iam::905418087090:role/eksctl-mpm-nodegroup-standard-work-NodeInstanceRole-u9O9QvFivBjm\n  username: system:node:{{EC2PrivateDNSName}}\n","mapUsers":"- userarn: arn:aws:iam::905418087090:user/daniel\n  username: daniel\n  groups:\n    - system:masters\n"},"kind":"ConfigMap","metadata":{"annotations":{},"creationTimestamp":"2024-06-19T11:16:31Z","name":"aws-auth","namespace":"kube-system","resourceVersion":"13475263","uid":"a137dab0-90e2-4054-a2e6-dee694516cf4"}}
+  creationTimestamp: "2024-06-19T11:16:31Z"
+  name: aws-auth
+  namespace: kube-system
+  resourceVersion: "41900117"
+  uid: a137dab0-90e2-4054-a2e6-dee694516cf4
