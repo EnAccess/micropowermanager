@@ -23,7 +23,7 @@ return [
         'request_url' => env('VODACOM_REQUEST_URL'),
         'sp_id' => env('VODACOM_SPID'),
         'sp_password' => env('VODACOM_SPPASSWORD'),
-        'ips' => env('VODACOM_SPPASSWORD', ['127.0.0.1']),
+        'ips' => env('VODACOM_IPS', ['127.0.0.1']),
         'certs' => [
             'broker' => env('VODACOM_BROKER_CRT'),
             'ssl_key' => env('VODACOM_SLL_KEY'),
