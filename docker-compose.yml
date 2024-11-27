@@ -3,6 +3,7 @@ services:
     container_name: backend-dev
     build:
       dockerfile: docker/DockerfileBackendDev
+    env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       - maria
       - redis
@@ -19,6 +20,7 @@ services:
     container_name: frontend-dev
     build:
       dockerfile: docker/DockerfileFrontendDev
+    env_file: ./dev/.env.micropowermanager-frontend
     ports:
       - 8001:8080
     volumes:
@@ -65,8 +67,7 @@ services:
   maria:
     container_name: maria
     image: mariadb:10.3
-    env_file:
-      - ./docker/.env
+    env_file: ./dev/.env.mysql
     volumes:
       - mariadb_data:/var/lib/mysql
     ports:
