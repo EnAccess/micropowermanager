@@ -180,6 +180,7 @@ For detailed information see [Vodacom Developer Documentation](https://business.
 | ------------------------------- | ---------------------------------- | --------------------------- |
 | `VODACOM_SPID`                  | **Required** (when plugin is used) | Vodacom SPID.               |
 | `VODACOM_SPPASSWORD`            | **Required** (when plugin is used) | Vodacom SPPASSWORD.         |
+| `VODACOM_IPS`                   | **Required** (when plugin is used) | Vodacom IPs.                |
 | `VODACOM_REQUEST_URL`           | **Required** (when plugin is used) | Vodacom Request API URL.    |
 | `VODACOM_BROKER_CRT`            | **Required** (when plugin is used) | Path to broker `.crt` file. |
 | `VODACOM_SLL_KEY`               | **Required** (when plugin is used) | Path to `.key` file.        |
