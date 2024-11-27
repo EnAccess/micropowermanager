@@ -14,8 +14,7 @@ use Inensus\CalinSmartMeter\Http\Requests\CalinSmartMeterApiRequests;
 use Inensus\CalinSmartMeter\Models\CalinSmartCredential;
 use Inensus\CalinSmartMeter\Models\CalinSmartTransaction;
 
-class CalinSmartMeterApi implements IManufacturerAPI
-{
+class CalinSmartMeterApi implements IManufacturerAPI {
     protected $api;
     private $rootUrl = '/POS_Purchase/';
 
@@ -28,8 +27,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeDevice($transactionContainer): array
-    {
+    public function chargeDevice($transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -78,8 +76,7 @@ class CalinSmartMeterApi implements IManufacturerAPI
      *
      * @psalm-return array{result_code: mixed}
      */
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         $meter = $device->device;
         $root = '/Maintenance_ClearCredit/';
         try {

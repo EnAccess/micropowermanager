@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('company_jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('job_name');
@@ -27,8 +26,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('company_jobs');
         Schema::enableForeignKeyConstraints();

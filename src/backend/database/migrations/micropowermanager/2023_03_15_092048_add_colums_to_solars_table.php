@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('solars', function (Blueprint $table) {
             $table->integer('frequency')->nullable();
             $table->double('pv_power')->nullable();
@@ -25,8 +24,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->table('solars', function (Blueprint $table) {
             $table->dropColumn('frequency');
             $table->dropColumn('pv_power');

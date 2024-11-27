@@ -19,8 +19,7 @@ use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Models\SmTransaction;
 
-class TransactionService
-{
+class TransactionService {
     private $sparkMeterApiRequests;
     private $sparkOrganization;
     private $sparkCredentialService;
@@ -75,8 +74,7 @@ class TransactionService
         $this->smSyncActionService = $smSyncActionService;
     }
 
-    public function updateTransactionStatus($smTransaction)
-    {
+    public function updateTransactionStatus($smTransaction) {
         try {
             $smTransactionResult = $this->sparkMeterApiRequests->getInfo(
                 $this->rootUrl,
@@ -136,8 +134,7 @@ class TransactionService
         ]);
     }
 
-    public function sync()
-    {
+    public function sync() {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Transactions');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         $syncCheck = [];
@@ -295,8 +292,7 @@ class TransactionService
         $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, true);
     }
 
-    public function syncCheck()
-    {
+    public function syncCheck() {
         $credentials = $this->sparkCredentialService->getCredentials();
         $sparkSites = $this->sparkSite->newQuery()->where('is_authenticated', 1)->where('is_online', 1)->get();
 
@@ -331,8 +327,7 @@ class TransactionService
         });
     }
 
-    private function createSparkTransaction($transaction)
-    {
+    private function createSparkTransaction($transaction) {
         return $this->sparkTransaction->newQuery()->create([
             'site_id' => $transaction['site'],
             'customer_id' => $transaction['to']['customer']['id'],
@@ -343,8 +338,7 @@ class TransactionService
         ]);
     }
 
-    public function getSparkTransactions($transactionMin)
-    {
+    public function getSparkTransactions($transactionMin) {
         $transactions = $this->sparkTransaction->newQuery()->with(['thirdPartyTransaction.transaction'])->where(
             'status',
             'processed'
@@ -355,8 +349,7 @@ class TransactionService
         });
     }
 
-    private function createThirdPartyTransaction($transaction, $sparkTransaction, $status)
-    {
+    private function createThirdPartyTransaction($transaction, $sparkTransaction, $status) {
         $thirdPartyTransaction = $this->thirdPartyTransaction->newQuery()->make([
             'transaction_id' => $transaction['transaction_id'],
             'status' => $status,
@@ -367,8 +360,7 @@ class TransactionService
         return $thirdPartyTransaction;
     }
 
-    private function createTransaction($transaction, $thirdPartyTransaction, $meterParameter)
-    {
+    private function createTransaction($transaction, $thirdPartyTransaction, $meterParameter) {
         $transaction = $this->transaction->newQuery()->make([
             'amount' => (int) $transaction['amount'],
             'sender' => $sparkCustomer->mpmPerson->addresses[0]->phone ?? '-',
@@ -384,8 +376,7 @@ class TransactionService
         return $transaction;
     }
 
-    private function createToken($sparkTariff, $mainTransaction, $transaction, $sparkTransaction, $meterParameter)
-    {
+    private function createToken($sparkTariff, $mainTransaction, $transaction, $sparkTransaction, $meterParameter) {
         try {
             $tariff = $this->sparkTariffService->singleSync($sparkTariff);
         } catch (SparkAPIResponseException $exception) {
@@ -407,8 +398,7 @@ class TransactionService
         return $token;
     }
 
-    private function createPayment($meterParameter, $mainTransaction, $token)
-    {
+    private function createPayment($meterParameter, $mainTransaction, $token) {
         $owner = $meterParameter->owner;
         event('payment.successful', [
             'amount' => $mainTransaction->amount,

@@ -6,8 +6,7 @@ use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanyFactory extends Factory
-{
+class CompanyFactory extends Factory {
     protected $model = Company::class;
 
     /**
@@ -15,8 +14,7 @@ class CompanyFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => $this->faker->company,
             'phone' => $this->faker->phoneNumber,
@@ -26,8 +24,7 @@ class CompanyFactory extends Factory
         ];
     }
 
-    public function createWithEmail(string $email): Model
-    {
+    public function createWithEmail(string $email): Model {
         $base = $this->definition();
         $base['email'] = $email;
 

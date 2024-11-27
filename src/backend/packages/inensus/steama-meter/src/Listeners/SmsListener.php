@@ -10,8 +10,7 @@ use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 
-class SmsListener
-{
+class SmsListener {
     private $smsFeedbackWordService;
     private $customerService;
     private $meter;
@@ -29,8 +28,7 @@ class SmsListener
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message)
-    {
+    public function onSmsStored($sender, $message) {
         $steamaCustomer = $this->customerService->getSteamaCustomerWithPhone($sender);
         if (!$steamaCustomer) {
             return;
@@ -39,16 +37,17 @@ class SmsListener
 
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
-            $this->smsService->sendSms($steamaCustomer,
+            $this->smsService->sendSms(
+                $steamaCustomer,
                 SteamaSmsTypes::BALANCE_FEEDBACK,
-                SteamaSmsConfig::class);
+                SteamaSmsConfig::class
+            );
 
             return;
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen('sms.stored', 'Inensus\SteamaMeter\Listeners\SmsListener@onSmsStored');
     }
 }

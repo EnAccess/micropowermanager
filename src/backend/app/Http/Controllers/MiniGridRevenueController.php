@@ -7,16 +7,13 @@ use App\Services\MeterService;
 use App\Services\MiniGridRevenueService;
 use Illuminate\Http\Request;
 
-class MiniGridRevenueController
-{
+class MiniGridRevenueController {
     public function __construct(
         private MeterService $meterService,
         private MiniGridRevenueService $miniGridRevenueService,
-    ) {
-    }
+    ) {}
 
-    public function show($miniGridId, Request $request): ApiResource
-    {
+    public function show($miniGridId, Request $request): ApiResource {
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
 

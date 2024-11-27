@@ -9,8 +9,7 @@ use App\Models\Meter\Meter;
 use App\Models\SolarHomeSystem;
 use MPM\Device\DeviceService;
 
-class TransactionPaymentProcessor
-{
+class TransactionPaymentProcessor {
     protected const PROCESSORS_BY_DEVICE_TYPE = [
         Meter::RELATION_NAME => EnergyTransactionProcessor::class,
         SolarHomeSystem::RELATION_NAME => ApplianceTransactionProcessor::class,
@@ -22,8 +21,7 @@ class TransactionPaymentProcessor
         EBike::RELATION_NAME => 'payment',
     ];
 
-    public static function process(int $transactionId): void
-    {
+    public static function process(int $transactionId): void {
         $transactionService = app()->make(TransactionService::class);
         $transaction = $transactionService->getById($transactionId);
         $serialNumber = $transaction->message;

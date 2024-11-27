@@ -13,8 +13,7 @@ use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\TariffService;
 
-class MeterParameterListener
-{
+class MeterParameterListener {
     private $tariffService;
     private $customerService;
     private $meterParameter;
@@ -49,8 +48,7 @@ class MeterParameterListener
      *
      * @param int $meter_id
      */
-    public function onParameterSaved(int $meter_id)
-    {
+    public function onParameterSaved(int $meter_id) {
         Log::debug('Meter Parameter listener Spark Meter Package', []);
         $meterInfo = $this->meterParameter->newQuery()->with([
             'tariff.tou',
@@ -93,8 +91,7 @@ class MeterParameterListener
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen('meterparameter.saved', 'Inensus\SparkMeter\Listeners\MeterParameterListener@onParameterSaved');
     }
 }

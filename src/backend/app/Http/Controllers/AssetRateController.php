@@ -8,8 +8,7 @@ use App\Services\ApplianceRateService;
 use App\Services\CashTransactionService;
 use Illuminate\Http\Request;
 
-class AssetRateController extends Controller
-{
+class AssetRateController extends Controller {
     /**
      * Update the specified resource in storage.
      *
@@ -29,8 +28,7 @@ class AssetRateController extends Controller
         $this->applianceRateService = $applianceRateService;
     }
 
-    public function update(Request $request, AssetRate $applianceRate): ApiResource
-    {
+    public function update(Request $request, AssetRate $applianceRate): ApiResource {
         $cost = $request->get('cost');
         $newCost = $request->get('newCost');
         $creatorId = $request->get('admin_id');

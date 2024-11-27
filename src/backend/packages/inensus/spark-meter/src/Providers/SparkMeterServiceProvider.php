@@ -17,13 +17,11 @@ use Inensus\SparkMeter\Models\SmSyncSetting;
 use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\SparkMeterApi;
 
-class SparkMeterServiceProvider extends ServiceProvider
-{
+class SparkMeterServiceProvider extends ServiceProvider {
     /**
      * Bootstrap the application services.
      */
-    public function boot(Filesystem $filesystem)
-    {
+    public function boot(Filesystem $filesystem) {
         $this->app->register(SparkMeterRouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -53,37 +51,32 @@ class SparkMeterServiceProvider extends ServiceProvider
         );
     }
 
-    public function register()
-    {
+    public function register() {
         $this->mergeConfigFrom(__DIR__.'/../../config/spark-meter-integration.php', 'spark');
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('SparkMeterApi', SparkMeterApi::class);
     }
 
-    public function publishVueFiles()
-    {
+    public function publishVueFiles() {
         $this->publishes([
             __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/spark-meter'),
         ], 'vue-components');
     }
 
-    public function publishConfigFiles()
-    {
+    public function publishConfigFiles() {
         $this->publishes([
             __DIR__.'/../../config/spark-meter-integration.php' => config_path('spark-meter-integration.php'),
         ]);
     }
 
-    public function publishMigrations($filesystem)
-    {
+    public function publishMigrations($filesystem) {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_spark_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
-    protected function getMigrationFileName(Filesystem $filesystem): string
-    {
+    protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)

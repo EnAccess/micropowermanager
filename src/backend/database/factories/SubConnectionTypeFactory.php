@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\SubConnectionType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SubConnectionTypeFactory extends Factory
-{
+class SubConnectionTypeFactory extends Factory {
     protected $model = SubConnectionType::class;
 
     /**
@@ -14,8 +13,7 @@ class SubConnectionTypeFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => $this->faker->word,
             'connection_type_id' => $this->faker->numberBetween(1, 10),

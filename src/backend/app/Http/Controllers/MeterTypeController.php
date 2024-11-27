@@ -13,13 +13,10 @@ use Illuminate\Http\Request;
  * @group   MeterTypes
  * Class MeterTypeController
  */
-class MeterTypeController extends Controller
-{
+class MeterTypeController extends Controller {
     use SoftDeletes;
 
-    public function __construct(private MeterTypeService $meterTypeService)
-    {
-    }
+    public function __construct(private MeterTypeService $meterTypeService) {}
 
     /**
      * List.
@@ -28,8 +25,7 @@ class MeterTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
 
         return ApiResource::make($this->meterTypeService->getAll($limit));
@@ -47,8 +43,7 @@ class MeterTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function store(MeterTypeCreateRequest $request)
-    {
+    public function store(MeterTypeCreateRequest $request) {
         $meterTypeData = $request->only(['online', 'phase', 'max_current']);
 
         return ApiResource::make($this->meterTypeService->create($meterTypeData));
@@ -63,8 +58,7 @@ class MeterTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function show($meterTypeId): ApiResource
-    {
+    public function show($meterTypeId): ApiResource {
         return ApiResource::make($this->meterTypeService->getById($meterTypeId));
     }
 
@@ -83,8 +77,7 @@ class MeterTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource
-    {
+    public function update(MeterTypeUpdateRequest $request, $meterTypeId): ApiResource {
         $meterType = $this->meterTypeService->getById($meterTypeId);
         $meterTypeData = $request->only(['online', 'phase', 'max_current']);
 

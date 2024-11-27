@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\Meter\MeterParameter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MeterParameterFactory extends Factory
-{
+class MeterParameterFactory extends Factory {
     protected $model = MeterParameter::class;
 
     /**
@@ -14,8 +13,7 @@ class MeterParameterFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'owner_type' => 'person',
             'owner_id' => $this->faker->randomNumber(1),

@@ -7,8 +7,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TransactionService;
 
-class TransactionListener
-{
+class TransactionListener {
     private $transactionService;
     private $smTransaction;
 
@@ -25,16 +24,14 @@ class TransactionListener
      *
      * @param Transaction $transaction
      */
-    public function onTransactionSuccess(Transaction $transaction)
-    {
+    public function onTransactionSuccess(Transaction $transaction) {
         $smTransaction = $this->smTransaction->newQuery()->where('mpm_transaction_id', $transaction->id)->first();
         if ($smTransaction) {
             $this->transactionService->updateTransactionStatus($smTransaction);
         }
     }
 
-    public function subscribe(Dispatcher $events)
-    {
+    public function subscribe(Dispatcher $events) {
         $events->listen(
             'transaction.successful',
             'Inensus\SparkMeter\Listeners\TransactionListener@onTransactionSuccess'

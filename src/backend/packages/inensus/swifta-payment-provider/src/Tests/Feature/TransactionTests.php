@@ -19,12 +19,10 @@ use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class TransactionTests extends TestCase
-{
+class TransactionTests extends TestCase {
     use RefreshDatabase;
 
-    public function testWithNonExistingTransaction()
-    {
+    public function testWithNonExistingTransaction() {
         $data = [
             'transaction_id' => -1,
             'transaction_reference' => 'ref',
@@ -44,8 +42,7 @@ class TransactionTests extends TestCase
         ]);
     }
 
-    public function testWithDifferentTransactionAmountFromValidatedTransaction()
-    {
+    public function testWithDifferentTransactionAmountFromValidatedTransaction() {
         $this->initializeData();
         $user = User::query()->create([
             'name' => 'test',
@@ -74,8 +71,7 @@ class TransactionTests extends TestCase
         ]);
     }
 
-    public function testWithValidTransaction()
-    {
+    public function testWithValidTransaction() {
         Queue::fake();
         $this->initializeData();
         $user = User::query()->create([
@@ -115,8 +111,7 @@ class TransactionTests extends TestCase
         ]);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         factory(Person::class)->create();
         // create meter-tariff
@@ -167,8 +162,7 @@ class TransactionTests extends TestCase
         $address->save();
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(1)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");

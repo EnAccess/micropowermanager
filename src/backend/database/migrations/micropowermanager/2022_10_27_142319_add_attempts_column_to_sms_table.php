@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('sms', function (Blueprint $table) {
             $table->integer('attempts')->default(0);
         });
@@ -22,8 +21,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->table('sms', function (Blueprint $table) {
             $table->dropColumn('attempts');
         });

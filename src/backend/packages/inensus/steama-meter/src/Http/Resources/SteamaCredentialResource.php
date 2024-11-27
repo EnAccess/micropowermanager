@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inensus\SteamaMeter\Models\SteamaCredential;
 
-class SteamaCredentialResource extends JsonResource
-{
-    public function __construct(SteamaCredential $steamaCredential)
-    {
+class SteamaCredentialResource extends JsonResource {
+    public function __construct(SteamaCredential $steamaCredential) {
         parent::__construct($steamaCredential);
     }
 
@@ -20,16 +18,14 @@ class SteamaCredentialResource extends JsonResource
      *
      * @return Request
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         $credentials = $this->resource->toArray();
         $credentials['alert'] = $this->alertType($this->resource->is_authenticated);
 
         return $credentials;
     }
 
-    private function alertType($authenticationStatus)
-    {
+    private function alertType($authenticationStatus) {
         switch ($authenticationStatus) {
             case true:
                 return [

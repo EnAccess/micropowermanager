@@ -20,8 +20,7 @@ use Inensus\SparkMeter\Services\SmSyncSettingService;
 use Inensus\SparkMeter\Services\TariffService;
 use Inensus\SparkMeter\Services\TransactionService;
 
-class SparkMeterDataSynchronizer extends AbstractSharedCommand
-{
+class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 2;
 
@@ -42,8 +41,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
@@ -70,10 +68,13 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand
                         return true;
                     }
                     $adminId = $cluster->manager->id;
-                    $adminAddress = $this->address->whereHasMorph('owner', [Person::class],
+                    $adminAddress = $this->address->whereHasMorph(
+                        'owner',
+                        [Person::class],
                         function ($q) use ($adminId) {
                             $q->where('id', $adminId);
-                        })->first();
+                        }
+                    )->first();
 
                     if (!$adminAddress) {
                         return true;

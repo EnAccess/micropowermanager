@@ -8,8 +8,7 @@ use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Models\SmTariff;
 use Inensus\SparkMeter\Services\TariffService;
 
-class MeterTariffObserver
-{
+class MeterTariffObserver {
     private $tariffService;
     private $smTableEncryption;
     private $smTariff;
@@ -27,8 +26,7 @@ class MeterTariffObserver
         $this->accessRate = $accessRate;
     }
 
-    public function updated(MeterTariff $tariff)
-    {
+    public function updated(MeterTariff $tariff) {
         $smTariff = $this->smTariff->newQuery()->where('mpm_tariff_id', $tariff->id)->first();
         if ($smTariff) {
             $sparkTariff = $this->tariffService->getSparkTariffInfo($smTariff->tariff_id);

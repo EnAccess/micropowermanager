@@ -13,13 +13,11 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AddressTest extends TestCase
-{
+class AddressTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function testUserDefinesAnAddressToCustomerForOwnCompany()
-    {
+    public function testUserDefinesAnAddressToCustomerForOwnCompany() {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -42,8 +40,7 @@ class AddressTest extends TestCase
         $this->assertEquals(1, $person->addresses()->first()->is_primary);
     }
 
-    public function testUserUpdatesAndAddressOfCustomerForOwnCompany()
-    {
+    public function testUserUpdatesAndAddressOfCustomerForOwnCompany() {
         $user = UserFactory::new()->create();
         $person = PersonFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -69,8 +66,7 @@ class AddressTest extends TestCase
         $this->assertEquals(0, $person->addresses()->first()->is_primary);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

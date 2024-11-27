@@ -5,8 +5,7 @@ namespace App\Http\Requests;
 use App\Models\City;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CityRequest extends FormRequest
-{
+class CityRequest extends FormRequest {
     private const PARAM_NAME = 'name';
     private const PARAM_MINI_GRID = 'mini_grid_id';
     private const PARAM_CLUSTER_ID = 'cluster_id';
@@ -17,8 +16,7 @@ class CityRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -27,16 +25,14 @@ class CityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             'name' => 'required',
             'mini_grid_id' => 'required',
         ];
     }
 
-    public function getCity(): City
-    {
+    public function getCity(): City {
         $city = new City();
         $city->setName($this->input(self::PARAM_NAME));
         $city->setCountryId($this->input(self::PARAM_COUNTRY_ID, 0));

@@ -14,8 +14,7 @@ use Inensus\SteamaMeter\Models\SteamaTransaction;
 use Inensus\SteamaMeter\Services\SteamaCredentialService;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 
-class SteamaMeterApi implements IManufacturerAPI
-{
+class SteamaMeterApi implements IManufacturerAPI {
     protected $api;
 
     public function __construct(
@@ -28,8 +27,7 @@ class SteamaMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $owner = $transactionContainer->device->person;
 
         $stmCustomer = $this->steamaCustomer->newQuery()->with('paymentPlans')->where(
@@ -107,7 +105,5 @@ class SteamaMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
-    }
+    public function clearDevice(Device $device) {}
 }

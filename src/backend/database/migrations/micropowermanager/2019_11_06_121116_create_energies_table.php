@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('energies', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mini_grid_id');
@@ -35,8 +34,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('energies');
     }
 };

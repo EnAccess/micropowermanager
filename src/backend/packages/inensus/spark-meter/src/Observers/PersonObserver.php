@@ -7,8 +7,7 @@ use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Models\SmCustomer;
 use Inensus\SparkMeter\Services\CustomerService;
 
-class PersonObserver
-{
+class PersonObserver {
     private $customerService;
     private $smTableEncryption;
     private $person;
@@ -26,8 +25,7 @@ class PersonObserver
         $this->smCustomer = $smCustomer;
     }
 
-    public function updated(Person $person)
-    {
+    public function updated(Person $person) {
         $smCustomer = $this->smCustomer->newQuery()->with('site')
             ->where('mpm_customer_id', $person->id)->first();
 

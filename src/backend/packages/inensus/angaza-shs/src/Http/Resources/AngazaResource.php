@@ -5,8 +5,7 @@ namespace Inensus\AngazaSHS\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AngazaResource extends JsonResource
-{
+class AngazaResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -14,8 +13,7 @@ class AngazaResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request) {
         return parent::toArray($request);
     }
 }

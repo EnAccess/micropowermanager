@@ -5,15 +5,12 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\Meter\Meter;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class MeterService extends CreatorService
-{
-    public function __construct(Meter $meter)
-    {
+class MeterService extends CreatorService {
+    public function __construct(Meter $meter) {
         parent::__construct($meter);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $meterConfig = [
             'serial_number' => 'device',
             'manufacturer_id' => 'manufacturer_id',

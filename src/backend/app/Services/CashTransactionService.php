@@ -5,19 +5,16 @@ namespace App\Services;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 
-class CashTransactionService
-{
+class CashTransactionService {
     private $cashTransaction;
     private $transaction;
 
-    public function __construct(CashTransaction $cashTransaction, Transaction $transaction)
-    {
+    public function __construct(CashTransaction $cashTransaction, Transaction $transaction) {
         $this->transaction = $transaction;
         $this->cashTransaction = $cashTransaction;
     }
 
-    public function createCashTransaction($creatorId, $amount, $sender, $deviceSerial = null)
-    {
+    public function createCashTransaction($creatorId, $amount, $sender, $deviceSerial = null) {
         $cashTransaction = $this->cashTransaction->newQuery()->create(
             [
                 'user_id' => $creatorId,

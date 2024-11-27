@@ -5,12 +5,10 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class TargetTest extends TestCase
-{
+class TargetTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserGetsTargetList()
-    {
+    public function testUserGetsTargetList() {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -23,8 +21,7 @@ class TargetTest extends TestCase
         $this->assertEquals(count($response['data']), $targetCount);
     }
 
-    public function testUserGetsTargetById()
-    {
+    public function testUserGetsTargetById() {
         $this->createTestData();
         $this->createCluster();
         $this->createMiniGrid();
@@ -37,8 +34,7 @@ class TargetTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->targets[0]->id);
     }
 
-    public function testUserCreatesNewTarget()
-    {
+    public function testUserCreatesNewTarget() {
         $this->withExceptionHandling();
         $this->createTestData();
         $this->createCluster();
@@ -69,8 +65,7 @@ class TargetTest extends TestCase
         $this->assertEquals($response['data']['target_date'], $targetData['period']);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

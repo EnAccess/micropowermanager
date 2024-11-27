@@ -5,21 +5,18 @@ namespace App\Sms\BodyParsers;
 use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
 
-class PricingDetails extends SmsBodyParser
-{
+class PricingDetails extends SmsBodyParser {
     public $variables = ['amount', 'vat_energy', 'vat_others'];
     protected $transaction;
     private $vatEnergy = 0;
     private $vatOtherStaffs = 0;
 
-    public function __construct(Transaction $transaction)
-    {
+    public function __construct(Transaction $transaction) {
         $this->transaction = $transaction;
         $this->calculateTaxes();
     }
 
-    protected function getVariableValue($variable)
-    {
+    protected function getVariableValue($variable) {
         switch ($variable) {
             case 'amount':
                 $variable = $this->transaction->amount;
@@ -35,8 +32,7 @@ class PricingDetails extends SmsBodyParser
         return $variable;
     }
 
-    private function calculateTaxes()
-    {
+    private function calculateTaxes() {
         $mainSettings = MainSettings::query()->first();
         $energy = $this->transaction->paymentHistories->where('payment_type', 'energy')->sum('amount');
         $other = $this->transaction->paymentHistories->where('payment_type', '!=', 'energy')->sum('amount');

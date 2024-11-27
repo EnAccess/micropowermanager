@@ -9,15 +9,13 @@ use Illuminate\Http\JsonResponse;
  * Class AuthController
  * Responsible for API-Call authentications.
  */
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
@@ -27,8 +25,7 @@ class AuthController extends Controller
      * @bodyParam email string required
      * @bodyParam password string required
      */
-    public function login()
-    {
+    public function login() {
         $credentials = request(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
@@ -43,8 +40,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function me()
-    {
+    public function me() {
         return response()->json(auth('api')->user());
     }
 
@@ -53,8 +49,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function logout()
-    {
+    public function logout() {
         auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -67,8 +62,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    public function refresh()
-    {
+    public function refresh() {
         return $this->respondWithToken(auth()->refresh());
     }
 
@@ -79,8 +73,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-    protected function respondWithToken($token)
-    {
+    protected function respondWithToken($token) {
         return response()->json(
             [
                 'access_token' => $token,

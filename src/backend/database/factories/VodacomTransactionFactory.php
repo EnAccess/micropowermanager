@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\Transaction\VodacomTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class VodacomTransactionFactory extends Factory
-{
+class VodacomTransactionFactory extends Factory {
     /**
      * The name of the factory's corresponding model.
      *
@@ -19,8 +18,7 @@ class VodacomTransactionFactory extends Factory
      *
      * @return array
      */
-    public function definition(): array
-    {
+    public function definition(): array {
         return [
             'conversation_id' => $this->faker->unique()->randomNumber(),
             'originator_conversation_id' => $this->faker->unique(true)->randomNumber(),

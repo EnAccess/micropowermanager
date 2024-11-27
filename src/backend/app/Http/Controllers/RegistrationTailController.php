@@ -7,19 +7,14 @@ use App\Models\RegistrationTail;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
 
-class RegistrationTailController extends Controller
-{
-    public function __construct(private RegistrationTailService $registrationTailService)
-    {
-    }
+class RegistrationTailController extends Controller {
+    public function __construct(private RegistrationTailService $registrationTailService) {}
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         return ApiResource::make($this->registrationTailService->getAll());
     }
 
-    public function update(RegistrationTail $registrationTail, Request $request): ApiResource
-    {
+    public function update(RegistrationTail $registrationTail, Request $request): ApiResource {
         $tail = $request->input('tail');
         $registrationTailData = [
             'tail' => $tail,

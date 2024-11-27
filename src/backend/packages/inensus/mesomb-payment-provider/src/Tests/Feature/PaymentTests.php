@@ -17,13 +17,11 @@ use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Tests\CreatesApplication;
 use Tests\TestCase;
 
-class PaymentTests extends TestCase
-{
+class PaymentTests extends TestCase {
     use RefreshDatabase;
     use CreatesApplication;
 
-    public function testOnlySuccessesPaymentsCanBeProcessed()
-    {
+    public function testOnlySuccessesPaymentsCanBeProcessed() {
         $data = [
             'status' => 'FAILED',
             'type' => 'Payment',
@@ -41,8 +39,7 @@ class PaymentTests extends TestCase
         ]);
     }
 
-    public function testOnlyOnePhoneNumberIsValidForOneCustomer()
-    {
+    public function testOnlyOnePhoneNumberIsValidForOneCustomer() {
         $data = [
             'status' => 'SUCCESS',
             'type' => 'Payment',
@@ -61,8 +58,7 @@ class PaymentTests extends TestCase
         ]);
     }
 
-    public function testOnlyOneConnectingMeterIsValidForOneNumber()
-    {
+    public function testOnlyOneConnectingMeterIsValidForOneNumber() {
         // create person
         factory(Person::class)->create();
         // associate meter with a person
@@ -93,8 +89,7 @@ class PaymentTests extends TestCase
         ]);
     }
 
-    public function testValidTransactionStartsTransactionProcessing()
-    {
+    public function testValidTransactionStartsTransactionProcessing() {
         Queue::fake();
         $this->withoutExceptionHandling();
         $this->initializeData();
@@ -135,8 +130,7 @@ class PaymentTests extends TestCase
         Queue::assertPushed(ProcessPayment::class);
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         factory(Person::class)->create();
         // create meter-tariff

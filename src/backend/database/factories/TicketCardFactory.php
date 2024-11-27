@@ -5,8 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\TicketCard;
 
-class TicketCardFactory extends Factory
-{
+class TicketCardFactory extends Factory {
     protected $model = TicketCard::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketCardFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         // includes existing list id in trello as card_id for testing
         return [
             'card_id' => '62914ca11509c55ab1c1ba56',

@@ -24,8 +24,7 @@ use Inensus\Ticket\Models\TicketUser;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class DummyDataCreator extends AbstractSharedCommand
-{
+class DummyDataCreator extends AbstractSharedCommand {
     protected $signature = 'dummy:create-data {amount} {--company-id=} {--type=}';
     protected $description = 'creates dummy data for demo company';
 
@@ -61,8 +60,7 @@ class DummyDataCreator extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle()
-    {
+    public function handle() {
         $companyId = $this->option('company-id');
         $type = $this->option('type') ?? 'transaction';
         $amount = $this->argument('amount');
@@ -90,8 +88,7 @@ class DummyDataCreator extends AbstractSharedCommand
         }
     }
 
-    private function generateTransaction(): void
-    {
+    private function generateTransaction(): void {
         try {
             // get randomly a user
             $randomMeter = $this->meter::inRandomOrder()->with([
@@ -287,13 +284,11 @@ class DummyDataCreator extends AbstractSharedCommand
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes()
-    {
+    private function getTransactionTypeRandomlyFromTransactionTypes() {
         return $this->transactionTypes[array_rand($this->transactionTypes)];
     }
 
-    private function generateTicket()
-    {
+    private function generateTicket() {
         $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = $this->user->inRandomOrder()->first();
@@ -341,8 +336,7 @@ class DummyDataCreator extends AbstractSharedCommand
         }
     }
 
-    private function generateFakeSentence($minWords = 5, $maxWords = 15)
-    {
+    private function generateFakeSentence($minWords = 5, $maxWords = 15) {
         $loremIpsum =
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
         $words = explode(' ', $loremIpsum);

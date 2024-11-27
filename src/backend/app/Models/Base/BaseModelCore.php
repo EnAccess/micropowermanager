@@ -10,13 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  * Only applies to very few common, high-level configuration entities in
  * the entire MPM-instance like database and plugin configuration.
  */
-abstract class BaseModelCore extends Model
-{
+abstract class BaseModelCore extends Model {
     protected $guarded = ['id'];
     public static $rules = [];
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         $this->setConnection('micro_power_manager');
         parent::__construct($attributes);
     }

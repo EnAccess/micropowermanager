@@ -19,16 +19,14 @@ use Illuminate\Support\Facades\DB;
  *
  * @group People
  */
-class PersonController extends Controller
-{
+class PersonController extends Controller {
     public function __construct(
         private AddressesService $addressService,
         private PersonService $personService,
         private PersonAddressService $personAddressService,
         private MaintenanceUserService $maintenanceUserService,
         private CountryService $countryService,
-    ) {
-    }
+    ) {}
 
     /**
      * List customer/other
@@ -40,8 +38,7 @@ class PersonController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
         $limit = $request->input('limit', config('settings.paginate'));
 
@@ -64,8 +61,7 @@ class PersonController extends Controller
      *
      * @responseFile     responses/people/people.detail.json
      */
-    public function show(int $personId): ApiResource
-    {
+    public function show(int $personId): ApiResource {
         return ApiResource::make($this->personService->getDetails($personId, true));
     }
 
@@ -76,8 +72,7 @@ class PersonController extends Controller
      *
      * @return JsonResponse
      */
-    public function store(PersonRequest $request): JsonResponse
-    {
+    public function store(PersonRequest $request): JsonResponse {
         try {
             $customerType = $request->input('customer_type');
             $addressData = $this->addressService->createAddressDataFromRequest($request);

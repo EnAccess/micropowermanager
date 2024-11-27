@@ -4,20 +4,17 @@ namespace Inensus\ViberMessaging\Services;
 
 use Inensus\ViberMessaging\Models\ViberCredential;
 
-class ViberCredentialService
-{
+class ViberCredentialService {
     public function __construct(
         private ViberCredential $credential,
         private WebhookService $webhookService,
         private AccountService $accountService,
-    ) {
-    }
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'api_token' => null,
             'webhook_url' => null,
@@ -26,16 +23,14 @@ class ViberCredentialService
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
     /**
      * @throws \Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException
      */
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->find($data['id']);
 
         $credential->update([

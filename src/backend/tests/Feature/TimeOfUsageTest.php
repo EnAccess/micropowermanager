@@ -6,12 +6,10 @@ use App\Models\TimeOfUsage;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class TimeOfUsageTest extends TestCase
-{
+class TimeOfUsageTest extends TestCase {
     use CreateEnvironments;
 
-    public function testUserDeletesTimeOfUsageOfTariff()
-    {
+    public function testUserDeletesTimeOfUsageOfTariff() {
         $this->createTestData();
         $meterTariffCount = 5;
         $withTimeOfUsage = true;
@@ -21,8 +19,7 @@ class TimeOfUsageTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

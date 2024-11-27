@@ -10,15 +10,13 @@ use App\Services\MeterService;
 use App\Services\PersonMeterService;
 use Illuminate\Http\Request;
 
-class MeterGeographicalInformationController extends Controller
-{
+class MeterGeographicalInformationController extends Controller {
     public function __construct(
         private MeterGeographicalInformationService $meterGeographicalInformationService,
         private PersonMeterService $personMeterService,
         private CityService $cityService,
         private MeterService $meterService,
-    ) {
-    }
+    ) {}
 
     /**
      * List with geo and access rate
@@ -31,8 +29,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @responseFile responses/meters/meters.geo.list.json
      */
-    public function index($miniGridId): ApiResource
-    {
+    public function index($miniGridId): ApiResource {
         $cityIds = $this->cityService->getCityIdsByMiniGridId($miniGridId);
         // we can get city id only by address
         if ($miniGridId === null) {
@@ -61,8 +58,7 @@ class MeterGeographicalInformationController extends Controller
      *
      * @responseFile responses/people/person.meter.list.json
      */
-    public function show(int $personId): ApiResource
-    {
+    public function show(int $personId): ApiResource {
         return ApiResource::make($this->personMeterService->getPersonMetersGeographicalInformation($personId));
     }
 
@@ -77,8 +73,7 @@ class MeterGeographicalInformationController extends Controller
      * @param Request $request
      * @param Meter   $meter
      */
-    public function update(Request $request): ApiResource
-    {
+    public function update(Request $request): ApiResource {
         $meters = $request->all();
 
         return ApiResource::make($this->meterGeographicalInformationService->updateGeographicalInformation($meters));

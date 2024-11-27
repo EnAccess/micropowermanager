@@ -12,8 +12,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::connection('shard')->create('asset_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -22,23 +21,24 @@ return new class extends Migration {
         });
 
         // Insert initial data
-        DB::connection('shard')->table('asset_types')->insert([
+        DB::connection('shard')->table('asset_types')->insert(
             [
-                'name' => 'Solar Home System',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'E-Bike',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Electronics',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]
+                [
+                    'name' => 'Solar Home System',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ],
+                [
+                    'name' => 'E-Bike',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ],
+                [
+                    'name' => 'Electronics',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ],
+            ]
         );
     }
 
@@ -47,8 +47,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::connection('shard')->dropIfExists('asset_types');
     }
 };

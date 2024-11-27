@@ -13,6 +13,4 @@ use App\Models\Base\BaseModel;
  * @property string $api_url
  * @property string $api_key
  * */
-class TicketSettings extends BaseModel
-{
-}
+class TicketSettings extends BaseModel {}

@@ -5,13 +5,11 @@ namespace App\Console\Commands;
 use App\Models\AccessRate\AccessRatePayment;
 use Carbon\Carbon;
 
-class AccessRateChecker extends AbstractSharedCommand
-{
+class AccessRateChecker extends AbstractSharedCommand {
     protected $signature = 'accessrate:check';
     protected $description = 'Updates the "debt" field, based on "due_date" field';
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         // get all access-rate payments where due Date is <= today
         $accessRatePayments = AccessRatePayment::where('due_date', '<=', Carbon::now())->get();
 

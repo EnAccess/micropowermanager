@@ -2,13 +2,11 @@
 
 namespace App\Console\Commands;
 
-class RoutesGenerator extends AbstractSharedCommand
-{
+class RoutesGenerator extends AbstractSharedCommand {
     protected $signature = 'routes:generate';
     protected $description = 'Generates new routes from packages';
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         $routeTmp = 'storage/skeletons/routes.tmp';
         fopen($routeTmp, 'w');
 
@@ -28,8 +26,7 @@ class RoutesGenerator extends AbstractSharedCommand
         }
     }
 
-    private function createPluginRoutesTmp(string $src, string $coreRoutesTmp): void
-    {
+    private function createPluginRoutesTmp(string $src, string $coreRoutesTmp): void {
         $packageRoutes = $src.'/js/routes.js';
         $packageRoutesTmp = $src.'/js/routes.tmp';
         fopen($packageRoutesTmp, 'w');
@@ -42,8 +39,7 @@ class RoutesGenerator extends AbstractSharedCommand
     /**
      * @return void
      */
-    private function removeLine(string $packageRoutesTmp, string $type)
-    {
+    private function removeLine(string $packageRoutesTmp, string $type) {
         $lines = file($packageRoutesTmp);
         if ($type === 'first') {
             array_shift($lines);
@@ -56,8 +52,7 @@ class RoutesGenerator extends AbstractSharedCommand
         file_put_contents($packageRoutesTmp, $file);
     }
 
-    private function appendLines(string $packageRoutesTmp, $coreRoutesTmp): void
-    {
+    private function appendLines(string $packageRoutesTmp, $coreRoutesTmp): void {
         $lines = file($packageRoutesTmp);
         $tmp = fopen($coreRoutesTmp, 'a+');
         $counter = 1;

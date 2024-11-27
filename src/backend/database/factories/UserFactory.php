@@ -7,8 +7,7 @@ use App\Utils\DummyCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
-class UserFactory extends Factory
-{
+class UserFactory extends Factory {
     protected $model = User::class;
 
     /**
@@ -16,8 +15,7 @@ class UserFactory extends Factory
      *
      * @return Factory
      */
-    public function clusterAdmin()
-    {
+    public function clusterAdmin() {
         return $this->state(function (array $attributes) {
             return [
                 'name' => 'Cluster Admin',
@@ -25,8 +23,7 @@ class UserFactory extends Factory
         });
     }
 
-    public function definition()
-    {
+    public function definition() {
         return [
             'name' => $this->faker->name,
             'company_id' => DummyCompany::DUMMY_COMPANY_ID,

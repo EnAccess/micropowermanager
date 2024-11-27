@@ -20,8 +20,7 @@ use Inensus\SteamaMeter\Services\SteamaSyncSettingService;
 use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Services\StemaSyncActionService;
 
-class SteamaMeterDataSynchronizer extends AbstractSharedCommand
-{
+class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 2;
 
@@ -61,8 +60,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
         $this->cluster = $cluster;
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }
@@ -89,10 +87,13 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand
                         return true;
                     }
                     $adminId = $cluster->manager->id;
-                    $adminAddress = $this->address->whereHasMorph('owner', [Person::class],
+                    $adminAddress = $this->address->whereHasMorph(
+                        'owner',
+                        [Person::class],
                         function ($q) use ($adminId) {
                             $q->where('id', $adminId);
-                        })->first();
+                        }
+                    )->first();
                     if (!$adminAddress) {
                         return true;
                     }

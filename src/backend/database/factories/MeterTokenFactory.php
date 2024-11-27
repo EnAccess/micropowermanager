@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\Meter\MeterToken;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MeterTokenFactory extends Factory
-{
+class MeterTokenFactory extends Factory {
     protected $model = MeterToken::class;
 
     /**
@@ -14,8 +13,7 @@ class MeterTokenFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'transaction_id' => 1,
             'meter_id' => 1,

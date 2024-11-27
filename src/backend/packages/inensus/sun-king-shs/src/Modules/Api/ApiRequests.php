@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingCredential;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
-    public function authentication($credential): array
-    {
+    public function authentication($credential): array {
         try {
             $response =
                 $this->httpClient->post($credential->getAuthUrl(), [
@@ -44,20 +41,21 @@ class ApiRequests
         }
     }
 
-    public function get(SunKingCredential $credentials, array $params, string $slug)
-    {
+    public function get(SunKingCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         foreach ($params as $key => $value) {
             $url .= $key.'='.$value.'&';
         }
         try {
-            $request = $this->httpClient->get($url,
+            $request = $this->httpClient->get(
+                $url,
                 [
                     'headers' => [
                         'Accept' => 'application/json',
                         'Authorization' => 'Bearer '.$credentials->getApiKey(),
                     ],
-                ]);
+                ]
+            );
 
             return json_decode((string) $request->getBody(), true);
         } catch (GuzzleException $e) {
@@ -68,8 +66,7 @@ class ApiRequests
         }
     }
 
-    public function post(SunKingCredential $credentials, array $params, string $slug)
-    {
+    public function post(SunKingCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {
             $request = $this->httpClient->post(
@@ -91,7 +88,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw new SunKingApiResponseException($e->getMessage());
         }
     }

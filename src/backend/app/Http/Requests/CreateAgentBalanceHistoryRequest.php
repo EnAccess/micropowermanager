@@ -4,15 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAgentBalanceHistoryRequest extends FormRequest
-{
+class CreateAgentBalanceHistoryRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -21,8 +19,7 @@ class CreateAgentBalanceHistoryRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'amount' => 'required|regex:/^\d*(\.\d{1,2})?$/',
         ];

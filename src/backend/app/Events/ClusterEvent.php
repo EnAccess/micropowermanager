@@ -9,8 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ClusterEvent
-{
+class ClusterEvent {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
@@ -35,8 +34,7 @@ class ClusterEvent
      * @param string  $type
      * @param         $data
      */
-    public function __construct(Cluster $cluster, string $type, $data)
-    {
+    public function __construct(Cluster $cluster, string $type, $data) {
         Log::debug('cluster event created');
         $this->cluster = $cluster;
         $this->type = $type;
@@ -48,8 +46,7 @@ class ClusterEvent
      *
      * @return PrivateChannel
      */
-    public function broadcastOn(): PrivateChannel
-    {
+    public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('clusters');
     }
 }

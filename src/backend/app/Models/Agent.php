@@ -32,20 +32,17 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $remember_token
  * @property int    $company_id
  */
-class Agent extends Authenticatable implements JWTSubject
-{
+class Agent extends Authenticatable implements JWTSubject {
     use HasFactory;
 
     public const RELATION_NAME = 'agent';
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         $this->setConnection('shard');
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute($password): void
-    {
+    public function setPasswordAttribute($password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 
@@ -62,8 +59,7 @@ class Agent extends Authenticatable implements JWTSubject
         'device_id',
     ];
 
-    public function miniGrid(): BelongsTo
-    {
+    public function miniGrid(): BelongsTo {
         return $this->belongsTo(MiniGrid::class);
     }
 
@@ -72,8 +68,7 @@ class Agent extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
-    {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
@@ -84,70 +79,57 @@ class Agent extends Authenticatable implements JWTSubject
      *
      * @psalm-return array<empty, empty>
      */
-    public function getJWTCustomClaims()
-    {
+    public function getJWTCustomClaims() {
         return [
             'companyId' => User::query()->select(User::COL_COMPANY_ID)->first()[User::COL_COMPANY_ID],
         ];
     }
 
-    public function address(): MorphOne
-    {
+    public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
-    public function tickets(): MorphMany
-    {
+    public function tickets(): MorphMany {
         return $this->morphMany(Ticket::class, 'creator');
     }
 
-    public function transaction(): HasMany
-    {
+    public function transaction(): HasMany {
         return $this->hasMany(Transaction::class);
     }
 
-    public function balanceHistory(): HasMany
-    {
+    public function balanceHistory(): HasMany {
         return $this->hasMany(AgentBalanceHistory::class);
     }
 
-    public function assignedAppliance(): HasMany
-    {
+    public function assignedAppliance(): HasMany {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
 
-    public function addressDetails()
-    {
+    public function addressDetails() {
         return $this->addresses()->with('city');
     }
 
-    public function person(): BelongsTo
-    {
+    public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 
-    public function commission(): BelongsTo
-    {
+    public function commission(): BelongsTo {
         return $this->belongsTo(AgentCommission::class, 'agent_commission_id');
     }
 
-    public function soldAppliances(): MorphMany
-    {
+    public function soldAppliances(): MorphMany {
         return $this->morphMany(AssetPerson::class, 'creator');
     }
 
-    public function agentCharges(): HasMany
-    {
+    public function agentCharges(): HasMany {
         return $this->hasMany(AgentCharge::class);
     }
 
-    public function addresses(): MorphMany
-    {
+    public function addresses(): MorphMany {
         return $this->morphMany(Address::class, 'owner');
     }
 
-    public function receipt(): HasMany
-    {
+    public function receipt(): HasMany {
         return $this->hasMany(AgentReceipt::class, 'agent_id', 'id');
     }
 }

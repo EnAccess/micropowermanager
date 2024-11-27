@@ -25,13 +25,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class TokenProcessorTest extends TestCase
-{
+class TokenProcessorTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function testWithValidTransaction()
-    {
+    public function testWithValidTransaction() {
         Queue::fake();
         PersonFactory::new()->create();
         MeterTariffFactory::new()->create();

@@ -5,16 +5,13 @@ namespace App\Services;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 
-class MeterGeographicalInformationService
-{
+class MeterGeographicalInformationService {
     public function __construct(
         private GeographicalInformation $geographicalInformation,
         private Meter $meter,
-    ) {
-    }
+    ) {}
 
-    public function updateGeographicalInformation(array $meters): array
-    {
+    public function updateGeographicalInformation(array $meters): array {
         collect($meters)->each(function ($meter) {
             $points = [
                 $meter['lat'],

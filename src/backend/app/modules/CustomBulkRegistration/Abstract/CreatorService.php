@@ -2,17 +2,14 @@
 
 namespace MPM\CustomBulkRegistration\Abstract;
 
-abstract class CreatorService
-{
+abstract class CreatorService {
     protected $model;
 
-    public function __construct($model)
-    {
+    public function __construct($model) {
         $this->model = $model;
     }
 
-    public function createRelatedDataIfDoesNotExists($resolvedCsvData)
-    {
+    public function createRelatedDataIfDoesNotExists($resolvedCsvData) {
         return $this->model->newQuery()->firstOrCreate($resolvedCsvData, $resolvedCsvData);
     }
 

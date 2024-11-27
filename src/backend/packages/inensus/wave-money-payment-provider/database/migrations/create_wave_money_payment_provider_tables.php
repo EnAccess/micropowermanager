@@ -4,10 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWaveMoneyPaymentProviderTables extends Migration
-{
-    public function up()
-    {
+class CreateWaveMoneyPaymentProviderTables extends Migration {
+    public function up() {
         if (!Schema::hasTable('wave_money_transactions')) {
             Schema::create('wave_money_transactions', static function (Blueprint $table) {
                 $table->increments('id');
@@ -37,8 +35,7 @@ class CreateWaveMoneyPaymentProviderTables extends Migration
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('wave_money_transactions');
         Schema::dropIfExists('wave_money_credentials');
     }

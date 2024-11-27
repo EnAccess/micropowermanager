@@ -12,8 +12,7 @@ use Inensus\CalinMeter\Http\Requests\CalinMeterApiRequests;
 use Inensus\CalinMeter\Models\CalinCredential;
 use Inensus\CalinMeter\Models\CalinTransaction;
 
-class CalinMeterApi implements IManufacturerAPI
-{
+class CalinMeterApi implements IManufacturerAPI {
     public const CREDIT_TOKEN = 'CreditToken';
     protected $api;
     private $rootUrl = '/tokennew';
@@ -27,8 +26,7 @@ class CalinMeterApi implements IManufacturerAPI
         $this->api = $httpClient;
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         // we round the energy to be charged to 1 decimal place because the api only accepts 1 decimal place.
@@ -66,8 +64,7 @@ class CalinMeterApi implements IManufacturerAPI
         ];
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

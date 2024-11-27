@@ -6,8 +6,7 @@ use App\Exceptions\MissingSmsReferencesException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class TransactionConfirmation extends SmsSender
-{
+class TransactionConfirmation extends SmsSender {
     protected $data;
     public $body = '';
     protected $references = [
@@ -19,8 +18,7 @@ class TransactionConfirmation extends SmsSender
     public const ACCESS_RATE_PAYMENT = 'access rate';
     public const ASSET_RATE_PAYMENT = 'loan rate';
 
-    public function prepareBody()
-    {
+    public function prepareBody() {
         $this->data->paymentHistories()->each(function ($payment) {
             switch ($payment->payment_type) {
                 case self::ENERGY_CONFIRMATION:
@@ -37,13 +35,11 @@ class TransactionConfirmation extends SmsSender
         $this->preparePricingDetails();
     }
 
-    public function preparePricingDetails()
-    {
+    public function preparePricingDetails() {
         $this->prepareBodyByClassReference('PricingDetails', $this->data);
     }
 
-    private function prepareBodyByClassReference($reference, $payload)
-    {
+    private function prepareBodyByClassReference($reference, $payload) {
         try {
             $smsBody = $this->smsBodyService->getSmsBodyByReference($reference);
         } catch (ModelNotFoundException $exception) {

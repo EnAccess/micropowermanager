@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use MPM\Device\ClusterDeviceService;
 use Nette\Utils\DateTime;
 
-class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService
-{
+class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataService {
     private const CACHE_KEY_CLUSTERS_DATA = 'ClustersData';
 
     public function __construct(
@@ -23,8 +22,7 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         parent::__construct(self::CACHE_KEY_CLUSTERS_DATA);
     }
 
-    public function setData($dateRange = [])
-    {
+    public function setData($dateRange = []) {
         if (empty($dateRange)) {
             $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));

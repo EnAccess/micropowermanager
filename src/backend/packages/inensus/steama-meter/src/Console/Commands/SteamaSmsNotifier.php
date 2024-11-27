@@ -17,8 +17,7 @@ use Inensus\SteamaMeter\Services\SteamaTransactionsService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
 use Inensus\SteamaMeter\Sms\SteamaSmsTypes;
 
-class SteamaSmsNotifier extends AbstractSharedCommand
-{
+class SteamaSmsNotifier extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 2;
 
@@ -49,8 +48,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         $this->smsService = $smsService;
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
-    {
+    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
             ->each(function ($steamaTransaction) use ($smsNotifiedCustomers, $customers) {
                 $smsNotifiedCustomers = $smsNotifiedCustomers->where(
@@ -75,9 +73,11 @@ class SteamaSmsNotifier extends AbstractSharedCommand
                 ) {
                     return true;
                 }
-                $this->smsService->sendSms($steamaTransaction->thirdPartyTransaction->transaction,
+                $this->smsService->sendSms(
+                    $steamaTransaction->thirdPartyTransaction->transaction,
                     SmsTypes::TRANSACTION_CONFIRMATION,
-                    SmsConfigs::class);
+                    SmsConfigs::class
+                );
 
                 $this->steamaSmsNotifiedCustomerService->createTransactionSmsNotify(
                     $notifyCustomer->customer_id,
@@ -88,8 +88,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin)
-    {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin) {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
@@ -109,9 +108,11 @@ class SteamaSmsNotifier extends AbstractSharedCommand
             ) {
                 return true;
             }
-            $this->smsService->sendSms($customer,
+            $this->smsService->sendSms(
+                $customer,
                 SteamaSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
-                SteamaSmsConfig::class);
+                SteamaSmsConfig::class
+            );
 
             $this->steamaSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
 
@@ -119,8 +120,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand
         });
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

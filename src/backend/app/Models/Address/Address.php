@@ -21,8 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int         $owner_id
  * @property string      $owner_type
  */
-class Address extends BaseModel
-{
+class Address extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'address';
@@ -31,50 +30,41 @@ class Address extends BaseModel
         'city_id' => 'required|exists:cities,id',
     ];
 
-    public function city(): BelongsTo
-    {
+    public function city(): BelongsTo {
         return $this->belongsTo(City::class);
     }
 
     // client & company
-    public function owner(): MorphTo
-    {
+    public function owner(): MorphTo {
         return $this->morphTo();
     }
 
-    public function geo(): MorphOne
-    {
+    public function geo(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 
-    public function setOwner(int $ownerId, string $ownerType): void
-    {
+    public function setOwner(int $ownerId, string $ownerType): void {
         $this->owner_id = $ownerId;
         $this->owner_type = $ownerType;
     }
 
-    public function setCityId(int $cityId): void
-    {
+    public function setCityId(int $cityId): void {
         $this->city_id = $cityId;
     }
 
-    public function setPhone(?string $phone): void
-    {
+    public function setPhone(?string $phone): void {
         $this->phone = $phone;
     }
 
-    public function setEmail(?string $email): void
-    {
+    public function setEmail(?string $email): void {
         $this->email = $email;
     }
 
-    public function setIsPrimary(bool $isPrimary): void
-    {
+    public function setIsPrimary(bool $isPrimary): void {
         $this->is_primary = $isPrimary;
     }
 
-    public function setStreet(?string $street): void
-    {
+    public function setStreet(?string $street): void {
         $this->street = $street;
     }
 }

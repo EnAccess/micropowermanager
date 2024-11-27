@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\CalinSmartMeter\Helpers\ApiHelpers;
 use Inensus\CalinSmartMeter\Services\CalinSmartCredentialService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'calin-smart-meter:install';
     protected $description = 'Install CalinSmartMeter Package';
 
@@ -18,16 +17,14 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing CalinSmartMeter Integration Package\n');
         $this->apiHelpers->registerCalinMeterManufacturer();
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider",
@@ -35,14 +32,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function publishVueFiles()
-    {
+    private function publishVueFiles() {
         $this->info('Copying vue files\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider",
@@ -50,8 +45,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'CalinSmartMeter',
             'composer_name' => 'inensus/calin-smart-meter',

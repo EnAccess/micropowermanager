@@ -10,15 +10,12 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @implements IBaseService<MeterConsumption>
  */
-class MeterConsumptionService implements IBaseService
-{
+class MeterConsumptionService implements IBaseService {
     public function __construct(
         private MeterConsumption $meterConsumption,
-    ) {
-    }
+    ) {}
 
-    public function getByMeter(Meter $meter, $start, $end): Collection|array
-    {
+    public function getByMeter(Meter $meter, $start, $end): Collection|array {
         return $this->meterConsumption->newQuery()
             ->where('meter_id', $meter->id)->whereBetween(
                 'reading_date',
@@ -26,28 +23,23 @@ class MeterConsumptionService implements IBaseService
             )->orderBy('reading_date')->get();
     }
 
-    public function getById(int $id): MeterConsumption
-    {
+    public function getById(int $id): MeterConsumption {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create(array $data): MeterConsumption
-    {
+    public function create(array $data): MeterConsumption {
         throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, array $data): MeterConsumption
-    {
+    public function update($model, array $data): MeterConsumption {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection
-    {
+    public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 }

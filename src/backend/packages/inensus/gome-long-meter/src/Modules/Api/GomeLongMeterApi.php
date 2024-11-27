@@ -10,19 +10,16 @@ use Illuminate\Support\Facades\Log;
 use Inensus\GomeLongMeter\Models\GomeLongTransaction;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
 
-class GomeLongMeterApi implements IManufacturerAPI
-{
+class GomeLongMeterApi implements IManufacturerAPI {
     public const API_CALL_TOKEN_GENERATION = '/EKPower';
 
     public function __construct(
         private GomeLongCredentialService $credentialService,
         private GomeLongTransaction $gomeLongTransaction,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -60,8 +57,7 @@ class GomeLongMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

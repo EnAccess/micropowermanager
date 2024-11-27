@@ -4,8 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\ClustersDashboardCacheDataService;
 
-class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
-{
+class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand {
     protected $signature = 'update:cachedClustersDashboardData';
     protected $description = 'Update Clusters Dashboard Data';
 
@@ -15,8 +14,7 @@ class ClustersDashboardCacheDataGenerator extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->clustersDashboardCacheDataService->setData();
     }
 }

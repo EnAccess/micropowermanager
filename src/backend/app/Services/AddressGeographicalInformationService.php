@@ -9,23 +9,19 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<GeographicalInformation, Address>
  */
-class AddressGeographicalInformationService implements IAssignationService
-{
+class AddressGeographicalInformationService implements IAssignationService {
     private GeographicalInformation $geographicInformation;
     private Address $address;
 
-    public function setAssigned($assigned): void
-    {
+    public function setAssigned($assigned): void {
         $this->geographicInformation = $assigned;
     }
 
-    public function setAssignee($assignee): void
-    {
+    public function setAssignee($assignee): void {
         $this->address = $assignee;
     }
 
-    public function assign(): GeographicalInformation
-    {
+    public function assign(): GeographicalInformation {
         $this->geographicInformation->owner()->associate($this->address);
 
         return $this->geographicInformation;

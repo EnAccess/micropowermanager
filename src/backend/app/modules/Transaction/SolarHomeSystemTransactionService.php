@@ -5,11 +5,8 @@ namespace MPM\Transaction;
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
 
-class SolarHomeSystemTransactionService
-{
-    public function __construct(private Transaction $transaction)
-    {
-    }
+class SolarHomeSystemTransactionService {
+    public function __construct(private Transaction $transaction) {}
 
     public function search(
         ?string $serialNumber = null,

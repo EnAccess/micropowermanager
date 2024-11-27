@@ -20,15 +20,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $direction
  * @property int    $sender_id
  */
-class Sms extends BaseModel
-{
-    public function trigger(): MorphTo
-    {
+class Sms extends BaseModel {
+    public function trigger(): MorphTo {
         return $this->morphTo();
     }
 
-    public function address(): BelongsTo
-    {
+    public function address(): BelongsTo {
         return $this->belongsTo(Address::class, 'receiver', 'phone');
     }
 }

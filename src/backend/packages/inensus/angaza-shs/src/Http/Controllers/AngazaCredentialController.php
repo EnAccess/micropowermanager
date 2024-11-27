@@ -7,19 +7,14 @@ use Inensus\AngazaSHS\Http\Requests\AngazaCredentialRequest;
 use Inensus\AngazaSHS\Http\Resources\AngazaResource;
 use Inensus\AngazaSHS\Services\AngazaCredentialService;
 
-class AngazaCredentialController extends Controller
-{
-    public function __construct(private AngazaCredentialService $credentialService)
-    {
-    }
+class AngazaCredentialController extends Controller {
+    public function __construct(private AngazaCredentialService $credentialService) {}
 
-    public function show(): AngazaResource
-    {
+    public function show(): AngazaResource {
         return AngazaResource::make($this->credentialService->getCredentials());
     }
 
-    public function update(AngazaCredentialRequest $request): AngazaResource
-    {
+    public function update(AngazaCredentialRequest $request): AngazaResource {
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
             'client_id',

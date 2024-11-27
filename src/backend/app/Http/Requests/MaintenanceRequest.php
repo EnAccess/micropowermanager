@@ -4,15 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MaintenanceRequest extends FormRequest
-{
+class MaintenanceRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -21,8 +19,7 @@ class MaintenanceRequest extends FormRequest
      *
      * @return array#
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'title' => 'sometimes|string',
             'name' => 'required|min:3',
@@ -38,23 +35,19 @@ class MaintenanceRequest extends FormRequest
         ];
     }
 
-    public function getCityId(): int
-    {
+    public function getCityId(): int {
         return $this->input('city_id');
     }
 
-    public function getPhone(): ?string
-    {
+    public function getPhone(): ?string {
         return $this->input('phone');
     }
 
-    public function getStreet(): ?string
-    {
+    public function getStreet(): ?string {
         return $this->input('street');
     }
 
-    public function getEmail(): ?string
-    {
+    public function getEmail(): ?string {
         return $this->input('email');
     }
 }

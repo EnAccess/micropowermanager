@@ -17,8 +17,7 @@ use Inensus\SparkMeter\Services\TransactionService;
 use Inensus\SparkMeter\Sms\Senders\SparkSmsConfig;
 use Inensus\SparkMeter\Sms\SparkSmsTypes;
 
-class SparkMeterSmsNotifier extends AbstractSharedCommand
-{
+class SparkMeterSmsNotifier extends AbstractSharedCommand {
     use ScheduledPluginCommand;
     public const MPM_PLUGIN_ID = 2;
 
@@ -49,8 +48,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
         $this->smsService = $smsService;
     }
 
-    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers)
-    {
+    private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
         $this->smTransactionService->getSparkTransactions($transactionMin)
             ->each(function ($smTransaction) use (
                 $smsNotifiedCustomers,
@@ -77,9 +75,11 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
                 ) {
                     return true;
                 }
-                $this->smsService->sendSms($smTransaction->thirdPartyTransaction->transaction,
+                $this->smsService->sendSms(
+                    $smTransaction->thirdPartyTransaction->transaction,
                     SmsTypes::TRANSACTION_CONFIRMATION,
-                    SmsConfigs::class);
+                    SmsConfigs::class
+                );
                 $this->smSmsNotifiedCustomerService->createTransactionSmsNotify(
                     $notifyCustomer->customer_id,
                     $smTransaction->id
@@ -89,8 +89,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
             });
     }
 
-    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin)
-    {
+    private function sendLowBalanceWarningNotifySms($customers, $smsNotifiedCustomers, $lowBalanceMin) {
         $customers->each(function ($customer) use (
             $smsNotifiedCustomers
         ) {
@@ -110,17 +109,18 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand
             ) {
                 return true;
             }
-            $this->smsService->sendSms($customer,
+            $this->smsService->sendSms(
+                $customer,
                 SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER,
-                SparkSmsConfig::class);
+                SparkSmsConfig::class
+            );
             $this->smSmsNotifiedCustomerService->createLowBalanceSmsNotify($customer->customer_id);
 
             return true;
         });
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
             return;
         }

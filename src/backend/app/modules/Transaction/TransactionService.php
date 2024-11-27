@@ -15,8 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IAssociative<Transaction>
  * @implements IBaseService<Transaction>
  */
-class TransactionService implements IAssociative, IBaseService
-{
+class TransactionService implements IAssociative, IBaseService {
     public const YESTERDAY = 0;
     public const SAME_DAY_LAST_WEEK = 1;
     public const LAST_SEVEN_DAYS = 2;
@@ -30,11 +29,9 @@ class TransactionService implements IAssociative, IBaseService
         private SolarHomeSystemTransactionService $solarHomeSystemTransactionService,
         private ApplianceTransactionService $applianceTransactionService,
         private EBikeTransactionService $eBikeTransactionService,
-    ) {
-    }
+    ) {}
 
-    private function getTotalAmountOfConfirmedTransaction($transactionIds)
-    {
+    private function getTotalAmountOfConfirmedTransaction($transactionIds) {
         return $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
             '*',
@@ -44,8 +41,7 @@ class TransactionService implements IAssociative, IBaseService
             ->sum('amount');
     }
 
-    private function getTransactionCountByStatus($transactionIds, bool $status): int
-    {
+    private function getTransactionCountByStatus($transactionIds, bool $status): int {
         $status = $status === true ? 1 : 0;
 
         return $this->transaction->newQuery()->whereHasMorph(
@@ -57,8 +53,7 @@ class TransactionService implements IAssociative, IBaseService
             ->count();
     }
 
-    private function getPercentage(int $base, int $wanted, bool $baseShouldGreater = true): float
-    {
+    private function getPercentage(int $base, int $wanted, bool $baseShouldGreater = true): float {
         if ($base === 0 || $wanted === 0) {
             return 0;
         }
@@ -72,8 +67,7 @@ class TransactionService implements IAssociative, IBaseService
         return round($percentage - 100, 2);
     }
 
-    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService
-    {
+    public function getRelatedService(string $type): ApplianceTransactionService|MeterTransactionService|SolarHomeSystemTransactionService|EBikeTransactionService {
         switch ($type) {
             case SolarHomeSystem::RELATION_NAME:
                 return $this->solarHomeSystemTransactionService;
@@ -86,8 +80,7 @@ class TransactionService implements IAssociative, IBaseService
         }
     }
 
-    public function determinePeriod($period): ?array
-    {
+    public function determinePeriod($period): ?array {
         $comparisonPeriod = null;
         switch ($period) {
             case self::YESTERDAY:
@@ -149,8 +142,7 @@ class TransactionService implements IAssociative, IBaseService
         return $comparisonPeriod;
     }
 
-    public function getByComparisonPeriod(array $comparisonPeriod): array
-    {
+    public function getByComparisonPeriod(array $comparisonPeriod): array {
         $currentTransactions = $this->transaction->newQuery()->whereBetween(
             'created_at',
             [
@@ -174,8 +166,7 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function getAnalysis($transactionIds): ?array
-    {
+    public function getAnalysis($transactionIds): ?array {
         if (count($transactionIds) === 0) {
             return null;
         }
@@ -202,8 +193,7 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function getEmptyCompareResult(): array
-    {
+    public function getEmptyCompareResult(): array {
         return [
             'total' => 0,
             'amount' => 0,
@@ -214,8 +204,7 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function comparePeriods(array $currentTransactions, array $pastTransactions): array
-    {
+    public function comparePeriods(array $currentTransactions, array $pastTransactions): array {
         $totalPercentage = $this->getPercentage($pastTransactions['total'], $currentTransactions['total'], false);
         $confirmationPercentage = round(
             $currentTransactions['confirmedPercentage'] - $pastTransactions['confirmedPercentage'],
@@ -247,18 +236,15 @@ class TransactionService implements IAssociative, IBaseService
         ];
     }
 
-    public function make(array $transactionData): Transaction
-    {
+    public function make(array $transactionData): Transaction {
         return $this->transaction->newQuery()->make($transactionData);
     }
 
-    public function save($transaction): bool
-    {
+    public function save($transaction): bool {
         return $transaction->save();
     }
 
-    public function getById(int $id): Transaction
-    {
+    public function getById(int $id): Transaction {
         return $this->transaction->newQuery()->with([
             'token',
             'originalTransaction',
@@ -268,8 +254,7 @@ class TransactionService implements IAssociative, IBaseService
             'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
         }
@@ -277,18 +262,15 @@ class TransactionService implements IAssociative, IBaseService
         return $this->transaction->newQuery()->latest()->get();
     }
 
-    public function create(array $data): Transaction
-    {
+    public function create(array $data): Transaction {
         throw new \Exception('Method create() not yet implemented.');
     }
 
-    public function update($model, array $data): Transaction
-    {
+    public function update($model, array $data): Transaction {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

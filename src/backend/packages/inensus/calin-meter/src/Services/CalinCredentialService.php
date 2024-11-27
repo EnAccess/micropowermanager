@@ -4,8 +4,7 @@ namespace Inensus\CalinMeter\Services;
 
 use Inensus\CalinMeter\Models\CalinCredential;
 
-class CalinCredentialService
-{
+class CalinCredentialService {
     private $credential;
 
     public function __construct(
@@ -17,21 +16,18 @@ class CalinCredentialService
     /**
      * This function uses one time on installation of the package.
      */
-    public function createCredentials()
-    {
+    public function createCredentials() {
         return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
             'user_id' => null,
             'api_key' => null,
         ]);
     }
 
-    public function getCredentials()
-    {
+    public function getCredentials() {
         return $this->credential->newQuery()->first();
     }
 
-    public function updateCredentials($data)
-    {
+    public function updateCredentials($data) {
         $credential = $this->credential->newQuery()->firstOrFail();
         $credential->update([
             'user_id' => $data['user_id'],

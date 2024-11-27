@@ -7,28 +7,33 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Support\Facades\Artisan;
 
-trait RefreshMultipleDatabases
-{
+trait RefreshMultipleDatabases {
     use RefreshDatabase;
 
-    protected function refreshInMemoryDatabase()
-    {
-        Artisan::call('migrate:fresh',
-            ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']);
-        Artisan::call('migrate:fresh',
-            ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']);
+    protected function refreshInMemoryDatabase() {
+        Artisan::call(
+            'migrate:fresh',
+            ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']
+        );
+        Artisan::call(
+            'migrate:fresh',
+            ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']
+        );
         app(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
     }
 
-    protected function refreshTestDatabase()
-    {
+    protected function refreshTestDatabase() {
         if (!RefreshDatabaseState::$migrated) {
-            Artisan::call('migrate:fresh',
-                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']);
+            Artisan::call(
+                'migrate:fresh',
+                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']
+            );
 
-            Artisan::call('migrate:fresh',
-                ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']);
+            Artisan::call(
+                'migrate:fresh',
+                ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']
+            );
 
             app(Kernel::class)->setArtisan(null);
 

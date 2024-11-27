@@ -9,8 +9,7 @@ use Inensus\SteamaMeter\Exceptions\SteamaApiResponseException;
 use Inensus\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 
-class SteamaMeterReadingService
-{
+class SteamaMeterReadingService {
     private $steamaMeter;
     private $steamaApi;
     private $meterConsumtion;
@@ -18,7 +17,6 @@ class SteamaMeterReadingService
     public function __construct(
         SteamaMeter $steamaMeter,
         SteamaMeterApiClient $steamaApi,
-
         MeterConsumption $meterConsumption,
     ) {
         $this->steamaMeter = $steamaMeter;
@@ -26,8 +24,7 @@ class SteamaMeterReadingService
         $this->meterConsumtion = $meterConsumption;
     }
 
-    public function getMeterReadingsThroughHourlyWorkingJob()
-    {
+    public function getMeterReadingsThroughHourlyWorkingJob() {
         $now = Carbon::now()->toIso8601ZuluString();
         $oneHourEarlier = Carbon::now()->subHours(10)->toIso8601ZuluString();
         $this->steamaMeter->newQuery()->get()->each(function ($meter) use ($now, $oneHourEarlier) {
@@ -42,7 +39,8 @@ class SteamaMeterReadingService
                                 [
                                     'meter_id' => $meter->mpm_meter_id,
                                     'reading_date' => Carbon::parse($reading['timestamp'])->format('Y-m-d H:i:s'),
-                                ], [
+                                ],
+                                [
                                     'meter_id' => $meter->mpm_meter_id,
                                     'total_consumption' => $reading['reading'],
                                     'consumption' => $reading['usage_amount'],

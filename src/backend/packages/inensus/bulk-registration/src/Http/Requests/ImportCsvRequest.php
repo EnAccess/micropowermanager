@@ -4,15 +4,13 @@ namespace Inensus\BulkRegistration\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ImportCsvRequest extends FormRequest
-{
+class ImportCsvRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return true;
     }
 
@@ -21,8 +19,7 @@ class ImportCsvRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return ['csv' => 'required|mimes:csv,txt'];
     }
 }

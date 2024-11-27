@@ -16,10 +16,14 @@ Route::group([
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', 'AgentCustomerController@index');
             Route::get('/search', 'AgentCustomerController@search');
-            Route::get('/{customerId}/graph/{period}/{limit?}/{order?}',
-                'AgentCustomersPaymentHistoryController@show')->where('customerId', '[0-9]+');
-            Route::get('/graph/{period}/{limit?}/{order?}',
-                'AgentCustomersPaymentHistoryController@index');
+            Route::get(
+                '/{customerId}/graph/{period}/{limit?}/{order?}',
+                'AgentCustomersPaymentHistoryController@show'
+            )->where('customerId', '[0-9]+');
+            Route::get(
+                '/graph/{period}/{limit?}/{order?}',
+                'AgentCustomersPaymentHistoryController@index'
+            );
         });
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/', 'AgentTransactionsController@index');

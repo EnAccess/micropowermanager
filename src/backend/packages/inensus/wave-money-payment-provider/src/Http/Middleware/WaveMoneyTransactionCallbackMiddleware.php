@@ -11,14 +11,10 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Api\Data\TransactionCallbackData;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 
-class WaveMoneyTransactionCallbackMiddleware
-{
-    public function __construct(private WaveMoneyTransactionService $transactionService)
-    {
-    }
+class WaveMoneyTransactionCallbackMiddleware {
+    public function __construct(private WaveMoneyTransactionService $transactionService) {}
 
-    public function handle(Request $request, \Closure $next)
-    {
+    public function handle(Request $request, \Closure $next) {
         $mapper = new TransactionCallbackRequestMapper();
         $callbackData = $mapper->getMappedObject($request);
         try {

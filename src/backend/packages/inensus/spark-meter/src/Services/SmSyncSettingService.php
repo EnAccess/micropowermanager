@@ -8,21 +8,18 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSyncSetting;
 
-class SmSyncSettingService
-{
+class SmSyncSettingService {
     private $syncSetting;
     private $setting;
     private $syncActionService;
 
-    public function __construct(SmSyncSetting $syncSetting, SmSetting $setting, SmSyncActionService $syncActionService)
-    {
+    public function __construct(SmSyncSetting $syncSetting, SmSetting $setting, SmSyncActionService $syncActionService) {
         $this->syncSetting = $syncSetting;
         $this->setting = $setting;
         $this->syncActionService = $syncActionService;
     }
 
-    public function createDefaultSettings()
-    {
+    public function createDefaultSettings() {
         $dayInterval = CarbonInterval::make('1day');
         $fiveMinInterval = CarbonInterval::make('5minute');
 
@@ -136,8 +133,7 @@ class SmSyncSettingService
         }
     }
 
-    public function updateSyncSettings($syncSettings)
-    {
+    public function updateSyncSettings($syncSettings) {
         foreach ($syncSettings as $setting) {
             $syncSetting = $this->syncSetting->newQuery()->find($setting['id']);
             $intervalStr = $setting['sync_in_value_num'].$setting['sync_in_value_str'];
@@ -162,13 +158,11 @@ class SmSyncSettingService
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettings()
-    {
+    public function getSyncSettings() {
         return $this->syncSetting->newQuery()->get();
     }
 
-    public function getSyncSettingsByActionName($actionName)
-    {
+    public function getSyncSettingsByActionName($actionName) {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();
         } catch (ModelNotFoundException $exception) {

@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * @property int $id
  */
-class SmsAndroidSetting extends BaseModel
-{
+class SmsAndroidSetting extends BaseModel {
     protected $table = 'sms_android_settings';
 
-    public static function getResponsible()
-    {
+    public static function getResponsible() {
         $smsAndroidSettings = SmsAndroidSetting::all();
         if ($smsAndroidSettings->count()) {
             try {
@@ -30,8 +28,7 @@ class SmsAndroidSetting extends BaseModel
         }
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 }

@@ -28,8 +28,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ClusterTest extends TestCase
-{
+class ClusterTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -47,8 +46,7 @@ class ClusterTest extends TestCase
     private $transaction;
     private $clusterIds = [];
 
-    public function testUserGetsClusterListForDashboard()
-    {
+    public function testUserGetsClusterListForDashboard() {
         $clusterCount = 1;
         $meterCount = 2;
         $transactionCount = 3;
@@ -60,8 +58,7 @@ class ClusterTest extends TestCase
         $this->assertEquals($response['data'][0]['clusterData']['meterCount'], $meterCount);
     }
 
-    public function testUserGetsClusterByIdForDashboard()
-    {
+    public function testUserGetsClusterByIdForDashboard() {
         $this->createTestData();
         $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s', $this->clusterIds[0]));
         $response->assertStatus(200);
@@ -69,15 +66,13 @@ class ClusterTest extends TestCase
         $this->assertEquals($response['data']['meterCount'], 1);
     }
 
-    public function testUserGetsClusterGeoDataById()
-    {
+    public function testUserGetsClusterGeoDataById() {
         $this->createTestData();
         $response = $this->actingAs($this->user)->get(sprintf('/api/clusters/%s/geo', $this->clusterIds[0]));
         $response->assertStatus(200);
     }
 
-    public function testUserAddsNewCluster()
-    {
+    public function testUserAddsNewCluster() {
         $this->createTestData();
         $clusterData = [
             'name' => 'test cluster',
@@ -90,8 +85,7 @@ class ClusterTest extends TestCase
         $this->assertEquals(Cluster::query()->count(), count($this->clusterIds) + 1);
     }
 
-    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $meterCount = 1, $transactionCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->city = CityFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
@@ -211,8 +205,7 @@ class ClusterTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -220,8 +213,7 @@ class ClusterTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
     }

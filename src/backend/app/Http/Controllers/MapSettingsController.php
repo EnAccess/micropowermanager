@@ -7,22 +7,18 @@ use App\Http\Resources\ApiResource;
 use App\Models\MapSettings;
 use App\Services\BingMapApiService;
 
-class MapSettingsController extends Controller
-{
+class MapSettingsController extends Controller {
     private $bingMapApiService;
 
-    public function __construct(BingMapApiService $bingMapApiService)
-    {
+    public function __construct(BingMapApiService $bingMapApiService) {
         $this->bingMapApiService = $bingMapApiService;
     }
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         return new ApiResource(MapSettings::all());
     }
 
-    public function update($id): ApiResource
-    {
+    public function update($id): ApiResource {
         $mapSettings = MapSettings::query()
             ->updateOrCreate(
                 ['id' => $id],
@@ -38,8 +34,7 @@ class MapSettingsController extends Controller
         return new ApiResource([$mapSettings->fresh()]);
     }
 
-    public function checkBingApiKey($key): ApiResource
-    {
+    public function checkBingApiKey($key): ApiResource {
         try {
             $apiAuthentication = $this->bingMapApiService->checkAuthenticationKey($key);
         } catch (InvalidBingApiKeyException $exception) {

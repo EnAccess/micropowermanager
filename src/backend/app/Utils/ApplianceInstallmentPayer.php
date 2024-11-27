@@ -13,8 +13,7 @@ use App\Services\ApplianceRateService;
 use Illuminate\Support\Collection;
 use MPM\Device\DeviceService;
 
-class ApplianceInstallmentPayer
-{
+class ApplianceInstallmentPayer {
     private Person $customer;
     private Transaction $transaction;
     public array $paidRates = [];
@@ -26,19 +25,16 @@ class ApplianceInstallmentPayer
         private ApplianceRateService $applianceRateService,
         private AppliancePaymentService $appliancePaymentService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
-    public function initialize(TransactionDataContainer $transactionData): void
-    {
+    public function initialize(TransactionDataContainer $transactionData): void {
         $this->transaction = $transactionData->transaction;
         $this->consumableAmount = $this->transaction->amount;
         $this->customer = $this->getCustomerByDeviceSerial($this->transaction->message);
     }
 
     // This function pays the installments for the device number that provided in transaction
-    public function payInstallmentsForDevice(TransactionDataContainer $container)
-    {
+    public function payInstallmentsForDevice(TransactionDataContainer $container) {
         $customer = $container->appliancePerson->person;
         $this->appliancePaymentService->setPaymentAmount($container->transaction->amount);
         $installments = $container->appliancePerson->rates;
@@ -47,8 +43,7 @@ class ApplianceInstallmentPayer
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
-    public function payInstallments()
-    {
+    public function payInstallments() {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
         $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds);
@@ -57,8 +52,7 @@ class ApplianceInstallmentPayer
         return $this->transaction->amount;
     }
 
-    public function consumeAmount()
-    {
+    public function consumeAmount() {
         $installments = $this->getInstallments($this->customer);
         $installments->each(function ($installment) {
             if ($installment->remaining > $this->consumableAmount) {// money is not enough to cover the
@@ -76,8 +70,7 @@ class ApplianceInstallmentPayer
         return $this->consumableAmount;
     }
 
-    private function getCustomerByDeviceSerial(string $serialNumber): Person
-    {
+    private function getCustomerByDeviceSerial(string $serialNumber): Person {
         $device = $this->deviceService->getBySerialNumber($serialNumber);
 
         if (!$device) {
@@ -87,15 +80,13 @@ class ApplianceInstallmentPayer
         return $device->person;
     }
 
-    private function getInstallments($customer)
-    {
+    private function getInstallments($customer) {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans);
     }
 
-    private function pay(Collection $installments, mixed $customer): void
-    {
+    private function pay(Collection $installments, mixed $customer): void {
         $installments->map(function ($installment) use ($customer) {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 // add payment history for the installment

@@ -6,8 +6,7 @@ use Illuminate\Console\Command;
 use Inensus\AngazaSHS\Services\AngazaCredentialService;
 use Inensus\AngazaSHS\Services\ManufacturerService;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'angaza-shs:install';
     protected $description = 'Install AngazaSHS Package';
 
@@ -18,8 +17,7 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing AngazaSHS Integration Package\n');
         $this->manufacturerService->register();
         $this->credentialService->createCredentials();

@@ -9,13 +9,11 @@ use Inensus\BulkRegistration\Models\CsvData;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ImportCsv extends TestCase
-{
+class ImportCsv extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isUserSentCsv()
-    {
+    public function isUserSentCsv() {
         $this->withoutExceptionHandling();
         $user = factory(User::class)->create();
 
@@ -40,8 +38,7 @@ class ImportCsv extends TestCase
         ]);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

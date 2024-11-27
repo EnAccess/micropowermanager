@@ -10,15 +10,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<AgentAssignedAppliances>
  */
-class AgentAssignedApplianceService implements IBaseService
-{
+class AgentAssignedApplianceService implements IBaseService {
     public function __construct(
         private AgentAssignedAppliances $agentAssignedAppliance,
-    ) {
-    }
+    ) {}
 
-    public function create(array $applianceData): AgentAssignedAppliances
-    {
+    public function create(array $applianceData): AgentAssignedAppliances {
         return $this->agentAssignedAppliance->newQuery()->create([
             'agent_id' => $applianceData['agent_id'],
             'user_id' => $applianceData['user_id'],
@@ -27,23 +24,19 @@ class AgentAssignedApplianceService implements IBaseService
         ]);
     }
 
-    public function getById(int $id): AgentAssignedAppliances
-    {
+    public function getById(int $id): AgentAssignedAppliances {
         return $this->agentAssignedAppliance->newQuery()->with('applianceType')->find($id);
     }
 
-    public function update($model, array $data): AgentAssignedAppliances
-    {
+    public function update($model, array $data): AgentAssignedAppliances {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentAssignedAppliance->newQuery();
 
         if ($agentId) {

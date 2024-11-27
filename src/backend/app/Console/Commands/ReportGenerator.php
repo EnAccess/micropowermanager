@@ -5,18 +5,15 @@ namespace App\Console\Commands;
 use App\Http\Controllers\Reports;
 use Carbon\Carbon;
 
-class ReportGenerator extends AbstractSharedCommand
-{
+class ReportGenerator extends AbstractSharedCommand {
     protected $signature = 'reports:city-revenue {type} {--start-date=} {--company-id=}';
     protected $description = 'Creates city revenue reports';
 
-    public function __construct(private Reports $reports)
-    {
+    public function __construct(private Reports $reports) {
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $startDay = Carbon::now()->format('Y-m-d');
         if ($this->option('start-date') != '') {
             $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');

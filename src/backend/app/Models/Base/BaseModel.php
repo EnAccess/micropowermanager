@@ -11,13 +11,11 @@ use Illuminate\Database\Eloquent\Model;
  * logic and define interaction between entities.
  * "Most" models will extend this base model.
  */
-abstract class BaseModel extends Model
-{
+abstract class BaseModel extends Model {
     protected $guarded = ['id'];
     public static $rules = [];
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         parent::__construct($attributes);
         $this->setConnection('shard');
     }

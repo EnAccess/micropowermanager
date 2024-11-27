@@ -9,8 +9,7 @@ use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
 
-class PersonObserver
-{
+class PersonObserver {
     private $apiHelpers;
     private $stmCustomerService;
     private $stmMeterService;
@@ -34,8 +33,7 @@ class PersonObserver
         $this->steamaApi = $steamaApi;
     }
 
-    public function updated(Person $person)
-    {
+    public function updated(Person $person) {
         $stmCustomer = $this->stmCustomer->newQuery()->with('site')->where('mpm_customer_id', $person->id)->first();
 
         if ($stmCustomer) {

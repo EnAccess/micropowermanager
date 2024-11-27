@@ -5,19 +5,16 @@ namespace Inensus\SparkMeter\Services;
 use Inensus\SparkMeter\Models\SmSetting;
 use Inensus\SparkMeter\Models\SmSmsSetting;
 
-class SmSmsSettingService
-{
+class SmSmsSettingService {
     private $smsSetting;
     private $setting;
 
-    public function __construct(SmSmsSetting $smsSetting, SmSetting $setting)
-    {
+    public function __construct(SmSmsSetting $smsSetting, SmSetting $setting) {
         $this->smsSetting = $smsSetting;
         $this->setting = $setting;
     }
 
-    public function createDefaultSettings()
-    {
+    public function createDefaultSettings() {
         $smsTransaction = $this->smsSetting->newQuery()->where('state', 'Transactions')->first();
         if (!$smsTransaction) {
             $smsSetting = $this->setting->newQuery()->make();
@@ -40,8 +37,7 @@ class SmSmsSettingService
         }
     }
 
-    public function updateSmsSettings($smsSettings)
-    {
+    public function updateSmsSettings($smsSettings) {
         foreach ($smsSettings as $key => $setting) {
             $smsSetting = $this->smsSetting->newQuery()->find($setting['id']);
             if ($smsSetting) {
@@ -55,8 +51,7 @@ class SmSmsSettingService
         return $this->smsSetting->newQuery()->get();
     }
 
-    public function getSmsSettings()
-    {
+    public function getSmsSettings() {
         return $this->smsSetting->newQuery()->get();
     }
 }

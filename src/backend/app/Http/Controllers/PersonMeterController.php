@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Services\PersonMeterService;
 
-class PersonMeterController
-{
+class PersonMeterController {
     public function __construct(
         private PersonMeterService $personMeterService,
-    ) {
-    }
+    ) {}
 
     /**
      * @group    People
@@ -25,8 +23,7 @@ class PersonMeterController
      *
      * @responseFile responses/people/person.meter.tariff.json
      */
-    public function show(int $personId): ApiResource
-    {
+    public function show(int $personId): ApiResource {
         return ApiResource::make($this->personMeterService->getPersonMeters($personId));
     }
 }

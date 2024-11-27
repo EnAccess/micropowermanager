@@ -5,18 +5,15 @@ namespace App\Console\Commands;
 use App\Models\Address\Address;
 use App\Models\Meter\MeterParameter;
 
-class AddMeterAddress extends AbstractSharedCommand
-{
+class AddMeterAddress extends AbstractSharedCommand {
     protected $signature = 'meters:addAddress';
     protected $description = 'Creates an address entry for all every registered meter. Sets them all to village 1';
 
-    public function __construct(private MeterParameter $meterParameter, private Address $address)
-    {
+    public function __construct(private MeterParameter $meterParameter, private Address $address) {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void
-    {
+    public function runInCompanyScope(): void {
         $usedMeters = $this->meterParameter::all();
 
         foreach ($usedMeters as $meter) {

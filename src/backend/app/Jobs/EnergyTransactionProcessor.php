@@ -8,13 +8,11 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Log;
 
-class EnergyTransactionProcessor extends AbstractJob
-{
+class EnergyTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'energy';
 
-    public function __construct(private $transactionId)
-    {
+    public function __construct(private $transactionId) {
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
@@ -26,8 +24,7 @@ class EnergyTransactionProcessor extends AbstractJob
      *
      * @throws TransactionNotInitializedException
      */
-    public function executeJob()
-    {
+    public function executeJob() {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
@@ -47,15 +44,13 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-    private function initializeTransaction()
-    {
+    private function initializeTransaction() {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'energy';
         $this->transaction->save();
     }
 
-    private function initializeTransactionDataContainer(): TransactionDataContainer
-    {
+    private function initializeTransactionDataContainer(): TransactionDataContainer {
         try {
             return TransactionDataContainer::initialize($this->transaction);
         } catch (\Exception $e) {
@@ -64,8 +59,7 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-    private function checkForMinimumPurchaseAmount(TransactionDataContainer $transactionData): void
-    {
+    private function checkForMinimumPurchaseAmount(TransactionDataContainer $transactionData): void {
         $minimumPurchaseAmount = $this->getTariffMinimumPurchaseAmount($transactionData);
 
         if ($minimumPurchaseAmount > 0) {
@@ -80,8 +74,7 @@ class EnergyTransactionProcessor extends AbstractJob
         }
     }
 
-    private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer
-    {
+    private function payApplianceInstallments(TransactionDataContainer $container): TransactionDataContainer {
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
         $applianceInstallmentPayer->initialize($container);
         $container->transaction->amount = $applianceInstallmentPayer->payInstallments();
@@ -91,8 +84,7 @@ class EnergyTransactionProcessor extends AbstractJob
         return $container;
     }
 
-    private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer
-    {
+    private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer {
         if ($transactionData->transaction->amount > 0) {
             // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
@@ -103,13 +95,11 @@ class EnergyTransactionProcessor extends AbstractJob
         return $transactionData;
     }
 
-    private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void
-    {
+    private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void {
         event('transaction.successful', [$transactionData->transaction]);
     }
 
-    private function processToken(TransactionDataContainer $transactionData): void
-    {
+    private function processToken(TransactionDataContainer $transactionData): void {
         $kWhToBeCharged = 0.0;
         $transactionData->chargedEnergy = round($kWhToBeCharged, 1);
 
@@ -118,8 +108,7 @@ class EnergyTransactionProcessor extends AbstractJob
             ->onQueue(config('services.queues.token'));
     }
 
-    private function getTariffMinimumPurchaseAmount($transactionData)
-    {
+    private function getTariffMinimumPurchaseAmount($transactionData) {
         return $transactionData->tariff->minimum_purchase_amount;
     }
 }

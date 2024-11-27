@@ -13,8 +13,7 @@ use App\Models\Transaction\Transaction;
 use App\Models\User;
 use MPM\CustomBulkRegistration\Abstract\CreatorService;
 
-class AppliancePersonService extends CreatorService
-{
+class AppliancePersonService extends CreatorService {
     private $newTarifName;
     private ?float $price = null;
     private $minimumAmount;
@@ -27,13 +26,11 @@ class AppliancePersonService extends CreatorService
     private $createdAt;
     private $lastPaymentDate;
 
-    public function __construct(AssetPerson $appliancePerson)
-    {
+    public function __construct(AssetPerson $appliancePerson) {
         parent::__construct($appliancePerson);
     }
 
-    public function resolveCsvDataFromComingRow($csvData)
-    {
+    public function resolveCsvDataFromComingRow($csvData) {
         $creatorId = User::query()->first()->id;
         $appliancePersonConfig = [
             'asset_id' => 'asset_id',
@@ -75,8 +72,7 @@ class AppliancePersonService extends CreatorService
         return $this->createRelatedDataIfDoesNotExists($appliancePersonData);
     }
 
-    private function calculateRateCount($price, $downPayment, $minimumPaymentAmount): int
-    {
+    private function calculateRateCount($price, $downPayment, $minimumPaymentAmount): int {
         $rawCost = $price - $downPayment;
         $rateCount = 0;
 
@@ -88,8 +84,7 @@ class AppliancePersonService extends CreatorService
         return $rateCount;
     }
 
-    public function createRelatedDataIfDoesNotExists($appliancePersonData)
-    {
+    public function createRelatedDataIfDoesNotExists($appliancePersonData) {
         $creatorId = User::query()->first()->id;
         $currency = MainSettings::query()->first() ? MainSettings::query()->first()->currency : 'MTn';
         $newTariffData = [
@@ -217,8 +212,7 @@ class AppliancePersonService extends CreatorService
         return $appliancePerson;
     }
 
-    private function updateRateRemaining($id, $amount): ?AssetRate
-    {
+    private function updateRateRemaining($id, $amount): ?AssetRate {
         /** @var AssetRate|null $applianceRate */
         $applianceRate = AssetRate::query()->find($id);
         $applianceRate->remaining -= $amount;
@@ -228,8 +222,7 @@ class AppliancePersonService extends CreatorService
         return $applianceRate;
     }
 
-    private function createPaymentHistory($amount, $buyer, $applianceRate, $transaction): void
-    {
+    private function createPaymentHistory($amount, $buyer, $applianceRate, $transaction): void {
         event(
             'payment.successful',
             [

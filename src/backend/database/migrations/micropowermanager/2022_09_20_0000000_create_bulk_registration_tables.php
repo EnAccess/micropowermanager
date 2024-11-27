@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
-    {
+    public function up() {
         if (!Schema::connection('shard')->hasTable('bulk_registration_csv_datas')) {
             Schema::connection('shard')->create('bulk_registration_csv_datas', function (Blueprint $table) {
                 $table->increments('id');
@@ -18,8 +17,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('bulk_registration_csv_datas');
     }
 };

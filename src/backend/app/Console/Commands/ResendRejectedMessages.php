@@ -7,8 +7,7 @@ use App\Models\SmsAndroidSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ResendRejectedMessages extends AbstractSharedCommand
-{
+class ResendRejectedMessages extends AbstractSharedCommand {
     /**
      * The name and signature of the console command.
      *
@@ -28,13 +27,11 @@ class ResendRejectedMessages extends AbstractSharedCommand
      *
      * @return void
      */
-    public function __construct(private Sms $sms)
-    {
+    public function __construct(private Sms $sms) {
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $amountToSend = $this->argument('amount');
         $messagesToSend = $this->sms
             ->where('direction', 1)

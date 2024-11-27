@@ -7,13 +7,11 @@ use App\Services\AgentCustomerService;
 use App\Services\AgentService;
 use Illuminate\Http\Request;
 
-class AgentCustomerController extends Controller
-{
+class AgentCustomerController extends Controller {
     public function __construct(
         private AgentCustomerService $agentCustomerService,
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -22,15 +20,13 @@ class AgentCustomerController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return ApiResource::make($this->agentCustomerService->list($agent));
     }
 
-    public function search(Request $request): ApiResource
-    {
+    public function search(Request $request): ApiResource {
         $term = $request->input('term');
         $limit = $request->input('paginate', 15);
         $agent = $this->agentService->getByAuthenticatedUser();

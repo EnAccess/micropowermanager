@@ -13,8 +13,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 use Inensus\WaveMoneyPaymentProvider\Modules\Transaction\WaveMoneyTransactionService;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class WaveMoneyTransactionProvider implements ITransactionProvider
-{
+class WaveMoneyTransactionProvider implements ITransactionProvider {
     private $validData = [];
 
     public function __construct(
@@ -22,11 +21,9 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         private Transaction $transaction,
         private WaveMoneyTransactionService $waveMoneyTransactionService,
         private TransactionConflicts $transactionConflicts,
-    ) {
-    }
+    ) {}
 
-    public function validateRequest($request)
-    {
+    public function validateRequest($request) {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
 
@@ -43,13 +40,11 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         $this->setValidData($waveMoneyTransactionData);
     }
 
-    public function saveTransaction()
-    {
+    public function saveTransaction() {
         $this->waveMoneyTransactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction)
-    {
+    public function sendResult(bool $requestType, Transaction $transaction) {
         if ($requestType) {
             $waveMoneyTransaction = $transaction->originalTransaction()->first();
             $updateData = [
@@ -59,47 +54,42 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
             $smsService = app()->make(SmsService::class);
             $smsService->sendSms($transaction, SmsTypes::TRANSACTION_CONFIRMATION, SmsConfigs::class);
         } else {
-            Log::critical('WaveMoney transaction is been cancelled from MicroPowerManager.',
+            Log::critical(
+                'WaveMoney transaction is been cancelled from MicroPowerManager.',
                 [
                     'transaction_id' => $transaction->id,
                     'original_transaction_id' => $transaction->originalTransaction()->first()->id,
-                ]);
+                ]
+            );
         }
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         // TODO: Implement confirm() method.
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         // TODO: Implement getMessage() method.
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->getTransaction()->amount;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->getTransaction()->message;
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         // TODO: Implement saveCommonData() method.
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->waveMoneytransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = $this->transactionConflicts->newQuery()->make([
             'state' => $message,
         ]);
@@ -107,23 +97,19 @@ class WaveMoneyTransactionProvider implements ITransactionProvider
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 
-    public function setValidData($waveMoneyTransactionData)
-    {
+    public function setValidData($waveMoneyTransactionData) {
         $this->validData = $waveMoneyTransactionData;
     }
 
-    public function getValidData()
-    {
+    public function getValidData() {
         return $this->validData;
     }
 
-    public function getSubTransaction()
-    {
+    public function getSubTransaction() {
         return $this->waveMoneyTransactionService->getWaveMoneyTransaction();
     }
 }

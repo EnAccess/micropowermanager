@@ -8,8 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PersonDeleting
-{
+class PersonDeleting {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
@@ -21,8 +20,7 @@ class PersonDeleting
      *
      * @return void
      */
-    public function __construct(Person $person)
-    {
+    public function __construct(Person $person) {
         $this->person = $person;
     }
 
@@ -31,8 +29,7 @@ class PersonDeleting
      *
      * @return PrivateChannel
      */
-    public function broadcastOn(): PrivateChannel
-    {
+    public function broadcastOn(): PrivateChannel {
         return new PrivateChannel('person.deleted');
     }
 }

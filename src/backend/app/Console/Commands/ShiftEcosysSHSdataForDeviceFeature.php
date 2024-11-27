@@ -9,8 +9,7 @@ use App\Models\Manufacturer;
 use App\Models\SolarHomeSystem;
 use Illuminate\Support\Facades\DB;
 
-class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
-{
+class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand {
     // --company-id=36
     protected $signature = 'ecosys:shift-data {--company-id=}';
     protected $description = 'custom data shifting command for ecosys';
@@ -25,13 +24,11 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand
         3 => 2,
     ];
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
-    public function handle()
-    {
+    public function handle() {
         $this->info('Command started');
         $this->info('command running w '.$this->option('company-id'));
         $manufacturer = Manufacturer::query()->where('name', 'SunKing SHS')->first();

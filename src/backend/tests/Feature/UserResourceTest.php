@@ -10,13 +10,11 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserResource extends TestCase
-{
+class UserResource extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -25,8 +23,7 @@ class UserResource extends TestCase
     }
 
     /** @test */
-    public function listRegisteredUsers(): void
-    {
+    public function listRegisteredUsers(): void {
         $user = UserFactory::new()->create();
         // create random users
         UserFactory::times(30)->create();
@@ -37,8 +34,7 @@ class UserResource extends TestCase
     }
 
     /** @test */
-    public function createUser(): void
-    {
+    public function createUser(): void {
         $this->withoutExceptionHandling();
         $user = UserFactory::new()->create();
         $response = $this->actingAs($user)->post('/api/users', [
@@ -53,8 +49,7 @@ class UserResource extends TestCase
     }
 
     /** @test */
-    public function updateUserPassword(): void
-    {
+    public function updateUserPassword(): void {
         $user = UserFactory::new()->create();
         // create user
         $this->actingAs($user)->post('/api/users', [
@@ -65,20 +60,21 @@ class UserResource extends TestCase
 
         $user = User::query()->get()[1];
 
-        $response = $this->actingAs($user)->put('/api/users/password/'.$user->id,
+        $response = $this->actingAs($user)->put(
+            '/api/users/password/'.$user->id,
             [
                 'id' => $user->id,
                 'password' => '12345',
                 'confirm_password' => '12345',
-            ]);
+            ]
+        );
         $response->assertStatus(200);
         $user = User::query()->get()[1];
         $this->assertTrue(Hash::check('12345', $user->password));
     }
 
     /** @test */
-    public function resetUserPassword(): void
-    {
+    public function resetUserPassword(): void {
         $user = UserFactory::new()->create();
         // create user
         $this->actingAs($user)->post('/api/users', [
@@ -95,8 +91,7 @@ class UserResource extends TestCase
     }
 
     /** @test */
-    public function resetPasswordWithNonExistingEmail(): void
-    {
+    public function resetPasswordWithNonExistingEmail(): void {
         $request = $this->post('/api/users/password', ['email' => 'ako@inensus.com']);
 
         $request->assertStatus(422);

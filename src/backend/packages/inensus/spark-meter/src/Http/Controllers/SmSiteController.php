@@ -8,8 +8,7 @@ use Inensus\SparkMeter\Http\Resources\SparkResource;
 use Inensus\SparkMeter\Models\SmSite;
 use Inensus\SparkMeter\Services\SiteService;
 
-class SmSiteController implements IBaseController
-{
+class SmSiteController implements IBaseController {
     private $siteService;
 
     public function __construct(
@@ -18,35 +17,29 @@ class SmSiteController implements IBaseController
         $this->siteService = $siteService;
     }
 
-    public function index(Request $request): SparkResource
-    {
+    public function index(Request $request): SparkResource {
         $customers = $this->siteService->getSmSites($request);
 
         return new SparkResource($customers);
     }
 
-    public function sync(): SparkResource
-    {
+    public function sync(): SparkResource {
         return new SparkResource($this->siteService->sync());
     }
 
-    public function checkSync(): SparkResource
-    {
+    public function checkSync(): SparkResource {
         return new SparkResource($this->siteService->syncCheck());
     }
 
-    public function count()
-    {
+    public function count() {
         return $this->siteService->getSmSitesCount();
     }
 
-    public function location(): SparkResource
-    {
+    public function location(): SparkResource {
         return new SparkResource($this->siteService->checkLocationAvailability());
     }
 
-    public function update(SmSite $site, SmSiteRequest $request): SparkResource
-    {
+    public function update(SmSite $site, SmSiteRequest $request): SparkResource {
         return new SparkResource($this->siteService->update($site->id, $request->only([
             'id',
             'thundercloud_url',

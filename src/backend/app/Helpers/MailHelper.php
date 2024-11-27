@@ -6,8 +6,7 @@ use App\Exceptions\MailNotSentException;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class MailHelper implements MailHelperInterface
-{
+class MailHelper implements MailHelperInterface {
     /**
      * @var PHPMailer
      */
@@ -15,15 +14,13 @@ class MailHelper implements MailHelperInterface
 
     private $mailSettings;
 
-    public function __construct(PHPMailer $mailer)
-    {
+    public function __construct(PHPMailer $mailer) {
         $this->mailer = $mailer;
         $this->mailSettings = config('mail.mailers.strato');
         $this->configure();
     }
 
-    private function configure(): void
-    {
+    private function configure(): void {
         $this->mailer->Host = $this->mailSettings['host'];
         $this->mailer->Port = $this->mailSettings['port'];
         $this->mailer->SMTPSecure = $this->mailSettings['smtp_secure'];
@@ -43,8 +40,7 @@ class MailHelper implements MailHelperInterface
      * @throws MailNotSentException
      * @throws PHPMailerException
      */
-    public function sendPlain($to, $title, $body, $attachment = null): void
-    {
+    public function sendPlain($to, $title, $body, $attachment = null): void {
         // don't send any mails while  testing
         if (config('app.env') === 'local') {
             return;
@@ -68,8 +64,7 @@ class MailHelper implements MailHelperInterface
         }
     }
 
-    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void
-    {
+    public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void {
         // don't send any mails while  testing
         if (config('app.env') === 'demo') {
             return;

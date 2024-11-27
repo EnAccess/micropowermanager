@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
-    {
+    public function up() {
         if (!Schema::hasTable('swifta_transactions')) {
             Schema::connection('shard')->create('swifta_transactions', static function (Blueprint $table) {
                 $table->increments('id');
@@ -30,8 +29,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('swifta_transactions');
         Schema::connection('shard')->dropIfExists('swifta_authentication');
     }

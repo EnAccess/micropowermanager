@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class RolesService
-{
+class RolesService {
     /**
      * @var Roles
      */
@@ -20,14 +19,12 @@ class RolesService
      */
     private $definiton;
 
-    public function __construct(Roles $role, RoleDefinition $definition)
-    {
+    public function __construct(Roles $role, RoleDefinition $definition) {
         $this->role = $role;
         $this->definiton = $definition;
     }
 
-    public function findOrCreateRoleDefinition(string $roleName)
-    {
+    public function findOrCreateRoleDefinition(string $roleName) {
         return $this->definiton->firstOrCreate(['role_name' => $roleName]);
     }
 
@@ -36,21 +33,18 @@ class RolesService
      *
      * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
      */
-    public function findRoleByDefinition(RoleDefinition $definition)
-    {
+    public function findRoleByDefinition(RoleDefinition $definition) {
         return $this->role->with()->get();
     }
 
     /**
      * @return Model|false
      */
-    public function attachToOwner(RoleInterface $roleOwner, Roles $role) // person or a company
-    {
+    public function attachToOwner(RoleInterface $roleOwner, Roles $role) { // person or a company
         return $roleOwner->roleowner()->save($role);
     }
 
-    public function create(RoleDefinition $definition): Roles
-    {
+    public function create(RoleDefinition $definition): Roles {
         $this->role->definitions()->associate($definition);
 
         return $this->role;

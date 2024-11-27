@@ -6,11 +6,8 @@ use App\Http\Resources\ApiResource;
 use App\Services\MeterTypeMeterService;
 use Illuminate\Http\Request;
 
-class MeterTypeMeterController extends Controller
-{
-    public function __construct(private MeterTypeMeterService $meterTypeMeterService)
-    {
-    }
+class MeterTypeMeterController extends Controller {
+    public function __construct(private MeterTypeMeterService $meterTypeMeterService) {}
 
     /**
      * List with Meters
@@ -25,8 +22,7 @@ class MeterTypeMeterController extends Controller
      *
      * @return ApiResource
      */
-    public function show(Request $request, $meterTypeId)
-    {
+    public function show(Request $request, $meterTypeId) {
         return ApiResource::make($this->meterTypeMeterService->getByIdWithMeters($meterTypeId));
     }
 }

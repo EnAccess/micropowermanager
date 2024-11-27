@@ -8,17 +8,14 @@ use App\Services\ClusterService;
 use App\Services\ConnectionTypeService;
 use Illuminate\Http\Request;
 
-class ClusterRevenueAnalysisController extends Controller
-{
+class ClusterRevenueAnalysisController extends Controller {
     public function __construct(
         private ClusterService $clusterService,
         private ClusterRevenueService $clusterRevenueService,
         private ConnectionTypeService $connectionTypeService,
-    ) {
-    }
+    ) {}
 
-    public function show($clusterId, Request $request): ApiResource
-    {
+    public function show($clusterId, Request $request): ApiResource {
         /**
          * !!!!
          * To group revenue by city -> connection type

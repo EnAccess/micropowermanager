@@ -4,10 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-class CorsMiddleware
-{
-    public function handle(Request $request, \Closure $next)
-    {
+class CorsMiddleware {
+    public function handle(Request $request, \Closure $next) {
         $accessControlRequestMethod = $request->header('access-control-request-method');
         $accessControlRequestHeaders = $request->header('access-control-request-headers');
 

@@ -9,8 +9,7 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterParameter;
 use Carbon\Carbon;
 
-class AccessRate
-{
+class AccessRate {
     /**
      * @var AccessRate
      */
@@ -25,9 +24,7 @@ class AccessRate
      *
      * @param AccessRate $accessRate
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * @param MeterParameter $meterParameter
@@ -36,8 +33,7 @@ class AccessRate
      *
      * @throws NoAccessRateFound
      */
-    public static function withMeterParameters(MeterParameter $meterParameter): AccessRate
-    {
+    public static function withMeterParameters(MeterParameter $meterParameter): AccessRate {
         if ($meterParameter->tariffAccessRate() === null) {
             throw new NoAccessRateFound('Tariff  '.$meterParameter->tariff()->first()->name.' has no access rate');
         }
@@ -48,8 +44,7 @@ class AccessRate
         return $accessRate;
     }
 
-    private function setMeterParameter(MeterParameter $meterParameter): void
-    {
+    private function setMeterParameter(MeterParameter $meterParameter): void {
         $this->meterParameter = $meterParameter;
     }
 
@@ -58,8 +53,7 @@ class AccessRate
      *
      * @throws NoAccessRateFound
      */
-    public function initializeAccessRatePayment(): AccessRatePayment
-    {
+    public function initializeAccessRatePayment(): AccessRatePayment {
         if ($this->accessRate === null || $this->meterParameter === null) {
             throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meterParameter === null ? 'Meter Parameter is not set' : ''));
         }
@@ -80,8 +74,7 @@ class AccessRate
      *
      * @throws NoAccessRateFound
      */
-    private function getDebt(Meter $meter): int
-    {
+    private function getDebt(Meter $meter): int {
         $accessRate = $meter->accessRatePayment()->first();
         if ($accessRate === null) {
             throw new NoAccessRateFound('no access rate is defined');
@@ -97,8 +90,7 @@ class AccessRate
      *
      * @deprecated
      */
-    public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer
-    {
+    public static function payAccessRate(TransactionDataContainer $transactionData): TransactionDataContainer {
         $nonStaticGateway = new self();
         // get accessRatePayment
         $accessRatePayment = $nonStaticGateway->getAccessRatePayment($transactionData->meter);
@@ -137,14 +129,12 @@ class AccessRate
         return $transactionData;
     }
 
-    public function updatePayment($accessRatePayment, int $paidAmount, bool $satisfied = false): void
-    {
+    public function updatePayment($accessRatePayment, int $paidAmount, bool $satisfied = false): void {
         $accessRatePayment->debt = $satisfied === true ? 0 : $accessRatePayment->debt - $paidAmount;
         $accessRatePayment->save();
     }
 
-    private function getAccessRatePayment(Meter $meter): ?object
-    {
+    private function getAccessRatePayment(Meter $meter): ?object {
         return $meter->accessRatePayment()->first();
     }
 }

@@ -2,6 +2,4 @@
 
 namespace Inensus\KelinMeter\Exceptions;
 
-class KelinApiCredentialsNotFoundException extends \Exception
-{
-}
+class KelinApiCredentialsNotFoundException extends \Exception {}

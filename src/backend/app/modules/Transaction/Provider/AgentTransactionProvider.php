@@ -12,19 +12,16 @@ use App\Services\FirebaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AgentTransactionProvider implements ITransactionProvider
-{
+class AgentTransactionProvider implements ITransactionProvider {
     private array $validData;
 
     public function __construct(
         private AgentTransactionModel $agentTransaction,
         private Transaction $transaction,
         private FirebaseService $fireBaseService,
-    ) {
-    }
+    ) {}
 
-    public function saveTransaction(): void
-    {
+    public function saveTransaction(): void {
         $this->agentTransaction = new AgentTransactionModel();
         $this->transaction = new Transaction();
         // assign data
@@ -33,8 +30,7 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->saveData($this->agentTransaction);
     }
 
-    private function assignData(array $data): void
-    {
+    private function assignData(array $data): void {
         // provider specific data
         $this->agentTransaction->agent_id = (int) $data['agent_id'];
         $this->agentTransaction->device_id = (int) $data['device_id'];
@@ -47,13 +43,11 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->transaction->original_transaction_type = 'agent_transaction';
     }
 
-    public function saveData(AgentTransactionModel $agentTransaction): void
-    {
+    public function saveData(AgentTransactionModel $agentTransaction): void {
         $agentTransaction->save();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction): void
-    {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         $this->agentTransaction->update(['status' => $requestType === true ? 1 : -1]);
         $agent = $this->agentTransaction->agent;
 
@@ -95,8 +89,7 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
     }
 
-    private function prepareBodySuccess(Transaction $transaction): array
-    {
+    private function prepareBodySuccess(Transaction $transaction): array {
         $transaction = Transaction::with(
             'token',
             'originalTransaction',
@@ -118,8 +111,7 @@ class AgentTransactionProvider implements ITransactionProvider
         ];
     }
 
-    private function prepareBodyFail(Transaction $transaction): array
-    {
+    private function prepareBodyFail(Transaction $transaction): array {
         return [
             'message' => 'Transaction failed',
             'type' => 'agent_transaction',
@@ -129,8 +121,7 @@ class AgentTransactionProvider implements ITransactionProvider
         ];
     }
 
-    public function validateRequest($request): void
-    {
+    public function validateRequest($request): void {
         $deviceId = request()->header('device-id');
         $agent = Agent::query()->find(auth('agent_api')->user()->id);
         $agentId = $agent->id;
@@ -151,39 +142,32 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->validData['agent_id'] = $agentId;
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         // No need to confirm the trigger request
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return $this->transaction->message;
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->transaction->amount;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->transaction->sender;
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         return $this->agentTransaction->transaction()->save($this->transaction);
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->agentTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->agentTransaction);
@@ -191,8 +175,7 @@ class AgentTransactionProvider implements ITransactionProvider
         $this->agentTransaction->update(['status' => -1]);
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 }

@@ -10,10 +10,8 @@ use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\UpdatePackage;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
-{
-    public function boot(Filesystem $filesystem)
-    {
+class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider {
+    public function boot(Filesystem $filesystem) {
         $this->app->register(RouteServiceProvider::class);
         if ($this->app->runningInConsole()) {
             $this->publishConfigFiles();
@@ -28,40 +26,38 @@ class WaveMoneyPaymentProviderServiceProvider extends ServiceProvider
         );
     }
 
-    public function register()
-    {
-        $this->mergeConfigFrom(__DIR__.'/../../config/wave-money-payment-provider.php',
-            'wave-money-payment-provider');
+    public function register() {
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/wave-money-payment-provider.php',
+            'wave-money-payment-provider'
+        );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->singleton('WaveMoneyPaymentProvider', WaveMoneyTransactionProvider::class);
     }
 
-    public function publishConfigFiles()
-    {
+    public function publishConfigFiles() {
         $this->publishes([
             __DIR__.
             '/../../config/wave-money-payment-provider-integration.php' => config_path('wave-money-payment-provider.php'),
         ]);
     }
 
-    public function publishVueFiles()
-    {
+    public function publishVueFiles() {
         $this->publishes([
-            __DIR__.'/../resources/assets' => resource_path('assets/js/plugins/wave-money-payment-provider'
+            __DIR__.'/../resources/assets' => resource_path(
+                'assets/js/plugins/wave-money-payment-provider'
             ),
         ], 'vue-components');
     }
 
-    public function publishMigrations($filesystem)
-    {
+    public function publishMigrations($filesystem) {
         $this->publishes([
             __DIR__.'/../../database/migrations/create_viber_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
     }
 
-    protected function getMigrationFileName(Filesystem $filesystem): string
-    {
+    protected function getMigrationFileName(Filesystem $filesystem): string {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)

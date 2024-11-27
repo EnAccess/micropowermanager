@@ -9,8 +9,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->dropIfExists('mini_grid_frequencies');
     }
 
@@ -19,8 +18,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         // This table never had any migration files and hence never existed
         // on fresh installations of MPM.
     }

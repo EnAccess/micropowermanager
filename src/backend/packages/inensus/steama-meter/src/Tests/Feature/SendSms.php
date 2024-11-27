@@ -18,13 +18,11 @@ use Inensus\SteamaMeter\Models\SteamaSmsFeedbackWord;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class SendSms extends TestCase
-{
+class SendSms extends TestCase {
     use RefreshDatabase;
 
     /** @test */
-    public function isMeterBalanceFeedbackSend()
-    {
+    public function isMeterBalanceFeedbackSend() {
         Queue::fake();
         Config::set('app.debug', false);
         $this->withoutExceptionHandling();
@@ -40,8 +38,7 @@ class SendSms extends TestCase
         $this->assertEquals(2, $smsCount);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -49,8 +46,7 @@ class SendSms extends TestCase
         return $this;
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         $this->addSmsBodies();
         $this->addFeedBackKeys();
         factory(MainSettings::class)->create();
@@ -89,8 +85,7 @@ class SendSms extends TestCase
         return ['customer' => $p];
     }
 
-    private function addSmsBodies()
-    {
+    private function addSmsBodies() {
         $bodies = [
             [
                 'reference' => 'SmsTransactionHeader',
@@ -240,8 +235,7 @@ class SendSms extends TestCase
         return SmsBody::query()->get();
     }
 
-    private function addFeedBackKeys()
-    {
+    private function addFeedBackKeys() {
         SteamaSmsFeedbackWord::query()->create([
             'meter_balance' => 'Balance',
         ]);

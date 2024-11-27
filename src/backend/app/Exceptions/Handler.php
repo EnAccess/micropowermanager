@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     use RestExceptionHandler;
 
     /**
@@ -38,8 +37,7 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function report(\Throwable $exception)
-    {
+    public function report(\Throwable $exception) {
         Log::critical(get_class($exception), ['message' => $exception->getMessage(), 'trace' => array_slice($exception->getTrace(), 0, 10)]);
         parent::report($exception);
     }
@@ -52,8 +50,7 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function render($request, \Exception|\Throwable $exception)
-    {
+    public function render($request, \Exception|\Throwable $exception) {
         // api request outputs are json
         if (preg_match('/.*\.local\/api.*/', $request->url()) || preg_match('/.*\.com\/api.*/', $request->url())) {
             return $this->getJsonResponseForException($request, $exception);

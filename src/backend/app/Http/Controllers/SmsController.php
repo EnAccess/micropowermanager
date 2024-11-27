@@ -18,19 +18,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inensus\Ticket\Services\TicketCommentService;
 
-class SmsController extends Controller
-{
+class SmsController extends Controller {
     public function __construct(
         private Sms $sms,
         private Person $person,
         private MeterParameter $meterParameter,
         private SmsService $smsService,
         private TicketCommentService $commentService,
-    ) {
-    }
+    ) {}
 
-    public function index(): ApiResource
-    {
+    public function index(): ApiResource {
         $list = $this->sms::with('address.owner')
             ->orderBy('id', 'DESC')
             ->select('receiver', DB::raw('count(*) as total'))
@@ -43,8 +40,7 @@ class SmsController extends Controller
     /**
      * @return void
      */
-    public function storeBulk(Request $request)
-    {
+    public function storeBulk(Request $request) {
         $type = $request->get('type');
         $receivers = $request->get('receivers');
         $message = $request->get('message');
@@ -159,8 +155,7 @@ class SmsController extends Controller
         }
     }
 
-    public function store(StoreSmsRequest $request): ApiResource
-    {
+    public function store(StoreSmsRequest $request): ApiResource {
         $sender = $request->get('sender');
         $message = $request->get('message');
         $smsData = [
@@ -183,8 +178,7 @@ class SmsController extends Controller
         return new ApiResource($sms);
     }
 
-    public function storeAndSend(SmsRequest $request): ApiResource
-    {
+    public function storeAndSend(SmsRequest $request): ApiResource {
         $personId = $request->get('person_id');
         $message = $request->get('message');
         $senderId = $request->get('senderId');
@@ -222,8 +216,7 @@ class SmsController extends Controller
      *
      * @return void
      */
-    public function updateForDelivered($uuid): void
-    {
+    public function updateForDelivered($uuid): void {
         try {
             Log::info('Sms has delivered successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
@@ -240,8 +233,7 @@ class SmsController extends Controller
         }
     }
 
-    public function updateForFailed($uuid): void
-    {
+    public function updateForFailed($uuid): void {
         try {
             Log::warning('Sending Sms failed on AndroidGateway', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
@@ -258,8 +250,7 @@ class SmsController extends Controller
         }
     }
 
-    public function updateForSent($uuid): void
-    {
+    public function updateForSent($uuid): void {
         try {
             Log::warning('Sms has sent successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
@@ -276,8 +267,7 @@ class SmsController extends Controller
         }
     }
 
-    public function show($person_id): ApiResource
-    {
+    public function show($person_id): ApiResource {
         $personAddresses = $this->person::with(
             [
                 'addresses' => function ($q) {
@@ -293,15 +283,13 @@ class SmsController extends Controller
         return new ApiResource($smses);
     }
 
-    public function byPhone($phone): ApiResource
-    {
+    public function byPhone($phone): ApiResource {
         $smses = $this->sms->where('receiver', $phone)->get();
 
         return new ApiResource($smses);
     }
 
-    public function search($search)
-    {
+    public function search($search) {
         // search in people
         $list = $this->person::with('addresses')
             ->whereHas(

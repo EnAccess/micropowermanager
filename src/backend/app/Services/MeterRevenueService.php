@@ -9,16 +9,13 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class MeterRevenueService
-{
+class MeterRevenueService {
     public function __construct(
         private MeterToken $meterToken,
         private Transaction $transaction,
-    ) {
-    }
+    ) {}
 
-    public function getBySerialNumber(string $serialNumber)
-    {
+    public function getBySerialNumber(string $serialNumber) {
         $tokens = $this->meterToken->newQuery()->whereHas(
             'meter',
             function ($q) use ($serialNumber) {

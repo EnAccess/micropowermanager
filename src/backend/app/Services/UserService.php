@@ -11,14 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use MPM\User\Events\UserCreatedEvent;
 
-class UserService
-{
-    public function __construct(private User $user, private MailHelperInterface $mailHelper)
-    {
-    }
+class UserService {
+    public function __construct(private User $user, private MailHelperInterface $mailHelper) {}
 
-    public function create(array $userData, ?int $companyId = null): User
-    {
+    public function create(array $userData, ?int $companyId = null): User {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
         $companyId = $companyId ?? auth('api')->payload()->get('companyId');
 
@@ -35,15 +31,13 @@ class UserService
         return $user;
     }
 
-    public function update($user, $data)
-    {
+    public function update($user, $data) {
         $user->update(['password' => $data['password']]);
 
         return $user->fresh();
     }
 
-    public function resetPassword(string $email): ?User
-    {
+    public function resetPassword(string $email): ?User {
         try {
             $newPassword = PasswordGenerator::generatePassword();
         } catch (\Exception $exception) {
@@ -77,16 +71,14 @@ class UserService
         return $user;
     }
 
-    public function list(): LengthAwarePaginator
-    {
+    public function list(): LengthAwarePaginator {
         return $this->buildQuery()
             ->select('id', 'name', 'email')
             ->with(['addressDetails'])
             ->paginate();
     }
 
-    public function get($id): User
-    {
+    public function get($id): User {
         /** @var User $user */
         $user = User::with(['addressDetails'])
             ->where('id', '=', $id)
@@ -95,8 +87,7 @@ class UserService
         return $user;
     }
 
-    public function resetAdminPassword(): array
-    {
+    public function resetAdminPassword(): array {
         /** @var User $user */
         $user = $this->buildQuery()->first();
         $randomPassword = str_random(8);
@@ -109,13 +100,11 @@ class UserService
         return $admin;
     }
 
-    private function buildQuery(): Builder
-    {
+    private function buildQuery(): Builder {
         return $this->user->newQuery();
     }
 
-    public function getCompanyId(): int
-    {
+    public function getCompanyId(): int {
         /** @var User $user */
         $user = $this->buildQuery()
             ->select(User::COL_COMPANY_ID)
@@ -124,23 +113,19 @@ class UserService
         return $user->getCompanyId();
     }
 
-    public function getById($id)
-    {
+    public function getById($id) {
         return $this->user->newQuery()->find($id);
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection
-    {
+    public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function getUsers(): Collection
-    {
+    public function getUsers(): Collection {
         return $this->user->newQuery()->get();
     }
 }

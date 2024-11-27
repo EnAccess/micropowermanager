@@ -4,15 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSolarHomeSystemRequest extends FormRequest
-{
+class StoreSolarHomeSystemRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -21,8 +19,7 @@ class StoreSolarHomeSystemRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             'serial_number' => 'required|min:8|max:11|unique:shard.devices,device_serial',
             'manufacturer_id' => 'required|exists:shard.manufacturers,id',

@@ -2,8 +2,7 @@
 
 namespace App\Sms;
 
-class SmsTypes
-{
+class SmsTypes {
     public const TRANSACTION_CONFIRMATION = 1;
     public const APPLIANCE_RATE = 2;
     public const OVER_DUE_APPLIANCE_RATE = 3;

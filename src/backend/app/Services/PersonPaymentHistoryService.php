@@ -9,23 +9,19 @@ use App\Services\Interfaces\IAssignationService;
 /**
  * @implements IAssignationService<PaymentHistory, Person>
  */
-class PersonPaymentHistoryService implements IAssignationService
-{
+class PersonPaymentHistoryService implements IAssignationService {
     private PaymentHistory $paymentHistory;
     private Person $person;
 
-    public function setAssigned($paymentHistory): void
-    {
+    public function setAssigned($paymentHistory): void {
         $this->paymentHistory = $paymentHistory;
     }
 
-    public function setAssignee($person): void
-    {
+    public function setAssignee($person): void {
         $this->person = $person;
     }
 
-    public function assign(): PaymentHistory
-    {
+    public function assign(): PaymentHistory {
         $this->paymentHistory->payer()->associate($this->person);
 
         return $this->paymentHistory;

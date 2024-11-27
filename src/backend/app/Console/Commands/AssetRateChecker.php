@@ -13,8 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Services\TicketService;
 
-class AssetRateChecker extends AbstractSharedCommand
-{
+class AssetRateChecker extends AbstractSharedCommand {
     protected $signature = 'asset-rate:check';
     protected $description = 'Checks if any asset rate is due and creates a ticket and reminds the customer';
 
@@ -29,14 +28,12 @@ class AssetRateChecker extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->remindUpComingRates();
         $this->findOverDueRates();
     }
 
-    private function remindUpComingRates(): void
-    {
+    private function remindUpComingRates(): void {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
         $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
             $dueAssetRates = $this->assetRate::with([
@@ -60,8 +57,7 @@ class AssetRateChecker extends AbstractSharedCommand
         });
     }
 
-    private function findOverDueRates(): void
-    {
+    private function findOverDueRates(): void {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
         $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
             $overDueRates = $this->assetRate::with(['assetPerson.asset', 'assetPerson.person.addresses'])
@@ -78,14 +74,12 @@ class AssetRateChecker extends AbstractSharedCommand
         });
     }
 
-    private function sendReminderSms(AssetRate $assetRate): void
-    {
+    private function sendReminderSms(AssetRate $assetRate): void {
         $smsService = app()->make(SmsService::class);
         $smsService->sendSms($assetRate, SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
     }
 
-    private function sendReminders($dueAssetRates, $smsType)
-    {
+    private function sendReminders($dueAssetRates, $smsType) {
         $dueAssetRates->each(function ($dueAssetRate) use ($smsType) {
             $this->sendReminderSms($dueAssetRate);
             if ($smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE) {
@@ -96,8 +90,7 @@ class AssetRateChecker extends AbstractSharedCommand
         });
     }
 
-    private function createReminderTicket(AssetRate $assetRate, $overDue = false): void
-    {
+    private function createReminderTicket(AssetRate $assetRate, $overDue = false): void {
         $currency = $this->mainSettingsService->getAll()->first()->currency;
         // create ticket for customer service
         $creator = $this->user->newQuery()->firstOrCreate([
@@ -127,8 +120,7 @@ class AssetRateChecker extends AbstractSharedCommand
         );
     }
 
-    private function getApplianceRemindRates(): Collection|array
-    {
+    private function getApplianceRemindRates(): Collection|array {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }
 }

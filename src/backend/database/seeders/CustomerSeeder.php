@@ -9,8 +9,7 @@ use App\Models\Person\Person;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class CustomerSeeder extends Seeder
-{
+class CustomerSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -22,29 +21,28 @@ class CustomerSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         // Get available Villages
         $villages = City::all();
 
         // For each Village generate customers
         foreach ($villages as $village) {
             Person::factory()
-            ->count(50)
-            ->isCustomer()
-            ->has(
-                Address::factory()
-                    ->for($village)
-                    ->has(
-                        GeographicalInformation::factory()
-                            ->state(function (array $attributes, Address $address) {
-                                return ['points' => $address->city->location->points];
-                            })
-                            ->randomizePointsInVillage(),
-                        'geo'
-                    )
-            )
-            ->create();
+                ->count(50)
+                ->isCustomer()
+                ->has(
+                    Address::factory()
+                        ->for($village)
+                        ->has(
+                            GeographicalInformation::factory()
+                                ->state(function (array $attributes, Address $address) {
+                                    return ['points' => $address->city->location->points];
+                                })
+                                ->randomizePointsInVillage(),
+                            'geo'
+                        )
+                )
+                ->create();
         }
     }
 }

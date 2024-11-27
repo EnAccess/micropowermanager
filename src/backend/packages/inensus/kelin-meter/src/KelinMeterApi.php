@@ -13,19 +13,16 @@ use Inensus\KelinMeter\Http\Clients\KelinMeterApiClient;
 use Inensus\KelinMeter\Models\KelinMeter;
 use Inensus\KelinMeter\Models\KelinTransaction;
 
-class KelinMeterApi implements IManufacturerAPI
-{
+class KelinMeterApi implements IManufacturerAPI {
     private $rootUrl = '/recharge';
 
     public function __construct(
         private KelinMeter $kelinMeter,
         private KelinTransaction $kelinTransaction,
         private KelinMeterApiClient $kelinApi,
-    ) {
-    }
+    ) {}
 
-    public function chargeDevice($transactionContainer): array
-    {
+    public function chargeDevice($transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargedEnergy += $transactionContainer->amount / $tariff->total_price;
@@ -97,10 +94,15 @@ class KelinMeterApi implements IManufacturerAPI
                 'manufacturer_transaction_type' => 'kelin_transaction',
             ]);
 
-            $token = $transactionResult['opType'] === 2 ? sprintf('EnergyToken : %s',
-                $transactionResult['payToken']) :
-                sprintf('OpenToken1 : %s OpenToken2 : %s', $transactionResult['openToken1'],
-                    $transactionResult['openToken2']);
+            $token = $transactionResult['opType'] === 2 ? sprintf(
+                'EnergyToken : %s',
+                $transactionResult['payToken']
+            ) :
+                sprintf(
+                    'OpenToken1 : %s OpenToken2 : %s',
+                    $transactionResult['openToken1'],
+                    $transactionResult['openToken2']
+                );
 
             return [
                 'token' => $token,
@@ -109,7 +111,5 @@ class KelinMeterApi implements IManufacturerAPI
         }
     }
 
-    public function clearDevice(Device $device)
-    {
-    }
+    public function clearDevice(Device $device) {}
 }

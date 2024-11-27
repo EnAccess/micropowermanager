@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\DB;
 use MPM\Device\DeviceAddressService;
 use MPM\Device\DeviceService;
 
-class AssetPersonController extends Controller
-{
+class AssetPersonController extends Controller {
     public function __construct(
         private AssetPerson $assetPerson,
         private AppliancePersonService $assetPersonService,
@@ -36,8 +35,7 @@ class AssetPersonController extends Controller
         private CashTransactionService $cashTransactionService,
         private AssetService $applianceService,
         private ApplianceRateService $applianceRateService,
-    ) {
-    }
+    ) {}
 
     /**
      * Store a newly created resource in storage.
@@ -147,8 +145,7 @@ class AssetPersonController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Person $person, Request $request): ApiResource
-    {
+    public function index(Person $person, Request $request): ApiResource {
         $assets = $this->assetPerson::with('asset.assetType', 'rates.logs', 'logs.owner')
             ->where('person_id', $person->id)
             ->get();
@@ -156,8 +153,7 @@ class AssetPersonController extends Controller
         return ApiResource::make($assets);
     }
 
-    public function show($applianceId): ApiResource
-    {
+    public function show($applianceId): ApiResource {
         $appliance = $this->assetPersonService->getApplianceDetails($applianceId);
 
         return ApiResource::make($appliance);

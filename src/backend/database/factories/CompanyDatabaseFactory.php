@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\CompanyDatabase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CompanyDatabaseFactory extends Factory
-{
+class CompanyDatabaseFactory extends Factory {
     protected $model = CompanyDatabase::class;
 
     /**
@@ -14,8 +13,7 @@ class CompanyDatabaseFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'company_id' => 1,
             'database_name' => 'test_company_db',

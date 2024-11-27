@@ -9,12 +9,10 @@ use App\Services\MeterTariffService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class MeterTariffController extends Controller
-{
+class MeterTariffController extends Controller {
     public function __construct(
         private MeterTariffService $meterTariffService,
-    ) {
-    }
+    ) {}
 
     /**
      * List
@@ -25,8 +23,7 @@ class MeterTariffController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         $limit = $request->get('limit');
 
         return ApiResource::make($this->meterTariffService->getAll($limit));
@@ -43,8 +40,7 @@ class MeterTariffController extends Controller
      *
      * @return ApiResource
      */
-    public function show(Request $request, $meterTariffId): ApiResource
-    {
+    public function show(Request $request, $meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffService->getById($meterTariffId));
     }
 
@@ -60,8 +56,7 @@ class MeterTariffController extends Controller
      *
      * @return ApiResource
      */
-    public function store(TariffCreateRequest $request): JsonResponse
-    {
+    public function store(TariffCreateRequest $request): JsonResponse {
         $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
         $newTariff = $this->meterTariffService->create($meterTariffData);
 
@@ -71,8 +66,7 @@ class MeterTariffController extends Controller
         return ApiResource::make($this->meterTariffService->getById($newTariff->id))->response()->setStatusCode(201);
     }
 
-    public function update($meterTariffId, TariffCreateRequest $request): ApiResource
-    {
+    public function update($meterTariffId, TariffCreateRequest $request): ApiResource {
         $meterTariff = $this->meterTariffService->getById($meterTariffId);
         $meterTariffData = [
             'name' => $request->input('name'),
@@ -90,8 +84,7 @@ class MeterTariffController extends Controller
         return ApiResource::make($meterTariff);
     }
 
-    public function destroy($meterTariffId): ?bool
-    {
+    public function destroy($meterTariffId): ?bool {
         $meterTariff = $this->meterTariffService->getById($meterTariffId);
 
         return $this->meterTariffService->delete($meterTariff);

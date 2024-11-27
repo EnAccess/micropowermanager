@@ -13,16 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class AirtelTransactionProvider implements ITransactionProvider
-{
+class AirtelTransactionProvider implements ITransactionProvider {
     private \SimpleXMLElement $validData;
 
-    public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction)
-    {
-    }
+    public function __construct(private AirtelTransaction $airtelTransaction, private Transaction $transaction) {}
 
-    public function saveTransaction(): void
-    {
+    public function saveTransaction(): void {
         $this->airtelTransaction = new AirtelTransaction();
         $this->transaction = new Transaction();
         // assign data
@@ -36,8 +32,7 @@ class AirtelTransactionProvider implements ITransactionProvider
      * @param bool        $requestType
      * @param Transaction $transaction
      */
-    public function sendResult(bool $requestType, Transaction $transaction): void
-    {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         // approve transaction : airtel transactions are automatically confirmed thus
         // only save it as successful
         if ($requestType) {
@@ -71,8 +66,7 @@ class AirtelTransactionProvider implements ITransactionProvider
         }
     }
 
-    public function validateRequest($request): bool
-    {
+    public function validateRequest($request): bool {
         $transactionXml = new \SimpleXMLElement($request);
         $transactionData = json_encode($transactionXml);
         $transactionData = json_decode($transactionData, true);
@@ -101,8 +95,7 @@ class AirtelTransactionProvider implements ITransactionProvider
         return true;
     }
 
-    public function confirm(): void
-    {
+    public function confirm(): void {
         echo $xmlResponse =
             '<?xml version="1.0" encoding="UTF-8"?>'.
             '<Response>'.
@@ -116,34 +109,28 @@ class AirtelTransactionProvider implements ITransactionProvider
             '</Response>';
     }
 
-    public function getMessage(): string
-    {
+    public function getMessage(): string {
         return $this->transaction->message;
     }
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->transaction->amount;
     }
 
-    public function getSender(): string
-    {
+    public function getSender(): string {
         return $this->transaction->sender;
     }
 
-    public function saveCommonData(): Model
-    {
+    public function saveCommonData(): Model {
         return $this->airtelTransaction->transaction()->save($this->transaction);
     }
 
-    public function init($transaction): void
-    {
+    public function init($transaction): void {
         $this->airtelTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }
 
-    private function assignData(\SimpleXMLElement $data): void
-    {
+    private function assignData(\SimpleXMLElement $data): void {
         // provider specific data
         $this->airtelTransaction->interface_id = (string) $data->INTERFACEID;
         $this->airtelTransaction->business_number = (string) $data->BusinessNumber;
@@ -160,22 +147,19 @@ class AirtelTransactionProvider implements ITransactionProvider
      *
      * @param AirtelTransaction $airtelTransaction
      */
-    public function saveData(AirtelTransaction $airtelTransaction): void
-    {
+    public function saveData(AirtelTransaction $airtelTransaction): void {
         $airtelTransaction->save();
         event('transaction.confirm');
     }
 
-    public function addConflict(?string $message): void
-    {
+    public function addConflict(?string $message): void {
         $conflict = new TransactionConflicts();
         $conflict->state = $message;
         $conflict->transaction()->associate($this->airtelTransaction);
         $conflict->save();
     }
 
-    public function getTransaction(): Transaction
-    {
+    public function getTransaction(): Transaction {
         return $this->transaction;
     }
 

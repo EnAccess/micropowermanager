@@ -7,8 +7,7 @@ use Carbon\Carbon;
 use Inensus\GomeLongMeter\Exceptions\CronJobException;
 use Inensus\GomeLongMeter\Services\GomeLongTariffService;
 
-class GomeLongMeterDataSynchronizer extends AbstractSharedCommand
-{
+class GomeLongMeterDataSynchronizer extends AbstractSharedCommand {
     protected $signature = 'gome-long-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from GomeLong Meter Meter.';
 
@@ -18,8 +17,7 @@ class GomeLongMeterDataSynchronizer extends AbstractSharedCommand
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $timeStart = microtime(true);
         $this->info('#############################');
         $this->info('# GomeLong Meter Package #');

@@ -7,21 +7,18 @@ use Inensus\BulkRegistration\Helpers\CsvDataProcessor;
 use Inensus\BulkRegistration\Helpers\CsvFileParser;
 use Inensus\BulkRegistration\Models\CsvData;
 
-class CsvDataService
-{
+class CsvDataService {
     private $csvData;
     private $csvDataProcessor;
     private $csvFileParser;
 
-    public function __construct(CsvData $csvData, CsvFileParser $csvFileParser, CsvDataProcessor $csvDataProcessor)
-    {
+    public function __construct(CsvData $csvData, CsvFileParser $csvFileParser, CsvDataProcessor $csvDataProcessor) {
         $this->csvData = $csvData;
         $this->csvDataProcessor = $csvDataProcessor;
         $this->csvFileParser = $csvFileParser;
     }
 
-    public function create($request)
-    {
+    public function create($request) {
         $path = $request->file('csv');
         $parsedCsvData = $this->csvFileParser->parseCsvFromFilePath($path);
         $message = '';

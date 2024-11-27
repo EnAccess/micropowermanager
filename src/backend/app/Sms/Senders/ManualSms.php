@@ -2,16 +2,14 @@
 
 namespace App\Sms\Senders;
 
-class ManualSms extends SmsSender
-{
+class ManualSms extends SmsSender {
     protected $data;
     public $body = '';
     protected $references = [
         'body' => '',
     ];
 
-    public function prepareBody()
-    {
+    public function prepareBody() {
         $this->body .= $this->data['message'];
     }
 }

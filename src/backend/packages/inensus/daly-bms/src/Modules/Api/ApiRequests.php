@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
 use Inensus\DalyBms\Models\DalyBmsCredential;
 
-class ApiRequests
-{
+class ApiRequests {
     public function __construct(
         private Client $httpClient,
-    ) {
-    }
+    ) {}
 
-    public function authentication($credential): array
-    {
+    public function authentication($credential): array {
         try {
             $slug = '/Login/Authenticate?';
             $userName = $credential->getUserName();
@@ -47,8 +44,7 @@ class ApiRequests
         }
     }
 
-    public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug)
-    {
+    public function postWithBodyParams(DalyBmsCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
         try {
             $response = $this->httpClient->post(
@@ -76,13 +72,13 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw $e;
         }
     }
 
-    public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug)
-    {
+    public function postWithQueryParams(DalyBmsCredential $credentials, array $params, string $slug) {
         $url = $credentials->getApiUrl().$slug;
 
         if (strpos($url, '?') === false) {
@@ -115,7 +111,8 @@ class ApiRequests
                     'URL :' => $url,
                     'Body :' => json_encode($params),
                     'message :' => $e->getMessage(),
-                ]);
+                ]
+            );
             throw $e;
         }
     }

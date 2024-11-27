@@ -21,13 +21,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
-class AccessRateTest extends TestCase
-{
+class AccessRateTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    private function initApplication(): void
-    {
+    private function initApplication(): void {
         Bus::fake();
         $manufacturer = ManufacturerFactory::new()->create();
         $meterType = MeterTypeFactory::new()->create();
@@ -61,8 +59,7 @@ class AccessRateTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testWithNoAccessRate(): void
-    {
+    public function testWithNoAccessRate(): void {
         $this->initApplication();
         $transaction = $this->createFakeTransaction(500);
         $transactionContainer = TransactionDataContainer::initialize($transaction);
@@ -70,8 +67,7 @@ class AccessRateTest extends TestCase
         $this->assertEquals(0, $transactionData->accessRateDebt);
     }
 
-    public function testWithCoverAccessRate(): void
-    {
+    public function testWithCoverAccessRate(): void {
         $this->initApplication();
         $transaction = $this->createFakeTransaction(500);
         $transactionContainer = TransactionDataContainer::initialize($transaction);
@@ -85,8 +81,7 @@ class AccessRateTest extends TestCase
         $this->assertEquals(0, $accessRatePayment->debt);
     }
 
-    public function testWithNonCoverAccessRate(): void
-    {
+    public function testWithNonCoverAccessRate(): void {
         $this->initApplication();
         $transaction = $this->createFakeTransaction(500);
         $transactionContainer = TransactionDataContainer::initialize($transaction);
@@ -100,8 +95,7 @@ class AccessRateTest extends TestCase
         $this->assertEquals(500, $accessRatePayment->debt);
     }
 
-    public function testWithExactlyAccessRateDebt()
-    {
+    public function testWithExactlyAccessRateDebt() {
         $this->initApplication();
         $transaction = $this->createFakeTransaction(1000);
 
@@ -120,8 +114,7 @@ class AccessRateTest extends TestCase
         $this->assertEquals(0, $accessRatePayment->debt);
     }
 
-    private function createFakeTransaction(int $amount)
-    {
+    private function createFakeTransaction(int $amount) {
         $vodacomTransaction = VodacomTransactionFactory::new()->create();
         $transaction = TransactionFactory::new()->make();
         $transaction->amount = $amount;

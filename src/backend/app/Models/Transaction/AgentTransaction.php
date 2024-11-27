@@ -16,32 +16,26 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property int status
  * @property string sender
  */
-class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
-{
+class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';
 
-    public function transaction(): MorphOne
-    {
+    public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction(): MorphTo
-    {
+    public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 
-    public function agent(): BelongsTo
-    {
+    public function agent(): BelongsTo {
         return $this->belongsTo(Agent::class);
     }
 
-    public function conflicts(): MorphMany
-    {
+    public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
-    public static function getTransactionName(): string
-    {
+    public static function getTransactionName(): string {
         return self::RELATION_NAME;
     }
 }

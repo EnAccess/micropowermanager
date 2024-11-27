@@ -11,8 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Device extends BaseModel
-{
+class Device extends BaseModel {
     use HasFactory;
 
     public const RELATION_NAME = 'device';
@@ -22,23 +21,19 @@ class Device extends BaseModel
     // but they are completely different things.
     // `id` is this device's... well... id, which it can be references with in the `device` table
     // `device_id` is the `id` in the target table depending on type. For example `meter` or `solar_home_system`.
-    public function device(): MorphTo
-    {
+    public function device(): MorphTo {
         return $this->morphTo();
     }
 
-    public function person(): BelongsTo
-    {
+    public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 
-    public function address(): MorphOne
-    {
+    public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
-    public function appliance(): HasOne
-    {
+    public function appliance(): HasOne {
         return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
     }
 }

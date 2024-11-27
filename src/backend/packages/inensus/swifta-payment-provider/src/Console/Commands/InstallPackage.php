@@ -12,8 +12,7 @@ use Illuminate\Console\Command;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaAuthentication;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'swifta-payment-provider:install';
     protected $description = 'Install SwiftaPaymentProvider Package';
 
@@ -27,16 +26,14 @@ class InstallPackage extends Command
         parent::__construct();
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->info('Installing SwiftaPaymentProvider Integration Package\n');
         $token = $this->generateAuthenticationToken();
         $this->warn("Authentication token for swifta payments generated. token =>\n {$token}");
         $this->info('Package installed successfully..');
     }
 
-    private function publishConfigurations()
-    {
+    private function publishConfigurations() {
         $this->info('Copying configurations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
@@ -44,8 +41,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function publishMigrations()
-    {
+    private function publishMigrations() {
         $this->info('Copying migrations\n');
         $this->call('vendor:publish', [
             '--provider' => "Inensus\SwiftaPaymentProvider\Providers\SwiftaServiceProvider",
@@ -53,14 +49,12 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function createDatabaseTables()
-    {
+    private function createDatabaseTables() {
         $this->info('Creating database tables\n');
         $this->call('migrate');
     }
 
-    private function createPluginRecord()
-    {
+    private function createPluginRecord() {
         $this->call('plugin:add', [
             'name' => 'SwiftaPaymentProvider',
             'composer_name' => 'inensus/swifta-payment-provider',
@@ -68,8 +62,7 @@ class InstallPackage extends Command
         ]);
     }
 
-    private function generateAuthenticationToken()
-    {
+    private function generateAuthenticationToken() {
         $password = $this->generateRandomNumber();
         $companyId = app()->make(UserService::class)->getCompanyId();
         $company = $this->companyService->getById($companyId);
@@ -98,8 +91,7 @@ class InstallPackage extends Command
         return $token;
     }
 
-    private function generateRandomNumber(): string
-    {
+    private function generateRandomNumber(): string {
         $length = random_int(1, 10);
         $number = '';
         for ($i = 0; $i < $length; ++$i) {

@@ -10,12 +10,10 @@ use App\Models\AgentReceipt;
 use App\Models\Transaction\AgentTransaction;
 use App\Services\AgentService;
 
-class AgentBalanceHistoryObserver
-{
+class AgentBalanceHistoryObserver {
     public function __construct(
         private AgentService $agentService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle the asset person "updated" event.
@@ -24,8 +22,7 @@ class AgentBalanceHistoryObserver
      *
      * @return void
      */
-    public function created(AgentBalanceHistory $agentBalanceHistory)
-    {
+    public function created(AgentBalanceHistory $agentBalanceHistory) {
         $trigger = $agentBalanceHistory->trigger()->first();
         $agent = $this->agentService->getById($agentBalanceHistory->agent_id);
 

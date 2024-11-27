@@ -5,11 +5,8 @@ namespace MPM\Transaction;
 use App\Models\EBike;
 use App\Models\Transaction\Transaction;
 
-class EBikeTransactionService
-{
-    public function __construct(private Transaction $transaction)
-    {
-    }
+class EBikeTransactionService {
+    public function __construct(private Transaction $transaction) {}
 
     public function search(
         ?string $serialNumber = null,

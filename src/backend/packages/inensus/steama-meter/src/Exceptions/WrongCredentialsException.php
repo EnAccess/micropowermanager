@@ -2,6 +2,4 @@
 
 namespace Inensus\SteamaMeter\Exceptions;
 
-class WrongCredentialsException extends \Exception
-{
-}
+class WrongCredentialsException extends \Exception {}

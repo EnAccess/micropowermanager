@@ -11,37 +11,31 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<MiniGrid>
  */
-class MiniGridService implements IBaseService
-{
+class MiniGridService implements IBaseService {
     public function __construct(
         private MiniGrid $miniGrid,
         private Cluster $cluster,
-    ) {
-    }
+    ) {}
 
-    public function getByIdWithLocation($miniGridId)
-    {
+    public function getByIdWithLocation($miniGridId) {
         return $this->miniGrid->newQuery()->with(['location'])->find($miniGridId);
     }
 
-    public function getById($miniGridId): MiniGrid
-    {
+    public function getById($miniGridId): MiniGrid {
         /** @var MiniGrid $model */
         $model = $this->miniGrid->newQuery()->find($miniGridId);
 
         return $model;
     }
 
-    public function create($miniGridData): MiniGrid
-    {
+    public function create($miniGridData): MiniGrid {
         /** @var MiniGrid $result */
         $result = $this->miniGrid->newQuery()->create($miniGridData);
 
         return $result;
     }
 
-    public function update($miniGrid, $miniGridData): MiniGrid
-    {
+    public function update($miniGrid, $miniGridData): MiniGrid {
         $miniGrid->update([
             'name' => $miniGridData['name'] ?? $miniGrid->name,
         ]);
@@ -50,8 +44,7 @@ class MiniGridService implements IBaseService
         return $miniGrid;
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $miniGrids = $this->miniGrid->newQuery()->with(['location']);
 
         if ($limit) {
@@ -61,8 +54,7 @@ class MiniGridService implements IBaseService
         return $miniGrids->newQuery()->get();
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

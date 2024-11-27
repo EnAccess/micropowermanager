@@ -10,20 +10,17 @@ use App\Services\UserService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
-class OutstandingDebtsExportService extends AbstractExportService
-{
+class OutstandingDebtsExportService extends AbstractExportService {
     public function __construct(
         private readonly UserService $userService,
         private ApplianceRateService $applianceService,
         private ApplianceRateService $applianceRateService,
         private MailHelper $mailHelper,
-    ) {
-    }
+    ) {}
 
     private Collection $outstandingDebtsData;
 
-    public function writeOutstandingDebtsData(): void
-    {
+    public function writeOutstandingDebtsData(): void {
         $this->setActivatedSheet('Sheet1');
 
         foreach ($this->exportingData as $key => $value) {
@@ -39,8 +36,7 @@ class OutstandingDebtsExportService extends AbstractExportService
         }
     }
 
-    public function setExportingData(): void
-    {
+    public function setExportingData(): void {
         $this->exportingData = $this->outstandingDebtsData->map(function ($applianceRate) {
             return [
                 $applianceRate->assetPerson->person->name.' '.$applianceRate->assetPerson->person->surname,
@@ -52,18 +48,15 @@ class OutstandingDebtsExportService extends AbstractExportService
         });
     }
 
-    public function setOutstandingDebtsData($outstandingDebtsData): void
-    {
+    public function setOutstandingDebtsData($outstandingDebtsData): void {
         $this->outstandingDebtsData = $outstandingDebtsData;
     }
 
-    public function getTemplatePath(): string
-    {
+    public function getTemplatePath(): string {
         return storage_path('appliance/export_outstanding_debts_template.xlsx');
     }
 
-    public function createReport(CarbonImmutable $toDate): string
-    {
+    public function createReport(CarbonImmutable $toDate): string {
         $currency = $this->applianceRateService->getCurrencyFromMainSettings();
 
         $data = $this->applianceService->queryOutstandingDebtsByApplianceRates($toDate)->get();
@@ -76,8 +69,7 @@ class OutstandingDebtsExportService extends AbstractExportService
         return $this->saveSpreadSheet();
     }
 
-    public function sendApplianceDebtsAsEmail(): void
-    {
+    public function sendApplianceDebtsAsEmail(): void {
         $reportDate = CarbonImmutable::now()->endOfWeek()->endOfDay();
         $path = $this->createReport($reportDate);
 
@@ -92,8 +84,7 @@ class OutstandingDebtsExportService extends AbstractExportService
             });
     }
 
-    public function getPrefix(): string
-    {
+    public function getPrefix(): string {
         return 'OutstandingDebtsExport';
     }
 }

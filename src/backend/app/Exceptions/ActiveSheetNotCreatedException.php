@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class ActiveSheetNotCreatedException extends \Exception
-{
-}
+class ActiveSheetNotCreatedException extends \Exception {}

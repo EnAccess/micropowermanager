@@ -19,8 +19,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property int customer_id
  * @property string|null meter_serial
  */
-class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface
-{
+class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
@@ -31,83 +30,67 @@ class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySu
 
     protected $table = 'wave_money_transactions';
 
-    public function getAmount(): int
-    {
+    public function getAmount(): int {
         return $this->amount;
     }
 
-    public function getCurrency(): string
-    {
+    public function getCurrency(): string {
         return $this->currency;
     }
 
-    public function getOrderId(): string
-    {
+    public function getOrderId(): string {
         return $this->order_id;
     }
 
-    public function getReferenceId(): string
-    {
+    public function getReferenceId(): string {
         return $this->reference_id;
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function setStatus(int $status)
-    {
+    public function setStatus(int $status) {
         $this->status = $status;
     }
 
-    public function setExternalTransactionId(string $transactionId)
-    {
+    public function setExternalTransactionId(string $transactionId) {
         $this->external_transaction_id = $transactionId;
     }
 
-    public function setOrderId(string $orderId)
-    {
+    public function setOrderId(string $orderId) {
         $this->order_id = $orderId;
     }
 
-    public function setReferenceId(string $referenceId)
-    {
+    public function setReferenceId(string $referenceId) {
         $this->reference_id = $referenceId;
     }
 
-    public function setCustomerId(int $customerId)
-    {
+    public function setCustomerId(int $customerId) {
         $this->customer_id = $customerId;
     }
 
-    public function setMeterSerial(string $meterSerialNumber)
-    {
+    public function setMeterSerial(string $meterSerialNumber) {
         $this->meter_serial = $meterSerialNumber;
     }
 
-    public function setAmount(float $amount)
-    {
+    public function setAmount(float $amount) {
         $this->amount = $amount;
     }
 
-    public function transaction()
-    {
+    public function transaction() {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
-    public function manufacturerTransaction()
-    {
+    public function manufacturerTransaction() {
         return $this->morphTo();
     }
 
-    public function conflicts()
-    {
+    public function conflicts() {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }
 
-    public static function getTransactionName(): string
-    {
+    public static function getTransactionName(): string {
         return self::RELATION_NAME;
     }
 }

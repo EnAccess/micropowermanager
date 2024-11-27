@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             $table->double('minimum_purchase_amount')->default(0);
         });
@@ -22,8 +21,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->table('meter_tariffs', function (Blueprint $table) {
             $table->dropColumn('minimum_purchase_amount');
         });

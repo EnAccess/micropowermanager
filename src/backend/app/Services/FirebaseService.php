@@ -6,10 +6,8 @@ use App\Exceptions\NotificationSendFailedException;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
-class FirebaseService
-{
-    public function sendNotify($firebaseToken, $body): string
-    {
+class FirebaseService {
+    public function sendNotify($firebaseToken, $body): string {
         try {
             $httpClient = new Client();
             $request = $httpClient->post(

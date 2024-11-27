@@ -19,8 +19,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @implements IBaseService<WaveMoneyTransaction>
  */
-class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService
-{
+class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionService implements IBaseService {
     private Meter $meter;
     private Address $address;
     private Transaction $transaction;
@@ -49,8 +48,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         );
     }
 
-    public function initializeTransactionData(): array
-    {
+    public function initializeTransactionData(): array {
         $orderId = Uuid::uuid4()->toString(); // need to store somewhere
         $referenceId = Uuid::uuid4()->toString(); // need to store somewhere
 
@@ -65,49 +63,41 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         ];
     }
 
-    public function getByOrderId(string $orderId)
-    {
+    public function getByOrderId(string $orderId) {
         return $this->waveMoneyTransaction->newQuery()->where('order_id', '=', $orderId)
             ->firstOrFail();
     }
 
-    public function getByExternalTransactionId(string $externalTransactionId)
-    {
+    public function getByExternalTransactionId(string $externalTransactionId) {
         return $this->waveMoneyTransaction->newQuery()->where('external_transaction_id', '=', $externalTransactionId)
             ->firstOrFail();
     }
 
-    public function getByStatus($status)
-    {
+    public function getByStatus($status) {
         return $this->waveMoneyTransaction->newQuery()->where('status', '=', $status)
             ->get();
     }
 
-    public function getById(int $id): WaveComTransaction
-    {
+    public function getById(int $id): WaveComTransaction {
         return $this->waveMoneyTransaction->newQuery()->find($id);
     }
 
-    public function update($waveMoneyTransaction, array $waveMoneyTransactionData): WaveMoneyTransaction
-    {
+    public function update($waveMoneyTransaction, array $waveMoneyTransactionData): WaveMoneyTransaction {
         $waveMoneyTransaction->update($waveMoneyTransactionData);
         $waveMoneyTransaction->fresh();
 
         return $waveMoneyTransaction;
     }
 
-    public function create($waveMoneyTransactionData): WaveMoneyTransaction
-    {
+    public function create($waveMoneyTransactionData): WaveMoneyTransaction {
         return $this->waveMoneyTransaction->newQuery()->create($waveMoneyTransactionData);
     }
 
-    public function delete($waveMoneyTransaction): ?bool
-    {
+    public function delete($waveMoneyTransaction): ?bool {
         return $waveMoneyTransaction->delete();
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->waveMoneyTransaction->newQuery();
 
         if ($limit) {
@@ -117,8 +107,7 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
         return $this->waveMoneyTransaction->newQuery()->get();
     }
 
-    public function getWaveMoneyTransaction()
-    {
+    public function getWaveMoneyTransaction() {
         return $this->getPaymentAggregatorTransaction();
     }
 }

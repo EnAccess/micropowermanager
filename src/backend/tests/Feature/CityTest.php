@@ -15,8 +15,7 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class CityTest extends TestCase
-{
+class CityTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
@@ -28,8 +27,7 @@ class CityTest extends TestCase
     private $miniGridIds = [];
     private $cityIds = [];
 
-    public function testUserGetsCities()
-    {
+    public function testUserGetsCities() {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 5;
@@ -39,8 +37,7 @@ class CityTest extends TestCase
         $this->assertEquals(count($response['data']), count($this->cityIds));
     }
 
-    public function testUserGetsCityById()
-    {
+    public function testUserGetsCityById() {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 1;
@@ -50,8 +47,7 @@ class CityTest extends TestCase
         $this->assertEquals($response['data']['id'], $this->cityIds[0]);
     }
 
-    public function testUserCreatesNewCity()
-    {
+    public function testUserCreatesNewCity() {
         $clusterCount = 1;
         $miniGridCount = 1;
         $cityCount = 1;
@@ -66,8 +62,7 @@ class CityTest extends TestCase
         $this->assertEquals($response['data']['name'], $cityData['name']);
     }
 
-    public function testUserUpdatesACity()
-    {
+    public function testUserUpdatesACity() {
         $clusterCount = 2;
         $miniGridCount = 2;
         $cityCount = 1;
@@ -83,8 +78,7 @@ class CityTest extends TestCase
         $this->assertEquals($response['data']['name'], $cityData['name']);
     }
 
-    protected function createTestData($clusterCount = 1, $miniGridCount = 1, $cityCount = 1)
-    {
+    protected function createTestData($clusterCount = 1, $miniGridCount = 1, $cityCount = 1) {
         $this->user = UserFactory::new()->create();
         $this->company = CompanyFactory::new()->create();
         $this->companyDatabase = CompanyDatabaseFactory::new()->create();
@@ -125,8 +119,7 @@ class CityTest extends TestCase
         }
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);
@@ -134,8 +127,7 @@ class CityTest extends TestCase
         return $this;
     }
 
-    protected function generateUniqueNumber(): int
-    {
+    protected function generateUniqueNumber(): int {
         return $this->faker->unique()->randomNumber() + $this->faker->unique()->randomNumber() +
             $this->faker->unique()->randomNumber();
     }

@@ -7,8 +7,7 @@ use App\Lib\ISmsProvider;
 use App\Models\SmsAndroidSetting;
 use Illuminate\Support\Facades\Log;
 
-class AndroidGateway implements ISmsProvider
-{
+class AndroidGateway implements ISmsProvider {
     /**
      * Sends the sms to the sms provider.
      *
@@ -17,8 +16,7 @@ class AndroidGateway implements ISmsProvider
      * @param string            $callback
      * @param SmsAndroidSetting $smsAndroidSettings
      */
-    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting)
-    {
+    public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting) {
         if (!config('app.env') == 'production') {
             Log::debug('Send sms on allowed in production', ['number' => $number, 'message' => $body]);
 

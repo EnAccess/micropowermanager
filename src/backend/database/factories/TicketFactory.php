@@ -5,8 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Inensus\Ticket\Models\Ticket;
 
-class TicketFactory extends Factory
-{
+class TicketFactory extends Factory {
     protected $model = Ticket::class;
 
     /**
@@ -14,8 +13,7 @@ class TicketFactory extends Factory
      *
      * @return array
      */
-    public function definition()
-    {
+    public function definition() {
         return [
             'ticket_id' => strval($this->faker->uuid),
             'creator_id' => $this->faker->numberBetween(1, 10),

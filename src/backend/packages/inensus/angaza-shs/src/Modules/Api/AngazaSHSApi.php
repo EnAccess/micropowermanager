@@ -12,19 +12,16 @@ use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
 use Inensus\AngazaSHS\Models\AngazaTransaction;
 use Inensus\AngazaSHS\Services\AngazaCredentialService;
 
-class AngazaSHSApi implements IManufacturerAPI
-{
+class AngazaSHSApi implements IManufacturerAPI {
     public const API_CALL_UNIT_CREDIT = '/unit_credit';
 
     public function __construct(
         private AngazaCredentialService $credentialService,
         private AngazaTransaction $angazaTransaction,
         private ApiRequests $apiRequests,
-    ) {
-    }
+    ) {}
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array
-    {
+    public function chargeMeter(TransactionDataContainer $transactionContainer): array {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
         $minimumPurchaseAmountPerDay =
@@ -90,8 +87,7 @@ class AngazaSHSApi implements IManufacturerAPI
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearMeter(Meter $meters)
-    {
+    public function clearMeter(Meter $meters) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

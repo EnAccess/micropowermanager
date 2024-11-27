@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Exceptions\WebhookNotCreatedException;
 use Viber\Client;
 
-class WebhookService
-{
-    public function createWebHook($credential)
-    {
+class WebhookService {
+    public function createWebHook($credential) {
         $apiKey = $credential->api_token;
         $webhookUrl = $credential->webhook_url;
 

@@ -15,19 +15,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 /**
  * @implements IBaseService<Agent>
  */
-class AgentService implements IBaseService
-{
+class AgentService implements IBaseService {
     public function __construct(
         private Agent $agent,
         private AgentReceipt $agentReceipt,
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
         private PersonService $personService,
-    ) {
-    }
+    ) {}
 
-    public function resetPassword(string $email)
-    {
+    public function resetPassword(string $email) {
         try {
             $newPassword = PasswordGenerator::generatePassword();
         } catch (Exception $exception) {
@@ -48,28 +45,24 @@ class AgentService implements IBaseService
         return $newPassword;
     }
 
-    public function updateDevice($agent, $deviceId): void
-    {
+    public function updateDevice($agent, $deviceId): void {
         $agent->device_id = $deviceId;
         $agent->update();
         $agent->fresh();
     }
 
-    public function setFirebaseToken($agent, $firebaseToken)
-    {
+    public function setFirebaseToken($agent, $firebaseToken) {
         $agent->fire_base_token = $firebaseToken;
         $agent->update();
 
         return $agent->fresh();
     }
 
-    public function getAgentBalance($agent)
-    {
+    public function getAgentBalance($agent) {
         return $agent->balance;
     }
 
-    public function searchAgent($searchTerm, $paginate)
-    {
+    public function searchAgent($searchTerm, $paginate) {
         if ($paginate === 1) {
             return $this->agent->newQuery()->with('miniGrid')->WhereHas(
                 'miniGrid',
@@ -89,25 +82,21 @@ class AgentService implements IBaseService
             ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->get();
     }
 
-    public function getByAuthenticatedUser()
-    {
+    public function getByAuthenticatedUser() {
         return $this->agent->newQuery()->find(auth('agent_api')->user()->id);
     }
 
-    public function getById(int $id): Agent
-    {
+    public function getById(int $id): Agent {
         return $this->agent->newQuery()
             ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
             ->where('id', $id)->firstOrFail();
     }
 
-    public function delete($agent): ?bool
-    {
+    public function delete($agent): ?bool {
         return $agent->delete();
     }
 
-    public function getAll(?int $limit = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->agent->newQuery()
                 ->with(['person', 'person.addresses', 'miniGrid', 'commission'])
@@ -146,8 +135,7 @@ class AgentService implements IBaseService
         return $this->agent->newQuery()->create($agentData);
     }
 
-    public function update($agent, array $agentData): Agent
-    {
+    public function update($agent, array $agentData): Agent {
         $person = $this->personService->getById($agentData['personId']);
         $personData = [
             'name' => $agentData['name'],

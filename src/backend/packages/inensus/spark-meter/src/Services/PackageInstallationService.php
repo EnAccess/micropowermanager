@@ -2,8 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
-class PackageInstallationService
-{
+class PackageInstallationService {
     private $smsSettingService;
     private $syncSettingService;
     private $smsBodyService;
@@ -24,8 +23,7 @@ class PackageInstallationService
         $this->smSmsFeedbackWordService = $smSmsFeedbackWordService;
     }
 
-    public function createDefaultSettingRecords()
-    {
+    public function createDefaultSettingRecords() {
         $this->smsBodyService->createSmsBodies();
         $this->defaultValueService->createSmsVariableDefaultValues();
         $this->syncSettingService->createDefaultSettings();

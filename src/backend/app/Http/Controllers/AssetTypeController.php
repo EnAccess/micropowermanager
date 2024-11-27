@@ -10,8 +10,7 @@ use App\Services\ApplianceTypeService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
-class AssetTypeController extends Controller
-{
+class AssetTypeController extends Controller {
     use SoftDeletes;
 
     /**
@@ -19,8 +18,7 @@ class AssetTypeController extends Controller
      */
     private $applianceTypeService;
 
-    public function __construct(ApplianceTypeService $applianceTypeService)
-    {
+    public function __construct(ApplianceTypeService $applianceTypeService) {
         $this->applianceTypeService = $applianceTypeService;
     }
 
@@ -29,8 +27,7 @@ class AssetTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function index(Request $request): ApiResource
-    {
+    public function index(Request $request): ApiResource {
         return new ApiResource($this->applianceTypeService->getApplianceTypes($request));
     }
 
@@ -41,8 +38,7 @@ class AssetTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function store(AssetTypeCreateRequest $request): ApiResource
-    {
+    public function store(AssetTypeCreateRequest $request): ApiResource {
         $appliance = $this->applianceTypeService->createApplianceType($request);
 
         return new ApiResource($appliance);
@@ -56,8 +52,7 @@ class AssetTypeController extends Controller
      *
      * @return ApiResource
      */
-    public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource
-    {
+    public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource {
         $appliance = $this->applianceTypeService->updateApplianceType($request, $assetType);
 
         return new ApiResource($appliance);
@@ -72,8 +67,7 @@ class AssetTypeController extends Controller
      *
      * @throws \Exception
      */
-    public function destroy(AssetType $assetType): ApiResource
-    {
+    public function destroy(AssetType $assetType): ApiResource {
         return new ApiResource(
             $this->applianceTypeService->deleteApplianceType($assetType)
         );

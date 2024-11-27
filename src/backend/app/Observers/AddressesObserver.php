@@ -4,8 +4,7 @@ namespace App\Observers;
 
 use App\Models\Address\Address;
 
-class AddressesObserver
-{
+class AddressesObserver {
     /**
      * Handles 'deleted' event of Address.
      *
@@ -13,8 +12,7 @@ class AddressesObserver
      *
      * @return void
      */
-    public function deleted(Address $address): void
-    {
+    public function deleted(Address $address): void {
         // delete the geographic information for that address
         // $address->geo()->delete();
     }

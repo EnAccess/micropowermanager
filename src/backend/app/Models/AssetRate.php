@@ -17,8 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property string $due_date
  * @property AssetPerson assetPerson
  */
-class AssetRate extends BaseModel
-{
+class AssetRate extends BaseModel {
     public const RELATION_NAME = 'asset_rate';
 
     protected $fillable = [
@@ -29,23 +28,19 @@ class AssetRate extends BaseModel
         'remind',
     ];
 
-    public function assetPerson(): BelongsTo
-    {
+    public function assetPerson(): BelongsTo {
         return $this->belongsTo(AssetPerson::class);
     }
 
-    public function logs(): MorphMany
-    {
+    public function logs(): MorphMany {
         return $this->morphMany(Log::class, 'affected');
     }
 
-    public function paymentHistory(): MorphOne
-    {
+    public function paymentHistory(): MorphOne {
         return $this->morphOne(PaymentHistory::class, 'paid_for');
     }
 
-    public function asset(): HasOneThrough
-    {
+    public function asset(): HasOneThrough {
         return $this->HasOneThrough(AssetType::class, AssetPerson::class, 'asset_type_id', 'id');
     }
 }

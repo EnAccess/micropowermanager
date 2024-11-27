@@ -6,10 +6,8 @@ use App\Jobs\ProcessPayment;
 use Illuminate\Routing\Controller;
 use Inensus\MesombPaymentProvider\Http\Resources\MesombTransactionProcessingResource;
 
-class MesombPaymentProviderController extends Controller
-{
-    public function store()
-    {
+class MesombPaymentProviderController extends Controller {
+    public function store() {
         $transactionProvider = resolve('MesombPaymentProvider');
         $transactionProvider->saveTransaction();
         // store common data

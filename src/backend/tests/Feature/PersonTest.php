@@ -18,13 +18,11 @@ use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class PersonTest extends TestCase
-{
+class PersonTest extends TestCase {
     use RefreshMultipleDatabases;
     use WithFaker;
 
-    public function testUserGetsCustomerList()
-    {
+    public function testUserGetsCustomerList() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -44,8 +42,7 @@ class PersonTest extends TestCase
         $this->assertEquals(2, count($response['data']));
     }
 
-    public function testUserGetsAllRegisteredPersonList()
-    {
+    public function testUserGetsAllRegisteredPersonList() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -57,8 +54,7 @@ class PersonTest extends TestCase
         $this->assertEquals(2, count($response['data']));
     }
 
-    public function testUserGetPersonById()
-    {
+    public function testUserGetPersonById() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -69,8 +65,7 @@ class PersonTest extends TestCase
         $this->assertEquals($response['data']['name'], $person->name);
     }
 
-    public function testUserCanCreateNewPersonAsACustomer()
-    {
+    public function testUserCanCreateNewPersonAsACustomer() {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -99,8 +94,7 @@ class PersonTest extends TestCase
         $this->assertEquals($personAddress->street, $postData['street']);
     }
 
-    public function testUserCanCreateNewPersonAsAMaintenanceUser()
-    {
+    public function testUserCanCreateNewPersonAsAMaintenanceUser() {
         $this->withExceptionHandling();
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
@@ -132,8 +126,7 @@ class PersonTest extends TestCase
         $this->assertEquals($maintenanceUser->person->name, $postData['name']);
     }
 
-    public function testUserCanUpdateAPerson()
-    {
+    public function testUserCanUpdateAPerson() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -154,8 +147,7 @@ class PersonTest extends TestCase
         $this->assertEquals($updatedPerson->surname, 'updated surname');
     }
 
-    public function testUserCanSearchAPersonByName()
-    {
+    public function testUserCanSearchAPersonByName() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -165,8 +157,7 @@ class PersonTest extends TestCase
         $this->assertEquals($response['data'][0]['id'], $person->id);
     }
 
-    public function testUserCanSearchAPersonByPhoneNumber()
-    {
+    public function testUserCanSearchAPersonByPhoneNumber() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -180,8 +171,7 @@ class PersonTest extends TestCase
         $this->assertEquals($responseData['addresses'][0]['phone'], $address->phone);
     }
 
-    public function testUserCanGetPersonsTransactions()
-    {
+    public function testUserCanGetPersonsTransactions() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -206,8 +196,7 @@ class PersonTest extends TestCase
         $this->assertEquals($transaction->amount, $response['data'][0]['amount']);
     }
 
-    public function testUserCanDeleteAPerson()
-    {
+    public function testUserCanDeleteAPerson() {
         $user = UserFactory::new()->create();
         $city = CityFactory::new()->create();
         $company = CompanyFactory::new()->create();
@@ -218,8 +207,7 @@ class PersonTest extends TestCase
         $this->assertEquals(0, $personListCount);
     }
 
-    public function actingAs($user, $driver = null)
-    {
+    public function actingAs($user, $driver = null) {
         $token = JWTAuth::fromUser($user);
         $this->withHeader('Authorization', "Bearer {$token}");
         parent::actingAs($user);

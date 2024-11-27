@@ -10,8 +10,7 @@ use Inensus\ViberMessaging\Services\ViberMessageService;
 use Viber\Api\Sender;
 use Viber\Bot;
 
-class ViberGateway
-{
+class ViberGateway {
     private $bot;
     private $botSender;
 

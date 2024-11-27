@@ -5,8 +5,7 @@ namespace App\Helpers;
 use App\Exceptions\MailNotSentException;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
-interface MailHelperInterface
-{
+interface MailHelperInterface {
     /**
      * @param      $to
      * @param      $title

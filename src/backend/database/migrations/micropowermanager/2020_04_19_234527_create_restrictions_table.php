@@ -11,8 +11,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->create('restrictions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('target');
@@ -28,13 +27,11 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('shard')->dropIfExists('restrictions');
     }
 
-    public function addDefault()
-    {
+    public function addDefault() {
         $timeStamp = Carbon\Carbon::now();
 
         DB::table('restrictions')->insert([

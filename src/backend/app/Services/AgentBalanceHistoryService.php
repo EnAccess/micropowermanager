@@ -13,16 +13,13 @@ use Illuminate\Support\Facades\DB;
  * @implements IBaseService<AgentBalanceHistory>
  * @implements IAssociative<AgentBalanceHistory>
  */
-class AgentBalanceHistoryService implements IBaseService, IAssociative
-{
+class AgentBalanceHistoryService implements IBaseService, IAssociative {
     public function __construct(
         private AgentBalanceHistory $agentBalanceHistory,
         private PeriodService $periodService,
-    ) {
-    }
+    ) {}
 
-    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator
-    {
+    public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentBalanceHistory->newQuery()
             ->whereHasMorph(
                 'trigger',
@@ -38,36 +35,30 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $query->latest()->get();
     }
 
-    public function create(array $agentBalanceHistoryData): AgentBalanceHistory
-    {
+    public function create(array $agentBalanceHistoryData): AgentBalanceHistory {
         return $this->agentBalanceHistory->newQuery()->create($agentBalanceHistoryData);
     }
 
-    public function make(array $agentBalanceHistoryData): AgentBalanceHistory
-    {
+    public function make(array $agentBalanceHistoryData): AgentBalanceHistory {
         return $this->agentBalanceHistory->newQuery()->make($agentBalanceHistoryData);
     }
 
-    public function save($agentBalanceHistory): bool
-    {
+    public function save($agentBalanceHistory): bool {
         return $agentBalanceHistory->save();
     }
 
-    public function getLastAgentBalanceHistory($agentId)
-    {
+    public function getLastAgentBalanceHistory($agentId) {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->get()->last();
     }
 
-    public function getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId)
-    {
+    public function getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId) {
         return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)
             ->where('id', '>', $agentBalanceHistoryId)
             ->whereIn('trigger_type', ['agent_appliance', 'agent_transaction'])
             ->sum('amount');
     }
 
-    public function getTransactionAverage($agent, $lastReceipt)
-    {
+    public function getTransactionAverage($agent, $lastReceipt) {
         if ($lastReceipt) {
             $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
                 ->where('agent_id', $agent->id)
@@ -86,8 +77,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return -1 * $averageTransactionAmounts;
     }
 
-    public function getGraphValues($agent, $lastReceiptDate)
-    {
+    public function getGraphValues($agent, $lastReceiptDate) {
         $periodDate = $lastReceiptDate;
         $period = $this->getPeriod($agent, $periodDate);
         $history = $this->agentBalanceHistory->newQuery()
@@ -142,8 +132,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $period;
     }
 
-    public function getPeriod($agent, $date): array
-    {
+    public function getPeriod($agent, $date): array {
         $days = $this->agentBalanceHistory->newQuery()->selectRaw('DATE_FORMAT(created_at,\'%Y-%m-%d\') as day')
             ->where('agent_id', $agent->id)
             ->where(
@@ -151,7 +140,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
                 '>=',
                 $date
             )->groupBy(DB::connection($this->agentBalanceHistory->getConnectionName())
-                ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
+            ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\')'))
             ->get();
         $period = [];
         foreach ($days as $key => $item) {
@@ -164,8 +153,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $period;
     }
 
-    public function getAgentRevenuesWeekly($agent): array
-    {
+    public function getAgentRevenuesWeekly($agent): array {
         $startDate = date('Y-m-d', strtotime('-3 months'));
         $endDate = date('Y-m-d');
         $Revenues = $this->agentBalanceHistory->newQuery()
@@ -184,18 +172,15 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative
         return $p;
     }
 
-    public function getById($id): AgentBalanceHistory
-    {
+    public function getById($id): AgentBalanceHistory {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function update($model, $data): AgentBalanceHistory
-    {
+    public function update($model, $data): AgentBalanceHistory {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 }

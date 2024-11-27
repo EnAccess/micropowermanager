@@ -38,8 +38,7 @@ use Inensus\Ticket\Models\Ticket;
  * @property int    $nationality
  * @property int    $is_customer
  */
-class Person extends BaseModel implements HasAddressesInterface, RoleInterface
-{
+class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     use SoftDeletes;
     use HasFactory;
 
@@ -55,69 +54,57 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
         'deleting' => PersonDeleting::class,
     ];
 
-    public function tickets(): MorphMany
-    {
+    public function tickets(): MorphMany {
         return $this->morphMany(Ticket::class, 'owner');
     }
 
-    public function saveAddress(Address $address): void
-    {
+    public function saveAddress(Address $address): void {
         $this->addresses()->save($address);
     }
 
     /**
      * @return MorphMany
      */
-    public function addresses(): HasOneOrMany
-    {
+    public function addresses(): HasOneOrMany {
         return $this->morphMany(Address::class, 'owner');
     }
 
-    public function citizenship(): BelongsTo
-    {
+    public function citizenship(): BelongsTo {
         return $this->belongsTo(Country::class, 'nationality', 'id');
     }
 
-    public function devices(): HasMany
-    {
+    public function devices(): HasMany {
         return $this->hasMany(Device::class);
     }
 
     /**
      * @return MorphMany
      */
-    public function roleOwner(): HasOneOrMany
-    {
+    public function roleOwner(): HasOneOrMany {
         return $this->morphMany(Roles::class, 'role_owner');
     }
 
-    public function payments(): MorphMany
-    {
+    public function payments(): MorphMany {
         return $this->morphMany(PaymentHistory::class, 'payer');
     }
 
-    public function customerGroup(): BelongsTo
-    {
+    public function customerGroup(): BelongsTo {
         return $this->belongsTo(CustomerGroup::class);
     }
 
-    public function agent(): HasOne
-    {
+    public function agent(): HasOne {
         return $this->hasOne(Agent::class);
     }
 
-    public function agentSoldAppliance(): HasOne
-    {
+    public function agentSoldAppliance(): HasOne {
         return $this->hasOne(AgentSoldAppliance::class);
     }
 
-    public function __toString()
-    {
+    public function __toString() {
         return sprintf('%s %s', $this->name, $this->surname);
     }
 
-    public function livingInClusterQuery(int $clusterId)
-    {
+    public function livingInClusterQuery(int $clusterId) {
         return DB::table($this->getTable())
             ->select('people.id')
             ->leftJoin('addresses', function (JoinClause $q) {
@@ -135,8 +122,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface
             ->orderBy('cities.id');
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 }

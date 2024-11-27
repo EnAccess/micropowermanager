@@ -12,8 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use MPM\Device\DeviceService;
 
-class AppliancePaymentService
-{
+class AppliancePaymentService {
     private float $paymentAmount;
 
     public function __construct(
@@ -21,11 +20,9 @@ class AppliancePaymentService
         private MainSettings $mainSettings,
         private AppliancePersonService $appliancePersonService,
         private DeviceService $deviceService,
-    ) {
-    }
+    ) {}
 
-    public function getPaymentForAppliance($request, $appliancePerson)
-    {
+    public function getPaymentForAppliance($request, $appliancePerson) {
         $creatorId = auth('api')->user()->id;
         $this->paymentAmount = $amount = (float) $request->input('amount');
         $applianceDetail = $this->appliancePersonService->getApplianceDetails($appliancePerson->id);
@@ -50,8 +47,7 @@ class AppliancePaymentService
         return $appliancePerson;
     }
 
-    public function updateRateRemaining($id, $amount): AssetRate
-    {
+    public function updateRateRemaining($id, $amount): AssetRate {
         /** @var AssetRate $applianceRate */
         $applianceRate = AssetRate::query()->findOrFail($id);
         $applianceRate->remaining -= $amount;
@@ -61,8 +57,7 @@ class AppliancePaymentService
         return $applianceRate;
     }
 
-    public function createPaymentLog($appliancePerson, $amount, $creatorId): void
-    {
+    public function createPaymentLog($appliancePerson, $amount, $creatorId): void {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings ? $mainSettings->currency : '€';
@@ -78,8 +73,7 @@ class AppliancePaymentService
         );
     }
 
-    public function createPaymentHistory($amount, $buyer, $applianceRate, $transaction)
-    {
+    public function createPaymentHistory($amount, $buyer, $applianceRate, $transaction) {
         event(
             'payment.successful',
             [
@@ -94,8 +88,7 @@ class AppliancePaymentService
         );
     }
 
-    private function validateAmount($applianceDetail, $amount)
-    {
+    private function validateAmount($applianceDetail, $amount) {
         $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
         $installmentCost = $applianceDetail->rates[1]['rate_cost'];
 
@@ -112,8 +105,7 @@ class AppliancePaymentService
         }
     }
 
-    public function payInstallment($installment, $applianceOwner, $transaction)
-    {
+    public function payInstallment($installment, $applianceOwner, $transaction) {
         if ($installment['remaining'] > 0 && $this->paymentAmount > 0) {
             if ($installment['remaining'] <= $this->paymentAmount) {
                 $this->paymentAmount -= $installment['remaining'];
@@ -127,8 +119,7 @@ class AppliancePaymentService
         }
     }
 
-    private function processPaymentForDevice($deviceSerial, $transaction, $applianceDetail)
-    {
+    private function processPaymentForDevice($deviceSerial, $transaction, $applianceDetail) {
         $device = $this->deviceService->getBySerialNumber($deviceSerial);
 
         if (!$device) {
@@ -156,8 +147,7 @@ class AppliancePaymentService
         $token->save();
     }
 
-    public function getDayDifferenceBetweenTwoInstallments($installments)
-    {
+    public function getDayDifferenceBetweenTwoInstallments($installments) {
         try {
             $secondInstallment = $installments[1];
             $thirdInstallment = $installments[2];
@@ -170,8 +160,7 @@ class AppliancePaymentService
         }
     }
 
-    public function setPaymentAmount($amount): void
-    {
+    public function setPaymentAmount($amount): void {
         $this->paymentAmount = $amount;
     }
 }

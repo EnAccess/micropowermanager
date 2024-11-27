@@ -15,8 +15,7 @@ use App\Services\AgentTransactionTransactionService;
 use App\Services\AppliancePersonService;
 use MPM\Transaction\TransactionService;
 
-class AgentSoldApplianceObserver
-{
+class AgentSoldApplianceObserver {
     public function __construct(
         private AgentBalanceHistoryService $agentBalanceHistoryService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
@@ -29,18 +28,15 @@ class AgentSoldApplianceObserver
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
-    ) {
-    }
+    ) {}
 
-    public function created(AgentSoldAppliance $agentSoldAppliance): void
-    {
+    public function created(AgentSoldAppliance $agentSoldAppliance): void {
         if (request()->all()) {
             $this->processSaleIfIsNotCreatedByFactory($agentSoldAppliance);
         }
     }
 
-    private function processSaleIfIsNotCreatedByFactory($agentSoldAppliance)
-    {
+    private function processSaleIfIsNotCreatedByFactory($agentSoldAppliance) {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->applianceType()->first();

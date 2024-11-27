@@ -11,14 +11,12 @@ use App\Services\AgentService;
 use App\Services\AgentTransactionService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class AgentBalanceMiddleware
-{
+class AgentBalanceMiddleware {
     public function __construct(
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
         private AgentTransactionService $agentTransactionService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
@@ -28,8 +26,7 @@ class AgentBalanceMiddleware
      *
      * @return mixed
      */
-    public function handle($request, \Closure $next)
-    {
+    public function handle($request, \Closure $next) {
         $routeName = request()->route()->getName();
         $agent = $this->agentService->getByAuthenticatedUser();
         $commission = $agent->commission()->first();

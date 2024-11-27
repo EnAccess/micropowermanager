@@ -11,24 +11,20 @@ use Illuminate\Database\Eloquent\Collection;
 
 // FIXME:
 // class ApplianceRateService implements IBaseService
-class ApplianceRateService
-{
+class ApplianceRateService {
     public function __construct(
         private AssetRate $applianceRate,
         private MainSettings $mainSettings,
-    ) {
-    }
+    ) {}
 
-    public function getCurrencyFromMainSettings(): string
-    {
+    public function getCurrencyFromMainSettings(): string {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
 
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function updateApplianceRateCost(AssetRate $applianceRate, $creatorId, $cost, $newCost): AssetRate
-    {
+    public function updateApplianceRateCost(AssetRate $applianceRate, $creatorId, $cost, $newCost): AssetRate {
         $currency = $this->getCurrencyFromMainSettings();
         event(
             'new.log',
@@ -52,8 +48,7 @@ class ApplianceRateService
         return $applianceRate->refresh();
     }
 
-    public function deleteUpdatedApplianceRateIfCostZero(AssetRate $applianceRate, $creatorId, $cost, $newCost): void
-    {
+    public function deleteUpdatedApplianceRateIfCostZero(AssetRate $applianceRate, $creatorId, $cost, $newCost): void {
         $currency = $this->getCurrencyFromMainSettings();
         $appliancePerson = $applianceRate->assetPerson;
         $applianceRate->delete();
@@ -73,8 +68,7 @@ class ApplianceRateService
         );
     }
 
-    public function getByLoanIdsForDueDate($loanIds): Collection
-    {
+    public function getByLoanIdsForDueDate($loanIds): Collection {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->whereIn('asset_person_id', $loanIds)
             ->where('remaining', '>', 0)
@@ -82,20 +76,17 @@ class ApplianceRateService
             ->get();
     }
 
-    public function getAllByLoanId($loanId): Collection
-    {
+    public function getAllByLoanId($loanId): Collection {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->where('asset_person_id', $loanId)
             ->get();
     }
 
-    public function getById(int $id): AssetRate
-    {
+    public function getById(int $id): AssetRate {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($assetPerson, $installmentType = 'monthly'): void
-    {
+    public function create($assetPerson, $installmentType = 'monthly'): void {
         $baseTime = $assetPerson->first_payment_date ?? date('Y-m-d');
         $installment = $installmentType === 'monthly' ? 'month' : 'week';
         if ($assetPerson->down_payment > 0) {
@@ -134,23 +125,19 @@ class ApplianceRateService
         }
     }
 
-    public function update($model, array $data): AssetRate
-    {
+    public function update($model, array $data): AssetRate {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool
-    {
+    public function delete($model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getAll(?int $limit = null): Collection
-    {
+    public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate
-    {
+    public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate {
         /** @var ?AssetRate $result */
         $result = $this->applianceRate->newQuery()
             ->where('asset_person_id', $assetPerson->id)
@@ -161,8 +148,7 @@ class ApplianceRateService
         return $result;
     }
 
-    public function queryOutstandingDebtsByApplianceRates(CarbonImmutable $toDate): Builder
-    {
+    public function queryOutstandingDebtsByApplianceRates(CarbonImmutable $toDate): Builder {
         return $this->applianceRate->newQuery()
             ->with(['assetPerson.asset', 'assetPerson.person'])
             ->where('due_date', '<', $toDate->format('Y-m-d'))

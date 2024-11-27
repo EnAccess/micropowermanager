@@ -10,8 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('shard')->table('people', function (Blueprint $table) {
             $table->json('additional_json')->nullable();
         });
@@ -22,9 +21,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::connection('shard')->table('people', function (Blueprint $table) {
-        });
+    public function down() {
+        Schema::connection('shard')->table('people', function (Blueprint $table) {});
     }
 };

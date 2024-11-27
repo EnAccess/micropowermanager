@@ -4,17 +4,14 @@ namespace App\Services;
 
 use App\Models\SmsVariableDefaultValue;
 
-class SmsVariableDefaultValueService
-{
+class SmsVariableDefaultValueService {
     private $smsVariableDefaultValue;
 
-    public function __construct(SmsVariableDefaultValue $smsVariableDefaultValue)
-    {
+    public function __construct(SmsVariableDefaultValue $smsVariableDefaultValue) {
         $this->smsVariableDefaultValue = $smsVariableDefaultValue;
     }
 
-    public function getSmsVariableDefaultValues()
-    {
+    public function getSmsVariableDefaultValues() {
         return $this->smsVariableDefaultValue->newQuery()->get();
     }
 }

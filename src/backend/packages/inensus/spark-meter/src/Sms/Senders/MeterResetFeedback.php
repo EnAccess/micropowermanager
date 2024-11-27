@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Inensus\SparkMeter\Sms\BodyParsers\SparkSmsMeterResetFailedFeedbackBody;
 use Inensus\SparkMeter\Sms\BodyParsers\SparkSmsMeterResetFeedbackBody;
 
-class MeterResetFeedback extends SmsSender
-{
+class MeterResetFeedback extends SmsSender {
     protected $data;
     public $body = '';
     protected $references = [
@@ -19,8 +18,7 @@ class MeterResetFeedback extends SmsSender
         'footer' => 'SparkSmsMeterResetFeedbackFooter',
     ];
 
-    public function prepareBody()
-    {
+    public function prepareBody() {
         if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('SparkSmsMeterResetFeedbackBody');

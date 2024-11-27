@@ -21,12 +21,10 @@ use Illuminate\Support\Facades\Queue;
 use Inensus\MesombPaymentProvider\Services\MesomTransactionService;
 use Tests\TestCase;
 
-class PaymentProcessTests extends TestCase
-{
+class PaymentProcessTests extends TestCase {
     use RefreshDatabase;
 
-    public function testProcessPaymentStartsEnergyTransactionProcessor()
-    {
+    public function testProcessPaymentStartsEnergyTransactionProcessor() {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -34,8 +32,7 @@ class PaymentProcessTests extends TestCase
         Queue::assertPushed(EnergyTransactionProcessor::class);
     }
 
-    public function testEnergyTransactionProcessorStartsTokenProcessor()
-    {
+    public function testEnergyTransactionProcessorStartsTokenProcessor() {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -43,8 +40,7 @@ class PaymentProcessTests extends TestCase
         Queue::assertPushed(TokenProcessor::class);
     }
 
-    public function testTokenProcessorChargesMeter()
-    {
+    public function testTokenProcessorChargesMeter() {
         Queue::fake();
         $this->initializeData();
         $transaction = $this->initializeTransaction();
@@ -58,8 +54,7 @@ class PaymentProcessTests extends TestCase
         $this->assertEquals(1, $mesombPaymentCount);
     }
 
-    private function initializeTransaction()
-    {
+    private function initializeTransaction() {
         $validData = [
             'pk' => 'ae58a073-2b76-4774-995b-3743d6793d53',
             'type' => 'PAYMENT',
@@ -76,12 +71,13 @@ class PaymentProcessTests extends TestCase
         $mesombTransaction = $mesombTransactionService->assignIncomingDataToMesombTransaction($validData);
         $transaction = $mesombTransactionService->assignIncomingDataToTransaction($validData);
 
-        return $mesombTransactionService->associateMesombTransactionWithTransaction($mesombTransaction,
-            $transaction);
+        return $mesombTransactionService->associateMesombTransactionWithTransaction(
+            $mesombTransaction,
+            $transaction
+        );
     }
 
-    private function initializeData()
-    {
+    private function initializeData() {
         // create person
         factory(Person::class)->create();
         // create meter-tariff
