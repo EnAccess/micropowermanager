@@ -23,9 +23,7 @@ return [
         'request_url' => env('VODACOM_REQUEST_URL'),
         'sp_id' => env('VODACOM_SPID'),
         'sp_password' => env('VODACOM_SPPASSWORD'),
-        'ips' => [
-            '127.0.0.1', // for testing purpose
-        ],
+        'ips' => env('VODACOM_SPPASSWORD', ['127.0.0.1']),
         'certs' => [
             'broker' => env('VODACOM_BROKER_CRT'),
             'ssl_key' => env('VODACOM_SLL_KEY'),
@@ -36,9 +34,9 @@ return [
 
     'airtel' => [
         'request_url' => env('AIRTEL_REQUEST_URL'),
-        'api_user' => 'AIRTEL_USERNAME',
-        'api_password' => 'AIRTEL_PASSWORD',
-        'ips' => [],
+        'api_user' => env('AIRTEL_USERNAME'),
+        'api_password' => env('AIRTEL_PASSWORD'),
+        'ips' => env('AIRTEL_IPS', []),
     ],
     'pagination' => 25,
 
@@ -89,7 +87,7 @@ return [
         'key' => 'key=AAAAdSTAIwc:APA91bHl4w-l4QSlHFPbfM-soHzf0hf1rQSgV-ubjzSxALNYjb_lnJigRvyWvp1IybrZTDfM-CaZ7yFBSoZh47V49fdOz5gLCSriN5T1qmLJ40S1WWUCLWNV32g7YPaz-6lcxbunyHcB',
     ],
     'bingMapApi' => [
-        'url' => 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=',
+        'url' => env('BINGMAP_API_URL', 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key='),
     ],
     'sunKing' => [
         'url' => env('SUNKING_API_URL'),
