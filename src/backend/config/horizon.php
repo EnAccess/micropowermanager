@@ -73,7 +73,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES'))),
+                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
@@ -82,7 +82,7 @@ return [
         'staging' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES'))),
+                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
@@ -92,7 +92,7 @@ return [
         'development' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES'))),
+                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
@@ -103,7 +103,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES'))),
+                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
