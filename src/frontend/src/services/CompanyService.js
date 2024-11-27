@@ -15,8 +15,8 @@ export class CompanyService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let erorMessage = e.response.data.data.message
-      return new ErrorHandler(erorMessage, "http")
+      let errorMessage = e.response?.data.message
+      return new ErrorHandler(errorMessage, "http", e.response?.status)
     }
   }
 

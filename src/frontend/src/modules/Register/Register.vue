@@ -416,7 +416,7 @@
                 v-if="!succeed"
               >
                 <span class="failure-span">
-                  {{ $tc("phrases.somethingWentWrong") }}
+                  {{ errorMessage }}
                   <md-icon style="color: red">priority_high</md-icon>
                 </span>
 
@@ -474,6 +474,7 @@ export default {
       },
       successMessage: "",
       succeed: true,
+      errorMessage: this.$tc("phrases.somethingWentWrong"),
     }
   },
   mounted() {
@@ -542,6 +543,16 @@ export default {
       } catch (e) {
         this.succeed = false
         this.loading = false
+
+        // set appropriate error message
+        if (e?.message === "validation.unique") {
+          this.errorMessage = this.$tc("errors.alreadyUsedCompanyEmail")
+        } else if (
+          e?.message &&
+          e?.message.includes("Integrity constraint violation")
+        ) {
+          this.errorMessage = this.$tc("errors.alreadyUserAdminEmail")
+        }
       }
     },
     validUsageType(plugin_usage_type, customer_usage_types) {

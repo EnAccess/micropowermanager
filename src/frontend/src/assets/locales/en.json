@@ -1,4 +1,8 @@
 {
+  "errors": {
+    "alreadyUsedCompanyEmail": "Company with email already exists",
+    "alreadyUserAdminEmail": "Admin with email already exists"
+  },
   "menu": {
     "Agents": "Agents",
     "Angaza SHS": "Angaza SHS",
