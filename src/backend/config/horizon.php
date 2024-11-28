@@ -1,5 +1,15 @@
 <?php
 
+$queues = [
+    env('QUEUE_PAYMENT', 'payment'),
+    env('QUEUE_ENERGY', 'energy_payment'),
+    env('QUEUE_TOKEN', 'token'),
+    env('QUEUE_SMS', 'sms'),
+    env('QUEUE_HISTORY', 'history'),
+    env('QUEUE_REPORT', 'report_generator'),
+    env('QUEUE_MISC', 'misc'),
+];
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -73,7 +83,7 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
+                'queue' => $queues,
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
@@ -82,7 +92,7 @@ return [
         'staging' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
+                'queue' => $queues,
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
@@ -92,7 +102,7 @@ return [
         'development' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
+                'queue' => $queues,
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
@@ -103,7 +113,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => explode(',', str_replace(' ', '', env('QUEUES', ''))),
+                'queue' => $queues,
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,
