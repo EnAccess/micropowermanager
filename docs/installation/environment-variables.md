@@ -34,6 +34,14 @@ For more details see the corresponding plugin's documentation.
 | `APP_KEY`            | **Required**            | Used by the Illuminate encrypter service to encrypt database entries. In production environments make sure this is a random, 32 character string, otherwise these encrypted strings will not be safe |
 | `APP_URL`            | `http://localhost:8000` | Set this to root of MicroPowerManager in deployed environmens (`production` or `demo`).                                                                                                              |
 
+### JSON Web Token Authentication (jwt-auth)
+
+For more details see [`jwt-auth` documentation](https://jwt-auth.readthedocs.io/en/stable/configuration/).
+
+| Environment Variable | Default      | Description                                                       |
+| -------------------- | ------------ | ----------------------------------------------------------------- |
+| `JWT_SECRET`         | **Required** | `jwt-auht` secret, ideally created with `php artisan jwt:secret`. |
+
 ### Database connection
 
 | Environment Variable | Default               | Description                                                                                                                                              |
@@ -96,14 +104,6 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 | `QUEUE_MISC`         | `misc`             | Name of the miscellaneous queue.    |
 
 ### Basic setup
-
-#### JWT
-
-For more details see [`jwt-auth` documentation](https://jwt-auth.readthedocs.io/en/stable/configuration/).
-
-| Environment Variable | Default      | Description                                                       |
-| -------------------- | ------------ | ----------------------------------------------------------------- |
-| `JWT_SECRET`         | **Required** | `jwt-auht` secret, ideally created with `php artisan jwt:secret`. |
 
 #### Logging
 
