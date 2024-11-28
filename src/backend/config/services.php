@@ -71,12 +71,13 @@ return [
     ],
 
     'queues' => [
-        'payment' => env('QUEUE_PAYMENT'),
-        'energy' => env('QUEUE_ENERGY'),
-        'token' => env('QUEUE_TOKEN'),
-        'sms' => env('QUEUE_SMS'),
-        'history' => env('QUEUE_HISTORY'),
-        'misc' => env('QUEUE_MISC'),
+        'payment' => env('QUEUE_PAYMENT', 'payment'),
+        'energy' => env('QUEUE_ENERGY', 'energy_payment'),
+        'token' => env('QUEUE_TOKEN', 'token'),
+        'sms' => env('QUEUE_SMS', 'sms'),
+        'history' => env('QUEUE_HISTORY', 'history'),
+        'report' => env('QUEUE_REPORT', 'report_generator'),
+        'misc' => env('QUEUE_MISC', 'misc'),
     ],
 
     'payment' => [

@@ -36,25 +36,32 @@ For more details see the corresponding plugin's documentation.
 
 ### Database connection
 
-| Environment Variable | Default               | Description                                                                                                                                                        |
-| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `DB_CONNECTION`      | `micro_power_manager` | Name of the laravel default connection. Should almost never be changed.                                                                                            |
-| `DB_HOST`            | **Required**          | Network name the database is accessible from. For example `db` (for name network) or `https://long-url.my-cloud-provider.com/region/db` (for dedicated databases). |
-| `DB_PORT`            | `3306`                | Database port.                                                                                                                                                     |
-| `DB_DATABASE`        | `micro_power_manager` | Database name.                                                                                                                                                     |
-| `DB_USERNAME`        | **Required**          | Database username. For example `root`.                                                                                                                             |
-| `DB_PASSWORD`        | **Required**          | Database password. For example `password123!`                                                                                                                      |
+| Environment Variable | Default               | Description                                                                                                                                              |
+| -------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DB_CONNECTION`      | `micro_power_manager` | Name of the laravel default connection. Should almost never be changed.                                                                                  |
+| `DB_HOST`            | **Required**          | Network host name the database is accessible from. For example `db` (for local) or `long-url.my-cloud-provider.com/region/db` (for dedicated databases). |
+| `DB_PORT`            | `3306`                | Database port.                                                                                                                                           |
+| `DB_DATABASE`        | `micro_power_manager` | Database name.                                                                                                                                           |
+| `DB_USERNAME`        | **Required**          | Database username. For example `root`.                                                                                                                   |
+| `DB_PASSWORD`        | **Required**          | Database password. For example `password123!`                                                                                                            |
+
+### Redis connection
+
+We recommend running MicroPowerManager with [Redis](https://redis.io/).
+
+| Environment Variable | Default                         | Description                                                                                                                                                          |
+| -------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `REDIS_HOST`         | **Required** (If Redis is used) | Network host name the Redis cluster is accessible from. For example `redis` (for local) or `long-url.my-cloud-provider.com/region/db` (for dedicated Redis cluster). |
+| `REDIS_PASSWORD`     | **Required** (If Redis is used) | Password for Redis.                                                                                                                                                  |
+| `REDIS_PORT`         | 6379                            |                                                                                                                                                                      |
 
 ### Caching
 
 We recommend running MicroPowerManager with [Redis](https://redis.io/) for caching.
 
-| Environment Variable | Default                         | Description                        |
-| -------------------- | ------------------------------- | ---------------------------------- |
-| `CACHE_DRIVER`       | `file`                          | Recommended to set to `redis`.     |
-| `REDIS_HOST`         | **Required** (If Redis is used) | Network address of the Redis host. |
-| `REDIS_PASSWORD`     | **Required** (If Redis is used) | Password for Redis.                |
-| `REDIS_PORT`         | 6379                            |                                    |
+| Environment Variable | Default | Description                    |
+| -------------------- | ------- | ------------------------------ |
+| `CACHE_DRIVER`       | `file`  | Recommended to set to `redis`. |
 
 ### Session management
 
@@ -77,18 +84,16 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 
 ### Queue
 
-| Environment Variable | Default            | Description                                                                                          |
-| -------------------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| `QUEUE_DRIVER`       | `sync`             | Recommended to set to `database`.                                                                    |
-| `QUEUE_CONNECTION`   | `null`             | It's not clear what this environment variables does. Keeping it for historical reasons.              |
-| `QUEUES`             | **Required**       | Set it to a string conncatenating all queues. For example `payment, energy_payment, token, sms, ...` |
-| `QUEUE_PAYMENT`      | `payment`          | Name of the payment queue.                                                                           |
-| `QUEUE_ENERGY`       | `energy_payment`   | Name of the energy payment queue.                                                                    |
-| `QUEUE_TOKEN`        | `token`            | Name of the token queue.                                                                             |
-| `QUEUE_SMS`          | `sms`              | Name of the SMS queue.                                                                               |
-| `QUEUE_HISTORY`      | `history`          | Name of the History queue.                                                                           |
-| `QUEUE_REPORT`       | `report_generator` | Name of the Report Generator queue.                                                                  |
-| `QUEUE_MISC`         | `misc`             | Name of the miscellaneous queue.                                                                     |
+| Environment Variable | Default            | Description                         |
+| -------------------- | ------------------ | ----------------------------------- |
+| `QUEUE_DRIVER`       | `sync`             | Recommended to set to `database`.   |
+| `QUEUE_PAYMENT`      | `payment`          | Name of the payment queue.          |
+| `QUEUE_ENERGY`       | `energy_payment`   | Name of the energy payment queue.   |
+| `QUEUE_TOKEN`        | `token`            | Name of the token queue.            |
+| `QUEUE_SMS`          | `sms`              | Name of the SMS queue.              |
+| `QUEUE_HISTORY`      | `history`          | Name of the History queue.          |
+| `QUEUE_REPORT`       | `report_generator` | Name of the Report Generator queue. |
+| `QUEUE_MISC`         | `misc`             | Name of the miscellaneous queue.    |
 
 ### Basic setup
 
