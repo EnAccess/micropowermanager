@@ -1,6 +1,8 @@
 import axios from "axios"
 
-export const baseUrl = import.meta.env.MPM_BACKEND_URL
+import { config } from "@/config"
+
+export const baseUrl = config.mpmBackendUrl
 
 const axiosClient = axios.create({
   // Set the timeout to 120 seconds (adjust as needed)

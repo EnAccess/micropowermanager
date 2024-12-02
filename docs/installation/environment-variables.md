@@ -14,9 +14,10 @@ In this document we describe the most relevant environment variables and highlig
 
 ### Backend connection
 
-| Environment Variable | Default      | Description                                                                                                                                                    |
-| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MPM_BACKEND_URL`    | **Required** | The URL of the MicroPowerManager backend. For example `http://localhost:8000` (for non-local) or `https://demo-backend.micropowermanager.io` (for production). |
+| Environment Variable | Default      | Description                                                                                                                                                                                                                                                                                              |
+| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_ENV`            | **Required** | Environment identifier for the MicroPowerManager frontend. Can be `development`, `demo` or `production`. Recommended to set to `production` in production environments. Note: This is different from the builtin [`NODE_ENV`](https://cli.vuejs.org/guide/mode-and-env.html#modes) environment variable. |
+| `MPM_BACKEND_URL`    | **Required** | The URL of the MicroPowerManager backend. For example `http://localhost:8000` (for non-local) or `https://demo-backend.micropowermanager.io` (for production).                                                                                                                                           |
 
 ## Backend
 
@@ -29,7 +30,7 @@ For more details see the corresponding plugin's documentation.
 | Environment Variable | Default                 | Description                                                                                                                                                                                          |
 | -------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `APP_NAME`           | `MicroPowerManager`     | Display Name of the Application                                                                                                                                                                      |
-| `APP_ENV`            | `development`           | Environment identifier for the MicroPowerManager. Can be `local`, `development`, `demo` or `production`. Recommended to set to `production` in production environments.                              |
+| `APP_ENV`            | `development`           | Environment identifier for the MicroPowerManager backend. Can be `development`, `demo` or `production`. Recommended to set to `production` in production environments.                               |
 | `APP_DEBUG`          | `True`                  | Whether or not to run MicroPowerManager in debug mode. Recommended to set to `false` in production environments.                                                                                     |
 | `APP_KEY`            | **Required**            | Used by the Illuminate encrypter service to encrypt database entries. In production environments make sure this is a random, 32 character string, otherwise these encrypted strings will not be safe |
 | `APP_URL`            | `http://localhost:8000` | Set this to root of MicroPowerManager in deployed environmens (`production` or `demo`).                                                                                                              |

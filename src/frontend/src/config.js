@@ -1,7 +1,6 @@
 let config = {
-  currency: "TZS",
-  mapStartingPoint: [-2.500381, 32.88906],
-  env: "development",
+  mpmEnv: import.meta.env.MPM_ENV,
+  mpmBackendUrl: import.meta.env.MPM_BACKEND_URL,
 }
 
 export { config }

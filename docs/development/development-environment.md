@@ -179,6 +179,18 @@ For frontend developmenet it can be helpful to use the Vue DevTools.
 
 ## Troubleshooting
 
+### Port errors
+
+The local development setup uses ports `8000` and `8001`.
+These are quite hardcoded into the application and cannot be changed easily.
+
+**Problem:**
+When running `docker compose up` the output contains errors messages related to ports being unavailable.
+
+**Solution:**
+
+Free up ports `8000` and `8001` by terminating any applications running on that ports.
+
 ### Docker build errors
 
 **Problem:**

@@ -22,7 +22,7 @@ spec:
             - name: APP_NAME
               value: MicroPowerManager
             - name: APP_ENV
-              value: local
+              value: demo
             - name: APP_KEY
               valueFrom:
                 secretKeyRef:

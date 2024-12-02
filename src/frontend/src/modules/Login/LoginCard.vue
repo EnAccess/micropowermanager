@@ -92,8 +92,10 @@ export default {
     authError: false,
     form: {
       email:
-        config.env === "development" ? "dummy_company_admin@example.com" : null,
-      password: config.env === "development" ? "123123" : null,
+        config.mpmEnv !== "production"
+          ? "dummy_company_admin@example.com"
+          : null,
+      password: config.mpmEnv !== "production" ? "123123" : null,
     },
 
     userSaved: false,
