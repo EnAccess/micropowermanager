@@ -14,9 +14,9 @@ In this document we describe the most relevant environment variables and highlig
 
 ### Backend connection
 
-| Environment Variable      | Default                                              | Description                                                                                       |
-| ------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `VUE_APP_MPM_BACKEND_URL` | `http://localhost:8000` **Required** (for non-local) | The URL of the MicroPowerManager backend. For example `https://demo-backend.micropowermanager.io` |
+| Environment Variable | Default      | Description                                                                                                                                                    |
+| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_BACKEND_URL`    | **Required** | The URL of the MicroPowerManager backend. For example `http://localhost:8000` (for non-local) or `https://demo-backend.micropowermanager.io` (for production). |
 
 ## Backend
 
