@@ -12,6 +12,9 @@ RUN npm install -g http-server
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
+# install MicroPowerManager
+RUN npm run build
+
 # Copy the entrypoint script to the container and make it executable
 COPY docker/entrypoint-frontend-prod.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint-frontend-prod.sh

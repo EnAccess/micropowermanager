@@ -1,15 +1,9 @@
 #!/bin/sh
 
-# This script builds the production application at container runtime before serving it
-# via webserver.
-# This is enable the use of environment variables in the production container.
-# As VueJS bundles the environment variables value into the application,
-# see https://cli.vuejs.org/guide/mode-and-env.html#environment-variables
-
-# An alternative approach would be to use a tool like:
-# https://import-meta-env.org/
+# This script enables the use of environment variables in the production container.
+# See https://import-meta-env.org/guide/getting-started/runtime-transform.html
 
 cd /app
-npm run build
+npx import-meta-env -x .env.example -p dist/index.html
 
 http-server dist -p 8081
