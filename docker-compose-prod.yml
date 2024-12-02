@@ -1,7 +1,9 @@
+# Local setup building MicroPowerManager containers in production mode
 services:
-  backend:
-    container_name: backend
-    image: enaccess/micropowermanager-backend:latest
+  backend-prod:
+    container_name: backend-prod
+    build:
+      dockerfile: docker/DockerfileBackendProd
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       - maria
@@ -13,9 +15,10 @@ services:
       - 8000:80
       - 8443:443
 
-  frontend:
-    container_name: frontend
-    image: enaccess/micropowermanager-frontend:latest
+  frontend-prod:
+    container_name: frontend-prod
+    build:
+      dockerfile: docker/DockerfileFrontendProd
     env_file: ./dev/.env.micropowermanager-frontend
     ports:
       - 8001:8081

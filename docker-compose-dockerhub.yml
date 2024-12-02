@@ -1,9 +1,8 @@
-# Local development setup building MicroPowerManager containers in development mode
+# Local setup using MicroPowerManager containers from DockerHub in production mode
 services:
-  backend-dev:
-    container_name: backend-dev
-    build:
-      dockerfile: docker/DockerfileBackendDev
+  backend:
+    container_name: backend
+    image: enaccess/micropowermanager-backend:latest
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       - maria
@@ -14,18 +13,14 @@ services:
     ports:
       - 8000:80
       - 8443:443
-    volumes:
-      - ./src/backend:/var/www/html
 
-  frontend-dev:
-    container_name: frontend-dev
-    build:
-      dockerfile: docker/DockerfileFrontendDev
+  frontend:
+    container_name: frontend
+    image: enaccess/micropowermanager-frontend:latest
     env_file: ./dev/.env.micropowermanager-frontend
     ports:
-      - 8001:8080
+      - 8001:8081
     volumes:
-      - ./src/frontend:/app/
       - frontend_node_modules:/app/node_modules/
 
   cron:
