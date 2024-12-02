@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 8081
           env:
+            - name: MPM_ENV
+              value: demo
             - name: MPM_BACKEND_URL
               valueFrom:
                 secretKeyRef:
