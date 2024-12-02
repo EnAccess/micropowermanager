@@ -1,23 +1,10 @@
 import axios from "axios"
-import { config } from "@/config"
 
-function getBaseUrl() {
-  const baseUrlFromEnv = process.env.VUE_APP_MPM_BACKEND_URL
-
-  if (baseUrlFromEnv) {
-    return baseUrlFromEnv
-  } else {
-    if (config.env === "development") {
-      return "http://localhost:8000"
-    }
-    return window.location.protocol + "//" + window.location.hostname
-  }
-}
-
-export const baseUrl = getBaseUrl()
+export const baseUrl = import.meta.env.MPM_BACKEND_URL
 
 const axiosClient = axios.create({
-  timeout: 120000, // Set the timeout to 120 seconds (adjust as needed)
+  // Set the timeout to 120 seconds (adjust as needed)
+  timeout: 120000,
 })
 
 axiosClient.interceptors.request.use(

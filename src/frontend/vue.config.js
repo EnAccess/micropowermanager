@@ -1,3 +1,5 @@
+const ImportMetaEnvPlugin = require("@import-meta-env/unplugin")
+
 module.exports = {
   lintOnSave: false,
   devServer: {
@@ -7,5 +9,11 @@ module.exports = {
     performance: {
       hints: false,
     },
+    plugins: [
+      ImportMetaEnvPlugin.webpack({
+        example: ".env.example",
+        env: ".env",
+      }),
+    ],
   },
 }
