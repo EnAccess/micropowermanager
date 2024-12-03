@@ -1,4 +1,5 @@
-FROM node:18.20.4
+# build stage
+FROM node:20.18-alpine3.20 AS build-stage
 
 WORKDIR /app
 
@@ -6,14 +7,29 @@ WORKDIR /app
 COPY src/frontend/package*.json ./
 RUN npm install
 
-# Install webserver
-RUN npm install -g http-server
-
 # get MicroPowerManager source code and configuration
 COPY src/frontend .
 
 # install MicroPowerManager
 RUN npm run build
+
+# Creating a single executable application for import-meta-env
+# https://import-meta-env.org/guide/getting-started/runtime-transform.html#without-node-js
+RUN echo '{ "main": "node_modules/@import-meta-env/cli/bin/import-meta-env.js", "output": "sea-prep.blob" }' > sea-config.json
+RUN node --experimental-sea-config sea-config.json
+RUN cp $(command -v node) import-meta-env-alpine
+RUN npx postject import-meta-env-alpine NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
+
+# production stage
+FROM nginx:1.27-alpine3.20 AS production-stage
+
+# required for Node single executable application
+RUN apk add libstdc++
+
+# copy the compiled MicroPowerManager from build-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage /app/import-meta-env-alpine /usr/local/bin/
+COPY src/frontend/.env.example /usr/share/nginx/html
 
 # Copy the entrypoint script to the container and make it executable
 COPY docker/entrypoint-frontend-prod.sh /usr/local/bin/
@@ -22,4 +38,4 @@ RUN chmod +x /usr/local/bin/entrypoint-frontend-prod.sh
 # serve the application via entrypoint script
 ENTRYPOINT ["/usr/local/bin/entrypoint-frontend-prod.sh"]
 
-EXPOSE 8081
+EXPOSE 80

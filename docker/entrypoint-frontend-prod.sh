@@ -1,9 +1,7 @@
 #!/bin/sh
 
-# This script enables the use of environment variables in the production container.
-# See https://import-meta-env.org/guide/getting-started/runtime-transform.html
+# Inject environment variables
+/usr/local/bin/import-meta-env-alpine -x /usr/share/nginx/html/.env.example -p /usr/share/nginx/html/index.html
 
-cd /app
-npx import-meta-env -x .env.example -p dist/index.html
-
-http-server dist -p 8081
+# Run nginx
+nginx -g "daemon off;"
