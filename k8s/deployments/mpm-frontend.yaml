@@ -17,7 +17,7 @@ spec:
           image: enaccess/micropowermanager-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8081
+            - containerPort: 80
           env:
             - name: MPM_ENV
               value: demo
