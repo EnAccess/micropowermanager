@@ -27,6 +27,7 @@ services:
     container_name: cron
     build:
       dockerfile: docker/DockerfileCron
+    env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       - maria
       - redis
@@ -42,6 +43,7 @@ services:
     restart: unless-stopped
     build:
       dockerfile: docker/DockerfileQueueWorker
+    env_file: ./dev/.env.micropowermanager-backend
     volumes:
       - ./src/backend:/var/www/laravel
       - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
