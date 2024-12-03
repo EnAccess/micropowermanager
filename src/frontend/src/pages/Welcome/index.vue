@@ -52,7 +52,8 @@ import { config } from "@/config"
 export default {
   name: "WelcomePage",
   created() {
-    if (config.env === "demo") {
+    // In the Demo environment the company registration page is hidden
+    if (config.mpmEnv === "demo") {
       this.$router.push("/login")
     }
   },
