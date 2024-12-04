@@ -30,15 +30,7 @@ spec:
                   key: APP_KEY
             - name: APP_DEBUG
               value: "false"
-            - name: LOG_CHANNEL
-              value: stack
-            - name: LOGGLY_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: LOGGLY_TOKEN
-            - name: LOG_LEVEL
-              value: info
+
             - name: DB_CONNECTION
               value: micro_power_manager
             - name: DB_HOST
@@ -54,88 +46,20 @@ spec:
                 secretKeyRef:
                   name: mpm-secrets
                   key: DB_PASSWORD
-            - name: TEST_DB_CONNECTION
-              value: test_company_db
-            - name: TEST_DB_HOST
-              value: db
-            - name: TEST_DB_PORT
-              value: "3306"
-            - name: TEST_DB_DATABASE
-              value: test_company_db
-            - name: TEST_DB_USERNAME
-              value: root
-            - name: TEST_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: TEST_DB_PASSWORD
-            - name: BROADCAST_DRIVER
-              value: pusher
-            - name: CACHE_DRIVER
-              value: redis
-            - name: SESSION_DRIVER
-              value: file
-            - name: SESSION_LIFETIME
-              value: "120"
-            - name: QUEUE_CONNECTION
-              value: database
-            - name: QUEUE_DRIVER
-              value: database
+
             - name: REDIS_HOST
               value: redis-db-service
             - name: REDIS_PORT
               value: "6379"
-            - name: HORIZON_PREFIX
-              value: "horizon:"
+
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: JWT_SECRET
-            - name: LOG_SLACK_WEBHOOK_URL
-              value: http://slackchannel.com
-            - name: QUEUES
-              value: local_payment, local_energy_payment, local_token, local_sms, local_history, local_sms_gateway, local_sms_gateway_1, local_sms_gateway_2, local_report_generator, local_misc
-            - name: QUEUE_PAYMENT
-              value: local_payment
-            - name: QUEUE_ENERGY
-              value: local_energy_payment
-            - name: QUEUE_TOKEN
-              value: local_token
-            - name: QUEUE_SMS
-              value: local_sms
-            - name: QUEUE_HISTORY
-              value: local_history
-            - name: QUEUE_REPORT
-              value: local_report_generator
-            - name: QUEUE_MISC
-              value: local_misc
-            - name: METER_DATA_URL
-              value: REMOTE-METER-READING-URL
-            - name: METER_DATA_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: METER_DATA_KEY
-            - name: METER_DATA_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: METER_DATA_USER
-            - name: TICKETING_CALLBACK
-              value: ""
-            - name: MAIL_HOST
-              value: smtp.mailserver
-            - name: MAIL_PORT
-              value: "587"
-            - name: MAIL_USERNAME
-              value: USERNAME
-            - name: MAIL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: MAIL_PASSWORD
-            - name: SUNKING_API_URL
-              value: https://dev.assetcontrol.central.glpapps.com/v2
-            - name: WAVEMONEY_API_URL
-              value: https://preprodpayments.wavemoney.io:8107
+
+            - name: CACHE_DRIVER
+              value: redis
+
+            - name: QUEUE_DRIVER
+              value: database
