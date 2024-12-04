@@ -2,9 +2,6 @@
 
 cd /var/www/html
 
-echo "Installing MicroPowerManager in development mode..."
-composer install
-
 echo "Running MicroPowerManager central migrations..."
 php artisan migrate
 echo "Running MicroPowerManager tenant migrations..."

@@ -50,6 +50,7 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
 
 # configure apache
 COPY docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
+RUN a2enmod rewrite
 
 # get MicroPowerManager source code and configuration
 COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
@@ -61,7 +62,8 @@ RUN chmod -R 775 /var/www/html/storage
 WORKDIR /var/www/html
 RUN composer install
 
-# apache stuff
-RUN a2enmod rewrite
+COPY docker/entrypoint-backend-prod.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-backend-prod.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint-backend-prod.sh"]
 
 EXPOSE 80
