@@ -105,7 +105,7 @@ class DummyDataCreator extends AbstractSharedCommand {
             return;
         }
 
-        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
+        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
 
         try {
             $meterOwnerPhoneNumber = $randomMeter->device->person->addresses()->firstOrFail();
@@ -292,7 +292,7 @@ class DummyDataCreator extends AbstractSharedCommand {
         $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = $this->user->inRandomOrder()->first();
-        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 30).' days'));
+        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
         $ticketUser = $this->ticketUser->inRandomOrder()->first();
         $randomMaintenanceUser = $this->maintenanceUsers->inRandomOrder()->first();
         $randomPerson = $this->person->inRandomOrder()->where('is_customer', 1)->first();
