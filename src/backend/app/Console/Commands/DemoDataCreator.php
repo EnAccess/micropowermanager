@@ -24,9 +24,9 @@ use Inensus\Ticket\Models\TicketUser;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class DummyDataCreator extends AbstractSharedCommand {
-    protected $signature = 'dummy:create-data {amount} {--company-id=} {--type=}';
-    protected $description = 'creates dummy data for demo company';
+class DemoDataCreator extends AbstractSharedCommand {
+    protected $signature = 'demo:create-data {amount} {--company-id=} {--type=}';
+    protected $description = 'Creates transaction and ticket data for Demo Company';
 
     private $transactionTypes = [
         SwiftaTransaction::class,
@@ -105,7 +105,7 @@ class DummyDataCreator extends AbstractSharedCommand {
             return;
         }
 
-        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
+        $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
 
         try {
             $meterOwnerPhoneNumber = $randomMeter->device->person->addresses()->firstOrFail();
@@ -129,8 +129,8 @@ class DummyDataCreator extends AbstractSharedCommand {
             'type' => 'energy',
             'message' => $randomMeter['serial_number'],
             'sender' => $meterOwnerPhoneNumber['phone'],
-            'created_at' => $dummyDate,
-            'updated_at' => $dummyDate,
+            'created_at' => $demoDate,
+            'updated_at' => $demoDate,
         ]);
 
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
@@ -145,8 +145,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -159,8 +159,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'timestamp' => strval(time()),
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -179,8 +179,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'attempts' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -193,8 +193,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'amount' => $amount,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -207,8 +207,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -221,8 +221,8 @@ class DummyDataCreator extends AbstractSharedCommand {
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         }
 
@@ -250,7 +250,7 @@ class DummyDataCreator extends AbstractSharedCommand {
         $transactionData->paidRates = $applianceInstallmentPayer->paidRates;
         $transactionData->shsLoan = $applianceInstallmentPayer->shsLoan;
 
-        // generate dummy token
+        // generate random token
         if ($transactionData->transaction->amount > 0) {
             $tokenData = [
                 'token' => Str::random(30),
@@ -292,11 +292,11 @@ class DummyDataCreator extends AbstractSharedCommand {
         $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = $this->user->inRandomOrder()->first();
-        $dummyDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
+        $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
         $ticketUser = $this->ticketUser->inRandomOrder()->first();
         $randomMaintenanceUser = $this->maintenanceUsers->inRandomOrder()->first();
         $randomPerson = $this->person->inRandomOrder()->where('is_customer', 1)->first();
-        $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($dummyDate)));
+        $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
         $ticket = $this->ticket->newQuery()->make([
@@ -308,8 +308,8 @@ class DummyDataCreator extends AbstractSharedCommand {
             'title' => 'Dummy Ticket',
             'content' => $fakeSentence,
             'category_id' => $randomCategory->id,
-            'created_at' => $dummyDate,
-            'updated_at' => $dummyDate,
+            'created_at' => $demoDate,
+            'updated_at' => $demoDate,
         ]);
 
         if ($randomCategory->out_source) {
@@ -325,8 +325,8 @@ class DummyDataCreator extends AbstractSharedCommand {
             $this->ticketOutsource->newQuery()->create([
                 'ticket_id' => $ticket->id,
                 'amount' => $amount,
-                'created_at' => $dummyDate,
-                'updated_at' => $dummyDate,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
             ]);
         } else {
             $ticket->assigned_id = $ticketUser->id;

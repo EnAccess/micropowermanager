@@ -24,7 +24,7 @@ class SolarHomeSystemSeeder extends Seeder {
      */
     public function run() {
         // Manufacturer
-        // Here, we adding some dummy Manufacturers for seeding.
+        // Here, we adding some fake Manufacturers for seeding.
         // Additional (actual) manufacturers can be added by
         // enabling to corresponding plugin in the demo environment.
         $manufacturers = Manufacturer::factory()

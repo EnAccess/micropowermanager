@@ -7,6 +7,13 @@ php artisan migrate
 echo "Running MicroPowerManager tenant migrations..."
 php artisan migrate-tenant
 
+# Check if MPM_LOAD_DEMO_DATA is set and not empty or false-y,
+# only then load the demo data.
+if [ -n "$MPM_LOAD_DEMO_DATA" ] && [ "$MPM_LOAD_DEMO_DATA" != "0" ] && [ "$MPM_LOAD_DEMO_DATA" != "false" ]; then
+  echo "MPM_LOAD_DEMO_DATA is set. Seeding database with Demo data."
+  php artisan db:seed
+fi
+
 echo "Executing command: $@"
 
 # the main image's CMD arguments are somehow not passed to this script

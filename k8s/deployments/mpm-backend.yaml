@@ -31,6 +31,9 @@ spec:
             - name: APP_DEBUG
               value: "false"
 
+            - name: MPM_LOAD_DEMO_DATA
+              value: "true"
+
             - name: DB_CONNECTION
               value: micro_power_manager
             - name: DB_HOST

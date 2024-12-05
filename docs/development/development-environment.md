@@ -62,19 +62,19 @@ php artisan db:seed
 Log in to the application using the following credentials:
 
 ```sh
-username: dummy_company_admin@example.com
+username: demo_company_admin@example.com
 password: 123123
 ```
 
-The dummy protected page password of this company is `123123`.
+The Demo Company protected page password of this company is `123123`.
 
 ## Generating transaction data
 
-To generate dummy transaction data, run:
+To generate transaction and ticket for the Demo Company data, run:
 
 ```sh
-php artisan dummy:create-data 250
-php artisan dummy:create-data --type=ticket 25
+php artisan demo:create-data 250
+php artisan demo:create-data --type=ticket 25
 ```
 
 This commands will create 250 transactions and 25 tickets within the past 30 days respectively.

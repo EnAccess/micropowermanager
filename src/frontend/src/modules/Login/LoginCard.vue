@@ -93,7 +93,7 @@ export default {
     form: {
       email:
         config.mpmEnv !== "production"
-          ? "dummy_company_admin@example.com"
+          ? "demo_company_admin@example.com"
           : null,
       password: config.mpmEnv !== "production" ? "123123" : null,
     },
