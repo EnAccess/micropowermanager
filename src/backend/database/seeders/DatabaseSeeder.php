@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder {
             // This is so that we can `php artisan db:seed` repeatedly.
             $demo_data_already_loaded =
                 $this->companyService->getById(DemoCompany::DEMO_COMPANY_ID)->name
-             == DemoCompany::DEMO_COMPANY_NAME;
+                == DemoCompany::DEMO_COMPANY_NAME;
             if ($demo_data_already_loaded) {
                 (new Info($this->command->getOutput()))->render(
                     'Demo data has been loaded previously. Nothing to seed.'
