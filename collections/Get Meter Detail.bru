@@ -1,0 +1,16 @@
+meta {
+  name: Get Meter Detail
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{mpm_backend_url}}/api/meters/42e55043-ccf4-328b-a872-617214cefca4
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

@@ -202,7 +202,7 @@ class SendSmsTest extends TestCase {
     private function getData($person, $user): array {
         $data = [
             'person_id' => $person->id,
-            'message' => 'Its a dummy message',
+            'message' => 'Its a sample, generated message',
             'senderId' => $user->id,
         ];
 

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Utils\DummyCompany;
+use App\Utils\DemoCompany;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +12,7 @@ class MigrateTenantDrop extends Command {
 
     public function handle() {
         $this->call('optimize:clear');
-        $database = DummyCompany::DUMMY_COMPANY_DATABASE_NAME;
-        DB::statement("DROP DATABASE `$database`");
+        $database = DemoCompany::DEMO_COMPANY_DATABASE_NAME;
+        DB::statement("DROP DATABASE IF EXISTS `$database`");
     }
 }
