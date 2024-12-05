@@ -5,8 +5,10 @@ services:
     image: enaccess/micropowermanager-backend:latest
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
-      - maria
-      - redis
+      maria:
+        condition: service_healthy
+      redis:
+        condition: service_started
     links:
       - maria:db
       - redis:redis
@@ -29,8 +31,10 @@ services:
       dockerfile: docker/DockerfileCron
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
-      - maria
-      - redis
+      maria:
+        condition: service_healthy
+      redis:
+        condition: service_started
     links:
       - maria:db
       - redis:redis
@@ -48,8 +52,10 @@ services:
       - ./src/backend:/var/www/laravel
       - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
-      - maria
-      - redis
+      maria:
+        condition: service_healthy
+      redis:
+        condition: service_started
     links:
       - maria:db
       - redis:redis
@@ -64,12 +70,18 @@ services:
 
   maria:
     container_name: maria
-    image: mariadb:10.3
+    image: mariadb:10.11
     env_file: ./dev/.env.mysql
     volumes:
       - mariadb_data:/var/lib/mysql
     ports:
       - 3306:3306
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   frontend_node_modules:
