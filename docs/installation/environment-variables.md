@@ -35,6 +35,14 @@ For more details see the corresponding plugin's documentation.
 | `APP_KEY`            | **Required**            | Used by the Illuminate encrypter service to encrypt database entries. In production environments make sure this is a random, 32 character string, otherwise these encrypted strings will not be safe |
 | `APP_URL`            | `http://localhost:8000` | Set this to root of MicroPowerManager in deployed environments (`production` or `demo`).                                                                                                             |
 
+### MicroPowerManager
+
+These environment variables control how the MicroPowerManager behaves as an application.
+
+| Environment Variable | Default | Description                                                                                                                                                                                        |
+| -------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MPM_LOAD_DEMO_DATA` | `false` | Whether or not the demo data should be loaded when the MicroPowerManager starts for the first time. Recommended for local development and demo environments. Optional for production environments. |
+
 ### JSON Web Token Authentication (jwt-auth)
 
 For more details see [`jwt-auth` documentation](https://jwt-auth.readthedocs.io/en/stable/configuration/).
