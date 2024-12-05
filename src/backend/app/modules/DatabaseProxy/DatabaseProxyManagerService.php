@@ -38,20 +38,8 @@ class DatabaseProxyManagerService {
 
     private function buildDatabaseConnection(string $databaseName): void {
         $databaseConnections = config()->get('database.connections');
-        $databaseConnections['shard'] = [
-            'driver' => 'mysql',
-            'host' => 'db',
-            'port' => '3306',
-            'database' => $databaseName,
-            'username' => 'root',
-            'password' => env('DB_PASSWORD'),
-            'unix_socket' => '',
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ];
+        $databaseConnections['shard']['database'] = $databaseName;
+        
         config()->set('database.connections', $databaseConnections);
         $this->databaseManager->purge('shard');
         $this->databaseManager->reconnect('shard');
