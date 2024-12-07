@@ -1,0 +1,11 @@
+meta {
+  name: Country List (settings)
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{mpm_backend_url}}/api/settings/country-list
+  body: none
+  auth: inherit
+}
