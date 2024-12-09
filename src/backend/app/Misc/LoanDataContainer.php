@@ -88,7 +88,7 @@ class LoanDataContainer {
      *
      * @return Builder[]|Collection
      *
-     * @psalm-return Collection|array<array-key, \Illuminate\Database\Eloquent\Builder>
+     * @psalm-return Collection|array<array-key, Builder>
      */
     private function getCustomerDueRates($owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
