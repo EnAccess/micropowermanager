@@ -22,7 +22,7 @@ class AgentReceiptObserver {
     public function created(AgentReceipt $receipt): void {
         $agentId = $receipt->agent_id;
         $agent = $this->agentService->getById($agentId);
-        $due = $agent->due_to_energy_supplier;
+        $due = $agent->due_to_energy_supplier ?? 0;
         $sinceLastVisit = 0;
         $lastReceipt = $this->agentReceiptService->getLastReceipt($agentId);
 
@@ -41,11 +41,11 @@ class AgentReceiptObserver {
         $collected = $receipt->amount;
         $agentReceiptDetailData = [
             'agent_receipt_id' => $receipt->id,
-            'due' => $due ?? 0,
-            'collected' => $collected ?? 0,
+            'due' => $due,
+            'collected' => $collected,
             'since_last_visit' => $sinceLastVisit ?? 0,
             'earlier' => $earlier ?? 0,
-            'summary' => $summary ?? 0,
+            'summary' => $summary < 0 ? 0 : $summary,
         ];
         $this->agentReceiptDetailService->create($agentReceiptDetailData);
         $agentBalanceHistoryData = [

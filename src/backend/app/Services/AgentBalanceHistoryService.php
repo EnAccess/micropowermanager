@@ -48,7 +48,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     }
 
     public function getLastAgentBalanceHistory($agentId) {
-        return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->get()->last();
+        return $this->agentBalanceHistory->newQuery()->where('agent_id', $agentId)->latest('id')->first();
     }
 
     public function getTotalAmountSinceLastVisit($agentBalanceHistoryId, $agentId) {
@@ -59,20 +59,16 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
     }
 
     public function getTransactionAverage($agent, $lastReceipt) {
+        $query = $this->agentBalanceHistory->newQuery()
+            ->where('agent_id', $agent->id)
+            ->where('trigger_type', 'agent_transaction');
+
         if ($lastReceipt) {
-            $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
-                ->where('agent_id', $agent->id)
-                ->where('trigger_type', 'agent_transaction')
-                ->where('created_at', '>', $lastReceipt->created_at)
-                ->get()
-                ->avg('amount');
-        } else {
-            $averageTransactionAmounts = $this->agentBalanceHistory->newQuery()
-                ->where('agent_id', $agent->id)
-                ->where('trigger_type', 'agent_transaction')
-                ->get()
-                ->avg('amount');
+            $query->where('created_at', '>', $lastReceipt->created_at);
         }
+
+        // Use avg directly on the query
+        $averageTransactionAmounts = $query->avg('amount');
 
         return -1 * $averageTransactionAmounts;
     }

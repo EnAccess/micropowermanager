@@ -132,6 +132,7 @@ class DemoDataCreator extends AbstractSharedCommand {
             'created_at' => $demoDate,
             'updated_at' => $demoDate,
         ]);
+        $subTransaction = null;
 
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
 
@@ -233,7 +234,7 @@ class DemoDataCreator extends AbstractSharedCommand {
             // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
-            event('transaction.failed', [$this->transaction, $e->getMessage()]);
+            event('transaction.failed', [$this->transaction, $exception->getMessage()]);
             throw $exception;
         }
 
@@ -256,7 +257,7 @@ class DemoDataCreator extends AbstractSharedCommand {
                 'token' => Str::random(30),
                 'load' => round(
                     $transactionData->transaction->amount /
-                    $randomMeter['tariff']['price'],
+                        $randomMeter['tariff']['price'],
                     2
                 ),
             ];

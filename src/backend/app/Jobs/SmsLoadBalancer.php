@@ -34,7 +34,7 @@ class SmsLoadBalancer extends AbstractJob {
                 Log::debug('smsgateway', ['data' => $this->smsBody, 'firebase' => $fireBaseResult]);
             },
             function () {
-                return $this->release(1);
+                $this->release(1);
             }
         );
     }

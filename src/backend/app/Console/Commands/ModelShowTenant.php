@@ -34,8 +34,6 @@ class ModelShowTenant extends Command {
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle() {
         $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
