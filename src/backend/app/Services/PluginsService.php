@@ -42,4 +42,14 @@ class PluginsService {
             ->where('mpm_plugin_id', '=', $pluginId)
             ->exists();
     }
+
+    public function addPlugin(string $name, string $composerName, string $description): Plugins {
+        $pluginData = [
+            'name' => $name,
+            'composer_name' => $composerName,
+            'description' => $description,
+        ];
+
+        return $this->create($pluginData);
+    }
 }

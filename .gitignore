@@ -72,4 +72,4 @@ dist/
 # deployment related
 
 ## secret file
-k8s/secrets/mpm-secrets.yaml
+*-secrets.yaml

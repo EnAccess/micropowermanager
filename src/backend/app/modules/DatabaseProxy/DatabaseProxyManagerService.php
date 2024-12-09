@@ -6,7 +6,7 @@ namespace MPM\DatabaseProxy;
 
 use App\Models\CompanyDatabase;
 use App\Models\DatabaseProxy;
-use App\Utils\DummyCompany;
+use App\Utils\DemoCompany;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -33,7 +33,7 @@ class DatabaseProxyManagerService {
     }
 
     public function buildDatabaseConnectionDummyCompany(): void {
-        $this->buildDatabaseConnection(DummyCompany::DUMMY_COMPANY_DATABASE_NAME);
+        $this->buildDatabaseConnection(DemoCompany::DEMO_COMPANY_DATABASE_NAME);
     }
 
     private function buildDatabaseConnection(string $databaseName): void {

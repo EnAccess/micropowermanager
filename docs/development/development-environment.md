@@ -42,49 +42,39 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
 
 1. `git`-clone the repository
 2. Build and run the Docker containers with `docker compose up`
+3. To access the local development instance of MicroPowerManager open <http://localhost:8001/> in a web browser.
 
-## Migration on First run
+## Seeding the database
 
-When you run the application for the first time, you need to run the following commands to initialize the databases and load Demo data:
+> [!INFO]
+>
+> When you run the application for the first time, you can explore a vanilla MicroPowerManager instance where you can register new users and tenants.
+>
+> However, for a better development flow it is generally recommended to seed the local development environment with demo data.
+
+To seed the database with Demo data, run:
 
 ```bash
 docker exec -it backend-dev bash
-php artisan migrate --seed
+php artisan db:seed
 ```
-
-This command will
-
-- create the central database which is required for MPM to function.
-- create the Demo company, it's database and run migrations
-- populate the database entities with demo data
-
-To access the local instance of MicroPowerManager open <http://localhost:8001/> in a web browser.
 
 Log in to the application using the following credentials:
 
 ```sh
-username: dummy_company_admin@example.com
+username: demo_company_admin@example.com
 password: 123123
 ```
 
-The dummy protected page password of this company is 123123.
-
-> [!NOTE]
-> If you wish to run MicroPowerManage without the Demo data you can
-> skip `--seed` and only run `php artisan migrate`.
->
-> Then you can then explore a vanilla MicroPowerManager instance,
-> where you can register new users and tenants.
->
-> However, for a better development flow it is generally recommended to load demo data.
+The Demo Company protected page password of this company is `123123`.
 
 ## Generating transaction data
 
-To generate dummy transaction data you can run
+To generate transaction and ticket for the Demo Company data, run:
 
 ```sh
-php artisan dummy:create-data 250
-php artisan dummy:create-data --type=ticket 25
+php artisan demo:create-data 250
+php artisan demo:create-data --type=ticket 25
 ```
 
 This commands will create 250 transactions and 25 tickets within the past 30 days respectively.
@@ -92,7 +82,12 @@ It can be run multiple times to generate more data as required.
 
 ## Reseting the Demo data
 
-If you wish reset the Demo data setup to the default setup run:
+> [!WARNING]
+>
+> Resetting the Demo data will remove all data from the Demo tenant.
+> Any changes to the Demo data (for example created users, cluster or appliances) will be lost.
+
+If you wish reset the Demo data setup to the default setup, run:
 
 ```sh
 docker exec -it backend-dev bash
@@ -126,7 +121,6 @@ Install the following linter and auto-formatter extensions
 - [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer)
 - [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Prettier - Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 ### API client

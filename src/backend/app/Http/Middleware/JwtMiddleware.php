@@ -25,7 +25,6 @@ class JwtMiddleware extends BaseMiddleware {
      */
     public function handle(Request $request, \Closure $next, string $type = 'user'): mixed {
         try {
-            // @phpstan-ignore-next-line as no methods are defined on the facade its failing to resolve the function
             $id = JWTAuth::parseToken()->getPayload()->get('sub');
             if ($type === 'agent') {
                 $user = Agent::query()->findOrFail($id);

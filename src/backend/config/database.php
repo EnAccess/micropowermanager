@@ -1,5 +1,7 @@
 <?php
 
+use App\Utils\DemoCompany;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +53,7 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => 'DummyCompany_1',
+            'database' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => '',

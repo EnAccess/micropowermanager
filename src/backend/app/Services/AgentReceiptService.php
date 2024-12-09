@@ -56,7 +56,9 @@ class AgentReceiptService implements IBaseService {
     }
 
     public function getLastReceiptDate($agent) {
-        $lastReceiptDate = $this->agentReceipt->newQuery()->where('agent_id', $agent->id)->get()->last();
+        $lastReceiptDate = $this->agentReceipt->newQuery()->where('agent_id', $agent->id)
+            ->lastest('created_at')
+            ->first();
 
         if ($lastReceiptDate) {
             return $lastReceiptDate->created_at;

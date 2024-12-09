@@ -33,7 +33,7 @@
             </md-chip>
           </div>
         </div>
-        <div class="md-layout-item dummy-message-area">
+        <div class="md-layout-item placeholder-message-area">
           {{ smsVariableDefaultValueService.shownMessage }}
         </div>
       </md-card-content>
@@ -133,7 +133,7 @@ export default {
 </script>
 
 <style scoped>
-.dummy-message-area {
+.placeholder-message-area {
   padding: 20px;
   background-color: #dfe9f3;
   margin: 10px;
