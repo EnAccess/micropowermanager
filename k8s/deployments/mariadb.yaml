@@ -23,7 +23,10 @@ spec:
             - name: MYSQL_DATABASE
               value: database-1
             - name: MYSQL_HOST
-              value: database-1.cli8wgsymz96.eu-central-1.rds.amazonaws.com
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: MYSQL_HOST
             - name: MYSQL_PORT
               value: "3306"
           ports:
