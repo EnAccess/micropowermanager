@@ -21,7 +21,7 @@ spec:
                   name: mpm-secrets
                   key: DB_PASSWORD
             - name: MYSQL_DATABASE
-              value: database-1
+              value: micro_power_manager
             - name: MYSQL_HOST
               valueFrom:
                 secretKeyRef:
