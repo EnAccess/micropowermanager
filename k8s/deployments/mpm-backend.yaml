@@ -38,7 +38,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
-                  key: MYSQL_HOST
+                  key: DB_HOST
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
