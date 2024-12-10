@@ -30,39 +30,39 @@ spec:
                   key: APP_KEY
             - name: APP_DEBUG
               value: "false"
-
             - name: MPM_LOAD_DEMO_DATA
               value: "true"
-
             - name: DB_CONNECTION
               value: micro_power_manager
             - name: DB_HOST
-              value: db
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_HOST
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
               value: micro_power_manager
             - name: DB_USERNAME
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_USERNAME
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: DB_PASSWORD
-
             - name: REDIS_HOST
               value: redis-db-service
             - name: REDIS_PORT
               value: "6379"
-
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: JWT_SECRET
-
             - name: CACHE_DRIVER
               value: redis
-
             - name: QUEUE_DRIVER
               value: database
