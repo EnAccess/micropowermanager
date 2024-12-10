@@ -31,6 +31,11 @@ jobs:
           composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
 
+      - name: Is Redis here?
+        run: |
+          php -i | grep -i redis
+        working-directory: ./src/backend
+
       - name: Run PHP-CS-Fixer
         run: composer php-cs-fixer-check
         working-directory: ./src/backend
