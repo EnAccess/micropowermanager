@@ -113,7 +113,7 @@ Configurations for a different editor will work a like.
 ### Local PHP installation
 
 For local development and editor integration it can be helpful to have a local instance of PHP.
-This will allow you to run composer scripts like `phpstan-analyse` without the need to use Docker.
+This will allow you to run composer scripts like `larastan` without the need to use Docker.
 
 These steps are highly dependant on your system.
 
