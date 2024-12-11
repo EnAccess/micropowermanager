@@ -102,13 +102,29 @@ This can be helpful if
 
 ## Advanced development environment
 
-The above instructions describe how to set up a simple local environment of MPM.
+The above instructions describe how to set up a simple local environment of MicroPowerManager.
 This is great for exploring the project both by interacting with the app and potentially some smaller code changes.
 
 However, if you are considering to **contribute to MicroPowerManager** code base it is recommended to set up some additional steps and tools for developer's convienience.
 
 We describe an example set up that has proven to work well based on [VS Code](https://code.visualstudio.com/).
 Configurations for a different editor will work a like.
+
+### Local PHP installation
+
+For local development and editor integration it can be helpful to have a local instance of PHP.
+This will allow you to run composer scripts like `phpstan-analyse` without the need to use Docker.
+
+These steps are highly dependant on your system.
+
+For example using `brew` on MacOS
+
+```sh
+brew install php@8.2
+pecl install redis
+```
+
+Alternatively [Laravel Herd](https://herd.laravel.com/) can be used.
 
 ### Linter configuration
 
