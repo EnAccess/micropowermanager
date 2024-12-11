@@ -103,6 +103,7 @@
     "php-cs-fixer-fix": "php-cs-fixer fix --diff",
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
-    "phpstan-analyse": "phpstan analyse --memory-limit=2G --no-progress"
+    "larastan": "phpstan analyse --memory-limit=2G --no-progress",
+    "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=2"
   }
 }
