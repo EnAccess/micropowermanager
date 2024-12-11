@@ -534,10 +534,10 @@ class Reports {
         $sheet = $this->spreadsheet->getActiveSheet();
         $sheet->setTitle('graphs'.$startDate.'-'.$endDate);
 
-        $transactions = $this->transaction::with(['meter.meterParameter.tariff', 'meter.meterParameter.connectionType'])
+        $transactions = $this->transaction::with(['device.device.tariff', 'device.device.connectionType'])
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
-                'meter.meterParameter.address',
+                'device.device.address',
                 function ($q) use ($cityId) {
                     $q->where('city_id', $cityId);
                 }
