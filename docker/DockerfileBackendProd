@@ -32,6 +32,7 @@ RUN docker-php-ext-install \
     zip
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-configure pcntl --enable-pcntl
+RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
 
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
