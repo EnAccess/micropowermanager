@@ -10,7 +10,7 @@ class ClusterMeterService {
 
     public function getCountById($clusterId): int {
         return $this->meter->newQuery()->whereHas(
-            'meterParameter',
+            'device',
             function ($q) use ($clusterId) {
                 $q->whereHas(
                     'address',

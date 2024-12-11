@@ -23,7 +23,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance {
-        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
+        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -59,7 +59,7 @@ class AgentSoldApplianceService implements IBaseService {
 
         $query = $this->agentSoldAppliance->newQuery()->with([
             'assignedAppliance',
-            'assignedAppliance.applianceType',
+            'assignedAppliance.appliance.assetType',
             'person',
         ]);
 
@@ -87,7 +87,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     public function list($agentId) {
-        return $this->assetPerson->newQuery()->with(['person', 'assetType', 'rates'])
+        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
