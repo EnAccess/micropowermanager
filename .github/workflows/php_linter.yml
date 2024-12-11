@@ -38,7 +38,6 @@ jobs:
       - name: Run PHPStan
         run: composer phpstan-analyse
         working-directory: ./src/backend
-        continue-on-error: true
 
         # Temporarily disabled, until we can run it with php-parser version 5
         # https://github.com/vimeo/psalm/issues/11112
