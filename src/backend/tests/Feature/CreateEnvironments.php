@@ -19,21 +19,19 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionGroupFactory;
 use Database\Factories\ConnectionTypeFactory;
+use Database\Factories\Inensus\Ticket\Models\TicketCategoryFactory;
 use Database\Factories\ManufacturerFactory;
-use Database\Factories\MeterFactory;
+use Database\Factories\Meter\MeterFactory;
+use Database\Factories\Meter\MeterTariffFactory;
+use Database\Factories\Meter\MeterTypeFactory;
 use Database\Factories\MeterParameterFactory;
-use Database\Factories\MeterTariffFactory;
 use Database\Factories\MeterTokenFactory;
-use Database\Factories\MeterTypeFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\PaymentHistoryFactory;
-use Database\Factories\PersonFactory;
+use Database\Factories\Person\PersonFactory;
 use Database\Factories\SubConnectionTypeFactory;
 use Database\Factories\SubTargetFactory;
 use Database\Factories\TargetFactory;
-use Database\Factories\TicketBoardFactory;
-use Database\Factories\TicketCardFactory;
-use Database\Factories\TicketCategoryFactory;
 use Database\Factories\TicketFactory;
 use Database\Factories\TicketUserFactory;
 use Database\Factories\TimeOfUsageFactory;
@@ -745,14 +743,6 @@ trait CreateEnvironments {
         if (count($this->tickets) > 0) {
             $this->ticket = $this->tickets[0];
         }
-    }
-
-    protected function createTicketBoard() {
-        $this->ticketBoard = TicketBoardFactory::new()->create();
-    }
-
-    protected function createTicketCard() {
-        $this->ticketCard = TicketCardFactory::new()->create();
     }
 
     protected function createTicketOutsourceReport($ticketOutSourceReportCount = 1) {

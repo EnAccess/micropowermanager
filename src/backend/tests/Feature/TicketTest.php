@@ -36,8 +36,6 @@ class TicketTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
 
         $postData = [
             'owner_id' => $this->person->id,
@@ -57,8 +55,6 @@ class TicketTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get('/tickets');
         $response->assertStatus(200);
@@ -70,8 +66,6 @@ class TicketTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id);
         $trelloId = $this->ticket->ticket_id;
         $response = $this->actingAs($this->user)->get(sprintf('/tickets/%s', $trelloId));
@@ -85,8 +79,6 @@ class TicketTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id);
         $ticketId = $this->ticket->id;
         $trelloId = $this->ticket->ticket_id;
@@ -102,8 +94,6 @@ class TicketTest extends TestCase {
         $this->createAgent();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id, $this->agent->id);
         $response = $this->actingAs($this->user)->get(sprintf('/tickets/api/agents/%s', $this->agent->id));
         $response->assertStatus(200);
@@ -141,8 +131,6 @@ class TicketTest extends TestCase {
         $this->createAgent();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id);
         $response = $this->actingAs($this->user)->get(sprintf('/tickets/api/tickets/user/%s', $this->person->id));
         $response->assertStatus(200);
@@ -154,8 +142,6 @@ class TicketTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $this->createTicket(1, 1, $this->person->id);
         $trelloId = $this->ticket->ticket_id;
         $postData = [
