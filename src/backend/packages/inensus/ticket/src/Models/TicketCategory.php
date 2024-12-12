@@ -2,16 +2,10 @@
 
 namespace Inensus\Ticket\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Inensus\Ticket\Factories\TicketCategoryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TicketCategory extends BaseModel {
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory(): Factory {
-        return TicketCategoryFactory::new();
-    }
+    use HasFactory;
 
     protected $table = 'ticket_categories';
 }
