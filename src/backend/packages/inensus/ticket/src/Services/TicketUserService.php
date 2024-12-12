@@ -62,9 +62,10 @@ class TicketUserService implements IBaseService {
                 ->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
             $result = $this->ticketUser->newQuery()->create([
-                'user_id' => $user->getId(),
-                'phone' => null,
                 'user_name' => $user->getName(),
+                'phone' => null,
+                'out_source' => 0,
+                'user_id' => $user->getId(),
             ]);
         }
 
