@@ -181,10 +181,10 @@ class DemoDataCreator extends AbstractSharedCommand {
                 'meter_serial' => $randomMeter['serial_number'],
                 'external_transaction_id' => Str::random(10),
                 'attempts' => 1,
-                'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                'manufacturer_transaction_type' => 'calin_transaction',
                 'created_at' => $demoDate,
                 'updated_at' => $demoDate,
+                'manufacturer_transaction_id' => $manufacturerTransaction->id,
+                'manufacturer_transaction_type' => 'calin_transaction',
             ]);
         }
 
@@ -207,6 +207,7 @@ class DemoDataCreator extends AbstractSharedCommand {
                 'conversation_id' => Str::random(20),
                 'originator_conversation_id' => Str::random(20),
                 'mpesa_receipt' => Str::random(10),
+                'transaction_date' => $demoDate,
                 'transaction_id' => Str::random(10),
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
@@ -264,7 +265,10 @@ class DemoDataCreator extends AbstractSharedCommand {
                     2
                 ),
             ];
-            $token = $this->token->newQuery()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
+            $token = $this->token->newQuery()->make([
+                'token' => $tokenData['token'],
+                'load' => $tokenData['load'],
+            ]);
             $token->transaction()->associate($transaction);
             $token->save();
             $transactionData->token = $token;
@@ -280,9 +284,12 @@ class DemoDataCreator extends AbstractSharedCommand {
                 ),
                 'transaction_id' => $transaction->id,
             ];
-            $meterToken = $this->meterToken->newQuery()->make(['meter_id' => $meterTokenData['meter_id'],
-                'token' => $meterTokenData['token'], '' => $meterTokenData['energy'],
-                'transaction_id' => $meterTokenData['transaction_id']]);
+            $meterToken = $this->meterToken->newQuery()->make([
+                'meter_id' => $meterTokenData['meter_id'],
+                'token' => $meterTokenData['token'],
+                'energy' => $meterTokenData['energy'],
+                'transaction_id' => $meterTokenData['transaction_id'],
+            ]);
             $meterToken->save();
 
             // payment event
