@@ -39,30 +39,6 @@ class DemoDataCreator extends AbstractSharedCommand {
         AirtelTransaction::class,
     ];
 
-    public function __construct(
-        private Transaction $transaction,
-        private AgentTransaction $agentTransaction,
-        private WaveMoneyTransaction $waveMoneyTransaction,
-        private SwiftaTransaction $swiftaTransaction,
-        private WaveComTransaction $waveComTransaction,
-        private VodacomTransaction $vodacomTransaction,
-        private AirtelTransaction $airtelTransaction,
-        private Meter $meter,
-        private Token $token,
-        private MeterToken $meterToken,
-        private CalinTransaction $calinTransaction,
-        private MainSettings $mainSettings,
-        private TicketCategory $ticketCategory,
-        private User $user,
-        private TicketUser $ticketUser,
-        private Person $person,
-        private Ticket $ticket,
-        private MaintenanceUsers $maintenanceUsers,
-        private TicketOutsource $ticketOutsource,
-    ) {
-        parent::__construct();
-    }
-
     public function handle() {
         $companyId = $this->option('company-id');
         $type = $this->option('type') ?? 'transaction';
@@ -87,6 +63,7 @@ class DemoDataCreator extends AbstractSharedCommand {
             } catch (\Exception $e) {
                 DB::connection('shard')->rollBack();
                 echo $e->getMessage();
+                throw $e;
             }
         }
     }
@@ -94,7 +71,7 @@ class DemoDataCreator extends AbstractSharedCommand {
     private function generateTransaction(): void {
         try {
             // get randomly a user
-            $randomMeter = $this->meter::inRandomOrder()->with([
+            $randomMeter = Meter::inRandomOrder()->with([
                 'device',
                 'tariff',
             ])->limit(1)->firstOrFail();
@@ -127,7 +104,7 @@ class DemoDataCreator extends AbstractSharedCommand {
         $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
         $transactionType = app()->make($randomTransactionType);
 
-        $transaction = $this->transaction->newQuery()->make([
+        $transaction = Transaction::query()->make([
             'amount' => $amount,
             'type' => 'energy',
             'message' => $randomMeter['serial_number'],
@@ -137,13 +114,14 @@ class DemoDataCreator extends AbstractSharedCommand {
         ]);
         $subTransaction = null;
 
-        $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
+        // FIXME: What is this?
+        $manufacturerTransaction = CalinTransaction::query()->create([]);
 
         if ($transactionType instanceof AgentTransaction) {
             $city = $randomMeter->device->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
             $agent = $miniGrid->agent()->first();
-            $subTransaction = $this->agentTransaction->newQuery()->create([
+            $subTransaction = AgentTransaction::query()->create([
                 'agent_id' => $agent->id,
                 'device_id' => 'test-device',
                 'status' => 1,
@@ -155,7 +133,7 @@ class DemoDataCreator extends AbstractSharedCommand {
         }
 
         if ($transactionType instanceof SwiftaTransaction) {
-            $subTransaction = $this->swiftaTransaction->newQuery()->create([
+            $subTransaction = SwiftaTransaction::query()->create([
                 'transaction_reference' => Str::random(10),
                 'status' => 1,
                 'amount' => $amount,
@@ -169,8 +147,8 @@ class DemoDataCreator extends AbstractSharedCommand {
         }
 
         if ($transactionType instanceof WaveMoneyTransaction) {
-            $mainSettings = $this->mainSettings->newQuery()->first();
-            $subTransaction = $this->waveMoneyTransaction->newQuery()->create([
+            $mainSettings = MainSettings::query()->first();
+            $subTransaction = WaveMoneyTransaction::query()->create([
                 'transaction_reference' => Str::random(10),
                 'status' => 1,
                 'amount' => $amount,
@@ -189,7 +167,7 @@ class DemoDataCreator extends AbstractSharedCommand {
         }
 
         if ($transactionType instanceof WaveComTransaction) {
-            $subTransaction = $this->waveComTransaction->newQuery()->create([
+            $subTransaction = WaveComTransaction::query()->create([
                 'transaction_id' => Str::random(10),
                 'sender' => $meterOwnerPhoneNumber['phone'],
                 'message' => $randomMeter['serial_number'],
@@ -203,7 +181,7 @@ class DemoDataCreator extends AbstractSharedCommand {
         }
 
         if ($transactionType instanceof VodacomTransaction) {
-            $subTransaction = $this->vodacomTransaction->newQuery()->create([
+            $subTransaction = VodacomTransaction::query()->create([
                 'conversation_id' => Str::random(20),
                 'originator_conversation_id' => Str::random(20),
                 'mpesa_receipt' => Str::random(10),
@@ -218,7 +196,7 @@ class DemoDataCreator extends AbstractSharedCommand {
         }
 
         if ($transactionType instanceof AirtelTransaction) {
-            $subTransaction = $this->airtelTransaction->newQuery()->create([
+            $subTransaction = AirtelTransaction::query()->create([
                 'interface_id' => Str::random(20),
                 'business_number' => Str::random(20),
                 'trans_id' => Str::random(10),
@@ -238,7 +216,7 @@ class DemoDataCreator extends AbstractSharedCommand {
             // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
-            event('transaction.failed', [$this->transaction, $exception->getMessage()]);
+            event('transaction.failed', [$transaction, $exception->getMessage()]);
             throw $exception;
         }
 
@@ -265,7 +243,7 @@ class DemoDataCreator extends AbstractSharedCommand {
                     2
                 ),
             ];
-            $token = $this->token->newQuery()->make([
+            $token = Token::query()->make([
                 'token' => $tokenData['token'],
                 'load' => $tokenData['load'],
             ]);
@@ -284,7 +262,7 @@ class DemoDataCreator extends AbstractSharedCommand {
                 ),
                 'transaction_id' => $transaction->id,
             ];
-            $meterToken = $this->meterToken->newQuery()->make([
+            $meterToken = MeterToken::query()->make([
                 'meter_id' => $meterTokenData['meter_id'],
                 'token' => $meterTokenData['token'],
                 'energy' => $meterTokenData['energy'],
@@ -316,17 +294,17 @@ class DemoDataCreator extends AbstractSharedCommand {
     }
 
     private function generateTicket() {
-        $randomCategory = $this->ticketCategory->newQuery()->inRandomOrder()->first();
+        $randomCategory = TicketCategory::query()->inRandomOrder()->first();
         $fakeSentence = $this->generateFakeSentence();
-        $randomCreator = $this->user->inRandomOrder()->first();
+        $randomCreator = User::inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
-        $ticketUser = $this->ticketUser->inRandomOrder()->first();
-        $randomMaintenanceUser = $this->maintenanceUsers->inRandomOrder()->first();
-        $randomPerson = $this->person->inRandomOrder()->where('is_customer', 1)->first();
+        $ticketUser = TicketUser::inRandomOrder()->first();
+        $randomMaintenanceUser = MaintenanceUsers::inRandomOrder()->first();
+        $randomPerson = Person::inRandomOrder()->where('is_customer', 1)->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
-        $ticket = $this->ticket->newQuery()->make([
+        $ticket = Ticket::query()->make([
             'ticket_id' => Str::random(10),
             'creator_type' => 'admin',
             'creator_id' => $randomCreator->id,
@@ -349,7 +327,7 @@ class DemoDataCreator extends AbstractSharedCommand {
             } catch (\Exception $e) {
                 $amount = 50;
             }
-            $this->ticketOutsource->newQuery()->create([
+            TicketOutsource::query()->create([
                 'ticket_id' => $ticket->id,
                 'amount' => $amount,
                 'created_at' => $demoDate,
