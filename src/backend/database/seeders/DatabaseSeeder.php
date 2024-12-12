@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder {
                 SolarHomeSystemSeeder::class,
                 TicketSeeder::class,
                 AgentSeeder::class,
+                TransactionSeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,
