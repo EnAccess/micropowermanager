@@ -46,18 +46,17 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
 
 ## Seeding the database
 
+When you run the application in development mode for the first time, it will automatically
+seed the database with demo data.
+This demo data tries to mimic a real-world use-case and is generally helpful when exploring MicroPowerManager's functionality or feature development.
+
 > [!INFO]
 >
-> When you run the application for the first time, you can explore a vanilla MicroPowerManager instance where you can register new users and tenants.
+> This behaviour is controlled by the environment variable `MPM_LOAD_DEMO_DATA`, see [here](/installation/environment-variables.html#micropowermanager).
+>
+> If you wish to explore a vanilla MicroPowerManager instance where you can register new users and tenants from scratch, set `MPM_LOAD_DEMO_DATA` to `false`.
 >
 > However, for a better development flow it is generally recommended to seed the local development environment with demo data.
-
-To seed the database with Demo data, run:
-
-```bash
-docker exec -it backend-dev bash
-php artisan db:seed
-```
 
 Log in to the application using the following credentials:
 
@@ -68,16 +67,16 @@ password: 123123
 
 The Demo Company protected page password of this company is `123123`.
 
-## Generating ticket data
+## Running `artisan` commands
 
-To generate ticket for the Demo Company data, run:
+When working with Laravel it can be helpful to have access to Laravel's CLI tool [Artisan](https://laravel.com/docs/9.x/artisan).
+
+To access `artisan` in MicroPowerManager development environment, run
 
 ```sh
-php artisan demo:create-data --type=ticket 25
+docker exec -it backend-dev bash
+php artisan --help
 ```
-
-This commands will generate 25 tickets within the past 365 days respectively.
-It can be run multiple times to generate more data as required.
 
 ## Reseting the Demo data
 
@@ -114,9 +113,7 @@ Configurations for a different editor will work a like.
 For local development and editor integration it can be helpful to have a local instance of PHP.
 This will allow you to run composer scripts like `larastan` without the need to use Docker.
 
-These steps are highly dependant on your system.
-
-For example using `brew` on MacOS
+These steps are highly dependant on your system setup. For example using `brew` on MacOS
 
 ```sh
 brew install php@8.2
@@ -175,8 +172,8 @@ And configure the following database connection
 - **Host:** `localhost`/`127.0.0.1`
 - **Port:** `3306`
 - **User:** `root`
-- **Password:** Take it from [`.env`](https://github.com/EnAccess/micropowermanager/blob/main/docker/.env)
-- **Database:** Leave empty if possible, as we will be interacting with multiple databases. Alternatively configure a seperate connection for each database. For example `micro_power_manager` and `DummyCompany_1`.
+- **Password:** Take it from [`.env.mysql`](https://github.com/EnAccess/micropowermanager/blob/main/dev/.env.mysql)
+- **Database:** Leave empty if possible, as we will be interacting with multiple databases. Alternatively configure a seperate connection for each database. For example `micro_power_manager` and `DemoCompany_1`.
 
 ![SQL Editor database connection](/screenshots/sql-editor-database-connection.png)
 
