@@ -68,16 +68,15 @@ password: 123123
 
 The Demo Company protected page password of this company is `123123`.
 
-## Generating transaction data
+## Generating ticket data
 
-To generate transaction and ticket for the Demo Company data, run:
+To generate ticket for the Demo Company data, run:
 
 ```sh
-php artisan demo:create-data 250
 php artisan demo:create-data --type=ticket 25
 ```
 
-This commands will create 250 transactions and 25 tickets within the past 30 days respectively.
+This commands will generate 25 tickets within the past 365 days respectively.
 It can be run multiple times to generate more data as required.
 
 ## Reseting the Demo data
