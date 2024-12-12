@@ -31,7 +31,22 @@ class PersonFactory extends Factory {
             return [
                 'is_customer' => false,
                 'education' => 'MicroPowerManager Agent',
-                'surname' => $attributes['surname'].' (Agent '.$village_name.')',
+                'surname' => $attributes['surname'].' (Agent - '.$village_name.')',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the person is an non-Agent, Maintenance User.
+     *
+     * @return Factory
+     */
+    public function isMaintenanceUser($village_name = 'Demo') {
+        return $this->state(function (array $attributes) use ($village_name) {
+            return [
+                'is_customer' => false,
+                'education' => 'MicroPowerManager Maintenance User',
+                'surname' => $attributes['surname'].' (Maintenance User - '.$village_name.')',
             ];
         });
     }
