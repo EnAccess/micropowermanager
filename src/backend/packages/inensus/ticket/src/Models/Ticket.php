@@ -17,10 +17,6 @@ class Ticket extends BaseModel {
         'waiting' => 2,
     ];
 
-    public function card() {
-        return $this->belongsTo(TicketCard::class);
-    }
-
     public function category(): BelongsTo {
         return $this->belongsTo(TicketCategory::class, 'category_id');
     }

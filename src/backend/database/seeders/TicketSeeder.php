@@ -25,7 +25,7 @@ class TicketSeeder extends Seeder {
      */
     public function run() {
         // Create Ticket categories
-        TicketCategory::newFactory()
+        TicketCategory::factory()
             ->count(12)
             ->sequence(
                 [

@@ -14,8 +14,6 @@ class AgentAppTicketsTest extends TestCase {
         $this->createAgent();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $ticketCount = 1;
         $this->createTicket($ticketCount, 1, $this->person->id, $this->agent->id);
         $response = $this->actingAs($this->agent)->get('/api/app/agents/ticket');
@@ -29,8 +27,6 @@ class AgentAppTicketsTest extends TestCase {
         $this->createAgent();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $ticketCount = 1;
         $this->createTicket($ticketCount, 1, $this->person->id, $this->agent->id);
 
@@ -46,8 +42,6 @@ class AgentAppTicketsTest extends TestCase {
         $this->createAgent();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
         $ticketCount = 1;
         $this->createTicket($ticketCount, 1, $this->person->id, $this->agent->id);
         $response = $this->actingAs($this->agent)->get(sprintf(
@@ -66,8 +60,6 @@ class AgentAppTicketsTest extends TestCase {
         $this->createPerson();
         $this->createTicketCategory();
         $this->createTicketUser();
-        $this->createTicketBoard();
-        $this->createTicketCard();
 
         $postData = [
             'owner_id' => $this->person->id,
