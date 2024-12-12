@@ -23,15 +23,15 @@
             <md-table-cell
               v-text="moneyFormat(token.transaction.amount)"
             ></md-table-cell>
-            <md-table-cell v-if="token.paid_for_type === 'token'">
-              Token {{ token.paid_for.token }}
+            <md-table-cell v-if="token.paid_for_type === 'App\\Models\\Token'">
+              Token ({{ formatToken(token.paid_for.token) }})
             </md-table-cell>
             <md-table-cell v-else>
               {{ token.paid_for_type }}
             </md-table-cell>
             <md-table-cell
-              v-if="token.paid_for_type === 'token'"
-              v-text="readable(token.paid_for.energy) + 'kWh'"
+              v-if="token.paid_for_type === 'App\\Models\\Token'"
+              v-text="readable(token.paid_for.energy) + ' kWh'"
             ></md-table-cell>
             <md-table-cell v-else>-</md-table-cell>
             <md-table-cell
@@ -49,10 +49,11 @@ import Widget from "../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { currency } from "@/mixins/currency"
 import { timing } from "@/mixins/timing"
+import { token } from "@/mixins/token"
 
 export default {
   name: "Transactions.vue",
-  mixins: [currency, timing],
+  mixins: [currency, timing, token],
   components: { Widget },
   props: {
     transactions: {
