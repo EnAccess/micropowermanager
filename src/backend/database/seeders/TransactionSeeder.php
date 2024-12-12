@@ -147,7 +147,6 @@ class TransactionSeeder extends Seeder {
         if ($transactionType instanceof WaveMoneyTransaction) {
             $mainSettings = MainSettings::query()->first();
             $subTransaction = WaveMoneyTransaction::query()->create([
-                'transaction_reference' => Str::random(10),
                 'status' => 1,
                 'amount' => $amount,
                 'order_id' => Str::random(10),

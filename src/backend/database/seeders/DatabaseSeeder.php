@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder {
                 CustomerSeeder::class,
                 MeterSeeder::class,
                 SolarHomeSystemSeeder::class,
-                TicketSeeder::class,
                 AgentSeeder::class,
+                TicketSeeder::class,
                 TransactionSeeder::class,
             ]);
         } else {
