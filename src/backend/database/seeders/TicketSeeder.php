@@ -26,18 +26,68 @@ class TicketSeeder extends Seeder {
     public function run() {
         // Create Ticket categories
         TicketCategory::newFactory()
-            ->count(2)
+            ->count(12)
             ->sequence(
                 [
-                    'label_name' => 'Internal',
+                    'label_name' => 'Payments/Top Up Issue',
+                    'label_color' => 'yellow',
+                    'out_source' => 0,
+                ],
+                [
+                    'label_name' => 'No Power/Power Went OFF',
+                    'label_color' => 'red',
+                    'out_source' => 0,
+                ],
+                [
+                    'label_name' => 'Installation Issue',
+                    'label_color' => 'sky',
+                    'out_source' => 0,
+                ],
+                [
+                    'label_name' => 'Welcome Call',
+                    'label_color' => 'pink',
+                    'out_source' => 0,
+                ],
+                [
+                    'label_name' => 'Technical or Software Issue',
                     'label_color' => 'lime',
                     'out_source' => 0,
                 ],
                 [
-                    'label_name' => 'Outsource',
-                    'label_color' => 'sky',
+                    'label_name' => 'Installing Meters',
+                    'label_color' => 'purple',
                     'out_source' => 1,
-                ]
+                ],
+                [
+                    'label_name' => 'System Troubleshoot',
+                    'label_color' => 'black',
+                    'out_source' => 1,
+                ],
+                [
+                    'label_name' => 'Service Line Installation',
+                    'label_color' => 'pink',
+                    'out_source' => 1,
+                ],
+                [
+                    'label_name' => 'In-door wiring',
+                    'label_color' => 'lime',
+                    'out_source' => 1,
+                ],
+                [
+                    'label_name' => 'Cleaning Panel/ Cutting grass',
+                    'label_color' => 'nocolor',
+                    'out_source' => 1,
+                ],
+                [
+                    'label_name' => 'Monthly Installment Follow up',
+                    'label_color' => 'yellow',
+                    'out_source' => 1,
+                ],
+                [
+                    'label_name' => 'Meter Replacement',
+                    'label_color' => 'nocolor',
+                    'out_source' => 1,
+                ],
             )
             ->create();
 
