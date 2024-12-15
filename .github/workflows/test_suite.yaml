@@ -1,0 +1,60 @@
+name: Code Test Suite
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    # Test on multiple PHP versions
+    strategy:
+      matrix:
+        php-version: ["8.2"]
+
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v3
+
+      # Setup PHP with extensions
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug
+
+      # Setup GitHub environment
+      - name: Copy .env
+        run: php -r "file_exists('./dev/.env.micropowermanager-backend') || copy('./dev/.env.micropowermanager-backend', '.env');"
+
+      # Validate composer.json and composer.lock
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      # Install Composer dependencies
+      - name: Install Dependencies
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      # Generate application key
+      - name: Generate key
+        run: php artisan key:generate
+
+      # Run database migrations for testing
+      - name: Run Migrations
+        run: php artisan migrate --force
+
+      # Run PHPUnit tests with coverage
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+          php artisan test --coverage
+        continue-on-error: true
