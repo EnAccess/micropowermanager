@@ -2,9 +2,9 @@ name: Code Test Suite
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
   laravel-tests:
@@ -37,16 +37,19 @@ jobs:
           composer install --no-interaction --prefer-dist
         working-directory: ./src/backend
 
-    #   # Generate application key
-    #   - name: Generate key
-    #     run: php artisan key:generate
-    #     working-directory: ./src/backend
+      #   # Generate application key
+      #   - name: Generate key
+      #     run: php artisan key:generate
+      #     working-directory: ./src/backend
 
       # Run database migrations for testing
       - name: Run Migrations
         run: |
-          php artisan migrate 
-          php artisan migrate-tenant
+          php artisan migrate --env=.env
+          php artisan migrate-tenant --env=.env
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
         working-directory: ./src/backend
 
       # Run PHPUnit tests with coverage
