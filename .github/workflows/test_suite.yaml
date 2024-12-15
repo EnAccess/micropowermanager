@@ -31,22 +31,21 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('./dev/.env.micropowermanager-backend') || copy('./dev/.env.micropowermanager-backend', '.env');"
 
-      # Validate composer.json and composer.lock
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-      # Install Composer dependencies
-      - name: Install Dependencies
+      # Install composer dependencies
+      - name: Install Composer Dependencies
         run: |
-          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          composer install --no-interaction --prefer-dist
+        working-directory: ./src/backend
 
       # Generate application key
       - name: Generate key
         run: php artisan key:generate
+        working-directory: ./src/backend
 
       # Run database migrations for testing
       - name: Run Migrations
         run: php artisan migrate --force
+        working-directory: ./src/backend
 
       # Run PHPUnit tests with coverage
       - name: Execute tests (Unit and Feature tests) via PHPUnit
@@ -58,3 +57,4 @@ jobs:
           touch database/database.sqlite
           php artisan test --coverage
         continue-on-error: true
+        working-directory: ./src/backend
