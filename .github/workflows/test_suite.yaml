@@ -7,13 +7,22 @@ on:
     branches: [main]
 
 jobs:
-  laravel-tests:
+  tests:
     runs-on: ubuntu-latest
 
     # Test on multiple PHP versions
     strategy:
       matrix:
         php-version: ["8.2"]
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: micro_power_manager
+          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+        ports:
+          - 3306:3306
 
     steps:
       # Checkout code
@@ -35,31 +44,22 @@ jobs:
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
+          composer dump-autoload
         working-directory: ./src/backend
 
-      #   # Generate application key
+      # Generate application key
       #   - name: Generate key
       #     run: php artisan key:generate
       #     working-directory: ./src/backend
 
       # Run database migrations for testing
-      - name: Run Migrations
-        run: |
-          php artisan migrate --env=.env
-          php artisan migrate-tenant --env=.env
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        working-directory: ./src/backend
+      #   - name: Run Migrations
+      #     run: |
+      #       php artisan migrate --env=.env
+      #       php artisan migrate-tenant --env=.env
 
       # Run PHPUnit tests with coverage
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-          php artisan test --coverage
+        run: php artisan test
         continue-on-error: true
         working-directory: ./src/backend
