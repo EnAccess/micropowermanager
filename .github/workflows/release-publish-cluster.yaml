@@ -30,11 +30,6 @@ jobs:
         run: |
           aws eks update-kubeconfig --region eu-central-1 --name mpm
 
-      - name: Debug kubectl
-        run: |
-          kubectl config view
-          kubectl get nodes
-
       - name: Deploy to EKS
         run: |
           kubectl apply -f k8s/deployments
