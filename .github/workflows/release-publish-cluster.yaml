@@ -28,7 +28,7 @@ jobs:
 
       - name: Authenticate kubectl with EKS
         run: |
-          aws eks update-kubeconfig --region eu-central-1 --name mpm-cluster
+          aws eks update-kubeconfig --region eu-central-1 --name mpm
 
       - name: Deploy to EKS
         run: |
