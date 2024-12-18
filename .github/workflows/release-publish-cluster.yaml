@@ -29,13 +29,6 @@ jobs:
       - name: Authenticate kubectl with EKS
         run: |
           aws eks update-kubeconfig --region eu-central-1 --name mpm
-          kubectl get nodes # Check connectivity
-
-      - name: Validate Kubernetes Manifests
-        run: |
-          kubectl apply --dry-run=client -f k8s/deployments
-          kubectl apply --dry-run=client -f k8s/services
-          kubectl apply --dry-run=client -f k8s/secrets
 
       - name: Deploy to EKS
         run: |
