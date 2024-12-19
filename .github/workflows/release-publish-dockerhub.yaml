@@ -1,4 +1,4 @@
-name: Build and publish images to DockerHub
+name: Publish images to DockerHub, deploy Demo environment to AWS
 
 on:
   release:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release-publish:
+  publish-dockerhub:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -71,9 +71,9 @@ jobs:
           repository: ${{ matrix.image.repo }}
           short-description: Open Source Management Tool for Decentralized Utilities
 
-  deploy:
+  deploy-aws:
     runs-on: ubuntu-latest
-    needs: release-publish
+    needs: publish-dockerhub
 
     steps:
       - name: Checkout code
@@ -97,12 +97,11 @@ jobs:
 
       - name: Deploy to EKS
         run: |
+          kubectl apply -f k8s/services/mpm-frontend.yaml
+          kubectl apply -f k8s/services/mpm-backend.yaml
 
-          kubectl rollout restart deployment/mpm-backend
+          kubectl apply -f k8s/deployments/mpm-frontend.yaml
           kubectl apply -f k8s/deployments/mpm-backend.yaml
 
           kubectl rollout restart deployment/mpm-frontend
-          kubectl apply -f k8s/deployments/mpm-frontend.yaml
-
-          kubectl apply -f k8s/services/mpm-frontend.yaml
-          kubectl apply -f k8s/services/mpm-backend.yaml
+          kubectl rollout restart deployment/mpm-backend
