@@ -3,25 +3,22 @@ kind: Deployment
 metadata:
   name: mpm-backend
 spec:
-  progressDeadlineSeconds: 600
   replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: mpm-backend
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: mpm-backend
     spec:
       containers:
-        - env:
+        - name: mpm-backend
+          image: enaccess/micropowermanager-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
             - name: APP_NAME
               value: MicroPowerManager
             - name: APP_ENV
@@ -29,8 +26,8 @@ spec:
             - name: APP_KEY
               valueFrom:
                 secretKeyRef:
-                  key: APP_KEY
                   name: mpm-secrets
+                  key: APP_KEY
             - name: APP_DEBUG
               value: "false"
             - name: MPM_LOAD_DEMO_DATA
@@ -40,8 +37,8 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  key: DB_HOST
                   name: mpm-secrets
+                  key: DB_HOST
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
@@ -49,13 +46,13 @@ spec:
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: DB_USERNAME
                   name: mpm-secrets
+                  key: DB_USERNAME
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: DB_PASSWORD
                   name: mpm-secrets
+                  key: DB_PASSWORD
             - name: REDIS_HOST
               value: redis-db-service
             - name: REDIS_PORT
@@ -63,42 +60,9 @@ spec:
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: JWT_SECRET
                   name: mpm-secrets
+                  key: JWT_SECRET
             - name: CACHE_DRIVER
               value: redis
             - name: QUEUE_DRIVER
               value: database
-          image: enaccess/micropowermanager-backend:latest
-          imagePullPolicy: Always
-          name: mpm-backend
-          ports:
-            - containerPort: 80
-              protocol: TCP
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-status:
-  availableReplicas: 1
-  conditions:
-    - lastTransitionTime: "2024-12-13T05:47:18Z"
-      lastUpdateTime: "2024-12-13T05:47:18Z"
-      message: Deployment has minimum availability.
-      reason: MinimumReplicasAvailable
-      status: "True"
-      type: Available
-    - lastTransitionTime: "2024-12-13T05:46:55Z"
-      lastUpdateTime: "2024-12-13T05:47:18Z"
-      message: ReplicaSet "mpm-backend-7b59564f89" has successfully progressed.
-      reason: NewReplicaSetAvailable
-      status: "True"
-      type: Progressing
-  observedGeneration: 1
-  readyReplicas: 1
-  replicas: 1
-  updatedReplicas: 1

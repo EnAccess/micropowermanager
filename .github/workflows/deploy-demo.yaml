@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   release-publish:
     runs-on: ubuntu-latest
     strategy:
@@ -98,15 +97,12 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-            
-            kubectl rollout restart deployment/mpm-backend
-            kubectl apply -f k8s/deployments/mpm-backend.yaml
 
-            kubectl rollout restart deployment/mpm-frontend
-            kubectl apply -f k8s/deployments/mpm-frontend.yaml
+          kubectl rollout restart deployment/mpm-backend
+          kubectl apply -f k8s/deployments/mpm-backend.yaml
 
-            kubectl apply -f k8s/services/mpm-frontend.yaml
-            kubectl apply -f k8s/services/mpm-backend.yaml
+          kubectl rollout restart deployment/mpm-frontend
+          kubectl apply -f k8s/deployments/mpm-frontend.yaml
 
-
-
+          kubectl apply -f k8s/services/mpm-frontend.yaml
+          kubectl apply -f k8s/services/mpm-backend.yaml
