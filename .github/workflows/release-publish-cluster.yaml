@@ -5,7 +5,7 @@ on:
     types:
       - published
   workflow_dispatch:
-  
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Authenticate kubectl with EKS
         run: |
@@ -45,5 +45,3 @@ jobs:
             echo "mpm-frontend deployment does not exist, applying initial deployment..."
             kubectl apply -f k8s/deployments/mpm-frontend.yaml
           fi
-
-
