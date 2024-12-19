@@ -36,14 +36,14 @@ jobs:
             kubectl rollout restart deployment/mpm-backend
           else
             echo "mpm-backend deployment does not exist, applying initial deployment..."
-            kubectl apply -f k8s/mpm-backend-deployment.yaml
+            kubectl apply -f k8s/deployments/mpm-backend.yaml
           fi
 
           if kubectl get deployment mpm-frontend; then
             kubectl rollout restart deployment/mpm-frontend
           else
             echo "mpm-frontend deployment does not exist, applying initial deployment..."
-            kubectl apply -f k8s/mpm-frontend-deployment.yaml
+            kubectl apply -f k8s/deployments/mpm-frontend.yaml
           fi
 
 
