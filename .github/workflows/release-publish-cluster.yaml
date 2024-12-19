@@ -41,5 +41,5 @@ jobs:
           BACKEND_POD=$(kubectl get pods -l app=mpm-backend -o jsonpath='{.items[0].metadata.name}')
           echo "Backend pod: $BACKEND_POD" 
           # Run the commands in sequence in the backend pod
-          kubectl exec $BACKEND_POD -- php artisan migrate-tenant:drop-demo-company
-          kubectl exec $BACKEND_POD -- php artisan migrate:fresh --seed
+          kubectl exec -it $BACKEND_POD -- /bin/sh -- php artisan migrate-tenant:drop-demo-company
+          kubectl exec $BACKEND_POD  -- /bin/sh -- php artisan migrate:fresh --seed
