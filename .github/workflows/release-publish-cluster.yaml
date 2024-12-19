@@ -24,7 +24,7 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: "latest"
+          version: 'latest'
 
       - name: Authenticate kubectl with EKS
         run: |
