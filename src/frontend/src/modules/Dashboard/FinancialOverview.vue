@@ -118,7 +118,6 @@ export default {
       },
       loading: false,
       setPeriod: false,
-      periodText: "-",
       disabled: {
         customPredictor: function (date) {
           let today = new Date()
@@ -137,7 +136,18 @@ export default {
       },
     }
   },
-
+  mounted() {
+    let currentDate = new Date()
+    // Set the time frame to show past 3 month until today
+    let startDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 2,
+      1,
+    )
+    let endDate = currentDate
+    this.setDate(startDate, "from")
+    this.setDate(endDate, "to")
+  },
   watch: {
     // eslint-disable-next-line no-unused-vars
     revenue(newVal, oldVal) {
@@ -146,10 +156,6 @@ export default {
   },
   methods: {
     showPeriod() {
-      this.period = {
-        from: null,
-        to: null,
-      }
       this.setPeriod = !this.setPeriod
     },
     async getClusterFinancialData() {
@@ -158,18 +164,9 @@ export default {
         return
       }
       this.loading = true
-      const from =
-        this.period.from !== null
-          ? moment(this.period.from).format("YYYY-MM-DD")
-          : null
-      const to =
-        this.period.to !== null
-          ? moment(this.period.to).format("YYYY-MM-DD")
-          : null
-      this.periodChanged(from, to)
-      if (from !== null) {
-        this.periodText = from + " - " + to
-      }
+      console.log(this.period.from)
+      console.log(this.period.to)
+      this.periodChanged(this.period.from, this.period.to)
       this.setPeriod = false
       this.loading = false
     },
@@ -190,6 +187,9 @@ export default {
     },
   },
   computed: {
+    periodText() {
+      return this.period.from + " - " + this.period.to
+    },
     lineChartData() {
       return this.clusterService.lineChartData(true)
     },
