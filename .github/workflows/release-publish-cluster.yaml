@@ -1,11 +1,11 @@
 name: Deploy to EKS
 
 on:
-  push:
-    branches:
-      - main
-      - 343-feature-request-reduce-the-need-for-container-interaction-in-demo-environment
-
+  release:
+    types:
+      - published
+  workflow_dispatch:
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
