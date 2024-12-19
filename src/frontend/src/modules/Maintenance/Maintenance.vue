@@ -65,7 +65,7 @@
                       <md-option
                         :key="employee.id"
                         v-if="employee.person"
-                        :value="employee"
+                        :value="employee.id"
                       >
                         {{ employee.person.name }}
                         {{ employee.person.surname }}
