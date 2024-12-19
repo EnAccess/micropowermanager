@@ -20,7 +20,28 @@ order: 3
 
 The below diagram depicts the integration layers of MPM with mobile money providers and device manufacturers (whether electricity meter, SHS or e-bike).
 
-![Plugin Integration Overview](images/plugin-integration-overview.png)
+```mermaid
+sequenceDiagram
+    actor c as Customer
+    participant mmp as Mobile Money Provider
+    participant mpm as MicroPowerManager
+    participant mm as Meter Manufacturer
+
+    c->>mmp: Make payment
+    activate mmp
+    mmp->>mpm: Call Validation API
+    activate mpm
+    mpm->>mpm: Make Validations
+    mpm->>mmp: Return Validation Response
+    mmp->>mpm: Call Process API
+    deactivate mmp
+    mpm->>mm: Call Token Generation API
+    activate mm
+    mm->>mpm: Return Token
+    deactivate mm
+    mpm->>c: Send Token to customer
+    deactivate mpm
+```
 
 In order to use MPM software to manage your customer portfolio, you will have to activate the relevant (manufacturer) plug-ins as well as the relevant telecommunication provider plug-ins.
 For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the “Calin” and “SunKing” plug-ins to be able to manage your customers with MPM software. Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
