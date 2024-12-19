@@ -32,14 +32,6 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl apply -f k8s/deployments
-          kubectl apply -f k8s/services
+          kubectl rollout restart deployment/mpm-backend
+          kubectl rollout restart deployment/mpm-frontend
 
-      - name: Run commands in backend pod
-        run: |
-          # Get the backend pod name dynamically
-          BACKEND_POD=$(kubectl get pods -l app=mpm-backend -o jsonpath='{.items[0].metadata.name}')
-          echo "Backend pod: $BACKEND_POD" 
-          # Run the commands in sequence in the backend pod
-          kubectl exec $BACKEND_POD -- php artisan migrate-tenant:drop-demo-company
-          kubectl exec $BACKEND_POD -- php artisan migrate:fresh --seed
