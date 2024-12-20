@@ -121,7 +121,7 @@
 
 <script>
 import { SettingService } from "../../services/SettingService"
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/Widget"
 
 export default {
   name: "Setting",
