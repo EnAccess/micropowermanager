@@ -44,7 +44,7 @@
 
 <script>
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/widget"
 import { SteamaTransactionsService } from "../../services/SteamaTransactionsService"
 import { CustomerService } from "../../services/CustomerService"
 

@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/widget"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { EventBus } from "@/shared/eventbus"
 import { TariffService } from "../../services/TariffService"

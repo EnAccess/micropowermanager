@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/widget"
 import { CredentialService } from "../../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
 import RedirectionModal from "@/shared/RedirectionModal"

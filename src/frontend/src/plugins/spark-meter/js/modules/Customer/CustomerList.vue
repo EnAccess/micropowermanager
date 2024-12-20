@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/widget"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { CustomerService } from "../../services/CustomerService"
 import { EventBus } from "@/shared/eventbus"

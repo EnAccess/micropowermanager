@@ -386,7 +386,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/WidgetLegacy"
+import Widget from "@/shared/widget"
 import { TariffService } from "../../services/TariffService"
 
 export default {
