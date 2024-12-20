@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import CredentialRepository from "../repositories/CredentialRepository"
 
 export class CredentialService {

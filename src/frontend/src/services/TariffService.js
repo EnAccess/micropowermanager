@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { TimeOfUsageService } from "./TimeOfUsageService"
 import { Paginator } from "@/Helpers/Paginator"
 import { resource } from "@/repositories/TariffRepository"

@@ -1,5 +1,5 @@
 import { Paginator } from "@/Helpers/Paginator"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { resources } from "@/resources"
 import { EventBus } from "@/shared/eventbus"
 import TransactionRepository from "@/repositories/TransactionRepository"

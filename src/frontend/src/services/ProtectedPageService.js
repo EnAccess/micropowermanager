@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import ProtectedPageRepository from "@/repositories/ProtectedPageRepository"
 
 export class ProtectedPageService {
