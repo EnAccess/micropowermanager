@@ -191,7 +191,7 @@ export default {
 </script>
 <style>
 .sidebar {
-  background: #2b2b2b;
+  background: #2b2b2b !important;;
 }
 
 .brand-column {
@@ -223,7 +223,7 @@ export default {
 
 @media screen and (min-width: 991px) {
   .brand-column {
-    dtext-align: center;
+    text-align: center;
     padding-left: 1rem !important;
   }
 }
