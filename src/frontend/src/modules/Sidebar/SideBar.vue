@@ -191,7 +191,7 @@ export default {
 </script>
 <style>
 .sidebar {
-  background: #2b2b2b !important;;
+  background: #2b2b2b !important;
 }
 
 .brand-column {
