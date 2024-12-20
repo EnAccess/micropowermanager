@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import SmsResendInformationKeyRepository from "@/repositories/SmsResendInformationKeyRepository"
 
 export class SmsResendInformationKeyService {

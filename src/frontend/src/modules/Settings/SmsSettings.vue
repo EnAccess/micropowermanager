@@ -111,7 +111,7 @@ import { SmsResendInformationKeyService } from "@/services/SmsResendInformationK
 import SmsApplianceRemindRate from "./SmsApplianceRemindRate"
 import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService"
 import SmsAndroidSetting from "./SmsAndroidSetting"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService"
 
 export default {

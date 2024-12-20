@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
 
 import CityRepository from "@/repositories/CityRepository"

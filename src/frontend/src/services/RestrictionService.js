@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import RestrictionRepository from "@/repositories/RestrictionRepository"
 
 export class RestrictionService {

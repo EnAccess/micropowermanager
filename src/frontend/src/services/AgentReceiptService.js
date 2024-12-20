@@ -1,5 +1,5 @@
 import { Paginator } from "@/Helpers/Paginator"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 
 import AgentReceiptRepository from "@/repositories/AgentReceiptRepository"
 export class AgentReceiptService {

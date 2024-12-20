@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { resources } from "@/resources"
 import { baseUrl } from "@/repositories/Client/AxiosClient"
 import ManufacturerRepository from "@/repositories/ManufacturerRepository"

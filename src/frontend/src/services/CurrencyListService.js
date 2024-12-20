@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import CurrencyRepository from "@/repositories/CurrencyRepository"
 
 export class CurrencyListService {

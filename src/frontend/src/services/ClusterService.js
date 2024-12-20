@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import i18n from "../i18n"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
 

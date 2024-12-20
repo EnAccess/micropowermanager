@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import store from "../store/store"
 import { resources } from "@/resources"
 import BatchRevenueRepository from "@/repositories/BatchRevenueRepository"

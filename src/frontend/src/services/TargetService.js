@@ -1,6 +1,6 @@
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { City } from "@/services/CityService"
 import { ConnectionsType } from "@/services/ConnectionTypeService"
 import TargetRepository from "@/repositories/TargetRepository"

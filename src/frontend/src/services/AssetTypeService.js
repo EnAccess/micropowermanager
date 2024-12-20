@@ -1,5 +1,5 @@
 import { EventBus } from "@/shared/eventbus"
-import { ErrorHandler } from "@/Helpers/ErrorHander"
+import { ErrorHandler } from "@/Helpers/ErrorHandler"
 
 import AssetTypeRepository from "@/repositories/AssetTypeRepository"
 
