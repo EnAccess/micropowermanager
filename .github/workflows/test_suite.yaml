@@ -10,7 +10,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    # Test on multiple PHP versions
     strategy:
       matrix:
         php-version: ["8.2"]
@@ -19,16 +18,14 @@ jobs:
       mariadb:
         image: mariadb:10.11
         env:
-          MYSQL_DATABASE: micro_power_manager
+          MYSQL_DATABASE: testing_test_company_db
           MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
         ports:
           - 3306:3306
 
     steps:
-      # Checkout code
       - uses: actions/checkout@v3
 
-      # Setup PHP with extensions
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -36,30 +33,36 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
-      # Setup GitHub environment
-      - name: Copy .env
-        run: php -r "file_exists('./dev/.env.micropowermanager-backend') || copy('./dev/.env.micropowermanager-backend', '.env');"
-
-      # Install composer dependencies
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
           composer dump-autoload
         working-directory: ./src/backend
 
-      # Generate application key
-      #   - name: Generate key
-      #     run: php artisan key:generate
-      #     working-directory: ./src/backend
+      # - name: Generate key
+      #   run: php artisan key:generate
+      #   working-directory: ./src/backend
 
-      # Run database migrations for testing
-      #   - name: Run Migrations
-      #     run: |
-      #       php artisan migrate --env=.env
-      #       php artisan migrate-tenant --env=.env
-
-      # Run PHPUnit tests with coverage
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: php artisan test
-        continue-on-error: true
+      - name: Run Migrations
+        run: |
+          php artisan migrate:fresh --seed
         working-directory: ./src/backend
+        env:
+          DB_CONNECTION: testing
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_test_company_db
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+
+      - name: Execute tests
+        run: php artisan test
+        working-directory: ./src/backend
+        continue-on-error: true
+        env:
+          DB_CONNECTION: testing
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_test_company_db
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e

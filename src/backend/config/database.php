@@ -66,16 +66,38 @@ return [
 
         // PHPunit testing main connection
         'testing' => [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
+            // 'driver' => 'sqlite',
+            // 'database' => ':memory:',
+            // 'prefix' => '',
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'testing_test_company_db'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'wF9zLp2qRxaS2e'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
+            'strict' => true,
+            'engine' => null,
         ],
 
         // PHPunit testing test_db connection
         'testing_test_company_db' => [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
+            // 'driver' => 'sqlite',
+            // 'database' => ':memory:',
+            // 'prefix' => '',
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'testing_test_company_db'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'wF9zLp2qRxaS2e'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
+            'strict' => true,
+            'engine' => null,
         ],
     ],
 

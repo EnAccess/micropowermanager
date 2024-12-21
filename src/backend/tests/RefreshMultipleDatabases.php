@@ -17,7 +17,7 @@ trait RefreshMultipleDatabases {
         );
         Artisan::call(
             'migrate:fresh',
-            ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']
+            ['--database' => 'testing_test_company_db', '--path' => '/database/migrations/testing_test_company_db']
         );
         app(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
@@ -32,7 +32,7 @@ trait RefreshMultipleDatabases {
 
             Artisan::call(
                 'migrate:fresh',
-                ['--database' => 'test_company_db', '--path' => '/database/migrations/test_company_db']
+                ['--database' => 'testing_test_company_db', '--path' => '/database/migrations/testing_test_company_db']
             );
 
             app(Kernel::class)->setArtisan(null);
