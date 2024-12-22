@@ -9,7 +9,6 @@ export class MapSettingsService {
       latitude: null,
       longitude: null,
       provider: null,
-      bingMapApiKey: null,
     }
   }
 
@@ -32,7 +31,6 @@ export class MapSettingsService {
         latitude: this.mapSettings.latitude,
         longitude: this.mapSettings.longitude,
         provider: this.mapSettings.provider,
-        bingMapApiKey: this.mapSettings.bingMapApiKey,
       }
       let response = await this.repository.update(
         mapSettingsPm.id,
@@ -49,17 +47,6 @@ export class MapSettingsService {
     }
   }
 
-  async checkBingMapApiKey() {
-    try {
-      const { data } = await this.repository.checkBingApiKey(
-        this.mapSettings.bingMapApiKey,
-      )
-      return data.data.authentication
-    } catch (error) {
-      return new ErrorHandler(error.response.data.message, "http")
-    }
-  }
-
   fromJson(mapSettings) {
     this.mapSettings = {
       id: mapSettings.id,
@@ -67,7 +54,6 @@ export class MapSettingsService {
       latitude: mapSettings.latitude,
       longitude: mapSettings.longitude,
       provider: mapSettings.provider,
-      bingMapApiKey: mapSettings.bingMapApiKey,
     }
     return this.mapSettings
   }

@@ -10,7 +10,4 @@ export default {
   update(id, mapSettings) {
     return Client.put(`${resource}/${id}`, mapSettings)
   },
-  checkBingApiKey(key) {
-    return Client.get(`${resource}/key/${key}`)
-  },
 }

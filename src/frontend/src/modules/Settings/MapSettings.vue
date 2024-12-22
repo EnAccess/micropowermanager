@@ -36,29 +36,6 @@
           </md-select>
         </md-field>
       </div>
-      <div
-        class="md-layout-item md-size-34 md-small-size-100"
-        v-if="bingMapsProviderSelected"
-      >
-        <md-field :class="{ 'md-invalid': errors.has('Bing Api Key') }">
-          <label for="apiKey" class="bing-api-key">
-            Bing Map Api Key (Click
-            <b>
-              <a href="https://www.bingmapsportal.com/" target="_blank">here</a>
-            </b>
-            to get api key.)
-          </label>
-          <md-input
-            id="apiKey"
-            name="Bing Api Key"
-            v-model="mapSettingsService.mapSettings.bingMapApiKey"
-            v-validate="'required|min:3'"
-          ></md-input>
-          <span class="md-error">
-            {{ errors.first("Bing Api Key") }}
-          </span>
-        </md-field>
-      </div>
       <div class="md-layout-item md-size-100 md-small-size-100">
         <md-subheader>Set Map Starting Points</md-subheader>
       </div>
@@ -162,17 +139,6 @@ export default {
         return
       }
 
-      if (
-        this.bingMapsProviderSelected &&
-        !(await this.mapSettingsService.checkBingMapApiKey())
-      ) {
-        this.alertNotify(
-          "error",
-          "Bing Map Api Key is wrong, please check again",
-        )
-        this.hideLoadingIndicator()
-        return
-      }
       try {
         await this.mapSettingsService.update()
         this.updateMapSettingsStore()
@@ -221,11 +187,6 @@ export default {
     },
     reRenderMap() {
       this.mapKey++
-    },
-  },
-  computed: {
-    bingMapsProviderSelected() {
-      return this.mapSettingsService.mapSettings.provider === "Bing Maps"
     },
   },
 }
