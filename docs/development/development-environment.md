@@ -234,3 +234,13 @@ We recommend the following settings
 - CPU: 4 or more
 - Memory: 4GB or more
 - Disk: 50GB or more
+
+### Running test suite locally (backend)
+
+To run the backend tests use the command:
+
+```sh
+php artisan test
+```
+
+Note: The test suite is being worked up, so expect many failling tests.
