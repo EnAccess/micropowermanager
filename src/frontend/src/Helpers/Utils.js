@@ -25,11 +25,10 @@ export const convertObjectKeysToSnakeCase = (obj) => {
   for (const [key, value] of Object.entries(obj)) {
     const snakeKey = camelToSnake(key)
 
-    if (value instanceof Date) {
-      result[snakeKey] = value
-    } else if (
+    if (
       value !== null &&
       typeof value === "object" &&
+      value instanceof Date === false &&
       !Array.isArray(value)
     ) {
       result[snakeKey] = convertObjectKeysToSnakeCase(value)

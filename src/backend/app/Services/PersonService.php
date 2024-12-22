@@ -112,14 +112,12 @@ class PersonService implements IBaseService {
     }
 
     public function createPersonDataFromRequest(Request $request): array {
-        $birthDate = Carbon::parse($request->get('birth_date'))->format('Y-m-d H:i:s');
-
         return [
             'title' => $request->get('title'),
             'education' => $request->get('education'),
             'name' => $request->get('name'),
             'surname' => $request->get('surname'),
-            'birth_date' => $birthDate,
+            'birth_date' => $request->get('birth_date'),
             'sex' => $request->get('sex'),
             'is_customer' => $request->get('is_customer') ?? 0,
         ];
