@@ -18,12 +18,6 @@ services:
       - 8443:443
     volumes:
       - ./src/backend:/var/www/html
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost/up]
-      start_period: 30s
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
 
   frontend-dev:

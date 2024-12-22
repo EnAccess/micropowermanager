@@ -30,10 +30,6 @@ class UserDefaultDatabaseConnectionMiddleware {
     }
 
     private function handleApiRequest(Request $request, \Closure $next) {
-        // health check route
-        if ($request->path() === 'up') {
-            return $next($request);
-        }
         // REMOVE THIS WHEN THE TESTS ARE FIXED
         if ($request->path() === 'api/micro-star-meters/test' && $request->isMethod('get')) {
             return $next($request);
@@ -64,6 +60,11 @@ class UserDefaultDatabaseConnectionMiddleware {
         }
 
         if (strpos($request->path(), 'laravel-erd') === 0) {
+            return $next($request);
+        }
+
+        // health check route
+        if ($request->path() === 'up') {
             return $next($request);
         }
 
