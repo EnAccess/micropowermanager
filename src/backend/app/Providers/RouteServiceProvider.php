@@ -30,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider {
      * @return void
      */
     public function map() {
+        $this->mapHealthRoute();
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
@@ -60,5 +61,18 @@ class RouteServiceProvider extends ServiceProvider {
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define healthcheck routes for the application.
+     *
+     * Using this as a backport for Laravel 11 healthcheck feature.
+     *
+     * @return void
+     */
+    protected function mapHealthRoute() {
+        Route::get('/up', function () {
+            return response()->json(['status' => 'OK'], 200);
+        });
     }
 }

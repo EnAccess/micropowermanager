@@ -63,6 +63,11 @@ class UserDefaultDatabaseConnectionMiddleware {
             return $next($request);
         }
 
+        // health check route
+        if ($request->path() === 'up') {
+            return $next($request);
+        }
+
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
