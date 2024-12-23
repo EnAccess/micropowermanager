@@ -247,7 +247,6 @@
               </md-table-row>
 
               <md-table-row
-                :class="transaction.status === 1 ? 'active' : 'danger'"
                 v-for="transaction in transactionService.list"
                 :key="transaction.id"
                 style="cursor: pointer"
