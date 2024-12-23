@@ -223,7 +223,7 @@ export default {
 
 @media screen and (min-width: 991px) {
   .brand-column {
-    dtext-align: center;
+    text-align: center;
     padding-left: 1rem !important;
   }
 }
