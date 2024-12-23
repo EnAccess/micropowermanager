@@ -16,7 +16,7 @@ class CompanyDatabaseFactory extends Factory {
     public function definition() {
         return [
             'company_id' => 1,
-            'database_name' => 'test_company_db',
+            'database_name' => 'testing_test_company_db',
         ];
     }
 }

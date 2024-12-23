@@ -6,11 +6,11 @@ use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentCommission;
 use App\Models\AgentSoldAppliance;
-use App\Models\AssetType;
+use App\Models\Asset;
 use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Models\PaymentHistory;
-use Database\Factories\PersonFactory;
+use Database\Factories\Person\PersonFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -81,7 +81,7 @@ class AgentSellApplianceTest extends TestCase {
             'agent_commission_id' => 1,
             'device_id' => 1,
             'name' => 'alper',
-            'email' => 'a@b.com',
+            'email' => 'a@a.com',
             'fire_base_token' => 'sadadadasd3',
             'password' => '123123',
         ]);
@@ -93,15 +93,16 @@ class AgentSellApplianceTest extends TestCase {
             'risk_balance' => -3,
         ]);
 
-        AssetType::query()->create([
+        Asset::query()->create([
             'name' => 'test',
             'price' => 100,
+            'asset_type_id' => 1,
         ]);
 
         AgentAssignedAppliances::query()->create([
             'agent_id' => 1,
             'user_id' => 1,
-            'appliance_type_id' => 1,
+            'appliance_id' => 1,
             'cost' => 100,
         ]);
     }

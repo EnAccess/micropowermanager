@@ -19,7 +19,7 @@ class Asset extends BaseModel {
     }
 
     public function agentAssignedAppliance(): HasMany {
-        return $this->hasMany(AgentAssignedAppliances::class, 'appliance_type_id', 'id');
+        return $this->hasMany(AgentAssignedAppliances::class, 'appliance_id', 'id');
     }
 
     public function rates(): HasMany {

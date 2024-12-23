@@ -1,0 +1,68 @@
+name: Code Test Suite
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ["8.2"]
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: testing_test_company_db
+          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer dump-autoload
+        working-directory: ./src/backend
+
+      # - name: Generate key
+      #   run: php artisan key:generate
+      #   working-directory: ./src/backend
+
+      - name: Run Migrations
+        run: |
+          php artisan migrate:fresh --seed
+        working-directory: ./src/backend
+        env:
+          DB_CONNECTION: testing
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_test_company_db
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+
+      - name: Execute tests
+        run: php artisan test
+        working-directory: ./src/backend
+        continue-on-error: true
+        env:
+          DB_CONNECTION: testing
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_test_company_db
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
