@@ -132,19 +132,10 @@ export const sharedMap = {
       this.nonEditableLayer = new L.FeatureGroup()
     },
     setTileLayer() {
-      if (this.mapProvider) {
-        L.tileLayer
-          .bing(this.bingMapApiKey, {
-            maxZoom: this.maxZoom,
-            attribution: this.osmAttrib,
-          })
-          .addTo(this.map)
-      } else {
-        L.tileLayer(this.osmUrl, {
-          maxZoom: this.maxZoom,
-          attribution: this.osmAttrib,
-        }).addTo(this.map)
-      }
+      L.tileLayer(this.osmUrl, {
+        maxZoom: this.maxZoom,
+        attribution: this.osmAttrib,
+      }).addTo(this.map)
     },
     reGenerateMap(mutatingCenter) {
       this.map.flyTo(mutatingCenter, this.zoom, this.drawingOptions)
@@ -181,9 +172,6 @@ export const sharedMap = {
   computed: {
     mapProvider() {
       return store.getters["settings/getMapSettings"].provider === "Bing Maps"
-    },
-    bingMapApiKey() {
-      return store.getters["settings/getMapSettings"].bingMapApiKey
     },
   },
   watch: {

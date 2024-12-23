@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvalidBingApiKeyException;
 use App\Http\Resources\ApiResource;
 use App\Models\MapSettings;
-use App\Services\BingMapApiService;
 
 class MapSettingsController extends Controller {
-    private $bingMapApiService;
-
-    public function __construct(BingMapApiService $bingMapApiService) {
-        $this->bingMapApiService = $bingMapApiService;
-    }
+    public function __construct() {}
 
     public function index(): ApiResource {
         return new ApiResource(MapSettings::all());
@@ -27,20 +21,14 @@ class MapSettingsController extends Controller {
                     'latitude' => request('latitude'),
                     'longitude' => request('longitude'),
                     'provider' => request('provider'),
-                    'bingMapApiKey' => request('bingMapApiKey'),
                 ]
             );
 
         return new ApiResource([$mapSettings->fresh()]);
     }
 
+    // TODO: remove this method and associated route references when docs can be updated
     public function checkBingApiKey($key): ApiResource {
-        try {
-            $apiAuthentication = $this->bingMapApiService->checkAuthenticationKey($key);
-        } catch (InvalidBingApiKeyException $exception) {
-            $apiAuthentication = false;
-        }
-
-        return ApiResource::make(['authentication' => $apiAuthentication]);
+        return ApiResource::make(['authentication' => '']);
     }
 }

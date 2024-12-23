@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->double('latitude', 10);
             $table->double('longitude', 10);
             $table->string('provider')->nullable();
-            $table->string('bingMapApiKey')->nullable();
             $table->timestamps();
         });
 
