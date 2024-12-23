@@ -246,6 +246,7 @@ import { notify } from "@/mixins"
 import { PersonService } from "@/services/PersonService"
 import { CityService } from "@/services/CityService"
 import Loader from "@/shared/Loader.vue"
+import moment from "moment"
 
 export default {
   name: "AddClientModal",
@@ -283,7 +284,9 @@ export default {
           isPrimary: true,
           title: this.personService.person.title,
           education: this.personService.person.education,
-          birthDate: this.personService.person.birthDate,
+          birthDate: moment(this.personService.person.birthDate).format(
+            "YYYY-MM-DD HH:mm:ss",
+          ),
           sex: this.personService.person.gender,
           isCustomer: true,
         }
