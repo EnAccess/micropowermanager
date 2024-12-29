@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\CompanyDatabase;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Utils\DemoCompany;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompanyDatabaseFactory extends Factory {
     protected $model = CompanyDatabase::class;
