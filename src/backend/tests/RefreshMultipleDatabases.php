@@ -16,8 +16,8 @@ trait RefreshMultipleDatabases {
             ['--database' => 'micro_power_manager', '--path' => '/database/migrations/']
         );
         Artisan::call(
-            'migrate:fresh',
-            ['--database' => 'DemoCompany_1', '--path' => '/database/migrations/micropowermanager']
+            'migrate:fresh  ',
+            ['--database' => 'shard', '--path' => '/database/migrations/micropowermanager']
         );
         app(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
@@ -32,7 +32,7 @@ trait RefreshMultipleDatabases {
 
             Artisan::call(
                 'migrate:fresh',
-                ['--database' => 'DemoCompany_1', '--path' => '/database/migrations/micropowermanager']
+                ['--database' => 'shard', '--path' => '/database/migrations/micropowermanager']
             );
 
             app(Kernel::class)->setArtisan(null);

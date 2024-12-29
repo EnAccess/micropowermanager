@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\CompanyDatabase;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Utils\DemoCompany;
 
 class CompanyDatabaseFactory extends Factory {
     protected $model = CompanyDatabase::class;
@@ -16,7 +17,7 @@ class CompanyDatabaseFactory extends Factory {
     public function definition() {
         return [
             'company_id' => 1,
-            'database_name' => 'testing_test_company_db',
+            'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ];
     }
 }
