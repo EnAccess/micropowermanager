@@ -48,7 +48,7 @@ jobs:
           php artisan migrate:fresh --seed
         working-directory: ./src/backend
         env:
-          DB_CONNECTION: testing
+          DB_CONNECTION: micro_power_manager
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: testing_test_company_db
@@ -60,7 +60,7 @@ jobs:
         working-directory: ./src/backend
         continue-on-error: true
         env:
-          DB_CONNECTION: testing
+          DB_CONNECTION: micro_power_manager
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: testing_test_company_db
