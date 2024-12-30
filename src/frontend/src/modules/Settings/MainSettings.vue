@@ -61,11 +61,11 @@
           >
             <md-option disabled>Select Country</md-option>
             <md-option
-              v-for="(country, index) in countryListService.countryList"
+              v-for="(country, index) in countryListService.list"
               :key="index"
-              :value="country"
+              :value="country.country_name"
             >
-              {{ country }}
+              {{ country.country_name }}
             </md-option>
           </md-select>
         </md-field>
@@ -157,7 +157,7 @@
 
 <script>
 import { CurrencyListService } from "@/services/CurrencyListService"
-import { CountryListService } from "@/services/CountryListService"
+import CountryService from "@/services/CountryService"
 import { UsageTypeListService } from "@/services/UsageTypeListService"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { EventBus } from "@/shared/eventbus"
@@ -173,7 +173,7 @@ export default {
     return {
       mainSettingsService: new MainSettingsService(),
       currencyListService: new CurrencyListService(),
-      countryListService: new CountryListService(),
+      countryListService: new CountryService(),
       usageTypeListService: new UsageTypeListService(),
       currencyList: [],
       languagesList: ["en", "fr", "bu"],
@@ -206,7 +206,7 @@ export default {
     },
     async getCountryList() {
       try {
-        await this.countryListService.list()
+        await this.countryListService.getCountries()
       } catch (e) {
         this.alertNotify("error", e.message)
       }
