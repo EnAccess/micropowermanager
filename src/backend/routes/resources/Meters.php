@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'meters'], function () {
     Route::get('/', 'MeterController@index');
     Route::post('/', 'MeterController@store');
+    Route::get('/connection-types', 'MeterController@showConnectionTypes');
     Route::put('/{meter}', 'MeterController@update');
     Route::get('/search', 'MeterController@search');
     Route::get('/{serialNumber}', 'MeterController@show');

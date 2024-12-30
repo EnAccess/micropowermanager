@@ -129,4 +129,8 @@ class MeterController extends Controller {
 
         return ApiResource::make($updatedMeter);
     }
+
+    public function showConnectionTypes(): ApiResource {
+        return ApiResource::make($this->meterService->getNumberOfConnectionTypes());
+    }
 }

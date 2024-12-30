@@ -6,6 +6,7 @@ use App\Models\Meter\Meter;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @implements IBaseService<Meter>
@@ -106,5 +107,12 @@ class MeterService implements IBaseService {
         $meter->fresh();
 
         return $meter;
+    }
+
+    public function getNumberOfConnectionTypes(): Collection|array {
+        return $this->meter->newQuery()->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
+            ->select('connection_type_id', DB::raw('count(*) as total'))
+            ->groupBy('connection_type_id')
+            ->get();
     }
 }
