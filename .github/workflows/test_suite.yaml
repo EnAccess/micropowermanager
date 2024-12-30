@@ -18,7 +18,7 @@ jobs:
       mariadb:
         image: mariadb:10.11
         env:
-          MYSQL_DATABASE: testing_test_company_db
+          MYSQL_DATABASE: micro_power_manager
           MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
         ports:
           - 3306:3306
@@ -48,10 +48,10 @@ jobs:
           php artisan migrate:fresh --seed
         working-directory: ./src/backend
         env:
-          DB_CONNECTION: testing
+          DB_CONNECTION: micro_power_manager
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
-          DB_DATABASE: testing_test_company_db
+          DB_DATABASE: micro_power_manager
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
 
@@ -60,9 +60,10 @@ jobs:
         working-directory: ./src/backend
         continue-on-error: true
         env:
-          DB_CONNECTION: testing
+          DB_CONNECTION: micro_power_manager
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
-          DB_DATABASE: testing_test_company_db
+          DB_DATABASE: micro_power_manager
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
+          JWT_SECRET: YOUR-JWT-SECRET

@@ -13,11 +13,11 @@ trait RefreshMultipleDatabases {
     protected function refreshInMemoryDatabase() {
         Artisan::call(
             'migrate:fresh',
-            ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']
+            ['--database' => 'micro_power_manager', '--path' => '/database/migrations/']
         );
         Artisan::call(
-            'migrate:fresh',
-            ['--database' => 'testing_test_company_db', '--path' => '/database/migrations/testing_test_company_db']
+            'migrate:fresh  ',
+            ['--database' => 'shard', '--path' => '/database/migrations/micropowermanager']
         );
         app(Kernel::class)->setArtisan(null);
         $this->app[Kernel::class]->setArtisan(null);
@@ -27,12 +27,12 @@ trait RefreshMultipleDatabases {
         if (!RefreshDatabaseState::$migrated) {
             Artisan::call(
                 'migrate:fresh',
-                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/base']
+                ['--database' => 'micro_power_manager', '--path' => '/database/migrations/']
             );
 
             Artisan::call(
                 'migrate:fresh',
-                ['--database' => 'testing_test_company_db', '--path' => '/database/migrations/testing_test_company_db']
+                ['--database' => 'shard', '--path' => '/database/migrations/micropowermanager']
             );
 
             app(Kernel::class)->setArtisan(null);

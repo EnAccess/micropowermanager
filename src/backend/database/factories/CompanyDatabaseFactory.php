@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\CompanyDatabase;
+use App\Utils\DemoCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompanyDatabaseFactory extends Factory {
@@ -16,7 +17,7 @@ class CompanyDatabaseFactory extends Factory {
     public function definition() {
         return [
             'company_id' => 1,
-            'database_name' => 'testing_test_company_db',
+            'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ];
     }
 }
