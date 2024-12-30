@@ -36,7 +36,7 @@ class PaymentHistory extends BaseModel {
     public function getFlow(string $payer_type, int $payer_id, string $period, $limit = null, string $order = 'ASC') {
         $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", '.$period.') as aperiod from'.
             ' payment_histories where payer_id=:payer_id and payer_type=:payer_type '.
-            'GROUP by concat( '.$period.'), payment_type ORDER BY created_at  '.$order;
+            'GROUP by aperiod, payment_type ORDER BY created_at  '.$order;
 
         if ($limit !== null) {
             $sql .= ' limit '.(int) $limit;
