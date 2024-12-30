@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->integer('zoom');
             $table->double('latitude', 10);
             $table->double('longitude', 10);
+            $table->string('bingMapApiKey')->nullable();
             $table->string('provider')->nullable();
             $table->timestamps();
         });
