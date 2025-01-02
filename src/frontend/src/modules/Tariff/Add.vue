@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget v-if="showAdd" :title="$tc('phrases.newTariff')" color="red">
+    <widget v-show="showAdd" :title="$tc('phrases.newTariff')" color="red">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -66,7 +66,7 @@
                   <md-field
                     :class="{
                       'md-invalid': errors.has(
-                        'Tariff-Form.' + $tc('words.minimumPurchaseAmount'),
+                        'Tariff-Form.' + $tc('phrases.minimumPurchaseAmount'),
                       ),
                     }"
                   >
@@ -75,14 +75,14 @@
                     </label>
                     <md-input
                       id="minimumPurchaseAmount"
-                      :name="$tc('words.minimumPurchaseAmount')"
+                      :name="$tc('phrases.minimumPurchaseAmount')"
                       v-model="tariffService.tariff.minimumPurchaseAmount"
                       v-validate="'required|decimal:2'"
                     />
                     <span class="md-error">
                       {{
                         errors.first(
-                          "Tariff-Form." + $tc("words.minimumPurchaseAmount"),
+                          "Tariff-Form." + $tc("phrases.minimumPurchaseAmount"),
                         )
                       }}
                     </span>
@@ -92,7 +92,7 @@
             </div>
 
             <!--Access-Rate-->
-            <div class="md-layout-item md-size-100" v-if="hasAccessRate">
+            <div class="md-layout-item md-size-100" v-show="hasAccessRate">
               <form
                 class="md-layout md-gutter"
                 data-vv-scope="Access-Rate-Form"
@@ -242,7 +242,7 @@
                 {{ $tc("phrases.addTou") }}
               </md-button>
               <div
-                v-if="tariffService.tariff.tous.length > 0"
+                v-show="tariffService.tariff.tous.length > 0"
                 role="alert"
                 class="alert alert-info"
               >
@@ -363,7 +363,7 @@
                             <a @click="showSocialOptions()" v-else
                                class="show-tariff-link">{{ $tc('phrases.socialTariffOptions', 2) }}</a>
                         </div>-->
-            <div class="md-layout-item md-size-100" v-if="socialOptions">
+            <div class="md-layout-item md-size-100" v-show="socialOptions">
               <form class="md-layout md-gutter" data-vv-scope="Social-Form">
                 <div class="md-layout-item md-size-30 md-small-size-50">
                   <h3>
@@ -512,7 +512,7 @@
               </form>
             </div>
           </div>
-          <md-progress-bar md-mode="indeterminate" v-if="loading" />
+          <md-progress-bar md-mode="indeterminate" v-show="loading" />
         </md-card-content>
 
         <md-card-actions>
