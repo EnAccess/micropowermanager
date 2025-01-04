@@ -291,12 +291,13 @@ export default {
         this.filter.status = null
       }
       if (this.filterFrom !== null) {
-        this.filter.from = this.filterFrom.toString() + " 00:00:00"
+        const fromDate = new Date(this.filterFrom)
+        this.filter.from = fromDate.toISOString().split("T")[0] + " 00:00:00"
       }
       if (this.filterTo !== null) {
-        this.filter.to = this.filterTo.toString() + " 23:59:59"
+        const toDate = new Date(this.filterTo)
+        this.filter.to = toDate.toISOString().split("T")[0] + " 23:59:59"
       }
-      console.log(this.filter)
     },
   },
   computed: {
