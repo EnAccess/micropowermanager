@@ -112,7 +112,6 @@
                 :required="true"
                 :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
                 autocomplete="off"
-                :name="$tc('words.phone')"
                 enabledCountryCode="true"
                 v-model="newAddress.phone"
                 @validate="validatePhone"
