@@ -1,0 +1,20 @@
+.vue-tel-input {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42) !important;
+  width: 100% !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+
+  .vti__dropdown {
+    background: transparent !important;
+  }
+
+  .vti__dropdown-list {
+    z-index: 999 !important;
+    margin-top: 1px !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    background: white !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  }
+}

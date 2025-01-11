@@ -26,16 +26,33 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field>
-                  <label>{{ $tc("words.phone") }}</label>
-                  <md-input
-                    type="number"
-                    name="phone"
+                <template>
+                  <vue-tel-input
                     id="phone"
+                    :validCharactersOnly="true"
+                    mode="international"
+                    invalidMsg="invalid phone number"
+                    :disabledFetchingCountry="false"
+                    :disabledFormatting="false"
+                    placeholder="Enter a phone number"
+                    :required="true"
+                    :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                    autocomplete="off"
+                    :name="$tc('words.phone')"
+                    enabledCountryCode="true"
                     v-model="user.phone"
-                  />
+                    @validate="validatePhone"
+                  ></vue-tel-input>
                   <md-icon>phone</md-icon>
-                </md-field>
+                  <span
+                    v-if="!phone.valid && firstStepClicked"
+                    style="color: red"
+                    class="md-error"
+                  >
+                    invalid phone number
+                  </span>
+                  <md-icon>phone</md-icon>
+                </template>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
@@ -107,6 +124,9 @@ export default {
     return {
       sending: false,
       selectedCity: 0,
+      phone: {
+        valid: true,
+      },
     }
   },
   mounted() {
@@ -127,6 +147,9 @@ export default {
           .filter((x) => x.id === this.user.cityId)
           .map((x) => x.id)[0]
       }
+    },
+    validatePhone(phone) {
+      this.phone = phone
     },
     closeEditUser() {
       this.$emit("editUserClosed")

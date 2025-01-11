@@ -5,6 +5,7 @@ import { resources } from "@/resources"
 
 import AgentRepository from "@/repositories/AgentRepository"
 import PersonRepository from "@/repositories/PersonRepository"
+import moment from "moment"
 
 export class AgentService {
   constructor() {
@@ -91,7 +92,7 @@ export class AgentService {
         is_primary: 1,
         agent_commission_id: this.agent.commissionTypeId,
         password: this.agent.password,
-        birth_date: this.agent.birthday,
+        birth_date: moment(this.agent.birthday).format("YYYY-MM-DD HH:mm:ss"),
         sex: this.agent.gender,
       }
       let response = await this.repository.create(agentPM)
