@@ -65,7 +65,7 @@ class EnergyTransactionProcessorTest extends TestCase {
             'connection_group_id' => 1,
         ]);
 
-        MeterParameter::query()->first()->socialTariffPiggyBank()->create([
+        Meter::query()->first()->socialTariffPiggyBank()->create([
             'savings' => SocialTariff::query()->first()->initial_energy_budget,
             'social_tariff_id' => SocialTariff::query()->first()->id,
         ]);

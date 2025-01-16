@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,8 +13,8 @@ class SubConnectionType extends BaseModel {
         return $this->belongsTo(ConnectionType::class);
     }
 
-    public function meterParameters(): HasMany {
-        return $this->hasMany(MeterParameter::class, 'connection_type_id');
+    public function meters(): HasMany {
+        return $this->hasMany(Meter::class, 'connection_type_id');
     }
 
     public function tariff(): BelongsTo {

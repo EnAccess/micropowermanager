@@ -83,7 +83,7 @@
                   {{ $tc("words.meter", 2) }}
                 </div>
                 <div class="md-layout-item md-subheader n-font">
-                  {{ connectionType.meter_parameters_count }}
+                  {{ connectionType.meters_count }}
                 </div>
               </div>
               <hr class="hr-d" />

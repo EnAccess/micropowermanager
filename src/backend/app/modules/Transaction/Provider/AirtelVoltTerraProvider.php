@@ -3,8 +3,8 @@
 namespace MPM\Transaction\Provider;
 
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\Transaction;
@@ -81,11 +81,11 @@ class AirtelVoltTerraProvider implements ITransactionProvider {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
-        if (!$meterTariff = $meter->meterParameter->tariff) {
+        if (!$meterTariff = $meter->tariff) {
             throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 
-        $customerId = $meter->MeterParameter->owner_id;
+        $customerId = $meter->device->person->id;
 
         if (!$customerId) {
             throw new ModelNotFoundException('Customer not found with meter serial number you entered');
@@ -114,15 +114,9 @@ class AirtelVoltTerraProvider implements ITransactionProvider {
     }
 
     private function getTransactionSender($meterSerial) {
-        $meterParameter = MeterParameter::query()
-            ->whereHas(
-                'meter',
-                function ($q) use ($meterSerial) {
-                    $q->where('serial_number', $meterSerial);
-                }
-            )->first();
-
-        $personId = $meterParameter->owner_id;
+        $device = Device::query()->where('device_serial', $meterSerial);
+        // get the meter
+        $personId = $device->person->id;
         try {
             $address = Address::query()
                 ->whereHasMorph(
