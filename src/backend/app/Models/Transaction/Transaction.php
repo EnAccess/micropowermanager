@@ -6,6 +6,7 @@ use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
@@ -57,6 +58,10 @@ class Transaction extends BaseModel {
         return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
     }
 
+    public function meter(): HasOne {
+        return $this->hasOne(Meter::class, 'serial_number', 'message');
+    }
+
     public function periodTargetAlternative($cityId, $startDate, $endDate) {
         $sql = <<<SQL
             SELECT
@@ -70,10 +75,10 @@ class Transaction extends BaseModel {
                 FROM transactions
                 LEFT JOIN meters
                     ON transactions.message = meters.serial_number
-                LEFT JOIN meter_parameters
-                    ON meter_parameters.meter_id = meters.id
+                LEFT JOIN devices
+                    ON  devices.device_id = meters.id
                 LEFT JOIN people
-                    ON people.id = meter_parameters.owner_id AND owner_type = 'person'
+                    ON  people.id = devices.person_id
                 LEFT JOIN addresses
                     ON addresses.owner_id = people.id AND addresses.owner_type = 'person'
                 WHERE
