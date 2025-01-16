@@ -18,7 +18,7 @@ class ConnectionTypeService implements IBaseService {
     ) {}
 
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder {
-        return $this->connectionType->newQuery()->withCount('meterParameters')->where('id', $connectionTypeId)
+        return $this->connectionType->newQuery()->withCount('meters')->where('id', $connectionTypeId)
             ->firstOrFail();
     }
 

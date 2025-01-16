@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,17 +15,17 @@ class UpdatePiggyBankEntry extends AbstractJob {
     use SerializesModels;
 
     /**
-     * @var MeterParameter
+     * @var Meter
      */
-    private $meterParameter;
+    private $meter;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MeterParameter $meterParameter) {
-        $this->meterParameter = $meterParameter;
+    public function __construct(Meter $meter) {
+        $this->meter = $meter;
         parent::__construct(get_class($this));
     }
 
@@ -35,7 +35,7 @@ class UpdatePiggyBankEntry extends AbstractJob {
      * @return void
      */
     public function executeJob() {
-        $socialTariff = $this->meterParameter->tariff()->first()->socialTariff;
+        $socialTariff = $this->meter->tariff()->first()->socialTariff;
         if (!$socialTariff) {
             echo "meter has no social tariff should be deleted \n";
             // meter parameter has no social tariff
@@ -44,11 +44,11 @@ class UpdatePiggyBankEntry extends AbstractJob {
 
             return;
         }
-        if ($piggyBank = $this->meterParameter->socialTariffPiggyBank) {
+        if ($piggyBank = $this->meter->socialTariffPiggyBank) {
             // update bank entry
             $piggyBank->savings = $socialTariff->initial_energy_budget;
         } else {
-            CreatePiggyBankEntry::dispatch($this->meterParameter)
+            CreatePiggyBankEntry::dispatch($this->meter)
                 ->allOnConnection('redis')
                 ->onQueue(config('services.queues.misc'));
         }

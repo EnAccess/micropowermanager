@@ -4,48 +4,46 @@ namespace App\PaymentHandler;
 
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Misc\TransactionDataContainer;
+use App\Models\AccessRate\AccessRate as AccessRateModel;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use Carbon\Carbon;
 
 class AccessRate {
     /**
-     * @var AccessRate
+     * @var AccessRateModel
      */
-    private $accessRate;
+    private AccessRateModel $accessRate;
     /**
-     * @var MeterParameter
+     * @var Meter
      */
-    private $meterParameter;
+    private $meter;
 
     /**
      * AccessRatePayment constructor.
-     *
-     * @param AccessRate $accessRate
      */
     public function __construct() {}
 
     /**
-     * @param MeterParameter $meterParameter
+     * @param Meter $meter
      *
      * @return AccessRate
      *
      * @throws NoAccessRateFound
      */
-    public static function withMeterParameters(MeterParameter $meterParameter): AccessRate {
-        if ($meterParameter->tariffAccessRate() === null) {
-            throw new NoAccessRateFound('Tariff  '.$meterParameter->tariff()->first()->name.' has no access rate');
+    public static function withMeter(Meter $meter): AccessRate {
+        if ($meter->tariff->accessRate === null) {
+            throw new NoAccessRateFound('Tariff  '.$meter->tariff->name.' has no access rate');
         }
         $accessRate = new self();
-        $accessRate->accessRate = $meterParameter->tariffAccessRate();
-        $accessRate->setMeterParameter($meterParameter);
+        $accessRate->accessRate = $meter->accessRate();
+        $accessRate->setMeter($meter);
 
         return $accessRate;
     }
 
-    private function setMeterParameter(MeterParameter $meterParameter): void {
-        $this->meterParameter = $meterParameter;
+    private function setMeter(Meter $meter): void {
+        $this->meter = $meter;
     }
 
     /**
@@ -54,15 +52,14 @@ class AccessRate {
      * @throws NoAccessRateFound
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
-        if ($this->accessRate === null || $this->meterParameter === null) {
-            throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meterParameter === null ? 'Meter Parameter is not set' : ''));
+        if ($this->accessRate === null) {
+            throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meter === null ? 'Meter is not set' : ''));
         }
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period)->toDateString();
         // create accessRatePayment instance and fill with the variables
         $accessRatePayment = new AccessRatePayment();
         $accessRatePayment->accessRate()->associate($this->accessRate);
-        $accessRatePayment->meter()->associate($this->meterParameter->meter()->first());
         $accessRatePayment->due_date = $nextPaymentDate;
         $accessRatePayment->debt = 0;
 
@@ -120,7 +117,7 @@ class AccessRate {
                     'paymentType' => 'access rate',
                     'sender' => $transactionData->transaction->sender,
                     'paidFor' => $transactionData->meter->accessRate(),
-                    'payer' => $transactionData->meterParameter->owner,
+                    'payer' => $transactionData->meter->device->person,
                     'transaction' => $transactionData->transaction,
                 ]
             );

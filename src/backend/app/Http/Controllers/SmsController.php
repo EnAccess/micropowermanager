@@ -6,7 +6,7 @@ use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\SmsSearchResultResource;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Services\SmsService;
@@ -22,7 +22,7 @@ class SmsController extends Controller {
     public function __construct(
         private Sms $sms,
         private Person $person,
-        private MeterParameter $meterParameter,
+        private Meter $meter,
         private SmsService $smsService,
         private TicketCommentService $commentService,
     ) {}
@@ -69,9 +69,9 @@ class SmsController extends Controller {
         } elseif ($type === 'group' || $type === 'type' || $type === 'all') {
             // get connection group meters and owners
             if ($type === 'group') {
-                $meters = $this->meterParameter::with(
+                $meters = $this->meter::with(
                     [
-                        'owner.addresses' => static function ($q) {
+                        'device.person.addresses' => static function ($q) {
                             $q->where('is_primary', 1);
                         },
                     ]
@@ -92,9 +92,9 @@ class SmsController extends Controller {
                         }
                     )->get();
             } elseif ($type === 'all') {
-                $meters = $this->meterParameter::with(
+                $meters = $this->meter::with(
                     [
-                        'owner.addresses' => static function ($q) {
+                        'device.person.addresses' => static function ($q) {
                             $q->where('is_primary', 1);
                         },
                     ]
@@ -110,9 +110,9 @@ class SmsController extends Controller {
                         }
                     )->get();
             } else {
-                $meters = $this->meterParameter::with(
+                $meters = $this->meter::with(
                     [
-                        'owner.addresses' => static function ($q) {
+                        'device.person.addresses' => static function ($q) {
                             $q->where('is_primary', 1);
                         },
                     ]
@@ -134,7 +134,7 @@ class SmsController extends Controller {
                     )->get();
             }
 
-            $addresses = $meters->pluck('owner.addresses');
+            $addresses = $meters->pluck('device.person.addresses');
             foreach ($addresses as $address) {
                 if ($address === null) {
                     continue;
