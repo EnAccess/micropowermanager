@@ -80,7 +80,7 @@ class TokenListener {
                 'paymentType' => 'energy',
                 'sender' => $transactionContainer->transaction->sender,
                 'paidFor' => $this->token,
-                'payer' => $transactionContainer->meterParameter->owner,
+                'payer' => $transactionContainer->meter->device->person,
                 'transaction' => $transactionContainer->transaction,
             ]
         );

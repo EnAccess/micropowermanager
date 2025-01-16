@@ -9,6 +9,7 @@ use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\Manufacturer;
+use App\Models\SocialTariffPiggyBank;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -74,6 +75,10 @@ class Meter extends BaseModel {
 
     public function transactions(): HasMany {
         return $this->hasMany(Transaction::class, 'message', 'serial_number');
+    }
+
+    public function socialTariffPiggyBank(): HasOne {
+        return $this->hasOne(SocialTariffPiggyBank::class);
     }
 
     public function findBySerialNumber(string $meterSerialNumber): ?self {
