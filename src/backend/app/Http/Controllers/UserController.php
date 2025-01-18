@@ -6,14 +6,12 @@ use App\Http\Requests\CreateAdminRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
-use App\Services\DatabaseProxyService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller {
     public function __construct(
         private UserService $userService,
-        private DatabaseProxyService $databaseProxyService,
         private CompanyDatabaseService $companyDatabaseService,
     ) {}
 
@@ -25,13 +23,6 @@ class UserController extends Controller {
 
     public function store(CreateAdminRequest $request) {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
-        $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
-        $databaseProxyData = [
-            'email' => $user->getEmail(),
-            'fk_company_id' => $user->getCompanyId(),
-            'fk_company_database_id' => $companyDatabase->getId(),
-        ];
-        $this->databaseProxyService->create($databaseProxyData);
 
         return ApiResource::make($user->toArray());
     }
