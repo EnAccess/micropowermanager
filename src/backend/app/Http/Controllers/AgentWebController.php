@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
+use App\Services\CompanyService;
 use App\Services\CountryService;
 use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
@@ -23,7 +23,7 @@ class AgentWebController extends Controller {
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
-        private DatabaseProxyService $databaseProxyService,
+        private CompanyService $companyService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -52,13 +52,14 @@ class AgentWebController extends Controller {
         /** @var \Tymon\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
         $companyId = $guard->payload()->get('companyId');
-        $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
-        $databaseProxyData = [
-            'email' => $request['email'],
-            'fk_company_id' => $companyId,
-            'fk_company_database_id' => $companyDatabase->getId(),
-        ];
-        $this->databaseProxyService->create($databaseProxyData);
+        // $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
+        // $userData = [
+        //     'email' => $request['email'],
+        //     'company_id' => $companyId,
+        //     'password' => $request['password'],
+        //     'fk_company_database_id' => $companyDatabase->getId(),
+        // ];
+        // $this->companyService->create($databaseProxyData);
 
         return ApiResource::make($this->agentService->create(
             $agentData,
