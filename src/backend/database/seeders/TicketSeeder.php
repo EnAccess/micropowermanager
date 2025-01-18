@@ -158,7 +158,7 @@ class TicketSeeder extends Seeder {
     }
 
     private function generateTicket() {
-        $randomCategory = TicketCategory::query()->inRandomOrder()->first();
+        $randomCategory = TicketCategory::factory()->create();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = User::inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
@@ -168,7 +168,7 @@ class TicketSeeder extends Seeder {
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
-        $ticket = Ticket::query()->make([
+        $ticket = Ticket::factory()->make([
             'ticket_id' => Str::random(10),
             'creator_type' => 'admin',
             'creator_id' => $randomCreator->id,
@@ -191,7 +191,7 @@ class TicketSeeder extends Seeder {
             } catch (\Exception $e) {
                 $amount = 50;
             }
-            TicketOutsource::query()->create([
+            TicketOutsource::factory()->create([
                 'ticket_id' => $ticket->id,
                 'amount' => $amount,
                 'created_at' => $demoDate,
