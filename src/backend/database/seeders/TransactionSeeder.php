@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\TokenGenerator;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
-use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\Transaction;
 use App\Models\Transaction\VodacomTransaction;
+use Database\Factories\AgentTransactionFactory;
+use Database\Factories\MeterTokenFactory;
+use Database\Factories\TokenFactory;
+use Database\Factories\TransactionFactory;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
@@ -102,7 +102,7 @@ class TransactionSeeder extends Seeder {
         $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
         $transactionType = app()->make($randomTransactionType);
 
-        $transaction = Transaction::query()->make([
+        $transaction = (new TransactionFactory())->make([
             'amount' => $amount,
             'type' => 'energy',
             'message' => $randomMeter['serial_number'],
@@ -119,7 +119,7 @@ class TransactionSeeder extends Seeder {
             $city = $randomMeter->device->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
             $agent = $miniGrid->agent()->first();
-            $subTransaction = AgentTransaction::query()->create([
+            $subTransaction = (new AgentTransactionFactory())->create([
                 'agent_id' => $agent->id,
                 'device_id' => 'test-device',
                 'status' => 1,
@@ -233,14 +233,14 @@ class TransactionSeeder extends Seeder {
         // generate random token
         if ($transactionData->transaction->amount > 0) {
             $tokenData = [
-                'token' => TokenGenerator::generate(),
+                'token' => TokenFactory::generateToken(),
                 'load' => round(
                     $transactionData->transaction->amount /
                         $randomMeter['tariff']['price'],
                     2
                 ),
             ];
-            $token = Token::query()->make([
+            $token = (new TokenFactory())->make([
                 'token' => $tokenData['token'],
                 'load' => $tokenData['load'],
             ]);
@@ -251,7 +251,7 @@ class TransactionSeeder extends Seeder {
             // generate meter_token
             $meterTokenData = [
                 'meter_id' => $randomMeter->id,
-                'token' => TokenGenerator::generate(),
+                'token' => TokenFactory::generateToken(),
                 'energy' => round(
                     $transactionData->transaction->amount /
                     $randomMeter['tariff']['price'],
@@ -259,7 +259,7 @@ class TransactionSeeder extends Seeder {
                 ),
                 'transaction_id' => $transaction->id,
             ];
-            $meterToken = MeterToken::query()->make([
+            $meterToken = (new MeterTokenFactory())->make([
                 'meter_id' => $meterTokenData['meter_id'],
                 'token' => $meterTokenData['token'],
                 'energy' => $meterTokenData['energy'],
