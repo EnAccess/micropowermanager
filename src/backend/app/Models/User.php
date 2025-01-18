@@ -31,7 +31,7 @@ class User extends Authenticatable implements JWTSubject {
     public const COL_COMPANY_ID = 'company_id';
 
     public function __construct(array $attributes = []) {
-        $this->setConnection('shard');
+        // $this->setConnection('shard');
 
         parent::__construct($attributes);
     }
@@ -117,5 +117,9 @@ class User extends Authenticatable implements JWTSubject {
 
     public function relationTicketUser(): HasOne {
         return $this->hasOne(TicketUser::class, TicketUser::COL_USER_ID, User::COL_ID);
+    }
+
+    public function findByEmail(string $email): ?User {
+        return self::where('email', $email)->first();
     }
 }

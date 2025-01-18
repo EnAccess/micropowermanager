@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace MPM\DatabaseProxy;
 
 use App\Models\CompanyDatabase;
-use App\Models\DatabaseProxy;
+use App\Models\User;
 use App\Utils\DemoCompany;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 
 class DatabaseProxyManagerService {
     public function __construct(
-        private DatabaseProxy $databaseProxy,
+        private User $user,
         private DatabaseManager $databaseManager,
         private CompanyDatabase $companyDatabase,
     ) {}
 
-    public function findByEmail(string $email): DatabaseProxy {
-        return $this->databaseProxy->findByEmail($email);
+    public function findByEmail(string $email): User {
+        return $this->user->findByEmail($email);
     }
 
     public function runForCompany(int $companyId, callable $callable) {
