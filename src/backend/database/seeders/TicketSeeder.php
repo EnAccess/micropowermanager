@@ -16,7 +16,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Models\TicketUser;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
