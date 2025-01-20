@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder {
                 AgentSeeder::class,
                 TicketSeeder::class,
                 TransactionSeeder::class,
+                CountrySeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,
