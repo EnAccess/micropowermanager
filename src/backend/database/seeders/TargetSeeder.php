@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Agent;
-use App\Models\AgentBalanceHistory;
+use App\Models\ConnectionGroup;
+use App\Models\SubTarget;
+use App\Models\Target;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
-class AgentBalanceHistorySeeder extends Seeder {
+class TargetSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
@@ -20,10 +21,13 @@ class AgentBalanceHistorySeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $agents = Agent::all();
+        $connections = ConnectionGroup::all();
 
-        foreach ($agents as $agent) {
-            AgentBalanceHistory::factory()->create(['agent_id' => $agent->id]);
+        $targets = Target::factory()->count(8)->create();
+
+        foreach ($targets as $target) {
+            $randomConnection = $connections->random();
+            SubTarget::factory()->create(['target_id' => $target->id, 'connection_id' => $randomConnection->id]);
         }
     }
 }
