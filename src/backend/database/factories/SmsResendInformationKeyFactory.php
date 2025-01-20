@@ -10,6 +10,7 @@ class SmsResendInformationKeyFactory extends Factory {
 
     public function definition() {
         return [
+            'id' => $this->faker->randomNumber(),
             'key' => 'Resend',
         ];
     }
