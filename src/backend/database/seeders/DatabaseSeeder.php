@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder {
                 TransactionSeeder::class,
                 CountrySeeder::class,
                 SubConnectionTypeSeeder::class,
-                // SmsSeeder::class,
+                SmsSeeder::class,
+                AgentBalanceHistorySeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,

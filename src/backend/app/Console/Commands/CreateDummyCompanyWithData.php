@@ -9,7 +9,6 @@ use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CreateDummyCompanyWithData extends Command {
     public const SQL_DUMMY_DATA_FILE_NAMES = [
-        'dummy_agent_data.sql',
         'dummy_plugin_data.sql',
     ];
     public const DUMMY_COMPANY_DATA = [
