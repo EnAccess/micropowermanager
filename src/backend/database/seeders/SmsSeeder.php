@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Sms;
 use App\Models\SmsAndroidSetting;
-use App\Models\SmsBody;
 use App\Models\SmsResendInformationKey;
 use App\Models\SmsVariableDefaultValue;
 use Illuminate\Database\Seeder;

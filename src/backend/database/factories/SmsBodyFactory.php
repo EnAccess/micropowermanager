@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SmsBodyFactory extends Factory {
     protected $model = SmsBody::class;
+
     /**
      * Define the model's default state.
      *
@@ -24,13 +25,12 @@ class SmsBodyFactory extends Factory {
         ];
     }
 
-     /**
+    /**
      * Define the specific data for seeding.
      *
      * @return static
      */
-    public function withCustomData($data)
-    {
+    public function withCustomData($data) {
         return $this->state($data);
     }
 }
