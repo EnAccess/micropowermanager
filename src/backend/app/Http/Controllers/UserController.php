@@ -16,7 +16,8 @@ class UserController extends Controller {
     ) {}
 
     public function index(Request $request): ApiResource {
-        $users = $this->userService->list();
+        $companyId = auth()->user()->company_id;
+        $users = $this->userService->list($companyId);
 
         return new ApiResource($users);
     }
