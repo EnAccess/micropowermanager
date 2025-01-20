@@ -8,14 +8,14 @@ use App\Models\MaintenanceUsers;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\User;
+use Database\Factories\TicketFactory;
+use Database\Factories\TicketOutsourceFactory;
+use Database\Factories\TicketUserFactory;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Inensus\Ticket\Models\Ticket;
 use Inensus\Ticket\Models\TicketCategory;
-use Inensus\Ticket\Models\TicketOutsource;
-use Inensus\Ticket\Models\TicketUser;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
@@ -158,17 +158,17 @@ class TicketSeeder extends Seeder {
     }
 
     private function generateTicket() {
-        $randomCategory = TicketCategory::query()->inRandomOrder()->first();
+        $randomCategory = TicketCategory::factory()->create();
         $fakeSentence = $this->generateFakeSentence();
         $randomCreator = User::inRandomOrder()->first();
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
-        $ticketUser = TicketUser::inRandomOrder()->first();
+        $ticketUser = (new TicketUserFactory())->create();
         $randomMaintenanceUser = MaintenanceUsers::inRandomOrder()->first();
         $randomPerson = Person::inRandomOrder()->where('is_customer', 1)->first();
         $dueDate = date('Y-m-d', strtotime('+3 days', strtotime($demoDate)));
         $status = rand(0, 1);
 
-        $ticket = Ticket::query()->make([
+        $ticket = (new TicketFactory())->make([
             'ticket_id' => Str::random(10),
             'creator_type' => 'admin',
             'creator_id' => $randomCreator->id,
@@ -191,12 +191,14 @@ class TicketSeeder extends Seeder {
             } catch (\Exception $e) {
                 $amount = 50;
             }
-            TicketOutsource::query()->create([
+            $ticketOutsource = (new TicketOutsourceFactory())->create([
                 'ticket_id' => $ticket->id,
                 'amount' => $amount,
                 'created_at' => $demoDate,
                 'updated_at' => $demoDate,
             ]);
+            $randomCategory->out_source = $ticketOutsource->id;
+            $randomCategory->save();
         } else {
             $ticket->assigned_id = $ticketUser->id;
             $ticket->owner_id = $randomPerson->id;

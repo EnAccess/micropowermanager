@@ -17,6 +17,7 @@ class TicketCategoryFactory extends Factory {
         return [
             'label_name' => $this->faker->word,
             'label_color' => $this->faker->colorName,
+            'out_source' => $this->faker->numberBetween(1, 10),
         ];
     }
 }
