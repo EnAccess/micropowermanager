@@ -10,6 +10,7 @@ class SmsResendInformationKeyFactory extends Factory {
 
     public function definition() {
         return [
+            'id' => $this->faker->numberBetween(1, 10),
             'key' => 'Resend',
         ];
     }

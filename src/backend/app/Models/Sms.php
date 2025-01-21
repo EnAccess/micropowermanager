@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -21,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $sender_id
  */
 class Sms extends BaseModel {
+    use HasFactory;
+
     public function trigger(): MorphTo {
         return $this->morphTo();
     }
