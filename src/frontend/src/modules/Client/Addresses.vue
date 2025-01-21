@@ -99,15 +99,31 @@
           </div>
 
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-field name="phone">
-              <label for="phone">{{ $tc("words.phone") }}</label>
-              <md-input
+            <template>
+              <vue-tel-input
                 name="phone"
                 id="phone"
+                :validCharactersOnly="true"
+                mode="international"
+                invalidMsg="invalid phone number"
+                :disabledFetchingCountry="false"
+                :disabledFormatting="false"
+                placeholder="Enter a phone number"
+                :required="true"
+                :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                autocomplete="off"
+                enabledCountryCode="true"
                 v-model="newAddress.phone"
-                data-mask="(999) 999-9999"
-              />
-            </md-field>
+                @validate="validatePhone"
+              ></vue-tel-input>
+              <span
+                v-if="!phone.valid && firstStepClicked"
+                style="color: red"
+                class="md-error"
+              >
+                invalid phone number
+              </span>
+            </template>
           </div>
         </div>
 
@@ -157,6 +173,9 @@ export default {
       cities: [],
       editFlag: false,
       addressIndex: 0,
+      phone: {
+        valid: true,
+      },
     }
   },
   mounted() {
@@ -229,6 +248,9 @@ export default {
         }
         this.newAddress = {}
       }
+    },
+    validatePhone(phone) {
+      this.phone = phone
     },
     validateNewAddress() {
       if (!("city_id" in this.newAddress) || !this.newAddress.city_id) {

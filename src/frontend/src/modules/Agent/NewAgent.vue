@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget v-if="addAgent" :title="$tc('phrases.newAgent')" color="red">
+    <widget v-show="addAgent" :title="$tc('phrases.newAgent')" color="red">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -84,27 +84,31 @@
 
                 <!--phone-->
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has($tc('words.phone')),
-                    }"
-                  >
-                    <label for="phone">
-                      {{ $tc("words.phone") }}
-                    </label>
-
-                    <md-input
-                      type="text"
+                  <template>
+                    <vue-tel-input
                       id="phone"
+                      :validCharactersOnly="true"
+                      mode="international"
+                      invalidMsg="invalid phone number"
+                      :disabledFetchingCountry="false"
+                      :disabledFormatting="false"
+                      placeholder="Enter a phone number"
+                      :required="true"
+                      :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                      autocomplete="off"
                       :name="$tc('words.phone')"
-                      v-validate="'required'"
+                      enabledCountryCode="true"
                       v-model="agentService.agent.phone"
-                      placeholder="(+___ _+9___ ____)"
-                    />
-                    <span class="md-error">
-                      {{ errors.first($tc("words.phone")) }}
+                      @validate="validatePhone"
+                    ></vue-tel-input>
+                    <span
+                      v-if="!phone.valid && firstStepClicked"
+                      style="color: red"
+                      class="md-error"
+                    >
+                      invalid phone number
                     </span>
-                  </md-field>
+                  </template>
                 </div>
 
                 <!--email-->
@@ -250,7 +254,7 @@
               </form>
             </div>
           </div>
-          <md-progress-bar md-mode="indeterminate" v-if="loading" />
+          <md-progress-bar md-mode="indeterminate" v-show="loading" />
         </md-card-content>
         <md-card-actions>
           <md-button
@@ -309,6 +313,9 @@ export default {
       redirectionUrl: "/locations/add-mini-grid",
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
+      phone: {
+        valid: true,
+      },
     }
   },
 
@@ -365,6 +372,9 @@ export default {
         this.$refs["agentForm"].reset()
         this.confirmPassword = null
       }
+    },
+    validatePhone(phone) {
+      this.phone = phone
     },
     hide() {
       EventBus.$emit("closed")

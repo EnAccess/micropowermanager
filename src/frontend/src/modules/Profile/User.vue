@@ -38,11 +38,31 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field>
-                  <label>{{ $tc("words.phone") }}</label>
-                  <md-input type="number" v-model="userService.user.phone" />
-                  <md-icon>phone</md-icon>
-                </md-field>
+                <template>
+                  <vue-tel-input
+                    id="phone"
+                    :validCharactersOnly="true"
+                    mode="international"
+                    invalidMsg="invalid phone number"
+                    :disabledFetchingCountry="false"
+                    :disabledFormatting="false"
+                    placeholder="Enter a phone number"
+                    :required="true"
+                    :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                    autocomplete="off"
+                    :name="$tc('words.phone')"
+                    enabledCountryCode="true"
+                    v-model="userService.user.phone"
+                    @validate="validatePhone"
+                  ></vue-tel-input>
+                  <span
+                    v-if="!phone.valid && firstStepClicked"
+                    style="color: red"
+                    class="md-error"
+                  >
+                    invalid phone number
+                  </span>
+                </template>
               </div>
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field>
@@ -188,6 +208,9 @@ export default {
       userService: new UserService(),
       cityService: new CityService(),
       passwordService: new UserPasswordService(),
+      phone: {
+        valid: true,
+      },
     }
   },
   mounted() {
@@ -201,6 +224,9 @@ export default {
       } catch (error) {
         this.alertNotify("error", error.message)
       }
+    },
+    validatePhone(phone) {
+      this.phone = phone
     },
     async getUser() {
       try {

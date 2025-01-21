@@ -21,22 +21,31 @@
               </span>
             </md-field>
             <!-- phone -->
-            <md-field
-              :class="{
-                'md-invalid': errors.has($tc('words.phone')),
-              }"
-            >
-              <label>{{ $tc("words.phone") }}</label>
-              <md-input
-                v-model="ticketUserService.newUser.phone"
-                :name="$tc('words.phone')"
+            <template>
+              <vue-tel-input
                 id="phone"
-                v-validate="'required|min:3'"
-              ></md-input>
-              <span class="md-error">
-                {{ errors.first($tc("words.phone")) }}
+                :validCharactersOnly="true"
+                mode="international"
+                invalidMsg="invalid phone number"
+                :disabledFetchingCountry="false"
+                :disabledFormatting="false"
+                placeholder="Enter a phone number"
+                :required="true"
+                :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                autocomplete="off"
+                :name="$tc('words.phone')"
+                enabledCountryCode="true"
+                v-model="ticketUserService.newUser.phone"
+                @validate="validatePhone"
+              ></vue-tel-input>
+              <span
+                v-if="!phone.valid && firstStepClicked"
+                style="color: red"
+                class="md-error"
+              >
+                invalid phone number
               </span>
-            </md-field>
+            </template>
           </div>
         </div>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
@@ -74,6 +83,9 @@ export default {
       subscriber: "ticket-user-add-external",
       ticketUserService: new TicketUserService(),
       loading: false,
+      phone: {
+        valid: true,
+      },
     }
   },
   mounted() {
@@ -81,6 +93,9 @@ export default {
   },
 
   methods: {
+    validatePhone(phone) {
+      this.phone = phone
+    },
     async saveUser() {
       let validator = await this.$validator.validateAll()
       if (validator) {

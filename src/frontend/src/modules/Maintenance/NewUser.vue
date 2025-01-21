@@ -92,27 +92,31 @@
                   </md-field>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has($tc('words.phone')),
-                    }"
-                  >
-                    <label for="phone">
-                      {{ $tc("words.phone") }}
-                    </label>
-
-                    <md-input
-                      type="text"
+                  <template>
+                    <vue-tel-input
                       id="phone"
+                      :validCharactersOnly="true"
+                      mode="international"
+                      invalidMsg="invalid phone number"
+                      :disabledFetchingCountry="false"
+                      :disabledFormatting="false"
+                      placeholder="Enter a phone number"
+                      :required="true"
+                      :preferredCountries="['TZ', 'CM', 'KE', 'NG', 'UG']"
+                      autocomplete="off"
                       :name="$tc('words.phone')"
-                      v-validate="'required|min:9'"
+                      enabledCountryCode="true"
                       v-model="maintenanceService.personData.phone"
-                      placeholder="Phone (+___ ____ ____)"
-                    />
-                    <span class="md-error">
-                      {{ errors.first($tc("words.phone")) }}
+                      @validate="validatePhone"
+                    ></vue-tel-input>
+                    <span
+                      v-if="!phone.valid && firstStepClicked"
+                      style="color: red"
+                      class="md-error"
+                    >
+                      invalid phone number
                     </span>
-                  </md-field>
+                  </template>
                 </div>
                 <div class="md-layout-item md-size-50 md-small-size-100">
                   <md-field
@@ -214,6 +218,9 @@ export default {
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
       redirectionUrl: "/locations/add-mini-grid",
+      phone: {
+        valid: true,
+      },
     }
   },
 
@@ -244,6 +251,9 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    validatePhone(phone) {
+      this.phone = phone
     },
     async submitNewUserForm() {
       let validator = await this.$validator.validateAll()
