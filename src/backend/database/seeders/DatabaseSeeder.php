@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder {
                 SmsSeeder::class,
                 AgentBalanceHistorySeeder::class,
                 TargetSeeder::class,
+                PluginsSeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,
