@@ -13,13 +13,13 @@ class CustomerRegistrationAppController extends Controller {
 
     public function store(AndroidAppRequest $request) {
         try {
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             $person = $this->customerRegistrationAppService->createCustomer($request);
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return ApiResource::make($person)->response()->setStatusCode(201);
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             Log::critical('Error while adding new Customer', ['message' => $e->getMessage()]);
             throw new \Exception($e->getMessage());
         }

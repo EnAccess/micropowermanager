@@ -67,7 +67,7 @@ class CustomerDatabaseParser {
             $tariff
         ) {
             try {
-                DB::connection('shard')->beginTransaction();
+                DB::connection('tenant')->beginTransaction();
                 $row['cluster_id'] = $cluster->id;
                 $row['mini_grid_id'] = $miniGrid->id;
                 $row['tariff_id'] = $tariff->id;
@@ -116,10 +116,10 @@ class CustomerDatabaseParser {
 
                 $appliancePerson = $this->createRecordFromCsv($row, AppliancePersonService::class);
                 $this->checkRecordWasRecentlyCreated($appliancePerson, 'appliance_person');
-                DB::connection('shard')->commit();
+                DB::connection('tenant')->commit();
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
-                DB::connection('shard')->rollBack();
+                DB::connection('tenant')->rollBack();
                 throw $exception;
             }
         });

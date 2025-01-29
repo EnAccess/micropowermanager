@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('weather_data', static function (Blueprint $table) {
+        Schema::connection('tenant')->create('weather_data', static function (Blueprint $table) {
             $table->increments('id');
             $table->integer('solar_id');
             $table->string('current_weather_data');
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('weather_data');
+        Schema::connection('tenant')->dropIfExists('weather_data');
     }
 };

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('swifta_transactions')) {
-            Schema::connection('shard')->create('swifta_transactions', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('swifta_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('transaction_reference')->nullable();
                 $table->string('manufacturer_transaction_type')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration {
             });
         }
         if (!Schema::hasTable('swifta_authentication')) {
-            Schema::connection('shard')->create('swifta_authentication', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('swifta_authentication', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('token')->nullable();
                 $table->unsignedInteger('expire_date')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('swifta_transactions');
-        Schema::connection('shard')->dropIfExists('swifta_authentication');
+        Schema::connection('tenant')->dropIfExists('swifta_transactions');
+        Schema::connection('tenant')->dropIfExists('swifta_authentication');
     }
 };

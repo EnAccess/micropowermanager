@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('meter_tokens', function (Blueprint $table) {
+        Schema::connection('tenant')->create('meter_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('transaction_id')->unique();
             $table->integer('meter_id');
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('meter_tokens');
+        Schema::connection('tenant')->dropIfExists('meter_tokens');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('sms_appliance_remind_rates', function (Blueprint $table) {
+        Schema::connection('tenant')->table('sms_appliance_remind_rates', function (Blueprint $table) {
             $table->renameColumn('appliance_type_id', 'appliance_id');
         });
     }

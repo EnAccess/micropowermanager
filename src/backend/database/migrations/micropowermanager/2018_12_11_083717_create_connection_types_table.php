@@ -13,13 +13,13 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('connection_types', function (Blueprint $table) {
+        Schema::connection('tenant')->create('connection_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('connection_types')->insert([
+        DB::connection('tenant')->table('connection_types')->insert([
             'name' => 'default connection type',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -32,6 +32,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('connection_types');
+        Schema::connection('tenant')->dropIfExists('connection_types');
     }
 };

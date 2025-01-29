@@ -11,12 +11,12 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('role_definitions', function (Blueprint $table) {
+        Schema::connection('tenant')->create('role_definitions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('role_name');
         });
 
-        Schema::connection('shard')->create('roles', function (Blueprint $table) {
+        Schema::connection('tenant')->create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('role_owner');
             $table->integer('role_definition_id');
@@ -30,7 +30,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('role_definitions');
-        Schema::connection('shard')->dropIfExists('roles');
+        Schema::connection('tenant')->dropIfExists('role_definitions');
+        Schema::connection('tenant')->dropIfExists('roles');
     }
 };

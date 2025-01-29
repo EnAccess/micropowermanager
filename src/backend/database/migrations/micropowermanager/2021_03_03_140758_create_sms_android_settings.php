@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('sms_android_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->create('sms_android_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url')->default('https://fcm.googleapis.com/fcm/send');
             $table->string('token')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('sms_android_settings');
+        Schema::connection('tenant')->dropIfExists('sms_android_settings');
     }
 };
