@@ -47,10 +47,8 @@ php artisan make:migration {migration-name}
 
 This command creates a migration file in Micropower Manager's core migration files location: `src/backend/database/migrations/micropowermanager`
 
-
 - **Creating Migration File (tenant):**
   To create a migration file for tenant database(s) use the following command:
-
 
 ```bash
 docker exec -it backend-dev bash
