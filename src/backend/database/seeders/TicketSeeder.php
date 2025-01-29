@@ -147,11 +147,11 @@ class TicketSeeder extends Seeder {
         // Seed tickets
         for ($i = 1; $i <= $this->amount; ++$i) {
             try {
-                DB::connection('shard')->beginTransaction();
+                DB::connection('tenant')->beginTransaction();
                 $this->generateTicket();
-                DB::connection('shard')->commit();
+                DB::connection('tenant')->commit();
             } catch (\Exception $e) {
-                DB::connection('shard')->rollBack();
+                DB::connection('tenant')->rollBack();
                 echo $e->getMessage();
             }
         }

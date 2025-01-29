@@ -10,7 +10,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->dropIfExists('mini_grid_frequencies');
+        Schema::connection('tenant')->dropIfExists('mini_grid_frequencies');
     }
 
     /**

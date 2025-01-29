@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('micro_star_api_credentials')) {
-            Schema::connection('shard')->create('micro_star_api_credentials', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('micro_star_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->nullable();
                 $table->string('certificate_file_name')->nullable();
@@ -18,7 +18,7 @@ return new class extends Migration {
             });
         }
         if (!Schema::hasTable('micro_star_transactions')) {
-            Schema::connection('shard')->create('micro_star_transactions', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('micro_star_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
@@ -26,7 +26,7 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('micro_star_api_credentials');
-        Schema::connection('shard')->dropIfExists('micro_star_transactions');
+        Schema::connection('tenant')->dropIfExists('micro_star_api_credentials');
+        Schema::connection('tenant')->dropIfExists('micro_star_transactions');
     }
 };

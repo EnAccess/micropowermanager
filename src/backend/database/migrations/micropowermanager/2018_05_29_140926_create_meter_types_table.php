@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('meter_types');
+        Schema::connection('tenant')->dropIfExists('meter_types');
     }
 
     /**
@@ -20,7 +20,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('meter_types', function (Blueprint $table) {
+        Schema::connection('tenant')->create('meter_types', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('online')->default(false);
             $table->integer('phase')->default(1);

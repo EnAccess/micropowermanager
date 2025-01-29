@@ -9,7 +9,7 @@ class MigrateTenantRefresh extends AbstractSharedCommand {
     public function handle() {
         $this->call('optimize:clear');
         $this->call('migrate:refresh', [
-            '--database' => 'shard',
+            '--database' => 'tenant',
             '--path' => '/database/migrations/micropowermanager',
         ]);
     }

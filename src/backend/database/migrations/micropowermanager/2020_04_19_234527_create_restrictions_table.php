@@ -12,7 +12,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('restrictions', static function (Blueprint $table) {
+        Schema::connection('tenant')->create('restrictions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('target');
             $table->integer('default');
@@ -28,7 +28,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('restrictions');
+        Schema::connection('tenant')->dropIfExists('restrictions');
     }
 
     public function addDefault() {
