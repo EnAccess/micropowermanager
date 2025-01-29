@@ -16,7 +16,7 @@ return new class extends Migration {
         if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
-        Schema::connection('shard')->table('meter_consumptions', function (Blueprint $table) {
+        Schema::connection('tenant')->table('meter_consumptions', function (Blueprint $table) {
             $table->renameColumn('daily_consumption', 'consumption')->double('consumption', 15, 4)->default(0)->change();
             $table->datetime('reading_date')->change();
         });
@@ -28,6 +28,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('meter_consumptions', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('meter_consumptions', function (Blueprint $table) {});
     }
 };

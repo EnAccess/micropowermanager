@@ -78,7 +78,7 @@ class PersonController extends Controller {
             $addressData = $this->addressService->createAddressDataFromRequest($request);
             $personData = $this->personService->createPersonDataFromRequest($request);
             $miniGridId = $request->input('mini_grid_id');
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             if ($this->personService->isMaintenancePerson($customerType)) {
                 $person = $this->personService->createMaintenancePerson($personData);
                 $maintenanceUserData = [
@@ -100,11 +100,11 @@ class PersonController extends Controller {
             $this->personAddressService->setAssigned($address);
             $this->personAddressService->assign();
             $this->addressService->save($address);
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return ApiResource::make($person)->response()->setStatusCode(201);
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             throw new \Exception($e->getMessage());
         }
     }

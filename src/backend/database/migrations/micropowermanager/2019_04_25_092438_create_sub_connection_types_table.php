@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up(): void {
-        Schema::connection('shard')->create('sub_connection_types', static function (Blueprint $table) {
+        Schema::connection('tenant')->create('sub_connection_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('connection_type_id');
@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('sub_connection_types')->insert([
+        DB::connection('tenant')->table('sub_connection_types')->insert([
             'name' => 'default  sub connection type',
             'tariff_id' => 1,
             'connection_type_id' => 1,
@@ -36,6 +36,6 @@ return new class extends Migration {
      * @return void
      */
     public function down(): void {
-        Schema::connection('shard')->dropIfExists('sub_connection_types');
+        Schema::connection('tenant')->dropIfExists('sub_connection_types');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('solars', function (Blueprint $table) {
+        Schema::connection('tenant')->table('solars', function (Blueprint $table) {
             $table->integer('frequency')->nullable();
             $table->double('pv_power')->nullable();
             $table->double('fraction')->default(0);
@@ -25,7 +25,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('solars', function (Blueprint $table) {
+        Schema::connection('tenant')->table('solars', function (Blueprint $table) {
             $table->dropColumn('frequency');
             $table->dropColumn('pv_power');
             $table->dropColumn('fraction');

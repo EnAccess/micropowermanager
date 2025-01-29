@@ -16,7 +16,7 @@ return new class extends Migration {
         if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
-        Schema::connection('shard')->table('tariff_pricing_components', function (Blueprint $table) {
+        Schema::connection('tenant')->table('tariff_pricing_components', function (Blueprint $table) {
             $table->double('price', 15, 6)->change();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('tariff_pricing_components', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('tariff_pricing_components', function (Blueprint $table) {});
     }
 };

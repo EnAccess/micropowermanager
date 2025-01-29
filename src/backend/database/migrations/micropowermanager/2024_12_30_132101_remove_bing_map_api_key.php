@@ -11,8 +11,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('map_settings', function (Blueprint $table) {
-            if (Schema::connection('shard')->hasColumn('map_settings', 'bingMapApiKey')) {
+        Schema::connection('tenant')->table('map_settings', function (Blueprint $table) {
+            if (Schema::connection('tenant')->hasColumn('map_settings', 'bingMapApiKey')) {
                 $table->dropColumn('bingMapApiKey');
             }
         });
@@ -24,8 +24,8 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('map_settings', function (Blueprint $table) {
-            if (!Schema::connection('shard')->hasColumn('map_settings', 'bingMapApiKey')) {
+        Schema::connection('tenant')->table('map_settings', function (Blueprint $table) {
+            if (!Schema::connection('tenant')->hasColumn('map_settings', 'bingMapApiKey')) {
                 $table->string('bingMapApiKey')->nullable();
             }
         });

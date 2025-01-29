@@ -38,7 +38,7 @@ class Agent extends Authenticatable implements JWTSubject {
     public const RELATION_NAME = 'agent';
 
     public function __construct(array $attributes = []) {
-        $this->setConnection('shard');
+        $this->setConnection('tenant');
         parent::__construct($attributes);
     }
 

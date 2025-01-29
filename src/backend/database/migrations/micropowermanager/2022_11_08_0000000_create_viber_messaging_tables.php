@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('viber_credentials')) {
-            Schema::connection('shard')->create('viber_credentials', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('viber_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_token')->nullable();
                 $table->string('webhook_url')->nullable();
@@ -17,14 +17,14 @@ return new class extends Migration {
             });
         }
         if (!Schema::hasTable('viber_messages')) {
-            Schema::connection('shard')->create('viber_messages', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('viber_messages', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sms_id');
                 $table->timestamps();
             });
         }
         if (!Schema::hasTable('viber_contacts')) {
-            Schema::connection('shard')->create('viber_contacts', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('viber_contacts', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('person_id');
                 $table->string('viber_id');
@@ -35,8 +35,8 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('viber_credentials');
-        Schema::connection('shard')->dropIfExists('viber_messages');
-        Schema::connection('shard')->dropIfExists('viber_contacts');
+        Schema::connection('tenant')->dropIfExists('viber_credentials');
+        Schema::connection('tenant')->dropIfExists('viber_messages');
+        Schema::connection('tenant')->dropIfExists('viber_contacts');
     }
 };

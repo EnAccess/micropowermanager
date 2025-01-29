@@ -213,7 +213,7 @@ class KelinMeterService implements ISynchronizeService {
 
     public function createRelatedMeter($kelinMeter) {
         try {
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             $meterSerial = $this->generateMeterSerialNumberInFormat($kelinMeter['meterAddr']);
 
             $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->first();
@@ -285,11 +285,11 @@ class KelinMeterService implements ISynchronizeService {
                 $address->geo()->associate($meterParameter->geo);
                 $address->save();
             }
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return $meter;
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             Log::critical('Error while synchronizing kelin meters', ['message' => $e->getMessage()]);
             throw new \Exception($e->getMessage());
         }

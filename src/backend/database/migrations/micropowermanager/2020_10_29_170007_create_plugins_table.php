@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('plugins', function (Blueprint $table) {
+        Schema::connection('tenant')->create('plugins', function (Blueprint $table) {
             $table->id();
             $table->integer('mpm_plugin_id');
             $table->boolean('status')->default(false);
@@ -25,6 +25,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('plugins');
+        Schema::connection('tenant')->dropIfExists('plugins');
     }
 };

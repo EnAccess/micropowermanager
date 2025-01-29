@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up(): void {
-        Schema::connection('shard')->create('asset_types', static function (Blueprint $table) {
+        Schema::connection('tenant')->create('asset_types', static function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('price')->unsigned()->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration {
         });
 
         // Insert initial data
-        DB::connection('shard')->table('asset_types')->insert(
+        DB::connection('tenant')->table('asset_types')->insert(
             [
                 [
                     'name' => 'Solar Home System',
@@ -48,6 +48,6 @@ return new class extends Migration {
      * @return void
      */
     public function down(): void {
-        Schema::connection('shard')->dropIfExists('asset_types');
+        Schema::connection('tenant')->dropIfExists('asset_types');
     }
 };

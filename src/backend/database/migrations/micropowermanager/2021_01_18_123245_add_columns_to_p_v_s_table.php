@@ -12,7 +12,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('p_v_s', function (Blueprint $table) {
+        Schema::connection('tenant')->table('p_v_s', function (Blueprint $table) {
             $table->double('max_theoretical_output')->default(0);
             $table->dateTime('reading_date')->default(Carbon::now()->format('Y-m-d H:i:s'));
         });
@@ -24,6 +24,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('p_v_s', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('p_v_s', function (Blueprint $table) {});
     }
 };
