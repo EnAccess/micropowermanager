@@ -1,7 +1,6 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import i18n from "../i18n"
 import { convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
-
 import ClusterRepository from "@/repositories/ClusterRepository"
 
 export class ClusterService {
@@ -103,10 +102,8 @@ export class ClusterService {
     this.trendChartData.base = [Object.keys(this.clusterTrends)]
     this.trendChartData.base[0].unshift("Date")
     for (let i in this.clusterTrends[trendKeys[0]]) {
-      // iterate over periods
       let tmpData = []
       for (let j in trendKeys) {
-        //iterate over connection names
         tmpData.push(this.clusterTrends[trendKeys[j]][i])
       }
       tmpData.unshift(i)
@@ -158,9 +155,6 @@ export class ClusterService {
     return data
   }
 
-  /**
-   * Generates data array for column and donut chart
-   */
   columnChartData(summary, type) {
     let data = []
     let summaryRevenue = 0
