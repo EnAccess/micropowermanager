@@ -56,7 +56,7 @@ class Ticket extends BaseModel {
             'left join addresses on addresses.owner_id = tickets.owner_id '.
             "where addresses.owner_type='person' ".
             'and addresses.city_id  in (SELECT id from cities where mini_grid_id  ='.$miniGridId.' ) '.
-            ' GROUP by tickets.category_id,YEARWEEK(tickets.updated_at,3)';
+            ' GROUP by ticket_categories.label_name, tickets.category_id, YEARWEEK(tickets.updated_at,3), tickets.created_at';
 
         $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
@@ -71,8 +71,8 @@ class Ticket extends BaseModel {
             'left join addresses on addresses.owner_id = tickets.owner_id '.
             "where addresses.owner_type='person' ".
             'and addresses.city_id in (SELECT id from cities where id =  '.$miniGridId.' ) '.
-            'and tickets . status = 1 '.
-            'GROUP by tickets . category_id,YEARWEEK(tickets.updated_at,3)';
+            'and tickets.status = 1 '.
+            'GROUP by ticket_categories.label_name, tickets.category_id,YEARWEEK(tickets.updated_at,3)';
         $sth = DB::connection('shard')->getPdo()->prepare($sql);
 
         $sth->execute();
