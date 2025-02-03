@@ -139,7 +139,7 @@ export default {
     let startDate = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth() - 2,
-      1
+      1,
     )
     let endDate = currentDate
     this.setDate(startDate, "from")
@@ -151,8 +151,14 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.lineChartData = this.clusterService.lineChartData(true)
-          this.columnChartData = this.clusterService.columnChartData(false, "cluster")
-          this.pieChartData = this.clusterService.columnChartData(false, "cluster")
+          this.columnChartData = this.clusterService.columnChartData(
+            false,
+            "cluster",
+          )
+          this.pieChartData = this.clusterService.columnChartData(
+            false,
+            "cluster",
+          )
         }
       },
       deep: true,
@@ -174,7 +180,7 @@ export default {
         const financialData = await this.clusterService.getAllRevenues(
           "monthly",
           this.period.from,
-          this.period.to
+          this.period.to,
         )
         this.clusterService.financialData = financialData
 
