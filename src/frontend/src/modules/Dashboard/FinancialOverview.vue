@@ -97,7 +97,7 @@ export default {
   mixins: [notify],
   props: {
     clusterId: {
-      type: [Number, null], 
+      type: [Number, null],
       default: null,
     },
     revenue: {
