@@ -46,6 +46,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Not really needed, but keeping it to evaluate whether we want to
+      # use `docker/metadata-action` in the future.
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -57,11 +59,6 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-
-      - name: Create manifest list and push
-        run: |
-          ASDF=$(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON")
-          echo $ASDF
 
       - name: Get version
         run: |
@@ -84,22 +81,19 @@ jobs:
         with:
           file: ${{ matrix.image.dockerfile }}
           platforms: ${{ matrix.platform.arch }}
-          # tags: |
-          #   ${{ matrix.image.repo }}:latest
-          #   ${{ matrix.image.repo }}:${{ env.VERSION }}
           outputs: type=image,"name=${{ matrix.image.repo }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
-          mkdir -p ${{ runner.temp }}/digests-${{ matrix.image.id }}
+          mkdir -p ${{ runner.temp }}/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "${{ runner.temp }}/digests-${{ matrix.image.id }}/${digest#sha256:}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ matrix.image.id }}-${{ matrix.platform.id }}
-          path: ${{ runner.temp }}/digests-${{ matrix.image.id }}/*
+          path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
 
@@ -124,7 +118,7 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: ${{ runner.temp }}/digests-${{ matrix.image.id }}
+          path: ${{ runner.temp }}/digests
           pattern: digests-${{ matrix.image.id }}*
           merge-multiple: true
 
@@ -153,7 +147,7 @@ jobs:
           fi
 
       - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests-${{ matrix.image.id }}
+        working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create \
           -t "${{ matrix.image.repo }}:latest" \
