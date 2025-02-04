@@ -32,7 +32,7 @@ class DatabaseProxyManagerService {
         return $this->companyDatabase->newQuery();
     }
 
-    public function buildDatabaseConnectionDummyCompany(): void {
+    public function buildDatabaseConnectionDemoCompany(): void {
         $this->buildDatabaseConnection(DemoCompany::DEMO_COMPANY_DATABASE_NAME);
     }
 

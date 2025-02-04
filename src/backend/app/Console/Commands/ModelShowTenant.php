@@ -36,7 +36,7 @@ class ModelShowTenant extends Command {
      * Execute the console command.
      */
     public function handle() {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
 
         $this->call('model:show', [
             'model' => $this->argument('model'),
