@@ -9,7 +9,6 @@ use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
 use App\Services\CountryService;
-use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
@@ -49,17 +48,7 @@ class AgentWebController extends Controller {
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
-        $guard = auth('api');
-        $companyId = $guard->payload()->get('companyId');
-        // $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
-        // $userData = [
-        //     'email' => $request['email'],
-        //     'company_id' => $companyId,
-        //     'password' => $request['password'],
-        //     'fk_company_database_id' => $companyDatabase->getId(),
-        // ];
-        // $this->companyService->create($databaseProxyData);
+        $companyId = auth('api')->payload()->get('companyId');
 
         return ApiResource::make($this->agentService->create(
             $agentData,
