@@ -22,8 +22,10 @@ jobs:
             repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileBackendProd
         platform:
-          - linux/amd64
-          - linux/arm64
+          - id: amd64
+            arch: linux/amd64
+          - id: arm64
+            arch: linux/arm64
 
     permissions:
       contents: read
@@ -62,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: ${{ matrix.image.dockerfile }}
-          platforms: ${{ matrix.platform }}
+          platforms: ${{ matrix.platform.arch }}
           # tags: |
           #   ${{ matrix.image.repo }}:latest
           #   ${{ matrix.image.repo }}:${{ env.VERSION }}
@@ -77,7 +79,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ matrix.image.id }}-${{ matrix.platform }}
+          name: digests-${{ matrix.image.id }}-${{ matrix.platform.id }}
           path: ${{ runner.temp }}/digests-${{ matrix.image.id }}/*
           if-no-files-found: error
           retention-days: 1
