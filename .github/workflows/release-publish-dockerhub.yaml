@@ -61,6 +61,7 @@ jobs:
           fi
 
       - name: Build and push Docker image by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           file: ${{ matrix.image.dockerfile }}
