@@ -117,6 +117,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Get version
+        run: |
+          VERSION=$(cat version)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check if image tag already exists
+        run: |
+          VERSION="${{ env.VERSION }}"
+          if docker manifest inspect ${{ matrix.image.repo }}:$VERSION > /dev/null 2>&1; then
+            echo "Docker image tag $VERSION already exists."
+            exit 1
+          else
+            echo "Docker image tag $VERSION does not exist. Proceeding with build."
+          fi
+
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests-${{ matrix.image.id }}
         run: |
