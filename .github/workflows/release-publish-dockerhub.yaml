@@ -68,9 +68,8 @@ jobs:
           # tags: |
           #   ${{ matrix.image.repo }}:latest
           #   ${{ matrix.image.repo }}:${{ env.VERSION }}
-          tags: |
-            ${{ matrix.image.repo }}:${{ env.VERSION }}
           outputs: type=image,"name=${{ matrix.image.repo }}",push-by-digest=true,name-canonical=true,push=true
+
       - name: Export digest
         run: |
           mkdir -p ${{ runner.temp }}/digests
