@@ -125,7 +125,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ${{ runner.temp }}/digests-${{ matrix.image.id }}
-          pattern: digests-*
+          pattern: digests-${{ matrix.image.id }}*
           merge-multiple: true
 
       - name: Set up Docker Buildx
