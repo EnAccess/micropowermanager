@@ -50,14 +50,6 @@ class AgentWebController extends Controller {
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
         $companyId = auth('api')->payload()->get('companyId');
-        // $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
-        // $userData = [
-        //     'email' => $request['email'],
-        //     'company_id' => $companyId,
-        //     'password' => $request['password'],
-        //     'fk_company_database_id' => $companyDatabase->getId(),
-        // ];
-        // $this->databaseProxyService->create($databaseProxyData);
 
         return ApiResource::make($this->agentService->create(
             $agentData,
