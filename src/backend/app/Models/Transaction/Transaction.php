@@ -10,6 +10,7 @@ use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
 use App\Relations\BelongsToMorph;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -28,6 +29,7 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property string $original_transaction_type
  */
 class Transaction extends BaseModel {
+    use HasFactory;
     use RelationsManager;
 
     public const RELATION_NAME = 'transaction';
