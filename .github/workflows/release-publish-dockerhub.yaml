@@ -60,8 +60,7 @@ jobs:
 
       - name: Create manifest list and push
         run: |
-          ASDF=$(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ matrix.image.repo }}@sha256:%s ' *)
+          ASDF=$(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON")
           echo $ASDF
 
       - name: Get version
