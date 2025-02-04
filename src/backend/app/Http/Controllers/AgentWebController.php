@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
