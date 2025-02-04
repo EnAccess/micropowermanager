@@ -3,9 +3,9 @@
 name: Publish images to DockerHub, deploy Demo environment to AWS
 
 on:
-  pull_request:
-    branches:
-      - main
+  release:
+    types:
+      - published
   workflow_dispatch:
 
 jobs:
@@ -173,9 +173,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Force Failure
-        run: exit 1
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
