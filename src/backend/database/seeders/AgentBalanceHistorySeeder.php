@@ -31,7 +31,7 @@ class AgentBalanceHistorySeeder extends Seeder {
             if (empty($transactions)) {
                 $transaction = AgentTransaction::create([
                     'agent_id' => $agent->id,
-                    'status' => 1, // Adjust according to your model's required fields
+                    'status' => 1,
                     'sender' => 'System',
                 ]);
                 $transactions = [$transaction->id];
