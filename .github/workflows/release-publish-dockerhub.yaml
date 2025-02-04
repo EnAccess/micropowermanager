@@ -135,15 +135,12 @@ jobs:
             echo "Docker image tag $VERSION does not exist. Proceeding with build."
           fi
 
-      - name: Debug
-        run: echo $(printf '${{ matrix.image.repo }}@sha256:%s ' *)
-
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests-${{ matrix.image.id }}
         run: |
           docker buildx imagetools create \
-          -t "latest" \
-          -t "${{ env.VERSION }}" \
+          -t "${{ matrix.image.repo }}:latest" \
+          -t "${{ matrix.image.repo }}:${{ env.VERSION }}" \
           $(printf '${{ matrix.image.repo }}@sha256:%s ' *)
 
       - name: Inspect image
