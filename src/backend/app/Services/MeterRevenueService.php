@@ -180,6 +180,7 @@ class MeterRevenueService {
                     ->where('mini_grid_id', $miniGridId);
             })
             ->whereBetween(DB::raw('DATE(meters.created_at)'), [$startDate, $endDate])
+            ->groupBy('connection_groups.name', DB::raw('YEARWEEK(meters.created_at, 3)'))
             ->get()->toArray();
     }
 

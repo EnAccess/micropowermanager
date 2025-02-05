@@ -26,7 +26,7 @@ class TransactionSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDummyCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     private $transactionTypes = [
