@@ -370,7 +370,10 @@
     "writeMessage": " စာတို ေရးပါ။...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "သင်၏မက်ေဆ့ချက် ယခုကဲ့သUိမျ+ိး ြမင်ရလိမ့်မည်။"
+    "yourMessage": "သင်၏မက်ေဆ့ချက် ယခုကဲ့သUိမျ+ိး ြမင်ရလိမ့်မည်။",
+    "shortCode": "မက်ေဆ့ချက်အမည်",
+    "deliveryReportsUrl": "မက်ေဆ့ချက်အမည်",
+    "incomingMessagesUrl": "မက်ေဆ့ချက်အမည်"
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",
@@ -556,6 +559,7 @@
     "village": "ရွာ",
     "week": "ရက်သတf ပတ် | အပတ်စV်",
     "yes": "ဟတု ်/မှန",
-    "yesterday": "မေနက့ "
+    "yesterday": "မေနက့ ",
+    "username": "အသံုးြပ+သူအမည်"
   }
 }

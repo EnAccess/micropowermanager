@@ -369,7 +369,10 @@
     "writeMessage": "Rédiger un message...",
     "wrongPassword": "Mot de passe erroné",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that"
+    "yourMessage": "Your message will seen like that",
+    "shortCode": "Code court",
+    "deliveryReportsUrl": "URL des rapports de livraison",
+    "incomingMessagesUrl": "URL des messages entrants"
   },
   "words": {
     "access": "Accès",
@@ -556,6 +559,7 @@
     "village": "Village",
     "week": "Semaine | Hebdomadaire",
     "yes": "Oui",
-    "yesterday": "Hier"
+    "yesterday": "Hier",
+    "username": "Nom d'utilisateur"
   }
 }
