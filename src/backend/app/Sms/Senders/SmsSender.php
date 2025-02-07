@@ -12,9 +12,13 @@ use App\Services\PluginsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
-use Webpatser\Uuid\Uuid;
 
 abstract class SmsSender {
+
+    public const VIBER_GATEWAY = 'ViberGateway';
+    public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
+    public const DEFAULT_GATEWAY = 'AndroidGateway';
+
     protected $smsBodyService;
     protected $data;
     protected $references;
@@ -23,6 +27,7 @@ abstract class SmsSender {
     protected $callback;
     protected $parserSubPath;
     private $smsAndroidSettings;
+    private $viberIdOfReceiver;
 
     public function __construct($data, $smsBodyService, $parserSubPath, $smsAndroidSettings) {
         $this->smsBodyService = $smsBodyService;
@@ -32,29 +37,43 @@ abstract class SmsSender {
     }
 
     public function sendSms() {
-        $viberId = $this->checkForViberIdOfReceiverIfPluginIsActive();
-        if ($viberId) {
-            resolve('ViberGateway')
-                ->sendSms(
-                    $this->body,
-                    $viberId,
-                    Sms::query()
+        $gateway = $this->determineGateway();
+        $lastRecordedSMS = Sms::query()
                         ->where('receiver', $this->receiver)
                         ->orWhere('receiver', ltrim($this->receiver, '+'))
                         ->where(
                             'body',
                             $this->body
-                        )->latest()->first()
+                        )->latest()->first();
+
+        switch ($gateway) {
+            case self::VIBER_GATEWAY:
+                resolve(self::VIBER_GATEWAY)
+                ->sendSms(
+                    $this->body,
+                    $this->viberIdOfReceiver,
+                    $lastRecordedSMS
                 );
-        } else {
-            // add sms to default sms provider
-            resolve('AndroidGateway')
+                break;
+
+            case self::AFRICAS_TALKING_GATEWAY:
+                resolve(self::AFRICAS_TALKING_GATEWAY)
+                ->sendSms(
+                    $this->body,
+                    $this->receiver,
+                    $lastRecordedSMS
+                );
+                break;
+
+            default:
+                resolve(self::DEFAULT_GATEWAY)
                 ->sendSms(
                     $this->receiver,
                     $this->body,
                     $this->callback,
                     $this->smsAndroidSettings
                 );
+                break;
         }
     }
 
@@ -133,7 +152,7 @@ abstract class SmsSender {
                 $this->prepareFooter();
             }
         } catch (MissingSmsReferencesException $exception) {
-            throw new $exception();
+            throw $exception;
         }
     }
 
@@ -161,28 +180,33 @@ abstract class SmsSender {
         return $this->receiver;
     }
 
-    public function generateCallbackAndGetUuid($callback) {
-        $uuid = (string) Uuid::generate(4);
+    public function setCallback($callback, $uuid) {
         $this->callback = sprintf($callback, $uuid);
-
-        return $uuid;
     }
 
-    private function checkForViberIdOfReceiverIfPluginIsActive() {
+    private function determineGateway() {
         $pluginsService = app()->make(PluginsService::class);
-        $viberContactService = app()->make(ViberContactService::class);
-        $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
-
-        if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
-            $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
-
-            if (!$viberContact) {
-                return null;
-            }
-
-            return $viberContact->viber_id;
+        $africasTalkingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
+        $gateway = self::DEFAULT_GATEWAY;
+        
+        if ($africasTalkingPlugin && $africasTalkingPlugin->status === Plugins::ACTIVE) {
+            $gateway = self::AFRICAS_TALKING_GATEWAY;
         }
 
-        return null;
+         $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
+
+         if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
+            $viberContactService = app()->make(ViberContactService::class);
+            $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
+            
+            if (!$viberContact) {
+                return $gateway;
+            }
+
+            $this->viberIdOfReceiver = $viberContact->viber_id;
+            $gateway = self::VIBER_GATEWAY;
+         }
+
+         return $gateway;
     }
 }

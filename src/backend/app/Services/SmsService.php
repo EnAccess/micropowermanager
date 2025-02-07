@@ -13,6 +13,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
+use Webpatser\Uuid\Uuid;
 
 class SmsService {
     public const TICKET = 1;
@@ -53,42 +54,39 @@ class SmsService {
         return $sms;
     }
 
-    private function getSmsAndroidSettings() {
+    public function sendSms($data, $smsType, $smsConfigs) {
+        $uuid = (string) Uuid::generate(4);
+        $gatewayId = null;
+        
         try {
-            return SmsAndroidSetting::getResponsible();
-        } catch (SmsAndroidSettingNotExistingException $exception) {
+            $smsAndroidSettings = SmsAndroidSetting::getResponsible();
+            $sender = $this->getSender($data, $smsType, $smsConfigs, $smsAndroidSettings);
+            $receiver = $sender->getReceiver();
+            $sender->validateReferences();
+            
+            if($smsAndroidSettings){
+                $gatewayId = $smsAndroidSettings->getId();
+                $sender->setCallback($smsAndroidSettings->callback, $uuid);
+            } 
+            $this->associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId);
+            SmsProcessor::dispatch($sender)->allOnConnection('redis')->onQueue(\config('services.queues.sms')); 
+        } catch (
+            SmsTypeNotFoundException|
+            SmsAndroidSettingNotExistingException|
+            SmsBodyParserNotExtendedException $exception) {
+            Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
+            
             throw $exception;
         }
     }
 
-    public function sendSms($data, $smsType, $smsConfigs) {
-        try {
-            $smsAndroidSettings = $this->getSmsAndroidSettings();
-            $smsType = $this->resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings);
-        } catch (SmsTypeNotFoundException|SmsAndroidSettingNotExistingException|SmsBodyParserNotExtendedException $exception) {
-            Log::critical('Sms send failed.', ['message : ' => $exception->getMessage()]);
-
-            return;
-        }
-        $receiver = $smsType->getReceiver();
-        // set the uuid for the callback
-        $uuid = $smsType->generateCallbackAndGetUuid($smsAndroidSettings->callback);
-        try {
-            // sends sms or throws exception
-            $smsType->validateReferences();
-        } catch (\Exception $e) {
-            Log::error('Sms Service failed '.$receiver, ['reason' => $e->getMessage()]);
-            throw $e;
-        }
-        SmsProcessor::dispatch($smsType)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
-        $this->associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings);
-    }
-
-    private function resolveSmsType($data, $smsType, $smsConfigs, $smsAndroidSettings) {
+    private function getSender($data, $smsType, $smsConfigs, $smsAndroidSettings) {
         $configs = resolve($smsConfigs);
+        
         if (!array_key_exists($smsType, $configs->smsTypes)) {
             throw new SmsTypeNotFoundException('SmsType could not resolve.');
         }
+
         $smsBodyService = resolve($configs->servicePath);
         $reflection = new \ReflectionClass($configs->smsTypes[$smsType]);
 
@@ -104,27 +102,30 @@ class SmsService {
         ]);
     }
 
-    private function associateSmsWithForSmsType($smsType, $data, $uuid, $receiver, $smsAndroidSettings) {
-        if (!($smsType instanceof ManualSms)) {
-            $sms = Sms::query()->make([
+    private function associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId) {
+        
+        if (!($sender instanceof ManualSms)) {
+            Sms::query()->create([
                 'uuid' => $uuid,
-                'body' => $smsType->body,
+                'body' => $sender->body,
                 'receiver' => $receiver,
-                'gateway_id' => $smsAndroidSettings->getId(),
+                'gateway_id' => $gatewayId,
+                'status' => Sms::STATUS_STORED,
+                'direction' => Sms::DIRECTION_OUTGOING,
             ]);
-            $sms->trigger()->associate($data);
-            $sms->save();
+    
         } else {
             $lastSentManualSms = Sms::query()->where('receiver', $receiver)->where(
                 'body',
-                $smsType->body
+                $sender->body
             )->latest()->first();
             if ($lastSentManualSms) {
                 $lastSentManualSms->update([
                     'uuid' => $uuid,
-                    'gateway_id' => $smsAndroidSettings->getId(),
+                    'gateway_id' => $gatewayId,
                 ]);
             }
         }
     }
+
 }

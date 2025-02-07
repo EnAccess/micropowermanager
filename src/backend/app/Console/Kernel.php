@@ -22,6 +22,7 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
+use Inensus\AfricasTalking\Console\Commands\InstallPackage as InstallAfricasTalkingPackage;
 
 class Kernel extends ConsoleKernel {
     /**
@@ -48,6 +49,7 @@ class Kernel extends ConsoleKernel {
         InstallWaveComPackage::class,
         InstallAngazaSHSPackage::class,
         InstallDalyBmsPackage::class,
+        InstallAfricasTalkingPackage::class,
     ];
 
     /**

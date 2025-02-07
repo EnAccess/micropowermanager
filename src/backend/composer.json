@@ -27,7 +27,8 @@
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^8.1",
     "tymon/jwt-auth": "dev-develop",
-    "webpatser/laravel-uuid": "^4.0"
+    "webpatser/laravel-uuid": "^4.0",
+    "inensus/africas-talking": "dev-main"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
@@ -41,11 +42,16 @@
     "phpstan/phpstan": "^1.1",
     "phpunit/phpunit": "^9.0",
     "recca0120/laravel-erd": "^0.3",
-    "roave/security-advisories": "dev-latest",
     "spatie/laravel-export": "^1.0",
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-web-tinker": "^1.7"
   },
+  "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/inensus/africas-talking"
+        }
+    ],
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
@@ -84,6 +90,7 @@
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
+      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
       "Tests\\": "tests/"
     }
   },

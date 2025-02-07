@@ -25,9 +25,9 @@ class SmsAndroidSetting extends BaseModel {
             }
 
             return $responsibleGateway;
-        } else {
-            throw new SmsAndroidSettingNotExistingException('No SMS android setting registered.');
         }
+
+        return null;      
     }
 
     public function getId(): int {

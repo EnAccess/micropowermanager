@@ -11,6 +11,7 @@ use MPM\Sharding\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\Sharding\ApiResolvers\TestApiResolver;
 use MPM\Sharding\ApiResolvers\ViberMessagingApiResolver;
 use MPM\Sharding\ApiResolvers\WaveMoneyApiResolver;
+use MPM\Sharding\ApiResolvers\AfricasTalkingApiResolver;
 
 class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';
@@ -20,6 +21,8 @@ class ApiResolverMap {
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
+    public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
+
     public const RESOLVABLE_APIS = [
         self::TEST_API,
         self::VIBER_API,
@@ -28,6 +31,7 @@ class ApiResolverMap {
         self::SWIFTA_PAYMENT_API,
         self::REPORT_DOWNLOADING_API,
         self::DATA_EXPORTING_API,
+        self::AFRICAS_TALKING_API,
     ];
 
     private const API_RESOLVER = [
@@ -38,6 +42,7 @@ class ApiResolverMap {
         self::SWIFTA_PAYMENT_API => SwiftaPaymentApiResolver::class,
         self::REPORT_DOWNLOADING_API => DownloadingReportsResolver::class,
         self::DATA_EXPORTING_API => DataExportResolver::class,
+        self::AFRICAS_TALKING_API => AfricasTalkingApiResolver::class,
     ];
 
     public function getResolvableApis(): array {
