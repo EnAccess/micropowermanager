@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\DB;
  * @property int    $city_id
  */
 class Target extends BaseModel {
+    use HasFactory;
+
     public function city(): BelongsTo {
         return $this->belongsTo(City::class);
     }

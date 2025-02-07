@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Models\Base\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * @property int $id
  */
 class SmsAndroidSetting extends BaseModel {
+    use HasFactory;
     protected $table = 'sms_android_settings';
 
     public static function getResponsible() {

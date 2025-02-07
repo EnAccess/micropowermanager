@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class AgentBalanceHistory extends BaseModel {
+    use HasFactory;
     protected $guarded = [];
 
     public function agent(): void {
