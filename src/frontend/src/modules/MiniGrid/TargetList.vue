@@ -122,9 +122,8 @@ import { notify } from "@/mixins/notify"
 
 export default {
   name: "TargetList",
-  mixins: [notify],
   components: { Widget },
-  mixins: [currency],
+  mixins: [currency, notify],
   props: {
     targetId: {
       type: String,
