@@ -113,9 +113,11 @@ import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService"
 import SmsAndroidSetting from "./SmsAndroidSetting"
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "SmsSettings",
+  mixins: [notify],
   components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody },
   props: {
     smsBodies: {
@@ -261,14 +263,6 @@ export default {
       for (const ref of refs) {
         await ref.validateBody()
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

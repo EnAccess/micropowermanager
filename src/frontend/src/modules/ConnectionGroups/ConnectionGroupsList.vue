@@ -84,9 +84,10 @@ import Widget from "../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { ConnectionGroupService } from "@/services/ConnectionGroupService"
 import NewConnectionGroup from "./NewConnectionGroup"
-
+import { notify } from "@/mixins/notify"
 export default {
   name: "ConnectionGroupsList",
+  mixins: [notify],
   components: { Widget, NewConnectionGroup },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
@@ -106,14 +107,6 @@ export default {
     }
   },
   methods: {
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
-    },
     checkConfirm(result) {
       return "value" in result
     },

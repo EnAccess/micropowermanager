@@ -96,9 +96,11 @@
 <script>
 import { CredentialService } from "../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Credential",
+  mixins: [notify],
   data() {
     return {
       credentialService: new CredentialService(),
@@ -126,14 +128,6 @@ export default {
         this.alertNotify("error", "MPM failed to verify your request")
       }
       this.loading = false
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

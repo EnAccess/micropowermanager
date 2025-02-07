@@ -57,6 +57,7 @@ import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "addAgentBalance",
+
   data() {
     return {
       agentChargeService: new AgentChargeService(),
@@ -100,15 +101,6 @@ export default {
     },
     hide() {
       EventBus.$emit("addBalanceClosed")
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

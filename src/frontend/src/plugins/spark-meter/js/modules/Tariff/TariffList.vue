@@ -71,9 +71,11 @@ import { TariffService } from "../../services/TariffService"
 import { MeterModelService } from "../../services/MeterModelService"
 import { CredentialService } from "../../services/CredentialService"
 import { SiteService } from "../../services/SiteService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "TariffList",
+  mixins: [notify],
   components: { Widget, RedirectionModal },
   data() {
     return {
@@ -190,14 +192,6 @@ export default {
     },
     editTariff(tariffId) {
       this.$router.push({ path: "/spark-meters/sm-tariff/" + tariffId })
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -79,6 +79,7 @@ import { GChart } from "vue-google-charts"
 import Widget from "../../shared/widget"
 import { PaymentService } from "@/services/PaymentService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentFlow",
@@ -86,7 +87,7 @@ export default {
     Widget,
     GChart,
   },
-  mixins: [currency],
+  mixins: [currency, notify],
   data() {
     return {
       paymentService: new PaymentService(),
@@ -180,14 +181,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

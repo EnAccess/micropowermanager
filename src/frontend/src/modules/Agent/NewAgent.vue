@@ -1,13 +1,6 @@
 <template>
   <div>
     <widget v-if="addAgent" :title="$tc('phrases.newAgent')" color="red">
-      <md-snackbar
-        :md-active.sync="showSnackbar"
-        :md-duration="snackbarDuration"
-        :class="snackbarClass"
-      >
-        {{ snackbarMessage }}
-      </md-snackbar>
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter">
@@ -289,8 +282,10 @@ import CountryService from "../../services/CountryService"
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import RedirectionModal from "../../shared/RedirectionModal"
+import { notify } from "@/mixins/notify"
 
 export default {
+  mixins: [notify],
   name: "AddAgent",
   components: { Widget, RedirectionModal },
   props: {
@@ -316,10 +311,6 @@ export default {
       redirectionUrl: "/locations/add-mini-grid",
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
-      showSnackbar: false,
-      snackbarMessage: "",
-      snackbarDuration: 4000,
-      snackbarClass: "",
     }
   },
 
@@ -380,21 +371,7 @@ export default {
     hide() {
       EventBus.$emit("closed")
     },
-
-    alertNotify(type, message) {
-      this.snackbarMessage = message
-      this.snackbarClass = `md-${type}`
-      this.showSnackbar = true
-    },
   },
 }
 </script>
-<style scoped>
-.md-snackbar.md-success {
-  background-color: #4caf50 !important;
-}
-
-.md-snackbar.md-error {
-  background-color: #f44336 !important;
-}
-</style>
+<style scoped></style>

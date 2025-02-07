@@ -177,8 +177,10 @@ import Widget from "../../shared/widget"
 import { UserService } from "@/services/UserService"
 import { CityService } from "@/services/CityService"
 import { UserPasswordService } from "@/services/UserPasswordService"
+import { notify } from "@/mixins/notify"
 export default {
   name: "Profile",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -251,18 +253,6 @@ export default {
     },
     closeModal() {
       this.modalVisibility = false
-    },
-    alertNotify(type, message, title = null) {
-      if (title == null) {
-        title =
-          type.toString().charAt(0).toUpperCase() + type.toString().slice(1)
-      }
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

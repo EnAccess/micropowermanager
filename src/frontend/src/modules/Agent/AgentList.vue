@@ -37,9 +37,11 @@ import { EventBus } from "@/shared/eventbus"
 import Widget from "@/shared/widget"
 import { AgentService } from "@/services/AgentService"
 import AddAgent from "@/modules/Agent/NewAgent"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AgentList",
+  mixins: [notify],
   components: { Widget, AddAgent },
   data() {
     return {
@@ -100,15 +102,6 @@ export default {
     },
     clearSearch() {
       this.searchTerm = ""
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -72,9 +72,11 @@
 <script>
 import widget from "./widget"
 import { PersonService } from "@/services/PersonService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "ClientDetailCard",
+  mixins: [notify],
   components: { widget },
   data() {
     return {
@@ -101,14 +103,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

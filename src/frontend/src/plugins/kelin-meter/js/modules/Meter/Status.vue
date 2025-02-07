@@ -115,10 +115,12 @@ import Widget from "@/shared/widget"
 import { StatusService } from "../../services/StatusService"
 import { CredentialService } from "../../services/CredentialService"
 import RedirectionModal from "@/shared/RedirectionModal"
+import { notify } from "@/mixins/notify"
 
 export default {
   components: { Widget, RedirectionModal },
   name: "Status",
+  mixins: [notify],
   data() {
     return {
       statusService: new StatusService(),
@@ -166,14 +168,6 @@ export default {
         this.switching = false
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }
