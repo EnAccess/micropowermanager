@@ -6,6 +6,7 @@ use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
@@ -57,6 +58,10 @@ class Transaction extends BaseModel {
         return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
     }
 
+    public function meter(): HasOne {
+        return $this->hasOne(Meter::class, 'serial_number', 'message');
+    }
+
     public function periodTargetAlternative($cityId, $startDate, $endDate) {
         $sql = 'SELECT sum(transactions.amount) as revenue,'.
             ' count(transactions.id) as total,'.
@@ -71,8 +76,8 @@ class Transaction extends BaseModel {
             ' LEFT join vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id and'.
             " transactions.original_transaction_type = 'vodacom_transaction'".
             ' LEFT join meters on transactions.message = meters.serial_number'.
-            ' LEFT JOIN meter_parameters on meter_parameters.meter_id = meters.id'.
-            " LEFT JOIN people on people.id = meter_parameters.owner_id and owner_type = 'person'".
+            ' LEFT JOIN  devices on devices.device_id = meters.id'.
+            ' LEFT JOIN people on people.id = devices.person_id'.
             " LEFT JOIN addresses on addresses.owner_id = people.id and addresses.owner_type = 'person'".
             ' WHERE DATE(transactions.created_at) BETWEEN :periodStartDate and :periodEndDate'.
             ' AND (airtel_transactions.status = 1 or vodacom_transactions.status = 1)'.
