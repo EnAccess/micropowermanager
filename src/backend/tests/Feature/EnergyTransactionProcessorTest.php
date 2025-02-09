@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
