@@ -39,7 +39,7 @@ class TransactionDataContainer {
         $container->amount = $transaction->amount;
         $container->rawAmount = $transaction->amount;
 
-        $container->meter = $transaction->meter();
+        $container->meter = $transaction->meter()->first();
 
         try {
             $container->device = $deviceService->getBySerialNumber($transaction->message);
