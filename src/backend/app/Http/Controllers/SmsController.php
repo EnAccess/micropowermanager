@@ -77,7 +77,7 @@ class SmsController extends Controller {
                     ]
                 )
                     ->whereHas(
-                        'address',
+                        'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
@@ -100,7 +100,7 @@ class SmsController extends Controller {
                     ]
                 )
                     ->whereHas(
-                        'address',
+                        'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
@@ -118,7 +118,7 @@ class SmsController extends Controller {
                     ]
                 )
                     ->whereHas(
-                        'address',
+                        'device.person.addresses',
                         static function ($q) use ($miniGrid) {
                             if ((int) $miniGrid === 0) {
                                 $q->where('city_id', '>', 0);
