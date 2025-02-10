@@ -89,10 +89,10 @@ class AddressesService implements IBaseService, IAssociative {
         return $address->save();
     }
 
-    public function getAddressByPhoneNumber(string $phoneNumber): Address|null {
+    public function getAddressByPhoneNumber(string $phoneNumber): ?Address {
         return $this->address->newQuery()
-        ->where('phone', $phoneNumber)
-        ->orWhere('phone', ltrim($phoneNumber, '+'))
-        ->first();
+            ->where('phone', $phoneNumber)
+            ->orWhere('phone', ltrim($phoneNumber, '+'))
+            ->first();
     }
 }

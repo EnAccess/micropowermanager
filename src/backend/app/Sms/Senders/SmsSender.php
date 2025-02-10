@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 use Inensus\ViberMessaging\Services\ViberContactService;
 
 abstract class SmsSender {
-
     public const VIBER_GATEWAY = 'ViberGateway';
     public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
     public const DEFAULT_GATEWAY = 'AndroidGateway';
@@ -39,40 +38,40 @@ abstract class SmsSender {
     public function sendSms() {
         $gateway = $this->determineGateway();
         $lastRecordedSMS = Sms::query()
-                        ->where('receiver', $this->receiver)
-                        ->orWhere('receiver', ltrim($this->receiver, '+'))
-                        ->where(
-                            'body',
-                            $this->body
-                        )->latest()->first();
+            ->where('receiver', $this->receiver)
+            ->orWhere('receiver', ltrim($this->receiver, '+'))
+            ->where(
+                'body',
+                $this->body
+            )->latest()->first();
 
         switch ($gateway) {
             case self::VIBER_GATEWAY:
                 resolve(self::VIBER_GATEWAY)
-                ->sendSms(
-                    $this->body,
-                    $this->viberIdOfReceiver,
-                    $lastRecordedSMS
-                );
+                    ->sendSms(
+                        $this->body,
+                        $this->viberIdOfReceiver,
+                        $lastRecordedSMS
+                    );
                 break;
 
             case self::AFRICAS_TALKING_GATEWAY:
                 resolve(self::AFRICAS_TALKING_GATEWAY)
-                ->sendSms(
-                    $this->body,
-                    $this->receiver,
-                    $lastRecordedSMS
-                );
+                    ->sendSms(
+                        $this->body,
+                        $this->receiver,
+                        $lastRecordedSMS
+                    );
                 break;
 
             default:
                 resolve(self::DEFAULT_GATEWAY)
-                ->sendSms(
-                    $this->receiver,
-                    $this->body,
-                    $this->callback,
-                    $this->smsAndroidSettings
-                );
+                    ->sendSms(
+                        $this->receiver,
+                        $this->body,
+                        $this->callback,
+                        $this->smsAndroidSettings
+                    );
                 break;
         }
     }
@@ -188,25 +187,25 @@ abstract class SmsSender {
         $pluginsService = app()->make(PluginsService::class);
         $africasTalkingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
         $gateway = self::DEFAULT_GATEWAY;
-        
+
         if ($africasTalkingPlugin && $africasTalkingPlugin->status === Plugins::ACTIVE) {
             $gateway = self::AFRICAS_TALKING_GATEWAY;
         }
 
-         $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
+        $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
-         if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
+        if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
             $viberContactService = app()->make(ViberContactService::class);
             $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
-            
+
             if (!$viberContact) {
                 return $gateway;
             }
 
             $this->viberIdOfReceiver = $viberContact->viber_id;
             $gateway = self::VIBER_GATEWAY;
-         }
+        }
 
-         return $gateway;
+        return $gateway;
     }
 }

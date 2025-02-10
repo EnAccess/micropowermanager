@@ -5,11 +5,8 @@ namespace Inensus\AfricasTalking\Providers;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Inensus\AfricasTalking\Console\Commands\InstallPackage;
 use Inensus\AfricasTalking\AfricasTalkingGateway;
-use Inensus\AfricasTalking\Providers\RouteServiceProvider;
-use Inensus\AfricasTalking\Providers\EventServiceProvider;
-use Inensus\AfricasTalking\Providers\ObserverServiceProvider;
+use Inensus\AfricasTalking\Console\Commands\InstallPackage;
 
 class AfricasTalkingServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem) {

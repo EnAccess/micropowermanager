@@ -6,7 +6,8 @@ use Inensus\AfricasTalking\Models\AfricasTalkingCredential;
 
 class AfricasTalkingCredentialService {
     public function __construct(
-        private AfricasTalkingCredential $credential) {}
+        private AfricasTalkingCredential $credential,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.

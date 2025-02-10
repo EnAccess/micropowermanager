@@ -68,7 +68,7 @@ class SmsListener {
     }
 
     public function subscribe(Dispatcher $events) {
-        //TODO: Uncomment this when spark-meter package is refactored with device->meter approach
-       //$events->listen('sms.stored', 'Inensus\SparkMeter\Listeners\SmsListener@onSmsStored');
+        // TODO: Uncomment this when spark-meter package is refactored with device->meter approach
+        // $events->listen('sms.stored', 'Inensus\SparkMeter\Listeners\SmsListener@onSmsStored');
     }
 }

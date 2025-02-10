@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\MailApplianceDebtsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Inensus\AfricasTalking\Console\Commands\InstallPackage as InstallAfricasTalkingPackage;
 use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage;
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
@@ -22,7 +23,6 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
-use Inensus\AfricasTalking\Console\Commands\InstallPackage as InstallAfricasTalkingPackage;
 
 class Kernel extends ConsoleKernel {
     /**

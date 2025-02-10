@@ -2,14 +2,12 @@
 
 namespace Inensus\AfricasTalking;
 
+use AfricasTalking\SDK\AfricasTalking;
 use App\Models\Sms;
 use Illuminate\Support\Facades\Log;
 use Inensus\AfricasTalking\Exceptions\MessageNotSentException;
 use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
-
-
-use AfricasTalking\SDK\AfricasTalking;
 
 class AfricasTalkingGateway {
     private $africasTalking;
@@ -34,41 +32,40 @@ class AfricasTalkingGateway {
         try {
             $sms = $this->africasTalking->sms();
             $phoneNumber = str_replace(' ', '', $phoneNumber);
-            
+
             if (empty($phoneNumber)) {
                 throw new MessageNotSentException('Invalid phone number');
             }
-            
+
             $shortCode = $this->credentials->short_code;
             $response = $sms->send([
                 'to' => $phoneNumber,
                 'message' => $body,
-                'from' => $shortCode
+                'from' => $shortCode,
             ]);
 
             $status = $response['status'];
-            
+
             if ($status !== 'success') {
-                throw new MessageNotSentException('AfricasTalking message sending failed with status: ' . $status);
+                throw new MessageNotSentException('AfricasTalking message sending failed with status: '.$status);
             }
 
-            $data = (array)$response['data'];
-            $messageData = (array)$data['SMSMessageData'];
+            $data = (array) $response['data'];
+            $messageData = (array) $data['SMSMessageData'];
             $recipients = $messageData['Recipients'];
-         
+
             if (count($recipients) !== 1) {
                 throw new MessageNotSentException('AfricasTalking message sending failed with wrong number of recipients');
             }
-                       
+
             $recipient = [];
             $africasTalkingMessage = [];
-            
-            foreach($recipients as $recipient)
-            {
-                $recipient = (array)$recipient;
+
+            foreach ($recipients as $recipient) {
+                $recipient = (array) $recipient;
 
                 if ($recipient['status'] !== 'Success') {
-                    throw new MessageNotSentException('AfricasTalking message sending failed with recipient status: ' . $recipient['status']);
+                    throw new MessageNotSentException('AfricasTalking message sending failed with recipient status: '.$recipient['status']);
                 }
 
                 $africasTalkingMessage = [
@@ -80,7 +77,6 @@ class AfricasTalkingGateway {
             }
 
             $this->africasTalkingMessageService->create($africasTalkingMessage);
-
         } catch (\Exception $exception) {
             Log::error('AfricasTalking message sending failed', ['message' => $exception->getMessage()]);
 

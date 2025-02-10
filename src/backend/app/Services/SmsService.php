@@ -57,32 +57,32 @@ class SmsService {
     public function sendSms($data, $smsType, $smsConfigs) {
         $uuid = (string) Uuid::generate(4);
         $gatewayId = null;
-        
+
         try {
             $smsAndroidSettings = SmsAndroidSetting::getResponsible();
             $sender = $this->getSender($data, $smsType, $smsConfigs, $smsAndroidSettings);
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
-            
-            if($smsAndroidSettings){
+
+            if ($smsAndroidSettings) {
                 $gatewayId = $smsAndroidSettings->getId();
                 $sender->setCallback($smsAndroidSettings->callback, $uuid);
-            } 
+            }
             $this->associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId);
-            SmsProcessor::dispatch($sender)->allOnConnection('redis')->onQueue(\config('services.queues.sms')); 
+            SmsProcessor::dispatch($sender)->allOnConnection('redis')->onQueue(\config('services.queues.sms'));
         } catch (
             SmsTypeNotFoundException|
             SmsAndroidSettingNotExistingException|
             SmsBodyParserNotExtendedException $exception) {
-            Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
-            
-            throw $exception;
-        }
+                Log::error('Sms send failed.', ['message : ' => $exception->getMessage()]);
+
+                throw $exception;
+            }
     }
 
     private function getSender($data, $smsType, $smsConfigs, $smsAndroidSettings) {
         $configs = resolve($smsConfigs);
-        
+
         if (!array_key_exists($smsType, $configs->smsTypes)) {
             throw new SmsTypeNotFoundException('SmsType could not resolve.');
         }
@@ -103,7 +103,6 @@ class SmsService {
     }
 
     private function associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId) {
-        
         if (!($sender instanceof ManualSms)) {
             Sms::query()->create([
                 'uuid' => $uuid,
@@ -113,7 +112,6 @@ class SmsService {
                 'status' => Sms::STATUS_STORED,
                 'direction' => Sms::DIRECTION_OUTGOING,
             ]);
-    
         } else {
             $lastSentManualSms = Sms::query()->where('receiver', $receiver)->where(
                 'body',
@@ -127,5 +125,4 @@ class SmsService {
             }
         }
     }
-
 }

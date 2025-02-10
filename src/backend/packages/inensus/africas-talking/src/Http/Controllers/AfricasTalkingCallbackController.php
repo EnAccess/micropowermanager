@@ -3,29 +3,27 @@
 namespace Inensus\AfricasTalking\Http\Controllers;
 
 use App\Models\Sms;
-use App\Services\SmsService;
 use App\Services\AddressesService;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 use Inensus\AfricasTalking\Services\AfricasTalkingMessageService;
 
 class AfricasTalkingCallbackController extends Controller {
-    
     public function __construct(
         private AfricasTalkingCredentialService $credentialService,
         private AfricasTalkingMessageService $messageService,
         private SmsService $smsService,
-        private AddressesService $addressesService
+        private AddressesService $addressesService,
     ) {}
 
-     public function incoming(Request $request) {
+    public function incoming(Request $request) {
         $data = $request->all();
         $phoneNumber = $data['from'];
         $message = $data['text'];
         $address = $this->addressesService->getAddressByPhoneNumber(str_replace(' ', '', $phoneNumber));
-        $sender = $address ? $address->owner: null;
+        $sender = $address ? $address->owner : null;
         $senderId = $sender ? $sender->id : null;
 
         $smsData = [
@@ -38,7 +36,7 @@ class AfricasTalkingCallbackController extends Controller {
 
         $this->smsService->createSms($smsData);
         event('sms.stored', [$phoneNumber, $message]);
-        
+
         return response()->json(['status' => 'success']);
     }
 
@@ -47,17 +45,16 @@ class AfricasTalkingCallbackController extends Controller {
         $status = $data['status'];
         $id = $data['id'];
         $africasTalkingMessage = $this->messageService->getByMessageId($id);
-        
+
         $africasTalkingMessage->update([
             'status' => $status,
         ]);
 
-      
         $africasTalkingMessage->sms()->update([
-            'status' => $status === 'Success' 
-                ? Sms::STATUS_DELIVERED 
-                : ($status === 'Rejected' || $status === 'Failed' 
-                    ? Sms::STATUS_FAILED 
+            'status' => $status === 'Success'
+                ? Sms::STATUS_DELIVERED
+                : ($status === 'Rejected' || $status === 'Failed'
+                    ? Sms::STATUS_FAILED
                     : Sms::STATUS_STORED),
         ]);
 

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class  extends Migration
-{
+return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('africas_talking_credentials')) {
             Schema::connection('shard')->create('africas_talking_credentials', static function (Blueprint $table) {
@@ -27,7 +26,7 @@ return new class  extends Migration
             });
         }
     }
-    
+
     public function down() {
         Schema::dropIfExists('africas_talking_credentials');
         Schema::dropIfExists('africas_talking_messages');

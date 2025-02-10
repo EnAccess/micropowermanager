@@ -9,7 +9,7 @@ use Inensus\AfricasTalking\Services\AfricasTalkingCredentialService;
 
 class AfricasTalkingCredentialController extends Controller {
     public function __construct(
-        private AfricasTalkingCredentialService $credentialService
+        private AfricasTalkingCredentialService $credentialService,
     ) {}
 
     public function show(): AfricasTalkingResource {

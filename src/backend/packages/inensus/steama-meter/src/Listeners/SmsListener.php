@@ -48,7 +48,7 @@ class SmsListener {
     }
 
     public function subscribe(Dispatcher $events) {
-        //TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
-        //$events->listen('sms.stored', 'Inensus\SteamaMeter\Listeners\SmsListener@onSmsStored');
+        // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
+        // $events->listen('sms.stored', 'Inensus\SteamaMeter\Listeners\SmsListener@onSmsStored');
     }
 }
