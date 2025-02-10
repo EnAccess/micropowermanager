@@ -24,7 +24,6 @@ export class CredentialService {
 
       return this.credential
     } catch (e) {
-
       const errorMessage = e.response.data.data.message
       return new ErrorHandler(errorMessage, "http")
     }

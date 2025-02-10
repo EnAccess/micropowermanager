@@ -83,16 +83,25 @@
               </div>
             </div>
 
-            <div class="md-layout md-gutter" style="padding: 2.5rem;">
-       
-            <div class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right">
-              <span style="font-weight: bold">Incoming Messages URL:  <p class="token-value">{{ incomingMessagesUrl }}</p></span>
-            </div>
+            <div class="md-layout md-gutter" style="padding: 2.5rem">
+              <div
+                class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right"
+              >
+                <span style="font-weight: bold">
+                  Incoming Messages URL:
+                  <p class="token-value">{{ incomingMessagesUrl }}</p>
+                </span>
+              </div>
 
-            <div class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right">
-              <span style="font-weight: bold">Delivery Reports URL: <p class="token-value">{{ deliveryReportsUrl }}</p></span>
+              <div
+                class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100 md-layout-item--right"
+              >
+                <span style="font-weight: bold">
+                  Delivery Reports URL:
+                  <p class="token-value">{{ deliveryReportsUrl }}</p>
+                </span>
+              </div>
             </div>
-          </div>
           </div>
         </md-card-content>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
@@ -151,7 +160,7 @@ export default {
       })
     },
   },
-   computed: {
+  computed: {
     ...mapGetters({
       authUser: "auth/getAuthenticateUser",
     }),
@@ -174,13 +183,12 @@ export default {
   height: 100% !important;
 }
 .token-value {
-    font-size: 16px;
-    color: #333;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    font-weight: normal;
-
+  font-size: 16px;
+  color: #333;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-weight: normal;
 }
 </style>

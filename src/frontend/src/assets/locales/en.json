@@ -158,6 +158,7 @@
     "deleteCustomerNotify": "I confirm that {name} {surname} will be deleted",
     "deleteMeter": "Delete Meter |  I confirm to delete {serialNumber}",
     "deleteMeterNotify": "You have to confirm to delete the meter |  Meter Deleted successfully",
+    "deliveryReportsUrl": "Delivery Reports URL",
     "distributeThis": "Please distribute this to your customers and ask them to send their meter number to register our Viber communication system.",
     "downPayment": "Down Payment",
     "dueDate": "Due Date",
@@ -180,6 +181,7 @@
     "getUpdatesFrom": "Get Update From {x}",
     "inReturn": "In Return",
     "inXSeconds": "In {x} Seconds",
+    "incomingMessagesUrl": "Incoming Messages URL",
     "incomingTransactions": "Incoming Transactions",
     "isPrimary": "Is Primary",
     "jobTitle": "Job Title",
@@ -309,6 +311,7 @@
     "sentDate": "Sent Date",
     "serialNumber": "Serial Number",
     "setPoints": "Set Points",
+    "shortCode": "Short Code",
     "signIn": "Sign In",
     "smsHistory": "SMS History",
     "smsList": "SMS List",
@@ -370,10 +373,7 @@
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that",
-    "shortCode": "Short Code",
-    "deliveryReportsUrl": "Delivery Reports URL",
-    "incomingMessagesUrl": "Incoming Messages URL"
+    "yourMessage": "Your message will seen like that"
   },
   "words": {
     "access": "Access",
@@ -555,11 +555,11 @@
     "unlock": "Unlock",
     "update": "Update | Updated",
     "user": "User | Users",
+    "username": "Username",
     "value": "Value",
     "village": "Village",
     "week": "Week | Weekly",
     "yes": "Yes",
-    "yesterday": "Yesterday",
-    "username": "Username"
+    "yesterday": "Yesterday"
   }
 }
