@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('agent_charges', function (Blueprint $table) {
+        Schema::connection('tenant')->table('agent_charges', function (Blueprint $table) {
             $table->float('amount')->after('user_id');
         });
     }
@@ -22,7 +22,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('agent_charges', function (Blueprint $table) {
+        Schema::connection('tenant')->table('agent_charges', function (Blueprint $table) {
             $table->dropColumn('amount');
         });
     }

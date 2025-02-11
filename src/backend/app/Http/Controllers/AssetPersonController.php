@@ -65,7 +65,7 @@ class AssetPersonController extends Controller {
             $installmentType = $request->input('rate_type');
             $points = $request->input('points');
 
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
 
             $appliancePerson = $this->assetPersonService->make([
                 'asset_id' => $applianceId,
@@ -128,11 +128,11 @@ class AssetPersonController extends Controller {
                     ]
                 );
             }
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             throw new \Exception($e->getMessage());
         }
     }

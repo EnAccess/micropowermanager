@@ -13,7 +13,7 @@ class SteamaCredentialRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'username' => ['required', Rule::unique('shard.steama_credentials')->ignore($this->id)],
+            'username' => ['required', Rule::unique('tenant.steama_credentials')->ignore($this->id)],
             'password' => 'required',
         ];
     }

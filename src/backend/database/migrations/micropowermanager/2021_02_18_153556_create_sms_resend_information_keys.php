@@ -13,13 +13,13 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('sms_resend_information_keys', function (Blueprint $table) {
+        Schema::connection('tenant')->create('sms_resend_information_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->default('Resend');
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('sms_resend_information_keys')->insert([
+        DB::connection('tenant')->table('sms_resend_information_keys')->insert([
             'key' => 'Resend',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -32,6 +32,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('sms_resend_information_keys');
+        Schema::connection('tenant')->dropIfExists('sms_resend_information_keys');
     }
 };

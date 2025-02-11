@@ -30,8 +30,8 @@ class ConnectionType extends BaseModel {
     }
 
     public function numberOfConnections(): Collection {
-        return DB::connection('shard')->table('meter_parameters')
-            ->select(DB::connection('shard')->raw('connection_type_id, count(id) as total'))
+        return DB::connection('tenant')->table('meter_parameters')
+            ->select(DB::connection('tenant')->raw('connection_type_id, count(id) as total'))
             ->groupBy('connection_type_id')
             ->get();
     }

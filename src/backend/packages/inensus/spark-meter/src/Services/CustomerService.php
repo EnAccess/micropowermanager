@@ -171,7 +171,7 @@ class CustomerService implements ISynchronizeService {
 
     public function createRelatedPerson($customer, $site_id) {
         try {
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             $sparkCustomerMeterSerial = $customer['meters'][0]['serial'];
             $meter = $this->meter->newQuery()->where('serial_number', $sparkCustomerMeterSerial)->first();
             $person = null;
@@ -244,11 +244,11 @@ class CustomerService implements ISynchronizeService {
             $address->owner()->associate($meterParameter);
             $address->geo()->associate($meterParameter->geo);
             $address->save();
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return $person->id;
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             Log::critical('Error while synchronizing spark customers', ['message' => $e->getMessage()]);
             throw new \Exception($e->getMessage());
         }

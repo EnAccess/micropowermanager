@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('countries', function (Blueprint $table) {
+        Schema::connection('tenant')->create('countries', function (Blueprint $table) {
             $table->increments('id');
             $table->string('country_code');
             $table->string('country_name');
@@ -25,6 +25,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('countries');
+        Schema::connection('tenant')->dropIfExists('countries');
     }
 };

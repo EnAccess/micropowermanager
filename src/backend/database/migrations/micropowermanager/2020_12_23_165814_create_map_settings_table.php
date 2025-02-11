@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('map_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->create('map_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('zoom');
             $table->double('latitude', 10);
@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('map_settings')->insert([
+        DB::connection('tenant')->table('map_settings')->insert([
             'zoom' => 7,
             'latitude' => -2.500380,
             'longitude' => 32.889060,
@@ -38,6 +38,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('map_settings');
+        Schema::connection('tenant')->dropIfExists('map_settings');
     }
 };

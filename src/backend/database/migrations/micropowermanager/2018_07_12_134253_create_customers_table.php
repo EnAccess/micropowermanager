@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('customers', function (Blueprint $table) {
+        Schema::connection('tenant')->create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('role_owner');
             $table->timestamps();
@@ -24,6 +24,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('customers');
+        Schema::connection('tenant')->dropIfExists('customers');
     }
 };

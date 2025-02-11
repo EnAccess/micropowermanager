@@ -152,7 +152,7 @@ class SteamaMeterService implements ISynchronizeService {
 
     public function createRelatedMeter($stmMeter) {
         try {
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             $meterSerial = $stmMeter['reference'];
             $meter = $this->meter->newQuery()->where('serial_number', $meterSerial)->first();
             $stmCustomer = $this->customer->newQuery()->with('mpmPerson')->where(
@@ -219,11 +219,11 @@ class SteamaMeterService implements ISynchronizeService {
                 $address->geo()->save($meterParameter?->geo()->first());
                 $address->save();
             }
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return $meter;
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             Log::critical('Error while synchronizing steama meters', ['message' => $e->getMessage()]);
             throw $e;
         }

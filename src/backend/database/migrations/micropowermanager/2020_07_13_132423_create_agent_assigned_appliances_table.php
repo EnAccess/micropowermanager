@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('agent_assigned_appliances', function (Blueprint $table) {
+        Schema::connection('tenant')->create('agent_assigned_appliances', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('agent_id');
             $table->unsignedInteger('user_id');
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('agent_assigned_appliances');
+        Schema::connection('tenant')->dropIfExists('agent_assigned_appliances');
     }
 };

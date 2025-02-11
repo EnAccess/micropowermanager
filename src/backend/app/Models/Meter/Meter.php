@@ -28,8 +28,8 @@ class Meter extends BaseModel {
     protected $guarded = [];
     public static $rules = [
         'serial_number' => 'required|min:1|unique:meters',
-        'meter_type_id' => 'exists:shard.meter_types,id',
-        'manufacturer_id' => 'exists:shard.manufacturers,id',
+        'meter_type_id' => 'exists:tenant.meter_types,id',
+        'manufacturer_id' => 'exists:tenant.manufacturers,id',
     ];
 
     public function meterType(): BelongsTo {

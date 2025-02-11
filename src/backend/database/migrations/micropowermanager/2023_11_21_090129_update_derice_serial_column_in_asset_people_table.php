@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('asset_people', function (Blueprint $table) {
+        Schema::connection('tenant')->table('asset_people', function (Blueprint $table) {
             $table->string('device_serial')->nullable()->default(null)->change();
         });
     }
@@ -22,6 +22,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('asset_people', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('asset_people', function (Blueprint $table) {});
     }
 };

@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up() {
-        if (!Schema::connection('shard')->hasTable('angaza_api_credentials')) {
-            Schema::connection('shard')->create('angaza_api_credentials', static function (Blueprint $table) {
+        if (!Schema::connection('tenant')->hasTable('angaza_api_credentials')) {
+            Schema::connection('tenant')->create('angaza_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('https://payg.angazadesign.com/nexus/v1');
                 $table->string('client_id')->nullable();
@@ -15,8 +15,8 @@ return new class extends Migration {
                 $table->timestamps();
             });
         }
-        if (!Schema::connection('shard')->hasTable('angaza_transactions')) {
-            Schema::connection('shard')->create('angaza_transactions', static function (Blueprint $table) {
+        if (!Schema::connection('tenant')->hasTable('angaza_transactions')) {
+            Schema::connection('tenant')->create('angaza_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->timestamps();
             });
@@ -24,7 +24,7 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('angaza_api_credentials');
-        Schema::connection('shard')->dropIfExists('angaza_transactions');
+        Schema::connection('tenant')->dropIfExists('angaza_api_credentials');
+        Schema::connection('tenant')->dropIfExists('angaza_transactions');
     }
 };

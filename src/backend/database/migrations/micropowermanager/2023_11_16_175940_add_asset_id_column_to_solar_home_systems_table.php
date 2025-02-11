@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('solar_home_systems', function (Blueprint $table) {
+        Schema::connection('tenant')->table('solar_home_systems', function (Blueprint $table) {
             $table->integer('asset_id')->after('id');
         });
     }
@@ -22,7 +22,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('solar_home_systems', function (Blueprint $table) {
+        Schema::connection('tenant')->table('solar_home_systems', function (Blueprint $table) {
             $table->dropColumn('asset_id');
         });
     }
