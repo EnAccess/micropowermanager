@@ -6,8 +6,8 @@
   >
     {{ message }}
     <md-button class="md-primary close-button" @click="showSnackbar = false">
-  Close
-</md-button>
+      Close
+    </md-button>
   </md-snackbar>
 </template>
 
@@ -48,17 +48,17 @@ export default {
   background-color: #f44336 !important;
 }
 .close-button {
-  font-size: 16px; 
-  padding: 8px 16px; 
+  font-size: 16px;
+  padding: 8px 16px;
   background-color: white !important;
-  color: #4caf50 !important; 
-  border-radius: 4px; 
-  font-weight: bold; 
-  text-transform: uppercase; 
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); 
+  color: #4caf50 !important;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .md-snackbar.md-error .close-button {
-  color: #f44336 !important; 
+  color: #f44336 !important;
 }
 </style>
