@@ -27,7 +27,6 @@
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^8.1",
     "tymon/jwt-auth": "dev-develop",
-    "webpatser/laravel-uuid": "^4.0",
     "inensus/africas-talking": "dev-main"
   },
   "require-dev": {

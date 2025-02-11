@@ -13,7 +13,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
-use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Str;
 
 class SmsService {
     public const TICKET = 1;
@@ -55,7 +55,7 @@ class SmsService {
     }
 
     public function sendSms($data, $smsType, $smsConfigs) {
-        $uuid = (string) Uuid::generate(4);
+        $uuid = Str::uuid()->toString();
         $gatewayId = null;
 
         try {
