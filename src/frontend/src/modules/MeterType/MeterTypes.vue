@@ -107,8 +107,10 @@
 import Widget from "@/shared/widget"
 import { MeterTypeService } from "@/services/MeterTypeService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 export default {
   name: "MeterTypes",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -169,14 +171,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

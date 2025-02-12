@@ -103,9 +103,11 @@
 
 <script>
 import Widget from "../../shared/widget"
+import { notify } from "@/mixins/notify"
 export default {
   components: { Widget },
   name: "EditUser",
+  mixins: [notify],
   props: {
     showEditUser: {
       type: Boolean,
@@ -153,14 +155,6 @@ export default {
     },
     closeEditUser() {
       this.$emit("editUserClosed")
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
   watch: {

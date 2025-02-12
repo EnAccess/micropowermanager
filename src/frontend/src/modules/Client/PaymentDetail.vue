@@ -46,9 +46,11 @@
 import Widget from "../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { PaymentService } from "@/services/PaymentService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "PaymentDetail",
+  mixins: [notify],
   data() {
     return {
       paymentService: new PaymentService(),
@@ -101,14 +103,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

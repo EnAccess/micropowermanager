@@ -63,9 +63,11 @@ import RedirectionModal from "@/shared/RedirectionModal"
 import { EventBus } from "@/shared/eventbus"
 import { CredentialService } from "../../services/CredentialService"
 import { AgentService } from "../../services/AgentService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AgentList",
+  mixins: [notify],
   components: { RedirectionModal, Widget },
   data() {
     return {
@@ -150,14 +152,6 @@ export default {
         this.subscriber,
         this.agentService.list.length,
       )
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

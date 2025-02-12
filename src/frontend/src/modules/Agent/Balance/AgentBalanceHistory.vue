@@ -49,9 +49,11 @@ import { AgentBalanceHistoryService } from "@/services/AgentBalanceHistoryServic
 import Widget from "../../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import AddAgentBalance from "./AddBalance"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "agentBalanceHistoryList",
+  mixins: [notify],
   data() {
     return {
       subscriber: "agent-balance-histories",
@@ -122,14 +124,6 @@ export default {
     },
     hide() {
       this.showNewAppliance = false
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -75,9 +75,9 @@ window.moment = moment
 /**
  * Vue Notification
  */
-import Notifications from "vue-notification"
+// import Notifications from "vue-notification"
 
-Vue.use(Notifications)
+// Vue.use(Notifications)
 
 /**
  * Reources

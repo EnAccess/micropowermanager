@@ -130,9 +130,11 @@ import Widget from "@/shared/widget"
 import { ApplianceService } from "@/services/ApplianceService"
 import { EventBus } from "@/shared/eventbus"
 import AddAsset from "@/modules/Assets/AddAsset.vue"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Assets",
+  mixins: [notify],
   components: { AddAsset, AssetTypeList, Widget },
   data() {
     return {
@@ -242,14 +244,6 @@ export default {
     },
     closeAddComponent(data) {
       this.addNewAssetType = data
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

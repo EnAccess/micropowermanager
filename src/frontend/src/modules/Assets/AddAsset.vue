@@ -105,9 +105,11 @@ import Widget from "@/shared/widget.vue"
 import { ApplianceService } from "@/services/ApplianceService"
 import { AssetTypeService } from "@/services/AssetTypeService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AddAsset",
+  mixins: [notify],
   components: { Widget },
   props: {
     addNewAsset: {
@@ -148,14 +150,6 @@ export default {
     },
     async getAssetTypes() {
       await this.assetTypeService.getAssetsTypes()
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

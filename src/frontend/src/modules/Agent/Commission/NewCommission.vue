@@ -103,9 +103,11 @@
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import widget from "../../../shared/widget"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewCommission",
+  mixins: [notify],
   data() {
     return {
       agentCommissionService: new AgentCommissionService(),
@@ -141,14 +143,6 @@ export default {
     },
     commissionAdded() {
       EventBus.$emit("commissionAdded")
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

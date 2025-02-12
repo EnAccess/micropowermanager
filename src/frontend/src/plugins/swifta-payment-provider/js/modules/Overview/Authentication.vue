@@ -40,9 +40,11 @@
 
 <script>
 import { AuthenticationService } from "../../services/AuthenticationService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Authentication",
+  mixins: [notify],
   data() {
     return {
       authenticationService: new AuthenticationService(),
@@ -55,14 +57,6 @@ export default {
   methods: {
     async getAuthentication() {
       await this.authenticationService.getAuthentication()
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

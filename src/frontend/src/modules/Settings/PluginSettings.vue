@@ -33,9 +33,11 @@
 <script>
 import { MpmPluginService } from "@/services/MpmPluginService"
 import { PluginService } from "@/services/PluginService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "PluginSettings",
+  mixins: [notify],
   data() {
     return {
       mpmPluginsService: new MpmPluginService(),
@@ -84,14 +86,7 @@ export default {
       this.switching = false
       this.progressing = false
     },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
-    },
+
     validUsageType(plugin_usage_type, customer_usage_types) {
       return (
         plugin_usage_type === "general" ||

@@ -39,6 +39,7 @@ import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransact
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
 import Angaza from "@/plugins/angaza-shs/js/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/js/modules/Overview/Credential"
+import Snackbar from "@/shared/Snackbar.vue"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -63,6 +64,7 @@ Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
 Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
+Vue.component("Snackbar", Snackbar)
 
 const unauthorizedPaths = [
   "login",

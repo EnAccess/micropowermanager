@@ -95,9 +95,11 @@
 
 <script>
 import { MailSettingsService } from "@/services/MailSettingsService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "MailSettings",
+  mixins: [notify],
   data() {
     return {
       mailSettingsService: new MailSettingsService(),
@@ -129,14 +131,6 @@ export default {
         this.alertNotify("error", e.message)
       }
       this.progress = false
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

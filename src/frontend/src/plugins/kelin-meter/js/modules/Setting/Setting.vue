@@ -122,9 +122,11 @@
 <script>
 import { SettingService } from "../../services/SettingService"
 import Widget from "@/shared/widget"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Setting",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -155,15 +157,6 @@ export default {
         this.loadingSync = false
         this.alertNotify("error", e.message)
       }
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }
