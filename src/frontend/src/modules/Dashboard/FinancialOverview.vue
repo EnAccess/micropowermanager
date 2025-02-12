@@ -97,8 +97,7 @@ export default {
   mixins: [notify],
   props: {
     clusterId: {
-      // eslint-disable-next-line vue/require-prop-type-constructor
-      type: Number | null,
+      type: [Number, null],
       default: null,
     },
     revenue: {
@@ -122,7 +121,6 @@ export default {
         customPredictor: function (date) {
           let today = new Date()
           let minDate = new Date("2018-01-01")
-          // disables the date if it is a multiple of 5
           if (date > today || date < minDate) {
             return true
           }
@@ -138,7 +136,6 @@ export default {
   },
   mounted() {
     let currentDate = new Date()
-    // Set the time frame to show past 3 month until today
     let startDate = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth() - 2,
@@ -147,11 +144,25 @@ export default {
     let endDate = currentDate
     this.setDate(startDate, "from")
     this.setDate(endDate, "to")
+    this.getClusterFinancialData()
   },
   watch: {
-    // eslint-disable-next-line no-unused-vars
-    revenue(newVal, oldVal) {
-      this.clusterService.financialData = newVal
+    "clusterService.financialData": {
+      handler(newVal) {
+        if (newVal) {
+          this.lineChartData = this.clusterService.lineChartData(true)
+          this.columnChartData = this.clusterService.columnChartData(
+            false,
+            "cluster",
+          )
+          this.pieChartData = this.clusterService.columnChartData(
+            false,
+            "cluster",
+          )
+        }
+      },
+      deep: true,
+      immediate: true,
     },
   },
   methods: {
@@ -164,18 +175,23 @@ export default {
         return
       }
       this.loading = true
-      console.log(this.period.from)
-      console.log(this.period.to)
-      this.periodChanged(this.period.from, this.period.to)
-      this.setPeriod = false
-      this.loading = false
-    },
 
-    dateSelectedFrom(date) {
-      this.setDate(date, "from")
-    },
-    dateSelectedTo(date) {
-      this.setDate(date, "to")
+      try {
+        const financialData = await this.clusterService.getAllRevenues(
+          "monthly",
+          this.period.from,
+          this.period.to,
+        )
+        this.clusterService.financialData = financialData
+
+        this.periodChanged(this.period.from, this.period.to)
+
+        this.setPeriod = false
+      } catch (error) {
+        console.error("Error fetching financial data:", error)
+      } finally {
+        this.loading = false
+      }
     },
     setDate(dateData, target) {
       let date = moment(dateData)
