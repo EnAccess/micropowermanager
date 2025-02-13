@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('africas_talking_credentials')) {
-            Schema::connection('shard')->create('africas_talking_credentials', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('africas_talking_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_key')->nullable();
                 $table->string('username')->nullable();
@@ -16,7 +16,7 @@ return new class extends Migration {
             });
         }
         if (!Schema::hasTable('africas_talking_messages')) {
-            Schema::connection('shard')->create('africas_talking_messages', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('africas_talking_messages', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sms_id');
                 $table->string('message_id');
@@ -28,7 +28,7 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::dropIfExists('africas_talking_credentials');
-        Schema::dropIfExists('africas_talking_messages');
+        Schema::connection('tenant')->dropIfExists('africas_talking_credentials');
+        Schema::connection('tenant')->dropIfExists('africas_talking_messages');
     }
 };
