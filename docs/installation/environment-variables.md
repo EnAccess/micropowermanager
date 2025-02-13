@@ -227,7 +227,6 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | -------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | `BINGMAP_API_URL`    | **Required** (when BingMaps is used) | BingMaps API URL (including the API key). For example `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=` |
 
-
 #### AfricasTalking
 
 For detailed information see [AfricasTalking Developer Documentation](https://developers.africastalking.com/tutorials?products=sms)
@@ -236,5 +235,6 @@ For detailed information see [AfricasTalking Developer Documentation](https://de
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `API_KEY`  | **Required** (when plugin is used) | AfricasTalking API key used for communication with AfricasTalking API. |
 | `USER_NAME`  | **Required** (when plugin is used) | AfricasTalking username used for communication with AfricasTalking API. |
+| `SHORT_CODE`   | **Required** (when plugin is used) | The shortcode you specified will appear as the sender on the recipient's phone.  |
 | `INCOMING_MESSAGES_URL`  | Generating by MPM | See how to use it in developer documentation. |
 | `DELIVERY_REPORTS_URL`   | Generating by MPM | See how to use it in developer documentation. |
