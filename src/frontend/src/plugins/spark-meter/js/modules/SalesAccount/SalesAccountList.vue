@@ -69,9 +69,11 @@ import { CredentialService } from "../../services/CredentialService"
 import Widget from "@/shared/widget"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "SalesAccountList",
+  mixins: [notify],
   components: { RedirectionModal, Widget },
   data() {
     return {
@@ -170,14 +172,6 @@ export default {
         this.subscriber,
         this.salesAccountService.list.length,
       )
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

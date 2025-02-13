@@ -12,7 +12,15 @@ class ClustersDashboardCacheDataController extends Controller {
     ) {}
 
     public function index() {
-        return ApiResource::make($this->clustersDashboardCacheDataService->getData());
+        $cachedData = $this->clustersDashboardCacheDataService->getData();
+
+        // If cache is empty, initialize it before returning
+        if (empty($cachedData)) {
+            $this->clustersDashboardCacheDataService->setData();
+            $cachedData = $this->clustersDashboardCacheDataService->getData();
+        }
+
+        return ApiResource::make($cachedData);
     }
 
     public function show($clusterId) {

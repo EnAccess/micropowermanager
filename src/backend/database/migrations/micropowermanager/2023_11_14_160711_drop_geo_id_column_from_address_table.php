@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('addresses', function (Blueprint $table) {
+        Schema::connection('tenant')->table('addresses', function (Blueprint $table) {
             $table->dropColumn('geo_id');
         });
     }
@@ -22,7 +22,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('addresses', function (Blueprint $table) {
+        Schema::connection('tenant')->table('addresses', function (Blueprint $table) {
             $table->integer('geo_id')->nullable();
         });
     }

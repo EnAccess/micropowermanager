@@ -103,8 +103,10 @@
 <script>
 import { Paginator } from "@/Helpers/Paginator"
 import { EventBus } from "./eventbus"
+import { notify } from "@/mixins/notify"
 export default {
   name: "Paginate",
+  mixins: [notify],
   props: {
     paginatorReference: Paginator,
     callback: {},
@@ -198,15 +200,6 @@ export default {
     },
     formatTotalPages(pageNumber) {
       return pageNumber.toLocaleString()
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-        speed: 0,
-      })
     },
   },
 }

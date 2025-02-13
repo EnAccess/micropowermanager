@@ -65,7 +65,7 @@ class PaymentHistory extends BaseModel {
         $sql = 'SELECT sum(amount) as amount, MONTH(created_at) as month from payment_histories where'.
             ' payer_id=:payer_id and payer_type=:payer_type and '.
             'YEAR(created_at)=:year group by  MONTH(created_at) order  by  MONTH(created_at) ';
-        $sth = DB::connection('shard')->getPdo()->prepare($sql);
+        $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->bindValue(':payer_id', $payer_id, \PDO::PARAM_INT);
         $sth->bindValue(':payer_type', $payer_type, \PDO::PARAM_STR);
         $sth->bindValue(':year', $year);
@@ -84,7 +84,7 @@ class PaymentHistory extends BaseModel {
         $sql = 'SELECT sum(amount) as total, DATE_FORMAT(created_at, "%Y-%m-%d")'.
             ' as dato from payment_histories where  DATE(created_at) >= DATE(\''.$begin.'\') '.
             'and DATE(created_at)<= DATE(\''.$end.'\')  group by dato';
-        $sth = DB::connection('shard')->getPdo()->prepare($sql);
+        $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->execute();
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -92,7 +92,7 @@ class PaymentHistory extends BaseModel {
     }
 
     private function executeSqlCommand(string $sql, $payer_id, $agent_id, $payer_type) {
-        $sth = DB::connection('shard')->getPdo()->prepare($sql);
+        $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         if ($payer_id) {
             $sth->bindValue(':payer_id', $payer_id, \PDO::PARAM_INT);
         }
@@ -110,7 +110,7 @@ class PaymentHistory extends BaseModel {
         CarbonImmutable $startDate,
         CarbonImmutable $endDate,
     ): Collection {
-        return DB::connection('shard')->table($this->getTable())
+        return DB::connection('tenant')->table($this->getTable())
             ->select('payer_id as customer_id')
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate)

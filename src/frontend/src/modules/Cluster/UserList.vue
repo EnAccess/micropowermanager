@@ -18,8 +18,10 @@
 
 <script>
 import { UserService } from "@/services/UserService"
+import { notify } from "@/mixins/notify"
 export default {
   name: "UserList",
+  mixins: [notify],
   mounted() {
     this.getUserList()
   },
@@ -41,14 +43,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

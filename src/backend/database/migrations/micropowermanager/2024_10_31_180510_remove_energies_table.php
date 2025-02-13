@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->dropIfExists('energies');
+        Schema::connection('tenant')->dropIfExists('energies');
     }
 
     /**
@@ -20,7 +20,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->create('energies', function (Blueprint $table) {
+        Schema::connection('tenant')->create('energies', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mini_grid_id');
             $table->string('meter_id');
@@ -37,13 +37,13 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::connection('shard')->table('energies', function (Blueprint $table) {
+        Schema::connection('tenant')->table('energies', function (Blueprint $table) {
             $table->double('used_energy_since_last', 15, 2)->default(0)->change();
             $table->double('total_absorbed', 15, 2)->default(0)->change();
             $table->double('absorbed_energy_since_last', 15, 2)->default(0)->change();
         });
 
-        Schema::connection('shard')->table('energies', function (Blueprint $table) {
+        Schema::connection('tenant')->table('energies', function (Blueprint $table) {
             $table->double('used_energy_since_last', 8, 4)->default(0)->change();
             $table->double('total_absorbed', 8, 4)->default(0)->change();
             $table->double('absorbed_energy_since_last', 8, 4)->default(0)->change();

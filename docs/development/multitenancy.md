@@ -14,9 +14,9 @@ Sharding is a technique employed to partition a large database into smaller, mor
 known as data shards. In the context of Micropower Manager, sharding is integral to the implementation of Software as a
 Service (SaaS) functionality.
 
-### Shard Representation
+### Tenant Representation
 
-Each shard in Micropower Manager represents an individual company leveraging the platform for their Customer
+Each tenant in Micropower Manager represents an individual company leveraging the platform for their Customer
 Relationship Management (CRM) needs.
 
 ### Central Database - "micro_power_manager"
@@ -35,37 +35,36 @@ Upon successful registration, when a user associated with a particular company l
 database connection for their session is dynamically altered. This ensures that the user gains access to and interacts
 with data exclusive to their company, providing a personalized and secure experience within the application.
 
-## Sharding Specific Migration Commands
+## Tenant Specific Migration Commands
 
-- **Creating Migration File:**
+- **Creating Migration File (core):**
   When creating a migration file, you need to use the following command:
 
 ```bash
 docker exec -it backend-dev bash
-php artisan migrator:create {migration-name}
+php artisan make:migration {migration-name}
 ```
 
 This command creates a migration file in Micropower Manager's core migration files location: `src/backend/database/migrations/micropowermanager`
 
-After creating the migration file, you can shift it to other company databases using the following command:
+- **Creating Migration File (tenant):**
+  To create a migration file for tenant database(s) use the following command:
 
 ```bash
 docker exec -it backend-dev bash
-php artisan migrator:copy
+php artisan make:migration-tenant {migration-name}
 ```
-
-This command syncs the migration files in the core migration folder for other company migrations.
 
 To migrate the database, use the following command:
 
 ```bash
 docker exec -it backend-dev bash
-php artisan migrator:migrate
+php artisan migrate
 ```
 
 Alternatively, you can migrate the database for a specific company using the following command:
 
 ```bash
 docker exec -it backend-dev bash
-php shard:migrate {company_id} {--force}
+php migrate-tenant {company_id} {--force}
 ```

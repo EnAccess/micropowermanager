@@ -10,7 +10,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->dropIfExists('city_clusters');
+        Schema::connection('tenant')->dropIfExists('city_clusters');
     }
 
     /**

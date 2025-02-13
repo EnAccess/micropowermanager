@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('wave_money_transactions', static function (Blueprint $table) {
+        Schema::connection('tenant')->table('wave_money_transactions', static function (Blueprint $table) {
             $table->string('meter_serial')->nullable()->change();
         });
     }
@@ -22,7 +22,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('wave_money_transactions', function (Blueprint $table) {
+        Schema::connection('tenant')->table('wave_money_transactions', function (Blueprint $table) {
             $table->integer('meter_serial')->nullable()->change();
         });
     }

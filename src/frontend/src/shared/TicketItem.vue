@@ -137,9 +137,11 @@ import { EventBus } from "./eventbus"
 import { SmsService } from "@/services/SmsService"
 import { TicketService } from "@/services/TicketService"
 import moment from "moment"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "TicketItem",
+  mixins: [notify],
   props: {
     ticket: String,
     allowComment: Boolean,
@@ -224,14 +226,6 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
-    },
   },
 }
 </script>
@@ -307,7 +301,7 @@ export default {
   width: 100%;
 }
 
-. Ticket-Area-Row-P {
+.Ticket-Area-Row-P {
   font-size: small;
   white-space: initial;
   max-width: 100%;

@@ -40,6 +40,7 @@ import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
 import Angaza from "@/plugins/angaza-shs/js/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/js/modules/Overview/Credential"
 import AfricasTalking from "@/plugins/africas-talking/js/modules/Overview/Credential"
+import Snackbar from "@/shared/Snackbar.vue"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -65,6 +66,7 @@ Vue.component("AgentTransactionDetail", AgentTransactionDetail)
 Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Africas-Talking", AfricasTalking)
+Vue.component("Snackbar", Snackbar)
 
 const unauthorizedPaths = [
   "login",

@@ -37,7 +37,7 @@ Assumping you have a local development setup running, run
 ```sh
 docker exec -it backend-dev bash
 php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
-php artisan erd:generate shard --path=/database/migrations/micropowermanager --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
+php artisan erd:generate tenant --path=/database/migrations/micropowermanager --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
 php artisan export
 ```
 

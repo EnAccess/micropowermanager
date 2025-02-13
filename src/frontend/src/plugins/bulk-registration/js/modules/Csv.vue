@@ -156,9 +156,11 @@
 <script>
 import Widget from "./Shared/Widget"
 import { CsvUploadService } from "../services/CsvUploadService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Csv",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -232,14 +234,6 @@ export default {
       )) {
         this.createdRecordCount += value
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

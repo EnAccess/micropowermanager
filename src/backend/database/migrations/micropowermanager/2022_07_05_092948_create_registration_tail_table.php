@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('registration_tail', function (Blueprint $table) {
+        Schema::connection('tenant')->create('registration_tail', function (Blueprint $table) {
             $table->id();
             $table->json('tail');
             $table->integer('updated_by')->nullable();
@@ -25,6 +25,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('registration_tail');
+        Schema::connection('tenant')->dropIfExists('registration_tail');
     }
 };

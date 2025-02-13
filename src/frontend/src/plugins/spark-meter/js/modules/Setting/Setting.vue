@@ -339,9 +339,11 @@ import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaul
 import { SmsBodiesService } from "../../services/SmsBodiesService"
 import SmsBody from "./SmsBody"
 import { SmFeedbackWordService } from "../../services/SmFeedbackWordService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Setting",
+  mixins: [notify],
   components: { Widget, SmsBody },
   data() {
     return {
@@ -471,14 +473,6 @@ export default {
       for (const ref of refs) {
         await ref.validateBody()
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

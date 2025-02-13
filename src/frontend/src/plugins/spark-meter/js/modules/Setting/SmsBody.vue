@@ -43,9 +43,11 @@
 
 <script>
 import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "SmsBody",
+  mixins: [notify],
   props: {
     smsBody: {
       default: null,
@@ -119,14 +121,6 @@ export default {
     },
     async validateBody() {
       this.smsBody.validation = await this.$validator.validateAll(this.tabName)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

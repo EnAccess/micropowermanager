@@ -105,9 +105,11 @@ import { TariffService } from "../../services/TariffService"
 import { MeterModelService } from "../../services/MeterModelService"
 import { CredentialService } from "../../services/CredentialService"
 import { SiteService } from "../../services/SiteService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "CustomerList",
+  mixins: [notify],
   components: { Widget, RedirectionModal },
   data() {
     return {
@@ -278,15 +280,6 @@ export default {
     },
     endSearching() {
       this.customerService.showAll()
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -389,10 +389,11 @@ import agentIcon from "@/assets/icons/agent-icon.png"
 import moneyIcon from "@/assets/icons/money-icon.png"
 import thirdPartyLogo from "@/assets/icons/third_party_transaction_icon.png"
 import WaveComLogo from "@/assets/icons/WaveComLogo.png"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Transactions.vue",
-  mixins: [timing, currency],
+  mixins: [timing, currency, notify],
   components: { Box, FilterTransaction, Widget },
   data() {
     return {
@@ -531,15 +532,6 @@ export default {
       }
 
       this.loadAnalytics()
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-        speed: 0,
-      })
     },
   },
   watch: {

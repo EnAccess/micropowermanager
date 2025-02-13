@@ -47,10 +47,11 @@ import { AgentService } from "@/services/AgentService"
 import AssignAppliance from "./AssignAppliance"
 import { EventBus } from "@/shared/eventbus"
 import { currency } from "@/mixins/currency"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AssignedApplianceList",
-  mixins: [currency],
+  mixins: [currency, notify],
   data() {
     return {
       assignedApplianceService: new AgentAssignedApplianceService(),
@@ -125,14 +126,6 @@ export default {
     async hide() {
       this.showNewAppliance = false
       await this.getAssignedAppliances(this.agent)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }
