@@ -9,6 +9,7 @@
   "license": "MIT",
   "require": {
     "php": "^8.0",
+    "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v2.0.0",
     "bogdaan/viber-bot-php": "^0.0.15",
     "doctrine/dbal": "^3.1",
@@ -26,8 +27,7 @@
     "pusher/pusher-php-server": "^5.0",
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^8.1",
-    "tymon/jwt-auth": "dev-develop",
-    "inensus/africas-talking": "dev-main"
+    "tymon/jwt-auth": "dev-develop"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
@@ -45,12 +45,6 @@
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-web-tinker": "^1.7"
   },
-  "repositories": [
-        {
-            "type": "path",
-            "url": "./packages/inensus/africas-talking"
-        }
-    ],
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",

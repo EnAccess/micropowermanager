@@ -2,9 +2,6 @@
   "name": "inensus/africas-talking",
   "description": "AfricasTalking integration for MicroPowerManager",
   "type": "package",
-  "require": {
-    "africastalking/africastalking": "^3.0"
-  },
   "license": "MIT",
   "authors": [
     {
