@@ -231,10 +231,10 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 
 For detailed information see [AfricasTalking Developer Documentation](https://developers.africastalking.com/tutorials?products=sms)
 
-| Environment Variable | Default                            | Description                                                                 |
-| -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
-| `API_KEY`  | **Required** (when plugin is used) | AfricasTalking API key used for communication with AfricasTalking API. |
-| `USER_NAME`  | **Required** (when plugin is used) | AfricasTalking username used for communication with AfricasTalking API. |
-| `SHORT_CODE`   | **Required** (when plugin is used) | The shortcode you specified will appear as the sender on the recipient's phone.  |
-| `INCOMING_MESSAGES_URL`  | Generating by MPM | See how to use it in developer documentation. |
-| `DELIVERY_REPORTS_URL`   | Generating by MPM | See how to use it in developer documentation. |
+| Environment Variable    | Default                            | Description                                                                     |
+| ----------------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
+| `API_KEY`               | **Required** (when plugin is used) | AfricasTalking API key used for communication with AfricasTalking API.          |
+| `USER_NAME`             | **Required** (when plugin is used) | AfricasTalking username used for communication with AfricasTalking API.         |
+| `SHORT_CODE`            | **Required** (when plugin is used) | The shortcode you specified will appear as the sender on the recipient's phone. |
+| `INCOMING_MESSAGES_URL` | Generating by MPM                  | See how to use it in developer documentation.                                   |
+| `DELIVERY_REPORTS_URL`  | Generating by MPM                  | See how to use it in developer documentation.                                   |
