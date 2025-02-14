@@ -192,11 +192,11 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl apply -f k8s/services/mpm-frontend.yaml
-          kubectl apply -f k8s/services/mpm-backend.yaml
+          kubectl apply -f k8s/aws_eks/services/mpm-frontend.yaml
+          kubectl apply -f k8s/aws_eks/services/mpm-backend.yaml
 
-          kubectl apply -f k8s/deployments/mpm-frontend.yaml
-          kubectl apply -f k8s/deployments/mpm-backend.yaml
+          kubectl apply -f k8s/aws_eks/deployments/mpm-frontend.yaml
+          kubectl apply -f k8s/aws_eks/deployments/mpm-backend.yaml
 
           kubectl rollout restart deployment/mpm-frontend
           kubectl rollout restart deployment/mpm-backend
