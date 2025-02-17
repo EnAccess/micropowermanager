@@ -25,7 +25,7 @@ In this section, users can define the structure of automated messages sent to th
 
 - **Transaction Confirmation**: This message is sent when a payment is successfully processed. For example:
 
-  ```
+  ```plaintext
   Dear [name] [surname], we received your transaction [transaction_amount].
   ```
 
