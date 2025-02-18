@@ -1,2 +1,3 @@
 # Ignore externally generated
 docs/.public
+src/backend/storage/framework/cache/scribe/openapi.yaml
