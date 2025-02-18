@@ -14,7 +14,7 @@ class SmsResendInformationHeader extends SmsBodyParser {
 
     protected function getVariableValue($variable) {
         if (!is_array($this->data)) {
-            $person = $this->data->meter->meterParameter->owner()->first();
+            $person = $this->data->device->person;
         } else {
             try {
                 $person = Person::query()->with(['devices.device' => function ($q) {

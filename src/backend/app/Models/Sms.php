@@ -24,6 +24,14 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Sms extends BaseModel {
     use HasFactory;
 
+    public const DIRECTION_INCOMING = 0;
+    public const DIRECTION_OUTGOING = 1;
+
+    public const STATUS_STORED = 0;
+    public const STATUS_SENT = 1;
+    public const STATUS_DELIVERED = 2;
+    public const STATUS_FAILED = -1;
+
     public function trigger(): MorphTo {
         return $this->morphTo();
     }

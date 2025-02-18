@@ -88,4 +88,11 @@ class AddressesService implements IBaseService, IAssociative {
     public function save($address): bool {
         return $address->save();
     }
+
+    public function getAddressByPhoneNumber(string $phoneNumber): ?Address {
+        return $this->address->newQuery()
+            ->where('phone', $phoneNumber)
+            ->orWhere('phone', ltrim($phoneNumber, '+'))
+            ->first();
+    }
 }

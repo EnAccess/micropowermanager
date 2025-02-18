@@ -77,6 +77,7 @@ import SteamaCoSettings from "./plugins/steama-meter/js/modules/Setting/Setting"
 import StronMeterOverview from "./plugins/stron-meter/js/modules/Overview/Overview"
 import BulkRegistrationCsv from "./plugins/bulk-registration/js/modules/Csv"
 import ViberMessagingOverview from "./plugins/viber-messaging/js/modules/Overview/Overview"
+import AfricasTalkingOverview from "./plugins/africas-talking/js/modules/Overview/Overview"
 import WaveMoneyOverview from "./plugins/wave-money-payment-provider/js/modules/Overview/Overview"
 // FIXME: These are used as modules which seem broken.
 // https://github.com/EnAccess/micropowermanager/issues/142
@@ -1373,6 +1374,30 @@ export const exportedRoutes = [
       {
         path: "angaza-overview",
         component: AngazaShsOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/africas-talking",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 18,
+        name: "Africas Talking",
+        icon: "message",
+      },
+    },
+    children: [
+      {
+        path: "africas-talking-overview",
+        component: AfricasTalkingOverview,
         meta: {
           layout: "default",
           sidebar: {

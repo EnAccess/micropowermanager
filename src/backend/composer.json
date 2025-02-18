@@ -9,6 +9,7 @@
   "license": "MIT",
   "require": {
     "php": "^8.0",
+    "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v2.0.0",
     "bogdaan/viber-bot-php": "^0.0.15",
     "doctrine/dbal": "^3.1",
@@ -26,8 +27,7 @@
     "pusher/pusher-php-server": "^5.0",
     "spatie/geocoder": "^3.14",
     "spatie/laravel-backup": "^8.1",
-    "tymon/jwt-auth": "dev-develop",
-    "webpatser/laravel-uuid": "^4.0"
+    "tymon/jwt-auth": "dev-develop"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.5",
@@ -41,7 +41,6 @@
     "phpstan/phpstan": "^1.1",
     "phpunit/phpunit": "^9.0",
     "recca0120/laravel-erd": "^0.3",
-    "roave/security-advisories": "dev-latest",
     "spatie/laravel-export": "^1.0",
     "spatie/laravel-ignition": "^1.0",
     "spatie/laravel-web-tinker": "^1.7"
@@ -84,6 +83,7 @@
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
+      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
       "Tests\\": "tests/"
     }
   },
