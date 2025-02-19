@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\VodacomResource;
 use App\Models\Transaction\VodacomTransaction;
+use App\Services\VodacomService;
 use Illuminate\Http\Request;
 
 class VodacomTransactionController extends Controller {
+    private VodacomService $vodacomService;
+
+    public function __construct(VodacomService $vodacomService) {
+        $this->vodacomService = $vodacomService;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -31,5 +39,72 @@ class VodacomTransactionController extends Controller {
             'sender' => $transactionData->initiator,
             'message' => $transactionData->accountReference,
         ]);
+    }
+
+    /**
+     * Validate a transaction request.
+     *
+     * @param Request $request
+     *
+     * @return VodacomResource
+     */
+    public function validateTransaction(Request $request): VodacomResource {
+        $validatedData = $request->validate([
+            'serialNumber' => 'required|string',
+            'amount' => 'required|numeric',
+            'payerPhoneNumber' => 'required|string',
+            'referenceId' => 'required|string',
+        ]);
+
+        try {
+            $result = $this->vodacomService->validateTransaction($validatedData);
+
+            return VodacomResource::make($result);
+        } catch (\Exception $e) {
+            return VodacomResource::error($e->getMessage());
+        }
+    }
+
+    /**
+     * Process a transaction.
+     *
+     * @param Request $request
+     *
+     * @return ApiResource
+     */
+    public function processTransaction(Request $request): VodacomResource {
+        $validatedData = $request->validate([
+            'referenceId' => 'required|string',
+            'transactionId' => 'required|string',
+        ]);
+
+        try {
+            $result = $this->vodacomService->processTransaction($validatedData);
+
+            return VodacomResource::make($result);
+        } catch (\Exception $e) {
+            return VodacomResource::error($e->getMessage());
+        }
+    }
+
+    /**
+     * Check transaction status.
+     *
+     * @param Request $request
+     *
+     * @return ApiResource
+     */
+    public function transactionEnquiryStatus(Request $request): VodacomResource {
+        $validatedData = $request->validate([
+            'referenceId' => 'required|string',
+        ]);
+
+        try {
+            $result = $this->vodacomService->transactionEnquiryStatus($validatedData);
+
+            return VodacomResource::make($result);
+        } catch (\Exception $e) {
+            return VodacomResource::error($e->getMessage());
+        }
     }
 }
