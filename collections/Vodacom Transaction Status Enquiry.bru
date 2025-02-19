@@ -1,0 +1,18 @@
+meta {
+  name: Vodacom Transaction Status Enquiry
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom/transactions/enquiry
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "referenceId": "string" // Same as validation request (Required)
+  }
+  
+}
