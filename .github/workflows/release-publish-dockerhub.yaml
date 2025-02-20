@@ -228,4 +228,18 @@ jobs:
           location: "${{ secrets.GCP_REGION }}"
 
       - name: Show existing pods
-        run: kubectl get pods -n micropowermanager
+        run: kubectl get pods -n ${{ secrets.GCP_GKE_NAMESPACE }}
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f k8s/gcp_gke/namespace.yaml
+          kubectl apply -f k8s/gcp_gke/redis.yaml
+          kubectl apply -f k8s/gcp_gke/deployments.yaml
+          kubectl apply -f k8s/gcp_gke/services.yaml
+          kubectl apply -f k8s/gcp_gke/ingress.yaml
+
+      # We need to restart the pods to pick up latest images
+      - name: Restart MicroPowerManager pods
+        run: |
+          kubectl rollout restart deployment/mpm-frontend -n ${{ secrets.GCP_GKE_NAMESPACE }}
+          kubectl rollout restart deployment/mpm-backend -n ${{ secrets.GCP_GKE_NAMESPACE }}
