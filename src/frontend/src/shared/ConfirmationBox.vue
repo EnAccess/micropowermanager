@@ -1,4 +1,3 @@
-
 <template>
   <md-dialog :md-active.sync="showDialog">
     <md-dialog-title>{{ title }}</md-dialog-title>
@@ -14,7 +13,11 @@
       <md-button class="md-accent" @click="onCancel">
         {{ cancelText }}
       </md-button>
-      <md-button class="md-primary" @click="onConfirm" :disabled="showCheckbox && !isChecked">
+      <md-button
+        class="md-primary"
+        @click="onConfirm"
+        :disabled="showCheckbox && !isChecked"
+      >
         {{ confirmText }}
       </md-button>
     </md-dialog-actions>
@@ -23,38 +26,38 @@
 
 <script>
 export default {
-  name: 'ConfirmationBox',
+  name: "ConfirmationBox",
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     message: {
       type: String,
-      default: ''
+      default: "",
     },
     showCheckbox: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkboxLabel: {
       type: String,
-      default: ''
+      default: "",
     },
     confirmText: {
       type: String,
-      default: 'Confirm'
+      default: "Confirm",
     },
     cancelText: {
       type: String,
-      default: 'Cancel'
-    }
+      default: "Cancel",
+    },
   },
   data() {
     return {
       showDialog: false,
       isChecked: false,
-      resolvePromise: null
+      resolvePromise: null,
     }
   },
   methods: {
@@ -76,7 +79,7 @@ export default {
       if (this.resolvePromise) {
         this.resolvePromise({ confirmed: false, checked: this.isChecked })
       }
-    }
-  }
+    },
+  },
 }
 </script>
