@@ -219,13 +219,13 @@ jobs:
       - name: Configure GCP credentials
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS_JSON }}"
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
       - name: Get GKE credentials
-        uses: "google-github-actions/get-gke-credentials@v2"
+        uses: google-github-actions/get-gke-credentials@v2
         with:
-          cluster_name: "${{ secrets.GCP_GKE_CLUSTER_NAME }}"
-          location: "${{ secrets.GCP_REGION }}"
+          cluster_name: ${{ secrets.GCP_GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GCP_REGION }}
 
       - name: Show existing pods
         run: kubectl get pods -n ${{ secrets.GCP_GKE_NAMESPACE }}
