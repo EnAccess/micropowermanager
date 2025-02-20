@@ -7,6 +7,11 @@ use App\Models\Transaction\VodacomTransaction;
 use App\Services\VodacomService;
 use Illuminate\Http\Request;
 
+/**
+ * @group Vodacom Transaction
+ *
+ * API endpoints for integrating with Vodacom's M-Pesa payment services
+ */
 class VodacomTransactionController extends Controller {
     public function __construct(private VodacomService $vodacomService) {}
 
@@ -38,7 +43,33 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Validate a transaction request.
+     * Validate Transaction.
+     *
+     * Validates a transaction before processing. Use this endpoint to verify if a transaction
+     * can proceed based on the provided information. This is typically the first step in the payment flow.
+     *
+     * @bodyParam serialNumber string required Unique identifier for the product/service being purchased
+     * @bodyParam amount numeric required Transaction amount in the local currency
+     * @bodyParam payerPhoneNumber string required Customer's phone number in international format
+     * @bodyParam referenceId string required Unique reference identifier for this transaction
+     *
+     * @response scenario="Success" {
+     *   "data": {
+     *     "transactionId": "VOD-TXN-123456",
+     *     "status": "validated",
+     *     "details": {
+     *       "product": "Internet Bundle",
+     *       "validAmount": true
+     *     },
+     *     "success": true
+     *   }
+     * }
+     * @response 400 scenario="Validation Error" {
+     *   "data": {
+     *     "message": "Invalid amount specified for this product",
+     *     "success": false
+     *   }
+     * }
      *
      * @param Request $request
      *
@@ -62,11 +93,32 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Process a transaction.
+     * Process Transaction.
+     *
+     * Processes a previously validated transaction. This endpoint should be called after successful
+     * validation to initiate the payment process with Vodacom M-Pesa.
+     *
+     * @bodyParam referenceId string required The reference ID used during validation
+     * @bodyParam transactionId string required The transaction ID returned from the validation step
+     *
+     * @response scenario="Success" {
+     *   "data": {
+     *     "transactionId": "VOD-TXN-123456",
+     *     "status": "processing",
+     *     "providerReference": "MPESA-TX-987654321",
+     *     "success": true
+     *   }
+     * }
+     * @response 400 scenario="Processing Error" {
+     *   "data": {
+     *     "message": "Transaction processing failed: Insufficient funds",
+     *     "success": false
+     *   }
+     * }
      *
      * @param Request $request
      *
-     * @return ApiResource
+     * @return VodacomResource
      */
     public function processTransaction(Request $request): VodacomResource {
         $validatedData = $request->validate([
@@ -84,11 +136,33 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Check transaction status.
+     * Check Transaction Status.
+     *
+     * Checks the current status of a transaction that has been submitted for processing.
+     * Use this to verify if a payment has been completed, is still pending, or has failed.
+     *
+     * @bodyParam referenceId string required The reference ID of the transaction to check
+     *
+     * @response scenario="Success" {
+     *   "data": {
+     *     "referenceId": "ORD-12345-ABC",
+     *     "transactionId": "VOD-TXN-123456",
+     *     "status": "completed",
+     *     "mpesaReceipt": "QCL12345XY",
+     *     "completedAt": "2023-06-15T12:45:32Z",
+     *     "success": true
+     *   }
+     * }
+     * @response 400 scenario="Enquiry Error" {
+     *   "data": {
+     *     "message": "Transaction not found or reference ID is invalid",
+     *     "success": false
+     *   }
+     * }
      *
      * @param Request $request
      *
-     * @return ApiResource
+     * @return VodacomResource
      */
     public function transactionEnquiryStatus(Request $request): VodacomResource {
         $validatedData = $request->validate([
