@@ -95,7 +95,7 @@ class ApplianceRateService {
                     'asset_person_id' => $assetPerson->id,
                     'rate_cost' => $assetPerson->down_payment,
                     'remaining' => 0,
-                    'due_date' => Carbon::parse(date('Y-m-d'))->format('Y-m-d H:i:s'),
+                    'due_date' => Carbon::parse(date('Y-m-d'))->toDateTimeString(),
                     'remind' => 0,
                 ]
             );
