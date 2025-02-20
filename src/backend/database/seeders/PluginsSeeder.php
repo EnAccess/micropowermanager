@@ -7,7 +7,6 @@ use Database\Factories\CalinCredentialFactory;
 use Database\Factories\CsvDataFactory;
 use Database\Factories\WaveMoneyCredentialFactory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class PluginsSeeder extends Seeder {
