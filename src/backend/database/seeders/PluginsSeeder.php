@@ -39,8 +39,8 @@ class PluginsSeeder extends Seeder {
 
         // Get the contents of the CSV files as arrays
         $csvFiles = [
-            $dummyDataPath.'/bulk-registration-template-1.hex',
-            $dummyDataPath.'/bulk-registration-template-2.hex',
+            $dummyDataPath.'/bulk-registration-template-1.json',
+            $dummyDataPath.'/bulk-registration-template-2.json',
         ];
         $csvData = [];
 
@@ -54,9 +54,13 @@ class PluginsSeeder extends Seeder {
         }
 
         foreach ($csvData as $data) {
-            $factory->create([
-                'csv_data' => DB::raw("X'{$data}'"),
-            ]);
+            if (json_validate($data)) {
+                $factory->create([
+                    'csv_data' => $data,
+                ]);
+            } else {
+                throw new \Exception('Invalid JSON: '.$data);
+            }
         }
     }
 
