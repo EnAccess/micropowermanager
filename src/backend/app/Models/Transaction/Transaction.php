@@ -58,26 +58,36 @@ class Transaction extends BaseModel {
     }
 
     public function periodTargetAlternative($cityId, $startDate, $endDate) {
-        $sql = 'SELECT sum(transactions.amount) as revenue,'.
-            ' count(transactions.id) as total,'.
-            ' AVG(transactions.amount) as average,'.
-            ' YEARWEEK(transactions.created_at,3) as period'.
-            ' from transactions'.
-            ' WHERE transactions.id in ('.
-            ' SELECT DISTINCT(transactions.id) '.
-            ' from transactions'.
-            ' LEFT join airtel_transactions on transactions.original_transaction_id = airtel_transactions.id and'.
-            " transactions.original_transaction_type = 'airtel_transaction'".
-            ' LEFT join vodacom_transactions on transactions.original_transaction_id = vodacom_transactions.id and'.
-            " transactions.original_transaction_type = 'vodacom_transaction'".
-            ' LEFT join meters on transactions.message = meters.serial_number'.
-            ' LEFT JOIN meter_parameters on meter_parameters.meter_id = meters.id'.
-            " LEFT JOIN people on people.id = meter_parameters.owner_id and owner_type = 'person'".
-            " LEFT JOIN addresses on addresses.owner_id = people.id and addresses.owner_type = 'person'".
-            ' WHERE DATE(transactions.created_at) BETWEEN :periodStartDate and :periodEndDate'.
-            ' AND (airtel_transactions.status = 1 or vodacom_transactions.status = 1)'.
-            ' AND addresses.city_id = :city_id '.
-            ')';
+        $sql = <<<SQL
+            SELECT
+                SUM(transactions.amount) AS revenue,
+                COUNT(transactions.id) AS total,
+                AVG(transactions.amount) AS average,
+                YEARWEEK(transactions.created_at, 3) AS period
+            FROM transactions
+            WHERE transactions.id IN (
+                SELECT DISTINCT(transactions.id)
+                FROM transactions
+                LEFT JOIN airtel_transactions
+                    ON transactions.original_transaction_id = airtel_transactions.id AND transactions.original_transaction_type = 'airtel_transaction'
+                LEFT JOIN vodacom_transactions
+                    ON transactions.original_transaction_id = vodacom_transactions.id AND transactions.original_transaction_type = 'vodacom_transaction'
+                LEFT JOIN meters
+                    ON transactions.message = meters.serial_number
+                LEFT JOIN meter_parameters
+                    ON meter_parameters.meter_id = meters.id
+                LEFT JOIN people
+                    ON people.id = meter_parameters.owner_id AND owner_type = 'person'
+                LEFT JOIN addresses
+                    ON addresses.owner_id = people.id AND addresses.owner_type = 'person'
+                WHERE
+                    DATE(transactions.created_at) BETWEEN :periodStartDate AND :periodEndDate
+                    AND (airtel_transactions.status = 1 OR vodacom_transactions.status = 1)
+                    AND addresses.city_id = :city_id
+            );
+            SQL;
+        // FIXME: This used to be here, but no longer.
+        // Why was it removed?
         // " GROUP BY CONCAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))" .
         // " ORDER BY CON CAT(YEAR(transactions.created_at), '-', WEEK(transactions.created_at,3))";
 
