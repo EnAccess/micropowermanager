@@ -1,41 +1,82 @@
+
 <template>
-  <div></div>
+  <md-dialog :md-active.sync="showDialog">
+    <md-dialog-title>{{ title }}</md-dialog-title>
+
+    <md-dialog-content>
+      <p>{{ message }}</p>
+      <div v-if="showCheckbox" class="md-layout md-alignment-center-left">
+        <md-checkbox v-model="isChecked">{{ checkboxLabel }}</md-checkbox>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions>
+      <md-button class="md-accent" @click="onCancel">
+        {{ cancelText }}
+      </md-button>
+      <md-button class="md-primary" @click="onConfirm" :disabled="showCheckbox && !isChecked">
+        {{ confirmText }}
+      </md-button>
+    </md-dialog-actions>
+  </md-dialog>
 </template>
 
 <script>
-import { EventBus } from "./eventbus"
-
 export default {
-  name: "ConfirmationBox",
+  name: 'ConfirmationBox',
   props: {
     title: {
-      required: true,
       type: String,
+      required: true
     },
+    message: {
+      type: String,
+      default: ''
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: false
+    },
+    checkboxLabel: {
+      type: String,
+      default: ''
+    },
+    confirmText: {
+      type: String,
+      default: 'Confirm'
+    },
+    cancelText: {
+      type: String,
+      default: 'Cancel'
+    }
   },
   data() {
-    return {}
-  },
-  created() {
-    EventBus.$on("show.confirm", this.showConfirmation)
+    return {
+      showDialog: false,
+      isChecked: false,
+      resolvePromise: null
+    }
   },
   methods: {
-    showConfirmation(data = null) {
-      this.$swal({
-        type: "question",
-        title: this.title,
-        text: "Are you sure to do this action?",
-        showCancelButton: true,
-        confirmButtonText: "I'm sure",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.value) {
-          this.$emit("confirmed", data)
-        }
+    show() {
+      this.showDialog = true
+      this.isChecked = false
+      return new Promise((resolve) => {
+        this.resolvePromise = resolve
       })
     },
-  },
+    onConfirm() {
+      this.showDialog = false
+      if (this.resolvePromise) {
+        this.resolvePromise({ confirmed: true, checked: this.isChecked })
+      }
+    },
+    onCancel() {
+      this.showDialog = false
+      if (this.resolvePromise) {
+        this.resolvePromise({ confirmed: false, checked: this.isChecked })
+      }
+    }
+  }
 }
 </script>
-
-<style scoped></style>
