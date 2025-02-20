@@ -172,7 +172,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -200,3 +200,25 @@ jobs:
 
           kubectl rollout restart deployment/mpm-frontend
           kubectl rollout restart deployment/mpm-backend
+
+  deploy-gcp:
+    runs-on: ubuntu-latest
+    needs: publish-dockerhub
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure GCP credentials
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS_JSON }}"
+
+      - name: Get GKE credentials
+        uses: "google-github-actions/get-gke-credentials@v2"
+        with:
+          cluster_name: "${{ secrets.GCP_GKE_CLUSTER_NAME }}"
+          location: "${{ secrets.GCP_REGION }}"
+
+      - name: Show existing pods
+        run: kubectl get pods -n micropowermanager
