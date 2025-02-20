@@ -125,6 +125,18 @@ Set of environment variables that can be used to configure logging and logging p
 | `LOG_LEVEL`             | `debug`                          | Level of the logs send to [Loggly](https://www.loggly.com/).                                                                                                                |
 | `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack)  | Slack Webhook URL                                                                                                                                                           |
 
+#### Email
+
+Configure the following environment variable to enable MicroPowerManager to send email (signup confirmation, password reset, etc...)
+
+| Environment Variable | Default                         | Description                                              |
+| -------------------- | ------------------------------- | -------------------------------------------------------- |
+| `MAIL_HOST`          | `smtp.mailgun.org`              | Mail server hostname. For example `smtp.mailserver.com`. |
+| `MAIL_PORT`          | `587`                           | Mail server port.                                        |
+| `MAIL_ENCRYPTION`    | `tls`                           | Mail encryption.                                         |
+| `MAIL_USERNAME`      | **Required** (when using email) | Mail server username.                                    |
+| `MAIL_PASSWORD`      | **Required** (when using email) | Mail server password.                                    |
+
 ### MPM Plugins
 
 Certain MicroPowerManager plugins require configuration before they can be used.
