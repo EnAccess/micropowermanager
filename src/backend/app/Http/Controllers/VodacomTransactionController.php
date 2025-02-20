@@ -8,11 +8,7 @@ use App\Services\VodacomService;
 use Illuminate\Http\Request;
 
 class VodacomTransactionController extends Controller {
-    private VodacomService $vodacomService;
-
-    public function __construct(VodacomService $vodacomService) {
-        $this->vodacomService = $vodacomService;
-    }
+    public function __construct(private VodacomService $vodacomService) {}
 
     /**
      * Store a newly created resource in storage.
