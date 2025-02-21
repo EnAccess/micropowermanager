@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "MicroPowerManager API docs",
-        "_postman_id": "abc57f86-7af4-418d-ba9d-f3882f8ee41b",
+        "_postman_id": "9e20c2e5-9c30-477c-b311-062db4331fb7",
         "description": "\n![MPM Logo](https:\/\/micropowermanager.com\/assets\/images\/Website_Illustrations_Logo.png)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.<\/em>\n<\/p>\n\n---\n\n# \ud83d\udcab Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -95,7 +95,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"ritchie.floyd@example.com\",\"password\":\"CPOSk(U*b0-PLHNA|@@\"}"
+                            "raw": "{\"email\":\"zena.schinner@example.net\",\"password\":\"5%[IgG_j\"}"
                         },
                         "description": "",
                         "auth": {
@@ -236,7 +236,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"mwintheiser@example.net\",\"password\":\"E6,vWb02ZyG\"}"
+                            "raw": "{\"email\":\"rutherford.garret@example.com\",\"password\":\"RHCIX2dk1&a\"}"
                         },
                         "description": "",
                         "auth": {
@@ -481,7 +481,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"corrupti\",\"mini_grid_id\":\"molestiae\"}"
+                            "raw": "{\"name\":\"aperiam\",\"mini_grid_id\":\"molestiae\"}"
                         },
                         "description": "",
                         "auth": {
@@ -520,7 +520,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"corporis\",\"mini_grid_id\":\"est\"}"
+                            "raw": "{\"name\":\"error\",\"mini_grid_id\":\"cum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -599,7 +599,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"country_name\":\"ducimus\",\"country_code\":\"fktern\"}"
+                            "raw": "{\"country_name\":\"quibusdam\",\"country_code\":\"ybobwprrmejhpwcgfglvz\"}"
                         },
                         "description": "",
                         "auth": {
@@ -676,13 +676,13 @@
                                 {
                                     "id": "page",
                                     "key": "page",
-                                    "value": "2",
+                                    "value": "14",
                                     "description": ""
                                 },
                                 {
                                     "id": "in_use",
                                     "key": "in_use",
-                                    "value": "1",
+                                    "value": "7",
                                     "description": "to list wether used or all meters"
                                 }
                             ]
@@ -735,7 +735,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"et\",\"manufacturer_id\":9,\"meter_type_id\":3}"
+                            "raw": "{\"serial_number\":\"non\",\"manufacturer_id\":14,\"meter_type_id\":2}"
                         },
                         "description": "",
                         "auth": {
@@ -822,7 +822,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":0.78839847,\"serial_number\":\"et\",\"meter_type_id\":8593603.7474,\"in_use\":3096.4712268,\"manufacturer_id\":4.0573348,\"connection_type_id\":41746948.5,\"connection_group_id\":776.23,\"tariff_id\":846757.06431052}"
+                            "raw": "{\"id\":3725401.4317295,\"serial_number\":\"laudantium\",\"meter_type_id\":3.411,\"in_use\":24.3,\"manufacturer_id\":35718107.31,\"connection_type_id\":12.8951,\"connection_group_id\":54102.5,\"tariff_id\":1}"
                         },
                         "description": "",
                         "auth": {
@@ -853,7 +853,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"term\":\"dicta\"}"
+                            "raw": "{\"term\":\"voluptas\"}"
                         },
                         "description": "",
                         "auth": {
@@ -881,7 +881,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "atque",
+                                    "value": "qui",
                                     "description": ""
                                 }
                             ]
@@ -924,13 +924,13 @@
                                 {
                                     "id": "meterId",
                                     "key": "meterId",
-                                    "value": "sit",
+                                    "value": "ea",
                                     "description": ""
                                 },
                                 {
                                     "id": "The",
                                     "key": "The",
-                                    "value": "iure",
+                                    "value": "rerum",
                                     "description": "ID of the meter to be delete"
                                 }
                             ]
@@ -966,7 +966,7 @@
                                 {
                                     "id": "meter",
                                     "key": "meter",
-                                    "value": "17",
+                                    "value": "11",
                                     "description": ""
                                 }
                             ]
@@ -984,7 +984,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"points\":\"delectus\"}"
+                            "raw": "{\"points\":\"in\"}"
                         },
                         "description": "",
                         "auth": {
@@ -1005,7 +1005,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "aut",
+                                    "value": "molestiae",
                                     "description": ""
                                 }
                             ]
@@ -1061,19 +1061,19 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "quis",
+                                    "value": "et",
                                     "description": ""
                                 },
                                 {
                                     "id": "start",
                                     "key": "start",
-                                    "value": "possimus",
+                                    "value": "ut",
                                     "description": "YYYY-mm-dd format"
                                 },
                                 {
                                     "id": "end",
                                     "key": "end",
-                                    "value": "esse",
+                                    "value": "ut",
                                     "description": "YYYY-mm-dd format"
                                 }
                             ]
@@ -1116,13 +1116,13 @@
                                 {
                                     "id": "miniGrid",
                                     "key": "miniGrid",
-                                    "value": "quas",
+                                    "value": "dolore",
                                     "description": ""
                                 },
                                 {
                                     "id": "mini_grid_id",
                                     "key": "mini_grid_id",
-                                    "value": "accusamus",
+                                    "value": "repellendus",
                                     "description": ""
                                 }
                             ]
@@ -1165,13 +1165,13 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "quos",
+                                    "value": "quam",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "est",
+                                    "value": "aut",
                                     "description": ""
                                 }
                             ]
@@ -1262,7 +1262,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "in",
                                     "description": "The ID of the address."
                                 }
                             ]
@@ -1366,7 +1366,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "7",
+                                    "value": "627",
                                     "description": "The ID of the transaction."
                                 }
                             ]
@@ -1470,7 +1470,7 @@
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "0203031",
+                                    "value": "13",
                                     "description": ""
                                 }
                             ]
@@ -1746,25 +1746,25 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "750936",
+                                    "value": "422",
                                     "description": ""
                                 },
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "qui",
+                                    "value": "ut",
                                     "description": ""
                                 },
                                 {
                                     "id": "limit",
                                     "key": "limit",
-                                    "value": "in",
+                                    "value": "sapiente",
                                     "description": ""
                                 },
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "ex",
+                                    "value": "architecto",
                                     "description": ""
                                 }
                             ]
@@ -1820,19 +1820,19 @@
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "itaque",
+                                    "value": "enim",
                                     "description": ""
                                 },
                                 {
                                     "id": "limit",
                                     "key": "limit",
-                                    "value": "optio",
+                                    "value": "quo",
                                     "description": ""
                                 },
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "qui",
+                                    "value": "itaque",
                                     "description": ""
                                 }
                             ]
@@ -1936,7 +1936,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "rerum",
+                                    "value": "est",
                                     "description": ""
                                 }
                             ]
@@ -2040,7 +2040,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "assumenda",
+                                    "value": "qui",
                                     "description": ""
                                 }
                             ]
@@ -2106,7 +2106,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"person_id\":\"tempore\",\"down_payment\":295980.300253311,\"tenure\":61,\"first_payment_date\":\"non\",\"agent_assigned_appliance_id\":\"accusantium\"}"
+                            "raw": "{\"person_id\":\"reprehenderit\",\"down_payment\":12040581.09108,\"tenure\":2,\"first_payment_date\":\"eaque\",\"agent_assigned_appliance_id\":\"nemo\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2175,7 +2175,7 @@
                                 {
                                     "id": "ticketId",
                                     "key": "ticketId",
-                                    "value": "delectus",
+                                    "value": "eos",
                                     "description": ""
                                 }
                             ]
@@ -2231,7 +2231,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "magnam",
+                                    "value": "aut",
                                     "description": ""
                                 }
                             ]
@@ -2297,7 +2297,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"owner_id\":\"non\",\"title\":\"dicta\",\"description\":\"pariatur\"}"
+                            "raw": "{\"owner_id\":\"sit\",\"title\":\"unde\",\"description\":\"voluptatem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2576,7 +2576,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"molestias\",\"name\":\"fzlffla\",\"surname\":\"seebesoatbyqeuvvculiryngflodjapuqwqiolarf\",\"password\":\"&St\\\"Y\\\/^+7b{gYp\",\"city_id\":\"enim\",\"agent_commission_id\":\"voluptas\"}"
+                            "raw": "{\"email\":\"laudantium\",\"name\":\"rbfakwnziuzudmgnhxevgyfjilxmuhsrzbaghl\",\"surname\":\"qnoqibknilshslopnxcugotndvlmvddopzmgszdcsiupwbrbnjttrduaflsrelzpsxej\",\"password\":\"p[m:_=-q0mOx:GC@\\\\M\",\"city_id\":\"eum\",\"agent_commission_id\":\"itaque\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2755,7 +2755,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":9,\"user_id\":12,\"appliance_id\":\"totam\",\"cost\":8,\"appliance_type_id\":10}"
+                            "raw": "{\"agent_id\":16,\"user_id\":10,\"appliance_id\":\"quo\",\"cost\":6,\"appliance_type_id\":3}"
                         },
                         "description": "",
                         "auth": {
@@ -2776,7 +2776,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "possimus",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -2832,7 +2832,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "dolor",
+                                    "value": "sapiente",
                                     "description": ""
                                 }
                             ]
@@ -2946,7 +2946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"odio\",\"energy_commission\":616.878,\"appliance_commission\":22332853.7081,\"risk_balance\":130938.2101}"
+                            "raw": "{\"name\":\"et\",\"energy_commission\":2.312878062,\"appliance_commission\":309002443.0263,\"risk_balance\":5018387.072584}"
                         },
                         "description": "",
                         "auth": {
@@ -2967,7 +2967,7 @@
                                 {
                                     "id": "agentCommissionId",
                                     "key": "agentCommissionId",
-                                    "value": "sit",
+                                    "value": "saepe",
                                     "description": ""
                                 }
                             ]
@@ -3003,7 +3003,7 @@
                                 {
                                     "id": "agentCommissionId",
                                     "key": "agentCommissionId",
-                                    "value": "voluptas",
+                                    "value": "nisi",
                                     "description": ""
                                 }
                             ]
@@ -3021,7 +3021,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"voluptatum\",\"energy_commission\":362567381.95,\"appliance_commission\":18.3616,\"risk_balance\":3546.3}"
+                            "raw": "{\"name\":\"facilis\",\"energy_commission\":70.052,\"appliance_commission\":21526.08705,\"risk_balance\":9150.518955}"
                         },
                         "description": "",
                         "auth": {
@@ -3090,7 +3090,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "dolorem",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -3156,7 +3156,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":\"dignissimos\",\"amount\":\"sit\"}"
+                            "raw": "{\"agent_id\":\"voluptatibus\",\"amount\":\"reprehenderit\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3177,7 +3177,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "99",
+                                    "value": "40",
                                     "description": ""
                                 }
                             ]
@@ -3233,7 +3233,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "4",
+                                    "value": "20",
                                     "description": ""
                                 }
                             ]
@@ -3299,7 +3299,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":\"et\",\"amount\":18154.82464975}"
+                            "raw": "{\"agent_id\":\"debitis\",\"amount\":5.44}"
                         },
                         "description": "",
                         "auth": {
@@ -3605,7 +3605,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"owpjhbrcyasgzfncujodarsmxnbunlcoeokvdais\",\"surname\":\"frqwwkhshfzkzyxlqvaptoxfdulynacjnhsaqbfrppbcjxcajeadbzaurfm\",\"phone\":88,\"tariff_id\":\"enim\",\"geo_points\":\"eaque\",\"serial_number\":\"vero\",\"manufacturer\":\"voluptatibus\",\"meter_type\":\"cum\"}"
+                            "raw": "{\"name\":\"gmcguenebnobdjhmsfjknyuchiussdtkkqlwzxfwbiwlcrdhnrumvlddybfjxfxqkudwjgvqhvowi\",\"surname\":\"ysrdnmnbmhedcjrphonlolmmcfvozwqhcxoduzjcdnyomwjgafhhd\",\"phone\":61,\"tariff_id\":\"et\",\"geo_points\":\"autem\",\"serial_number\":\"enim\",\"manufacturer\":\"distinctio\",\"meter_type\":\"repellendus\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3636,7 +3636,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"fugit\",\"name\":\"iekcstvdhgazjjjybfimbgmhzqalltxslsbqwlorfxqngmoysbpdfozdczcdehuxwblihylxeuelwjo\",\"password\":\"|<}m[]bbs[bo=5_m{*\"}"
+                            "raw": "{\"email\":\"velit\",\"name\":\"ugd\",\"password\":\"#t)O`vtD+]>[E'\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3815,7 +3815,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"tempore\"}"
+                            "raw": "{\"city_id\":\"facere\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3854,7 +3854,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"quisquam\"}"
+                            "raw": "{\"city_id\":\"tenetur\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3893,7 +3893,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"password\":\"\\\"|K-}dd|jqy1#I\",\"confirm_password\":\"et\"}"
+                            "raw": "{\"password\":\"V^o|-u32K?j3>v8[%\",\"confirm_password\":\"ut\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3924,7 +3924,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"quisquam\"}"
+                            "raw": "{\"email\":\"dolores\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4003,7 +4003,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"asset_type_id\":\"cupiditate\",\"name\":\"gtzfadtrmcvbvudefnskhicnaideuwdcj\",\"price\":54}"
+                            "raw": "{\"asset_type_id\":\"ipsa\",\"name\":\"zbcccdpsbekrqbhbugovcfhbnxupwzuwuqrgccclmarvbqwaivumcdhcuelknyxicyqaapaxhltemaf\",\"price\":46}"
                         },
                         "description": "",
                         "auth": {
@@ -4042,7 +4042,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"oorjggouxjpynbxwjuirzwthjndm\",\"price\":920.2}"
+                            "raw": "{\"name\":\"bzykdcipuwjmnknkliaarghghboiospshkqngbdbrjrprbsdolsombiyhuhewrbihtc\",\"price\":1767957.4}"
                         },
                         "description": "",
                         "auth": {
@@ -4197,7 +4197,7 @@
                                 {
                                     "id": "applianceId",
                                     "key": "applianceId",
-                                    "value": "impedit",
+                                    "value": "dolor",
                                     "description": ""
                                 }
                             ]
@@ -4311,7 +4311,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"xysgpiznowjumhfwtdkvmlohfufodpsajctswfsakqs\"}"
+                            "raw": "{\"name\":\"odnbczhslrdxmwkphvmllioxanhsufuskteqjvtvgtajbjkvrzscmjivhmyky\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4332,7 +4332,7 @@
                                 {
                                     "id": "asset_type_id",
                                     "key": "asset_type_id",
-                                    "value": "et",
+                                    "value": "reiciendis",
                                     "description": "The ID of the asset type."
                                 }
                             ]
@@ -4350,7 +4350,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"nwesyxypiykbimhljpzjbvkpupnwglgkmznqvnkahshtdt\"}"
+                            "raw": "{\"name\":\"ojnouhvrhfjlixobgylyshdukykqumluobeblidutduriyjxxa\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4371,7 +4371,7 @@
                                 {
                                     "id": "asset_type_id",
                                     "key": "asset_type_id",
-                                    "value": "quod",
+                                    "value": "similique",
                                     "description": "The ID of the asset type."
                                 }
                             ]
@@ -4407,7 +4407,7 @@
                                 {
                                     "id": "appliance_rate_id",
                                     "key": "appliance_rate_id",
-                                    "value": "eos",
+                                    "value": "odit",
                                     "description": "The ID of the appliance rate."
                                 }
                             ]
@@ -4443,7 +4443,7 @@
                                 {
                                     "id": "appliance_person_id",
                                     "key": "appliance_person_id",
-                                    "value": "similique",
+                                    "value": "ea",
                                     "description": "The ID of the appliance person."
                                 }
                             ]
@@ -4583,13 +4583,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "provident",
+                                    "value": "earum",
                                     "description": "The ID of the post."
                                 },
                                 {
                                     "id": "lang",
                                     "key": "lang",
-                                    "value": "accusamus",
+                                    "value": "ipsam",
                                     "description": "The language."
                                 }
                             ]
@@ -4607,7 +4607,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"nam\",\"geo_type\":\"quos\",\"geo_data\":\"enim\",\"manager_id\":20,\"cities\":\"minima\"}"
+                            "raw": "{\"name\":\"dolorem\",\"geo_type\":\"distinctio\",\"geo_data\":\"suscipit\",\"manager_id\":6,\"cities\":\"aut\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5222,7 +5222,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"hic\"}"
+                            "raw": "{\"name\":\"nobis\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5261,7 +5261,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"autem\"}"
+                            "raw": "{\"name\":\"deserunt\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5414,7 +5414,7 @@
                                 {
                                     "id": "connectionTypeId",
                                     "key": "connectionTypeId",
-                                    "value": "sunt",
+                                    "value": "consequatur",
                                     "description": ""
                                 }
                             ]
@@ -5564,7 +5564,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"sunt\",\"name\":\"zfmsuyvbfjstlfyllcnwqodrezxfyil\",\"surname\":\"vbyvrsdzxteggimvklwixytjwcetpxeam\",\"birth_date\":\"\\\"2025-02-20\",\"sex\":\"male\",\"education\":\"cadofvcqncpynoscbqhxnvyqedd\",\"street\":\"fgmelmxmbxagnvvogqyqqvkkgiqsxrsbtykvsblpzqtyulhn\",\"email\":\"skye37@example.org\",\"phone\":65}"
+                            "raw": "{\"title\":\"et\",\"name\":\"xtkxcjzkdciufwjbgyqjbqntbcwmtktsykcahwcqmkxscqathofnyagwjodubevzhatlcoitqjjxhxrhbb\",\"surname\":\"vfhpqgkzhiafqtmdxautedwxcgj\",\"birth_date\":\"\\\"2025-02-21\",\"sex\":\"female\",\"education\":\"shyvyoivktgjrwqnglxjxyxlgbupjkfudyrygmoad\",\"street\":\"lft\",\"email\":\"franco90@example.net\",\"phone\":16}"
                         },
                         "description": "",
                         "auth": {
@@ -5699,7 +5699,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"cumque\",\"phone\":\"vel\",\"email\":\"kfeil@example.com\",\"contact_person\":\"tzhxqxtodrtcfwqubungbactd\",\"website\":\"bgfwpbzvttrqpqbyehsdkxfeyobgljodguqeleprzbztlpptwbgqyripktxyvletshvkktxlpfxjbvmmqthcsxg\",\"city_id\":8,\"address\":\"cupiditate\"}"
+                            "raw": "{\"name\":\"inventore\",\"phone\":\"mollitia\",\"email\":\"stehr.lue@example.net\",\"contact_person\":\"mkppytknkrkqbaffjavvdviueaicwndkklngpclvzkhqgmrijviaiskqgqrhc\",\"website\":\"hdartzdkyvbcneinheigghlwammkpdkmroesxcdzsbymvfrlbazvl\",\"city_id\":20,\"address\":\"sapiente\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5778,7 +5778,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"yhzos\",\"cluster_id\":\"aut\",\"geo_data\":\"veniam\"}"
+                            "raw": "{\"name\":\"zknakrrjjohzsqbpd\",\"cluster_id\":\"exercitationem\",\"geo_data\":\"unde\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5817,7 +5817,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":20}"
+                            "raw": "{\"id\":1}"
                         },
                         "description": "",
                         "auth": {
@@ -5986,7 +5986,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "labore",
+                                    "value": "voluptate",
                                     "description": ""
                                 }
                             ]
@@ -6032,7 +6032,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "et",
+                                    "value": "recusandae",
                                     "description": ""
                                 }
                             ]
@@ -6050,7 +6050,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"nihil\"}"
+                            "raw": "{\"city_id\":\"dolorum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6071,7 +6071,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "nesciunt",
+                                    "value": "laborum",
                                     "description": ""
                                 }
                             ]
@@ -6089,7 +6089,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"aut\"}"
+                            "raw": "{\"city_id\":\"est\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6158,7 +6158,7 @@
                                 {
                                     "id": "key",
                                     "key": "key",
-                                    "value": "qui",
+                                    "value": "voluptates",
                                     "description": "The key."
                                 }
                             ]
@@ -6214,7 +6214,7 @@
                                 {
                                     "id": "mapSettings",
                                     "key": "mapSettings",
-                                    "value": "id",
+                                    "value": "sunt",
                                     "description": ""
                                 }
                             ]
@@ -6298,7 +6298,7 @@
                                 {
                                     "id": "ticketSettings",
                                     "key": "ticketSettings",
-                                    "value": "sint",
+                                    "value": "natus",
                                     "description": ""
                                 }
                             ]
@@ -6476,7 +6476,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"mail_host\":\"pgdxxjhayfraxdjpopnraeceoypwomkezggyrlpougghzznqjqamhuywidzbssksejuzqfmdob\",\"mail_port\":1.931,\"mail_encryption\":\"ddvrxjtpkykvkrqnvrgpdzzdxhtcjveqabjyetzvtprguwoaujxdvmzpwqhpo\",\"mail_username\":\"tdmwwcpbfwfvepewujdei\",\"mail_password\":\"aiogelayxoytppejluxvqdimlafefxbsnnguwcyumbpeklxxoscakwrnhpyhgsduovsgevzihszmpjddndqgztcx\"}"
+                            "raw": "{\"mail_host\":\"urkrqhvmxiwzjgotshbrzkjmrexxicyqjzibgkuskazlgemmgkuavt\",\"mail_port\":3214.3,\"mail_encryption\":\"effojpurgnidumxctcguynfdwwtiqyobzmztpfgxzucnixwemtwg\",\"mail_username\":\"sjbowkcbwelvgbsaxtakzkbeluvlthprayxoeazlmejtnltvmrrrjafurkizfecd\",\"mail_password\":\"zzyfedtsdtptrmiswdrdqo\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6515,7 +6515,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"mail_host\":\"dtplkjuc\",\"mail_port\":57991533,\"mail_encryption\":\"gpsqdkyndnabhdmecmi\",\"mail_username\":\"awsuppfrldhseqykxmxtxgeopayhgectrtusgygoynokpualunstks\",\"mail_password\":\"cjxkbixsiejszmzpyygsnbbixsmzmduspjnngqusdvwgwnzpigszwskdxtgwxx\"}"
+                            "raw": "{\"mail_host\":\"tfghsbkinfxtfaclextyqubnzhmbvmapkjnmztjuuracgkjkyqodonzfnkhlgyvgzclcmudbdvugeeavn\",\"mail_port\":482118.575391,\"mail_encryption\":\"vgmpgkegzafmapqxkidxffymnfjhxtfatoprdsrhmgpmyhiqxwfphtoqbbg\",\"mail_username\":\"aojcozlttcvhqwjnymxaoxwbtkrxbmxprzlpjkmkabdnnixmssuwuxxdcxpfuxfjzwnfqi\",\"mail_password\":\"ysjsucbcohzeq\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6840,7 +6840,7 @@
                                 {
                                     "id": "smsApplianceRemindRate_id",
                                     "key": "smsApplianceRemindRate_id",
-                                    "value": "6",
+                                    "value": "4",
                                     "description": "The ID of the smsApplianceRemindRate."
                                 }
                             ]
@@ -6886,7 +6886,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"appliance_type_id\":\"odio\",\"overdue_remind_rate\":\"odit\",\"remind_rate\":\"vel\"}"
+                            "raw": "{\"appliance_type_id\":\"voluptas\",\"overdue_remind_rate\":\"sit\",\"remind_rate\":\"explicabo\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6973,7 +6973,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"soluta\"}"
+                            "raw": "{\"token\":\"adipisci\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7004,7 +7004,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"et\"}"
+                            "raw": "{\"token\":\"dolor\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7157,13 +7157,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "qui",
+                                    "value": "ut",
                                     "description": "The ID of the report downloading."
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "placeat",
+                                    "value": "commodi",
                                     "description": "The slug of the download."
                                 }
                             ]
@@ -7247,7 +7247,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "nobis",
+                                    "value": "voluptatem",
                                     "description": "The ID of the trend."
                                 }
                             ]
@@ -7283,7 +7283,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "optio",
+                                    "value": "velit",
                                     "description": "The ID of the ticket."
                                 }
                             ]
@@ -7395,7 +7395,7 @@
                                 {
                                     "id": "number",
                                     "key": "number",
-                                    "value": "quo",
+                                    "value": "quia",
                                     "description": ""
                                 }
                             ]
@@ -7499,7 +7499,7 @@
                                 {
                                     "id": "search",
                                     "key": "search",
-                                    "value": "reiciendis",
+                                    "value": "quia",
                                     "description": "The search."
                                 }
                             ]
@@ -7565,7 +7565,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"message\":\"velit\"}"
+                            "raw": "{\"message\":\"autem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7596,7 +7596,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"sender\":\"minus\",\"message\":\"sit\"}"
+                            "raw": "{\"sender\":\"minus\",\"message\":\"ipsa\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7645,13 +7645,13 @@
                                 {
                                     "id": "uuid",
                                     "key": "uuid",
-                                    "value": "934cb0c4-d874-37e8-b4e0-9c5b6be6fb52",
+                                    "value": "27adfd95-2220-32e7-8a23-01357b209b2c",
                                     "description": ""
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "illo",
+                                    "value": "incidunt",
                                     "description": "The slug of the delivered."
                                 }
                             ]
@@ -7707,13 +7707,13 @@
                                 {
                                     "id": "uuid",
                                     "key": "uuid",
-                                    "value": "d54adb0a-150c-308f-864e-712946ad43d1",
+                                    "value": "b74ba531-7ebf-3db8-ab3e-d4ce8902dd80",
                                     "description": ""
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "aut",
+                                    "value": "eaque",
                                     "description": "The slug of the sent."
                                 }
                             ]
@@ -7769,7 +7769,7 @@
                                 {
                                     "id": "connectionTypeId",
                                     "key": "connectionTypeId",
-                                    "value": "sunt",
+                                    "value": "vel",
                                     "description": ""
                                 }
                             ]
@@ -7835,7 +7835,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"bsrsqqlxmwuwdkwjgosnohgxfmgkexywmaqxcheulelxzrmpnurjvzs\",\"connection_type_id\":1798.39,\"tariff_id\":200147.389662397}"
+                            "raw": "{\"name\":\"rmntffsralumfxpwbsnczjpcdltuvwdwuqiwdxwxtzpjnvodxjxuzogpomwytsktlfyokxinkntqiz\",\"connection_type_id\":17507798.9102,\"tariff_id\":267540.55293}"
                         },
                         "description": "",
                         "auth": {
@@ -7950,7 +7950,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data\":\"sint\",\"period\":\"non\",\"targetForType\":\"modi\",\"targetForId\":50}"
+                            "raw": "{\"data\":\"quisquam\",\"period\":\"placeat\",\"targetForType\":\"eum\",\"targetForId\":70}"
                         },
                         "description": "",
                         "auth": {
@@ -8090,13 +8090,13 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "est",
+                                    "value": "ut",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "16",
                                     "description": ""
                                 }
                             ]
@@ -8149,7 +8149,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"soluta\",\"price\":17,\"currency\":\"ut\",\"factor\":\"ducimus\",\"access_rate_period\":37,\"access_rate_amount\":9,\"social_tariff\":\"eaque\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":0.18441}"
+                            "raw": "{\"name\":\"perferendis\",\"price\":2,\"currency\":\"aut\",\"factor\":\"est\",\"access_rate_period\":9,\"access_rate_amount\":13,\"social_tariff\":\"consequuntur\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":0.6551444}"
                         },
                         "description": "",
                         "auth": {
@@ -8170,7 +8170,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "alias",
+                                    "value": "rerum",
                                     "description": ""
                                 }
                             ]
@@ -8188,7 +8188,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"modi\",\"price\":43673.8499,\"currency\":\"jycxmncfxkffpmdr\",\"factor\":16,\"access_rate_period\":79,\"access_rate_amount\":9,\"social_tariff\":\"magnam\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":15131972.2}"
+                            "raw": "{\"name\":\"ratione\",\"price\":5.491398191,\"currency\":\"bwptjdodo\",\"factor\":2,\"access_rate_period\":11,\"access_rate_amount\":5,\"social_tariff\":\"nesciunt\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":4.269377854}"
                         },
                         "description": "",
                         "auth": {
@@ -8209,7 +8209,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "beatae",
+                                    "value": "quo",
                                     "description": ""
                                 }
                             ]
@@ -8245,7 +8245,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "voluptas",
+                                    "value": "quia",
                                     "description": ""
                                 }
                             ]
@@ -8301,13 +8301,13 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "ea",
+                                    "value": "voluptatibus",
                                     "description": ""
                                 },
                                 {
                                     "id": "changeId",
                                     "key": "changeId",
-                                    "value": "dicta",
+                                    "value": "excepturi",
                                     "description": ""
                                 }
                             ]
@@ -8343,13 +8343,13 @@
                                 {
                                     "id": "meterSerial",
                                     "key": "meterSerial",
-                                    "value": "asperiores",
+                                    "value": "minima",
                                     "description": ""
                                 },
                                 {
                                     "id": "tariffId",
                                     "key": "tariffId",
-                                    "value": "officiis",
+                                    "value": "dolores",
                                     "description": ""
                                 }
                             ]
@@ -8469,7 +8469,7 @@
                                 {
                                     "id": "timeOfUsageId",
                                     "key": "timeOfUsageId",
-                                    "value": "3",
+                                    "value": "10",
                                     "description": ""
                                 }
                             ]
@@ -8733,7 +8733,7 @@
                                 {
                                     "id": "mpmPluginId",
                                     "key": "mpmPluginId",
-                                    "value": "fugit",
+                                    "value": "quaerat",
                                     "description": ""
                                 }
                             ]
@@ -8903,7 +8903,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"dolore\",\"address\":\"sit\",\"phone\":\"dolorem\",\"email\":\"est\",\"protected_page_password\":\"non\"}"
+                            "raw": "{\"name\":\"et\",\"address\":\"est\",\"phone\":\"laudantium\",\"email\":\"quo\",\"protected_page_password\":\"hic\"}"
                         },
                         "description": "",
                         "auth": {
@@ -8998,7 +8998,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":350503005.90078,\"person_id\":72.319,\"device_type\":\"deleniti\",\"device_serial\":\"quis\",\"device_id\":11700045.925151063}"
+                            "raw": "{\"id\":62075648.65226088,\"person_id\":1261192.64,\"device_type\":\"occaecati\",\"device_serial\":\"et\",\"device_id\":44596.281852}"
                         },
                         "description": "",
                         "auth": {
@@ -9095,13 +9095,13 @@
                                 {
                                     "id": "meterSerial",
                                     "key": "meterSerial",
-                                    "value": "est",
+                                    "value": "porro",
                                     "description": ""
                                 },
                                 {
                                     "id": "amount",
                                     "key": "amount",
-                                    "value": "delectus",
+                                    "value": "ullam",
                                     "description": ""
                                 }
                             ]
@@ -9215,7 +9215,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"wugd\",\"manufacturer_id\":\"quo\",\"asset_id\":\"in\"}"
+                            "raw": "{\"serial_number\":\"trdnxt\",\"manufacturer_id\":\"id\",\"asset_id\":\"quas\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9342,7 +9342,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"wfqyuikmk\",\"manufacturer_id\":\"corrupti\",\"asset_id\":\"placeat\"}"
+                            "raw": "{\"serial_number\":\"yatptlu\",\"manufacturer_id\":\"id\",\"asset_id\":\"ipsam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9411,7 +9411,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "12",
+                                    "value": "18",
                                     "description": ""
                                 }
                             ]
@@ -9495,7 +9495,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "qui",
+                                    "value": "possimus",
                                     "description": "The slug of the transaction."
                                 }
                             ]
@@ -9551,7 +9551,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "est",
+                                    "value": "commodi",
                                     "description": "The slug of the debt."
                                 }
                             ]
@@ -9713,7 +9713,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_key\":\"beatae\",\"username\":\"a\",\"short_code\":\"vel\"}"
+                            "raw": "{\"api_key\":\"voluptatem\",\"username\":\"numquam\",\"short_code\":\"exercitationem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9734,7 +9734,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "molestias",
+                                    "value": "a",
                                     "description": "The slug of the callback."
                                 }
                             ]
@@ -9770,7 +9770,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "tempora",
+                                    "value": "magnam",
                                     "description": "The slug of the callback."
                                 }
                             ]
@@ -9998,7 +9998,7 @@
                                 {
                                     "id": "site_id",
                                     "key": "site_id",
-                                    "value": "10",
+                                    "value": "13",
                                     "description": "The ID of the site."
                                 }
                             ]
@@ -10016,7 +10016,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"thundercloud_url\":\"doloribus\",\"thundercloud_token\":\"laboriosam\"}"
+                            "raw": "{\"thundercloud_url\":\"praesentium\",\"thundercloud_token\":\"est\"}"
                         },
                         "description": "",
                         "auth": {
@@ -10143,7 +10143,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_key\":\"aut\",\"api_secret\":\"neque\"}"
+                            "raw": "{\"api_key\":\"animi\",\"api_secret\":\"veniam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -10596,7 +10596,7 @@
                                 {
                                     "id": "customer_id",
                                     "key": "customer_id",
-                                    "value": "9",
+                                    "value": "2",
                                     "description": "The ID of the customer."
                                 }
                             ]
@@ -10614,7 +10614,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"low_balance_limit\":\"sint\"}"
+                            "raw": "{\"low_balance_limit\":\"quo\"}"
                         },
                         "description": "",
                         "auth": {
@@ -10731,7 +10731,7 @@
                                 {
                                     "id": "tariffId",
                                     "key": "tariffId",
-                                    "value": "at",
+                                    "value": "vitae",
                                     "description": ""
                                 }
                             ]
@@ -11399,7 +11399,7 @@
                                 {
                                     "id": "smsFeedbackWord_id",
                                     "key": "smsFeedbackWord_id",
-                                    "value": "10",
+                                    "value": "16",
                                     "description": "The ID of the smsFeedbackWord."
                                 }
                             ]
@@ -11493,7 +11493,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"eos\",\"password\":\"rem\"}"
+                            "raw": "{\"username\":\"facere\",\"password\":\"iusto\"}"
                         },
                         "description": "",
                         "auth": {
@@ -11946,7 +11946,7 @@
                                 {
                                     "id": "customer",
                                     "key": "customer",
-                                    "value": "ad",
+                                    "value": "aut",
                                     "description": ""
                                 }
                             ]
@@ -11964,7 +11964,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":\"corrupti\",\"low_balance_warning\":\"id\",\"energy_price\":\"vel\"}"
+                            "raw": "{\"id\":\"sunt\",\"low_balance_warning\":\"ut\",\"energy_price\":\"nostrum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -11985,7 +11985,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "praesentium",
+                                    "value": "iste",
                                     "description": ""
                                 }
                             ]
@@ -12473,7 +12473,7 @@
                                 {
                                     "id": "customer",
                                     "key": "customer",
-                                    "value": "dignissimos",
+                                    "value": "pariatur",
                                     "description": ""
                                 }
                             ]
@@ -12805,7 +12805,7 @@
                                 {
                                     "id": "smsFeedbackWord_id",
                                     "key": "smsFeedbackWord_id",
-                                    "value": "8",
+                                    "value": "3",
                                     "description": "The ID of the smsFeedbackWord."
                                 }
                             ]
@@ -12899,7 +12899,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"amet\",\"password\":\"dolorem\"}"
+                            "raw": "{\"username\":\"enim\",\"password\":\"vero\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13208,7 +13208,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "15",
+                                    "value": "9",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13264,7 +13264,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "8",
+                                    "value": "6",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13320,7 +13320,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "9",
+                                    "value": "3",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13376,7 +13376,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "20",
+                                    "value": "4",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13546,7 +13546,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":\"maxime\",\"api_key\":\"quod\"}"
+                            "raw": "{\"user_id\":\"quasi\",\"api_key\":\"dolorum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13625,7 +13625,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"company_name\":\"harum\",\"username\":\"excepturi\",\"password\":\"ut\"}"
+                            "raw": "{\"company_name\":\"quam\",\"username\":\"officiis\",\"password\":\"impedit\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13704,7 +13704,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"company_name\":\"reprehenderit\",\"user_name\":\"accusantium\",\"password\":\"placeat\",\"password_vend\":\"et\"}"
+                            "raw": "{\"company_name\":\"quo\",\"user_name\":\"in\",\"password\":\"et\",\"password_vend\":\"vel\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13735,7 +13735,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"meter_number\":\"dicta\",\"amount\":\"nesciunt\",\"cipher\":\"voluptas\",\"timestamp\":\"ipsa\"}"
+                            "raw": "{\"meter_number\":\"voluptas\",\"amount\":\"quae\",\"cipher\":\"eum\",\"timestamp\":\"ut\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13766,7 +13766,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"transaction_id\":\"ullam\",\"transaction_reference\":\"ut\",\"cipher\":\"quos\",\"amount\":\"et\",\"timestamp\":\"itaque\"}"
+                            "raw": "{\"transaction_id\":\"eligendi\",\"transaction_reference\":\"similique\",\"cipher\":\"maiores\",\"amount\":\"aspernatur\",\"timestamp\":\"officia\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13873,7 +13873,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"csv\":\"ratione\"}"
+                            "raw": "{\"csv\":\"illum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13952,7 +13952,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_token\":\"deleniti\"}"
+                            "raw": "{\"api_token\":\"et\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13973,7 +13973,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "quidem",
+                                    "value": "fuga",
                                     "description": "The slug of the webhook."
                                 }
                             ]
@@ -14067,7 +14067,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"merchant_id\":\"qui\",\"secret_key\":\"possimus\"}"
+                            "raw": "{\"merchant_id\":\"non\",\"secret_key\":\"unde\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14088,7 +14088,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "cum",
+                                    "value": "qui",
                                     "description": "The slug of the start."
                                 }
                             ]
@@ -14106,7 +14106,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"meterSerial\":\"at\",\"amount\":482859288.9}"
+                            "raw": "{\"meterSerial\":\"nemo\",\"amount\":20.002}"
                         },
                         "description": "",
                         "auth": {
@@ -14127,7 +14127,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "cupiditate",
+                                    "value": "doloremque",
                                     "description": "The slug of the callback."
                                 }
                             ]
@@ -14221,7 +14221,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_url\":\"est\",\"certificate_password\":\"non\"}"
+                            "raw": "{\"api_url\":\"officiis\",\"certificate_password\":\"voluptatem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14300,7 +14300,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"cert\":\"velit\"}"
+                            "raw": "{\"cert\":\"qui\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14427,7 +14427,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"client_id\":\"distinctio\",\"client_secret\":\"vel\"}"
+                            "raw": "{\"client_id\":\"ipsam\",\"client_secret\":\"ut\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14506,7 +14506,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":\"quia\",\"user_password\":\"provident\"}"
+                            "raw": "{\"user_id\":\"sed\",\"user_password\":\"sed\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14537,7 +14537,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"transaction_file\":\"assumenda\"}"
+                            "raw": "{\"transaction_file\":\"eos\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14616,7 +14616,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"client_id\":\"debitis\",\"client_secret\":\"non\"}"
+                            "raw": "{\"client_id\":\"et\",\"client_secret\":\"qui\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14695,7 +14695,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"saepe\",\"password\":\"optio\"}"
+                            "raw": "{\"user_name\":\"deleniti\",\"password\":\"magni\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14757,7 +14757,7 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "dignissimos",
+                                    "value": "ipsa",
                                     "description": ""
                                 }
                             ]
@@ -14775,7 +14775,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":6}"
+                            "raw": "{\"id\":12}"
                         },
                         "description": "",
                         "auth": {
@@ -14826,7 +14826,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"max_current\":6,\"phase\":19,\"online\":15}"
+                            "raw": "{\"max_current\":6,\"phase\":6,\"online\":12}"
                         },
                         "description": "",
                         "auth": {
@@ -14847,13 +14847,13 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "ipsa",
+                                    "value": "consequuntur",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "incidunt",
+                                    "value": "dolor",
                                     "description": ""
                                 }
                             ]
@@ -14871,7 +14871,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"max_current\":8,\"phase\":4,\"online\":15}"
+                            "raw": "{\"max_current\":5,\"phase\":15,\"online\":14}"
                         },
                         "description": "",
                         "auth": {
@@ -14933,7 +14933,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "necessitatibus",
+                                    "value": "hic",
                                     "description": ""
                                 }
                             ]
@@ -14951,7 +14951,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serialNumber\":\"nostrum\"}"
+                            "raw": "{\"serialNumber\":\"et\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14985,13 +14985,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "18",
+                                    "value": "20",
                                     "description": ""
                                 },
                                 {
                                     "id": "year",
                                     "key": "year",
-                                    "value": "incidunt",
+                                    "value": "cum",
                                     "description": ""
                                 }
                             ]
@@ -15053,7 +15053,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "15",
+                                    "value": "5",
                                     "description": ""
                                 }
                             ]
@@ -15109,7 +15109,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "12",
+                                    "value": "7",
                                     "description": "checks if the person has any debts to the system"
                                 }
                             ]
@@ -15175,7 +15175,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"begin\":\"voluptatem\",\"end\":\"asperiores\"}"
+                            "raw": "{\"begin\":\"asperiores\",\"end\":\"magni\"}"
                         },
                         "description": "",
                         "auth": {
@@ -15202,25 +15202,25 @@
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "repudiandae",
+                                    "value": "nulla",
                                     "description": ""
                                 },
                                 {
                                     "id": "limit",
                                     "key": "limit",
-                                    "value": "5",
+                                    "value": "12",
                                     "description": ""
                                 },
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "delectus",
+                                    "value": "aut",
                                     "description": ""
                                 },
                                 {
                                     "id": "payerId",
                                     "key": "payerId",
-                                    "value": "15",
+                                    "value": "14",
                                     "description": ""
                                 }
                             ]
@@ -15282,7 +15282,7 @@
                                 {
                                     "id": "is_customer",
                                     "key": "is_customer",
-                                    "value": "17",
+                                    "value": "1",
                                     "description": "optinal. To get a list of customers or non customer. Default : 1"
                                 }
                             ]
@@ -15325,13 +15325,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "blanditiis",
+                                    "value": "ut",
                                     "description": ""
                                 },
                                 {
                                     "id": "person",
                                     "key": "person",
-                                    "value": "quibusdam",
+                                    "value": "minima",
                                     "description": "The ID of the person"
                                 }
                             ]
@@ -15374,13 +15374,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "rerum",
+                                    "value": "consequuntur",
                                     "description": ""
                                 },
                                 {
                                     "id": "person",
                                     "key": "person",
-                                    "value": "doloribus",
+                                    "value": "repudiandae",
                                     "description": "The ID of the person"
                                 }
                             ]
@@ -15423,7 +15423,7 @@
                                 {
                                     "id": "is_customer",
                                     "key": "is_customer",
-                                    "value": "1",
+                                    "value": "14",
                                     "description": "optinal. To get a list of customers or non customer. Default : 1"
                                 }
                             ]
@@ -15546,7 +15546,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "iusto",
+                                    "value": "dicta",
                                     "description": ""
                                 }
                             ]
@@ -15589,7 +15589,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "provident",
+                                    "value": "quasi",
                                     "description": ""
                                 }
                             ]
@@ -15635,13 +15635,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "eaque",
+                                    "value": "cum",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "dolorum",
+                                    "value": "minus",
                                     "description": "The ID of the person to update"
                                 }
                             ]
@@ -15687,7 +15687,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "enim",
+                                    "value": "et",
                                     "description": ""
                                 },
                                 {
@@ -15724,7 +15724,7 @@
             "description": "\nAPI endpoints for integrating with Vodacom's M-Pesa payment services",
             "item": [
                 {
-                    "name": "Validate Transaction.",
+                    "name": "Validate Transaction",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15745,7 +15745,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serialNumber\":\"explicabo\",\"amount\":\"voluptatibus\",\"payerPhoneNumber\":\"quod\",\"referenceId\":\"ducimus\"}"
+                            "raw": "{\"serialNumber\":\"ABC123456789\",\"amount\":15000,\"payerPhoneNumber\":\"255712345678\",\"referenceId\":\"ORD-12345-ABC\"}"
                         },
                         "description": "Validates a transaction before processing. Use this endpoint to verify if a transaction\ncan proceed based on the provided information. This is typically the first step in the payment flow.",
                         "auth": {
@@ -15768,7 +15768,7 @@
                     ]
                 },
                 {
-                    "name": "Process Transaction.",
+                    "name": "Process Transaction",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15789,7 +15789,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"referenceId\":\"et\",\"transactionId\":\"doloribus\"}"
+                            "raw": "{\"referenceId\":\"ORD-12345-ABC\",\"transactionId\":\"VOD-TXN-123456\"}"
                         },
                         "description": "Processes a previously validated transaction. This endpoint should be called after successful\nvalidation to initiate the payment process with Vodacom M-Pesa.",
                         "auth": {
@@ -15812,7 +15812,7 @@
                     ]
                 },
                 {
-                    "name": "Check Transaction Status.",
+                    "name": "Check Transaction Status",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15833,7 +15833,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"referenceId\":\"eveniet\"}"
+                            "raw": "{\"referenceId\":\"ORD-12345-ABC\"}"
                         },
                         "description": "Checks the current status of a transaction that has been submitted for processing.\nUse this to verify if a payment has been completed, is still pending, or has failed.",
                         "auth": {
@@ -15844,7 +15844,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n  \"data\": {\n    \"referenceId\": \"ORD-12345-ABC\",\n    \"transactionId\": \"VOD-TXN-123456\",\n    \"status\": \"completed\",\n    \"mpesaReceipt\": \"QCL12345XY\",\n    \"completedAt\": \"2023-06-15T12:45:32Z\",\n    \"success\": true\n  }\n}",
+                            "body": "{\n  \"data\": {\n    \"referenceId\": \"ORD-12345-ABC\",\n    \"transactionId\": \"VOD-TXN-123456\",\n    \"status\": \"completed\",\n    \"mpesaReceipt\": \"QCL4521XYZ\",\n    \"completedAt\": \"2023-06-15T12:45:32Z\",\n    \"success\": true\n  }\n}",
                             "name": "Success"
                         },
                         {

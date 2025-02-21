@@ -43,16 +43,16 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Validate Transaction.
-     *
-     * Validates a transaction before processing. Use this endpoint to verify if a transaction
+     * Validate Transaction
+     * 
+     * Validates a transaction before processing. Use this endpoint to verify if a transaction 
      * can proceed based on the provided information. This is typically the first step in the payment flow.
      *
-     * @bodyParam serialNumber string required Unique identifier for the product/service being purchased
-     * @bodyParam amount numeric required Transaction amount in the local currency
-     * @bodyParam payerPhoneNumber string required Customer's phone number in international format
-     * @bodyParam referenceId string required Unique reference identifier for this transaction
-     *
+     * @bodyParam serialNumber string required Unique identifier for the product/service being purchased pattern: ^[A-Z0-9]{8,12}$ Example: ABC123456789
+     * @bodyParam amount number required Transaction amount in the local currency  Example: 15000
+     * @bodyParam payerPhoneNumber string required Customer's phone number in international format pattern: ^255[0-9]{9}$ Example: 255712345678
+     * @bodyParam referenceId string required Unique reference identifier for this transaction pattern: ^[A-Za-z0-9\-]{5,20}$ Example: ORD-12345-ABC
+     * 
      * @response scenario="Success" {
      *   "data": {
      *     "transactionId": "VOD-TXN-123456",
@@ -64,6 +64,7 @@ class VodacomTransactionController extends Controller {
      *     "success": true
      *   }
      * }
+     * 
      * @response 400 scenario="Validation Error" {
      *   "data": {
      *     "message": "Invalid amount specified for this product",
@@ -77,10 +78,10 @@ class VodacomTransactionController extends Controller {
      */
     public function validateTransaction(Request $request): VodacomResource {
         $validatedData = $request->validate([
-            'serialNumber' => 'required|string',
-            'amount' => 'required|numeric',
-            'payerPhoneNumber' => 'required|string',
-            'referenceId' => 'required|string',
+            'serialNumber' => 'required|string|regex:/^[A-Z0-9]{8,12}$/',
+            'amount' => 'required|numeric|min:100|max:5000000',
+            'payerPhoneNumber' => 'required|string|regex:/^255[0-9]{9}$/',
+            'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
         ]);
 
         try {
@@ -93,14 +94,14 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Process Transaction.
-     *
-     * Processes a previously validated transaction. This endpoint should be called after successful
+     * Process Transaction
+     * 
+     * Processes a previously validated transaction. This endpoint should be called after successful 
      * validation to initiate the payment process with Vodacom M-Pesa.
      *
-     * @bodyParam referenceId string required The reference ID used during validation
-     * @bodyParam transactionId string required The transaction ID returned from the validation step
-     *
+     * @bodyParam referenceId string required The reference ID used during validation pattern: ^[A-Za-z0-9\-]{5,20}$ Example: ORD-12345-ABC
+     * @bodyParam transactionId string required The transaction ID returned from the validation step pattern: ^VOD-TXN-[0-9]{6}$ Example: VOD-TXN-123456
+     * 
      * @response scenario="Success" {
      *   "data": {
      *     "transactionId": "VOD-TXN-123456",
@@ -109,6 +110,7 @@ class VodacomTransactionController extends Controller {
      *     "success": true
      *   }
      * }
+     * 
      * @response 400 scenario="Processing Error" {
      *   "data": {
      *     "message": "Transaction processing failed: Insufficient funds",
@@ -122,8 +124,8 @@ class VodacomTransactionController extends Controller {
      */
     public function processTransaction(Request $request): VodacomResource {
         $validatedData = $request->validate([
-            'referenceId' => 'required|string',
-            'transactionId' => 'required|string',
+            'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
+            'transactionId' => 'required|string|regex:/^VOD-TXN-[0-9]{6}$/',
         ]);
 
         try {
@@ -136,23 +138,24 @@ class VodacomTransactionController extends Controller {
     }
 
     /**
-     * Check Transaction Status.
-     *
+     * Check Transaction Status
+     * 
      * Checks the current status of a transaction that has been submitted for processing.
      * Use this to verify if a payment has been completed, is still pending, or has failed.
      *
-     * @bodyParam referenceId string required The reference ID of the transaction to check
-     *
+     * @bodyParam referenceId string required The reference ID of the transaction to check pattern: ^[A-Za-z0-9\-]{5,20}$ Example: ORD-12345-ABC
+     * 
      * @response scenario="Success" {
      *   "data": {
      *     "referenceId": "ORD-12345-ABC",
      *     "transactionId": "VOD-TXN-123456",
      *     "status": "completed",
-     *     "mpesaReceipt": "QCL12345XY",
+     *     "mpesaReceipt": "QCL4521XYZ",
      *     "completedAt": "2023-06-15T12:45:32Z",
      *     "success": true
      *   }
      * }
+     * 
      * @response 400 scenario="Enquiry Error" {
      *   "data": {
      *     "message": "Transaction not found or reference ID is invalid",
@@ -166,7 +169,7 @@ class VodacomTransactionController extends Controller {
      */
     public function transactionEnquiryStatus(Request $request): VodacomResource {
         $validatedData = $request->validate([
-            'referenceId' => 'required|string',
+            'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
         ]);
 
         try {
