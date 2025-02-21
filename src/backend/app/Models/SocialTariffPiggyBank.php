@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -17,7 +17,7 @@ class SocialTariffPiggyBank extends BaseModel {
     protected $guarded = [];
 
     public function meter(): BelongsTo {
-        return $this->belongsTo(MeterParameter::class);
+        return $this->belongsTo(Meter::class);
     }
 
     public function socialTariff(): BelongsTo {

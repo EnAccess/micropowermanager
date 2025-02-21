@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Asset;
 use App\Models\AssetRate;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\Token;
 use App\Services\AccessRatePaymentHistoryService;
 use App\Services\ApplianceRatePaymentHistoryService;
@@ -30,7 +30,7 @@ class PaymentListener {
         $transaction = $transactionProvider->getTransaction();
         // get meter preferences
         try {
-            $meterParameter = MeterParameter::with('meter')->where('meter_id', $transaction->message)->firstOrFail();
+            $meter = Meter::query()->where('meter_id', $transaction->message)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             Log::critical('Unkown meterId', ['meter_id' => $transaction->message, 'amount' => $transaction->amount]);
             event('transaction.failed', $transactionProvider);
