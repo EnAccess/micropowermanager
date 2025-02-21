@@ -1,0 +1,18 @@
+meta {
+  name: Vodacom Proccess Transaction
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom/transactions/process
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "referenceId": "string", // Same as validation request (Required)
+    "transactionId": "string" // ID of Vodacom transaction (Required)
+  }
+}
