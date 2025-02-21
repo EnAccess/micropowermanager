@@ -52,33 +52,6 @@ class PaymentHistory extends BaseModel {
         return $this->executeSqlCommand($sql, $payer_id, null, $payer_type);
     }
 
-    public function getAgentCustomersFlow(string $payer_type, $agent_id, string $period, $limit = null, $order = 'ASC') {
-        $sql = <<<SQL
-            SELECT
-                SUM(amount) AS amount,
-                payment_type,
-                CONCAT_WS("/", {$period}) AS aperiod
-            FROM payment_histories
-            INNER JOIN addresses ON payment_histories.payer_id = addresses.owner_id
-            INNER JOIN cities ON addresses.city_id = cities.id
-            INNER JOIN mini_grids ON cities.mini_grid_id = mini_grids.id
-            INNER JOIN agents ON agents.mini_grid_id = mini_grids.id
-            WHERE
-                payment_service LIKE '%agent%'
-                AND payer_type = :payer_type
-                AND agents.id = :agent_id
-                AND addresses.is_primary = 1
-            GROUP BY CONCAT({$period}), payment_type
-            ORDER BY payment_histories.created_at {$order};
-            SQL;
-
-        if ($limit !== null) {
-            $sql .= ' LIMIT '.(int) $limit;
-        }
-
-        return $this->executeSqlCommand($sql, null, $agent_id, $payer_type);
-    }
-
     public function getPaymentFlow(string $payer_type, int $payer_id, int $year) {
         $sql = <<<SQL
             SELECT
