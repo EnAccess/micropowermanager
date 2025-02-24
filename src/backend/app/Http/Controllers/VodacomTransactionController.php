@@ -50,7 +50,7 @@ class VodacomTransactionController extends Controller {
      *
      * @bodyParam serialNumber string required Unique identifier for the product/service being purchased pattern: ^[A-Z0-9]{8,12}$ Example: ABC123456789
      * @bodyParam amount number required Transaction amount in the local currency  Example: 15000
-     * @bodyParam payerPhoneNumber string required Customer's phone number in international format pattern: ^255[0-9]{9}$ Example: 255712345678
+     * @bodyParam payerPhoneNumber string required Customer's phone number in international format pattern: ^258[0-9]{9}$ Example: 258712345678
      * @bodyParam referenceId string required Unique reference identifier for this transaction pattern: ^[A-Za-z0-9\-]{5,20}$ Example: ORD-12345-ABC
      * 
      * @response scenario="Success" {
@@ -80,7 +80,7 @@ class VodacomTransactionController extends Controller {
         $validatedData = $request->validate([
             'serialNumber' => 'required|string|regex:/^[A-Z0-9]{8,12}$/',
             'amount' => 'required|numeric|min:100|max:5000000',
-            'payerPhoneNumber' => 'required|string|regex:/^255[0-9]{9}$/',
+            'payerPhoneNumber' => 'required|string|regex:/^258[0-9]{9}$/',
             'referenceId' => 'required|string|regex:/^[A-Za-z0-9\-]{5,20}$/',
         ]);
 

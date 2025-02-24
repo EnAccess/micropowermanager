@@ -48,12 +48,12 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: zena.schinner@example.net
+                  example: sydnee.mills@example.org
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: '5%[IgG_j'
+                  example: 'PDE|,k~,Y"f'
                   nullable: false
               required:
                 - email
@@ -120,12 +120,12 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: rutherford.garret@example.com
+                  example: mariam80@example.net
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: 'RHCIX2dk1&a'
+                  example: "|UKP#-viZyqv{1*S6'ah"
                   nullable: false
               required:
                 - email
@@ -213,12 +213,12 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: voluptatem
                   nullable: false
                 mini_grid_id:
                   type: string
                   description: ''
-                  example: molestiae
+                  example: repellat
                   nullable: false
               required:
                 - name
@@ -264,12 +264,12 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: error
+                  example: molestias
                   nullable: false
                 mini_grid_id:
                   type: string
                   description: ''
-                  example: cum
+                  example: veniam
                   nullable: false
               required:
                 - name
@@ -324,12 +324,12 @@ paths:
                 country_name:
                   type: string
                   description: ''
-                  example: quibusdam
+                  example: tempore
                   nullable: false
                 country_code:
                   type: string
                   description: validation.min.
-                  example: ybobwprrmejhpwcgfglvz
+                  example: kyuokyhxrreydakuusm
                   nullable: false
               required:
                 - country_name
@@ -605,12 +605,12 @@ paths:
                 serial_number:
                   type: string
                   description: ''
-                  example: non
+                  example: quisquam
                   nullable: false
                 manufacturer_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 4
                   nullable: false
                 meter_type_id:
                   type: integer
@@ -640,7 +640,7 @@ paths:
                 points:
                   type: string.
                   description: 'Comma seperated latitude and longitude. Example 1,2'
-                  example: in
+                  example: similique
                   nullable: false
       security: []
     parameters:
@@ -657,7 +657,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 14
+            value: 9
       -
         in: path
         name: in_use
@@ -671,7 +671,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 7
+            value: 1
   /api/meters/connection-types:
     get:
       summary: ''
@@ -713,42 +713,42 @@ paths:
                 id:
                   type: number
                   description: ''
-                  example: 3725401.4317295
+                  example: 1.7
                   nullable: false
                 serial_number:
                   type: string
                   description: ''
-                  example: laudantium
+                  example: tenetur
                   nullable: false
                 meter_type_id:
                   type: number
                   description: ''
-                  example: 3.411
+                  example: 1.837
                   nullable: false
                 in_use:
                   type: number
                   description: ''
-                  example: 24.3
+                  example: 25660.12
                   nullable: false
                 manufacturer_id:
                   type: number
                   description: ''
-                  example: 35718107.31
+                  example: 14.449435721
                   nullable: false
                 connection_type_id:
                   type: number
                   description: ''
-                  example: 12.8951
+                  example: 75241629.19
                   nullable: false
                 connection_group_id:
                   type: number
                   description: ''
-                  example: 54102.5
+                  example: 148399022.0
                   nullable: false
                 tariff_id:
                   type: number
                   description: ''
-                  example: 1.0
+                  example: 374.845
                   nullable: false
               required:
                 - id
@@ -952,7 +952,7 @@ paths:
                 term:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: sequi
                   nullable: false
               required:
                 - term
@@ -1245,7 +1245,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: qui
+            value: iste
   '/api/meters/{meterId}':
     delete:
       summary: "Delete\nDeletes the meter with its all releations."
@@ -1261,7 +1261,7 @@ paths:
         in: path
         name: meterId
         description: ''
-        example: ea
+        example: magnam
         required: true
         schema:
           type: string
@@ -1278,7 +1278,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: rerum
+            value: molestias
   '/api/meters/{serialNumber}/transactions':
     get:
       summary: ''
@@ -1306,7 +1306,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: molestiae
+        example: et
         required: true
         schema:
           type: string
@@ -1409,7 +1409,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: et
+            value: quasi
       -
         in: path
         name: start
@@ -1423,7 +1423,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: ut
+            value: rerum
       -
         in: path
         name: end
@@ -1437,7 +1437,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: ut
+            value: autem
   '/api/meters/{miniGrid}/geoList':
     get:
       summary: "List with geo and access rate\nA list of meters with their positions and access rate payments\nThe list is not paginated."
@@ -1670,7 +1670,7 @@ paths:
         in: path
         name: miniGrid
         description: ''
-        example: dolore
+        example: facere
         required: true
         schema:
           type: string
@@ -1687,7 +1687,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: repellendus
+            value: soluta
   '/api/meter-types/{meterTypeId}/list':
     get:
       summary: "List with Meters\nDisplays the meter types with the associated meters."
@@ -1806,7 +1806,7 @@ paths:
         in: path
         name: meterTypeId
         description: ''
-        example: quam
+        example: facere
         required: true
         schema:
           type: string
@@ -1814,7 +1814,7 @@ paths:
         in: path
         name: id
         description: ''
-        example: aut
+        example: pariatur
         required: true
         schema:
           type: string
@@ -1867,7 +1867,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the address.'
-        example: in
+        example: culpa
         required: true
         schema:
           type: string
@@ -1920,7 +1920,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the transaction.'
-        example: '627'
+        example: '3984'
         required: true
         schema:
           type: string
@@ -1973,7 +1973,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: '13'
+        example: '11'
         required: true
         schema:
           type: string
@@ -2102,7 +2102,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: '422'
+        example: '5'
         required: true
         schema:
           type: string
@@ -2110,7 +2110,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: ut
+        example: nihil
         required: true
         schema:
           type: string
@@ -2127,7 +2127,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: sapiente
+            value: est
       -
         in: path
         name: order
@@ -2141,7 +2141,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: architecto
+            value: voluptatem
   '/api/app/agents/customers/graph/{period}/{limit}/{order}':
     get:
       summary: ''
@@ -2169,7 +2169,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: enim
+        example: consequuntur
         required: true
         schema:
           type: string
@@ -2186,7 +2186,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: quo
+            value: ullam
       -
         in: path
         name: order
@@ -2200,7 +2200,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: itaque
+            value: nesciunt
   /api/app/agents/transactions:
     get:
       summary: ''
@@ -2250,7 +2250,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: est
+        example: tenetur
         required: true
         schema:
           type: string
@@ -2294,27 +2294,27 @@ paths:
                 person_id:
                   type: string
                   description: ''
-                  example: reprehenderit
+                  example: commodi
                   nullable: false
                 down_payment:
                   type: number
                   description: ''
-                  example: 12040581.09108
+                  example: 38.0
                   nullable: false
                 tenure:
                   type: number
                   description: validation.min.
-                  example: 2
+                  example: 21
                   nullable: false
                 first_payment_date:
                   type: string
                   description: ''
-                  example: eaque
+                  example: neque
                   nullable: false
                 agent_assigned_appliance_id:
                   type: string
                   description: ''
-                  example: nemo
+                  example: iure
                   nullable: false
               required:
                 - person_id
@@ -2350,7 +2350,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: qui
+        example: rem
         required: true
         schema:
           type: string
@@ -2394,17 +2394,17 @@ paths:
                 owner_id:
                   type: string
                   description: ''
-                  example: sit
+                  example: placeat
                   nullable: false
                 title:
                   type: string
                   description: ''
-                  example: unde
+                  example: praesentium
                   nullable: false
                 description:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: voluptas
                   nullable: false
               required:
                 - owner_id
@@ -2438,7 +2438,7 @@ paths:
         in: path
         name: ticketId
         description: ''
-        example: eos
+        example: perferendis
         required: true
         schema:
           type: string
@@ -2469,7 +2469,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: aut
+        example: error
         required: true
         schema:
           type: string
@@ -2579,32 +2579,32 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: laudantium
+                  example: tempore
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: rbfakwnziuzudmgnhxevgyfjilxmuhsrzbaghl
+                  example: cwu
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: qnoqibknilshslopnxcugotndvlmvddopzmgszdcsiupwbrbnjttrduaflsrelzpsxej
+                  example: iztbgjgcandsdhsffwfopbegjwalkukuqaswyfbooclzmefihyryz
                   nullable: false
                 password:
                   type: string
                   description: validation.min.
-                  example: 'p[m:_=-q0mOx:GC@\M'
+                  example: )g.\.6a
                   nullable: false
                 city_id:
                   type: string
                   description: ''
-                  example: eum
+                  example: atque
                   nullable: false
                 agent_commission_id:
                   type: string
                   description: ''
-                  example: itaque
+                  example: quasi
                   nullable: false
               required:
                 - email
@@ -2714,27 +2714,27 @@ paths:
                 agent_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 18
                   nullable: false
                 user_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 1
                   nullable: false
                 appliance_id:
                   type: string
                   description: ''
-                  example: quo
+                  example: pariatur
                   nullable: false
                 cost:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 20
                   nullable: false
                 appliance_type_id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 11
                   nullable: false
               required:
                 - agent_id
@@ -2770,7 +2770,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: et
+        example: iure
         required: true
         schema:
           type: string
@@ -2801,7 +2801,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: sapiente
+        example: ut
         required: true
         schema:
           type: string
@@ -2845,22 +2845,22 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: et
+                  example: libero
                   nullable: false
                 energy_commission:
                   type: number
                   description: ''
-                  example: 2.312878062
+                  example: 1289115.0
                   nullable: false
                 appliance_commission:
                   type: number
                   description: ''
-                  example: 309002443.0263
+                  example: 1.76866
                   nullable: false
                 risk_balance:
                   type: number
                   description: validation.max.
-                  example: 5018387.072584
+                  example: 71666477.411016
                   nullable: false
               required:
                 - name
@@ -2896,22 +2896,22 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: facilis
+                  example: sint
                   nullable: false
                 energy_commission:
                   type: number
                   description: ''
-                  example: 70.052
+                  example: 37411.886269087
                   nullable: false
                 appliance_commission:
                   type: number
                   description: ''
-                  example: 21526.08705
+                  example: 5.50085
                   nullable: false
                 risk_balance:
                   type: number
                   description: validation.max.
-                  example: 9150.518955
+                  example: 85828.889929
                   nullable: false
               required:
                 - name
@@ -2924,7 +2924,7 @@ paths:
         in: path
         name: agentCommissionId
         description: ''
-        example: saepe
+        example: aut
         required: true
         schema:
           type: string
@@ -2968,12 +2968,12 @@ paths:
                 agent_id:
                   type: string
                   description: ''
-                  example: voluptatibus
+                  example: ratione
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: reprehenderit
+                  example: doloribus
                   nullable: false
               required:
                 - agent_id
@@ -3006,7 +3006,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: et
+        example: sunt
         required: true
         schema:
           type: string
@@ -3037,7 +3037,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: '40'
+        example: '48496'
         required: true
         schema:
           type: string
@@ -3068,7 +3068,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: 20
+        example: 8
         required: true
         schema:
           type: integer
@@ -3091,12 +3091,12 @@ paths:
                 agent_id:
                   type: string
                   description: ''
-                  example: debitis
+                  example: eligendi
                   nullable: false
                 amount:
                   type: number
                   description: ''
-                  example: 5.44
+                  example: 4731996.0
                   nullable: false
               required:
                 - agent_id
@@ -3441,42 +3441,42 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: gmcguenebnobdjhmsfjknyuchiussdtkkqlwzxfwbiwlcrdhnrumvlddybfjxfxqkudwjgvqhvowi
+                  example: xtpbakkyqha
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: ysrdnmnbmhedcjrphonlolmmcfvozwqhcxoduzjcdnyomwjgafhhd
+                  example: itertymlodguznqjblgfndireeliuzoyhb
                   nullable: false
                 phone:
                   type: number
                   description: 'Must match the regex (^\+). validation.min.'
-                  example: 61
+                  example: 68
                   nullable: false
                 tariff_id:
                   type: string
                   description: ''
-                  example: et
+                  example: officia
                   nullable: false
                 geo_points:
                   type: string
                   description: ''
-                  example: autem
+                  example: corporis
                   nullable: false
                 serial_number:
                   type: string
                   description: ''
-                  example: enim
+                  example: omnis
                   nullable: false
                 manufacturer:
                   type: string
                   description: ''
-                  example: distinctio
+                  example: dolorum
                   nullable: false
                 meter_type:
                   type: string
                   description: ''
-                  example: repellendus
+                  example: labore
                   nullable: false
               required:
                 - name
@@ -3507,17 +3507,17 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: velit
+                  example: et
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: ugd
+                  example: qalipdvjdtlvfllrjuxzphymlpxnniusxdrnmqcrwitiaujwygayepycpuee
                   nullable: false
                 password:
                   type: string
                   description: validation.min.
-                  example: "#t)O`vtD+]>[E'"
+                  example: 'O&5HP+b]VlR;'
                   nullable: false
               required:
                 - email
@@ -3604,7 +3604,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: facere
+                  example: itaque
                   nullable: false
               required:
                 - city_id
@@ -3627,7 +3627,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: tenetur
+                  example: quisquam
                   nullable: false
               required:
                 - city_id
@@ -3660,12 +3660,12 @@ paths:
                 password:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: 'V^o|-u32K?j3>v8[%'
+                  example: '"/$n1H'
                   nullable: false
                 confirm_password:
                   type: string
                   description: 'The value and <code>password</code> must match.'
-                  example: ut
+                  example: nostrum
                   nullable: false
               required:
                 - password
@@ -3699,7 +3699,7 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: dolores
+                  example: fugit
                   nullable: false
               required:
                 - email
@@ -3744,17 +3744,17 @@ paths:
                 asset_type_id:
                   type: string
                   description: ''
-                  example: ipsa
+                  example: rem
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: zbcccdpsbekrqbhbugovcfhbnxupwzuwuqrgccclmarvbqwaivumcdhcuelknyxicyqaapaxhltemaf
+                  example: foapyktvmzqpxyzoxpzpvwhszqny
                   nullable: false
                 price:
                   type: number
                   description: validation.min.
-                  example: 46
+                  example: 42
                   nullable: false
               required:
                 - asset_type_id
@@ -3785,12 +3785,12 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: bzykdcipuwjmnknkliaarghghboiospshkqngbdbrjrprbsdolsombiyhuhewrbihtc
+                  example: tglhxdpwldfpznohnqcuriombrqagwbnpgmdzccmvrtqdomfvpejnyqb
                   nullable: false
                 price:
                   type: number
                   description: ''
-                  example: 1767957.4
+                  example: 1.51358
                   nullable: false
       security: []
     delete:
@@ -3896,7 +3896,7 @@ paths:
         in: path
         name: applianceId
         description: ''
-        example: dolor
+        example: blanditiis
         required: true
         schema:
           type: string
@@ -3940,7 +3940,7 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: odnbczhslrdxmwkphvmllioxanhsufuskteqjvtvgtajbjkvrzscmjivhmyky
+                  example: aqglecvcadcnaykidbipkyvweyfrrkcvpcsuossxkuaeqyzyphgfpxucjxgg
                   nullable: false
               required:
                 - name
@@ -3964,7 +3964,7 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: ojnouhvrhfjlixobgylyshdukykqumluobeblidutduriyjxxa
+                  example: awgyxzeeblfegwunedqiujjarjxumnlscrgmsglcpbwelfdjqgcjnxbbapyodmrfzawzudtmxapvtgox
                   nullable: false
       security: []
     delete:
@@ -3981,7 +3981,7 @@ paths:
         in: path
         name: asset_type_id
         description: 'The ID of the asset type.'
-        example: reiciendis
+        example: est
         required: true
         schema:
           type: string
@@ -4000,7 +4000,7 @@ paths:
         in: path
         name: appliance_rate_id
         description: 'The ID of the appliance rate.'
-        example: odit
+        example: itaque
         required: true
         schema:
           type: string
@@ -4019,7 +4019,7 @@ paths:
         in: path
         name: appliance_person_id
         description: 'The ID of the appliance person.'
-        example: ea
+        example: aut
         required: true
         schema:
           type: string
@@ -4063,17 +4063,17 @@ paths:
                 name:
                   type: string
                   description: 'The name  of the cluster.'
-                  example: dolorem
+                  example: beatae
                   nullable: false
                 geo_type:
                   type: string
                   description: 'required. Describes if the polygon created manually or fetched from the internet.'
-                  example: distinctio
+                  example: voluptatem
                   nullable: false
                 geo_data:
                   type: string
                   description: 'required. Coordinates or the external url  that contains a geojson.'
-                  example: suscipit
+                  example: ea
                   nullable: false
                 manager_id:
                   type: integer
@@ -4083,7 +4083,7 @@ paths:
                 cities:
                   type: 'array[int]'
                   description: "required. The id's of the cities which belong to the cluster."
-                  example: aut
+                  example: nemo
                   nullable: false
               required:
                 - name
@@ -4429,7 +4429,7 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: nobis
+                  example: voluptas
                   nullable: false
               required:
                 - name
@@ -4453,7 +4453,7 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: deserunt
+                  example: ut
                   nullable: false
               required:
                 - name
@@ -4564,7 +4564,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: consequatur
+            value: laborum
   /api/maintenance:
     get:
       summary: ''
@@ -4606,27 +4606,27 @@ paths:
                 title:
                   type: string
                   description: ''
-                  example: et
+                  example: debitis
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: xtkxcjzkdciufwjbgyqjbqntbcwmtktsykcahwcqmkxscqathofnyagwjodubevzhatlcoitqjjxhxrhbb
+                  example: mgvqoetaypgjluuvgnfykryuvhaiheeagdusgcazxthntaajbgc
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: vfhpqgkzhiafqtmdxautedwxcgj
+                  example: yjwdlcdymbwaj
                   nullable: false
                 birth_date:
                   type: string
                   description: 'Must be a valid date in the format <code>"Y-m-d</code>.'
-                  example: '"2025-02-21'
+                  example: '"2025-02-24'
                   nullable: false
                 sex:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   nullable: false
                   enum:
                     - male
@@ -4634,7 +4634,7 @@ paths:
                 education:
                   type: string
                   description: validation.min.
-                  example: shyvyoivktgjrwqnglxjxyxlgbupjkfudyrygmoad
+                  example: ppawtehyjlujyedjmfhqguvbfegkoynhdkdyqyvzluwfjqggwz
                   nullable: false
                 city_id:
                   type: string
@@ -4644,17 +4644,17 @@ paths:
                 street:
                   type: string
                   description: validation.min.
-                  example: lft
+                  example: yfqbagiuaoghyixlasslikryzlimpyxicdhpnmbtukvfcpcgcschyafhjhpjbtfmfka
                   nullable: false
                 email:
                   type: string
                   description: validation.email.
-                  example: franco90@example.net
+                  example: bins.marquis@example.org
                   nullable: false
                 phone:
                   type: number
                   description: 'Must match the regex (^\+). validation.min.'
-                  example: 16
+                  example: 67
                   nullable: false
                 nationality:
                   type: string
@@ -4706,37 +4706,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: inventore
+                  example: dolorum
                   nullable: false
                 phone:
                   type: string
                   description: ''
-                  example: mollitia
+                  example: harum
                   nullable: false
                 email:
                   type: string
                   description: validation.email.
-                  example: stehr.lue@example.net
+                  example: kassulke.kiara@example.org
                   nullable: false
                 contact_person:
                   type: string
                   description: validation.min.
-                  example: mkppytknkrkqbaffjavvdviueaicwndkklngpclvzkhqgmrijviaiskqgqrhc
+                  example: ogitnxfvdjabfzuuoneykidzyevbfwpoiyvnqvsvyeuvbdwwrmkauobjfmxsipanlcjb
                   nullable: false
                 website:
                   type: string
                   description: validation.min.
-                  example: hdartzdkyvbcneinheigghlwammkpdkmroesxcdzsbymvfrlbazvl
+                  example: uufvwaotwklemybkctejqcjjurrsbvtxtlbpidkbhvowcbjbyckqoikydnanfngcrkxrpfqfrabuunwjevde
                   nullable: false
                 city_id:
                   type: integer
                   description: ''
-                  example: 20
+                  example: 10
                   nullable: false
                 address:
                   type: string
                   description: ''
-                  example: sapiente
+                  example: minus
                   nullable: false
                 api_name:
                   type: string
@@ -4817,17 +4817,17 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: zknakrrjjohzsqbpd
+                  example: kfhvrghjpiscxrwoizavcsjbuabyhwcs
                   nullable: false
                 cluster_id:
                   type: string
                   description: ''
-                  example: exercitationem
+                  example: et
                   nullable: false
                 geo_data:
                   type: string
                   description: ''
-                  example: unde
+                  example: reiciendis
                   nullable: false
               required:
                 - name
@@ -4865,7 +4865,7 @@ paths:
                 id:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 3
                   nullable: false
               required:
                 - id
@@ -5179,7 +5179,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: officiis
                   nullable: false
               required:
                 - city_id
@@ -5202,7 +5202,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: est
+                  example: magnam
                   nullable: false
               required:
                 - city_id
@@ -5212,7 +5212,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: voluptate
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -5265,7 +5265,7 @@ paths:
         in: path
         name: key
         description: 'The key.'
-        example: voluptates
+        example: vel
         required: true
         schema:
           type: string
@@ -5284,7 +5284,7 @@ paths:
         in: path
         name: mapSettings
         description: ''
-        example: sunt
+        example: saepe
         required: true
         schema:
           type: string
@@ -5325,7 +5325,7 @@ paths:
         in: path
         name: ticketSettings
         description: ''
-        example: natus
+        example: quod
         required: true
         schema:
           type: string
@@ -5410,27 +5410,27 @@ paths:
                 mail_host:
                   type: string
                   description: validation.min.
-                  example: urkrqhvmxiwzjgotshbrzkjmrexxicyqjzibgkuskazlgemmgkuavt
+                  example: znpeiebizeuieoizmrdzcadczberjrqqjefpjzsbfgazuinuiyymmertvutpordvhjebosgmpqadvxmaoxhbipvbe
                   nullable: false
                 mail_port:
                   type: number
                   description: ''
-                  example: 3214.3
+                  example: 61788811.3
                   nullable: false
                 mail_encryption:
                   type: string
                   description: validation.min.
-                  example: effojpurgnidumxctcguynfdwwtiqyobzmztpfgxzucnixwemtwg
+                  example: oqnjlkndlxdwfdqmnaammoqeufxnqjoqjknyztcleuaa
                   nullable: false
                 mail_username:
                   type: string
                   description: 'validation.email validation.min.'
-                  example: sjbowkcbwelvgbsaxtakzkbeluvlthprayxoeazlmejtnltvmrrrjafurkizfecd
+                  example: vvtexhxngcmdvxrtaqweuyrfftapbbqikjmbypfsr
                   nullable: false
                 mail_password:
                   type: string
                   description: validation.min.
-                  example: zzyfedtsdtptrmiswdrdqo
+                  example: wtnenayuifqdsxuystfbgdxmijlxvkildytiynybsangtzypndtw
                   nullable: false
               required:
                 - mail_host
@@ -5458,27 +5458,27 @@ paths:
                 mail_host:
                   type: string
                   description: validation.min.
-                  example: tfghsbkinfxtfaclextyqubnzhmbvmapkjnmztjuuracgkjkyqodonzfnkhlgyvgzclcmudbdvugeeavn
+                  example: lkrknhdkjgqyaslafhfztzpjgnnor
                   nullable: false
                 mail_port:
                   type: number
                   description: ''
-                  example: 482118.575391
+                  example: 2425574.6193502
                   nullable: false
                 mail_encryption:
                   type: string
                   description: validation.min.
-                  example: vgmpgkegzafmapqxkidxffymnfjhxtfatoprdsrhmgpmyhiqxwfphtoqbbg
+                  example: mqobvrkswxlbwzbmdteaglxyfntentybitvfovljfxakdkftxaqexibmeyssyktedywcjvplwspmjwcbmrlqgkxebh
                   nullable: false
                 mail_username:
                   type: string
                   description: 'validation.email validation.min.'
-                  example: aojcozlttcvhqwjnymxaoxwbtkrxbmxprzlpjkmkabdnnixmssuwuxxdcxpfuxfjzwnfqi
+                  example: asevrydmfijtseoxgsg
                   nullable: false
                 mail_password:
                   type: string
                   description: validation.min.
-                  example: ysjsucbcohzeq
+                  example: bofflkhjfwyfzhcl
                   nullable: false
               required:
                 - mail_host
@@ -5652,17 +5652,17 @@ paths:
                 appliance_type_id:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: illum
                   nullable: false
                 overdue_remind_rate:
                   type: string
                   description: ''
-                  example: sit
+                  example: laudantium
                   nullable: false
                 remind_rate:
                   type: string
                   description: ''
-                  example: explicabo
+                  example: dolor
                   nullable: false
               required:
                 - appliance_type_id
@@ -5684,7 +5684,7 @@ paths:
         in: path
         name: smsApplianceRemindRate_id
         description: 'The ID of the smsApplianceRemindRate.'
-        example: 4
+        example: 1
         required: true
         schema:
           type: integer
@@ -5728,7 +5728,7 @@ paths:
                 token:
                   type: string
                   description: ''
-                  example: dolor
+                  example: omnis
                   nullable: false
               required:
                 - token
@@ -5752,7 +5752,7 @@ paths:
                 token:
                   type: string
                   description: ''
-                  example: adipisci
+                  example: ut
                   nullable: false
               required:
                 - token
@@ -5846,7 +5846,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the report downloading.'
-        example: ut
+        example: aut
         required: true
         schema:
           type: string
@@ -5854,7 +5854,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the download.'
-        example: commodi
+        example: iure
         required: true
         schema:
           type: string
@@ -5883,7 +5883,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the trend.'
-        example: voluptatem
+        example: id
         required: true
         schema:
           type: string
@@ -5914,7 +5914,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the ticket.'
-        example: velit
+        example: molestias
         required: true
         schema:
           type: string
@@ -5976,7 +5976,7 @@ paths:
         in: path
         name: number
         description: ''
-        example: quia
+        example: autem
         required: true
         schema:
           type: string
@@ -6020,12 +6020,12 @@ paths:
                 sender:
                   type: string
                   description: ''
-                  example: minus
+                  example: et
                   nullable: false
                 message:
                   type: string
                   description: ''
-                  example: ipsa
+                  example: dolor
                   nullable: false
               required:
                 - sender
@@ -6058,7 +6058,7 @@ paths:
         in: path
         name: search
         description: 'The search.'
-        example: quia
+        example: quibusdam
         required: true
         schema:
           type: string
@@ -6081,7 +6081,7 @@ paths:
                 message:
                   type: string
                   description: ''
-                  example: autem
+                  example: omnis
                   nullable: false
                 person_id:
                   type: string
@@ -6128,7 +6128,7 @@ paths:
         in: path
         name: uuid
         description: ''
-        example: 27adfd95-2220-32e7-8a23-01357b209b2c
+        example: 37d4ac8f-163d-3448-b9ac-9d6c2f7f81a7
         required: true
         schema:
           type: string
@@ -6136,7 +6136,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the delivered.'
-        example: incidunt
+        example: omnis
         required: true
         schema:
           type: string
@@ -6167,7 +6167,7 @@ paths:
         in: path
         name: uuid
         description: ''
-        example: b74ba531-7ebf-3db8-ab3e-d4ce8902dd80
+        example: b19e37cd-5f6b-3659-bd8f-cc4829c10c68
         required: true
         schema:
           type: string
@@ -6175,7 +6175,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the sent.'
-        example: eaque
+        example: eos
         required: true
         schema:
           type: string
@@ -6215,7 +6215,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: vel
+            value: sed
   /api/sub-connection-types:
     post:
       summary: 'Show the form for creating a new resource.'
@@ -6235,17 +6235,17 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: rmntffsralumfxpwbsnczjpcdltuvwdwuqiwdxwxtzpjnvodxjxuzogpomwytsktlfyokxinkntqiz
+                  example: oefwqrvhruwisarfrvbnoltnpyedzoftxzbui
                   nullable: false
                 connection_type_id:
                   type: number
                   description: ''
-                  example: 17507798.9102
+                  example: 9.8
                   nullable: false
                 tariff_id:
                   type: number
                   description: ''
-                  example: 267540.55293
+                  example: 2.26811
                   nullable: false
               required:
                 - name
@@ -6311,22 +6311,22 @@ paths:
                 data:
                   type: string
                   description: ''
-                  example: quisquam
+                  example: ratione
                   nullable: false
                 period:
                   type: string
                   description: ''
-                  example: placeat
+                  example: voluptatem
                   nullable: false
                 targetForType:
                   type: string
                   description: ''
-                  example: eum
+                  example: non
                   nullable: false
                 targetForId:
                   type: number
                   description: validation.min.
-                  example: 70
+                  example: 56
                   nullable: false
               required:
                 - data
@@ -6603,37 +6603,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: perferendis
+                  example: ducimus
                   nullable: false
                 price:
                   type: integer
                   description: required.
-                  example: 2
+                  example: 8
                   nullable: false
                 currency:
                   type: string
                   description: ''
-                  example: aut
+                  example: ullam
                   nullable: false
                 factor:
                   type: int.
                   description: 'The factor between two different sub tariffs. Like day/night sub-tariffs.'
-                  example: est
+                  example: nemo
                   nullable: false
                 access_rate_period:
                   type: integer
                   description: validation.min.
-                  example: 9
+                  example: 35
                   nullable: false
                 access_rate_amount:
                   type: integer
                   description: ''
-                  example: 13
+                  example: 1
                   nullable: false
                 social_tariff:
                   type: string
                   description: ''
-                  example: consequuntur
+                  example: quidem
                   nullable: false
                 components:
                   type: object
@@ -6650,7 +6650,7 @@ paths:
                 minimum_purchase_amount:
                   type: number
                   description: ''
-                  example: 0.6551444
+                  example: 18.34
                   nullable: false
               required:
                 - name
@@ -6730,37 +6730,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: ratione
+                  example: et
                   nullable: false
                 price:
                   type: number
                   description: ''
-                  example: 5.491398191
+                  example: 25770352.0
                   nullable: false
                 currency:
                   type: string
                   description: validation.max.
-                  example: bwptjdodo
+                  example: lgnapacgidjgyqs
                   nullable: false
                 factor:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 6
                   nullable: false
                 access_rate_period:
                   type: integer
                   description: validation.min.
-                  example: 11
+                  example: 90
                   nullable: false
                 access_rate_amount:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 19
                   nullable: false
                 social_tariff:
                   type: string
                   description: ''
-                  example: nesciunt
+                  example: tenetur
                   nullable: false
                 components:
                   type: object
@@ -6777,7 +6777,7 @@ paths:
                 minimum_purchase_amount:
                   type: number
                   description: ''
-                  example: 4.269377854
+                  example: 72.41001
                   nullable: false
               required:
                 - name
@@ -6801,7 +6801,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: ut
+        example: cum
         required: true
         schema:
           type: string
@@ -6809,7 +6809,7 @@ paths:
         in: path
         name: id
         description: ''
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -6840,7 +6840,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: quia
+        example: est
         required: true
         schema:
           type: string
@@ -6859,7 +6859,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: voluptatibus
+        example: id
         required: true
         schema:
           type: string
@@ -6867,7 +6867,7 @@ paths:
         in: path
         name: changeId
         description: ''
-        example: excepturi
+        example: et
         required: true
         schema:
           type: string
@@ -6886,7 +6886,7 @@ paths:
         in: path
         name: meterSerial
         description: ''
-        example: minima
+        example: et
         required: true
         schema:
           type: string
@@ -6894,7 +6894,7 @@ paths:
         in: path
         name: tariffId
         description: ''
-        example: dolores
+        example: dignissimos
         required: true
         schema:
           type: string
@@ -6943,7 +6943,7 @@ paths:
         in: path
         name: timeOfUsageId
         description: ''
-        example: 10
+        example: 12
         required: true
         schema:
           type: integer
@@ -7459,7 +7459,7 @@ paths:
         in: path
         name: mpmPluginId
         description: ''
-        example: quaerat
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -7866,22 +7866,22 @@ paths:
                 address:
                   type: string
                   description: ''
-                  example: est
+                  example: debitis
                   nullable: false
                 phone:
                   type: string
                   description: ''
-                  example: laudantium
+                  example: ut
                   nullable: false
                 email:
                   type: string
                   description: ''
-                  example: quo
+                  example: est
                   nullable: false
                 protected_page_password:
                   type: string
                   description: ''
-                  example: hic
+                  example: omnis
                   nullable: false
               required:
                 - name
@@ -7940,27 +7940,27 @@ paths:
                 id:
                   type: number
                   description: ''
-                  example: 62075648.652261
+                  example: 9007271.89
                   nullable: false
                 person_id:
                   type: number
                   description: ''
-                  example: 1261192.64
+                  example: 575664.9
                   nullable: false
                 device_type:
                   type: string
                   description: ''
-                  example: occaecati
+                  example: quam
                   nullable: false
                 device_serial:
                   type: string
                   description: ''
-                  example: et
+                  example: molestias
                   nullable: false
                 device_id:
                   type: number
                   description: ''
-                  example: 44596.281852
+                  example: 57.234681836
                   nullable: false
               required:
                 - id
@@ -8037,7 +8037,7 @@ paths:
         in: path
         name: meterSerial
         description: ''
-        example: porro
+        example: facilis
         required: true
         schema:
           type: string
@@ -8045,7 +8045,7 @@ paths:
         in: path
         name: amount
         description: ''
-        example: ullam
+        example: ex
         required: true
         schema:
           type: string
@@ -8089,17 +8089,17 @@ paths:
                 serial_number:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: trdnxt
+                  example: ricveaiaeu
                   nullable: false
                 manufacturer_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.manufacturers table.'
-                  example: id
+                  example: illo
                   nullable: false
                 asset_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.assets table.'
-                  example: quas
+                  example: ad
                   nullable: false
               required:
                 - serial_number
@@ -8168,17 +8168,17 @@ paths:
                 serial_number:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: yatptlu
+                  example: lwgwnvqfh
                   nullable: false
                 manufacturer_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.manufacturers table.'
-                  example: id
+                  example: non
                   nullable: false
                 asset_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.assets table.'
-                  example: ipsam
+                  example: itaque
                   nullable: false
               required:
                 - serial_number
@@ -8234,7 +8234,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: 18
+        example: 7
         required: true
         schema:
           type: integer
@@ -8275,7 +8275,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the transaction.'
-        example: possimus
+        example: numquam
         required: true
         schema:
           type: string
@@ -8306,7 +8306,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the debt.'
-        example: commodi
+        example: repudiandae
         required: true
         schema:
           type: string
@@ -8474,17 +8474,17 @@ paths:
                 api_key:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: quas
                   nullable: false
                 username:
                   type: string
                   description: ''
-                  example: numquam
+                  example: dolores
                   nullable: false
                 short_code:
                   type: string
                   description: ''
-                  example: exercitationem
+                  example: quis
                   nullable: false
               required:
                 - api_key
@@ -8506,7 +8506,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: a
+        example: fuga
         required: true
         schema:
           type: string
@@ -8525,7 +8525,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: magnam
+        example: similique
         required: true
         schema:
           type: string
@@ -8636,12 +8636,12 @@ paths:
                 thundercloud_url:
                   type: string
                   description: ''
-                  example: praesentium
+                  example: odio
                   nullable: false
                 thundercloud_token:
                   type: string
                   description: ''
-                  example: est
+                  example: quisquam
                   nullable: false
               required:
                 - thundercloud_url
@@ -8652,7 +8652,7 @@ paths:
         in: path
         name: site_id
         description: 'The ID of the site.'
-        example: 13
+        example: 5
         required: true
         schema:
           type: integer
@@ -8718,12 +8718,12 @@ paths:
                 api_key:
                   type: string
                   description: ''
-                  example: animi
+                  example: praesentium
                   nullable: false
                 api_secret:
                   type: string
                   description: ''
-                  example: veniam
+                  example: ut
                   nullable: false
               required:
                 - api_key
@@ -8946,7 +8946,7 @@ paths:
                 low_balance_limit:
                   type: string
                   description: ''
-                  example: quo
+                  example: sunt
                   nullable: false
               required:
                 - low_balance_limit
@@ -8956,7 +8956,7 @@ paths:
         in: path
         name: customer_id
         description: 'The ID of the customer.'
-        example: 2
+        example: 8
         required: true
         schema:
           type: integer
@@ -9031,7 +9031,7 @@ paths:
         in: path
         name: tariffId
         description: ''
-        example: vitae
+        example: neque
         required: true
         schema:
           type: string
@@ -9321,7 +9321,7 @@ paths:
         in: path
         name: smsFeedbackWord_id
         description: 'The ID of the smsFeedbackWord.'
-        example: 16
+        example: 6
         required: true
         schema:
           type: integer
@@ -9365,12 +9365,12 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: facere
+                  example: autem
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: iusto
+                  example: et
                   nullable: false
               required:
                 - username
@@ -9593,17 +9593,17 @@ paths:
                 id:
                   type: string
                   description: ''
-                  example: sunt
+                  example: voluptate
                   nullable: false
                 low_balance_warning:
                   type: string
                   description: ''
-                  example: ut
+                  example: sapiente
                   nullable: false
                 energy_price:
                   type: string
                   description: ''
-                  example: nostrum
+                  example: non
                   nullable: false
               required:
                 - id
@@ -9615,7 +9615,7 @@ paths:
         in: path
         name: customer
         description: ''
-        example: aut
+        example: qui
         required: true
         schema:
           type: string
@@ -9646,7 +9646,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: iste
+        example: odit
         required: true
         schema:
           type: string
@@ -9875,7 +9875,7 @@ paths:
         in: path
         name: customer
         description: ''
-        example: pariatur
+        example: aut
         required: true
         schema:
           type: string
@@ -10011,7 +10011,7 @@ paths:
         in: path
         name: smsFeedbackWord_id
         description: 'The ID of the smsFeedbackWord.'
-        example: 3
+        example: 14
         required: true
         schema:
           type: integer
@@ -10055,12 +10055,12 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: enim
+                  example: doloribus
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: vero
+                  example: qui
                   nullable: false
               required:
                 - username
@@ -10225,7 +10225,7 @@ paths:
         in: path
         name: meter_id
         description: 'The ID of the meter.'
-        example: 9
+        example: 12
         required: true
         schema:
           type: integer
@@ -10256,7 +10256,7 @@ paths:
         in: path
         name: meter_id
         description: 'The ID of the meter.'
-        example: 6
+        example: 18
         required: true
         schema:
           type: integer
@@ -10296,7 +10296,7 @@ paths:
         in: path
         name: meter_id
         description: 'The ID of the meter.'
-        example: 3
+        example: 10
         required: true
         schema:
           type: integer
@@ -10372,12 +10372,12 @@ paths:
                 user_id:
                   type: string
                   description: ''
-                  example: quasi
+                  example: ut
                   nullable: false
                 api_key:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: nobis
                   nullable: false
               required:
                 - user_id
@@ -10423,17 +10423,17 @@ paths:
                 company_name:
                   type: string
                   description: ''
-                  example: quam
+                  example: excepturi
                   nullable: false
                 username:
                   type: string
                   description: ''
-                  example: officiis
+                  example: ducimus
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: impedit
+                  example: praesentium
                   nullable: false
               required:
                 - company_name
@@ -10480,22 +10480,22 @@ paths:
                 company_name:
                   type: string
                   description: ''
-                  example: quo
+                  example: sint
                   nullable: false
                 user_name:
                   type: string
                   description: ''
-                  example: in
+                  example: et
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: et
+                  example: maiores
                   nullable: false
                 password_vend:
                   type: string
                   description: ''
-                  example: vel
+                  example: doloremque
                   nullable: false
               required:
                 - company_name
@@ -10522,22 +10522,22 @@ paths:
                 meter_number:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: reiciendis
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: quae
+                  example: adipisci
                   nullable: false
                 cipher:
                   type: string
                   description: ''
-                  example: eum
+                  example: nihil
                   nullable: false
                 timestamp:
                   type: string
                   description: ''
-                  example: ut
+                  example: dolores
                   nullable: false
               required:
                 - meter_number
@@ -10564,27 +10564,27 @@ paths:
                 transaction_id:
                   type: string
                   description: ''
-                  example: eligendi
+                  example: ut
                   nullable: false
                 transaction_reference:
                   type: string
                   description: ''
-                  example: similique
+                  example: magni
                   nullable: false
                 cipher:
                   type: string
                   description: ''
-                  example: maiores
+                  example: adipisci
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: aspernatur
+                  example: ut
                   nullable: false
                 timestamp:
                   type: string
                   description: ''
-                  example: officia
+                  example: quia
                   nullable: false
               required:
                 - transaction_id
@@ -10644,7 +10644,7 @@ paths:
                 csv:
                   type: string
                   description: ''
-                  example: illum
+                  example: sequi
                   nullable: false
               required:
                 - csv
@@ -10689,7 +10689,7 @@ paths:
                 api_token:
                   type: string
                   description: ''
-                  example: et
+                  example: voluptatum
                   nullable: false
               required:
                 - api_token
@@ -10709,7 +10709,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the webhook.'
-        example: fuga
+        example: non
         required: true
         schema:
           type: string
@@ -10753,12 +10753,12 @@ paths:
                 merchant_id:
                   type: string
                   description: ''
-                  example: non
+                  example: atque
                   nullable: false
                 secret_key:
                   type: string
                   description: ''
-                  example: unde
+                  example: dolor
                   nullable: false
               required:
                 - merchant_id
@@ -10783,12 +10783,12 @@ paths:
                 meterSerial:
                   type: string
                   description: ''
-                  example: nemo
+                  example: deleniti
                   nullable: false
                 amount:
                   type: number
                   description: ''
-                  example: 20.002
+                  example: 5979666.8
                   nullable: false
               required:
                 - meterSerial
@@ -10799,7 +10799,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the start.'
-        example: qui
+        example: eius
         required: true
         schema:
           type: string
@@ -10818,7 +10818,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: doloremque
+        example: totam
         required: true
         schema:
           type: string
@@ -10862,12 +10862,12 @@ paths:
                 api_url:
                   type: string
                   description: ''
-                  example: officiis
+                  example: enim
                   nullable: false
                 certificate_password:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: placeat
                   nullable: false
               required:
                 - api_url
@@ -10913,7 +10913,7 @@ paths:
                 cert:
                   type: string
                   description: ''
-                  example: qui
+                  example: autem
                   nullable: false
               required:
                 - cert
@@ -10980,12 +10980,12 @@ paths:
                 client_id:
                   type: string
                   description: ''
-                  example: ipsam
+                  example: rem
                   nullable: false
                 client_secret:
                   type: string
                   description: ''
-                  example: ut
+                  example: iusto
                   nullable: false
               required:
                 - client_id
@@ -11031,12 +11031,12 @@ paths:
                 user_id:
                   type: string
                   description: ''
-                  example: sed
+                  example: rerum
                   nullable: false
                 user_password:
                   type: string
                   description: ''
-                  example: sed
+                  example: incidunt
                   nullable: false
               required:
                 - user_id
@@ -11061,7 +11061,7 @@ paths:
                 transaction_file:
                   type: string
                   description: ''
-                  example: eos
+                  example: dolore
                   nullable: false
               required:
                 - transaction_file
@@ -11106,12 +11106,12 @@ paths:
                 client_id:
                   type: string
                   description: ''
-                  example: et
+                  example: tempore
                   nullable: false
                 client_secret:
                   type: string
                   description: ''
-                  example: qui
+                  example: minus
                   nullable: false
               required:
                 - client_id
@@ -11157,12 +11157,12 @@ paths:
                 user_name:
                   type: string
                   description: ''
-                  example: deleniti
+                  example: eum
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: magni
+                  example: omnis
                   nullable: false
               required:
                 - user_name
@@ -11285,17 +11285,17 @@ paths:
                 max_current:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 1
                   nullable: false
                 phase:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 7
                   nullable: false
                 online:
                   type: integer
                   description: ''
-                  example: 12
+                  example: 10
                   nullable: false
               required:
                 - max_current
@@ -11333,7 +11333,7 @@ paths:
                 id:
                   type: integer
                   description: ''
-                  example: 12
+                  example: 4
                   nullable: false
               required:
                 - id
@@ -11356,17 +11356,17 @@ paths:
                 max_current:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 3
                   nullable: false
                 phase:
                   type: integer
                   description: ''
-                  example: 15
+                  example: 16
                   nullable: false
                 online:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 13
                   nullable: false
               required:
                 - max_current
@@ -11378,7 +11378,7 @@ paths:
         in: path
         name: meterTypeId
         description: ''
-        example: ipsa
+        example: fuga
         required: true
         schema:
           type: string
@@ -11516,7 +11516,7 @@ paths:
                 serialNumber:
                   type: string
                   description: required.
-                  example: et
+                  example: est
                   nullable: false
       security: []
     parameters:
@@ -11524,7 +11524,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: hic
+        example: sequi
         required: true
         schema:
           type: string
@@ -11555,7 +11555,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: 20
+        example: 3
         required: true
         schema:
           type: integer
@@ -11572,7 +11572,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: cum
+            value: neque
   '/api/paymenthistories/{person_id}/period':
     get:
       summary: 'Payment Periods.'
@@ -11608,7 +11608,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: 5
+        example: 9
         required: true
         schema:
           type: integer
@@ -11639,7 +11639,7 @@ paths:
         in: path
         name: personId
         description: 'checks if the person has any debts to the system'
-        example: 7
+        example: 6
         required: true
         schema:
           type: integer
@@ -11662,12 +11662,12 @@ paths:
                 begin:
                   type: string
                   description: ''
-                  example: asperiores
+                  example: quos
                   nullable: false
                 end:
                   type: string
                   description: ''
-                  example: magni
+                  example: quod
                   nullable: false
       security: []
   '/api/paymenthistories/{personId}/payments/{period}/{limit}/{order}':
@@ -11705,7 +11705,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: nulla
+        example: eum
         required: true
         schema:
           type: string
@@ -11722,7 +11722,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 12
+            value: 8
       -
         in: path
         name: order
@@ -11736,12 +11736,12 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: aut
+            value: voluptatem
       -
         in: path
         name: payerId
         description: ''
-        example: 14
+        example: 16
         required: true
         schema:
           type: integer
@@ -11995,7 +11995,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 1
+            value: 17
   '/api/people/{personId}/meters':
     get:
       summary: "Person with Meters & Tariff\nPerson details with his/her owned meter(s) and its assigned tariff"
@@ -12199,7 +12199,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: ut
+        example: atque
         required: true
         schema:
           type: string
@@ -12207,7 +12207,7 @@ paths:
         in: path
         name: person
         description: 'The ID of the person'
-        example: minima
+        example: ea
         required: true
         schema:
           type: string
@@ -12404,7 +12404,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: consequuntur
+        example: hic
         required: true
         schema:
           type: string
@@ -12412,7 +12412,7 @@ paths:
         in: path
         name: person
         description: 'The ID of the person'
-        example: repudiandae
+        example: sed
         required: true
         schema:
           type: string
@@ -12739,7 +12739,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 14
+            value: 8
   /api/people/search:
     get:
       summary: "Search\nSearches in person list according to the search term."
@@ -13603,7 +13603,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: dicta
+        example: nihil
         required: true
         schema:
           type: string
@@ -13812,7 +13812,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: quasi
+        example: porro
         required: true
         schema:
           type: string
@@ -13900,8 +13900,8 @@ paths:
                   nullable: false
                 payerPhoneNumber:
                   type: string
-                  description: "Customer's phone number in international format pattern: ^255[0-9]{9}$"
-                  example: '255712345678'
+                  description: "Customer's phone number in international format pattern: ^258[0-9]{9}$"
+                  example: '258712345678'
                   nullable: false
                 referenceId:
                   type: string
