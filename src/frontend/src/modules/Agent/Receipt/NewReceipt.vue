@@ -84,9 +84,11 @@
 import { EventBus } from "@/shared/eventbus"
 import { AgentReceiptService } from "@/services/AgentReceiptService"
 import { AgentService } from "@/services/AgentService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewReceipt",
+  mixins: [notify],
   data() {
     return {
       agentReceiptService: new AgentReceiptService(),
@@ -140,14 +142,6 @@ export default {
     },
     receiptAdded() {
       EventBus.$emit("receiptAdded")
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

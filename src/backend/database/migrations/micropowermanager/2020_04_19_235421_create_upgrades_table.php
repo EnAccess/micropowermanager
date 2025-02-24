@@ -12,7 +12,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('upgrades', static function (Blueprint $table) {
+        Schema::connection('tenant')->create('upgrades', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('restriction_id');
             $table->integer('cost'); // 100 times the price to handle two digit floating numbers
@@ -28,7 +28,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('upgrades');
+        Schema::connection('tenant')->dropIfExists('upgrades');
     }
 
     // TODO : add to seeders

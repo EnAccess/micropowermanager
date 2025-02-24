@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-backend
+  namespace: micropowermanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-backend
+  template:
+    metadata:
+      labels:
+        app: mpm-backend
+    spec:
+      containers:
+        - name: mpm-backend
+          image: enaccess/micropowermanager-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: APP_NAME
+              value: MicroPowerManager
+            - name: APP_ENV
+              value: demo
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: APP_KEY
+            - name: APP_DEBUG
+              value: "false"
+            - name: MPM_LOAD_DEMO_DATA
+              value: "true"
+            - name: DB_CONNECTION
+              value: micro_power_manager
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_HOST
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: micro_power_manager
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: DB_PASSWORD
+            - name: REDIS_HOST
+              value: redis-db-service
+            - name: REDIS_PORT
+              value: "6379"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: JWT_SECRET
+            - name: CACHE_DRIVER
+              value: redis
+            - name: QUEUE_DRIVER
+              value: database
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-frontend
+  namespace: micropowermanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-frontend
+  template:
+    metadata:
+      labels:
+        app: mpm-frontend
+    spec:
+      containers:
+        - name: mpm-frontend
+          image: enaccess/micropowermanager-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: MPM_ENV
+              value: demo
+            - name: MPM_BACKEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mpm-secrets
+                  key: MPM_BACKEND_URL

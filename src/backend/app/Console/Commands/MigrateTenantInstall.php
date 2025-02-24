@@ -9,7 +9,7 @@ class MigrateTenantInstall extends AbstractSharedCommand {
     public function handle() {
         $this->call('optimize:clear');
         $this->call('migrate:install', [
-            '--database' => 'shard',
+            '--database' => 'tenant',
         ]);
     }
 }

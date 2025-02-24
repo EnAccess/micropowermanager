@@ -110,9 +110,11 @@
 </template>
 <script>
 import { SmsApplianceRemindRateService } from "@/services/SmsApplianceRemindRateService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "SmsApplianceRemindRate",
+  mixins: [notify],
   data() {
     return {
       smsApplianceRemindRateService: new SmsApplianceRemindRateService(),
@@ -149,14 +151,6 @@ export default {
         this.smsApplianceRemindRateService.list.filter(
           (x) => x.id === smsApplianceRemindRate,
         )[0]
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

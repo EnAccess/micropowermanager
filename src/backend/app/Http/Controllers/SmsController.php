@@ -55,8 +55,9 @@ class SmsController extends Controller {
                 $smsData = [
                     'receiver' => $phone,
                     'body' => $message,
-                    'direction' => 1,
+                    'direction' => Sms::DIRECTION_OUTGOING,
                     'sender_id' => $senderId,
+                    'status' => Sms::STATUS_STORED,
                 ];
                 $this->smsService->createSms($smsData);
                 $data = [
@@ -142,8 +143,9 @@ class SmsController extends Controller {
                     [
                         'receiver' => $address[0]->phone,
                         'body' => $message,
-                        'direction' => 1,
+                        'direction' => Sms::DIRECTION_OUTGOING,
                         'sender_id' => $senderId,
+                        'status' => Sms::STATUS_STORED,
                     ]
                 );
                 $data = [
@@ -161,8 +163,9 @@ class SmsController extends Controller {
         $smsData = [
             'receiver' => $sender,
             'body' => $message,
-            'direction' => 0,
+            'direction' => Sms::DIRECTION_INCOMING,
             'sender_id' => null,
+            'status' => Sms::STATUS_DELIVERED,
         ];
         $sms = $this->smsService->createSms($smsData);
 
@@ -200,9 +203,9 @@ class SmsController extends Controller {
         $smsData = [
             'receiver' => $phone,
             'body' => $message,
-            // TODO MPM-78
-            // 'direction' => SmsService::DIRECTION_OUTGOING,
+            'direction' => Sms::DIRECTION_OUTGOING,
             'sender_id' => $senderId,
+            'status' => Sms::STATUS_STORED,
         ];
         $sms = $this->smsService->createAndSendSms($smsData);
 
@@ -220,7 +223,7 @@ class SmsController extends Controller {
         try {
             Log::info('Sms has delivered successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = 2;
+            $sms->status = Sms::STATUS_DELIVERED;
             $sms->save();
         } catch (ModelNotFoundException $e) {
             Log::critical(
@@ -237,7 +240,7 @@ class SmsController extends Controller {
         try {
             Log::warning('Sending Sms failed on AndroidGateway', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = -1;
+            $sms->status = Sms::STATUS_FAILED;
             $sms->save();
         } catch (ModelNotFoundException $e) {
             Log::critical(
@@ -254,7 +257,7 @@ class SmsController extends Controller {
         try {
             Log::warning('Sms has sent successfully', ['uuid' => $uuid]);
             $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = 1;
+            $sms->status = Sms::STATUS_SENT;
             $sms->save();
         } catch (ModelNotFoundException $e) {
             Log::critical(

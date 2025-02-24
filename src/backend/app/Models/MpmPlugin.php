@@ -29,6 +29,7 @@ class MpmPlugin extends BaseModelCore {
     public const WAVECOM_PAYMENT_PROVIDER = 15;
     public const DALY_BMS = 16;
     public const AGAZA_SHS = 17;
+    public const AFRICAS_TALKING = 18;
 
     protected $table = 'mpm_plugins';
 

@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('main_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
             $table->enum('usage_type', [
                 'mini-grid',
                 'shs',
@@ -30,6 +30,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('main_settings', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {});
     }
 };

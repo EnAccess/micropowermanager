@@ -30,7 +30,7 @@ class CsvDataProcessor {
     public function processParsedCsvData($csvData) {
         Collect($csvData)->each(function ($row) {
             try {
-                DB::connection('shard')->beginTransaction();
+                DB::connection('tenant')->beginTransaction();
                 $person = $this->createRecordFromCsv($row, $this->reflections['PersonService']);
                 $row['person_id'] = $person->id;
                 $this->checkRecordWasRecentlyCreated($person, 'customer');
@@ -84,10 +84,10 @@ class CsvDataProcessor {
                         $address->save();
                     }
                 }
-                DB::connection('shard')->commit();
+                DB::connection('tenant')->commit();
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
-                DB::connection('shard')->rollBack();
+                DB::connection('tenant')->rollBack();
                 throw $exception;
             }
         });

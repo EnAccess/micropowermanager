@@ -62,9 +62,11 @@ import { EventBus } from "@/shared/eventbus"
 
 import { CredentialService } from "../../services/CredentialService"
 import { SiteService } from "../../services/SiteService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "MeterModelList",
+  mixins: [notify],
   components: { Widget, RedirectionModal },
   data() {
     return {
@@ -173,14 +175,6 @@ export default {
         this.subscriber,
         this.meterModelService.list.length,
       )
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

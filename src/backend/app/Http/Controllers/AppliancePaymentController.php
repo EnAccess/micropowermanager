@@ -13,13 +13,13 @@ class AppliancePaymentController extends Controller {
 
     public function store(AssetPerson $appliancePerson, Request $request): ApiResource {
         try {
-            DB::connection('shard')->beginTransaction();
+            DB::connection('tenant')->beginTransaction();
             $this->appliancePaymentService->getPaymentForAppliance($request, $appliancePerson);
-            DB::connection('shard')->commit();
+            DB::connection('tenant')->commit();
 
             return ApiResource::make($appliancePerson);
         } catch (\Exception $e) {
-            DB::connection('shard')->rollBack();
+            DB::connection('tenant')->rollBack();
             throw new \Exception($e->getMessage());
         }
     }

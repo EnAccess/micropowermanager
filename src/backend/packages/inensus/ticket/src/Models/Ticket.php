@@ -51,14 +51,29 @@ class Ticket extends BaseModel {
     }
 
     public function ticketsOpenedWithCategories($miniGridId): bool|array {
-        $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as new_tickets, YEARWEEK(tickets.created_at,3) as period FROM `tickets` '.
-            'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
-            'left join addresses on addresses.owner_id = tickets.owner_id '.
-            "where addresses.owner_type='person' ".
-            'and addresses.city_id  in (SELECT id from cities where mini_grid_id  ='.$miniGridId.' ) '.
-            ' GROUP by ticket_categories.label_name, tickets.category_id, YEARWEEK(tickets.updated_at,3), tickets.created_at';
+        $sql = <<<SQL
+            SELECT
+                ticket_categories.label_name,
+                COUNT(tickets.id) AS new_tickets,
+                YEARWEEK(tickets.created_at, 3) AS period
+            FROM tickets
+            LEFT JOIN ticket_categories ON tickets.category_id = ticket_categories.id
+            LEFT JOIN addresses ON addresses.owner_id = tickets.owner_id
+            WHERE
+                addresses.owner_type = 'person'
+                AND addresses.city_id IN (
+                    SELECT id
+                    FROM cities
+                    WHERE mini_grid_id = {$miniGridId}
+                )
+            GROUP BY
+                ticket_categories.label_name,
+                tickets.category_id,
+                YEARWEEK(tickets.updated_at, 3),
+                tickets.created_at;
+            SQL;
 
-        $sth = DB::connection('shard')->getPdo()->prepare($sql);
+        $sth = DB::connection('tenant')->getPdo()->prepare($sql);
 
         $sth->execute();
 
@@ -66,14 +81,29 @@ class Ticket extends BaseModel {
     }
 
     public function ticketsClosedWithCategories($miniGridId): bool|array {
-        $sql = 'SELECT ticket_categories.label_name, count(tickets.id) as closed_tickets, YEARWEEK(tickets.updated_at,3) as period FROM `tickets` '.
-            'LEFT join ticket_categories on tickets.category_id = ticket_categories.id '.
-            'left join addresses on addresses.owner_id = tickets.owner_id '.
-            "where addresses.owner_type='person' ".
-            'and addresses.city_id in (SELECT id from cities where id =  '.$miniGridId.' ) '.
-            'and tickets.status = 1 '.
-            'GROUP by ticket_categories.label_name, tickets.category_id,YEARWEEK(tickets.updated_at,3)';
-        $sth = DB::connection('shard')->getPdo()->prepare($sql);
+        $sql = <<<SQL
+            SELECT
+                ticket_categories.label_name,
+                COUNT(tickets.id) AS closed_tickets,
+                YEARWEEK(tickets.updated_at, 3) AS period
+            FROM tickets
+            LEFT JOIN ticket_categories ON tickets.category_id = ticket_categories.id
+            LEFT JOIN addresses ON addresses.owner_id = tickets.owner_id
+            WHERE
+                addresses.owner_type = 'person'
+                AND addresses.city_id IN (
+                    SELECT id
+                    FROM cities
+                    WHERE id = {$miniGridId}
+                )
+                AND tickets.status = 1
+            GROUP BY
+                ticket_categories.label_name,
+                tickets.category_id,
+                YEARWEEK(tickets.updated_at, 3);
+            SQL;
+
+        $sth = DB::connection('tenant')->getPdo()->prepare($sql);
 
         $sth->execute();
 

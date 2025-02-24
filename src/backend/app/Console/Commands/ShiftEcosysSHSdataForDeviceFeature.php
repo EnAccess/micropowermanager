@@ -58,8 +58,8 @@ class ShiftEcosysSHSdataForDeviceFeature extends AbstractSharedCommand {
                     }
                 }
             });
-            DB::connection('shard')->table('meters')->truncate();
-            DB::connection('shard')->table('meter_tariffs')->truncate();
+            DB::connection('tenant')->table('meters')->truncate();
+            DB::connection('tenant')->table('meter_tariffs')->truncate();
 
             ConnectionGroup::query()->whereIn('id', [2, 3])->get()->map(function ($q) {
                 $q->delete();

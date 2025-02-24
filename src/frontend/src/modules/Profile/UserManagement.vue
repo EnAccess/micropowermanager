@@ -69,9 +69,11 @@ import { UserService } from "@/services/UserService"
 import { CityService } from "@/services/CityService"
 import NewUser from "./NewUser"
 import EditUser from "./EditUser"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "ProfileManagement",
+  mixins: [notify],
   components: { Widget, NewUser, EditUser },
   data() {
     return {
@@ -151,14 +153,6 @@ export default {
         this.alertNotify("error", error.message)
       }
       this.sending = false
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

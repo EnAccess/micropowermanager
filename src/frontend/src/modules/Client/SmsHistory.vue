@@ -98,8 +98,11 @@ import moment from "moment"
 import { SmsService } from "@/services/SmsService"
 import { mapGetters } from "vuex"
 
+import { notify } from "@/mixins/notify"
+
 export default {
   name: "SmsHistory",
+  mixins: [notify],
   components: { Widget },
   props: {
     personId: {
@@ -179,14 +182,6 @@ export default {
         let chat = parent.$refs.chat
         chat.scrollTop = chat.scrollHeight
       }, 1000)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

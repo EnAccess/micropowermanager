@@ -27,11 +27,11 @@ class MaintenanceRequest extends FormRequest {
             'birth_date' => 'sometimes|date_format:"Y-m-d',
             'sex' => 'sometimes|in:male,female',
             'education' => 'sometimes|min:3',
-            'city_id' => 'sometimes|exists:shard.cities,id',
+            'city_id' => 'sometimes|exists:tenant.cities,id',
             'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
             'phone' => 'required|min:11|regex:(^\+)|numeric',
-            'nationality' => 'sometimes|exists:shard.countries,country_code',
+            'nationality' => 'sometimes|exists:tenant.countries,country_code',
         ];
     }
 

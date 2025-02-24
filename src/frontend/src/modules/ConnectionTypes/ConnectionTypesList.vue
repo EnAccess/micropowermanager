@@ -38,9 +38,11 @@ import { EventBus } from "@/shared/eventbus"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"
 import NewConnectionType from "./NewConnectionType"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "ConnectionTypesList",
+  mixins: [notify],
   components: { Widget, NewConnectionType },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
@@ -84,14 +86,6 @@ export default {
     addNew() {
       EventBus.$emit("showNewConnectionType")
     },
-  },
-  alertNotify(type, message) {
-    this.$notify({
-      group: "notify",
-      type: type,
-      title: type + " !",
-      text: message,
-    })
   },
 }
 </script>

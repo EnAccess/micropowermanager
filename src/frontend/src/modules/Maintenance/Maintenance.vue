@@ -200,9 +200,11 @@ import { EventBus } from "@/shared/eventbus"
 import { TicketService } from "@/services/TicketService"
 import { MaintenanceService } from "@/services/MaintenanceService"
 import { SmsService } from "@/services/SmsService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Maintenance",
+  mixins: [notify],
   components: { NewUser, Widget },
   data() {
     return {
@@ -294,14 +296,6 @@ export default {
     openNewUser() {
       EventBus.$emit("getLists")
       this.newUser = true
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

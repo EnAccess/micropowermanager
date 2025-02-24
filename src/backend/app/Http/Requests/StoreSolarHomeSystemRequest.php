@@ -21,9 +21,9 @@ class StoreSolarHomeSystemRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'serial_number' => 'required|min:8|max:11|unique:shard.devices,device_serial',
-            'manufacturer_id' => 'required|exists:shard.manufacturers,id',
-            'asset_id' => 'required|exists:shard.assets,id',
+            'serial_number' => 'required|min:8|max:11|unique:tenant.devices,device_serial',
+            'manufacturer_id' => 'required|exists:tenant.manufacturers,id',
+            'asset_id' => 'required|exists:tenant.assets,id',
         ];
     }
 }

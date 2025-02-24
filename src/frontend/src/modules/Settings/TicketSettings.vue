@@ -51,9 +51,12 @@
 
 <script>
 import { TicketSettingsService } from "@/services/TicketSettingsService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "TicketSettings",
+  mixins: [notify],
+
   props: {
     ticketSettings: {
       type: Object,
@@ -94,14 +97,6 @@ export default {
         this.alertNotify("error", e.message)
       }
       this.progress = false
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

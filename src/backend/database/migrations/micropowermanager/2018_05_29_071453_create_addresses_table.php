@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('addresses', function (Blueprint $table) {
+        Schema::connection('tenant')->create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('owner'); // adds owner_id and owner_type automatically
             $table->string('email')->nullable();
@@ -32,6 +32,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('addresses');
+        Schema::connection('tenant')->dropIfExists('addresses');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('sms', function (Blueprint $table) {
+        Schema::connection('tenant')->table('sms', function (Blueprint $table) {
             $table->integer('status')->default(0)->change();
             $table->integer('sender_id')->nullable()->change();
             $table->integer('trigger_id')->nullable()->change();
@@ -26,6 +26,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('sms', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('sms', function (Blueprint $table) {});
     }
 };

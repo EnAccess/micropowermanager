@@ -313,11 +313,12 @@ import { currency } from "@/mixins/currency"
 import { Targets } from "@/services/TargetService"
 import { baseUrl } from "@/repositories/Client/AxiosClient"
 import { resources } from "@/resources"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewTarget",
   components: { Widget },
-  mixins: [currency],
+  mixins: [currency, notify],
   computed: {
     isMobile() {
       return this.$store.getters["resolution/getDevice"]
@@ -371,18 +372,6 @@ export default {
     }
   },
   methods: {
-    alertNotify(type, message, title = null) {
-      if (title == null) {
-        title =
-          type.toString().charAt(0).toUpperCase() + type.toString().slice(1)
-      }
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
-    },
     async submitTarget() {
       let validation = await this.$validator.validateAll()
       if (!validation) {

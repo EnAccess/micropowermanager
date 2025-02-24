@@ -49,9 +49,11 @@
 import Widget from "../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { ConnectionGroupService } from "@/services/ConnectionGroupService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewConnectionGroup",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -84,14 +86,6 @@ export default {
     },
     show() {
       this.showAdd = true
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
   watch: {

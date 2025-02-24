@@ -1,0 +1,59 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: mpm-managed-cert
+  namespace: micropowermanager
+spec:
+  domains:
+    - demo2.micropowermanager.io
+    - backend-demo2.micropowermanager.io
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: mpm-frontend-config
+  namespace: micropowermanager
+spec:
+  redirectToHttps:
+    enabled: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mpm-ingress
+  namespace: micropowermanager
+  annotations:
+    networking.gke.io/managed-certificates: mpm-managed-cert
+    networking.gke.io/v1beta1.FrontendConfig: mpm-frontend-config
+    # Eventhough Kubernetes may throw a
+    #   Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
+    # we have to use this annotation in GKE, see
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#deploy-ingress
+    kubernetes.io/ingress.class: gce
+    # IMPORTANT: Make sure this static IP address exists, see
+    # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
+    kubernetes.io/ingress.global-static-ip-name: loadbalancer-global-address-demo
+spec:
+  rules:
+    # MicroPowerManager frontend
+    - host: demo2.micropowermanager.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mpm-frontend-service
+                port:
+                  number: 80
+    # MicroPowerManager backend
+    - host: backend-demo2.micropowermanager.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mpm-backend-service
+                port:
+                  number: 80

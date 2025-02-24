@@ -185,9 +185,11 @@ import Widget from "../../shared/widget"
 import { AgentService } from "@/services/AgentService"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AgentDetail",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -278,14 +280,6 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

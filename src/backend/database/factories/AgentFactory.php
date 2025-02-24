@@ -22,7 +22,7 @@ class AgentFactory extends Factory {
             'balance' => 0,
             'commission_revenue' => 0,
             'due_to_energy_supplier' => 0,
-            'connection' => 'shard',
+            'connection' => 'tenant',
         ];
     }
 }

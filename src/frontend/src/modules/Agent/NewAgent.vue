@@ -286,8 +286,10 @@ import CountryService from "../../services/CountryService"
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import RedirectionModal from "../../shared/RedirectionModal"
+import { notify } from "@/mixins/notify"
 
 export default {
+  mixins: [notify],
   name: "AddAgent",
   components: { Widget, RedirectionModal },
   props: {
@@ -378,15 +380,6 @@ export default {
     },
     hide() {
       EventBus.$emit("closed")
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }
