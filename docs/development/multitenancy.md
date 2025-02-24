@@ -27,7 +27,7 @@ company-specific information and common data such as installable plugins.
 ### New Company Registration Process
 
 When a new company registers an account, a dedicated database is dynamically created for that specific company. This new
-database incorporates Micropower Manager's core migration files located at `src/backend/database/migrations/micropowermanager`
+database incorporates Micropower Manager's core migration files located at `src/backend/database/migrations/tenant`
 
 ### User Session Interaction
 
@@ -45,7 +45,7 @@ docker exec -it backend-dev bash
 php artisan make:migration {migration-name}
 ```
 
-This command creates a migration file in Micropower Manager's core migration files location: `src/backend/database/migrations/micropowermanager`
+This command creates a migration file in Micropower Manager's core migration files location: `src/backend/database/migrations/tenant`
 
 - **Creating Migration File (tenant):**
   To create a migration file for tenant database(s) use the following command:
