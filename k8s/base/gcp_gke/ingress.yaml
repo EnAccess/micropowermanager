@@ -2,7 +2,6 @@ apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
   name: mpm-managed-cert
-  namespace: micropowermanager
 spec:
   domains:
     - demo2.micropowermanager.io
@@ -12,7 +11,6 @@ apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
   name: mpm-frontend-config
-  namespace: micropowermanager
 spec:
   redirectToHttps:
     enabled: true
@@ -21,7 +19,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mpm-ingress
-  namespace: micropowermanager
   annotations:
     networking.gke.io/managed-certificates: mpm-managed-cert
     networking.gke.io/v1beta1.FrontendConfig: mpm-frontend-config
