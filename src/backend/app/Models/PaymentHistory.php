@@ -42,7 +42,7 @@ class PaymentHistory extends BaseModel {
             FROM payment_histories
             WHERE payer_id = :payer_id AND payer_type = :payer_type
             GROUP BY aperiod, payment_type
-            ORDER BY aperiod {$order};
+            ORDER BY MIN(created_at) {$order};
             SQL;
 
         if ($limit !== null) {
