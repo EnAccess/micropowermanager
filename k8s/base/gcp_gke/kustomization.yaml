@@ -1,24 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: micropowermanager-test
-
 resources:
-  # - namespace.yaml
-  # - redis.yaml
+  - redis.yaml
   - deployments.yaml
-  # - services.yaml
-  # - ingress.yaml
-
-images:
-  - name: enaccess/micropowermanager-backend:latest
-    newTag: 0.0.12
-  - name: enaccess/micropowermanager-frontend:latest
-    newTag: 0.0.12
-# spec:
-#   replicas: 1
-#   template:
-#     spec:
-#       containers:
-#         - name: example-container
-#           image: my-app:${IMAGE_TAG:-latest}
+  - services.yaml
+  - ingress.yaml
