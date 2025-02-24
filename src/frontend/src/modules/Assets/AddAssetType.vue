@@ -99,14 +99,6 @@ export default {
     closeAddComponent() {
       EventBus.$emit("addAssetTypeClosed", false)
     },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
-    },
   },
   watch: {
     addNewAssetType(value) {

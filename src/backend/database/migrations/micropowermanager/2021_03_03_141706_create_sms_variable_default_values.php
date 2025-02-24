@@ -13,14 +13,14 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('sms_variable_default_values', function (Blueprint $table) {
+        Schema::connection('tenant')->create('sms_variable_default_values', function (Blueprint $table) {
             $table->id();
             $table->string('variable');
             $table->string('value');
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('sms_variable_default_values')->insert([
+        DB::connection('tenant')->table('sms_variable_default_values')->insert([
             [
                 'variable' => 'name',
                 'value' => 'Herbert',
@@ -102,6 +102,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('sms_variable_default_values');
+        Schema::connection('tenant')->dropIfExists('sms_variable_default_values');
     }
 };

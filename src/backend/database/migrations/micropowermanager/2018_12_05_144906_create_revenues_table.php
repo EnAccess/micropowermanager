@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('revenues', function (Blueprint $table) {
+        Schema::connection('tenant')->create('revenues', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
         });
@@ -23,6 +23,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('revenues');
+        Schema::connection('tenant')->dropIfExists('revenues');
     }
 };

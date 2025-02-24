@@ -195,9 +195,11 @@ import { MiniGridService } from "@/services/MiniGridService"
 import { MaintenanceService } from "@/services/MaintenanceService"
 import { EventBus } from "@/shared/eventbus"
 import RedirectionModal from "../../shared/RedirectionModal"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "NewUser",
+  mixins: [notify],
   components: { widget, Stepper, RedirectionModal },
   props: {
     newUser: {
@@ -282,14 +284,6 @@ export default {
 
     onClose() {
       EventBus.$emit("newUserClosed", false)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

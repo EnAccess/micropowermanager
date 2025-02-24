@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('sms_bodies', function (Blueprint $table) {
+        Schema::connection('tenant')->create('sms_bodies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('reference', 50)->unique();
             $table->string('title')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('sms_bodies')->insert(
+        DB::connection('tenant')->table('sms_bodies')->insert(
             [
                 [
                     'reference' => 'SmsTransactionHeader',
@@ -161,6 +161,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('sms_bodies');
+        Schema::connection('tenant')->dropIfExists('sms_bodies');
     }
 };

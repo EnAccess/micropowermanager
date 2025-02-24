@@ -2,7 +2,7 @@
   <div>
     <component :is="layout">
       <router-view />
-      <notifications group="notify" position="bottom right"></notifications>
+      <Snackbar ref="snackbar"></Snackbar>
     </component>
   </div>
 </template>

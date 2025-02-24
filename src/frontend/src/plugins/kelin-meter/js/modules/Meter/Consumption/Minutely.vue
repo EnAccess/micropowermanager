@@ -164,10 +164,12 @@ import { CredentialService } from "../../../services/CredentialService"
 import { EventBus } from "@/shared/eventbus"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { MinutelyConsumptionService } from "../../../services/MinutelyConsumptionService"
+import { notify } from "@/mixins/notify"
 
 export default {
   components: { Widget, RedirectionModal },
   name: "Daily",
+  mixins: [notify],
   data() {
     return {
       title: "Minutely Consumptions",
@@ -206,14 +208,6 @@ export default {
         this.subscriber,
         this.minutelyConsumptionService.list.length,
       )
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

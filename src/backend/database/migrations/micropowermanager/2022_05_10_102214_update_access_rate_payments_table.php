@@ -16,7 +16,7 @@ return new class extends Migration {
         if (!Type::hasType('double')) {
             Type::addType('double', FloatType::class);
         }
-        Schema::connection('shard')->table('access_rate_payments', function (Blueprint $table) {
+        Schema::connection('tenant')->table('access_rate_payments', function (Blueprint $table) {
             $table->double('debt', 15, 6)->change();
             $table->double('unpaid_in_row', 15, 6)->change();
         });
@@ -28,6 +28,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('access_rate_payments', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('access_rate_payments', function (Blueprint $table) {});
     }
 };

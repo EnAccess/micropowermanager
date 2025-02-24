@@ -38,7 +38,7 @@ class DatabaseProxyManagerService {
 
     private function buildDatabaseConnection(string $databaseName): void {
         $databaseConnections = config()->get('database.connections');
-        $databaseConnections['shard'] = [
+        $databaseConnections['tenant'] = [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
@@ -53,7 +53,7 @@ class DatabaseProxyManagerService {
             'engine' => null,
         ];
         config()->set('database.connections', $databaseConnections);
-        $this->databaseManager->purge('shard');
-        $this->databaseManager->reconnect('shard');
+        $this->databaseManager->purge('tenant');
+        $this->databaseManager->reconnect('tenant');
     }
 }

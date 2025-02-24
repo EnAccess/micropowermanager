@@ -174,11 +174,13 @@ import Widget from "../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { SmsService } from "@/services/SmsService"
 import moment from "moment"
+import { notify } from "@/mixins/notify"
 
 const debounce = require("debounce")
 
 export default {
   name: "List",
+  mixins: [notify],
   components: { Widget },
   watch: {
     filterNumber: debounce(function () {
@@ -297,14 +299,6 @@ export default {
         this.alertNotify("error", e.message)
       }
       this.$validator.reset()
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
     searchSms(text) {
       this.numberList = this.smsService.searchSms(text)

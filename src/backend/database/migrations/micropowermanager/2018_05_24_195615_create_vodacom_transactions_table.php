@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('vodacom_transactions', function (Blueprint $table) {
+        Schema::connection('tenant')->create('vodacom_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('conversation_id')->unique();
             $table->string('originator_conversation_id')->unique();
@@ -29,6 +29,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('vodacom_transactions');
+        Schema::connection('tenant')->dropIfExists('vodacom_transactions');
     }
 };

@@ -118,11 +118,12 @@ import {
   BatchRevenue,
   BatchRevenueService,
 } from "@/services/BatchRevenueService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "TargetList",
   components: { Widget },
-  mixins: [currency],
+  mixins: [currency, notify],
   props: {
     targetId: {
       type: String,
@@ -326,15 +327,6 @@ export default {
           : 1)
 
       this.$emit("complete", totalConnections)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-        speed: 0,
-      })
     },
   },
 }

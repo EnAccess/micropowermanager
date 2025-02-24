@@ -73,9 +73,11 @@
 import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService"
 import { EventBus } from "@/shared/eventbus"
 import { ApplianceService } from "@/services/ApplianceService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "AssignAppliance",
+  mixins: [notify],
   data() {
     return {
       applianceIndex: null,
@@ -148,14 +150,6 @@ export default {
     },
     applianceAssigned() {
       EventBus.$emit("applianceAssigned")
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

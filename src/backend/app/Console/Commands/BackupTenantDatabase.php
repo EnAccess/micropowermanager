@@ -9,7 +9,7 @@ class BackupTenantDatabase extends AbstractSharedCommand {
     protected $description = 'Run the backup for provided tenant database(s)';
 
     public function handle() {
-        $databaseName = config('database.connections.shard');
+        $databaseName = config('database.connections.tenant');
         $this->info('Starting backup for tenant databases');
         dump($this->arguments());
         config(['database.connections.mysql' => $databaseName]);

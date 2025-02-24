@@ -13,21 +13,21 @@ return new class extends Migration {
     public function up() {
         $tableNames = config('permission.table_names');
 
-        Schema::connection('shard')->create($tableNames['permissions'], function (Blueprint $table) {
+        Schema::connection('tenant')->create($tableNames['permissions'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('guard_name');
             $table->timestamps();
         });
 
-        Schema::connection('shard')->create($tableNames['roles'], function (Blueprint $table) {
+        Schema::connection('tenant')->create($tableNames['roles'], function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('guard_name');
             $table->timestamps();
         });
 
-        Schema::connection('shard')->create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames) {
+        Schema::connection('tenant')->create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->unsignedInteger('permission_id');
             $table->morphs('model');
 
@@ -39,7 +39,7 @@ return new class extends Migration {
             $table->primary(['permission_id', 'model_id', 'model_type'], 'model_has_permissions_permission_model_type_primary');
         });
 
-        Schema::connection('shard')->create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames) {
+        Schema::connection('tenant')->create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames) {
             $table->unsignedInteger('role_id');
             $table->morphs('model');
 
@@ -51,7 +51,7 @@ return new class extends Migration {
             $table->primary(['role_id', 'model_id', 'model_type']);
         });
 
-        Schema::connection('shard')->create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
+        Schema::connection('tenant')->create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->unsignedInteger('permission_id');
             $table->unsignedInteger('role_id');
 
@@ -79,10 +79,10 @@ return new class extends Migration {
     public function down() {
         $tableNames = config('permission.table_names');
 
-        Schema::connection('shard')->drop($tableNames['role_has_permissions']);
-        Schema::connection('shard')->drop($tableNames['model_has_roles']);
-        Schema::connection('shard')->drop($tableNames['model_has_permissions']);
-        Schema::connection('shard')->drop($tableNames['roles']);
-        Schema::connection('shard')->drop($tableNames['permissions']);
+        Schema::connection('tenant')->drop($tableNames['role_has_permissions']);
+        Schema::connection('tenant')->drop($tableNames['model_has_roles']);
+        Schema::connection('tenant')->drop($tableNames['model_has_permissions']);
+        Schema::connection('tenant')->drop($tableNames['roles']);
+        Schema::connection('tenant')->drop($tableNames['permissions']);
     }
 };

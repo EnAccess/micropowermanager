@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('airtel_transactions', function (Blueprint $table) {
+        Schema::connection('tenant')->table('airtel_transactions', function (Blueprint $table) {
             $table->string('manufacturer_transaction_type')->nullable();
             $table->integer('manufacturer_transaction_id')->nullable();
         });
@@ -23,6 +23,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('airtel_transactions', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('airtel_transactions', function (Blueprint $table) {});
     }
 };

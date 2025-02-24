@@ -171,9 +171,10 @@ import Widget from "../../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import NewCommission from "../Commission/NewCommission"
-
+import { notify } from "@/mixins/notify"
 export default {
   name: "AgentCommissionList",
+  mixins: [notify],
   data() {
     return {
       subscriber: "agent-commission-list",
@@ -278,14 +279,6 @@ export default {
         this.loading = false
         this.alertNotify("error", e.message)
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

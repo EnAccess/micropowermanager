@@ -12,6 +12,7 @@ export class AuthenticationService {
       token: null,
       remaining_time: 0,
       intervalId: 0,
+      companyId: null,
     }
   }
 
@@ -24,6 +25,7 @@ export class AuthenticationService {
         remaining_time: data.expires_in,
         name: data.user.name,
         intervalId: 0,
+        companyId: data.user.company_id,
       }
       localStorage.setItem("token", this.authenticateUser.token)
       this.startTimer()

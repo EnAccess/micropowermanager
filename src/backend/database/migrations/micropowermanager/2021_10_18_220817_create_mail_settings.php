@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('mail_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->create('mail_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('mail_host');
             $table->integer('mail_port');
@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('mail_settings')->insert([
+        DB::connection('tenant')->table('mail_settings')->insert([
             'mail_host' => 'smtp.example.com',
             'mail_port' => 123,
             'mail_encryption' => 'tls',
@@ -40,6 +40,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('mail_settings');
+        Schema::connection('tenant')->dropIfExists('mail_settings');
     }
 };

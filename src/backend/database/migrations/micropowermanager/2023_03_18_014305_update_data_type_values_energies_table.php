@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('energies', function (Blueprint $table) {
+        Schema::connection('tenant')->table('energies', function (Blueprint $table) {
             $table->double('used_energy_since_last', 8, 4)->default(0)->change();
             $table->double('total_absorbed', 8, 4)->default(0)->change();
             $table->double('absorbed_energy_since_last', 8, 4)->default(0)->change();
@@ -24,6 +24,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->table('energies', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('energies', function (Blueprint $table) {});
     }
 };

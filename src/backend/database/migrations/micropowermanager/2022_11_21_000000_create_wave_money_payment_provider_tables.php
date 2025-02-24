@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('wave_money_transactions')) {
-            Schema::connection('shard')->create('wave_money_transactions', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('wave_money_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('status')->default(-2);
                 $table->decimal('amount');
@@ -22,7 +22,7 @@ return new class extends Migration {
             });
         }
         if (!Schema::hasTable('wave_money_credentials')) {
-            Schema::connection('shard')->create('wave_money_credentials', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('wave_money_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('merchant_id')->nullable();
                 $table->string('merchant_name')->nullable();
@@ -36,7 +36,7 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('wave_money_transactions');
-        Schema::connection('shard')->dropIfExists('wave_money_credentials');
+        Schema::connection('tenant')->dropIfExists('wave_money_transactions');
+        Schema::connection('tenant')->dropIfExists('wave_money_credentials');
     }
 };

@@ -189,11 +189,13 @@
 import Widget from "../../shared/widget"
 import { MiniGridService } from "@/services/MiniGridService"
 import { SmsService } from "@/services/SmsService"
+import { notify } from "@/mixins/notify"
 
 const debounce = require("debounce")
 
 export default {
   name: "NewSms",
+  mixins: [notify],
   components: { Widget },
   props: {
     show: {
@@ -330,15 +332,6 @@ export default {
           this.duplicateError = true
         }
       }
-    },
-
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
   watch: {

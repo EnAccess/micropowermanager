@@ -31,7 +31,7 @@ class User extends Authenticatable implements JWTSubject {
     public const COL_COMPANY_ID = 'company_id';
 
     public function __construct(array $attributes = []) {
-        $this->setConnection('shard');
+        $this->setConnection('tenant');
 
         parent::__construct($attributes);
     }

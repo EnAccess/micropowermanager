@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Exceptions\SmsAndroidSettingNotExistingException;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -25,9 +24,9 @@ class SmsAndroidSetting extends BaseModel {
             }
 
             return $responsibleGateway;
-        } else {
-            throw new SmsAndroidSettingNotExistingException('No SMS android setting registered.');
         }
+
+        return null;
     }
 
     public function getId(): int {

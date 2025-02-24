@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('menu_items', function (Blueprint $table) {
+        Schema::connection('tenant')->create('menu_items', function (Blueprint $table) {
             $table->increments('id');
             $table->char('name', 50);
             $table->char('url_slug', 50);
@@ -27,6 +27,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('menu_items');
+        Schema::connection('tenant')->dropIfExists('menu_items');
     }
 };

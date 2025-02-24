@@ -161,9 +161,11 @@ import CountryService from "@/services/CountryService"
 import { UsageTypeListService } from "@/services/UsageTypeListService"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "MainSettings",
+  mixins: [notify],
   props: {
     mainSettings: {
       default: null,
@@ -247,14 +249,6 @@ export default {
     updateStoreStates(mainSettings) {
       document.title = mainSettings.siteTitle
       this.$i18n.locale = mainSettings.language
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('mesomb_transactions')) {
-            Schema::connection('shard')->create('mesomb_transactions', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('mesomb_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('pk');
                 $table->integer('status')->default(0);
@@ -26,6 +26,6 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('mesomb_transactions');
+        Schema::connection('tenant')->dropIfExists('mesomb_transactions');
     }
 };

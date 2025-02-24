@@ -2,193 +2,84 @@
 order: 3
 ---
 
-# Essential Configurations
+# Micropower Manager Settings
 
-There are bound services like the Payment Services (Vodacom Tanzania and
-Airtel Tanzania), Ticketing Service(Trello API), Critical Logging
-notification(Slack Channel), WebSocket(Pusher), etc. if you plan to get
-your payments through these services you need to change/edit following
-files/configurations
+The **Micropower Manager** (MPM) provides a user-friendly interface for managing your Mini-Grid settings. Upon accessing the `/settings` page, users are greeted with the default tab where they can configure essential settings.
 
-## Mobile Payment Configurations - Vodacom
+## Key Settings
 
-1. `ips` array element in `services.php`. The file is located under
-   `app/config/`. The element `ips` holds a list of authorized
-   IP-addresses that are allowed to send transaction data.
+- **Title**: This field allows users to set a custom title for their Mini-Grid management.
+- **Currency**: Users can select the currency in which they wish to operate.
+- **Country**: The country setting is crucial for compliance with local regulations and represents the country where the MPM user's Mini-Grids are located.
+- **VAT Energy**: This field is used to input the VAT rate applicable to energy consumption, which is a tax applied to energy sales.
+- **Usage Type**: Users can specify the type of usage, such as Mini-Grid, Solar Home System, or E-Bike Rental.
+- **Company Name**: The name of the company managing the Mini-Grid can be entered here.
+- **Language**: Users can select their preferred language for the interface.
+- **VAT Appliance**: This field allows users to set the VAT rate applicable to appliances, which is a tax applied to appliance sales.
 
-2. Following changes should be done in the `.env` file
+Once all settings are configured, users can click the **SAVE** button to apply the changes.
 
-   ```bash
-   VODACOM_SPID=YOUR-SPID
-   VODACOM_SPPASSWORD="YOUR-PASSWORD"
-   VODACOM_REQUEST_URL="END-POINT WHERE YOU CONFIRM THE TRANSACTION"
-   VODACOM_BROKER_CRT="LOCATION-OF-.CRT-FILE"
-   VODACOM_SLL_KEY="LOCATION-OF-.KEY-FILE"
-   VODACOM_CERTIFICATE_AUTHORITY="LOCATION-OF-.CER-FILE"
-   VODACOM_SSL_CERT="LOCATION-OF-.PEM-FILE"
-   ```
+## SMS Settings
 
-## Mobile Payment Configurations - Airtel
+In this section, users can define the structure of automated messages sent to their end customers. The MPM user can customize the following message types:
 
-When we set up the second payment provider in our live system, we were
-not that experienced by setting up **VPN Tunnels** that\'s why we go
-with the idea \'one tunnel per host\`. Thatswhy the airtel payment
-integration is on a separate project for now. We\'re planning to migrate
-it into this project soon.
+- **Transaction Confirmation**: This message is sent when a payment is successfully processed. For example:
 
-\--\> **The project link comes as soon as we uploaded the project to
-GitHub** \<\--
+  ```plaintext
+  Dear [name] [surname], we received your transaction [transaction_amount].
+  ```
 
-Change the `api_user`, `api_password`, and `ips` in `services.php`
+- **Resend Last Transaction**: This option allows end users to request information about their most recent payment.
 
-```php
-'airtel' => [
-      'request_url' => env('AIRTEL_REQUEST_URL'),
-      'api_user' => 'YOUR-USER',
-      'api_password' => 'YOUR-PASSWORD',
-      'ips' => [
-          'ALLOWED_IPS TO SEND YOU TRANSACTION DATA'
-      ],
-  ],
-```
+- **Reminder**: Automated messages are sent to remind users of upcoming or overdue payments.
 
-The following change should be done in the `.env` file
+### Android Gateway Settings
 
-```bash
-AIRTEL_REQUEST_URL="AIRTEL SERVICE URL"
-```
+The Android Gateway settings allow MPM users to configure message sending methods through the embedded Android gateway application. Users can add as many gateways as they wish, with each gateway representing an Android phone that has the MPM SMS Gateway application installed.
 
-## STS Meter Configuration
+To obtain the token information, users can use the "Copy Tokens" button available in the app. Each gateway registered here will be randomly selected for sending automated or manual messages.
 
-Currently, the system supports only CALIN-STS meters. To be able to
-communicate with Calin and generate STS-Tokens, the following changes
-should be done;
+## Map Settings
 
-1. Your key and the endpoint where you create those tokens.
+In this section, users can configure the settings for the maps displayed within the Micropower Manager. Users can set the default zoom level and choose the default provider for the map. Additionally, users can specify the starting points for the map by entering the latitude and longitude coordinates.
 
-   ```bash
-   CALIN_KEY="CALIN-KEY"
-   CALIN_CLIENT_URL="CALIN-CLIENT-URL"
-   ```
+- **Default Zoom**: This setting allows users to define the initial zoom level of the map when it is first displayed.
+- **Default Provider**: Users can select the preferred map provider for displaying the map.
+- **Set Map Starting Points**: Users can input the latitude and longitude to set the initial view of the map.
 
-2. If you have meters which can send their consumption data to CALIN\'s
-   server please fill the below-listed variables too
+Once all settings are configured, users can click the **SAVE** button to apply the changes.
 
-   ```bash
-   METER_DATA_URL="REMOTE-METER-READING-URL"
-   METER_DATA_KEY="METER-READING-KEY"
-   METER_DATA_USER="METER-READING-USER"
-   ```
+## Plugin Management
 
-## Pusher(Web Socket)
+In this section, MPM users have the flexibility to activate and deactivate the plugins they wish to utilize within the Micropower Manager. Once activated, these plugins will be prominently displayed in the sidebar, enabling users to easily access and configure specific settings, as well as view any relevant plugin-specific information.
 
-Pusher is used to notify your admins when a new ticket is been created.
+Plugins are designed to enhance functionality and often rely on third-party applications. To configure the necessary credentials or URLs for an activated plugin, users can simply click on the corresponding entry in the sidebar.
 
-```sh
-PUSHER_APP_ID="PUSHER-APP-ID"
-PUSHER_APP_KEY="PUSHER-KEY"
-PUSHER_APP_SECRET="PUSHER-APP-SECRET"
-PUSHER_APP_CLUSTER="YOUR-CLUSTER ex. eu"
-```
+### Africa's Talking Plugin Settings
 
-## Slack
+Once the Africa's Talking plugin is activated, users must fill in the following fields on the overview page:
 
-Slack is the current critical logging service that alerts the admins
-when something went wrong. Like a transaction is been canceled.
+- **Username**: The username for the Africa's Talking account.
+- **API Key**: The API key provided by Africa's Talking.
+- **Short Code**: The short code used for sending messages.
 
-```bash
-LOG_SLACK_WEBHOOK_URL="SLACK-WEBHOOK-URL"
-```
+The **Incoming Messages URL** and **Delivery Reports URL** will be automatically generated by the Micropower Manager (MPM). Users should copy these URLs and paste them into the Africa's Talking platform.
 
-## Setup Sms Communication
+For detailed information on setting up the Africa's Talking plugin, please refer to the [Africa's Talking Documentation](https://developers.africastalking.com/tutorials?products=sms).
 
-### Configuration for BongoLive
+### Availability
 
-> [!WARNING]
-> The Bongo API integration on our system is not been
-> maintained since early 2019.
-> Proceed with caution.
+Africa's Talking services are available in several countries, including but not limited to:
 
-Firstly, you have to uncomment these lines in
-`app/Providers/AppServiceProvider.php`. Because the default SMSProvider
-is the 2nd option above.
+- Kenya
+- Uganda
+- Tanzania
+- Rwanda
+- Malawi
+- Zambia
+- Nigeria
+- Côte d'Ivoire
+- Ethiopia
+- South Africa
 
-```php
-//$this->app->singleton('SmsProvider', function ($app) {
-       //   return new \App\Sms\Bongo();
-       //});
-```
-
-After that, change the following configuration
-
-```php
-'bongo' => [
-           'url' => 'http://www.bongolive.co.tz/api/sendSMS.php',
-           'sender' => 'SENDER_NUMBER',
-           'username' => 'USER NAME',
-           'password' => 'PASSWORD',
-           'key' =>'KEY',
-       ],
-```
-
-### Configuration for SMS-Gateway Application
-
-> [!INFO]
-> Please read the SMS-Gateway documentation before you
-> continue
-
-To lower the costs of the system we are using the following application
-to send and receive SMSes over that application. To be able to use the
-application you need to assign following configuration values in
-`services.php`
-
-You are not forced to use our inhouse solution for SMS communication.
-You can change the SmsProvider easily in
-`app/Providers/AppServiceProvider.php`
-
-```php
-$this->app->singleton('SmsProvider', static function ($app) {
-           return new AndroidGateway();
-       });
-```
-
-```php
-'sms' => [
-
-        'android' => [
-            'url' => 'https://fcm.googleapis.com/fcm/send',
-            'token' => 'FIREBASE_TOKEN',
-            'key' => 'PHONE_KEY',
-        ],
-        'callback' => 'https://localhost:8000/api/sms/%s/confirm',
-    ],
-```
-
-> [!NOTE]
-> Dont forget to change the `callback` variable to a globaly
-> reachable domain
-
-### Change Predefined SMS Text
-
-To change the predefined SMS texts, please edit `app/Sms/SmsTypes.php`
-
-## Email
-
-To be able to send E-Mails please edit following configuration variables
-
-```bash
-return [
-    'host' => '', //your host to send through
-    'smtp_auth' => true, // enable SMTP authentication
-    'username' => '',// SMTP username
-    'password' => '', //SMTP username
-    'smtp_secure' => PHPMailer::ENCRYPTION_STARTTLS,// default is tls
-    'port' => '',
-    'default_sender' => '',
-    'default_message' => 'Please do not reply to this email', // adds a small footer text to your email
-];
-```
-
-There are currently two supported SMS-Gateways.
-
-1. Inhouse SMS-Gateway Application
+Please check the official documentation for the most up-to-date list of supported countries.

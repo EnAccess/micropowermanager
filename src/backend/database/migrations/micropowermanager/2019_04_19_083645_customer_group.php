@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('customer_groups', function (Blueprint $table) {
+        Schema::connection('tenant')->create('customer_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('tariff_id');
             $table->string('name');
@@ -25,6 +25,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('customer_groups');
+        Schema::connection('tenant')->dropIfExists('customer_groups');
     }
 };

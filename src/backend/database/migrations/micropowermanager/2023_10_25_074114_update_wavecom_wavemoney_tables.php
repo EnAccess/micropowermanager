@@ -11,12 +11,12 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->table('wave_money_transactions', function (Blueprint $table) {
+        Schema::connection('tenant')->table('wave_money_transactions', function (Blueprint $table) {
             $table->string('manufacturer_transaction_type')->nullable();
             $table->integer('manufacturer_transaction_id')->nullable();
         });
 
-        Schema::connection('shard')->table('wavecom_transactions', function (Blueprint $table) {
+        Schema::connection('tenant')->table('wavecom_transactions', function (Blueprint $table) {
             $table->string('manufacturer_transaction_type')->nullable();
             $table->integer('manufacturer_transaction_id')->nullable();
         });

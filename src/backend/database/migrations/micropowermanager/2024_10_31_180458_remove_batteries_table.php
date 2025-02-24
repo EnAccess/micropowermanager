@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->dropIfExists('batteries');
+        Schema::connection('tenant')->dropIfExists('batteries');
     }
 
     /**
@@ -20,7 +20,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->create('batteries', function (Blueprint $table) {
+        Schema::connection('tenant')->create('batteries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('mini_grid_id');
             $table->integer('node_id');
@@ -46,7 +46,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::connection('shard')->table('batteries', function (Blueprint $table) {
+        Schema::connection('tenant')->table('batteries', function (Blueprint $table) {
             $table->boolean('active')->default(0);
             $table->double('c_total')->default(0);
             $table->string('c_total_unit')->default(0);

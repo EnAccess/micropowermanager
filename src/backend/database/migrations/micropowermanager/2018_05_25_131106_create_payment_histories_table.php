@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('payment_histories', function (Blueprint $table) {
+        Schema::connection('tenant')->create('payment_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('amount');
             $table->integer('transaction_id');
@@ -30,6 +30,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('payment_histories');
+        Schema::connection('tenant')->dropIfExists('payment_histories');
     }
 };

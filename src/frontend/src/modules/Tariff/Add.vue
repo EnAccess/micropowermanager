@@ -537,9 +537,11 @@
 import { EventBus } from "@/shared/eventbus"
 import Widget from "../../shared/widget"
 import { TariffService } from "@/services/TariffService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Add",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -657,14 +659,6 @@ export default {
           e.cost = price * e.value
         })
       }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

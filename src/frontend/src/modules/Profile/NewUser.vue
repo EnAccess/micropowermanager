@@ -114,8 +114,10 @@
 
 <script>
 import Widget from "../../shared/widget"
+import { notify } from "@/mixins/notify"
 export default {
   name: "NewUser",
+  mixins: [notify],
   components: {
     Widget,
   },
@@ -139,14 +141,6 @@ export default {
     },
     closeNewUser() {
       this.$emit("newUserClosed")
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

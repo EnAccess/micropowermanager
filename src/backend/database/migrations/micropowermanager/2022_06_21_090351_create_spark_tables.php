@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         if (!Schema::hasTable('sm_api_credentials')) {
-            Schema::connection('shard')->create('sm_api_credentials', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_api_credentials', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_url')->default('https://www.sparkmeter.cloud/api/v0');
                 $table->string('api_key')->nullable();
@@ -19,7 +19,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_customers')) {
-            Schema::connection('shard')->create('sm_customers', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_customers', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('customer_id')->unique(); // Code of the customer, id of corresponding person in MPM
                 $table->string('site_id');
@@ -32,7 +32,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_meter_models')) {
-            Schema::connection('shard')->create('sm_meter_models', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_meter_models', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
                 $table->string('model_name'); // Meter model name that uses as starting word on creating customer
@@ -45,7 +45,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_organizations')) {
-            Schema::connection('shard')->create('sm_organizations', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_organizations', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('organization_id')->unique();
                 $table->string('code')->unique();
@@ -55,7 +55,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sites')) {
-            Schema::connection('shard')->create('sm_sites', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sites', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id')->unique();
                 $table->integer('mpm_mini_grid_id')->unique();
@@ -69,7 +69,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_tariffs')) {
-            Schema::connection('shard')->create('sm_tariffs', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_tariffs', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
                 $table->string('tariff_id')->unique();
@@ -83,7 +83,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_transactions')) {
-            Schema::connection('shard')->create('sm_transactions', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_transactions', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('site_id');
                 $table->string('customer_id');
@@ -96,7 +96,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sync_actions')) {
-            Schema::connection('shard')->create('sm_sync_actions', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sync_actions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('sync_setting_id');
                 $table->integer('attempts')->default(0);
@@ -107,7 +107,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_settings')) {
-            Schema::connection('shard')->create('sm_settings', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('setting_id');
                 $table->string('setting_type');
@@ -116,7 +116,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sms_settings')) {
-            Schema::connection('shard')->create('sm_sms_settings', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sms_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('state')->unique();
                 $table->integer('not_send_elder_than_mins');
@@ -126,7 +126,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sync_settings')) {
-            Schema::connection('shard')->create('sm_sync_settings', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sync_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('action_name')->unique();
                 $table->string('sync_in_value_str');
@@ -137,7 +137,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sms_notified_customers')) {
-            Schema::connection('shard')->create('sm_sms_notified_customers', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sms_notified_customers', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('customer_id');
                 $table->string('notify_type');
@@ -147,7 +147,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sms_bodies')) {
-            Schema::connection('shard')->create('sm_sms_bodies', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sms_bodies', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('reference', 50)->unique();
                 $table->string('title')->nullable();
@@ -159,7 +159,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sms_variable_default_values')) {
-            Schema::connection('shard')->create('sm_sms_variable_default_values', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sms_variable_default_values', function (Blueprint $table) {
                 $table->id();
                 $table->string('variable');
                 $table->string('value');
@@ -168,7 +168,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sales_accounts')) {
-            Schema::connection('shard')->create('sm_sales_accounts', static function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sales_accounts', static function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('sales_account_id');
                 $table->string('site_id');
@@ -183,7 +183,7 @@ return new class extends Migration {
         }
 
         if (!Schema::hasTable('sm_sms_feedback_words')) {
-            Schema::connection('shard')->create('sm_sms_feedback_words', function (Blueprint $table) {
+            Schema::connection('tenant')->create('sm_sms_feedback_words', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('meter_reset')->nullable();
                 $table->string('meter_balance')->nullable();
@@ -193,21 +193,21 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::connection('shard')->dropIfExists('sm_api_credentials');
-        Schema::connection('shard')->dropIfExists('sm_customers');
-        Schema::connection('shard')->dropIfExists('sm_meter_models');
-        Schema::connection('shard')->dropIfExists('sm_organizations');
-        Schema::connection('shard')->dropIfExists('sm_sites');
-        Schema::connection('shard')->dropIfExists('sm_tariffs');
-        Schema::connection('shard')->dropIfExists('sm_transactions');
-        Schema::connection('shard')->dropIfExists('sm_sync_actions');
-        Schema::connection('shard')->dropIfExists('sm_settings');
-        Schema::connection('shard')->dropIfExists('sm_sms_settings');
-        Schema::connection('shard')->dropIfExists('sm_sync_settings');
-        Schema::connection('shard')->dropIfExists('sm_sms_notified_customers');
-        Schema::connection('shard')->dropIfExists('sm_sms_bodies');
-        Schema::connection('shard')->dropIfExists('sm_sms_variable_default_values');
-        Schema::connection('shard')->dropIfExists('sm_sales_accounts');
-        Schema::connection('shard')->dropIfExists('sm_sms_feedback_words');
+        Schema::connection('tenant')->dropIfExists('sm_api_credentials');
+        Schema::connection('tenant')->dropIfExists('sm_customers');
+        Schema::connection('tenant')->dropIfExists('sm_meter_models');
+        Schema::connection('tenant')->dropIfExists('sm_organizations');
+        Schema::connection('tenant')->dropIfExists('sm_sites');
+        Schema::connection('tenant')->dropIfExists('sm_tariffs');
+        Schema::connection('tenant')->dropIfExists('sm_transactions');
+        Schema::connection('tenant')->dropIfExists('sm_sync_actions');
+        Schema::connection('tenant')->dropIfExists('sm_settings');
+        Schema::connection('tenant')->dropIfExists('sm_sms_settings');
+        Schema::connection('tenant')->dropIfExists('sm_sync_settings');
+        Schema::connection('tenant')->dropIfExists('sm_sms_notified_customers');
+        Schema::connection('tenant')->dropIfExists('sm_sms_bodies');
+        Schema::connection('tenant')->dropIfExists('sm_sms_variable_default_values');
+        Schema::connection('tenant')->dropIfExists('sm_sales_accounts');
+        Schema::connection('tenant')->dropIfExists('sm_sms_feedback_words');
     }
 };

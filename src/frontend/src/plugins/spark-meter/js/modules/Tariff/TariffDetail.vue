@@ -388,9 +388,11 @@
 <script>
 import Widget from "@/shared/widget"
 import { TariffService } from "../../services/TariffService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "TariffDetail",
+  mixins: [notify],
   components: { Widget },
   data() {
     return {
@@ -478,14 +480,6 @@ export default {
     },
     planEnabledChange(event) {
       this.tariffService.planEnabledChange(event)
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('tariff_pricing_components', function (Blueprint $table) {
+        Schema::connection('tenant')->create('tariff_pricing_components', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('price')->unsigned();
@@ -26,6 +26,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('tariff_pricing_components');
+        Schema::connection('tenant')->dropIfExists('tariff_pricing_components');
     }
 };

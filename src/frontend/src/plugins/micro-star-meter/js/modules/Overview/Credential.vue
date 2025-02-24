@@ -117,9 +117,11 @@
 import { CredentialService } from "../../services/CredentialService"
 import { CertService } from "../../services/CertService"
 import { EventBus } from "@/shared/eventbus"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "Credential",
+  mixins: [notify],
   data() {
     return {
       credentialService: new CredentialService(),
@@ -210,14 +212,6 @@ export default {
 
       this.certFile = event[fileLocation].files[0]
       this.fileName = this.$refs["file-input"].value
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

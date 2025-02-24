@@ -13,8 +13,8 @@ class StronCredentialRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'company_name' => ['required', Rule::unique('shard.stron_api_credentials')->ignore($this->id)],
-            'username' => ['required', Rule::unique('shard.stron_api_credentials')->ignore($this->id)],
+            'company_name' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],
+            'username' => ['required', Rule::unique('tenant.stron_api_credentials')->ignore($this->id)],
             'password' => 'required',
         ];
     }

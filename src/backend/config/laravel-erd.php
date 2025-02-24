@@ -27,7 +27,7 @@ return [
             // 'engine' => null,
             // 'options' => [],
         ],
-        'shard' => [
+        'tenant' => [
             'driver' => 'mysql',
             'host' => 'db',
             // 'port' => '3306',

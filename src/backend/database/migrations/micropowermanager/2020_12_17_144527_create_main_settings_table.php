@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('main_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->create('main_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->char('site_title', 100);
             $table->char('company_name', 100);
@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('main_settings')->insert([
+        DB::connection('tenant')->table('main_settings')->insert([
             'site_title' => 'MPM - The easiest way to manage your Mini-Grid',
             'company_name' => 'MicroPowerManager',
             'currency' => '€',
@@ -44,6 +44,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('main_settings');
+        Schema::connection('tenant')->dropIfExists('main_settings');
     }
 };

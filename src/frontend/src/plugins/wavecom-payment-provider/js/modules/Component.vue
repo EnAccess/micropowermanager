@@ -110,9 +110,11 @@
 <script>
 import Widget from "@/plugins/bulk-registration/js/modules/Shared/Widget.vue"
 import { WaveComService } from "@/plugins/wavecom-payment-provider/js/services/WaveComService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "WaveComTransaction",
+  mixins: [notify],
   components: { Widget },
 
   data() {
@@ -184,14 +186,6 @@ export default {
       //     for (let value of Object.values(this.csvUploadService.recentlyCreatedRecords)) {
       //         this.createdRecordCount += value
       //     }
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }

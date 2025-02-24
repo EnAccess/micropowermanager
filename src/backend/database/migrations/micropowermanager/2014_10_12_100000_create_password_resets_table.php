@@ -11,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('password_resets', function (Blueprint $table) {
+        Schema::connection('tenant')->create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
@@ -24,6 +24,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('password_resets');
+        Schema::connection('tenant')->dropIfExists('password_resets');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('shard')->create('ticket_settings', function (Blueprint $table) {
+        Schema::connection('tenant')->create('ticket_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('api_token');
@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::connection('shard')->table('ticket_settings')->insert([
+        DB::connection('tenant')->table('ticket_settings')->insert([
             'name' => 'Trello',
             'api_token' => '----',
             'api_url' => 'https://api.trello.com/1',
@@ -38,6 +38,6 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('shard')->dropIfExists('ticket_settings');
+        Schema::connection('tenant')->dropIfExists('ticket_settings');
     }
 };

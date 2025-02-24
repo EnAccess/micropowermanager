@@ -57,9 +57,11 @@ import { EventBus } from "@/shared/eventbus"
 import { CredentialService } from "../../services/CredentialService"
 import Widget from "@/shared/widget"
 import { CustomerService } from "../../services/CustomerService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "CustomerList",
+  mixins: [notify],
   components: { RedirectionModal, Widget },
   data() {
     return {
@@ -156,14 +158,6 @@ export default {
         this.subscriber,
         this.customerService.list.length,
       )
-    },
-    alertNotify(type, message) {
-      this.$notify({
-        group: "notify",
-        type: type,
-        title: type + " !",
-        text: message,
-      })
     },
   },
 }
