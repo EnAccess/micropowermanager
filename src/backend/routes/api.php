@@ -332,3 +332,9 @@ Route::group(['prefix' => 'export'], static function () {
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', 'UsageTypeController@index');
 });
+
+Route::group(['prefix' => 'vodacom'], static function () {
+    Route::post('/transactions/validation', 'VodacomTransactionController@validateTransaction');
+    Route::post('/transactions/process', 'VodacomTransactionController@processTransaction');
+    Route::post('/transactions/enquiry', 'VodacomTransactionController@transactionEnquiryStatus');
+});

@@ -1,0 +1,20 @@
+meta {
+  name: Vodacom Transaction Validation
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{mpm_backend_url}}/api/vodacom/transactions/validation
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "serialNumber": "string", // Required
+    "amount": 0.0, // Required (double)
+    "payerPhoneNumber": "string", // Required
+    "referenceId": "string" // Required (Unique Id)
+  }
+}
