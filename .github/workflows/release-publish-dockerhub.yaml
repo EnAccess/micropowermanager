@@ -187,7 +187,7 @@ jobs:
 
       - name: Deploy to GKE
         run: |
-          kubectl apply -k k8s/overlays/demo2.micropowermanager.io/
+          kubectl apply -k k8s/overlays/demo.micropowermanager.io/
 
       # We need to restart the pods to pick up latest images
       - name: Restart MicroPowerManager pods on GKE

@@ -54,8 +54,8 @@ Other cloud providers might require adjustments to the manifest files.
            name: mpm-managed-cert
        spec:
            domains:
-           - demo-backend2.micropowermanager.io
-           - demo2.micropowermanager.io
+           - api.demo.micropowermanager.io
+           - demo.micropowermanager.io
 
    replacements:
    - source:
