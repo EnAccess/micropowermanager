@@ -24,8 +24,8 @@ patches:
         name: mpm-managed-cert
       spec:
         domains:
-          - api.demo2.micropowermanager.io
-          - demo2.micropowermanager.io
+          - api.demo.micropowermanager.io
+          - demo.micropowermanager.io
 
 replacements:
   - source:
