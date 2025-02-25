@@ -19,30 +19,46 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: APP_NAME
-              value: MicroPowerManager
             - name: APP_ENV
-              value: demo
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: APP_ENV
             - name: APP_KEY
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: APP_KEY
             - name: APP_DEBUG
-              value: "false"
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: APP_DEBUG
             - name: MPM_LOAD_DEMO_DATA
-              value: "true"
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: MPM_LOAD_DEMO_DATA
             - name: DB_CONNECTION
-              value: micro_power_manager
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: DB_CONNECTION
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: DB_HOST
             - name: DB_PORT
-              value: "3306"
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: DB_PORT
             - name: DB_DATABASE
-              value: micro_power_manager
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: DB_DATABASE
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -54,15 +70,27 @@ spec:
                   name: mpm-secrets
                   key: DB_PASSWORD
             - name: REDIS_HOST
-              value: redis-db-service
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: REDIS_HOST
             - name: REDIS_PORT
-              value: "6379"
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: REDIS_PORT
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: mpm-secrets
                   key: JWT_SECRET
             - name: CACHE_DRIVER
-              value: redis
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: CACHE_DRIVER
             - name: QUEUE_DRIVER
-              value: database
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-backend
+                  key: QUEUE_DRIVER
