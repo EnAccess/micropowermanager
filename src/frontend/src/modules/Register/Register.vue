@@ -502,7 +502,6 @@ export default {
       } else if (id === "Plugins" && index === "Create-Form") {
         // Add validation for the Plugins step
         const validation = await this.$validator.validateAll("Plugins")
-        console.log("validation: ", validation);
         if (!validation) {
           this.loadingNextStep = false
           return
