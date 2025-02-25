@@ -3,9 +3,9 @@
 cd /var/www/html
 
 echo "Running MicroPowerManager central migrations..."
-php artisan migrate
+php artisan migrate --force
 echo "Running MicroPowerManager tenant migrations..."
-php artisan migrate-tenant
+php artisan migrate-tenant --force
 
 # Check if MPM_LOAD_DEMO_DATA is set and not empty or false-y,
 # only then load the demo data.
