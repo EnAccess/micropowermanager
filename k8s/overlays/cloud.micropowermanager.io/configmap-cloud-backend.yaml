@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mpm-configmap-backend
+data:
+  APP_ENV: production
+  APP_DEBUG: "false"
+  MPM_LOAD_DEMO_DATA: "false"
