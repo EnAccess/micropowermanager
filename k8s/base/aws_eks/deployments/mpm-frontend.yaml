@@ -20,7 +20,10 @@ spec:
             - containerPort: 80
           env:
             - name: MPM_ENV
-              value: demo
+              valueFrom:
+                configMapKeyRef:
+                  name: mpm-configmap-frontend
+                  key: MPM_ENV
             - name: MPM_BACKEND_URL
               valueFrom:
                 secretKeyRef:

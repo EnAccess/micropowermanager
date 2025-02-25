@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'MPManager'),
+    'name' => env('APP_NAME', 'MicroPowerManager'),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: micropowermanager-cloud
+
+resources:
+  - namespace.yaml
+  - ../../base/gcp_gke/
+
+images:
+  - name: enaccess/micropowermanager-backend:latest
+    newTag: 0.0.13
+  - name: enaccess/micropowermanager-frontend:latest
+    newTag: 0.0.13
+
+patches:
+  - path: configmap-cloud-backend.yaml
+    target:
+      kind: ConfigMap
+      name: mpm-configmap-backend
+  - path: configmap-cloud-frontend.yaml
+    target:
+      kind: ConfigMap
+      name: mpm-configmap-frontend
+  # Setting a static IP address for our load balancer, see
+  # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress
+  - patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: mpm-ingress
+        annotations:
+          kubernetes.io/ingress.global-static-ip-name: loadbalancer-global-address-cloud
+  - patch: |-
+      apiVersion: networking.gke.io/v1
+      kind: ManagedCertificate
+      metadata:
+        name: mpm-managed-cert
+      spec:
+        domains:
+          - api.cloud.micropowermanager.io
+          - cloud.micropowermanager.io
+
+replacements:
+  - source:
+      kind: ManagedCertificate
+      name: mpm-managed-cert
+      fieldPath: spec.domains.0
+    targets:
+      - select:
+          kind: Ingress
+          name: mpm-ingress
+        fieldPaths:
+          - spec.rules.0.host
+  - source:
+      kind: ManagedCertificate
+      name: mpm-managed-cert
+      fieldPath: spec.domains.1
+    targets:
+      - select:
+          kind: Ingress
+          name: mpm-ingress
+        fieldPaths:
+          - spec.rules.1.host

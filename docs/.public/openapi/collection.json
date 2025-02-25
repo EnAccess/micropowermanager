@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "https:\/\/backend-demo.micropowermanager.io"
+            "value": "https:\/\/api.demo.micropowermanager.io"
         }
     ],
     "info": {
         "name": "MicroPowerManager API docs",
-        "_postman_id": "c52ca122-e0b6-4346-b897-c853398fa2e2",
+        "_postman_id": "306e91d7-3194-47ef-9b36-382158f72941",
         "description": "\n![MPM Logo](https:\/\/micropowermanager.com\/assets\/images\/Website_Illustrations_Logo.png)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.<\/em>\n<\/p>\n\n---\n\n# \ud83d\udcab Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -95,7 +95,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"skiles.bennett@example.com\",\"password\":\"N\\\/e1=vS\\\"\"}"
+                            "raw": "{\"email\":\"cary74@example.org\",\"password\":\"'9fEi,\\\/=5Rsx;!?44Wx5\"}"
                         },
                         "description": "",
                         "auth": {
@@ -236,7 +236,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"hbosco@example.org\",\"password\":\"UH`-eV\"}"
+                            "raw": "{\"email\":\"stanford94@example.com\",\"password\":\"sib!%Fc9q\"}"
                         },
                         "description": "",
                         "auth": {
@@ -481,7 +481,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"animi\",\"mini_grid_id\":\"nihil\"}"
+                            "raw": "{\"name\":\"accusamus\",\"mini_grid_id\":\"veniam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -520,7 +520,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"explicabo\",\"mini_grid_id\":\"laborum\"}"
+                            "raw": "{\"name\":\"nam\",\"mini_grid_id\":\"fugiat\"}"
                         },
                         "description": "",
                         "auth": {
@@ -599,7 +599,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"country_name\":\"esse\",\"country_code\":\"ixqgdjpnwalnbobivvylsioiaewxisrgxmhlfpnbrdd\"}"
+                            "raw": "{\"country_name\":\"ipsum\",\"country_code\":\"qnwthcoudbawuxcgptgpiqrzaygemobgxuuia\"}"
                         },
                         "description": "",
                         "auth": {
@@ -620,7 +620,7 @@
                                 {
                                     "id": "country_country_code",
                                     "key": "country_country_code",
-                                    "value": "enim",
+                                    "value": "AF",
                                     "description": ""
                                 }
                             ]
@@ -676,13 +676,13 @@
                                 {
                                     "id": "page",
                                     "key": "page",
-                                    "value": "1",
+                                    "value": "7",
                                     "description": ""
                                 },
                                 {
                                     "id": "in_use",
                                     "key": "in_use",
-                                    "value": "16",
+                                    "value": "3",
                                     "description": "to list wether used or all meters"
                                 }
                             ]
@@ -735,7 +735,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"minus\",\"manufacturer_id\":14,\"meter_type_id\":5}"
+                            "raw": "{\"serial_number\":\"dolor\",\"manufacturer_id\":7,\"meter_type_id\":5}"
                         },
                         "description": "",
                         "auth": {
@@ -743,6 +743,54 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "GET api\/meters\/connection-types",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/meters\/connection-types",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/meters\/connection-types"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 500,
+                            "body": "{\n    \"message\": \"Server Error\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "PUT api\/meters\/{meter_id}",
@@ -774,7 +822,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":31.2447,\"serial_number\":\"vel\",\"meter_type_id\":15231849.871,\"in_use\":10378747,\"manufacturer_id\":434028.551,\"connection_type_id\":68226339.76392,\"connection_group_id\":2282906.1,\"tariff_id\":96899211.82334}"
+                            "raw": "{\"id\":2772.6387376,\"serial_number\":\"laboriosam\",\"meter_type_id\":24574.1503414,\"in_use\":8607.1,\"manufacturer_id\":687571.2880135,\"connection_type_id\":139397.5866,\"connection_group_id\":61798785.2689316,\"tariff_id\":62.44}"
                         },
                         "description": "",
                         "auth": {
@@ -805,7 +853,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"term\":\"qui\"}"
+                            "raw": "{\"term\":\"in\"}"
                         },
                         "description": "",
                         "auth": {
@@ -833,7 +881,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "in",
+                                    "value": "tempore",
                                     "description": ""
                                 }
                             ]
@@ -876,13 +924,13 @@
                                 {
                                     "id": "meterId",
                                     "key": "meterId",
-                                    "value": "est",
+                                    "value": "laborum",
                                     "description": ""
                                 },
                                 {
                                     "id": "The",
                                     "key": "The",
-                                    "value": "ut",
+                                    "value": "cumque",
                                     "description": "ID of the meter to be delete"
                                 }
                             ]
@@ -918,7 +966,7 @@
                                 {
                                     "id": "meter",
                                     "key": "meter",
-                                    "value": "9",
+                                    "value": "8",
                                     "description": ""
                                 }
                             ]
@@ -936,7 +984,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"points\":\"accusantium\"}"
+                            "raw": "{\"points\":\"tenetur\"}"
                         },
                         "description": "",
                         "auth": {
@@ -957,7 +1005,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "labore",
+                                    "value": "iure",
                                     "description": ""
                                 }
                             ]
@@ -1019,13 +1067,13 @@
                                 {
                                     "id": "start",
                                     "key": "start",
-                                    "value": "consectetur",
+                                    "value": "rem",
                                     "description": "YYYY-mm-dd format"
                                 },
                                 {
                                     "id": "end",
                                     "key": "end",
-                                    "value": "et",
+                                    "value": "voluptatem",
                                     "description": "YYYY-mm-dd format"
                                 }
                             ]
@@ -1068,13 +1116,13 @@
                                 {
                                     "id": "miniGrid",
                                     "key": "miniGrid",
-                                    "value": "dolor",
+                                    "value": "qui",
                                     "description": ""
                                 },
                                 {
                                     "id": "mini_grid_id",
                                     "key": "mini_grid_id",
-                                    "value": "fugit",
+                                    "value": "blanditiis",
                                     "description": ""
                                 }
                             ]
@@ -1117,13 +1165,13 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "quia",
+                                    "value": "delectus",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "aliquam",
+                                    "value": "sed",
                                     "description": ""
                                 }
                             ]
@@ -1214,7 +1262,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "minus",
+                                    "value": "voluptatem",
                                     "description": "The ID of the address."
                                 }
                             ]
@@ -1318,7 +1366,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": "2399",
                                     "description": "The ID of the transaction."
                                 }
                             ]
@@ -1422,7 +1470,7 @@
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "3123",
+                                    "value": "211",
                                     "description": ""
                                 }
                             ]
@@ -1698,25 +1746,25 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "5",
+                                    "value": "3",
                                     "description": ""
                                 },
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "autem",
+                                    "value": "distinctio",
                                     "description": ""
                                 },
                                 {
                                     "id": "limit",
                                     "key": "limit",
-                                    "value": "similique",
+                                    "value": "sit",
                                     "description": ""
                                 },
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "non",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -1772,19 +1820,19 @@
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "reprehenderit",
+                                    "value": "vero",
                                     "description": ""
                                 },
                                 {
                                     "id": "limit",
                                     "key": "limit",
-                                    "value": "cupiditate",
+                                    "value": "iste",
                                     "description": ""
                                 },
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "et",
+                                    "value": "voluptate",
                                     "description": ""
                                 }
                             ]
@@ -1888,7 +1936,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "iure",
+                                    "value": "mollitia",
                                     "description": ""
                                 }
                             ]
@@ -1992,7 +2040,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "amet",
+                                    "value": "excepturi",
                                     "description": ""
                                 }
                             ]
@@ -2058,7 +2106,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"person_id\":\"similique\",\"down_payment\":11565.26646602,\"tenure\":15,\"first_payment_date\":\"assumenda\",\"agent_assigned_appliance_id\":\"et\"}"
+                            "raw": "{\"person_id\":\"alias\",\"down_payment\":111022.7,\"tenure\":46,\"first_payment_date\":\"suscipit\",\"agent_assigned_appliance_id\":\"beatae\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2127,7 +2175,7 @@
                                 {
                                     "id": "ticketId",
                                     "key": "ticketId",
-                                    "value": "quasi",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -2183,7 +2231,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "occaecati",
+                                    "value": "ut",
                                     "description": ""
                                 }
                             ]
@@ -2249,7 +2297,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"owner_id\":\"recusandae\",\"title\":\"nisi\",\"description\":\"adipisci\"}"
+                            "raw": "{\"owner_id\":\"inventore\",\"title\":\"delectus\",\"description\":\"numquam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2528,7 +2576,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"et\",\"name\":\"eorebpgdlmvlqriclbcvtmcojqloywmoxmkmvjnqsyktgzpovntvjoexkrzhvyutolhpr\",\"surname\":\"whsmkqlwtrzlfqhtoiaemijiiphkjkcrkqntctriocpztnvcelupybrzbvqctmlbvqne\",\"password\":\"V]ei_QII~;~%7^\\\/C\",\"city_id\":\"alias\",\"agent_commission_id\":\"quia\"}"
+                            "raw": "{\"email\":\"animi\",\"name\":\"ouyhiwjistvrkhmftedztnfyflfubqmwgnzvlrzgdguedrwmkmqcvzjgvnseqll\",\"surname\":\"kfgrqwxyqtsgawmwlngnprfstdbaydurihftgatktorggckrj\",\"password\":\"}i*.WpO\\\/.{y&G\",\"city_id\":\"quia\",\"agent_commission_id\":\"molestias\"}"
                         },
                         "description": "",
                         "auth": {
@@ -2707,7 +2755,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":9,\"user_id\":4,\"appliance_id\":\"qui\",\"cost\":2,\"appliance_type_id\":11}"
+                            "raw": "{\"agent_id\":5,\"user_id\":5,\"appliance_id\":\"rerum\",\"cost\":13,\"appliance_type_id\":1}"
                         },
                         "description": "",
                         "auth": {
@@ -2728,7 +2776,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "reiciendis",
+                                    "value": "non",
                                     "description": ""
                                 }
                             ]
@@ -2784,7 +2832,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "illo",
+                                    "value": "tempore",
                                     "description": ""
                                 }
                             ]
@@ -2898,7 +2946,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"voluptatum\",\"energy_commission\":5.74,\"appliance_commission\":132559355,\"risk_balance\":11.92}"
+                            "raw": "{\"name\":\"eaque\",\"energy_commission\":75.6,\"appliance_commission\":210204149.747,\"risk_balance\":450.4}"
                         },
                         "description": "",
                         "auth": {
@@ -2919,7 +2967,7 @@
                                 {
                                     "id": "agentCommissionId",
                                     "key": "agentCommissionId",
-                                    "value": "omnis",
+                                    "value": "quidem",
                                     "description": ""
                                 }
                             ]
@@ -2955,7 +3003,7 @@
                                 {
                                     "id": "agentCommissionId",
                                     "key": "agentCommissionId",
-                                    "value": "excepturi",
+                                    "value": "eos",
                                     "description": ""
                                 }
                             ]
@@ -2973,7 +3021,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"ducimus\",\"energy_commission\":2.436,\"appliance_commission\":60614612.2,\"risk_balance\":47}"
+                            "raw": "{\"name\":\"rerum\",\"energy_commission\":215692.57895,\"appliance_commission\":2403792,\"risk_balance\":1206121.36}"
                         },
                         "description": "",
                         "auth": {
@@ -3042,7 +3090,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "ratione",
+                                    "value": "maxime",
                                     "description": ""
                                 }
                             ]
@@ -3108,7 +3156,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":\"itaque\",\"amount\":\"asperiores\"}"
+                            "raw": "{\"agent_id\":\"aut\",\"amount\":\"sequi\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3129,7 +3177,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "8",
+                                    "value": "508",
                                     "description": ""
                                 }
                             ]
@@ -3185,7 +3233,7 @@
                                 {
                                     "id": "agentId",
                                     "key": "agentId",
-                                    "value": "12",
+                                    "value": "14",
                                     "description": ""
                                 }
                             ]
@@ -3251,7 +3299,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"agent_id\":\"at\",\"amount\":268163.455672504}"
+                            "raw": "{\"agent_id\":\"pariatur\",\"amount\":403.4672}"
                         },
                         "description": "",
                         "auth": {
@@ -3557,7 +3605,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"tugzhjwvplxslwqyplzckidwwmlkuurqacnqfvfptjkhvybtndqwilfieqnwsyjiaiwftcgncqzhtxseskprqynft\",\"surname\":\"kgdtfkcipxzjwhbzglpwchfetkjacdamwaamubwxjiolaondhsgwjazyrpplbickvf\",\"phone\":17,\"tariff_id\":\"totam\",\"geo_points\":\"nulla\",\"serial_number\":\"aspernatur\",\"manufacturer\":\"consequuntur\",\"meter_type\":\"eum\"}"
+                            "raw": "{\"name\":\"cdrvwneecaadvsthmxicozcpxsvhoszquvqspoidemd\",\"surname\":\"sijlcnsdzlmmfnkhqubfai\",\"phone\":50,\"tariff_id\":\"molestiae\",\"geo_points\":\"asperiores\",\"serial_number\":\"consequatur\",\"manufacturer\":\"magnam\",\"meter_type\":\"unde\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3588,7 +3636,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"omnis\",\"name\":\"fdxvsikkbwezxmkprqspxxamsgtkzoroyxsxbcfgmlihmvfejpwntmudbgvkhjkhmduwedsugusqilxeerit\",\"password\":\"NB&zUsad['Tm@\"}"
+                            "raw": "{\"email\":\"exercitationem\",\"name\":\"hwjywydbhdcnedmtpgmtnmhhekdhbfcqjusctivtfoihrrwdxgpkkmlzvlzlpxcvlqnzqvk\",\"password\":\"mLljIVVYR-lf%=Mv\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3767,7 +3815,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"et\"}"
+                            "raw": "{\"city_id\":\"illum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3806,7 +3854,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"dicta\"}"
+                            "raw": "{\"city_id\":\"voluptatem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3845,7 +3893,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"password\":\"ec*#|18EP4>Qk&\",\"confirm_password\":\"repellat\"}"
+                            "raw": "{\"password\":\";$eM0srWrr\\\"489\\\\\",\"confirm_password\":\"dolores\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3876,7 +3924,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"quis\"}"
+                            "raw": "{\"email\":\"quibusdam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -3955,7 +4003,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"asset_type_id\":\"qui\",\"name\":\"oujvkavlqtanovfjmumjtoiycndgwwsw\",\"price\":42}"
+                            "raw": "{\"asset_type_id\":\"non\",\"name\":\"uzfjprvvyzlsjnusczahijubzpmr\",\"price\":66}"
                         },
                         "description": "",
                         "auth": {
@@ -3994,7 +4042,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"xvbxhrstybulylneprxdxkuzfjlrgxzhjifjgnctlntwj\",\"price\":74199644.77}"
+                            "raw": "{\"name\":\"jlsplhkvufqwpmmlnbzeqvgvzylccpsrbdkmepethpnkfamacfjtjatlfxobgvk\",\"price\":568036.618}"
                         },
                         "description": "",
                         "auth": {
@@ -4149,7 +4197,7 @@
                                 {
                                     "id": "applianceId",
                                     "key": "applianceId",
-                                    "value": "dolorum",
+                                    "value": "necessitatibus",
                                     "description": ""
                                 }
                             ]
@@ -4263,7 +4311,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"xtijiizveekjxgumpopxwvdaqsmnay\"}"
+                            "raw": "{\"name\":\"ounlvfcnqablohpgzdunflirqboopyudtyvqvcpbxxvbjeujacepakvnduhgszvbqdatrzubddcmqpilqxaycsdzms\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4284,7 +4332,7 @@
                                 {
                                     "id": "asset_type_id",
                                     "key": "asset_type_id",
-                                    "value": "quidem",
+                                    "value": "quam",
                                     "description": "The ID of the asset type."
                                 }
                             ]
@@ -4302,7 +4350,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"kctbrfkpcvkkjmbhucghioogdebdmbsxzxxrocywsef\"}"
+                            "raw": "{\"name\":\"gwcniausdaacchdokabkza\"}"
                         },
                         "description": "",
                         "auth": {
@@ -4323,7 +4371,7 @@
                                 {
                                     "id": "asset_type_id",
                                     "key": "asset_type_id",
-                                    "value": "ut",
+                                    "value": "fuga",
                                     "description": "The ID of the asset type."
                                 }
                             ]
@@ -4359,7 +4407,7 @@
                                 {
                                     "id": "appliance_rate_id",
                                     "key": "appliance_rate_id",
-                                    "value": "nam",
+                                    "value": "sed",
                                     "description": "The ID of the appliance rate."
                                 }
                             ]
@@ -4395,7 +4443,7 @@
                                 {
                                     "id": "appliance_person_id",
                                     "key": "appliance_person_id",
-                                    "value": "ullam",
+                                    "value": "facere",
                                     "description": "The ID of the appliance person."
                                 }
                             ]
@@ -4535,13 +4583,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "velit",
+                                    "value": "sed",
                                     "description": "The ID of the post."
                                 },
                                 {
                                     "id": "lang",
                                     "key": "lang",
-                                    "value": "quia",
+                                    "value": "omnis",
                                     "description": "The language."
                                 }
                             ]
@@ -4559,7 +4607,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"inventore\",\"geo_type\":\"deleniti\",\"geo_data\":\"vitae\",\"manager_id\":1,\"cities\":\"dolorem\"}"
+                            "raw": "{\"name\":\"eum\",\"geo_type\":\"dolor\",\"geo_data\":\"quibusdam\",\"manager_id\":17,\"cities\":\"quas\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5174,7 +5222,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"optio\"}"
+                            "raw": "{\"name\":\"fugiat\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5213,7 +5261,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"est\"}"
+                            "raw": "{\"name\":\"perferendis\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5366,7 +5414,7 @@
                                 {
                                     "id": "connectionTypeId",
                                     "key": "connectionTypeId",
-                                    "value": "fugiat",
+                                    "value": "officiis",
                                     "description": ""
                                 }
                             ]
@@ -5516,7 +5564,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"temporibus\",\"name\":\"zgwkpffdquhquuaztqgyoagvdtgxrjaotavfdxduycqpshskcpkavfurkdfsqitkehgxrgoivnlfsrnmtuyguwy\",\"surname\":\"jtaoyfpkmwdwwpifcxitiqdhxughsqplhqzejidlwqazdijaquxhthprfpqvdapazgtm\",\"birth_date\":\"\\\"2024-11-21\",\"sex\":\"male\",\"education\":\"ktnrztrccecwyahliqzoxnuyfhzktqdljqcfy\",\"street\":\"gwhzickzduefasewyxthkcrudmladmsafqfagsqnxvebmwhfayfjduhlvrqwqclccxqbiatdutgadevhdjhda\",\"email\":\"adelia96@example.org\",\"phone\":32}"
+                            "raw": "{\"title\":\"quaerat\",\"name\":\"oqoisyrmhrelbtxwaohqctxvqpq\",\"surname\":\"qqttrwgkfpnkmbthfemghemhqrtslgjffgycknacplpxsozirrhdfteadekegwvfjvvlpietnlcmrzcngl\",\"birth_date\":\"\\\"2025-02-25\",\"sex\":\"male\",\"education\":\"jnvhgaopbxefurpbqciacddkfzzsuzxklbeahmjuhrshilladhmbfcqnqxdfnlavbioqrloxqaksslojofyybtaupq\",\"street\":\"wlskpzqdxldghvmdqyxbnbclawptcipoibfajwbbdgfdscnporsqxpffzhoabathzkivzt\",\"email\":\"gleason.effie@example.net\",\"phone\":37}"
                         },
                         "description": "",
                         "auth": {
@@ -5651,7 +5699,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"est\",\"phone\":\"iste\",\"email\":\"graciela09@example.com\",\"contact_person\":\"waidbuszsofisogpmf\",\"website\":\"wtbsasslummooklhfpwngkbowkdsmwoarinflyunkizooswjktjw\",\"city_id\":8,\"address\":\"officiis\"}"
+                            "raw": "{\"name\":\"ipsum\",\"phone\":\"ut\",\"email\":\"hubert.kessler@example.com\",\"contact_person\":\"ueecbzqylqdbbjvigfsnbatcsylmqrsokvijlvksknazdrzyhbfcuyq\",\"website\":\"abioxtdoscdndfbmimuyvjivywikmcnzhibigvxxvfzsisokcyoivoyoeycdxsi\",\"city_id\":3,\"address\":\"ipsam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5730,7 +5778,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"jhjbmkjruh\",\"cluster_id\":\"consectetur\",\"geo_data\":\"est\"}"
+                            "raw": "{\"name\":\"onrxyqbhtfpkbpjiuofekewxurbfzbzysrbiqekbqjhqdnshitwiyfweracnznpjmsjyequjgjpznducnhiueb\",\"cluster_id\":\"sed\",\"geo_data\":\"sit\"}"
                         },
                         "description": "",
                         "auth": {
@@ -5769,7 +5817,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":3}"
+                            "raw": "{\"id\":5}"
                         },
                         "description": "",
                         "auth": {
@@ -5938,7 +5986,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "amet",
+                                    "value": "ex",
                                     "description": ""
                                 }
                             ]
@@ -5984,7 +6032,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "et",
+                                    "value": "nobis",
                                     "description": ""
                                 }
                             ]
@@ -6002,7 +6050,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"dolore\"}"
+                            "raw": "{\"city_id\":\"placeat\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6023,7 +6071,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "libero",
+                                    "value": "quo",
                                     "description": ""
                                 }
                             ]
@@ -6041,7 +6089,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"city_id\":\"suscipit\"}"
+                            "raw": "{\"city_id\":\"qui\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6110,7 +6158,7 @@
                                 {
                                     "id": "key",
                                     "key": "key",
-                                    "value": "pariatur",
+                                    "value": "autem",
                                     "description": "The key."
                                 }
                             ]
@@ -6166,7 +6214,7 @@
                                 {
                                     "id": "mapSettings",
                                     "key": "mapSettings",
-                                    "value": "asperiores",
+                                    "value": "consequatur",
                                     "description": ""
                                 }
                             ]
@@ -6250,7 +6298,7 @@
                                 {
                                     "id": "ticketSettings",
                                     "key": "ticketSettings",
-                                    "value": "odio",
+                                    "value": "a",
                                     "description": ""
                                 }
                             ]
@@ -6428,7 +6476,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"mail_host\":\"rwpproomqjxahm\",\"mail_port\":747248.85,\"mail_encryption\":\"cvqugzfwbgbvxwiclowbmkgwplrsesyqoiexplwspkmwrcrjrkrtzxtgkpoiupwklmkgcluwvrdfkstavfmzp\",\"mail_username\":\"akqrfacpdvwgodknizyritilmugiaiwrusmyqeycazeovcpwjvjslfsbdgoximcfqudrjyaskjksqbpifrd\",\"mail_password\":\"zyamxkti\"}"
+                            "raw": "{\"mail_host\":\"jrzlhqeqytswuosl\",\"mail_port\":192616.75932,\"mail_encryption\":\"flzdvmcrnsbqeknmysfoyyisjofoqjjfpcioaljflaoctgzxwecxriholmoccsafwjdgkktpbfjqghazspwmnl\",\"mail_username\":\"pyuaemplrajxifq\",\"mail_password\":\"hyqaritntdepwgjlgbiqzpi\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6467,7 +6515,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"mail_host\":\"cqgbtvrzpjvzpsbeprpgxjbrwnihifbdaccpungmqpnfjjsrxvzxisgerv\",\"mail_port\":0,\"mail_encryption\":\"hlwqxtpmfvvtjzedmhduxcouqznutfeessgbzisauhglqxtuxqzysnquhem\",\"mail_username\":\"knqgvjjkvlogybjxyjpedhijpinogetyhrqrdl\",\"mail_password\":\"fgandsywijqwbwindjeymkxnynsuxluoakaahukgnuwqwpzcwvdkvhaqycpgldgcmrdp\"}"
+                            "raw": "{\"mail_host\":\"dxjrwshsszhowxdgdqscmuhcfgbyqdvfwvcxy\",\"mail_port\":2.34682298,\"mail_encryption\":\"gmhihdtn\",\"mail_username\":\"rhayomyidhpwzqypqg\",\"mail_password\":\"pyjrtllhkdjkq\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6792,7 +6840,7 @@
                                 {
                                     "id": "smsApplianceRemindRate_id",
                                     "key": "smsApplianceRemindRate_id",
-                                    "value": "5",
+                                    "value": "2",
                                     "description": "The ID of the smsApplianceRemindRate."
                                 }
                             ]
@@ -6838,7 +6886,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"appliance_type_id\":\"repellat\",\"overdue_remind_rate\":\"quo\",\"remind_rate\":\"expedita\"}"
+                            "raw": "{\"appliance_type_id\":\"aut\",\"overdue_remind_rate\":\"ut\",\"remind_rate\":\"dolorum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6907,7 +6955,7 @@
                                 {
                                     "id": "smsAndroidSetting_id",
                                     "key": "smsAndroidSetting_id",
-                                    "value": "8",
+                                    "value": "1",
                                     "description": "The ID of the smsAndroidSetting."
                                 }
                             ]
@@ -6925,7 +6973,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"officiis\"}"
+                            "raw": "{\"token\":\"non\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6956,7 +7004,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"voluptas\"}"
+                            "raw": "{\"token\":\"vero\"}"
                         },
                         "description": "",
                         "auth": {
@@ -6977,7 +7025,7 @@
                                 {
                                     "id": "smsAndroidSetting_id",
                                     "key": "smsAndroidSetting_id",
-                                    "value": "20",
+                                    "value": "1",
                                     "description": "The ID of the smsAndroidSetting."
                                 }
                             ]
@@ -7109,13 +7157,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "quam",
+                                    "value": "magni",
                                     "description": "The ID of the report downloading."
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "est",
+                                    "value": "eum",
                                     "description": "The slug of the download."
                                 }
                             ]
@@ -7199,7 +7247,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "necessitatibus",
+                                    "value": "corrupti",
                                     "description": "The ID of the trend."
                                 }
                             ]
@@ -7235,7 +7283,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "quaerat",
+                                    "value": "numquam",
                                     "description": "The ID of the ticket."
                                 }
                             ]
@@ -7291,7 +7339,7 @@
                                 {
                                     "id": "number",
                                     "key": "number",
-                                    "value": "9",
+                                    "value": "1",
                                     "description": ""
                                 }
                             ]
@@ -7347,7 +7395,7 @@
                                 {
                                     "id": "number",
                                     "key": "number",
-                                    "value": "aliquam",
+                                    "value": "quia",
                                     "description": ""
                                 }
                             ]
@@ -7451,7 +7499,7 @@
                                 {
                                     "id": "search",
                                     "key": "search",
-                                    "value": "nam",
+                                    "value": "ut",
                                     "description": "The search."
                                 }
                             ]
@@ -7517,7 +7565,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"message\":\"ipsum\"}"
+                            "raw": "{\"message\":\"ex\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7548,7 +7596,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"sender\":\"aut\",\"message\":\"molestiae\"}"
+                            "raw": "{\"sender\":\"in\",\"message\":\"debitis\"}"
                         },
                         "description": "",
                         "auth": {
@@ -7597,13 +7645,13 @@
                                 {
                                     "id": "uuid",
                                     "key": "uuid",
-                                    "value": "ba2a9ec6-254f-3000-99ba-8005b20a2eb2",
+                                    "value": "c613874e-666c-3046-a2db-67350ac93b56",
                                     "description": ""
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "earum",
+                                    "value": "animi",
                                     "description": "The slug of the delivered."
                                 }
                             ]
@@ -7659,13 +7707,13 @@
                                 {
                                     "id": "uuid",
                                     "key": "uuid",
-                                    "value": "d7714246-2708-3c09-b2cf-044b80a0255a",
+                                    "value": "5dbcf640-5437-3a9a-884b-3b02d932c02e",
                                     "description": ""
                                 },
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "fuga",
+                                    "value": "et",
                                     "description": "The slug of the sent."
                                 }
                             ]
@@ -7721,7 +7769,7 @@
                                 {
                                     "id": "connectionTypeId",
                                     "key": "connectionTypeId",
-                                    "value": "velit",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -7787,7 +7835,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"jurgvsdyoprjuuasfcksueowpphrflpgauoowosdeijjg\",\"connection_type_id\":530115548.59,\"tariff_id\":6412751.15}"
+                            "raw": "{\"name\":\"muauqmmvytvykluclryohbwhhkdxcjqpchmmqjwxvqayjcqajblvoqitalunbyvcgjdonkcmxpqsqbxgtvvmemvax\",\"connection_type_id\":0,\"tariff_id\":3.516254}"
                         },
                         "description": "",
                         "auth": {
@@ -7902,7 +7950,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"data\":\"fuga\",\"period\":\"voluptatem\",\"targetForType\":\"voluptatum\",\"targetForId\":8}"
+                            "raw": "{\"data\":\"numquam\",\"period\":\"inventore\",\"targetForType\":\"mollitia\",\"targetForId\":59}"
                         },
                         "description": "",
                         "auth": {
@@ -7923,7 +7971,7 @@
                                 {
                                     "id": "targetId",
                                     "key": "targetId",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": ""
                                 }
                             ]
@@ -8042,7 +8090,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "iure",
+                                    "value": "eos",
                                     "description": ""
                                 },
                                 {
@@ -8101,7 +8149,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"a\",\"price\":19,\"currency\":\"voluptates\",\"factor\":\"inventore\",\"access_rate_period\":7,\"access_rate_amount\":11,\"social_tariff\":\"omnis\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":12358505}"
+                            "raw": "{\"name\":\"asperiores\",\"price\":12,\"currency\":\"ex\",\"factor\":\"accusamus\",\"access_rate_period\":59,\"access_rate_amount\":16,\"social_tariff\":\"iure\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":19711209.578}"
                         },
                         "description": "",
                         "auth": {
@@ -8122,7 +8170,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "eveniet",
+                                    "value": "ab",
                                     "description": ""
                                 }
                             ]
@@ -8140,7 +8188,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"eveniet\",\"price\":1,\"currency\":\"rxwfta\",\"factor\":20,\"access_rate_period\":8,\"access_rate_amount\":1,\"social_tariff\":\"sit\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":28061265.09}"
+                            "raw": "{\"name\":\"quia\",\"price\":78.7184871,\"currency\":\"blyekrhi\",\"factor\":15,\"access_rate_period\":31,\"access_rate_amount\":2,\"social_tariff\":\"enim\",\"components\":[],\"tous\":[],\"minimum_purchase_amount\":56}"
                         },
                         "description": "",
                         "auth": {
@@ -8161,7 +8209,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "illum",
+                                    "value": "aliquid",
                                     "description": ""
                                 }
                             ]
@@ -8197,7 +8245,7 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "nostrum",
+                                    "value": "sed",
                                     "description": ""
                                 }
                             ]
@@ -8253,13 +8301,13 @@
                                 {
                                     "id": "meterTariffId",
                                     "key": "meterTariffId",
-                                    "value": "aut",
+                                    "value": "nisi",
                                     "description": ""
                                 },
                                 {
                                     "id": "changeId",
                                     "key": "changeId",
-                                    "value": "sit",
+                                    "value": "quo",
                                     "description": ""
                                 }
                             ]
@@ -8295,13 +8343,13 @@
                                 {
                                     "id": "meterSerial",
                                     "key": "meterSerial",
-                                    "value": "veniam",
+                                    "value": "et",
                                     "description": ""
                                 },
                                 {
                                     "id": "tariffId",
                                     "key": "tariffId",
-                                    "value": "sunt",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -8421,7 +8469,7 @@
                                 {
                                     "id": "timeOfUsageId",
                                     "key": "timeOfUsageId",
-                                    "value": "14",
+                                    "value": "8",
                                     "description": ""
                                 }
                             ]
@@ -8536,7 +8584,7 @@
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"data\":[{\"id\":1,\"usage_type\":\"mini-grid\",\"name\":\"SparkMeter\",\"description\":\"This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Spark Meter\",\"installation_command\":\"spark-meter:install\",\"root_class\":\"SparkMeter\"},{\"id\":2,\"usage_type\":\"mini-grid\",\"name\":\"SteamaMeter\",\"description\":\"This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Steamaco Meter\",\"installation_command\":\"steama-meter:install\",\"root_class\":\"SteamaMeter\"},{\"id\":3,\"usage_type\":\"mini-grid\",\"name\":\"CalinMeter\",\"description\":\"This plugin integrates Calin meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Calin Meter\",\"installation_command\":\"calin-meter:install\",\"root_class\":\"CalinMeter\"},{\"id\":4,\"usage_type\":\"mini-grid\",\"name\":\"CalinSmartMeter\",\"description\":\"This plugin integrates Calin meters to Micropowermanager. It uses company_name, user_name, password and password_vend for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"CalinSmart Meter\",\"installation_command\":\"calin-smart-meter:install\",\"root_class\":\"CalinSmartMeter\"},{\"id\":5,\"usage_type\":\"mini-grid\",\"name\":\"KelinMeter\",\"description\":\"This plugin integrates Kelim meters to Micropowermanager. It uses username & password for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Kelin Meter\",\"installation_command\":\"kelin-meter:install\",\"root_class\":\"KelinMeter\"},{\"id\":6,\"usage_type\":\"mini-grid\",\"name\":\"StronMeter\",\"description\":\"This plugin integrates Stron meters to Micropowermanager. It uses the api login credentials for authentication.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Stron Meter\",\"installation_command\":\"stron-meter:installl\",\"root_class\":\"StronMeter\"},{\"id\":7,\"usage_type\":\"general\",\"name\":\"SwiftaPayment\",\"description\":\"This plugin developed for getting Swifta payments into MicroPowerManager.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":null,\"installation_command\":\"swifta-payment-provider:install\",\"root_class\":\"SwiftaPaymentProvider\"},{\"id\":8,\"usage_type\":\"general\",\"name\":\"MesombPayment\",\"description\":\"This plugin developed for getting MeSomb payments into MicroPowerManager.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":null,\"installation_command\":\"mesomb-payment-provider:install\",\"root_class\":\"MesombPaymentProvider\"},{\"id\":9,\"usage_type\":\"general\",\"name\":\"BulkRegistration\",\"description\":\"This plugin provides bulk registration of the company's existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":null,\"installation_command\":\"bulk-registration:install\",\"root_class\":\"BulkRegistration\"},{\"id\":10,\"usage_type\":\"general\",\"name\":\"ViberMessaging\",\"description\":\"This plugin developed for the communication with customers throughout Viber messages.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Viber Messaging\",\"installation_command\":\"viber-messaging:install\",\"root_class\":\"ViberMessaging\"},{\"id\":11,\"usage_type\":\"general\",\"name\":\"WaveMoneyPayment\",\"description\":\"This plugin developed for getting WaveMoney payments into MicroPowerManager.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"WaveMoney\",\"installation_command\":\"wave-money-payment-provider:install\",\"root_class\":\"WaveMoneyPaymentProvider\"},{\"id\":12,\"usage_type\":\"mini-grid\",\"name\":\"MicroStarMeter\",\"description\":\"This plugin integrates MicroStar meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"MicroStar Meter\",\"installation_command\":\"micro-star-meter:install\",\"root_class\":\"MicroStarMeter\"},{\"id\":13,\"usage_type\":\"shs\",\"name\":\"SunKingSHS\",\"description\":\"This plugin integrates SunKing solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"SunKing SHS\",\"installation_command\":\"sun-king-shs:install\",\"root_class\":\"SunKingSHS\"},{\"id\":14,\"usage_type\":\"mini-grid\",\"name\":\"GomeLongMeter\",\"description\":\"This plugin integrates GomeLong meters to Micropowermanager. It uses. user_id & user_password for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"GomeLong Meter\",\"installation_command\":\"gome-long-meter:install\",\"root_class\":\"GomeLongMeter\"},{\"id\":15,\"usage_type\":\"general\",\"name\":\"WavecomPayment\",\"description\":\"This plugin developed for getting Wavecom(Senegal) payments into MicroPowerManager.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":null,\"installation_command\":\"wavecom-payment-provider:install\",\"root_class\":\"WavecomPaymentProvider\"},{\"id\":16,\"usage_type\":\"e-bike\",\"name\":\"DalyBms\",\"description\":\"This plugin developed for managing e-bikes with daly bms.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Daly Bms\",\"installation_command\":\"daly-bms:install\",\"root_class\":\"DalyBms\"},{\"id\":17,\"usage_type\":\"shs\",\"name\":\"AngazaSHS\",\"description\":\"This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\",\"tail_tag\":\"Angaza SHS\",\"installation_command\":\"angaza-shs:install\",\"root_class\":\"AngazaSHS\"}]}",
+                            "body": "{\"data\":[{\"id\":1,\"usage_type\":\"mini-grid\",\"name\":\"SparkMeter\",\"description\":\"This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Spark Meter\",\"installation_command\":\"spark-meter:install\",\"root_class\":\"SparkMeter\"},{\"id\":2,\"usage_type\":\"mini-grid\",\"name\":\"SteamaMeter\",\"description\":\"This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Steamaco Meter\",\"installation_command\":\"steama-meter:install\",\"root_class\":\"SteamaMeter\"},{\"id\":3,\"usage_type\":\"mini-grid\",\"name\":\"CalinMeter\",\"description\":\"This plugin integrates Calin meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Calin Meter\",\"installation_command\":\"calin-meter:install\",\"root_class\":\"CalinMeter\"},{\"id\":4,\"usage_type\":\"mini-grid\",\"name\":\"CalinSmartMeter\",\"description\":\"This plugin integrates Calin meters to Micropowermanager. It uses company_name, user_name, password and password_vend for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"CalinSmart Meter\",\"installation_command\":\"calin-smart-meter:install\",\"root_class\":\"CalinSmartMeter\"},{\"id\":5,\"usage_type\":\"mini-grid\",\"name\":\"KelinMeter\",\"description\":\"This plugin integrates Kelim meters to Micropowermanager. It uses username & password for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Kelin Meter\",\"installation_command\":\"kelin-meter:install\",\"root_class\":\"KelinMeter\"},{\"id\":6,\"usage_type\":\"mini-grid\",\"name\":\"StronMeter\",\"description\":\"This plugin integrates Stron meters to Micropowermanager. It uses the api login credentials for authentication.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Stron Meter\",\"installation_command\":\"stron-meter:installl\",\"root_class\":\"StronMeter\"},{\"id\":7,\"usage_type\":\"general\",\"name\":\"SwiftaPayment\",\"description\":\"This plugin developed for getting Swifta payments into MicroPowerManager.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":null,\"installation_command\":\"swifta-payment-provider:install\",\"root_class\":\"SwiftaPaymentProvider\"},{\"id\":8,\"usage_type\":\"general\",\"name\":\"MesombPayment\",\"description\":\"This plugin developed for getting MeSomb payments into MicroPowerManager.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":null,\"installation_command\":\"mesomb-payment-provider:install\",\"root_class\":\"MesombPaymentProvider\"},{\"id\":9,\"usage_type\":\"general\",\"name\":\"BulkRegistration\",\"description\":\"This plugin provides bulk registration of the company's existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":null,\"installation_command\":\"bulk-registration:install\",\"root_class\":\"BulkRegistration\"},{\"id\":10,\"usage_type\":\"general\",\"name\":\"ViberMessaging\",\"description\":\"This plugin developed for the communication with customers throughout Viber messages.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Viber Messaging\",\"installation_command\":\"viber-messaging:install\",\"root_class\":\"ViberMessaging\"},{\"id\":11,\"usage_type\":\"general\",\"name\":\"WaveMoneyPayment\",\"description\":\"This plugin developed for getting WaveMoney payments into MicroPowerManager.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"WaveMoney\",\"installation_command\":\"wave-money-payment-provider:install\",\"root_class\":\"WaveMoneyPaymentProvider\"},{\"id\":12,\"usage_type\":\"mini-grid\",\"name\":\"MicroStarMeter\",\"description\":\"This plugin integrates MicroStar meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"MicroStar Meter\",\"installation_command\":\"micro-star-meter:install\",\"root_class\":\"MicroStarMeter\"},{\"id\":13,\"usage_type\":\"shs\",\"name\":\"SunKingSHS\",\"description\":\"This plugin integrates SunKing solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"SunKing SHS\",\"installation_command\":\"sun-king-shs:install\",\"root_class\":\"SunKingSHS\"},{\"id\":14,\"usage_type\":\"mini-grid\",\"name\":\"GomeLongMeter\",\"description\":\"This plugin integrates GomeLong meters to Micropowermanager. It uses. user_id & user_password for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"GomeLong Meter\",\"installation_command\":\"gome-long-meter:install\",\"root_class\":\"GomeLongMeter\"},{\"id\":15,\"usage_type\":\"general\",\"name\":\"WavecomPayment\",\"description\":\"This plugin developed for getting Wavecom(Senegal) payments into MicroPowerManager.\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":null,\"installation_command\":\"wavecom-payment-provider:install\",\"root_class\":\"WavecomPaymentProvider\"},{\"id\":16,\"usage_type\":\"e-bike\",\"name\":\"DalyBms\",\"description\":\"This plugin developed for managing e-bikes with daly bms.\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Daly Bms\",\"installation_command\":\"daly-bms:install\",\"root_class\":\"DalyBms\"},{\"id\":17,\"usage_type\":\"shs\",\"name\":\"AngazaSHS\",\"description\":\"This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Angaza SHS\",\"installation_command\":\"angaza-shs:install\",\"root_class\":\"AngazaSHS\"},{\"id\":18,\"usage_type\":\"general\",\"name\":\"AfricasTalking\",\"description\":\"This plugin developed for the communication with customers throughout Africas Talking.\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\",\"tail_tag\":\"Africas Talking\",\"installation_command\":\"africas-talking:install\",\"root_class\":\"AfricasTalking\"}]}",
                             "name": ""
                         }
                     ]
@@ -8685,7 +8733,7 @@
                                 {
                                     "id": "mpmPluginId",
                                     "key": "mpmPluginId",
-                                    "value": "asperiores",
+                                    "value": "nostrum",
                                     "description": ""
                                 }
                             ]
@@ -8828,7 +8876,7 @@
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"data\":[{\"id\":1,\"name\":\"\\\/locations\\\/add-cluster\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":2,\"name\":\"\\\/locations\\\/add-mini-grid\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":3,\"name\":\"\\\/locations\\\/add-village\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":4,\"name\":\"\\\/settings\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":5,\"name\":\"\\\/connection-groups\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":6,\"name\":\"\\\/connection-types\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":7,\"name\":\"\\\/profile\\\/management\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":8,\"name\":\"\\\/commissions\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":9,\"name\":\"\\\/tariffs\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":10,\"name\":\"\\\/targets\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":11,\"name\":\"\\\/swifta-payment\\\/swifta-payment-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":12,\"name\":\"\\\/bulk-registration\\\/bulk-registration\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":13,\"name\":\"\\\/wave-money\\\/wave-money-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":14,\"name\":\"\\\/sun-king-meters\\\/sun-king-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":15,\"name\":\"\\\/kelin-meters\\\/kelin-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":16,\"name\":\"\\\/kelin-meters\\\/kelin-setting\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":17,\"name\":\"\\\/spark-meters\\\/sm-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":18,\"name\":\"\\\/spark-meters\\\/sm-site\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":19,\"name\":\"\\\/spark-meters\\\/sm-tariff\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":20,\"name\":\"\\\/spark-meters\\\/sm-sales-account\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":21,\"name\":\"\\\/spark-meters\\\/sm-setting\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":22,\"name\":\"\\\/steama-meters\\\/steama-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":23,\"name\":\"\\\/steama-meters\\\/steama-site\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":24,\"name\":\"\\\/steama-meters\\\/steama-setting\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":25,\"name\":\"\\\/stron-meters\\\/stron-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":26,\"name\":\"\\\/viber-messaging\\\/viber-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":27,\"name\":\"\\\/calin-meters\\\/calin-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":28,\"name\":\"\\\/calin-smart-meters\\\/calin-smart-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":29,\"name\":\"\\\/micro-star-meters\\\/micro-star-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":30,\"name\":\"\\\/gome-long-meters\\\/gome-long-overview\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"}]}",
+                            "body": "{\"data\":[{\"id\":1,\"name\":\"\\\/locations\\\/add-cluster\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":2,\"name\":\"\\\/locations\\\/add-mini-grid\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":3,\"name\":\"\\\/locations\\\/add-village\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":4,\"name\":\"\\\/settings\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":5,\"name\":\"\\\/connection-groups\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":6,\"name\":\"\\\/connection-types\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":7,\"name\":\"\\\/profile\\\/management\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":8,\"name\":\"\\\/commissions\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":9,\"name\":\"\\\/tariffs\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":10,\"name\":\"\\\/targets\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":11,\"name\":\"\\\/swifta-payment\\\/swifta-payment-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":12,\"name\":\"\\\/bulk-registration\\\/bulk-registration\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":13,\"name\":\"\\\/wave-money\\\/wave-money-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":14,\"name\":\"\\\/sun-king-meters\\\/sun-king-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":15,\"name\":\"\\\/kelin-meters\\\/kelin-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":16,\"name\":\"\\\/kelin-meters\\\/kelin-setting\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":17,\"name\":\"\\\/spark-meters\\\/sm-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":18,\"name\":\"\\\/spark-meters\\\/sm-site\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":19,\"name\":\"\\\/spark-meters\\\/sm-tariff\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":20,\"name\":\"\\\/spark-meters\\\/sm-sales-account\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":21,\"name\":\"\\\/spark-meters\\\/sm-setting\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":22,\"name\":\"\\\/steama-meters\\\/steama-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":23,\"name\":\"\\\/steama-meters\\\/steama-site\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":24,\"name\":\"\\\/steama-meters\\\/steama-setting\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":25,\"name\":\"\\\/stron-meters\\\/stron-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":26,\"name\":\"\\\/viber-messaging\\\/viber-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":27,\"name\":\"\\\/calin-meters\\\/calin-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":28,\"name\":\"\\\/calin-smart-meters\\\/calin-smart-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":29,\"name\":\"\\\/micro-star-meters\\\/micro-star-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":30,\"name\":\"\\\/gome-long-meters\\\/gome-long-overview\",\"created_at\":\"2025-02-25T14:38:14.000000Z\",\"updated_at\":\"2025-02-25T14:38:14.000000Z\"},{\"id\":31,\"name\":\"\\\/africas-talking\\\/africas-talking-overview\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"}]}",
                             "name": ""
                         }
                     ]
@@ -8855,7 +8903,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"ducimus\",\"address\":\"optio\",\"phone\":\"eligendi\",\"email\":\"accusamus\",\"protected_page_password\":\"nobis\"}"
+                            "raw": "{\"name\":\"non\",\"address\":\"nulla\",\"phone\":\"veniam\",\"email\":\"et\",\"protected_page_password\":\"reiciendis\"}"
                         },
                         "description": "",
                         "auth": {
@@ -8950,7 +8998,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":23713.942,\"person_id\":288,\"device_type\":\"pariatur\",\"device_serial\":\"et\",\"device_id\":31.881791}"
+                            "raw": "{\"id\":0.92289,\"person_id\":0.4,\"device_type\":\"praesentium\",\"device_serial\":\"nihil\",\"device_id\":628255.58105}"
                         },
                         "description": "",
                         "auth": {
@@ -9047,13 +9095,13 @@
                                 {
                                     "id": "meterSerial",
                                     "key": "meterSerial",
-                                    "value": "harum",
+                                    "value": "saepe",
                                     "description": ""
                                 },
                                 {
                                     "id": "amount",
                                     "key": "amount",
-                                    "value": "sunt",
+                                    "value": "ab",
                                     "description": ""
                                 }
                             ]
@@ -9167,7 +9215,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"nyavprbe\",\"manufacturer_id\":\"delectus\",\"asset_id\":\"iusto\"}"
+                            "raw": "{\"serial_number\":\"as\",\"manufacturer_id\":\"corrupti\",\"asset_id\":\"laborum\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9294,7 +9342,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serial_number\":\"pqwonerrc\",\"manufacturer_id\":\"libero\",\"asset_id\":\"consequatur\"}"
+                            "raw": "{\"serial_number\":\"f\",\"manufacturer_id\":\"hic\",\"asset_id\":\"dolore\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9363,7 +9411,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "13",
+                                    "value": "6",
                                     "description": ""
                                 }
                             ]
@@ -9447,7 +9495,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "quo",
+                                    "value": "dicta",
                                     "description": "The slug of the transaction."
                                 }
                             ]
@@ -9503,7 +9551,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "quae",
+                                    "value": "qui",
                                     "description": "The slug of the debt."
                                 }
                             ]
@@ -9590,10 +9638,161 @@
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"data\":[{\"id\":1,\"name\":\"Mini-Grid\",\"value\":\"mini-grid\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":2,\"name\":\"Solar Home System\",\"value\":\"shs\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":3,\"name\":\"EBike Rental\",\"value\":\"e-bike\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":4,\"name\":\"Mini-Grid & Solar Home System\",\"value\":\"mini-grid&shs\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":5,\"name\":\"Mini-Grid & EBike Rental\",\"value\":\"mini-grid&e-bike\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":6,\"name\":\"Solar Home & EBike Rental\",\"value\":\"shs&e-bike\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"},{\"id\":7,\"name\":\"Mini-Grid & Solar Home System & EBike Rental\",\"value\":\"mini-grid&shs&e-bike\",\"created_at\":\"2024-11-20T16:05:47.000000Z\",\"updated_at\":\"2024-11-20T16:05:47.000000Z\"}]}",
+                            "body": "{\"data\":[{\"id\":1,\"name\":\"Mini-Grid\",\"value\":\"mini-grid\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":2,\"name\":\"Solar Home System\",\"value\":\"shs\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":3,\"name\":\"EBike Rental\",\"value\":\"e-bike\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":4,\"name\":\"Mini-Grid & Solar Home System\",\"value\":\"mini-grid&shs\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":5,\"name\":\"Mini-Grid & EBike Rental\",\"value\":\"mini-grid&e-bike\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":6,\"name\":\"Solar Home & EBike Rental\",\"value\":\"shs&e-bike\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"},{\"id\":7,\"name\":\"Mini-Grid & Solar Home System & EBike Rental\",\"value\":\"mini-grid&shs&e-bike\",\"created_at\":\"2025-02-25T14:38:15.000000Z\",\"updated_at\":\"2025-02-25T14:38:15.000000Z\"}]}",
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "GET api\/africas-talking\/credential",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/africas-talking\/credential",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/africas-talking\/credential"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 500,
+                            "body": "{\n    \"message\": \"Server Error\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "PUT api\/africas-talking\/credential",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/africas-talking\/credential",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/africas-talking\/credential"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"api_key\":\"facilis\",\"username\":\"sed\",\"short_code\":\"sit\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/africas-talking\/callback\/{slug}\/incoming-messages",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/africas-talking\/callback\/:slug\/incoming-messages",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/africas-talking\/callback\/:slug\/incoming-messages",
+                            "variable": [
+                                {
+                                    "id": "slug",
+                                    "key": "slug",
+                                    "value": "non",
+                                    "description": "The slug of the callback."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/africas-talking\/callback\/{slug}\/delivery-reports",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/africas-talking\/callback\/:slug\/delivery-reports",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/africas-talking\/callback\/:slug\/delivery-reports",
+                            "variable": [
+                                {
+                                    "id": "slug",
+                                    "key": "slug",
+                                    "value": "molestias",
+                                    "description": "The slug of the callback."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
                 },
                 {
                     "name": "GET api\/spark-meters\/sm-site",
@@ -9799,7 +9998,7 @@
                                 {
                                     "id": "site_id",
                                     "key": "site_id",
-                                    "value": "3",
+                                    "value": "15",
                                     "description": "The ID of the site."
                                 }
                             ]
@@ -9817,7 +10016,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"thundercloud_url\":\"sed\",\"thundercloud_token\":\"impedit\"}"
+                            "raw": "{\"thundercloud_url\":\"aut\",\"thundercloud_token\":\"consequuntur\"}"
                         },
                         "description": "",
                         "auth": {
@@ -9944,7 +10143,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_key\":\"sit\",\"api_secret\":\"ratione\"}"
+                            "raw": "{\"api_key\":\"ut\",\"api_secret\":\"est\"}"
                         },
                         "description": "",
                         "auth": {
@@ -10397,7 +10596,7 @@
                                 {
                                     "id": "customer_id",
                                     "key": "customer_id",
-                                    "value": "13",
+                                    "value": "12",
                                     "description": "The ID of the customer."
                                 }
                             ]
@@ -10415,7 +10614,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"low_balance_limit\":\"molestiae\"}"
+                            "raw": "{\"low_balance_limit\":\"corrupti\"}"
                         },
                         "description": "",
                         "auth": {
@@ -10532,7 +10731,7 @@
                                 {
                                     "id": "tariffId",
                                     "key": "tariffId",
-                                    "value": "et",
+                                    "value": "pariatur",
                                     "description": ""
                                 }
                             ]
@@ -11200,7 +11399,7 @@
                                 {
                                     "id": "smsFeedbackWord_id",
                                     "key": "smsFeedbackWord_id",
-                                    "value": "20",
+                                    "value": "7",
                                     "description": "The ID of the smsFeedbackWord."
                                 }
                             ]
@@ -11294,7 +11493,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"et\",\"password\":\"labore\"}"
+                            "raw": "{\"username\":\"suscipit\",\"password\":\"sed\"}"
                         },
                         "description": "",
                         "auth": {
@@ -11747,7 +11946,7 @@
                                 {
                                     "id": "customer",
                                     "key": "customer",
-                                    "value": "quidem",
+                                    "value": "consequatur",
                                     "description": ""
                                 }
                             ]
@@ -11765,7 +11964,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":\"est\",\"low_balance_warning\":\"incidunt\",\"energy_price\":\"molestiae\"}"
+                            "raw": "{\"id\":\"vero\",\"low_balance_warning\":\"dolor\",\"energy_price\":\"quidem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -11786,7 +11985,7 @@
                                 {
                                     "id": "customerId",
                                     "key": "customerId",
-                                    "value": "officia",
+                                    "value": "enim",
                                     "description": ""
                                 }
                             ]
@@ -12274,7 +12473,7 @@
                                 {
                                     "id": "customer",
                                     "key": "customer",
-                                    "value": "sunt",
+                                    "value": "dolores",
                                     "description": ""
                                 }
                             ]
@@ -12606,7 +12805,7 @@
                                 {
                                     "id": "smsFeedbackWord_id",
                                     "key": "smsFeedbackWord_id",
-                                    "value": "8",
+                                    "value": "4",
                                     "description": "The ID of the smsFeedbackWord."
                                 }
                             ]
@@ -12700,7 +12899,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"sequi\",\"password\":\"quidem\"}"
+                            "raw": "{\"username\":\"fugiat\",\"password\":\"optio\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13009,7 +13208,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "17",
+                                    "value": "18",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13121,7 +13320,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "2",
+                                    "value": "10",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13177,7 +13376,7 @@
                                 {
                                     "id": "meter_id",
                                     "key": "meter_id",
-                                    "value": "10",
+                                    "value": "20",
                                     "description": "The ID of the meter."
                                 }
                             ]
@@ -13347,7 +13546,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":\"laborum\",\"api_key\":\"distinctio\"}"
+                            "raw": "{\"user_id\":\"sit\",\"api_key\":\"magnam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13426,7 +13625,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"company_name\":\"consequuntur\",\"username\":\"at\",\"password\":\"vero\"}"
+                            "raw": "{\"company_name\":\"eum\",\"username\":\"autem\",\"password\":\"quo\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13505,7 +13704,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"company_name\":\"qui\",\"user_name\":\"neque\",\"password\":\"reprehenderit\",\"password_vend\":\"laudantium\"}"
+                            "raw": "{\"company_name\":\"ad\",\"user_name\":\"accusamus\",\"password\":\"modi\",\"password_vend\":\"aliquam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13536,7 +13735,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"meter_number\":\"laboriosam\",\"amount\":\"repellendus\",\"cipher\":\"natus\",\"timestamp\":\"velit\"}"
+                            "raw": "{\"meter_number\":\"soluta\",\"amount\":\"corrupti\",\"cipher\":\"tempore\",\"timestamp\":\"nihil\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13567,7 +13766,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"transaction_id\":\"est\",\"transaction_reference\":\"fugiat\",\"cipher\":\"labore\",\"amount\":\"blanditiis\",\"timestamp\":\"reiciendis\"}"
+                            "raw": "{\"transaction_id\":\"harum\",\"transaction_reference\":\"exercitationem\",\"cipher\":\"commodi\",\"amount\":\"ex\",\"timestamp\":\"aliquam\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13674,7 +13873,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"csv\":\"aut\"}"
+                            "raw": "{\"csv\":\"qui\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13753,7 +13952,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_token\":\"corrupti\"}"
+                            "raw": "{\"api_token\":\"quae\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13774,7 +13973,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "ad",
+                                    "value": "saepe",
                                     "description": "The slug of the webhook."
                                 }
                             ]
@@ -13868,7 +14067,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"merchant_id\":\"illum\",\"secret_key\":\"assumenda\"}"
+                            "raw": "{\"merchant_id\":\"nihil\",\"secret_key\":\"unde\"}"
                         },
                         "description": "",
                         "auth": {
@@ -13889,7 +14088,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "maxime",
+                                    "value": "vel",
                                     "description": "The slug of the start."
                                 }
                             ]
@@ -13907,7 +14106,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"meterSerial\":\"illum\",\"amount\":0}"
+                            "raw": "{\"meterSerial\":\"consequatur\",\"amount\":34124.36289445}"
                         },
                         "description": "",
                         "auth": {
@@ -13928,7 +14127,7 @@
                                 {
                                     "id": "slug",
                                     "key": "slug",
-                                    "value": "at",
+                                    "value": "corrupti",
                                     "description": "The slug of the callback."
                                 }
                             ]
@@ -14022,7 +14221,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"api_url\":\"sed\",\"certificate_password\":\"velit\"}"
+                            "raw": "{\"api_url\":\"dolore\",\"certificate_password\":\"sunt\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14101,7 +14300,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"cert\":\"nemo\"}"
+                            "raw": "{\"cert\":\"et\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14228,7 +14427,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"client_id\":\"et\",\"client_secret\":\"minus\"}"
+                            "raw": "{\"client_id\":\"nihil\",\"client_secret\":\"architecto\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14307,7 +14506,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":\"vel\",\"user_password\":\"sed\"}"
+                            "raw": "{\"user_id\":\"aspernatur\",\"user_password\":\"aut\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14338,7 +14537,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"transaction_file\":\"quas\"}"
+                            "raw": "{\"transaction_file\":\"autem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14417,7 +14616,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"client_id\":\"odio\",\"client_secret\":\"eius\"}"
+                            "raw": "{\"client_id\":\"nemo\",\"client_secret\":\"et\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14496,7 +14695,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_name\":\"ut\",\"password\":\"tempore\"}"
+                            "raw": "{\"user_name\":\"ut\",\"password\":\"in\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14558,7 +14757,7 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "unde",
+                                    "value": "quaerat",
                                     "description": ""
                                 }
                             ]
@@ -14576,7 +14775,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":7}"
+                            "raw": "{\"id\":2}"
                         },
                         "description": "",
                         "auth": {
@@ -14627,7 +14826,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"max_current\":10,\"phase\":9,\"online\":13}"
+                            "raw": "{\"max_current\":19,\"phase\":14,\"online\":17}"
                         },
                         "description": "",
                         "auth": {
@@ -14648,13 +14847,13 @@
                                 {
                                     "id": "meterTypeId",
                                     "key": "meterTypeId",
-                                    "value": "ipsam",
+                                    "value": "animi",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "nihil",
+                                    "value": "velit",
                                     "description": ""
                                 }
                             ]
@@ -14672,7 +14871,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"max_current\":1,\"phase\":5,\"online\":20}"
+                            "raw": "{\"max_current\":14,\"phase\":2,\"online\":17}"
                         },
                         "description": "",
                         "auth": {
@@ -14734,7 +14933,7 @@
                                 {
                                     "id": "serialNumber",
                                     "key": "serialNumber",
-                                    "value": "aliquam",
+                                    "value": "voluptatibus",
                                     "description": ""
                                 }
                             ]
@@ -14752,7 +14951,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"serialNumber\":\"debitis\"}"
+                            "raw": "{\"serialNumber\":\"laudantium\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14786,13 +14985,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "2",
+                                    "value": "9",
                                     "description": ""
                                 },
                                 {
                                     "id": "year",
                                     "key": "year",
-                                    "value": "officia",
+                                    "value": "consequatur",
                                     "description": ""
                                 }
                             ]
@@ -14848,13 +15047,13 @@
                                 {
                                     "id": "person_id",
                                     "key": "person_id",
-                                    "value": "10",
+                                    "value": "1",
                                     "description": "The ID of the person."
                                 },
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "7",
+                                    "value": "2",
                                     "description": ""
                                 }
                             ]
@@ -14910,7 +15109,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "4",
+                                    "value": "6",
                                     "description": "checks if the person has any debts to the system"
                                 }
                             ]
@@ -14976,7 +15175,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"begin\":\"explicabo\",\"end\":\"ea\"}"
+                            "raw": "{\"begin\":\"eligendi\",\"end\":\"rem\"}"
                         },
                         "description": "",
                         "auth": {
@@ -14997,13 +15196,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "795",
+                                    "value": "1",
                                     "description": ""
                                 },
                                 {
                                     "id": "period",
                                     "key": "period",
-                                    "value": "deserunt",
+                                    "value": "corrupti",
                                     "description": ""
                                 },
                                 {
@@ -15015,13 +15214,13 @@
                                 {
                                     "id": "order",
                                     "key": "order",
-                                    "value": "quam",
+                                    "value": "id",
                                     "description": ""
                                 },
                                 {
                                     "id": "payerId",
                                     "key": "payerId",
-                                    "value": "14",
+                                    "value": "9",
                                     "description": ""
                                 }
                             ]
@@ -15083,7 +15282,7 @@
                                 {
                                     "id": "is_customer",
                                     "key": "is_customer",
-                                    "value": "14",
+                                    "value": "11",
                                     "description": "optinal. To get a list of customers or non customer. Default : 1"
                                 }
                             ]
@@ -15126,13 +15325,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "veniam",
+                                    "value": "rerum",
                                     "description": ""
                                 },
                                 {
                                     "id": "person",
                                     "key": "person",
-                                    "value": "incidunt",
+                                    "value": "voluptatem",
                                     "description": "The ID of the person"
                                 }
                             ]
@@ -15175,13 +15374,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "nihil",
+                                    "value": "aut",
                                     "description": ""
                                 },
                                 {
                                     "id": "person",
                                     "key": "person",
-                                    "value": "deleniti",
+                                    "value": "deserunt",
                                     "description": "The ID of the person"
                                 }
                             ]
@@ -15224,7 +15423,7 @@
                                 {
                                     "id": "is_customer",
                                     "key": "is_customer",
-                                    "value": "9",
+                                    "value": "14",
                                     "description": "optinal. To get a list of customers or non customer. Default : 1"
                                 }
                             ]
@@ -15390,7 +15589,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "sunt",
+                                    "value": "deserunt",
                                     "description": ""
                                 }
                             ]
@@ -15436,13 +15635,13 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "quasi",
+                                    "value": "qui",
                                     "description": ""
                                 },
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "et",
+                                    "value": "minus",
                                     "description": "The ID of the person to update"
                                 }
                             ]
@@ -15488,7 +15687,7 @@
                                 {
                                     "id": "personId",
                                     "key": "personId",
-                                    "value": "quaerat",
+                                    "value": "nihil",
                                     "description": ""
                                 },
                                 {
@@ -15517,6 +15716,144 @@
                         }
                     },
                     "response": []
+                }
+            ]
+        },
+        {
+            "name": "Vodacom Transaction",
+            "description": "\nAPI endpoints for integrating with Vodacom's M-Pesa payment services",
+            "item": [
+                {
+                    "name": "Validate Transaction.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vodacom\/transactions\/validation",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/vodacom\/transactions\/validation"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"serialNumber\":\"ABC123456789\",\"amount\":15000,\"payerPhoneNumber\":\"258712345678\",\"referenceId\":\"ORD-12345-ABC\"}"
+                        },
+                        "description": "Validates a transaction before processing. Use this endpoint to verify if a transaction\ncan proceed based on the provided information. This is typically the first step in the payment flow.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": {\n    \"transactionId\": \"VOD-TXN-123456\",\n    \"status\": \"validated\",\n    \"details\": {\n      \"product\": \"Internet Bundle\",\n      \"validAmount\": true\n    },\n    \"success\": true\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n  \"data\": {\n    \"message\": \"Invalid amount specified for this product\",\n    \"success\": false\n  }\n}",
+                            "name": "Validation Error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Process Transaction.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vodacom\/transactions\/process",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/vodacom\/transactions\/process"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"referenceId\":\"ORD-12345-ABC\",\"transactionId\":\"VOD-TXN-123456\"}"
+                        },
+                        "description": "Processes a previously validated transaction. This endpoint should be called after successful\nvalidation to initiate the payment process with Vodacom M-Pesa.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": {\n    \"transactionId\": \"VOD-TXN-123456\",\n    \"status\": \"processing\",\n    \"providerReference\": \"MPESA-TX-987654321\",\n    \"success\": true\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n  \"data\": {\n    \"message\": \"Transaction processing failed: Insufficient funds\",\n    \"success\": false\n  }\n}",
+                            "name": "Processing Error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Check Transaction Status.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/vodacom\/transactions\/enquiry",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/vodacom\/transactions\/enquiry"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"referenceId\":\"ORD-12345-ABC\"}"
+                        },
+                        "description": "Checks the current status of a transaction that has been submitted for processing.\nUse this to verify if a payment has been completed, is still pending, or has failed.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"data\": {\n    \"referenceId\": \"ORD-12345-ABC\",\n    \"transactionId\": \"VOD-TXN-123456\",\n    \"status\": \"completed\",\n    \"mpesaReceipt\": \"QCL4521XYZ\",\n    \"completedAt\": \"2023-06-15T12:45:32Z\",\n    \"success\": true\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{\n  \"data\": {\n    \"message\": \"Transaction not found or reference ID is invalid\",\n    \"success\": false\n  }\n}",
+                            "name": "Enquiry Error"
+                        }
+                    ]
                 }
             ]
         }

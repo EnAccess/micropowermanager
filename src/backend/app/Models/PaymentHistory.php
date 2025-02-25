@@ -34,37 +34,37 @@ class PaymentHistory extends BaseModel {
     }
 
     public function getFlow(string $payer_type, int $payer_id, string $period, $limit = null, string $order = 'ASC') {
-        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", '.$period.') as aperiod from'.
-            ' payment_histories where payer_id=:payer_id and payer_type=:payer_type '.
-            'GROUP by aperiod, payment_type ORDER BY created_at  '.$order;
+        $sql = <<<SQL
+            SELECT
+                SUM(amount) AS amount,
+                payment_type,
+                CONCAT_WS("/", {$period}) AS aperiod
+            FROM payment_histories
+            WHERE payer_id = :payer_id AND payer_type = :payer_type
+            GROUP BY aperiod, payment_type
+            ORDER BY MIN(created_at) {$order};
+            SQL;
 
         if ($limit !== null) {
-            $sql .= ' limit '.(int) $limit;
+            $sql .= ' LIMIT '.(int) $limit;
         }
 
         return $this->executeSqlCommand($sql, $payer_id, null, $payer_type);
     }
 
-    public function getAgentCustomersFlow(string $payer_type, $agent_id, string $period, $limit = null, $order = 'ASC') {
-        $sql = 'SELECT sum(amount) as amount, payment_type, CONCAT_WS("/", '.$period.') as aperiod '.
-            'from payment_histories inner join addresses on payment_histories.payer_id = addresses.owner_id '.
-            'inner JOIN cities on addresses.city_id=cities.id inner JOIN mini_grids on '.
-            'cities.mini_grid_id=mini_grids.id inner JOIN agents on agents.mini_grid_id=mini_grids.id '.
-            ' where payment_service  like \'%agent%\' and payer_type=:payer_type and agents.id=:agent_id '.
-            'and addresses.is_primary=1 GROUP by concat( '.$period.'), payment_type ORDER BY '.
-            'payment_histories.created_at '.$order;
-
-        if ($limit !== null) {
-            $sql .= ' limit '.(int) $limit;
-        }
-
-        return $this->executeSqlCommand($sql, null, $agent_id, $payer_type);
-    }
-
     public function getPaymentFlow(string $payer_type, int $payer_id, int $year) {
-        $sql = 'SELECT sum(amount) as amount, MONTH(created_at) as month from payment_histories where'.
-            ' payer_id=:payer_id and payer_type=:payer_type and '.
-            'YEAR(created_at)=:year group by  MONTH(created_at) order  by  MONTH(created_at) ';
+        $sql = <<<SQL
+            SELECT
+                SUM(amount) AS amount,
+                MONTH(created_at) AS month
+            FROM payment_histories
+            WHERE
+                payer_id = :payer_id
+                AND payer_type = :payer_type
+                AND YEAR(created_at) = :year
+            GROUP BY MONTH(created_at)
+            ORDER BY MONTH(created_at);
+            SQL;
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->bindValue(':payer_id', $payer_id, \PDO::PARAM_INT);
         $sth->bindValue(':payer_type', $payer_type, \PDO::PARAM_STR);
@@ -81,9 +81,16 @@ class PaymentHistory extends BaseModel {
      * @param Request|array|string $end
      */
     public function getOverview($begin, $end) {
-        $sql = 'SELECT sum(amount) as total, DATE_FORMAT(created_at, "%Y-%m-%d")'.
-            ' as dato from payment_histories where  DATE(created_at) >= DATE(\''.$begin.'\') '.
-            'and DATE(created_at)<= DATE(\''.$end.'\')  group by dato';
+        $sql = <<<SQL
+            SELECT
+                SUM(amount) AS total,
+                DATE_FORMAT(created_at, "%Y-%m-%d") AS dato
+            FROM payment_histories
+            WHERE
+                DATE(created_at) >= DATE('{$begin}')
+                AND DATE(created_at) <= DATE('{$end}')
+            GROUP BY dato;
+            SQL;
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         $sth->execute();
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);

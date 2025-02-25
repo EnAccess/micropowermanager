@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libxml2-dev \
     libzip-dev \
-    mariadb-client \
     supervisor \
     vim \
     zlib1g-dev

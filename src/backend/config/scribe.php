@@ -26,7 +26,7 @@ DESC,
 
     // The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url') at generation time.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.
-    'base_url' => 'https://backend-demo.micropowermanager.io',
+    'base_url' => 'https://api.demo.micropowermanager.io',
 
     'routes' => [
         [
