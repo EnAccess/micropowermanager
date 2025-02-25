@@ -84,15 +84,16 @@ Other cloud providers might require adjustments to the manifest files.
    A good reference is the working sample `kustomize.yaml` Kubernetes manifest file that is used to run the [MPM Demo Version](https://demo.micropowermanager.io/#/login).
    It can be found in the `k8s` directory of this repository.
 
-3. (Optional) Create a static IP address in GCP and populate the `kubernetes.io/ingress.global-static-ip-name` annotation in `Ingress`.
-4. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
+3. (Optional) Create a static IP address in GCP and populate the `kubernetes.io/ingress.global-static-ip-name` annotation in `Ingress` by using a Kustomize `patch`
+4. (Optional) Adjust `ConfigMap` entries by using a Kustomize `patch`
+5. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
    Note: If you choose to run MicroPowerManager in a non-default namespace make sure the Kubernetes `Secret` gets deployed into the same namespace.
-5. Run `kubectl -f apply secrets.yaml`
 6. Run `kubectl -k overlays/gcp_gke`
-7. Retrieve the loadbalancer IP address using
+7. Run `kubectl -f apply secrets.yaml`
+8. Retrieve the loadbalancer IP address using
 
    ```sh
-   echo 1
+   kubectl describe ingress mpm-ingress
    ```
 
    Create DNS records for the backend and frontend URLs.
