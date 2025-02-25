@@ -219,9 +219,6 @@ jobs:
           cluster_name: ${{ secrets.GCP_GKE_CLUSTER_NAME }}
           location: ${{ secrets.GCP_REGION }}
 
-      - name: Show existing pods
-        run: kubectl get pods -n ${{ secrets.GCP_GKE_NAMESPACE }}
-
       - name: Deploy to GKE
         run: |
           kubectl apply -k k8s/overlays/demo2.micropowermanager.io/
@@ -229,5 +226,5 @@ jobs:
       # We need to restart the pods to pick up latest images
       - name: Restart MicroPowerManager pods on GKE
         run: |
-          kubectl rollout restart deployment/mpm-frontend -n ${{ secrets.GCP_GKE_NAMESPACE }}
-          kubectl rollout restart deployment/mpm-backend -n ${{ secrets.GCP_GKE_NAMESPACE }}
+          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
+          kubectl rollout restart deployment/mpm-backend -n micropowermanager-demo
