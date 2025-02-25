@@ -177,6 +177,7 @@
                   use with your MicroPowerManager
                 </h2>
               </div>
+              <form data-vv-scope="Plugins">
               <div class="md-layout-item md-size-50 md-small-size-100">
                 <md-field
                   :class="{
@@ -188,6 +189,8 @@
                     name="usage_type"
                     id="usage_type"
                     v-model="companyForm.usage_type"
+                    required
+                    v-validate="'required'"
                   >
                     <md-option disabled>Select Usage Types</md-option>
                     <md-option
@@ -203,6 +206,7 @@
                   </span>
                 </md-field>
               </div>
+              </form>
               <div class="md-layout md-gutter">
                 <div
                   v-for="plugin in mpmPluginsService.list.filter(
@@ -496,6 +500,14 @@ export default {
           this.activeStep = index
         }
       } else if (id === "Plugins" && index === "Create-Form") {
+        // Add validation for the Plugins step
+        const validation = await this.$validator.validateAll("Plugins")
+        console.log("validation: ", validation);
+        if (!validation) {
+          this.loadingNextStep = false
+          return
+        }
+
         if (index) {
           this.activeStep = index
         }
