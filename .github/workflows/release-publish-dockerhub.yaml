@@ -192,12 +192,11 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl apply -f k8s/aws_eks/services/mpm-frontend.yaml
-          kubectl apply -f k8s/aws_eks/services/mpm-backend.yaml
+          kubectl apply -k k8s/overlays/demo.micropowermanager.io/
 
-          kubectl apply -f k8s/aws_eks/deployments/mpm-frontend.yaml
-          kubectl apply -f k8s/aws_eks/deployments/mpm-backend.yaml
-
+      # We need to restart the pods to pick up latest images
+      - name: Restart MicroPowerManager pods on EKS
+        run: |
           kubectl rollout restart deployment/mpm-frontend
           kubectl rollout restart deployment/mpm-backend
 
@@ -225,14 +224,10 @@ jobs:
 
       - name: Deploy to GKE
         run: |
-          kubectl apply -f k8s/gcp_gke/namespace.yaml
-          kubectl apply -f k8s/gcp_gke/redis.yaml
-          kubectl apply -f k8s/gcp_gke/deployments.yaml
-          kubectl apply -f k8s/gcp_gke/services.yaml
-          kubectl apply -f k8s/gcp_gke/ingress.yaml
+          kubectl apply -k k8s/overlays/demo2.micropowermanager.io/
 
       # We need to restart the pods to pick up latest images
-      - name: Restart MicroPowerManager pods
+      - name: Restart MicroPowerManager pods on GKE
         run: |
           kubectl rollout restart deployment/mpm-frontend -n ${{ secrets.GCP_GKE_NAMESPACE }}
           kubectl rollout restart deployment/mpm-backend -n ${{ secrets.GCP_GKE_NAMESPACE }}

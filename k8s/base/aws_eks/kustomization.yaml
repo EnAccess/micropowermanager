@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployments/mpm-backend.yaml
+  - deployments/mpm-frontend.yaml
+  - deployments/redis.yaml
+  - services/mpm-backend.yaml
+  - services/mpm-frontend.yaml
