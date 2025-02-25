@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'https://backend-demo.micropowermanager.io'
+    url: 'https://api.demo.micropowermanager.io'
 paths:
   /api/app/agents/appliance_types:
     get:
@@ -48,12 +48,12 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: sydnee.mills@example.org
+                  example: cary74@example.org
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: 'PDE|,k~,Y"f'
+                  example: "'9fEi,/=5Rsx;!?44Wx5"
                   nullable: false
               required:
                 - email
@@ -120,12 +120,12 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: mariam80@example.net
+                  example: stanford94@example.com
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: "|UKP#-viZyqv{1*S6'ah"
+                  example: sib!%Fc9q
                   nullable: false
               required:
                 - email
@@ -213,12 +213,12 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: accusamus
                   nullable: false
                 mini_grid_id:
                   type: string
                   description: ''
-                  example: repellat
+                  example: veniam
                   nullable: false
               required:
                 - name
@@ -264,12 +264,12 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: molestias
+                  example: nam
                   nullable: false
                 mini_grid_id:
                   type: string
                   description: ''
-                  example: veniam
+                  example: fugiat
                   nullable: false
               required:
                 - name
@@ -324,12 +324,12 @@ paths:
                 country_name:
                   type: string
                   description: ''
-                  example: tempore
+                  example: ipsum
                   nullable: false
                 country_code:
                   type: string
                   description: validation.min.
-                  example: kyuokyhxrreydakuusm
+                  example: qnwthcoudbawuxcgptgpiqrzaygemobgxuuia
                   nullable: false
               required:
                 - country_name
@@ -605,17 +605,17 @@ paths:
                 serial_number:
                   type: string
                   description: ''
-                  example: quisquam
+                  example: dolor
                   nullable: false
                 manufacturer_id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 7
                   nullable: false
                 meter_type_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 5
                   nullable: false
               required:
                 - serial_number
@@ -640,7 +640,7 @@ paths:
                 points:
                   type: string.
                   description: 'Comma seperated latitude and longitude. Example 1,2'
-                  example: similique
+                  example: tenetur
                   nullable: false
       security: []
     parameters:
@@ -657,7 +657,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 9
+            value: 7
       -
         in: path
         name: in_use
@@ -671,7 +671,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 1
+            value: 3
   /api/meters/connection-types:
     get:
       summary: ''
@@ -713,42 +713,42 @@ paths:
                 id:
                   type: number
                   description: ''
-                  example: 1.7
+                  example: 2772.6387376
                   nullable: false
                 serial_number:
                   type: string
                   description: ''
-                  example: tenetur
+                  example: laboriosam
                   nullable: false
                 meter_type_id:
                   type: number
                   description: ''
-                  example: 1.837
+                  example: 24574.1503414
                   nullable: false
                 in_use:
                   type: number
                   description: ''
-                  example: 25660.12
+                  example: 8607.1
                   nullable: false
                 manufacturer_id:
                   type: number
                   description: ''
-                  example: 14.449435721
+                  example: 687571.2880135
                   nullable: false
                 connection_type_id:
                   type: number
                   description: ''
-                  example: 75241629.19
+                  example: 139397.5866
                   nullable: false
                 connection_group_id:
                   type: number
                   description: ''
-                  example: 148399022.0
+                  example: 61798785.268932
                   nullable: false
                 tariff_id:
                   type: number
                   description: ''
-                  example: 374.845
+                  example: 62.44
                   nullable: false
               required:
                 - id
@@ -952,7 +952,7 @@ paths:
                 term:
                   type: string
                   description: ''
-                  example: sequi
+                  example: in
                   nullable: false
               required:
                 - term
@@ -1245,7 +1245,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: iste
+            value: tempore
   '/api/meters/{meterId}':
     delete:
       summary: "Delete\nDeletes the meter with its all releations."
@@ -1261,7 +1261,7 @@ paths:
         in: path
         name: meterId
         description: ''
-        example: magnam
+        example: laborum
         required: true
         schema:
           type: string
@@ -1278,7 +1278,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: molestias
+            value: cumque
   '/api/meters/{serialNumber}/transactions':
     get:
       summary: ''
@@ -1306,7 +1306,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: et
+        example: iure
         required: true
         schema:
           type: string
@@ -1409,7 +1409,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: quasi
+            value: ipsa
       -
         in: path
         name: start
@@ -1423,7 +1423,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: rerum
+            value: rem
       -
         in: path
         name: end
@@ -1437,7 +1437,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: autem
+            value: voluptatem
   '/api/meters/{miniGrid}/geoList':
     get:
       summary: "List with geo and access rate\nA list of meters with their positions and access rate payments\nThe list is not paginated."
@@ -1670,7 +1670,7 @@ paths:
         in: path
         name: miniGrid
         description: ''
-        example: facere
+        example: qui
         required: true
         schema:
           type: string
@@ -1687,7 +1687,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: soluta
+            value: blanditiis
   '/api/meter-types/{meterTypeId}/list':
     get:
       summary: "List with Meters\nDisplays the meter types with the associated meters."
@@ -1806,7 +1806,7 @@ paths:
         in: path
         name: meterTypeId
         description: ''
-        example: facere
+        example: delectus
         required: true
         schema:
           type: string
@@ -1814,7 +1814,7 @@ paths:
         in: path
         name: id
         description: ''
-        example: pariatur
+        example: sed
         required: true
         schema:
           type: string
@@ -1867,7 +1867,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the address.'
-        example: culpa
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -1920,7 +1920,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the transaction.'
-        example: '3984'
+        example: '2399'
         required: true
         schema:
           type: string
@@ -1973,7 +1973,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: '11'
+        example: '211'
         required: true
         schema:
           type: string
@@ -2102,7 +2102,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: '5'
+        example: '3'
         required: true
         schema:
           type: string
@@ -2110,7 +2110,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: nihil
+        example: distinctio
         required: true
         schema:
           type: string
@@ -2127,7 +2127,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: est
+            value: sit
       -
         in: path
         name: order
@@ -2141,7 +2141,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: voluptatem
+            value: et
   '/api/app/agents/customers/graph/{period}/{limit}/{order}':
     get:
       summary: ''
@@ -2169,7 +2169,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: consequuntur
+        example: vero
         required: true
         schema:
           type: string
@@ -2186,7 +2186,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: ullam
+            value: iste
       -
         in: path
         name: order
@@ -2200,7 +2200,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: nesciunt
+            value: voluptate
   /api/app/agents/transactions:
     get:
       summary: ''
@@ -2250,7 +2250,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: tenetur
+        example: mollitia
         required: true
         schema:
           type: string
@@ -2294,27 +2294,27 @@ paths:
                 person_id:
                   type: string
                   description: ''
-                  example: commodi
+                  example: alias
                   nullable: false
                 down_payment:
                   type: number
                   description: ''
-                  example: 38.0
+                  example: 111022.7
                   nullable: false
                 tenure:
                   type: number
                   description: validation.min.
-                  example: 21
+                  example: 46
                   nullable: false
                 first_payment_date:
                   type: string
                   description: ''
-                  example: neque
+                  example: suscipit
                   nullable: false
                 agent_assigned_appliance_id:
                   type: string
                   description: ''
-                  example: iure
+                  example: beatae
                   nullable: false
               required:
                 - person_id
@@ -2350,7 +2350,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: rem
+        example: excepturi
         required: true
         schema:
           type: string
@@ -2394,17 +2394,17 @@ paths:
                 owner_id:
                   type: string
                   description: ''
-                  example: placeat
+                  example: inventore
                   nullable: false
                 title:
                   type: string
                   description: ''
-                  example: praesentium
+                  example: delectus
                   nullable: false
                 description:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: numquam
                   nullable: false
               required:
                 - owner_id
@@ -2438,7 +2438,7 @@ paths:
         in: path
         name: ticketId
         description: ''
-        example: perferendis
+        example: et
         required: true
         schema:
           type: string
@@ -2469,7 +2469,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: error
+        example: ut
         required: true
         schema:
           type: string
@@ -2579,32 +2579,32 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: tempore
+                  example: animi
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: cwu
+                  example: ouyhiwjistvrkhmftedztnfyflfubqmwgnzvlrzgdguedrwmkmqcvzjgvnseqll
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: iztbgjgcandsdhsffwfopbegjwalkukuqaswyfbooclzmefihyryz
+                  example: kfgrqwxyqtsgawmwlngnprfstdbaydurihftgatktorggckrj
                   nullable: false
                 password:
                   type: string
                   description: validation.min.
-                  example: )g.\.6a
+                  example: '}i*.WpO/.{y&G'
                   nullable: false
                 city_id:
                   type: string
                   description: ''
-                  example: atque
+                  example: quia
                   nullable: false
                 agent_commission_id:
                   type: string
                   description: ''
-                  example: quasi
+                  example: molestias
                   nullable: false
               required:
                 - email
@@ -2714,27 +2714,27 @@ paths:
                 agent_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 5
                   nullable: false
                 user_id:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 5
                   nullable: false
                 appliance_id:
                   type: string
                   description: ''
-                  example: pariatur
+                  example: rerum
                   nullable: false
                 cost:
                   type: integer
                   description: ''
-                  example: 20
+                  example: 13
                   nullable: false
                 appliance_type_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 1
                   nullable: false
               required:
                 - agent_id
@@ -2770,7 +2770,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: iure
+        example: non
         required: true
         schema:
           type: string
@@ -2801,7 +2801,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: ut
+        example: tempore
         required: true
         schema:
           type: string
@@ -2845,22 +2845,22 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: libero
+                  example: eaque
                   nullable: false
                 energy_commission:
                   type: number
                   description: ''
-                  example: 1289115.0
+                  example: 75.6
                   nullable: false
                 appliance_commission:
                   type: number
                   description: ''
-                  example: 1.76866
+                  example: 210204149.747
                   nullable: false
                 risk_balance:
                   type: number
                   description: validation.max.
-                  example: 71666477.411016
+                  example: 450.4
                   nullable: false
               required:
                 - name
@@ -2896,22 +2896,22 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: sint
+                  example: rerum
                   nullable: false
                 energy_commission:
                   type: number
                   description: ''
-                  example: 37411.886269087
+                  example: 215692.57895
                   nullable: false
                 appliance_commission:
                   type: number
                   description: ''
-                  example: 5.50085
+                  example: 2403792.0
                   nullable: false
                 risk_balance:
                   type: number
                   description: validation.max.
-                  example: 85828.889929
+                  example: 1206121.36
                   nullable: false
               required:
                 - name
@@ -2924,7 +2924,7 @@ paths:
         in: path
         name: agentCommissionId
         description: ''
-        example: aut
+        example: quidem
         required: true
         schema:
           type: string
@@ -2968,12 +2968,12 @@ paths:
                 agent_id:
                   type: string
                   description: ''
-                  example: ratione
+                  example: aut
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: doloribus
+                  example: sequi
                   nullable: false
               required:
                 - agent_id
@@ -3006,7 +3006,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: sunt
+        example: maxime
         required: true
         schema:
           type: string
@@ -3037,7 +3037,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: '48496'
+        example: '508'
         required: true
         schema:
           type: string
@@ -3068,7 +3068,7 @@ paths:
         in: path
         name: agentId
         description: ''
-        example: 8
+        example: 14
         required: true
         schema:
           type: integer
@@ -3091,12 +3091,12 @@ paths:
                 agent_id:
                   type: string
                   description: ''
-                  example: eligendi
+                  example: pariatur
                   nullable: false
                 amount:
                   type: number
                   description: ''
-                  example: 4731996.0
+                  example: 403.4672
                   nullable: false
               required:
                 - agent_id
@@ -3441,42 +3441,42 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: xtpbakkyqha
+                  example: cdrvwneecaadvsthmxicozcpxsvhoszquvqspoidemd
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: itertymlodguznqjblgfndireeliuzoyhb
+                  example: sijlcnsdzlmmfnkhqubfai
                   nullable: false
                 phone:
                   type: number
                   description: 'Must match the regex (^\+). validation.min.'
-                  example: 68
+                  example: 50
                   nullable: false
                 tariff_id:
                   type: string
                   description: ''
-                  example: officia
+                  example: molestiae
                   nullable: false
                 geo_points:
                   type: string
                   description: ''
-                  example: corporis
+                  example: asperiores
                   nullable: false
                 serial_number:
                   type: string
                   description: ''
-                  example: omnis
+                  example: consequatur
                   nullable: false
                 manufacturer:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: magnam
                   nullable: false
                 meter_type:
                   type: string
                   description: ''
-                  example: labore
+                  example: unde
                   nullable: false
               required:
                 - name
@@ -3507,17 +3507,17 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: et
+                  example: exercitationem
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: qalipdvjdtlvfllrjuxzphymlpxnniusxdrnmqcrwitiaujwygayepycpuee
+                  example: hwjywydbhdcnedmtpgmtnmhhekdhbfcqjusctivtfoihrrwdxgpkkmlzvlzlpxcvlqnzqvk
                   nullable: false
                 password:
                   type: string
                   description: validation.min.
-                  example: 'O&5HP+b]VlR;'
+                  example: mLljIVVYR-lf%=Mv
                   nullable: false
               required:
                 - email
@@ -3604,7 +3604,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: itaque
+                  example: illum
                   nullable: false
               required:
                 - city_id
@@ -3627,7 +3627,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: quisquam
+                  example: voluptatem
                   nullable: false
               required:
                 - city_id
@@ -3660,12 +3660,12 @@ paths:
                 password:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: '"/$n1H'
+                  example: ';$eM0srWrr"489\'
                   nullable: false
                 confirm_password:
                   type: string
                   description: 'The value and <code>password</code> must match.'
-                  example: nostrum
+                  example: dolores
                   nullable: false
               required:
                 - password
@@ -3699,7 +3699,7 @@ paths:
                 email:
                   type: string
                   description: ''
-                  example: fugit
+                  example: quibusdam
                   nullable: false
               required:
                 - email
@@ -3744,17 +3744,17 @@ paths:
                 asset_type_id:
                   type: string
                   description: ''
-                  example: rem
+                  example: non
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: foapyktvmzqpxyzoxpzpvwhszqny
+                  example: uzfjprvvyzlsjnusczahijubzpmr
                   nullable: false
                 price:
                   type: number
                   description: validation.min.
-                  example: 42
+                  example: 66
                   nullable: false
               required:
                 - asset_type_id
@@ -3785,12 +3785,12 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: tglhxdpwldfpznohnqcuriombrqagwbnpgmdzccmvrtqdomfvpejnyqb
+                  example: jlsplhkvufqwpmmlnbzeqvgvzylccpsrbdkmepethpnkfamacfjtjatlfxobgvk
                   nullable: false
                 price:
                   type: number
                   description: ''
-                  example: 1.51358
+                  example: 568036.618
                   nullable: false
       security: []
     delete:
@@ -3896,7 +3896,7 @@ paths:
         in: path
         name: applianceId
         description: ''
-        example: blanditiis
+        example: necessitatibus
         required: true
         schema:
           type: string
@@ -3940,7 +3940,7 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: aqglecvcadcnaykidbipkyvweyfrrkcvpcsuossxkuaeqyzyphgfpxucjxgg
+                  example: ounlvfcnqablohpgzdunflirqboopyudtyvqvcpbxxvbjeujacepakvnduhgszvbqdatrzubddcmqpilqxaycsdzms
                   nullable: false
               required:
                 - name
@@ -3964,7 +3964,7 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: awgyxzeeblfegwunedqiujjarjxumnlscrgmsglcpbwelfdjqgcjnxbbapyodmrfzawzudtmxapvtgox
+                  example: gwcniausdaacchdokabkza
                   nullable: false
       security: []
     delete:
@@ -3981,7 +3981,7 @@ paths:
         in: path
         name: asset_type_id
         description: 'The ID of the asset type.'
-        example: est
+        example: quam
         required: true
         schema:
           type: string
@@ -4000,7 +4000,7 @@ paths:
         in: path
         name: appliance_rate_id
         description: 'The ID of the appliance rate.'
-        example: itaque
+        example: sed
         required: true
         schema:
           type: string
@@ -4019,7 +4019,7 @@ paths:
         in: path
         name: appliance_person_id
         description: 'The ID of the appliance person.'
-        example: aut
+        example: facere
         required: true
         schema:
           type: string
@@ -4063,27 +4063,27 @@ paths:
                 name:
                   type: string
                   description: 'The name  of the cluster.'
-                  example: beatae
+                  example: eum
                   nullable: false
                 geo_type:
                   type: string
                   description: 'required. Describes if the polygon created manually or fetched from the internet.'
-                  example: voluptatem
+                  example: dolor
                   nullable: false
                 geo_data:
                   type: string
                   description: 'required. Coordinates or the external url  that contains a geojson.'
-                  example: ea
+                  example: quibusdam
                   nullable: false
                 manager_id:
                   type: integer
                   description: 'required. The id of the user who is responsible for the cluster.'
-                  example: 6
+                  example: 17
                   nullable: false
                 cities:
                   type: 'array[int]'
                   description: "required. The id's of the cities which belong to the cluster."
-                  example: nemo
+                  example: quas
                   nullable: false
               required:
                 - name
@@ -4429,7 +4429,7 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: fugiat
                   nullable: false
               required:
                 - name
@@ -4453,7 +4453,7 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: ut
+                  example: perferendis
                   nullable: false
               required:
                 - name
@@ -4564,7 +4564,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: laborum
+            value: officiis
   /api/maintenance:
     get:
       summary: ''
@@ -4606,22 +4606,22 @@ paths:
                 title:
                   type: string
                   description: ''
-                  example: debitis
+                  example: quaerat
                   nullable: false
                 name:
                   type: string
                   description: validation.min.
-                  example: mgvqoetaypgjluuvgnfykryuvhaiheeagdusgcazxthntaajbgc
+                  example: oqoisyrmhrelbtxwaohqctxvqpq
                   nullable: false
                 surname:
                   type: string
                   description: validation.min.
-                  example: yjwdlcdymbwaj
+                  example: qqttrwgkfpnkmbthfemghemhqrtslgjffgycknacplpxsozirrhdfteadekegwvfjvvlpietnlcmrzcngl
                   nullable: false
                 birth_date:
                   type: string
                   description: 'Must be a valid date in the format <code>"Y-m-d</code>.'
-                  example: '"2025-02-24'
+                  example: '"2025-02-25'
                   nullable: false
                 sex:
                   type: string
@@ -4634,7 +4634,7 @@ paths:
                 education:
                   type: string
                   description: validation.min.
-                  example: ppawtehyjlujyedjmfhqguvbfegkoynhdkdyqyvzluwfjqggwz
+                  example: jnvhgaopbxefurpbqciacddkfzzsuzxklbeahmjuhrshilladhmbfcqnqxdfnlavbioqrloxqaksslojofyybtaupq
                   nullable: false
                 city_id:
                   type: string
@@ -4644,17 +4644,17 @@ paths:
                 street:
                   type: string
                   description: validation.min.
-                  example: yfqbagiuaoghyixlasslikryzlimpyxicdhpnmbtukvfcpcgcschyafhjhpjbtfmfka
+                  example: wlskpzqdxldghvmdqyxbnbclawptcipoibfajwbbdgfdscnporsqxpffzhoabathzkivzt
                   nullable: false
                 email:
                   type: string
                   description: validation.email.
-                  example: bins.marquis@example.org
+                  example: gleason.effie@example.net
                   nullable: false
                 phone:
                   type: number
                   description: 'Must match the regex (^\+). validation.min.'
-                  example: 67
+                  example: 37
                   nullable: false
                 nationality:
                   type: string
@@ -4706,37 +4706,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: ipsum
                   nullable: false
                 phone:
                   type: string
                   description: ''
-                  example: harum
+                  example: ut
                   nullable: false
                 email:
                   type: string
                   description: validation.email.
-                  example: kassulke.kiara@example.org
+                  example: hubert.kessler@example.com
                   nullable: false
                 contact_person:
                   type: string
                   description: validation.min.
-                  example: ogitnxfvdjabfzuuoneykidzyevbfwpoiyvnqvsvyeuvbdwwrmkauobjfmxsipanlcjb
+                  example: ueecbzqylqdbbjvigfsnbatcsylmqrsokvijlvksknazdrzyhbfcuyq
                   nullable: false
                 website:
                   type: string
                   description: validation.min.
-                  example: uufvwaotwklemybkctejqcjjurrsbvtxtlbpidkbhvowcbjbyckqoikydnanfngcrkxrpfqfrabuunwjevde
+                  example: abioxtdoscdndfbmimuyvjivywikmcnzhibigvxxvfzsisokcyoivoyoeycdxsi
                   nullable: false
                 city_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 3
                   nullable: false
                 address:
                   type: string
                   description: ''
-                  example: minus
+                  example: ipsam
                   nullable: false
                 api_name:
                   type: string
@@ -4817,17 +4817,17 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: kfhvrghjpiscxrwoizavcsjbuabyhwcs
+                  example: onrxyqbhtfpkbpjiuofekewxurbfzbzysrbiqekbqjhqdnshitwiyfweracnznpjmsjyequjgjpznducnhiueb
                   nullable: false
                 cluster_id:
                   type: string
                   description: ''
-                  example: et
+                  example: sed
                   nullable: false
                 geo_data:
                   type: string
                   description: ''
-                  example: reiciendis
+                  example: sit
                   nullable: false
               required:
                 - name
@@ -4865,7 +4865,7 @@ paths:
                 id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 5
                   nullable: false
               required:
                 - id
@@ -5179,7 +5179,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: officiis
+                  example: placeat
                   nullable: false
               required:
                 - city_id
@@ -5202,7 +5202,7 @@ paths:
                 city_id:
                   type: string
                   description: ''
-                  example: magnam
+                  example: qui
                   nullable: false
               required:
                 - city_id
@@ -5212,7 +5212,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: voluptatem
+        example: ex
         required: true
         schema:
           type: string
@@ -5265,7 +5265,7 @@ paths:
         in: path
         name: key
         description: 'The key.'
-        example: vel
+        example: autem
         required: true
         schema:
           type: string
@@ -5284,7 +5284,7 @@ paths:
         in: path
         name: mapSettings
         description: ''
-        example: saepe
+        example: consequatur
         required: true
         schema:
           type: string
@@ -5325,7 +5325,7 @@ paths:
         in: path
         name: ticketSettings
         description: ''
-        example: quod
+        example: a
         required: true
         schema:
           type: string
@@ -5410,27 +5410,27 @@ paths:
                 mail_host:
                   type: string
                   description: validation.min.
-                  example: znpeiebizeuieoizmrdzcadczberjrqqjefpjzsbfgazuinuiyymmertvutpordvhjebosgmpqadvxmaoxhbipvbe
+                  example: jrzlhqeqytswuosl
                   nullable: false
                 mail_port:
                   type: number
                   description: ''
-                  example: 61788811.3
+                  example: 192616.75932
                   nullable: false
                 mail_encryption:
                   type: string
                   description: validation.min.
-                  example: oqnjlkndlxdwfdqmnaammoqeufxnqjoqjknyztcleuaa
+                  example: flzdvmcrnsbqeknmysfoyyisjofoqjjfpcioaljflaoctgzxwecxriholmoccsafwjdgkktpbfjqghazspwmnl
                   nullable: false
                 mail_username:
                   type: string
                   description: 'validation.email validation.min.'
-                  example: vvtexhxngcmdvxrtaqweuyrfftapbbqikjmbypfsr
+                  example: pyuaemplrajxifq
                   nullable: false
                 mail_password:
                   type: string
                   description: validation.min.
-                  example: wtnenayuifqdsxuystfbgdxmijlxvkildytiynybsangtzypndtw
+                  example: hyqaritntdepwgjlgbiqzpi
                   nullable: false
               required:
                 - mail_host
@@ -5458,27 +5458,27 @@ paths:
                 mail_host:
                   type: string
                   description: validation.min.
-                  example: lkrknhdkjgqyaslafhfztzpjgnnor
+                  example: dxjrwshsszhowxdgdqscmuhcfgbyqdvfwvcxy
                   nullable: false
                 mail_port:
                   type: number
                   description: ''
-                  example: 2425574.6193502
+                  example: 2.34682298
                   nullable: false
                 mail_encryption:
                   type: string
                   description: validation.min.
-                  example: mqobvrkswxlbwzbmdteaglxyfntentybitvfovljfxakdkftxaqexibmeyssyktedywcjvplwspmjwcbmrlqgkxebh
+                  example: gmhihdtn
                   nullable: false
                 mail_username:
                   type: string
                   description: 'validation.email validation.min.'
-                  example: asevrydmfijtseoxgsg
+                  example: rhayomyidhpwzqypqg
                   nullable: false
                 mail_password:
                   type: string
                   description: validation.min.
-                  example: bofflkhjfwyfzhcl
+                  example: pyjrtllhkdjkq
                   nullable: false
               required:
                 - mail_host
@@ -5652,17 +5652,17 @@ paths:
                 appliance_type_id:
                   type: string
                   description: ''
-                  example: illum
+                  example: aut
                   nullable: false
                 overdue_remind_rate:
                   type: string
                   description: ''
-                  example: laudantium
+                  example: ut
                   nullable: false
                 remind_rate:
                   type: string
                   description: ''
-                  example: dolor
+                  example: dolorum
                   nullable: false
               required:
                 - appliance_type_id
@@ -5684,7 +5684,7 @@ paths:
         in: path
         name: smsApplianceRemindRate_id
         description: 'The ID of the smsApplianceRemindRate.'
-        example: 1
+        example: 2
         required: true
         schema:
           type: integer
@@ -5728,7 +5728,7 @@ paths:
                 token:
                   type: string
                   description: ''
-                  example: omnis
+                  example: vero
                   nullable: false
               required:
                 - token
@@ -5752,7 +5752,7 @@ paths:
                 token:
                   type: string
                   description: ''
-                  example: ut
+                  example: non
                   nullable: false
               required:
                 - token
@@ -5846,7 +5846,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the report downloading.'
-        example: aut
+        example: magni
         required: true
         schema:
           type: string
@@ -5854,7 +5854,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the download.'
-        example: iure
+        example: eum
         required: true
         schema:
           type: string
@@ -5883,7 +5883,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the trend.'
-        example: id
+        example: corrupti
         required: true
         schema:
           type: string
@@ -5914,7 +5914,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the ticket.'
-        example: molestias
+        example: numquam
         required: true
         schema:
           type: string
@@ -5976,7 +5976,7 @@ paths:
         in: path
         name: number
         description: ''
-        example: autem
+        example: quia
         required: true
         schema:
           type: string
@@ -6020,12 +6020,12 @@ paths:
                 sender:
                   type: string
                   description: ''
-                  example: et
+                  example: in
                   nullable: false
                 message:
                   type: string
                   description: ''
-                  example: dolor
+                  example: debitis
                   nullable: false
               required:
                 - sender
@@ -6058,7 +6058,7 @@ paths:
         in: path
         name: search
         description: 'The search.'
-        example: quibusdam
+        example: ut
         required: true
         schema:
           type: string
@@ -6081,7 +6081,7 @@ paths:
                 message:
                   type: string
                   description: ''
-                  example: omnis
+                  example: ex
                   nullable: false
                 person_id:
                   type: string
@@ -6128,7 +6128,7 @@ paths:
         in: path
         name: uuid
         description: ''
-        example: 37d4ac8f-163d-3448-b9ac-9d6c2f7f81a7
+        example: c613874e-666c-3046-a2db-67350ac93b56
         required: true
         schema:
           type: string
@@ -6136,7 +6136,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the delivered.'
-        example: omnis
+        example: animi
         required: true
         schema:
           type: string
@@ -6167,7 +6167,7 @@ paths:
         in: path
         name: uuid
         description: ''
-        example: b19e37cd-5f6b-3659-bd8f-cc4829c10c68
+        example: 5dbcf640-5437-3a9a-884b-3b02d932c02e
         required: true
         schema:
           type: string
@@ -6175,7 +6175,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the sent.'
-        example: eos
+        example: et
         required: true
         schema:
           type: string
@@ -6215,7 +6215,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: sed
+            value: et
   /api/sub-connection-types:
     post:
       summary: 'Show the form for creating a new resource.'
@@ -6235,17 +6235,17 @@ paths:
                 name:
                   type: string
                   description: validation.min.
-                  example: oefwqrvhruwisarfrvbnoltnpyedzoftxzbui
+                  example: muauqmmvytvykluclryohbwhhkdxcjqpchmmqjwxvqayjcqajblvoqitalunbyvcgjdonkcmxpqsqbxgtvvmemvax
                   nullable: false
                 connection_type_id:
                   type: number
                   description: ''
-                  example: 9.8
+                  example: 0.0
                   nullable: false
                 tariff_id:
                   type: number
                   description: ''
-                  example: 2.26811
+                  example: 3.516254
                   nullable: false
               required:
                 - name
@@ -6311,22 +6311,22 @@ paths:
                 data:
                   type: string
                   description: ''
-                  example: ratione
+                  example: numquam
                   nullable: false
                 period:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: inventore
                   nullable: false
                 targetForType:
                   type: string
                   description: ''
-                  example: non
+                  example: mollitia
                   nullable: false
                 targetForId:
                   type: number
                   description: validation.min.
-                  example: 56
+                  example: 59
                   nullable: false
               required:
                 - data
@@ -6603,37 +6603,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: ducimus
+                  example: asperiores
                   nullable: false
                 price:
                   type: integer
                   description: required.
-                  example: 8
+                  example: 12
                   nullable: false
                 currency:
                   type: string
                   description: ''
-                  example: ullam
+                  example: ex
                   nullable: false
                 factor:
                   type: int.
                   description: 'The factor between two different sub tariffs. Like day/night sub-tariffs.'
-                  example: nemo
+                  example: accusamus
                   nullable: false
                 access_rate_period:
                   type: integer
                   description: validation.min.
-                  example: 35
+                  example: 59
                   nullable: false
                 access_rate_amount:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 16
                   nullable: false
                 social_tariff:
                   type: string
                   description: ''
-                  example: quidem
+                  example: iure
                   nullable: false
                 components:
                   type: object
@@ -6650,7 +6650,7 @@ paths:
                 minimum_purchase_amount:
                   type: number
                   description: ''
-                  example: 18.34
+                  example: 19711209.578
                   nullable: false
               required:
                 - name
@@ -6730,37 +6730,37 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: et
+                  example: quia
                   nullable: false
                 price:
                   type: number
                   description: ''
-                  example: 25770352.0
+                  example: 78.7184871
                   nullable: false
                 currency:
                   type: string
                   description: validation.max.
-                  example: lgnapacgidjgyqs
+                  example: blyekrhi
                   nullable: false
                 factor:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 15
                   nullable: false
                 access_rate_period:
                   type: integer
                   description: validation.min.
-                  example: 90
+                  example: 31
                   nullable: false
                 access_rate_amount:
                   type: integer
                   description: ''
-                  example: 19
+                  example: 2
                   nullable: false
                 social_tariff:
                   type: string
                   description: ''
-                  example: tenetur
+                  example: enim
                   nullable: false
                 components:
                   type: object
@@ -6777,7 +6777,7 @@ paths:
                 minimum_purchase_amount:
                   type: number
                   description: ''
-                  example: 72.41001
+                  example: 56.0
                   nullable: false
               required:
                 - name
@@ -6801,7 +6801,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: cum
+        example: eos
         required: true
         schema:
           type: string
@@ -6809,7 +6809,7 @@ paths:
         in: path
         name: id
         description: ''
-        example: 1
+        example: 8
         required: true
         schema:
           type: integer
@@ -6840,7 +6840,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: est
+        example: sed
         required: true
         schema:
           type: string
@@ -6859,7 +6859,7 @@ paths:
         in: path
         name: meterTariffId
         description: ''
-        example: id
+        example: nisi
         required: true
         schema:
           type: string
@@ -6867,7 +6867,7 @@ paths:
         in: path
         name: changeId
         description: ''
-        example: et
+        example: quo
         required: true
         schema:
           type: string
@@ -6894,7 +6894,7 @@ paths:
         in: path
         name: tariffId
         description: ''
-        example: dignissimos
+        example: et
         required: true
         schema:
           type: string
@@ -6943,7 +6943,7 @@ paths:
         in: path
         name: timeOfUsageId
         description: ''
-        example: 12
+        example: 8
         required: true
         schema:
           type: integer
@@ -6989,8 +6989,8 @@ paths:
                       usage_type: mini-grid
                       name: SparkMeter
                       description: 'This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Spark Meter'
                       installation_command: 'spark-meter:install'
                       root_class: SparkMeter
@@ -6999,8 +6999,8 @@ paths:
                       usage_type: mini-grid
                       name: SteamaMeter
                       description: 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Steamaco Meter'
                       installation_command: 'steama-meter:install'
                       root_class: SteamaMeter
@@ -7009,8 +7009,8 @@ paths:
                       usage_type: mini-grid
                       name: CalinMeter
                       description: 'This plugin integrates Calin meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Calin Meter'
                       installation_command: 'calin-meter:install'
                       root_class: CalinMeter
@@ -7019,8 +7019,8 @@ paths:
                       usage_type: mini-grid
                       name: CalinSmartMeter
                       description: 'This plugin integrates Calin meters to Micropowermanager. It uses company_name, user_name, password and password_vend for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'CalinSmart Meter'
                       installation_command: 'calin-smart-meter:install'
                       root_class: CalinSmartMeter
@@ -7029,8 +7029,8 @@ paths:
                       usage_type: mini-grid
                       name: KelinMeter
                       description: 'This plugin integrates Kelim meters to Micropowermanager. It uses username & password for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Kelin Meter'
                       installation_command: 'kelin-meter:install'
                       root_class: KelinMeter
@@ -7039,8 +7039,8 @@ paths:
                       usage_type: mini-grid
                       name: StronMeter
                       description: 'This plugin integrates Stron meters to Micropowermanager. It uses the api login credentials for authentication.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Stron Meter'
                       installation_command: 'stron-meter:installl'
                       root_class: StronMeter
@@ -7049,8 +7049,8 @@ paths:
                       usage_type: general
                       name: SwiftaPayment
                       description: 'This plugin developed for getting Swifta payments into MicroPowerManager.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: null
                       installation_command: 'swifta-payment-provider:install'
                       root_class: SwiftaPaymentProvider
@@ -7059,8 +7059,8 @@ paths:
                       usage_type: general
                       name: MesombPayment
                       description: 'This plugin developed for getting MeSomb payments into MicroPowerManager.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: null
                       installation_command: 'mesomb-payment-provider:install'
                       root_class: MesombPaymentProvider
@@ -7069,8 +7069,8 @@ paths:
                       usage_type: general
                       name: BulkRegistration
                       description: "This plugin provides bulk registration of the company's existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins."
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: null
                       installation_command: 'bulk-registration:install'
                       root_class: BulkRegistration
@@ -7079,8 +7079,8 @@ paths:
                       usage_type: general
                       name: ViberMessaging
                       description: 'This plugin developed for the communication with customers throughout Viber messages.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Viber Messaging'
                       installation_command: 'viber-messaging:install'
                       root_class: ViberMessaging
@@ -7089,8 +7089,8 @@ paths:
                       usage_type: general
                       name: WaveMoneyPayment
                       description: 'This plugin developed for getting WaveMoney payments into MicroPowerManager.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: WaveMoney
                       installation_command: 'wave-money-payment-provider:install'
                       root_class: WaveMoneyPaymentProvider
@@ -7099,8 +7099,8 @@ paths:
                       usage_type: mini-grid
                       name: MicroStarMeter
                       description: 'This plugin integrates MicroStar meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'MicroStar Meter'
                       installation_command: 'micro-star-meter:install'
                       root_class: MicroStarMeter
@@ -7109,8 +7109,8 @@ paths:
                       usage_type: shs
                       name: SunKingSHS
                       description: 'This plugin integrates SunKing solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'SunKing SHS'
                       installation_command: 'sun-king-shs:install'
                       root_class: SunKingSHS
@@ -7119,8 +7119,8 @@ paths:
                       usage_type: mini-grid
                       name: GomeLongMeter
                       description: 'This plugin integrates GomeLong meters to Micropowermanager. It uses. user_id & user_password for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'GomeLong Meter'
                       installation_command: 'gome-long-meter:install'
                       root_class: GomeLongMeter
@@ -7129,8 +7129,8 @@ paths:
                       usage_type: general
                       name: WavecomPayment
                       description: 'This plugin developed for getting Wavecom(Senegal) payments into MicroPowerManager.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: null
                       installation_command: 'wavecom-payment-provider:install'
                       root_class: WavecomPaymentProvider
@@ -7139,8 +7139,8 @@ paths:
                       usage_type: e-bike
                       name: DalyBms
                       description: 'This plugin developed for managing e-bikes with daly bms.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Daly Bms'
                       installation_command: 'daly-bms:install'
                       root_class: DalyBms
@@ -7149,8 +7149,8 @@ paths:
                       usage_type: shs
                       name: AngazaSHS
                       description: 'This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Angaza SHS'
                       installation_command: 'angaza-shs:install'
                       root_class: AngazaSHS
@@ -7159,8 +7159,8 @@ paths:
                       usage_type: general
                       name: AfricasTalking
                       description: 'This plugin developed for the communication with customers throughout Africas Talking.'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                       tail_tag: 'Africas Talking'
                       installation_command: 'africas-talking:install'
                       root_class: AfricasTalking
@@ -7173,8 +7173,8 @@ paths:
                         usage_type: mini-grid
                         name: SparkMeter
                         description: 'This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Spark Meter'
                         installation_command: 'spark-meter:install'
                         root_class: SparkMeter
@@ -7183,8 +7183,8 @@ paths:
                         usage_type: mini-grid
                         name: SteamaMeter
                         description: 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Steamaco Meter'
                         installation_command: 'steama-meter:install'
                         root_class: SteamaMeter
@@ -7193,8 +7193,8 @@ paths:
                         usage_type: mini-grid
                         name: CalinMeter
                         description: 'This plugin integrates Calin meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Calin Meter'
                         installation_command: 'calin-meter:install'
                         root_class: CalinMeter
@@ -7203,8 +7203,8 @@ paths:
                         usage_type: mini-grid
                         name: CalinSmartMeter
                         description: 'This plugin integrates Calin meters to Micropowermanager. It uses company_name, user_name, password and password_vend for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'CalinSmart Meter'
                         installation_command: 'calin-smart-meter:install'
                         root_class: CalinSmartMeter
@@ -7213,8 +7213,8 @@ paths:
                         usage_type: mini-grid
                         name: KelinMeter
                         description: 'This plugin integrates Kelim meters to Micropowermanager. It uses username & password for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Kelin Meter'
                         installation_command: 'kelin-meter:install'
                         root_class: KelinMeter
@@ -7223,8 +7223,8 @@ paths:
                         usage_type: mini-grid
                         name: StronMeter
                         description: 'This plugin integrates Stron meters to Micropowermanager. It uses the api login credentials for authentication.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Stron Meter'
                         installation_command: 'stron-meter:installl'
                         root_class: StronMeter
@@ -7233,8 +7233,8 @@ paths:
                         usage_type: general
                         name: SwiftaPayment
                         description: 'This plugin developed for getting Swifta payments into MicroPowerManager.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: null
                         installation_command: 'swifta-payment-provider:install'
                         root_class: SwiftaPaymentProvider
@@ -7243,8 +7243,8 @@ paths:
                         usage_type: general
                         name: MesombPayment
                         description: 'This plugin developed for getting MeSomb payments into MicroPowerManager.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: null
                         installation_command: 'mesomb-payment-provider:install'
                         root_class: MesombPaymentProvider
@@ -7253,8 +7253,8 @@ paths:
                         usage_type: general
                         name: BulkRegistration
                         description: "This plugin provides bulk registration of the company's existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins."
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: null
                         installation_command: 'bulk-registration:install'
                         root_class: BulkRegistration
@@ -7263,8 +7263,8 @@ paths:
                         usage_type: general
                         name: ViberMessaging
                         description: 'This plugin developed for the communication with customers throughout Viber messages.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Viber Messaging'
                         installation_command: 'viber-messaging:install'
                         root_class: ViberMessaging
@@ -7273,8 +7273,8 @@ paths:
                         usage_type: general
                         name: WaveMoneyPayment
                         description: 'This plugin developed for getting WaveMoney payments into MicroPowerManager.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: WaveMoney
                         installation_command: 'wave-money-payment-provider:install'
                         root_class: WaveMoneyPaymentProvider
@@ -7283,8 +7283,8 @@ paths:
                         usage_type: mini-grid
                         name: MicroStarMeter
                         description: 'This plugin integrates MicroStar meters to Micropowermanager. It uses user_id & api_key for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'MicroStar Meter'
                         installation_command: 'micro-star-meter:install'
                         root_class: MicroStarMeter
@@ -7293,8 +7293,8 @@ paths:
                         usage_type: shs
                         name: SunKingSHS
                         description: 'This plugin integrates SunKing solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'SunKing SHS'
                         installation_command: 'sun-king-shs:install'
                         root_class: SunKingSHS
@@ -7303,8 +7303,8 @@ paths:
                         usage_type: mini-grid
                         name: GomeLongMeter
                         description: 'This plugin integrates GomeLong meters to Micropowermanager. It uses. user_id & user_password for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'GomeLong Meter'
                         installation_command: 'gome-long-meter:install'
                         root_class: GomeLongMeter
@@ -7313,8 +7313,8 @@ paths:
                         usage_type: general
                         name: WavecomPayment
                         description: 'This plugin developed for getting Wavecom(Senegal) payments into MicroPowerManager.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: null
                         installation_command: 'wavecom-payment-provider:install'
                         root_class: WavecomPaymentProvider
@@ -7323,8 +7323,8 @@ paths:
                         usage_type: e-bike
                         name: DalyBms
                         description: 'This plugin developed for managing e-bikes with daly bms.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Daly Bms'
                         installation_command: 'daly-bms:install'
                         root_class: DalyBms
@@ -7333,8 +7333,8 @@ paths:
                         usage_type: shs
                         name: AngazaSHS
                         description: 'This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Angaza SHS'
                         installation_command: 'angaza-shs:install'
                         root_class: AngazaSHS
@@ -7343,8 +7343,8 @@ paths:
                         usage_type: general
                         name: AfricasTalking
                         description: 'This plugin developed for the communication with customers throughout Africas Talking.'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                         tail_tag: 'Africas Talking'
                         installation_command: 'africas-talking:install'
                         root_class: AfricasTalking
@@ -7365,10 +7365,10 @@ paths:
                           example: 'This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site'
                         created_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:14.000000Z'
                         updated_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:15.000000Z'
                         tail_tag:
                           type: string
                           example: 'Spark Meter'
@@ -7459,7 +7459,7 @@ paths:
         in: path
         name: mpmPluginId
         description: ''
-        example: voluptatem
+        example: nostrum
         required: true
         schema:
           type: string
@@ -7513,158 +7513,158 @@ paths:
                     -
                       id: 1
                       name: /locations/add-cluster
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 2
                       name: /locations/add-mini-grid
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 3
                       name: /locations/add-village
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 4
                       name: /settings
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 5
                       name: /connection-groups
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 6
                       name: /connection-types
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 7
                       name: /profile/management
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 8
                       name: /commissions
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 9
                       name: /tariffs
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 10
                       name: /targets
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 11
                       name: /swifta-payment/swifta-payment-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 12
                       name: /bulk-registration/bulk-registration
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 13
                       name: /wave-money/wave-money-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 14
                       name: /sun-king-meters/sun-king-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 15
                       name: /kelin-meters/kelin-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 16
                       name: /kelin-meters/kelin-setting
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 17
                       name: /spark-meters/sm-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 18
                       name: /spark-meters/sm-site
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 19
                       name: /spark-meters/sm-tariff
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 20
                       name: /spark-meters/sm-sales-account
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 21
                       name: /spark-meters/sm-setting
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 22
                       name: /steama-meters/steama-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 23
                       name: /steama-meters/steama-site
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 24
                       name: /steama-meters/steama-setting
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 25
                       name: /stron-meters/stron-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 26
                       name: /viber-messaging/viber-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 27
                       name: /calin-meters/calin-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 28
                       name: /calin-smart-meters/calin-smart-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 29
                       name: /micro-star-meters/micro-star-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 30
                       name: /gome-long-meters/gome-long-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:14.000000Z'
+                      updated_at: '2025-02-25T14:38:14.000000Z'
                     -
                       id: 31
                       name: /africas-talking/africas-talking-overview
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                 properties:
                   data:
                     type: array
@@ -7672,158 +7672,158 @@ paths:
                       -
                         id: 1
                         name: /locations/add-cluster
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 2
                         name: /locations/add-mini-grid
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 3
                         name: /locations/add-village
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 4
                         name: /settings
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 5
                         name: /connection-groups
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 6
                         name: /connection-types
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 7
                         name: /profile/management
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 8
                         name: /commissions
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 9
                         name: /tariffs
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 10
                         name: /targets
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 11
                         name: /swifta-payment/swifta-payment-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 12
                         name: /bulk-registration/bulk-registration
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 13
                         name: /wave-money/wave-money-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 14
                         name: /sun-king-meters/sun-king-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 15
                         name: /kelin-meters/kelin-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 16
                         name: /kelin-meters/kelin-setting
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 17
                         name: /spark-meters/sm-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 18
                         name: /spark-meters/sm-site
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 19
                         name: /spark-meters/sm-tariff
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 20
                         name: /spark-meters/sm-sales-account
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 21
                         name: /spark-meters/sm-setting
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 22
                         name: /steama-meters/steama-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 23
                         name: /steama-meters/steama-site
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 24
                         name: /steama-meters/steama-setting
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 25
                         name: /stron-meters/stron-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 26
                         name: /viber-messaging/viber-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 27
                         name: /calin-meters/calin-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 28
                         name: /calin-smart-meters/calin-smart-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 29
                         name: /micro-star-meters/micro-star-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 30
                         name: /gome-long-meters/gome-long-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:14.000000Z'
+                        updated_at: '2025-02-25T14:38:14.000000Z'
                       -
                         id: 31
                         name: /africas-talking/africas-talking-overview
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                     items:
                       type: object
                       properties:
@@ -7835,10 +7835,10 @@ paths:
                           example: /locations/add-cluster
                         created_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:14.000000Z'
                         updated_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:14.000000Z'
       tags:
         - Endpoints
       security: []
@@ -7861,27 +7861,27 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: et
+                  example: non
                   nullable: false
                 address:
                   type: string
                   description: ''
-                  example: debitis
+                  example: nulla
                   nullable: false
                 phone:
                   type: string
                   description: ''
-                  example: ut
+                  example: veniam
                   nullable: false
                 email:
                   type: string
                   description: ''
-                  example: est
+                  example: et
                   nullable: false
                 protected_page_password:
                   type: string
                   description: ''
-                  example: omnis
+                  example: reiciendis
                   nullable: false
               required:
                 - name
@@ -7940,27 +7940,27 @@ paths:
                 id:
                   type: number
                   description: ''
-                  example: 9007271.89
+                  example: 0.92289
                   nullable: false
                 person_id:
                   type: number
                   description: ''
-                  example: 575664.9
+                  example: 0.4
                   nullable: false
                 device_type:
                   type: string
                   description: ''
-                  example: quam
+                  example: praesentium
                   nullable: false
                 device_serial:
                   type: string
                   description: ''
-                  example: molestias
+                  example: nihil
                   nullable: false
                 device_id:
                   type: number
                   description: ''
-                  example: 57.234681836
+                  example: 628255.58105
                   nullable: false
               required:
                 - id
@@ -8037,7 +8037,7 @@ paths:
         in: path
         name: meterSerial
         description: ''
-        example: facilis
+        example: saepe
         required: true
         schema:
           type: string
@@ -8045,7 +8045,7 @@ paths:
         in: path
         name: amount
         description: ''
-        example: ex
+        example: ab
         required: true
         schema:
           type: string
@@ -8089,17 +8089,17 @@ paths:
                 serial_number:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: ricveaiaeu
+                  example: as
                   nullable: false
                 manufacturer_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.manufacturers table.'
-                  example: illo
+                  example: corrupti
                   nullable: false
                 asset_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.assets table.'
-                  example: ad
+                  example: laborum
                   nullable: false
               required:
                 - serial_number
@@ -8168,17 +8168,17 @@ paths:
                 serial_number:
                   type: string
                   description: 'validation.min validation.max.'
-                  example: lwgwnvqfh
+                  example: f
                   nullable: false
                 manufacturer_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.manufacturers table.'
-                  example: non
+                  example: hic
                   nullable: false
                 asset_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the tenant.assets table.'
-                  example: itaque
+                  example: dolore
                   nullable: false
               required:
                 - serial_number
@@ -8234,7 +8234,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: 7
+        example: 6
         required: true
         schema:
           type: integer
@@ -8275,7 +8275,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the transaction.'
-        example: numquam
+        example: dicta
         required: true
         schema:
           type: string
@@ -8306,7 +8306,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the debt.'
-        example: repudiandae
+        example: qui
         required: true
         schema:
           type: string
@@ -8329,44 +8329,44 @@ paths:
                       id: 1
                       name: Mini-Grid
                       value: mini-grid
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 2
                       name: 'Solar Home System'
                       value: shs
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 3
                       name: 'EBike Rental'
                       value: e-bike
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 4
                       name: 'Mini-Grid & Solar Home System'
                       value: 'mini-grid&shs'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 5
                       name: 'Mini-Grid & EBike Rental'
                       value: 'mini-grid&e-bike'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 6
                       name: 'Solar Home & EBike Rental'
                       value: 'shs&e-bike'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                     -
                       id: 7
                       name: 'Mini-Grid & Solar Home System & EBike Rental'
                       value: 'mini-grid&shs&e-bike'
-                      created_at: '2025-02-12T15:21:27.000000Z'
-                      updated_at: '2025-02-12T15:21:27.000000Z'
+                      created_at: '2025-02-25T14:38:15.000000Z'
+                      updated_at: '2025-02-25T14:38:15.000000Z'
                 properties:
                   data:
                     type: array
@@ -8375,44 +8375,44 @@ paths:
                         id: 1
                         name: Mini-Grid
                         value: mini-grid
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 2
                         name: 'Solar Home System'
                         value: shs
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 3
                         name: 'EBike Rental'
                         value: e-bike
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 4
                         name: 'Mini-Grid & Solar Home System'
                         value: 'mini-grid&shs'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 5
                         name: 'Mini-Grid & EBike Rental'
                         value: 'mini-grid&e-bike'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 6
                         name: 'Solar Home & EBike Rental'
                         value: 'shs&e-bike'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                       -
                         id: 7
                         name: 'Mini-Grid & Solar Home System & EBike Rental'
                         value: 'mini-grid&shs&e-bike'
-                        created_at: '2025-02-12T15:21:27.000000Z'
-                        updated_at: '2025-02-12T15:21:27.000000Z'
+                        created_at: '2025-02-25T14:38:15.000000Z'
+                        updated_at: '2025-02-25T14:38:15.000000Z'
                     items:
                       type: object
                       properties:
@@ -8427,10 +8427,10 @@ paths:
                           example: mini-grid
                         created_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:15.000000Z'
                         updated_at:
                           type: string
-                          example: '2025-02-12T15:21:27.000000Z'
+                          example: '2025-02-25T14:38:15.000000Z'
       tags:
         - Endpoints
       security: []
@@ -8474,17 +8474,17 @@ paths:
                 api_key:
                   type: string
                   description: ''
-                  example: quas
+                  example: facilis
                   nullable: false
                 username:
                   type: string
                   description: ''
-                  example: dolores
+                  example: sed
                   nullable: false
                 short_code:
                   type: string
                   description: ''
-                  example: quis
+                  example: sit
                   nullable: false
               required:
                 - api_key
@@ -8506,7 +8506,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: fuga
+        example: non
         required: true
         schema:
           type: string
@@ -8525,7 +8525,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: similique
+        example: molestias
         required: true
         schema:
           type: string
@@ -8636,12 +8636,12 @@ paths:
                 thundercloud_url:
                   type: string
                   description: ''
-                  example: odio
+                  example: aut
                   nullable: false
                 thundercloud_token:
                   type: string
                   description: ''
-                  example: quisquam
+                  example: consequuntur
                   nullable: false
               required:
                 - thundercloud_url
@@ -8652,7 +8652,7 @@ paths:
         in: path
         name: site_id
         description: 'The ID of the site.'
-        example: 5
+        example: 15
         required: true
         schema:
           type: integer
@@ -8718,12 +8718,12 @@ paths:
                 api_key:
                   type: string
                   description: ''
-                  example: praesentium
+                  example: ut
                   nullable: false
                 api_secret:
                   type: string
                   description: ''
-                  example: ut
+                  example: est
                   nullable: false
               required:
                 - api_key
@@ -8946,7 +8946,7 @@ paths:
                 low_balance_limit:
                   type: string
                   description: ''
-                  example: sunt
+                  example: corrupti
                   nullable: false
               required:
                 - low_balance_limit
@@ -8956,7 +8956,7 @@ paths:
         in: path
         name: customer_id
         description: 'The ID of the customer.'
-        example: 8
+        example: 12
         required: true
         schema:
           type: integer
@@ -9031,7 +9031,7 @@ paths:
         in: path
         name: tariffId
         description: ''
-        example: neque
+        example: pariatur
         required: true
         schema:
           type: string
@@ -9321,7 +9321,7 @@ paths:
         in: path
         name: smsFeedbackWord_id
         description: 'The ID of the smsFeedbackWord.'
-        example: 6
+        example: 7
         required: true
         schema:
           type: integer
@@ -9365,12 +9365,12 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: autem
+                  example: suscipit
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: et
+                  example: sed
                   nullable: false
               required:
                 - username
@@ -9593,17 +9593,17 @@ paths:
                 id:
                   type: string
                   description: ''
-                  example: voluptate
+                  example: vero
                   nullable: false
                 low_balance_warning:
                   type: string
                   description: ''
-                  example: sapiente
+                  example: dolor
                   nullable: false
                 energy_price:
                   type: string
                   description: ''
-                  example: non
+                  example: quidem
                   nullable: false
               required:
                 - id
@@ -9615,7 +9615,7 @@ paths:
         in: path
         name: customer
         description: ''
-        example: qui
+        example: consequatur
         required: true
         schema:
           type: string
@@ -9646,7 +9646,7 @@ paths:
         in: path
         name: customerId
         description: ''
-        example: odit
+        example: enim
         required: true
         schema:
           type: string
@@ -9875,7 +9875,7 @@ paths:
         in: path
         name: customer
         description: ''
-        example: aut
+        example: dolores
         required: true
         schema:
           type: string
@@ -10011,7 +10011,7 @@ paths:
         in: path
         name: smsFeedbackWord_id
         description: 'The ID of the smsFeedbackWord.'
-        example: 14
+        example: 4
         required: true
         schema:
           type: integer
@@ -10055,12 +10055,12 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: doloribus
+                  example: fugiat
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: qui
+                  example: optio
                   nullable: false
               required:
                 - username
@@ -10225,7 +10225,7 @@ paths:
         in: path
         name: meter_id
         description: 'The ID of the meter.'
-        example: 12
+        example: 18
         required: true
         schema:
           type: integer
@@ -10256,7 +10256,7 @@ paths:
         in: path
         name: meter_id
         description: 'The ID of the meter.'
-        example: 18
+        example: 3
         required: true
         schema:
           type: integer
@@ -10372,12 +10372,12 @@ paths:
                 user_id:
                   type: string
                   description: ''
-                  example: ut
+                  example: sit
                   nullable: false
                 api_key:
                   type: string
                   description: ''
-                  example: nobis
+                  example: magnam
                   nullable: false
               required:
                 - user_id
@@ -10423,17 +10423,17 @@ paths:
                 company_name:
                   type: string
                   description: ''
-                  example: excepturi
+                  example: eum
                   nullable: false
                 username:
                   type: string
                   description: ''
-                  example: ducimus
+                  example: autem
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: praesentium
+                  example: quo
                   nullable: false
               required:
                 - company_name
@@ -10480,22 +10480,22 @@ paths:
                 company_name:
                   type: string
                   description: ''
-                  example: sint
+                  example: ad
                   nullable: false
                 user_name:
                   type: string
                   description: ''
-                  example: et
+                  example: accusamus
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: maiores
+                  example: modi
                   nullable: false
                 password_vend:
                   type: string
                   description: ''
-                  example: doloremque
+                  example: aliquam
                   nullable: false
               required:
                 - company_name
@@ -10522,22 +10522,22 @@ paths:
                 meter_number:
                   type: string
                   description: ''
-                  example: reiciendis
+                  example: soluta
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: adipisci
+                  example: corrupti
                   nullable: false
                 cipher:
                   type: string
                   description: ''
-                  example: nihil
+                  example: tempore
                   nullable: false
                 timestamp:
                   type: string
                   description: ''
-                  example: dolores
+                  example: nihil
                   nullable: false
               required:
                 - meter_number
@@ -10564,27 +10564,27 @@ paths:
                 transaction_id:
                   type: string
                   description: ''
-                  example: ut
+                  example: harum
                   nullable: false
                 transaction_reference:
                   type: string
                   description: ''
-                  example: magni
+                  example: exercitationem
                   nullable: false
                 cipher:
                   type: string
                   description: ''
-                  example: adipisci
+                  example: commodi
                   nullable: false
                 amount:
                   type: string
                   description: ''
-                  example: ut
+                  example: ex
                   nullable: false
                 timestamp:
                   type: string
                   description: ''
-                  example: quia
+                  example: aliquam
                   nullable: false
               required:
                 - transaction_id
@@ -10644,7 +10644,7 @@ paths:
                 csv:
                   type: string
                   description: ''
-                  example: sequi
+                  example: qui
                   nullable: false
               required:
                 - csv
@@ -10689,7 +10689,7 @@ paths:
                 api_token:
                   type: string
                   description: ''
-                  example: voluptatum
+                  example: quae
                   nullable: false
               required:
                 - api_token
@@ -10709,7 +10709,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the webhook.'
-        example: non
+        example: saepe
         required: true
         schema:
           type: string
@@ -10753,12 +10753,12 @@ paths:
                 merchant_id:
                   type: string
                   description: ''
-                  example: atque
+                  example: nihil
                   nullable: false
                 secret_key:
                   type: string
                   description: ''
-                  example: dolor
+                  example: unde
                   nullable: false
               required:
                 - merchant_id
@@ -10783,12 +10783,12 @@ paths:
                 meterSerial:
                   type: string
                   description: ''
-                  example: deleniti
+                  example: consequatur
                   nullable: false
                 amount:
                   type: number
                   description: ''
-                  example: 5979666.8
+                  example: 34124.36289445
                   nullable: false
               required:
                 - meterSerial
@@ -10799,7 +10799,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the start.'
-        example: eius
+        example: vel
         required: true
         schema:
           type: string
@@ -10818,7 +10818,7 @@ paths:
         in: path
         name: slug
         description: 'The slug of the callback.'
-        example: totam
+        example: corrupti
         required: true
         schema:
           type: string
@@ -10862,12 +10862,12 @@ paths:
                 api_url:
                   type: string
                   description: ''
-                  example: enim
+                  example: dolore
                   nullable: false
                 certificate_password:
                   type: string
                   description: ''
-                  example: placeat
+                  example: sunt
                   nullable: false
               required:
                 - api_url
@@ -10913,7 +10913,7 @@ paths:
                 cert:
                   type: string
                   description: ''
-                  example: autem
+                  example: et
                   nullable: false
               required:
                 - cert
@@ -10980,12 +10980,12 @@ paths:
                 client_id:
                   type: string
                   description: ''
-                  example: rem
+                  example: nihil
                   nullable: false
                 client_secret:
                   type: string
                   description: ''
-                  example: iusto
+                  example: architecto
                   nullable: false
               required:
                 - client_id
@@ -11031,12 +11031,12 @@ paths:
                 user_id:
                   type: string
                   description: ''
-                  example: rerum
+                  example: aspernatur
                   nullable: false
                 user_password:
                   type: string
                   description: ''
-                  example: incidunt
+                  example: aut
                   nullable: false
               required:
                 - user_id
@@ -11061,7 +11061,7 @@ paths:
                 transaction_file:
                   type: string
                   description: ''
-                  example: dolore
+                  example: autem
                   nullable: false
               required:
                 - transaction_file
@@ -11106,12 +11106,12 @@ paths:
                 client_id:
                   type: string
                   description: ''
-                  example: tempore
+                  example: nemo
                   nullable: false
                 client_secret:
                   type: string
                   description: ''
-                  example: minus
+                  example: et
                   nullable: false
               required:
                 - client_id
@@ -11157,12 +11157,12 @@ paths:
                 user_name:
                   type: string
                   description: ''
-                  example: eum
+                  example: ut
                   nullable: false
                 password:
                   type: string
                   description: ''
-                  example: omnis
+                  example: in
                   nullable: false
               required:
                 - user_name
@@ -11285,17 +11285,17 @@ paths:
                 max_current:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 19
                   nullable: false
                 phase:
                   type: integer
                   description: ''
-                  example: 7
+                  example: 14
                   nullable: false
                 online:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 17
                   nullable: false
               required:
                 - max_current
@@ -11333,7 +11333,7 @@ paths:
                 id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 2
                   nullable: false
               required:
                 - id
@@ -11356,17 +11356,17 @@ paths:
                 max_current:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 14
                   nullable: false
                 phase:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 2
                   nullable: false
                 online:
                   type: integer
                   description: ''
-                  example: 13
+                  example: 17
                   nullable: false
               required:
                 - max_current
@@ -11378,7 +11378,7 @@ paths:
         in: path
         name: meterTypeId
         description: ''
-        example: fuga
+        example: quaerat
         required: true
         schema:
           type: string
@@ -11516,7 +11516,7 @@ paths:
                 serialNumber:
                   type: string
                   description: required.
-                  example: est
+                  example: laudantium
                   nullable: false
       security: []
     parameters:
@@ -11524,7 +11524,7 @@ paths:
         in: path
         name: serialNumber
         description: ''
-        example: sequi
+        example: voluptatibus
         required: true
         schema:
           type: string
@@ -11555,7 +11555,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: 3
+        example: 9
         required: true
         schema:
           type: integer
@@ -11572,7 +11572,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: neque
+            value: consequatur
   '/api/paymenthistories/{person_id}/period':
     get:
       summary: 'Payment Periods.'
@@ -11608,7 +11608,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: 9
+        example: 2
         required: true
         schema:
           type: integer
@@ -11662,12 +11662,12 @@ paths:
                 begin:
                   type: string
                   description: ''
-                  example: quos
+                  example: eligendi
                   nullable: false
                 end:
                   type: string
                   description: ''
-                  example: quod
+                  example: rem
                   nullable: false
       security: []
   '/api/paymenthistories/{personId}/payments/{period}/{limit}/{order}':
@@ -11705,7 +11705,7 @@ paths:
         in: path
         name: period
         description: ''
-        example: eum
+        example: corrupti
         required: true
         schema:
           type: string
@@ -11722,7 +11722,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 8
+            value: 4
       -
         in: path
         name: order
@@ -11736,12 +11736,12 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: voluptatem
+            value: id
       -
         in: path
         name: payerId
         description: ''
-        example: 16
+        example: 9
         required: true
         schema:
           type: integer
@@ -11995,7 +11995,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 17
+            value: 11
   '/api/people/{personId}/meters':
     get:
       summary: "Person with Meters & Tariff\nPerson details with his/her owned meter(s) and its assigned tariff"
@@ -12199,7 +12199,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: atque
+        example: rerum
         required: true
         schema:
           type: string
@@ -12207,7 +12207,7 @@ paths:
         in: path
         name: person
         description: 'The ID of the person'
-        example: ea
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -12404,7 +12404,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: hic
+        example: aut
         required: true
         schema:
           type: string
@@ -12412,7 +12412,7 @@ paths:
         in: path
         name: person
         description: 'The ID of the person'
-        example: sed
+        example: deserunt
         required: true
         schema:
           type: string
@@ -12739,7 +12739,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 8
+            value: 14
   /api/people/search:
     get:
       summary: "Search\nSearches in person list according to the search term."
@@ -13603,7 +13603,7 @@ paths:
         in: path
         name: personId
         description: ''
-        example: nihil
+        example: libero
         required: true
         schema:
           type: string
@@ -13812,13 +13812,13 @@ paths:
         in: path
         name: personId
         description: ''
-        example: porro
+        example: deserunt
         required: true
         schema:
           type: string
   /api/vodacom/transactions/validation:
     post:
-      summary: 'Validate Transaction'
+      summary: 'Validate Transaction.'
       operationId: validateTransaction
       description: "Validates a transaction before processing. Use this endpoint to verify if a transaction\ncan proceed based on the provided information. This is typically the first step in the payment flow."
       parameters: []
@@ -13916,7 +13916,7 @@ paths:
       security: []
   /api/vodacom/transactions/process:
     post:
-      summary: 'Process Transaction'
+      summary: 'Process Transaction.'
       operationId: processTransaction
       description: "Processes a previously validated transaction. This endpoint should be called after successful\nvalidation to initiate the payment process with Vodacom M-Pesa."
       parameters: []
@@ -13994,7 +13994,7 @@ paths:
       security: []
   /api/vodacom/transactions/enquiry:
     post:
-      summary: 'Check Transaction Status'
+      summary: 'Check Transaction Status.'
       operationId: checkTransactionStatus
       description: "Checks the current status of a transaction that has been submitted for processing.\nUse this to verify if a payment has been completed, is still pending, or has failed."
       parameters: []
