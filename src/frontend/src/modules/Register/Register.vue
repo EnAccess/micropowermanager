@@ -178,34 +178,34 @@
                 </h2>
               </div>
               <form data-vv-scope="Plugins">
-              <div class="md-layout-item md-size-50 md-small-size-100">
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has('Plugins.usage_type'),
-                  }"
-                >
-                  <label for="usage_type">Usage Type</label>
-                  <md-select
-                    name="usage_type"
-                    id="usage_type"
-                    v-model="companyForm.usage_type"
-                    required
-                    v-validate="'required'"
+                <div class="md-layout-item md-size-50 md-small-size-100">
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has('Plugins.usage_type'),
+                    }"
                   >
-                    <md-option disabled>Select Usage Types</md-option>
-                    <md-option
-                      v-for="ut in usageTypeListService.list"
-                      :key="ut.id"
-                      :value="ut.value"
+                    <label for="usage_type">Usage Type</label>
+                    <md-select
+                      name="usage_type"
+                      id="usage_type"
+                      v-model="companyForm.usage_type"
+                      required
+                      v-validate="'required'"
                     >
-                      {{ ut.name }}
-                    </md-option>
-                  </md-select>
-                  <span class="md-error">
-                    {{ errors.first("Plugins.usage_type") }}
-                  </span>
-                </md-field>
-              </div>
+                      <md-option disabled>Select Usage Types</md-option>
+                      <md-option
+                        v-for="ut in usageTypeListService.list"
+                        :key="ut.id"
+                        :value="ut.value"
+                      >
+                        {{ ut.name }}
+                      </md-option>
+                    </md-select>
+                    <span class="md-error">
+                      {{ errors.first("Plugins.usage_type") }}
+                    </span>
+                  </md-field>
+                </div>
               </form>
               <div class="md-layout md-gutter">
                 <div
