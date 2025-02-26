@@ -79,7 +79,8 @@
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
-      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src"
+      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
+      "Inensus\\VodacomMobileMoney\\": "packages/inensus/vodacom-mobile-money/src"
     }
   },
   "autoload-dev": {
