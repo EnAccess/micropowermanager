@@ -10,7 +10,7 @@ class MigrateTenantReset extends AbstractSharedCommand {
         $this->call('optimize:clear');
         $this->call('migrate:reset', [
             '--database' => 'tenant',
-            '--path' => '/database/migrations/micropowermanager',
+            '--path' => '/database/migrations/tenant',
         ]);
     }
 }

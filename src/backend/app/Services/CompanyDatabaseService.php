@@ -43,7 +43,7 @@ class CompanyDatabaseService implements IBaseService {
             function () {
                 Artisan::call('migrate', [
                     '--database' => 'tenant',
-                    '--path' => '/database/migrations/micropowermanager',
+                    '--path' => '/database/migrations/tenant',
                     '--force' => true,
                 ]);
             }

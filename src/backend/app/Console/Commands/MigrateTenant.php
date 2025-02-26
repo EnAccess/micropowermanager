@@ -11,7 +11,7 @@ class MigrateTenant extends AbstractSharedCommand {
 
         $options = [
             '--database' => 'tenant',
-            '--path' => '/database/migrations/micropowermanager',
+            '--path' => '/database/migrations/tenant',
         ];
 
         if ($this->option('force')) {
