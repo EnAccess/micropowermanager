@@ -18,14 +18,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-          env:
-            - name: MPM_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: mpm-configmap-frontend
-                  key: MPM_ENV
-            - name: MPM_BACKEND_URL
-              valueFrom:
-                secretKeyRef:
-                  name: mpm-secrets
-                  key: MPM_BACKEND_URL
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-frontend
+            - secretRef:
+                name: mpm-secret-frontend
