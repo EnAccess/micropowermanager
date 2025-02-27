@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Jobs\EnergyTransactionProcessor;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
@@ -65,7 +64,7 @@ class EnergyTransactionProcessorTest extends TestCase {
             'connection_group_id' => 1,
         ]);
 
-        MeterParameter::query()->first()->socialTariffPiggyBank()->create([
+        Meter::query()->first()->socialTariffPiggyBank()->create([
             'savings' => SocialTariff::query()->first()->initial_energy_budget,
             'social_tariff_id' => SocialTariff::query()->first()->id,
         ]);

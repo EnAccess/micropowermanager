@@ -123,6 +123,6 @@ class LoanDataContainer {
             throw new MeterIsNotInUse($serialNumber.' meter is not in use');
         }
 
-        return $meter->meterParameter->owner;
+        return $meter->device->person;
     }
 }
