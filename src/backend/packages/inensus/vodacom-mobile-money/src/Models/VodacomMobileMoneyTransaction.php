@@ -2,7 +2,6 @@
 
 namespace Inensus\VodacomMobileMoney\Models;
 
-
 use App\Models\Base\BaseModel;
 
 class VodacomMobileMoneyTransaction extends BaseModel {
