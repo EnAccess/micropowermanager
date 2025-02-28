@@ -1,4 +1,7 @@
-<template></template>
+<template>
+    <div>
+  </div>
+</template>
 <script>
 export default {
   name: "Component",
