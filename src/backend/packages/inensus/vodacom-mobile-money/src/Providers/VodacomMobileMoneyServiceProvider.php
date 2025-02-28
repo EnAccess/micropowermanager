@@ -6,9 +6,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Inensus\VodacomMobileMoney\Console\Commands\InstallPackage;
-use Inensus\VodacomMobileMoney\Providers\EventServiceProvider;
-use Inensus\VodacomMobileMoney\Providers\ObserverServiceProvider;
-use Inensus\VodacomMobileMoney\Providers\RouteServiceProvider;
 
 class VodacomMobileMoneyServiceProvider extends ServiceProvider {
     public function boot(Filesystem $filesystem) {

@@ -1,13 +1,11 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up()
-    {
-
+    public function up() {
         if (!Schema::hasTable('vodacom_mobile_money_transactions')) {
             Schema::create('vodacom_mobile_money_transactions', static function (Blueprint $table) {
                 $table->id();
@@ -20,8 +18,7 @@ return new class extends Migration {
         }
     }
 
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('vodacom_mobile_money_transactions');
     }
 };
