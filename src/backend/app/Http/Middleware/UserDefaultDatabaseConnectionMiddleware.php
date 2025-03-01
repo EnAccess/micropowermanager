@@ -38,7 +38,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             if ($request->expectsJson() || strpos($request->url(), '/api') !== false) {
                 return app(Handler::class)->render($request, $e);
             }
-            throw $e; // Let Laravel's Handler process it
+            throw $e;
         }
     }
 
