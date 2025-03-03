@@ -298,30 +298,33 @@ class Reports {
                 );
             }
             $sheet->setCellValue('K'.$sheetIndex, $balance);
-            $sheet->setCellValue(
-                'J'.$sheetIndex,
-                $transaction->meter()->first()->tariff()->first()->name.'-'.
-                $transaction->meter()->first()->connectionType()->first()->name
-            );
 
-            $connectionGroupName = $transaction
-                ->meter()->first()
-                ->connectionGroup()->first()->name;
-
-            $paymentHistories = $this->paymentHistory
-                ->selectRaw('id, sum(amount) as amount, payment_type ')
-                ->whereIn('transaction_id', explode(',', $transaction->transaction_ids))
-                ->groupBy('payment_type')
-                ->get();
-
-            if ($addPurchaseBreakDown) {
-                $this->purchaseBreakDown(
-                    $sheet,
-                    $paymentHistories,
-                    $sheetIndex,
-                    $connectionGroupName,
-                    $transaction->meter()->first()->tariff()->first()
+            if ($transaction->device->device->device_type === Meter::RELATION_NAME) {
+                $tariff = $transaction->device->device->tariff()->first();
+                $connectionType = $transaction->device->device->connectionType()->first();
+                $sheet->setCellValue(
+                    'J'.$sheetIndex,
+                    $tariff->name.'-'.
+                    $connectionType->name
                 );
+
+                $connectionGroupName = $transaction->device->device->connectionGroup()->first()->name;
+
+                $paymentHistories = $this->paymentHistory
+                    ->selectRaw('id, sum(amount) as amount, payment_type ')
+                    ->whereIn('transaction_id', explode(',', $transaction->transaction_ids))
+                    ->groupBy('payment_type')
+                    ->get();
+
+                if ($addPurchaseBreakDown) {
+                    $this->purchaseBreakDown(
+                        $sheet,
+                        $paymentHistories,
+                        $sheetIndex,
+                        $connectionGroupName,
+                        $tariff
+                    );
+                }
             }
         }
         $this->lastIndex = $sheetIndex;
