@@ -12,8 +12,7 @@
 | **Wavecom Payment**           | (Manual) Ready (MPM users must export transaction data, paste into template, and upload)            | N/A                                                                                                                     |
 | **Angaza Solar Home System**  | Requires **minor update** in `AngazaSHSApi.php` (Rename `chargeMeter` to `chargeDevice`) then ready | [API Docs](https://developers.angaza.com/docs/dev-portal-nexus/77a9ea5040a3b-retrieve-a-unit-s-payg-credit-information) |
 
-### **Needs Refactoring / Development**
-
+## Needs Refactoring / Development
 | Plugin                 | Current Status       | Integration Document URL                                    |
 | ---------------------- | -------------------- | ----------------------------------------------------------- |
 | **Spark Meter**        | Requires refactoring | [API Docs](https://api.sparkmeter.io/#intro)                |
@@ -22,8 +21,7 @@
 | **Mesomb Payment**     | Requires refactoring | [Login](https://business.mesomb.com/auth/login)             |
 | **Wave Money Payment** | Requires refactoring | [API Docs](https://partners.wavemoney.com.mm/documentation) |
 
-### **Broken / Deprecated**
-
+## Broken / Deprecated
 | Plugin              | Current Status                                      | Integration Document URL                                                                     |
 | ------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | **Kelin Meter**     | Broken (They do not provide API anymore)            | N/A                                                                                          |
