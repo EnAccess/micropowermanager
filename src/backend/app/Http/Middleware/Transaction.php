@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\PaymentProviderNotIdentified;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 

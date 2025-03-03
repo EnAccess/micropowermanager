@@ -106,19 +106,18 @@ class TransactionService {
             '*'
         )->find($smTransaction['external_id']);
 
-           
-                if ($transaction && $transaction->orginalAgent) {
-                    $transaction->orginalAgent->update([
-                        'status' => $status,
-                    ]);
-                } else {
-                    if ($transaction && $transaction->originalThirdParty) {
-                        $transaction->originalThirdParty->update([
-                            'status' => $status,
-                        ]);
-                    }
-                }
-            
+        if ($transaction && $transaction->orginalAgent) {
+            $transaction->orginalAgent->update([
+                'status' => $status,
+            ]);
+        } else {
+            if ($transaction && $transaction->originalThirdParty) {
+                $transaction->originalThirdParty->update([
+                    'status' => $status,
+                ]);
+            }
+        }
+
         $smTransaction->update([
             'status' => $smStatus,
         ]);

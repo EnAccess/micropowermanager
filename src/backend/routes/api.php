@@ -327,4 +327,3 @@ Route::group(['prefix' => 'export'], static function () {
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', 'UsageTypeController@index');
 });
-

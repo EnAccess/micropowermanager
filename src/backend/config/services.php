@@ -22,7 +22,7 @@ return [
     'pagination' => 25,
 
     'manufacturer_master_key' => '36dKhvjwE58!M2.A@L', // the key which is required to  add a new  manufacturer
-    
+
     'sms' => [
         'android' => [
             'url' => 'https://fcm.googleapis.com/fcm/send',
