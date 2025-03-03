@@ -7,7 +7,6 @@ use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ISubTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-use App\Models\Transaction\VodacomTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
@@ -25,10 +24,6 @@ class SmTransaction extends BaseModel implements ISubTransaction {
 
     public function agentTransaction() {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
-    }
-
-    public function vodacomTransaction() {
-        return $this->morphOne(VodacomTransaction::class, 'manufacturer_transaction');
     }
 
     public function airtelTransaction() {

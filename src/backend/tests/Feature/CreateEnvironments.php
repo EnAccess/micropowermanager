@@ -667,7 +667,6 @@ trait CreateEnvironments {
                 'transaction_id' => $this->faker->numberBetween(1, 100),
                 'amount' => $this->faker->randomFloat(2, 0, 100),
                 'payment_service' => $this->faker->randomElement([
-                    'vodacom_transaction',
                     'airtel_transaction',
                     'agent_transaction',
                 ]),

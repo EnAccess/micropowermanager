@@ -6,7 +6,6 @@ use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\AirtelTransaction;
-use App\Models\Transaction\VodacomTransaction;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\TokenFactory;
@@ -34,7 +33,6 @@ class TransactionSeeder extends Seeder {
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
-        VodacomTransaction::class,
         AirtelTransaction::class,
     ];
 
@@ -170,21 +168,6 @@ class TransactionSeeder extends Seeder {
                 'message' => $randomMeter['serial_number'],
                 'status' => 1,
                 'amount' => $amount,
-                'manufacturer_transaction_id' => $manufacturerTransaction->id,
-                'manufacturer_transaction_type' => 'calin_transaction',
-                'created_at' => $demoDate,
-                'updated_at' => $demoDate,
-            ]);
-        }
-
-        if ($transactionType instanceof VodacomTransaction) {
-            $subTransaction = VodacomTransaction::query()->create([
-                'conversation_id' => Str::random(20),
-                'originator_conversation_id' => Str::random(20),
-                'mpesa_receipt' => Str::random(10),
-                'transaction_date' => $demoDate,
-                'transaction_id' => Str::random(10),
-                'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
                 'created_at' => $demoDate,

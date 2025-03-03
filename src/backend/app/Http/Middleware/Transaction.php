@@ -21,11 +21,6 @@ class Transaction {
 
     private function determineSender(Request $request): ITransactionProvider {
         if (
-            preg_match('/\/vodacom/', $request->url())
-            && \in_array($request->ip(), Config::get('services.vodacom.ips'))
-        ) {
-            return resolve('VodacomPaymentProvider');
-        } elseif (
             preg_match('/\/airtel/', $request->url())
             && \in_array($request->ip(), Config::get('services.airtel.ips'))
         ) {

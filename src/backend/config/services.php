@@ -19,19 +19,6 @@ return [
         'region' => env('SES_REGION', 'us-east-1'),
     ],
 
-    'vodacom' => [
-        'request_url' => env('VODACOM_REQUEST_URL'),
-        'sp_id' => env('VODACOM_SPID'),
-        'sp_password' => env('VODACOM_SPPASSWORD'),
-        'ips' => env('VODACOM_IPS', ['127.0.0.1']),
-        'certs' => [
-            'broker' => env('VODACOM_BROKER_CRT'),
-            'ssl_key' => env('VODACOM_SLL_KEY'),
-            'certificate_authority' => env('VODACOM_CERTIFICATE_AUTHORITY'),
-            'ssl_cert' => env('VODACOM_SSL_CERT'),
-        ],
-    ],
-
     'airtel' => [
         'request_url' => env('AIRTEL_REQUEST_URL'),
         'api_user' => env('AIRTEL_USERNAME'),

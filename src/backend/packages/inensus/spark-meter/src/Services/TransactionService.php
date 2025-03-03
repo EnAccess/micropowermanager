@@ -111,11 +111,7 @@ class TransactionService {
                 'status' => $status,
             ]);
         } else {
-            if ($transaction && $transaction->originalVodacom) {
-                $transaction->originalVodacom->update([
-                    'status' => $status,
-                ]);
-            } else {
+           
                 if ($transaction && $transaction->orginalAgent) {
                     $transaction->orginalAgent->update([
                         'status' => $status,
@@ -127,7 +123,7 @@ class TransactionService {
                         ]);
                     }
                 }
-            }
+            
         }
         $smTransaction->update([
             'status' => $smStatus,

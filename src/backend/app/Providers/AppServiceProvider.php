@@ -34,7 +34,6 @@ use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
-use App\Models\Transaction\VodacomTransaction;
 use App\Models\User;
 use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
@@ -46,7 +45,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 use MPM\Transaction\Provider\AirtelVoltTerraProvider;
-use MPM\Transaction\Provider\VodacomTransactionProvider;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -68,7 +66,6 @@ class AppServiceProvider extends ServiceProvider {
                 Transaction::RELATION_NAME => Transaction::class,
                 AgentTransaction::RELATION_NAME => AgentTransaction::class,
                 AirtelTransaction::RELATION_NAME => AirtelTransaction::class,
-                VodacomTransaction::RELATION_NAME => VodacomTransaction::class,
                 AccessRate::RELATION_NAME => AccessRate::class,
                 AssetRate::RELATION_NAME => AssetRate::class,
                 Cluster::RELATION_NAME => Cluster::class,
@@ -111,7 +108,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
         $this->app->singleton('AgentPaymentProvider', AgentTransactionProvider::class);
         $this->app->singleton('AirtelVoltTerra', AirtelVoltTerraProvider::class); // workaround until airtel problem
-        $this->app->singleton('VodacomPaymentProvider', VodacomTransactionProvider::class);
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
