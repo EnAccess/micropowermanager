@@ -6,7 +6,6 @@ use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
