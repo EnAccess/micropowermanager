@@ -58,10 +58,6 @@ class Transaction extends BaseModel {
         return $this->hasOne(AssetPerson::class, 'device_serial', 'message');
     }
 
-    public function meter(): HasOne {
-        return $this->hasOne(Meter::class, 'serial_number', 'message');
-    }
-
     public function periodTargetAlternative($cityId, $startDate, $endDate) {
         $sql = <<<SQL
             SELECT
@@ -77,10 +73,8 @@ class Transaction extends BaseModel {
                     ON transactions.original_transaction_id = airtel_transactions.id AND transactions.original_transaction_type = 'airtel_transaction'
                 LEFT JOIN vodacom_transactions
                     ON transactions.original_transaction_id = vodacom_transactions.id AND transactions.original_transaction_type = 'vodacom_transaction'
-                LEFT JOIN meters
-                    ON transactions.message = meters.serial_number
                 LEFT JOIN devices
-                    ON  devices.device_id = meters.id
+                    ON  devices.device_serial = transactions.message 
                 LEFT JOIN people
                     ON  people.id = devices.person_id
                 LEFT JOIN addresses

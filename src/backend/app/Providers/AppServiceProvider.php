@@ -45,7 +45,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
-use MPM\Transaction\Provider\AirtelVoltTerraProvider;
 use MPM\Transaction\Provider\VodacomTransactionProvider;
 
 class AppServiceProvider extends ServiceProvider {
@@ -110,7 +109,6 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->singleton('AndroidGateway', AndroidGateway::class);
         $this->app->singleton('LoanDataContainerProvider', LoanDataContainer::class);
         $this->app->singleton('AgentPaymentProvider', AgentTransactionProvider::class);
-        $this->app->singleton('AirtelVoltTerra', AirtelVoltTerraProvider::class); // workaround until airtel problem
         $this->app->singleton('VodacomPaymentProvider', VodacomTransactionProvider::class);
         $this->app->bind('MinimumPurchaseAmountValidator', MinimumPurchaseAmountValidator::class);
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);

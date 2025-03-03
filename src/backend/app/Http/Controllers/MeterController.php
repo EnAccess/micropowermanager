@@ -60,7 +60,7 @@ class MeterController extends Controller {
     /**
      * Detail
      * Detailed meter with following relations
-     * - MeterTrafice.tariff
+     * - MeterTariff.tariff
      * - Meter Type
      * - Meter.connectionType
      * - Meter.connectionGroup
