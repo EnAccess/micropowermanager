@@ -21,28 +21,8 @@ return [
 
     'pagination' => 25,
 
-    'calin' => [
-        'url' => env('CALIN_CLIENT_URL'),
-        'key' => env('CALIN_KEY'),
-        'api' => env('CALIN_CLIENT_URL'),
-        'user_id' => env('CALIN_USER_ID'),
-        'meter' => [
-            'key' => env('METER_DATA_KEY'),
-            'user' => env('METER_DATA_USER'),
-            'api' => env('METER_DATA_URL'),
-        ],
-    ],
     'manufacturer_master_key' => '36dKhvjwE58!M2.A@L', // the key which is required to  add a new  manufacturer
-    'calinSmart' => [
-        'company_name' => env('CALIN_SMART_COMPANY_NAME'),
-        'url' => [
-            'purchase' => env('CALIN_SMART_PURCHASE_API_URL'),
-            'clear' => env('CALIN_SMART_CLEAR_API_URL'),
-        ],
-        'user_name' => env('CALIN_SMART_USER_NAME'),
-        'password' => env('CALIN_SMART_PASSWORD'),
-        'password_vend' => env('CALIN_SMART_PASSWORD_VENT'),
-    ],
+    
     'sms' => [
         'android' => [
             'url' => 'https://fcm.googleapis.com/fcm/send',
