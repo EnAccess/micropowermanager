@@ -18,11 +18,8 @@ return [
         'secret' => env('SES_SECRET'),
         'region' => env('SES_REGION', 'us-east-1'),
     ],
-
     'pagination' => 25,
-
     'manufacturer_master_key' => '36dKhvjwE58!M2.A@L', // the key which is required to  add a new  manufacturer
-
     'sms' => [
         'android' => [
             'url' => 'https://fcm.googleapis.com/fcm/send',
@@ -30,7 +27,6 @@ return [
         ],
         'callback' => 'https://cloud.micropowermanager.com/api/sms-android-callback/%s/confirm/',
     ],
-
     'queues' => [
         'payment' => env('QUEUE_PAYMENT', 'payment'),
         'energy' => env('QUEUE_ENERGY', 'energy_payment'),
@@ -40,7 +36,6 @@ return [
         'report' => env('QUEUE_REPORT', 'report_generator'),
         'misc' => env('QUEUE_MISC', 'misc'),
     ],
-
     'payment' => [
         'data-stream' => 'placeholder-url',
         'maintenance' => 'placeholder-url',
