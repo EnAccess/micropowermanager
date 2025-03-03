@@ -69,7 +69,7 @@ class Transaction extends BaseModel {
                 SELECT DISTINCT(transactions.id)
                 FROM transactions
                 LEFT JOIN devices
-                    ON  devices.device_serial = transactions.message 
+                    ON  devices.device_serial = transactions.message
                 LEFT JOIN people
                     ON  people.id = devices.person_id
                 LEFT JOIN addresses
