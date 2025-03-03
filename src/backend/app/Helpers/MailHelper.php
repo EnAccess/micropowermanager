@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
+use Illuminate\Support\Facades\Log;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -42,8 +43,9 @@ class MailHelper implements MailHelperInterface {
      * @throws PHPMailerException
      */
     public function sendPlain($to, $title, $body, $attachment = null): void {
-        // Only send mails in production environments
         if (config('app.env') != 'production') {
+            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+
             return;
         }
 
@@ -67,8 +69,9 @@ class MailHelper implements MailHelperInterface {
     }
 
     public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void {
-        // Only send mails in production environments
         if (config('app.env') != 'production') {
+            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+
             return;
         }
 

@@ -7,3 +7,4 @@ resources:
   - deployments.yaml
   - services.yaml
   - ingress.yaml
+  - egress-nat-policy.yaml

@@ -26,17 +26,40 @@ It is recommended to use a third party mail service which provides a mail server
 
 For example Mailgun, Google Workspace, etc..
 
-Set the following environment variables.
+Set the following environment variables to configure the Email provider
 
 - `MAIL_SMTP_HOST`
+- `MAIL_SMTP_DEFAULT_SENDER`
+
+If your Email provider requires authentication, also populate:
+
 - `MAIL_SMTP_AUTH`
 - `MAIL_SMTP_USERNAME`
 - `MAIL_SMTP_PASSWORD`
-- `MAIL_SMTP_DEFAULT_SENDER`
 
-Optional, to debug Email you can also set
+Alternatively, when using an Email provider with IP whitelisting:
+
+- Make sure cluster egress is using a static IP. For example of GKE, see [`egress-nat-policy.yaml`](https://github.com/EnAccess/micropowermanager/blob/main/k8s/base/gcp_gke/kustomization.yaml).
+- Whitelist the NAT Gateway's static IP in the Email provider.
+
+Optionally, to debug Email you can set:
 
 - `MAIL_SMTP_DEBUG_LEVEL`
+
+### Testing Email integration
+
+A quick and dirty way to test sending of email, is to open a Laravel Tinker shell
+
+```sh
+php artisan tinker
+```
+
+Then
+
+```php
+$mailHelper = app(App\Helpers\MailHelper::class);
+$mailHelper->sendPlain('test@example.org', '[TEST] Welcome to MicroPowerManager', 'lorem ipsum');
+```
 
 ## Agent Apps
 
