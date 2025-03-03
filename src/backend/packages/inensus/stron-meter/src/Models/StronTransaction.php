@@ -4,7 +4,6 @@ namespace Inensus\StronMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\AirtelTransaction;
 use App\Models\Transaction\ISubTransaction;
 use App\Models\Transaction\ThirdPartyTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
@@ -16,10 +15,6 @@ class StronTransaction extends BaseModel implements ISubTransaction {
 
     public function agentTransaction() {
         return $this->morphOne(AgentTransaction::class, 'manufacturer_transaction');
-    }
-
-    public function airtelTransaction() {
-        return $this->morphOne(AirtelTransaction::class, 'manufacturer_transaction');
     }
 
     public function thirdPartyTransaction() {

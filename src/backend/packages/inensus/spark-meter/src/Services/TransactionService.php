@@ -106,11 +106,6 @@ class TransactionService {
             '*'
         )->find($smTransaction['external_id']);
 
-        if ($transaction && $transaction->originalAirtel) {
-            $transaction->originalAirtel->update([
-                'status' => $status,
-            ]);
-        } else {
            
                 if ($transaction && $transaction->orginalAgent) {
                     $transaction->orginalAgent->update([
@@ -124,7 +119,6 @@ class TransactionService {
                     }
                 }
             
-        }
         $smTransaction->update([
             'status' => $smStatus,
         ]);

@@ -20,12 +20,7 @@ class Transaction {
     }
 
     private function determineSender(Request $request): ITransactionProvider {
-        if (
-            preg_match('/\/airtel/', $request->url())
-            && \in_array($request->ip(), Config::get('services.airtel.ips'))
-        ) {
-            return resolve('AirtelPaymentProvider');
-        } elseif (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
+        if (preg_match('/\/agent/', $request->url()) && auth('agent_api')->user()) {
             return resolve('AgentPaymentProvider');
         } else {
             Log::warning(

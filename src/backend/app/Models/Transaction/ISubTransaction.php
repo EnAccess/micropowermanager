@@ -4,8 +4,6 @@ namespace App\Models\Transaction;
 
 interface ISubTransaction {
 
-    public function airtelTransaction();
-
     public function agentTransaction();
 
     public function thirdPartyTransaction();

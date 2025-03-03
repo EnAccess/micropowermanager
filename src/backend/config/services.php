@@ -19,12 +19,6 @@ return [
         'region' => env('SES_REGION', 'us-east-1'),
     ],
 
-    'airtel' => [
-        'request_url' => env('AIRTEL_REQUEST_URL'),
-        'api_user' => env('AIRTEL_USERNAME'),
-        'api_password' => env('AIRTEL_PASSWORD'),
-        'ips' => env('AIRTEL_IPS', []),
-    ],
     'pagination' => 25,
 
     'calin' => [

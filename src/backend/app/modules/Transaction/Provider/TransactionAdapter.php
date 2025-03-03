@@ -3,7 +3,6 @@
 namespace MPM\Transaction\Provider;
 
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\AirtelTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
@@ -15,13 +14,7 @@ class TransactionAdapter {
      * @return ITransactionProvider
      */
     public static function getTransaction($transactionProvider): ?ITransactionProvider {
-        if ($transactionProvider instanceof AirtelTransaction) {
-            // workaround for airtel volt terra
-            $baseTransaction = resolve('AirtelVoltTerra');
-            $baseTransaction->init($transactionProvider);
-
-            return $baseTransaction;
-        } elseif ($transactionProvider instanceof AgentTransaction) {
+        if ($transactionProvider instanceof AgentTransaction) {
             $baseTransaction = resolve('AgentPaymentProvider');
             $baseTransaction->init($transactionProvider);
 
