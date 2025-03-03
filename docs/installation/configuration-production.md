@@ -38,6 +38,19 @@ Optional, to debug Email you can also set
 
 - `MAIL_SMTP_DEBUG_LEVEL`
 
+A quick and dirty way to test sending of email, is to open a Laravel Tinker shell
+
+```sh
+php artisan tinker
+```
+
+Then
+
+```php
+$mailHelper = app(App\Helpers\MailHelper::class);
+$mailHelper->sendPlain('test@example.org', '[TEST] Welcome to MicroPowerManager', 'lorem ipsum');
+```
+
 ## Agent Apps
 
 Placeholder, do this, do that
