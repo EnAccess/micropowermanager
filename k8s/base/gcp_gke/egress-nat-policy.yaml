@@ -1,0 +1,12 @@
+# Make sure that we have a static external IP for egress.
+# This is required to authorize with external services using IP-whitelisting,
+# for example Mail providers.
+# https://cloud.google.com/kubernetes-engine/docs/how-to/egress-nat-policy-ip-masq-autopilot
+kind: EgressNATPolicy
+apiVersion: networking.gke.io/v1
+metadata:
+  name: mpm-egress-nat
+spec:
+  action: NoSNAT
+  destinations:
+    - cidr: 0.0.0.0/0
