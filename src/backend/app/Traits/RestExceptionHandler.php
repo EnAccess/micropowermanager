@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
+use App\Exceptions\ValidationException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -27,7 +27,7 @@ trait RestExceptionHandler {
             case $e instanceof TokenInvalidException:
                 return response()->json(['error' => 'Token is invalid'], 401);
             case $e instanceof JWTException:
-                return response()->json(['error' => 'There was an issue with the token'], 401);
+                return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
             case $this->isModelNotFoundException($e):
                 $response = $this->modelNotFound(['model not found '.implode(' ', $e->getIds()), $e->getMessage(), $e->getTrace()]);
                 break;
