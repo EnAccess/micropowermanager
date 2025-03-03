@@ -73,7 +73,7 @@ class Transaction extends BaseModel {
                 LEFT JOIN vodacom_transactions
                     ON transactions.original_transaction_id = vodacom_transactions.id AND transactions.original_transaction_type = 'vodacom_transaction'
                 LEFT JOIN devices
-                    ON  devices.device_serial = transactions.message 
+                    ON  devices.device_serial = transactions.message
                 LEFT JOIN people
                     ON  people.id = devices.person_id
                 LEFT JOIN addresses
