@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace Inensus\VodacomMobileMoney\Services;
 
-class VodacomService {
+class VodacomTransactionService {
     /**
      * Validate a transaction request.
      *
