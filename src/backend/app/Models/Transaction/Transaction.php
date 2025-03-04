@@ -72,12 +72,10 @@ class Transaction extends BaseModel {
                     ON transactions.original_transaction_id = airtel_transactions.id AND transactions.original_transaction_type = 'airtel_transaction'
                 LEFT JOIN vodacom_transactions
                     ON transactions.original_transaction_id = vodacom_transactions.id AND transactions.original_transaction_type = 'vodacom_transaction'
-                LEFT JOIN meters
-                    ON transactions.message = meters.serial_number
-                LEFT JOIN meter_parameters
-                    ON meter_parameters.meter_id = meters.id
+                LEFT JOIN devices
+                    ON  devices.device_serial = transactions.message
                 LEFT JOIN people
-                    ON people.id = meter_parameters.owner_id AND owner_type = 'person'
+                    ON  people.id = devices.person_id
                 LEFT JOIN addresses
                     ON addresses.owner_id = people.id AND addresses.owner_type = 'person'
                 WHERE

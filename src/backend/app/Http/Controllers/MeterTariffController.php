@@ -89,4 +89,33 @@ class MeterTariffController extends Controller {
 
         return $this->meterTariffService->delete($meterTariff);
     }
+
+    /**
+     * @param     $meterTariffId
+     * @param int $changeId
+     *
+     * @return ApiResource
+     */
+    public function updateTariff($meterTariffId, int $changeId): ApiResource {
+        $result = $this->meterTariffService->changeMetersTariff($meterTariffId, $changeId);
+
+        return ApiResource::make($result);
+    }
+
+    public function updateForMeter($meterSerial, $tariffId): ApiResource {
+        $result = $this->meterTariffService->changeMeterTariff($meterSerial, $tariffId);
+
+        return ApiResource::make($result);
+    }
+
+    /**
+     * Display a list of meters which using a particular tariff.
+     *
+     * @param $meterTariffId
+     *
+     * @return ApiResource
+     */
+    public function showUsageCount($meterTariffId): ApiResource {
+        return ApiResource::make($this->meterTariffService->getCountById($meterTariffId));
+    }
 }

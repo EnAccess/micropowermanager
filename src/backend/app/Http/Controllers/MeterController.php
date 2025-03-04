@@ -18,7 +18,7 @@ class MeterController extends Controller {
 
     /**
      * List
-     * Lists all used meters with meterType and meterParameters.tariff
+     * Lists all used meters with meterType
      * The response is paginated with 15 results on each page/request.
      *
      * @urlParam     page int
@@ -60,11 +60,10 @@ class MeterController extends Controller {
     /**
      * Detail
      * Detailed meter with following relations
-     * - MeterParameter.tariff
-     * - MeterParameter.owner
+     * - MeterTariff.tariff
      * - Meter Type
-     * - MeterParameter.connectionType
-     * - MeterParameter.connectionGroup
+     * - Meter.connectionType
+     * - Meter.connectionGroup
      * - Manufacturer.
      *
      * @urlParam serialNumber string

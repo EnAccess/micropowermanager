@@ -21,7 +21,7 @@ class MeterGeographicalInformationService {
                 $meter = $this->meter->newQuery()->where('id', $meter['id'])
                     ->first();
                 if ($meter) {
-                    $geo = $meter->meterParameter->geo;
+                    $geo = $meter->device->person->addresses()->first()->geo;
                     $geo->points = $points[0].','.$points[1];
                     $geo->save();
                 }
