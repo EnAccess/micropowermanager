@@ -6,6 +6,21 @@
     button-icon="delete"
     @widgetAction="confirmDelete"
   >
+    <div>
+      <confirmation-box
+        ref="deleteDialog"
+        :title="$tc('phrases.deleteAgent')"
+        :message="
+          $tc('phrases.deleteAgent', 3, { name: agent.name + agent.surname })
+        "
+        :show-checkbox="true"
+        :checkbox-label="
+          $tc('phrases.deleteAgent', 3, { name: agent.name + agent.surname })
+        "
+        :confirm-text="$tc('words.confirm')"
+        :cancel-text="$tc('words.cancel')"
+      />
+    </div>
     <md-card>
       <md-card-content>
         <div class="md-layout md-gutter" v-if="!editAgent">
@@ -186,11 +201,11 @@ import { AgentService } from "@/services/AgentService"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"
-
+import ConfirmationBox from "@/shared/ConfirmationBox.vue"
 export default {
   name: "AgentDetail",
   mixins: [notify],
-  components: { Widget },
+  components: { Widget, ConfirmationBox },
   data() {
     return {
       agentService: new AgentService(),
@@ -233,32 +248,11 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    confirmDelete() {
-      this.$swal({
-        type: "question",
-        title: this.$tc("phrases.deleteAgent"),
-        width: "35%",
-        confirmButtonText: this.$tc("words.confirm"),
-        showCancelButton: true,
-        cancelButtonText: this.$tc("words.cancel"),
-        focusCancel: true,
-        html:
-          '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-          "  <label>" +
-          '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-          this.$tc("phrases.deleteAgent", 3, {
-            name: this.agent.name + this.agent.surname,
-          }) +
-          "  </label>" +
-          "</div>",
-      }).then((result) => {
-        let answer = document.getElementById("confirmation").checked
-        if ("value" in result) {
-          if (answer) {
-            this.deleteAgent()
-          }
-        }
-      })
+    async confirmDelete() {
+      const result = await this.$refs.deleteDialog.show()
+      if (result.confirmed && result.checked) {
+        await this.deleteAgent()
+      }
     },
     async updateAgent() {
       try {
