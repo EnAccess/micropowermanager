@@ -10,23 +10,9 @@ $slack = [
     'emoji' => ':boom:',
     'level' => 'critical',
 ];
-$loggly = [
-    'driver' => 'monolog',
-    'level' => env('LOG_LEVEL', 'debug'),
-    'handler' => LogglyHandler::class,
-    'with' => [
-        'token' => env('LOGGLY_TOKEN'),
-    ],
-];
 
 if (in_array(config('app.env'), ['development', 'local'])) {
     $slack = [
-        'level' => 'critical',
-        'driver' => 'errorlog',
-        'path' => storage_path('logs/critical.log'),
-    ];
-
-    $loggly = [
         'level' => 'critical',
         'driver' => 'errorlog',
         'path' => storage_path('logs/critical.log'),
@@ -65,7 +51,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'slack', 'loggly'],
+            'channels' => ['single', 'slack'],
         ],
 
         'single' => [
@@ -80,7 +66,6 @@ return [
             'level' => 'debug',
             'days' => 7,
         ],
-        'loggly' => $loggly,
         'slack' => $slack,
         'stderr' => [
             'driver' => 'monolog',
