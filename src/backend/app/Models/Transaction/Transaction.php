@@ -68,10 +68,6 @@ class Transaction extends BaseModel {
             WHERE transactions.id IN (
                 SELECT DISTINCT(transactions.id)
                 FROM transactions
-                LEFT JOIN airtel_transactions
-                    ON transactions.original_transaction_id = airtel_transactions.id AND transactions.original_transaction_type = 'airtel_transaction'
-                LEFT JOIN vodacom_transactions
-                    ON transactions.original_transaction_id = vodacom_transactions.id AND transactions.original_transaction_type = 'vodacom_transaction'
                 LEFT JOIN meters
                     ON transactions.message = meters.serial_number
                 LEFT JOIN meter_parameters
@@ -82,7 +78,6 @@ class Transaction extends BaseModel {
                     ON addresses.owner_id = people.id AND addresses.owner_type = 'person'
                 WHERE
                     DATE(transactions.created_at) BETWEEN :periodStartDate AND :periodEndDate
-                    AND (airtel_transactions.status = 1 OR vodacom_transactions.status = 1)
                     AND addresses.city_id = :city_id
             );
             SQL;
