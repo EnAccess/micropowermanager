@@ -118,12 +118,13 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 
 Set of environment variables that can be used to configure logging and logging providers in MicroPowerManager.
 
-| Environment Variable    | Default                          | Description                                                                                                                                                                 |
-| ----------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LOG_CHANNEL`           | `stack`                          | Log channel. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php) |
-| `LOGGLY_TOKEN`          | **Required** (When using Loggly) | Access token for [Loggly](https://www.loggly.com/).                                                                                                                         |
-| `LOG_LEVEL`             | `debug`                          | Level of the logs send to [Loggly](https://www.loggly.com/).                                                                                                                |
-| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack)  | Slack Webhook URL                                                                                                                                                           |
+| Environment Variable    | Default                                 | Description                                                                                                                                                                 |
+| ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOG_CHANNEL`           | `stack`                                 | Log channel. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php) |
+| `LOG_LEVEL`             | `debug`                                 | Level of the logs.                                                                                                                                                          |
+| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL. This require a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
+| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook URL                                                                                                                                                           |
+| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook URL                                                                                                                                                           |
 
 #### Email
 

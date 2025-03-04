@@ -61,6 +61,23 @@ $mailHelper = app(App\Helpers\MailHelper::class);
 $mailHelper->sendPlain('test@example.org', '[TEST] Welcome to MicroPowerManager', 'lorem ipsum');
 ```
 
+## Logging
+
+> [!INFO]
+> This section is optional, but recommended.
+
+Set up a logging channel which allows you to monitor critical errors of the application in realtime.
+
+Currently, we support Slack logging using [incoming webhooks](https://api.slack.com/messaging/webhooks).
+Set the following environment variables
+
+- `LOG_SLACK_WEBHOOK_URL`
+
+By default, we are logging `CRITICAL` errors.
+To increase the logging level (for example to investigate errors), set
+
+- `LOG_LEVEL`
+
 ## Agent Apps
 
 Placeholder, do this, do that

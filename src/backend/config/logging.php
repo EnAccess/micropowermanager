@@ -1,23 +1,6 @@
 <?php
 
-use Monolog\Handler\LogglyHandler;
 use Monolog\Handler\StreamHandler;
-
-$slack = [
-    'driver' => 'slack',
-    'url' => env('LOG_SLACK_WEBHOOK_URL'),
-    'username' => 'Error Messenger',
-    'emoji' => ':boom:',
-    'level' => 'critical',
-];
-
-if (in_array(config('app.env'), ['development', 'local'])) {
-    $slack = [
-        'level' => 'critical',
-        'driver' => 'errorlog',
-        'path' => storage_path('logs/critical.log'),
-    ];
-}
 
 return [
     /*
@@ -51,7 +34,13 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'slack'],
+            // `single` is our default log channel.
+            // Third party logging tools will be enabled passed on the corresponding
+            // environment variables.
+            'channels' => array_filter([
+                'single',
+                env('LOG_SLACK_WEBHOOK_URL') ? 'slack' : null,
+            ]),
         ],
 
         'single' => [
@@ -66,7 +55,15 @@ return [
             'level' => 'debug',
             'days' => 7,
         ],
-        'slack' => $slack,
+
+        'slack' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
+            'level' => env('LOG_LEVEL', 'critical'),
+        ],
+
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
