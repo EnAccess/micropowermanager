@@ -73,8 +73,4 @@ class MeterParameter extends BaseModel {
     public function connectionGroup(): BelongsTo {
         return $this->belongsTo(ConnectionGroup::class);
     }
-
-    public function socialTariffPiggyBank(): HasOne {
-        return $this->hasOne(SocialTariffPiggyBank::class);
-    }
 }
