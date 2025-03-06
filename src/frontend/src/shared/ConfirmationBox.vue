@@ -4,6 +4,14 @@
 
     <md-dialog-content>
       <p>{{ message }}</p>
+
+      <!-- Password Input Field (Conditional) -->
+      <md-field v-if="inputType">
+        <label>{{ inputType === "password" ? "Password" : "Input" }}</label>
+        <md-input v-model="inputValue" :type="inputType"></md-input>
+      </md-field>
+
+      <!-- Checkbox (Conditional) -->
       <div v-if="showCheckbox" class="md-layout md-alignment-center-left">
         <md-checkbox v-model="isChecked">{{ checkboxLabel }}</md-checkbox>
       </div>
@@ -52,11 +60,16 @@ export default {
       type: String,
       default: "Cancel",
     },
+    inputType: {
+      type: String,
+      default: "", // Can be 'password', 'text', or empty
+    },
   },
   data() {
     return {
       showDialog: false,
       isChecked: false,
+      inputValue: "", // To store the input value
       resolvePromise: null,
     }
   },
@@ -64,6 +77,7 @@ export default {
     show() {
       this.showDialog = true
       this.isChecked = false
+      this.inputValue = "" // Reset input value when dialog is shown
       return new Promise((resolve) => {
         this.resolvePromise = resolve
       })
@@ -71,13 +85,21 @@ export default {
     onConfirm() {
       this.showDialog = false
       if (this.resolvePromise) {
-        this.resolvePromise({ confirmed: true, checked: this.isChecked })
+        this.resolvePromise({
+          confirmed: true,
+          checked: this.isChecked,
+          inputValue: this.inputValue, // Pass the input value back
+        })
       }
     },
     onCancel() {
       this.showDialog = false
       if (this.resolvePromise) {
-        this.resolvePromise({ confirmed: false, checked: this.isChecked })
+        this.resolvePromise({
+          confirmed: false,
+          checked: this.isChecked,
+          inputValue: this.inputValue, // Pass the input value back
+        })
       }
     },
   },

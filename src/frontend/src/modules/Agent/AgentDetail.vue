@@ -9,13 +9,11 @@
     <div>
       <confirmation-box
         ref="deleteDialog"
-        :title="$tc('phrases.deleteAgent')"
-        :message="
-          $tc('phrases.deleteAgent', 3, { name: agent.name + agent.surname })
-        "
+        :title="$t('phrases.deleteAgentTitle')"
+        :message="$t('phrases.deleteAgentSuccess')"
         :show-checkbox="true"
         :checkbox-label="
-          $tc('phrases.deleteAgent', 3, { name: agent.name + agent.surname })
+          $t('phrases.deleteAgentConfirm', { name: agent.name + agent.surname })
         "
         :confirm-text="$tc('words.confirm')"
         :cancel-text="$tc('words.cancel')"
@@ -258,7 +256,7 @@ export default {
       try {
         this.loading = true
         await this.agentService.updateAgent(this.agent)
-        this.alertNotify("success", this.$tc("phrases.deleteAgent", 2))
+        this.alertNotify("success", this.$t("phrases.updateAgentSuccess"))
         this.loading = false
         this.editAgent = false
       } catch (e) {
@@ -269,9 +267,10 @@ export default {
     async deleteAgent() {
       try {
         await this.agentService.deleteAgent(this.agent)
-        this.alertNotify("success", this.$tc("phrases.deleteAgent", 1))
+        this.alertNotify("success", this.$t("phrases.deleteAgentSuccess"))
         window.history.back()
       } catch (e) {
+        console.log(e)
         this.alertNotify("error", e.message)
       }
     },
