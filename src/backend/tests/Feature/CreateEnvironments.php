@@ -233,7 +233,7 @@ trait CreateEnvironments {
             'sender' => $this->faker->phoneNumber,
             'message' => $meter->serial_number,
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
-            'original_transaction_type' => 'airtel_transaction',
+            'original_transaction_type' => 'agent_transaction',
         ]);
         $this->token = MeterTokenFactory::new()->create([
             'meter_id' => $meter->id,
@@ -242,7 +242,7 @@ trait CreateEnvironments {
         $paymentHistory = PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
-            'payment_service' => 'airtel_transaction',
+            'payment_service' => 'agent_transaction',
             'sender' => $this->faker->phoneNumber,
             'payment_type' => 'energy',
             'paid_for_type' => 'token',
@@ -666,11 +666,7 @@ trait CreateEnvironments {
                 'id' => 1,
                 'transaction_id' => $this->faker->numberBetween(1, 100),
                 'amount' => $this->faker->randomFloat(2, 0, 100),
-                'payment_service' => $this->faker->randomElement([
-                    'vodacom_transaction',
-                    'airtel_transaction',
-                    'agent_transaction',
-                ]),
+                'payment_service' => 'agent_transaction',
                 'sender' => $this->faker->phoneNumber,
                 'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
             ]);

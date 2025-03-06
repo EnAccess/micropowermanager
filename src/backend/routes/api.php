@@ -264,8 +264,6 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
 Route::group(
     ['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
     static function () {
-        Route::post('/airtel', 'TransactionController@store');
-        Route::post('/vodacom', ['as' => 'vodacomTransaction', 'uses' => 'TransactionController@store']);
         Route::post(
             '/agent',
             ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']
@@ -310,9 +308,6 @@ Route::group(['prefix' => 'devices'], static function () {
 Route::group(['prefix' => 'device-addresses'], function () {
     Route::post('/', 'DeviceAddressController@update');
 });
-Route::group(['prefix' => 'airtel-volt-terra'], static function () {
-    Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');
-});
 Route::group(['prefix' => 'solar-home-systems'], static function () {
     Route::get('/', 'SolarHomeSystemController@index');
     Route::post('/', 'SolarHomeSystemController@store');
@@ -331,10 +326,4 @@ Route::group(['prefix' => 'export'], static function () {
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', 'UsageTypeController@index');
-});
-
-Route::group(['prefix' => 'vodacom'], static function () {
-    Route::post('/transactions/validation', 'VodacomTransactionController@validateTransaction');
-    Route::post('/transactions/process', 'VodacomTransactionController@processTransaction');
-    Route::post('/transactions/enquiry', 'VodacomTransactionController@transactionEnquiryStatus');
 });
