@@ -10,6 +10,20 @@
       color="green"
       :subscriber="subscriber"
     >
+      <div>
+        <confirmation-box
+          ref="deleteDialog"
+          :title="$tc('phrases.deleteAgentCommission')"
+          :show-checkbox="true"
+          :checkbox-label="
+            $tc('phrases.deleteAgentCommission', 2, {
+              commissionName: commission?.name || '',
+            })
+          "
+          :confirm-text="$tc('words.confirm')"
+          :cancel-text="$tc('words.cancel')"
+        />
+      </div>
       <md-progress-bar md-mode="indeterminate" v-if="loading" />
 
       <md-table md-sort="id" md-sort-order="asc">
@@ -166,15 +180,19 @@
     </widget>
   </div>
 </template>
+
 <script>
 import Widget from "../../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import NewCommission from "../Commission/NewCommission"
 import { notify } from "@/mixins/notify"
+import ConfirmationBox from "@/shared/ConfirmationBox.vue"
+
 export default {
   name: "AgentCommissionList",
   mixins: [notify],
+  components: { Widget, NewCommission, ConfirmationBox },
   data() {
     return {
       subscriber: "agent-commission-list",
@@ -190,11 +208,8 @@ export default {
       tableName: "Agent Commission Types",
       editCommission: null,
       loading: false,
+      commission: null, // Define the commission property
     }
-  },
-  components: {
-    Widget,
-    NewCommission,
   },
   mounted() {
     this.getAgentCommissions()
@@ -240,34 +255,13 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
-    async confirmDelete(commission) {
-      this.$swal({
-        type: "question",
-        title: this.$tc("phrases.deleteAgentCommission"),
-        width: "35%",
-        confirmButtonText: this.$tc("words.confirm"),
-        showCancelButton: true,
-        cancelButtonText: this.$tc("words.cancel"),
-        focusCancel: true,
-        html:
-          '<div style="text-align: left; padding-left: 5rem" class="checkbox">' +
-          "  <label>" +
-          '    <input type="checkbox" name="confirmation" id="confirmation" >' +
-          this.$tc("phrases.deleteAgentCommission", 2, {
-            commissionName: commission.name,
-          }) +
-          "  </label>" +
-          "</div>",
-      }).then((result) => {
-        let answer = document.getElementById("confirmation").checked
-        if ("value" in result) {
-          if (answer) {
-            this.deleteCommission(commission.id)
-          }
-        }
-      })
+    async confirmDelete(item) {
+      this.commission = item // Set the commission property
+      const result = await this.$refs.deleteDialog.show()
+      if (result.confirmed && result.checked) {
+        await this.deleteCommission(item.id)
+      }
     },
-
     async deleteCommission(commissionId) {
       try {
         this.loading = true
@@ -283,4 +277,5 @@ export default {
   },
 }
 </script>
+
 <style scoped></style>
