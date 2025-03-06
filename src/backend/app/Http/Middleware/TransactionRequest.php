@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\VodacomHeartBeatException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -19,8 +18,6 @@ class TransactionRequest {
         $transactionProvider = $request->attributes->get('transactionProcessor');
         try {
             $transactionProvider->validateRequest($request->getContent());
-        } catch (VodacomHeartBeatException $ex) {
-            // no need to do anything.
         } catch (\Exception $e) {
             Log::critical(
                 'Transaction Validation failed',

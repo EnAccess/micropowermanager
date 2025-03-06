@@ -10,7 +10,7 @@ class MigrateTenantStatus extends AbstractSharedCommand {
         $this->call('optimize:clear');
         $this->call('migrate:status', [
             '--database' => 'tenant',
-            '--path' => '/database/migrations/micropowermanager',
+            '--path' => '/database/migrations/tenant',
         ]);
     }
 }

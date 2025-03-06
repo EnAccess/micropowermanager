@@ -1,10 +1,16 @@
 ---
-order: 4
+order: 2
 ---
 
 # Deploy for Production
 
+> [!INFO]
+> This page covers **deployment** related information for MicroPowerManager.
+> An installation of MicroPowerManager can be customised using environment variables which is explained in detail [here](environment-variables.md).
+
 The MicroPowerManager is distributed as pre-compile Docker images via [DockerHub](https://hub.docker.com/u/enaccess).
+
+## Choose a deployment scenario
 
 For running a self-hosted version of MicroPowerManager multiple options exists.
 We "officially" support two deployment options for MicroPowerManager
@@ -14,11 +20,7 @@ We "officially" support two deployment options for MicroPowerManager
 
 which are further explained in the sections below.
 
-> [!INFO]
-> This page covers deployment related information for MicroPowerManager.
-> An installation of MicroPowerManager can be customised using environment variables which is explained in detail [here](environment-variables.md).
-
-## Kubernetes
+### Kubernetes
 
 This section describes the deployment scenario of a cloud-hosted [Kubernetes](https://kubernetes.io/) cluster with dedicated databases.
 
@@ -99,7 +101,9 @@ Other cloud providers might require adjustments to the manifest files.
    Create DNS records for the backend and frontend URLs.
    Note: It might take a while for the newly created DNS records to propagate.
 
-## Stand-alone server using Docker Compose
+9. Proceed to the [Next Steps](#next-steps) section
+
+### Stand-alone server using Docker Compose
 
 > [!INFO]
 > If you choose to run MicroPowerManager on a stand-alone server, additional configuration steps are required.
@@ -107,13 +111,29 @@ Other cloud providers might require adjustments to the manifest files.
 >
 > There are plenty of great resources available online that cover these topics in detail.
 
-A working "all-in one" environment running with production containers fetched from DockerHub can be achieved by running:
+1. A working "all-in one" environment running with production containers fetched from DockerHub can be achieved by running:
 
-```sh
-docker compose -f docker-compose-dockerhub.yml up
-```
+   ```sh
+   docker compose -f docker-compose-dockerhub.yml up
+   ```
 
-This exposes
+   This exposes
 
-- Port `8443`, `8000`: The backend of MicroPowerManager
-- Port `8001`: The frontend of MicroPowerManager
+   - Port `8443`, `8000`: The backend of MicroPowerManager
+   - Port `8001`: The frontend of MicroPowerManager
+
+2. Configure WebServer, networking, TLS, certificates and DNS.
+3. Proceed to the [Next Steps](#next-steps) section
+
+## Next Steps
+
+After the installation an empty instance of MicroPowerManager should be accessible at
+
+- [https://<your-url.com>](https://demo.micropowermanager.io)
+
+This instance is fully functional just yet.
+For example, you cannot log in, as further configuration is required.
+
+Please proceed to [Configuration for Production](configuration-production.md)
+
+## Troubleshooting

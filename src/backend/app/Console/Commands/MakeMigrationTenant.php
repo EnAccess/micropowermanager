@@ -12,7 +12,7 @@ class MakeMigrationTenant extends Command {
         $migrationName = $this->argument('migration-name');
         $this->call('make:migration', [
             'name' => $migrationName,
-            '--path' => '/database/migrations/micropowermanager',
+            '--path' => '/database/migrations/tenant',
         ]);
 
         return 0;

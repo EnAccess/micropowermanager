@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\MailNotSentException;
+use Illuminate\Support\Facades\Log;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -16,19 +17,20 @@ class MailHelper implements MailHelperInterface {
 
     public function __construct(PHPMailer $mailer) {
         $this->mailer = $mailer;
-        $this->mailSettings = config('mail.mailers.strato');
+        $this->mailSettings = config('mail.mailers.smtp');
         $this->configure();
     }
 
     private function configure(): void {
         $this->mailer->Host = $this->mailSettings['host'];
         $this->mailer->Port = $this->mailSettings['port'];
-        $this->mailer->SMTPSecure = $this->mailSettings['smtp_secure'];
-        $this->mailer->SMTPAuth = $this->mailSettings['smtp_auth'];
+        $this->mailer->SMTPSecure = $this->mailSettings['encryption'];
+        $this->mailer->SMTPAuth = $this->mailSettings['auth'];
         $this->mailer->Username = $this->mailSettings['username'];
         $this->mailer->Password = $this->mailSettings['password'];
         $this->mailer->From = $this->mailSettings['default_sender'];
-        $this->mailer->isSMTP();                       // telling the class to use SMTP
+        $this->mailer->SMTPDebug = $this->mailSettings['debug_level'];
+        $this->mailer->isSMTP();
     }
 
     /**
@@ -41,10 +43,12 @@ class MailHelper implements MailHelperInterface {
      * @throws PHPMailerException
      */
     public function sendPlain($to, $title, $body, $attachment = null): void {
-        // don't send any mails while  testing
-        if (config('app.env') === 'local') {
+        if (config('app.env') != 'production') {
+            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+
             return;
         }
+
         $this->mailer->setFrom($this->mailSettings['default_sender']);
         $this->mailer->addReplyTo($this->mailSettings['default_sender']);
 
@@ -65,10 +69,12 @@ class MailHelper implements MailHelperInterface {
     }
 
     public function sendViaTemplate(string $to, string $title, string $templatePath, ?array $variables = null, ?string $attachmentPath = null): void {
-        // don't send any mails while  testing
-        if (config('app.env') === 'demo') {
+        if (config('app.env') != 'production') {
+            Log::warning('Sending Email is only supported in `production` mode. Running `'.config('app.env').'`');
+
             return;
         }
+
         $this->mailer->setFrom($this->mailSettings['default_sender']);
         $this->mailer->addReplyTo($this->mailSettings['default_sender']);
 

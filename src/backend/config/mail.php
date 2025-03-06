@@ -35,23 +35,17 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'host' => env('MAIL_SMTP_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_SMTP_PORT', 587),
+            'encryption' => env('MAIL_SMTP_ENCRYPTION', 'tls'),
+            'auth' => env('MAIL_SMTP_AUTH', false),
+            'username' => env('MAIL_SMTP_USERNAME'),
+            'password' => env('MAIL_SMTP_PASSWORD'),
+            'default_sender' => env('MAIL_SMTP_DEFAULT_SENDER'),
+            'default_message' => env('MAIL_SMTP_DEFAULT_MESSAGE', 'Please do not reply to this email'),
+            'debug_level' => env('MAIL_SMTP_DEBUG_LEVEL', 'Please do not reply to this email'),
             'timeout' => null,
             'auth_mode' => null,
-        ],
-        'strato' => [
-            'host' => 'smtp.strato.de', // your host to send through
-            'smtp_auth' => true, // enable SMTP authentication
-            'username' => 'mpm@jumeme.com', // SMTP username
-            'password' => 'V6UHSTIHM3508SAUJ6TV', // SMTP username
-            'smtp_secure' => 'tls',
-            'port' => '587',
-            'default_sender' => 'MPM@micropowermanager.com',
-            'default_message' => 'Please do not reply to this email', // adds a small footer text to your email
         ],
 
         'ses' => [
