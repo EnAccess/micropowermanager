@@ -118,13 +118,19 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 
 Set of environment variables that can be used to configure logging and logging providers in MicroPowerManager.
 
+| Environment Variable | Default     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `LOG_CHANNEL`        | `mpm_stack` | The default value `mpm_stack` configures a split logging where error logs go to `STDERR` and application info and debug logs to `STDOUT`. Additional log channels to external logging solutions are automatically enabled, if corresponding environment variables are configured, see below. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php). |
+| `LOG_LEVEL`          | `debug`     | General log level of the application. Note, that external logging systems may define their log level seperately. For example, it might be desired to only send critical errors to Slack, even if MicroPowerManager runs with an elevanted log level of `info`. Recommended to set this at least `info` or hire in normal operations of a production environment.                                                                                             |
+
+Slack
+
 | Environment Variable    | Default                                 | Description                                                                                                                                                                 |
 | ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LOG_CHANNEL`           | `stack`                                 | Log channel. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php) |
-| `LOG_LEVEL`             | `debug`                                 | Level of the logs.                                                                                                                                                          |
+| `LOG_SLACK_LEVEL`       | `critical`                              | The log level sent to Slack. URL                                                                                                                                            |
 | `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL. This require a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
-| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook URL                                                                                                                                                           |
-| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook URL                                                                                                                                                           |
+| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook Username                                                                                                                                                      |
+| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook Emoji                                                                                                                                                         |
 
 #### Email
 

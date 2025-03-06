@@ -1,6 +1,8 @@
 <?php
 
+use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 return [
     /*
@@ -14,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => env('LOG_CHANNEL', 'mpm_stack'),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,53 +36,75 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            // `single` is our default log channel.
-            // Third party logging tools will be enabled passed on the corresponding
+            'channels' => explode(',', env('LOG_STACK', 'single')),
+            'ignore_exceptions' => false,
+        ],
+
+        'mpm_stack' => [
+            'driver' => 'stack',
+            // `stdout` and `stderr` are our default log channels.
+            // Third party logging tools will be enabled based on the corresponding
             // environment variables.
             'channels' => array_filter([
-                'single',
+                'stdout',
+                'stderr',
                 env('LOG_SLACK_WEBHOOK_URL') ? 'slack' : null,
             ]),
+            'ignore_exceptions' => false,
         ],
 
         'single' => [
             'driver' => 'single',
+            'level' => env('LOG_LEVEL', 'debug'),
             'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
         ],
 
         'daily' => [
             'driver' => 'daily',
+            'level' => env('LOG_LEVEL', 'debug'),
             'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
-            'days' => 7,
+            'days' => env('LOG_DAILY_DAYS', 7),
         ],
 
         'slack' => [
             'driver' => 'slack',
+            'level' => env('LOG_SLACK_LEVEL', 'critical'),
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
-            'level' => env('LOG_LEVEL', 'critical'),
+        ],
+
+        // based on:
+        // https://laravel-news.com/split-log-levels-between-stdout-and-stderr-with-laravel#content-configuring-laravel-to-filter-log-levels
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => FilterHandler::class,
+            'with' => [
+                'handler' => fn () => new StreamHandler('php://stdout'),
+                'minLevelOrList' => max(Logger::toMonologLevel('debug'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
+                'maxLevel' => Logger::toMonologLevel('notice'),
+            ],
         ],
 
         'stderr' => [
             'driver' => 'monolog',
-            'handler' => StreamHandler::class,
+            'handler' => FilterHandler::class,
             'with' => [
-                'stream' => 'php://stderr',
+                'handler' => fn () => new StreamHandler('php://stderr'),
+                'minLevelOrList' => max(Logger::toMonologLevel('warning'), Logger::toMonologLevel(env('LOG_LEVEL', 'debug'))),
+                'maxLevel' => Logger::toMonologLevel('emergency'),
             ],
         ],
 
         'syslog' => [
             'driver' => 'syslog',
-            'level' => 'debug',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
-            'level' => 'debug',
-            // 'path' => storage_path('logs/critical.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
         ],
     ],
 ];
