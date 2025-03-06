@@ -5,6 +5,7 @@ namespace App\Misc;
 use App\Models\AssetPerson;
 use App\Models\Device;
 use App\Models\Manufacturer;
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
@@ -27,6 +28,7 @@ class TransactionDataContainer {
     public ?AssetPerson $appliancePerson;
     public float $installmentCost;
     public string $dayDifferenceBetweenTwoInstallments;
+    public Meter $meter;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
@@ -36,6 +38,8 @@ class TransactionDataContainer {
         $container->totalAmount = $transaction->amount;
         $container->amount = $transaction->amount;
         $container->rawAmount = $transaction->amount;
+
+        $container->meter = $transaction->meter()->first();
 
         try {
             $container->device = $deviceService->getBySerialNumber($transaction->message);

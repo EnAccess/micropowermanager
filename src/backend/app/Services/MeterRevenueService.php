@@ -191,7 +191,7 @@ class MeterRevenueService {
         string $endDate,
     ): array {
         return Meter::query()
-            ->selectRaw('COUNT(meters.serial_number) as registered_connections, connection_groups.name, YEARWEEK(meter_parameters.created_at, 3) as period')
+            ->selectRaw('COUNT(meters.serial_number) as registered_connections, connection_groups.name, YEARWEEK(meters.created_at, 3) as period')
             ->leftJoin('devices', 'devices.device_id', '=', 'meters.id')
             ->leftJoin('addresses', 'addresses.owner_id', '=', 'devices.id')
             ->leftJoin('connection_groups', 'connection_groups.id', '=', 'meters.connection_group_id')

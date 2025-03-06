@@ -256,9 +256,9 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
     Route::post('/', 'MeterTariffController@store');
     Route::put('/{meterTariffId}', 'MeterTariffController@update');
     Route::delete('/{meterTariffId}', 'MeterTariffController@destroy');
-    Route::get('/{meterTariffId}/usage-count', 'MeterTariffMeterParameterController@show');
-    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffMeterParameterController@update');
-    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffMeterParameterController@updateForMeter');
+    Route::get('/{meterTariffId}/usage-count', 'MeterTariffController@showUsageCount');
+    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffController@updateTariff');
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffController@updateForMeter');
 });
 // Transactions
 Route::group(

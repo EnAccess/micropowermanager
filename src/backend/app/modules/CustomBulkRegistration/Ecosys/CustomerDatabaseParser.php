@@ -98,7 +98,6 @@ class CustomerDatabaseParser {
 
                 $meterParameter = $this->createRecordFromCsv($row, MeterParameterService::class);
                 event('accessRatePayment.initialize', $meterParameter);
-                $row['meter_parameter_id'] = $meterParameter->id;
 
                 $this->createRecordFromCsv($row, GeographicalInformationService::class);
                 $meterAddress = new Address();

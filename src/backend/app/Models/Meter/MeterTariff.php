@@ -35,12 +35,12 @@ class MeterTariff extends BaseModel {
     protected $table = 'meter_tariffs';
     protected $guarded = [];
 
-    public function meterParameter(): HasMany {
-        return $this->hasMany(MeterParameter::class, 'tariff_id');
+    public function meters(): HasMany {
+        return $this->hasMany(Meter::class, 'tariff_id');
     }
 
-    public function meterParametersCount() {
-        return $this->meterParameter()
+    public function metersCount() {
+        return $this->meters()
             ->selectRaw('tariff_id, count(*) as aggregate')
             ->groupBy('tariff_id');
     }
