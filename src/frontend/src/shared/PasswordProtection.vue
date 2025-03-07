@@ -1,13 +1,38 @@
 <template>
-  <div></div>
+  <div>
+    <confirmation-box
+      ref="passwordDialog"
+      title="Password is not set"
+      message="Please contact your administrator to set the password"
+      :confirm-text="$tc('words.ok')"
+    />
+
+    <confirmation-box
+      ref="passwordInputDialog"
+      :title="$tc('phrases.passwordProtected')"
+      :message="$tc('phrases.passwordProtected', 2)"
+      :confirm-text="$tc('words.confirm')"
+      :cancel-text="$tc('words.cancel')"
+      input-type="password"
+    />
+
+    <confirmation-box
+      ref="passwordErrorDialog"
+      title="Wrong Password"
+      message="The password you entered is incorrect."
+      :confirm-text="$tc('words.ok')"
+    />
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex"
 import { EventBus } from "@/shared/eventbus"
+import ConfirmationBox from "@/shared/ConfirmationBox.vue"
 
 export default {
   name: "PasswordProtection",
+  components: { ConfirmationBox },
 
   mounted() {
     EventBus.$on("checkPageProtection", (to) => {
@@ -22,41 +47,24 @@ export default {
     }),
   },
   methods: {
-    confirm(path) {
+    async confirm(path) {
       if (this.protectedPages.includes(path)) {
-        if (this.password === "" || this.password === null) {
-          this.$swal
-            .fire(
-              "Password is not set",
-              "Please contact your administrator to set the password",
-              "warning",
-            )
-            .then(() => {
-              this.$router.replace("/")
-            })
+        if (!this.password) {
+          const result = await this.$refs.passwordDialog.show()
+          console.log(result)
+          if (result.confirmed) {
+            this.$router.replace("/")
+          }
         } else {
-          this.$swal({
-            type: "question",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            title: this.$tc("phrases.passwordProtected"),
-            text: this.$tc("phrases.passwordProtected", 2),
-            inputType: "password",
-            input: "password",
-            inputPlaceholder: this.$tc("words.password"),
+          const result = await this.$refs.passwordInputDialog.show()
+          console.log(result)
 
-            inputValidator: (value) => {
-              if (value !== this.password) {
-                this.$swal({
-                  type: "error",
-                  text: this.$tc("phrases.wrongPassword"),
-                  timer: 1000,
-                }).then(() => {
-                  this.$router.replace("/")
-                })
-              }
-            },
-          })
+          if (result.confirmed && result.inputValue === this.password) {
+            console.log("Access granted")
+          } else {
+            await this.$refs.passwordErrorDialog.show()
+            this.$router.replace("/")
+          }
         }
       }
     },
