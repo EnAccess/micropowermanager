@@ -40,7 +40,7 @@ class AssetPersonController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param AssetType $assetType
+     * @param Asset     $asset
      * @param Person    $person
      * @param Request   $request
      *

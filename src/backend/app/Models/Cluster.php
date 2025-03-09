@@ -13,8 +13,8 @@ use MPM\Target\TargetAssignable;
  *
  * @property int    $id
  * @property string $name
- * @property int manager_id
- * @property string geo_data
+ * @property int $manager_id
+ * @property string $geo_data
  * @property string $updated_at
  * @property string $created_at
  */

@@ -28,6 +28,8 @@ interface IBaseService {
     /** @param T $model */
     public function delete(Model $model): ?bool;
 
-    /** @return array<array-key, T>|Collection<array-key, T>|LengthAwarePaginator */
+    /**
+     * @return Collection|LengthAwarePaginator
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator;
 }
