@@ -17,6 +17,9 @@ use MPM\Target\TargetAssignable;
  * @property string $geo_data
  * @property string $updated_at
  * @property string $created_at
+ * @property int $population
+ * @property int $meterCount
+ * @property int $revenue
  */
 class Cluster extends BaseModel implements TargetAssignable {
     use HasFactory;

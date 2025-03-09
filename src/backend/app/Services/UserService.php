@@ -16,7 +16,11 @@ class UserService {
 
     public function create(array $userData, ?int $companyId = null): User {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
-        $companyId = $companyId ?? auth('api')->payload()->get('companyId');
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
+        $payload = $guard->payload();
+        $companyId ??= $payload->get('companyId');
+
 
         /** @var User $user */
         $user = $this->buildQuery()->newQuery()->create([
