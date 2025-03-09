@@ -83,7 +83,7 @@ class AccessRate {
     /**
      * @param TransactionDataContainer $transactionData
      *
-     * @return int
+     * @return TransactionDataContainer
      *
      * @deprecated
      */

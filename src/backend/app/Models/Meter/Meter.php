@@ -8,6 +8,7 @@ use App\Models\Base\BaseModel;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
+use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -85,5 +86,9 @@ class Meter extends BaseModel {
 
     public function getId(): int {
         return $this->id;
+    }
+
+    public function geo(): MorphOne {
+        return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 }

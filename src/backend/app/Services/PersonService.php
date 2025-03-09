@@ -185,7 +185,7 @@ class PersonService implements IBaseService {
         return $person;
     }
 
-    public function getByPhoneNumber($phoneNumber): ?Person {
+    public function getByPhoneNumber($phoneNumber): Person {
         return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
     }

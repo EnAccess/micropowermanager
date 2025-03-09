@@ -6,6 +6,7 @@ use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
+use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
@@ -25,7 +26,9 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property string $type
  * @property string $sender
  * @property string $message
+ * @property string $meter
  * @property string $original_transaction_type
+ *
  */
 class Transaction extends BaseModel {
     use RelationsManager;
@@ -33,6 +36,11 @@ class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
+    protected $casts = ['transaction_ids' => 'array'];
+
+    public function getTransactionIdsAttribute(){
+        return explode(',', $this->attributes['transaction_ids'] ?? '');
+    }
     public function originalTransaction(): MorphTo {
         return $this->morphTo();
     }
@@ -144,5 +152,9 @@ class Transaction extends BaseModel {
 
     public function originalWaveMoney(): BelongsToMorph {
         return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
+    }
+
+    public function meter(){
+        return $this->belongsTo(Meter::class, 'message', 'serial_number');
     }
 }
