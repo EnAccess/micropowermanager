@@ -30,7 +30,13 @@ class MailHelper implements MailHelperInterface {
         $this->mailer->Password = $this->mailSettings['password'];
         $this->mailer->From = $this->mailSettings['default_sender'];
         $this->mailer->SMTPDebug = $this->mailSettings['debug_level'];
+        $this->mailer->Debugoutput = 'error_log';
         $this->mailer->isSMTP();
+        // When debugging Email sending locally it might helpful to explicitly set a Hostname
+        // as certain mail providers might block traffic with Hostname `localhost`.
+        // And `$_SERVER['SERVER_NAME']` is `localhost` in our local development setup.
+        // https://phpmailer.github.io/PHPMailer/classes/PHPMailer-PHPMailer-PHPMailer.html#property_Hostname
+        // $this->mailer->Hostname = gethostname();
     }
 
     /**
