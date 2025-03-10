@@ -7485,16 +7485,6 @@ paths:
       tags:
         - Endpoints
       security: []
-  /api/restrictions:
-    post:
-      summary: ''
-      operationId: postApiRestrictions
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Endpoints
-      security: []
   /api/protected-pages:
     get:
       summary: ''
