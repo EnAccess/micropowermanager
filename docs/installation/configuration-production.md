@@ -59,6 +59,7 @@ Then
 ```php
 $mailHelper = app(App\Helpers\MailHelper::class);
 $mailHelper->sendPlain('test@example.org', '[TEST] Welcome to MicroPowerManager', 'lorem ipsum');
+$mailHelper->sendViaTemplate('test@example.org', '[TEST] Welcome to MicroPowerManager', 'templates.mail.register_welcome', ['userName' => 'Lorem', 'companyName' => 'Ipsum']);
 ```
 
 ## Logging
