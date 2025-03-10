@@ -171,14 +171,6 @@
         </form>
       </div>
     </widget>
-    <md-dialog :md-active.sync="ModalVisibility">
-      <md-dialog-content>
-        <stepper
-          :purchasingType="'maintenance'"
-          v-if="ModalVisibility"
-        ></stepper>
-      </md-dialog-content>
-    </md-dialog>
     <redirection-modal
       :redirection-url="redirectionUrl"
       :imperative-item="imperativeItem"
@@ -215,7 +207,6 @@ export default {
       miniGridService: new MiniGridService(),
       cityService: new CityService(),
       maintenanceService: new MaintenanceService(),
-      ModalVisibility: false,
       loading: false,
       imperativeItem: "Mini-Grid",
       redirectDialogActive: false,
@@ -231,12 +222,8 @@ export default {
       this.getMiniGrids()
       this.getCities()
     })
-    EventBus.$on("closeModal", this.closeModal)
   },
   methods: {
-    closeModal() {
-      this.ModalVisibility = false
-    },
     async getMiniGrids() {
       try {
         this.miniGrids = await this.miniGridService.getMiniGrids()
@@ -273,15 +260,9 @@ export default {
         this.onClose()
       } catch (e) {
         this.loading = false
-        if (e.status_code === 409) {
-          this.alertNotify("warn", e.message)
-          this.ModalVisibility = true
-        } else {
-          this.alertNotify("error", e.message)
-        }
+        this.alertNotify("error", e.message)
       }
     },
-
     onClose() {
       EventBus.$emit("newUserClosed", false)
     },
