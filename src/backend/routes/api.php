@@ -108,8 +108,7 @@ Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], sta
 // Maintenance
 Route::group(['prefix' => '/maintenance', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'MaintenanceUserController@index');
-    Route::post('/user', 'MaintenanceUserController@store')
-        ->middleware('restriction:maintenance-user');
+    Route::post('/user', 'MaintenanceUserController@store');
 });
 // Manufacturers
 Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static function () {
@@ -294,7 +293,6 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::post('/restrictions', 'RestrictionController@store');
 Route::get('/protected-pages', 'ProtectedPageController@index');
 
 Route::group(['prefix' => 'companies'], static function () {

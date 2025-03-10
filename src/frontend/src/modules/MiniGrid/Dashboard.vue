@@ -227,17 +227,6 @@
           </div>
         </div>
       </transition>
-      <!-- purchasing modal-->
-      <md-dialog :md-active.sync="ModalVisibility">
-        <md-dialog-content>
-          <stepper
-            :watchingMiniGrids="watchingMiniGrids"
-            :purchasingType="'logger'"
-            v-if="ModalVisibility"
-          />
-        </md-dialog-content>
-      </md-dialog>
-      <!-- purchasing modal-->
     </section>
   </div>
 </template>
@@ -255,9 +244,7 @@ import { MiniGridService } from "@/services/MiniGridService"
 import { BatchRevenueService } from "@/services/BatchRevenueService"
 import { EventBus } from "@/shared/eventbus"
 import i18n from "@/i18n"
-import Stepper from "@/shared/stepper.vue"
 import { ICONS, MappingService } from "@/services/MappingService"
-import Widget from "@/shared/widget"
 import { DeviceAddressService } from "@/services/DeviceAddressService"
 import moment from "moment"
 
@@ -267,11 +254,9 @@ export default {
     RevenueTargetPerCustomerType,
     MiniGridMap,
     RevenueTrends,
-    Stepper,
     BoxGroup,
     TicketsOverview,
     RevenuePerCustomerType,
-    Widget,
   },
   mixins: [currency, notify],
   data() {
@@ -280,13 +265,6 @@ export default {
       mappingService: new MappingService(),
       batchRevenueService: new BatchRevenueService(),
       deviceAddressService: new DeviceAddressService(),
-      ModalVisibility: false,
-      watchingMiniGrids: [],
-      activeStep: "firstStep",
-      firstStep: false,
-      secondStep: false,
-      thirdStep: false,
-      purchaseCode: "",
       showModal: false,
       miniGridData: {},
       miniGridId: null,
@@ -335,7 +313,6 @@ export default {
   },
   mounted() {
     this.getMiniGridData()
-    EventBus.$on("closeModal", this.closeModal)
     EventBus.$on("getEditedGeoDataItems", (editedItems) => {
       this.$swal({
         title: this.$tc("phrases.relocateMeter", 1),
@@ -608,9 +585,6 @@ export default {
         this.trendChartData.base.splice(50)
       }
       return this.trendChartData.base
-    },
-    closeModal() {
-      this.ModalVisibility = false
     },
     editMiniGrid() {
       this.showModal = true
