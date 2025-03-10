@@ -181,7 +181,6 @@
 
 <script>
 import widget from "../../shared/widget"
-import Stepper from "../../shared/stepper"
 import { CityService } from "@/services/CityService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { MaintenanceService } from "@/services/MaintenanceService"
@@ -192,7 +191,7 @@ import { notify } from "@/mixins/notify"
 export default {
   name: "NewUser",
   mixins: [notify],
-  components: { widget, Stepper, RedirectionModal },
+  components: { widget, RedirectionModal },
   props: {
     newUser: {
       type: Boolean,
