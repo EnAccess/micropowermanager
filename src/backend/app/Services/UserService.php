@@ -19,7 +19,7 @@ class UserService {
         /** @var \Tymon\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
         $payload = $guard->payload();
-        $companyId ??= $payload->get('companyId');
+        $companyId = $payload->get('companyId');
 
         /** @var User $user */
         $user = $this->buildQuery()->newQuery()->create([
