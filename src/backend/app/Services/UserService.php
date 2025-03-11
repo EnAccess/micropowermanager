@@ -18,8 +18,9 @@ class UserService {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
         /** @var \Tymon\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
-        $payload = $guard->payload();
-        $companyId = $payload->get('companyId');
+        $payload = $guard->check() ? $guard->payload() : null;
+        $companyId ??= $payload?->get('companyId');
+
 
         /** @var User $user */
         $user = $this->buildQuery()->newQuery()->create([
