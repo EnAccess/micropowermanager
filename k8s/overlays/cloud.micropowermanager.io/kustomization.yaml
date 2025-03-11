@@ -9,9 +9,9 @@ resources:
 
 images:
   - name: enaccess/micropowermanager-backend:latest
-    newTag: 0.0.18
+    newTag: 0.0.19
   - name: enaccess/micropowermanager-frontend:latest
-    newTag: 0.0.18
+    newTag: 0.0.19
 
 patches:
   - path: configmap-cloud-backend.yaml
