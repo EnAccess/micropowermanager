@@ -30,7 +30,7 @@ class MaintenanceRequest extends FormRequest {
             'city_id' => 'sometimes|exists:tenant.cities,id',
             'street' => 'sometimes|string|min:3',
             'email' => 'sometimes|email',
-            'phone' => 'required|min:11|regex:(^\+)|numeric',
+            'phone' => 'required|min:11|regex:(^\+)',
             'nationality' => 'sometimes|exists:tenant.countries,country_code',
         ];
     }
