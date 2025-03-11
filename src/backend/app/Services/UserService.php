@@ -21,7 +21,6 @@ class UserService {
         $payload = $guard->check() ? $guard->payload() : null;
         $companyId ??= $payload?->get('companyId');
 
-
         /** @var User $user */
         $user = $this->buildQuery()->newQuery()->create([
             'name' => $userData['name'],
