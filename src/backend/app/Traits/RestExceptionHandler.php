@@ -29,13 +29,13 @@ trait RestExceptionHandler {
             case $e instanceof JWTException:
                 return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
             case $e instanceof ModelNotFoundException:
-                $response = $this->modelNotFound(['model not found '.implode(' ', $e->getIds()), $e->getMessage(), $e->getTrace()]);
+                $response = $this->modelNotFound('model not found '.implode(' ', $e->getIds()));
                 break;
             case $e instanceof ValidationException:
                 $response = $this->validationError($e);
                 break;
             default:
-                $response = $this->badRequest([$e->getMessage(), $e->getTrace()]);
+                $response = $this->badRequest($e->getMessage());
         }
 
         return $response;
@@ -77,27 +77,26 @@ trait RestExceptionHandler {
         );
     }
 
-   /**
- * Generates validation error response.
- *
- * @param array|string $errors
- * @param int          $status_code
- *
- * @return JsonResponse
- */
-protected function validationError($errors = 'Validation failed', $status_code = 422) {
-    $errorMessages = ($errors instanceof \Illuminate\Support\MessageBag) ? $errors->toArray() : [$errors];
+    /**
+     * Generates validation error response.
+     *
+     * @param array|string $errors
+     * @param int          $status_code
+     *
+     * @return JsonResponse
+     */
+    protected function validationError($errors = 'Validation failed', $status_code = 422) {
+        $errorMessages = ($errors instanceof \Illuminate\Support\MessageBag) ? $errors->toArray() : [$errors];
 
-    return $this->jsonResponse(
-        [
-            'message' => 'Validation failed',
-            'errors' => $errorMessages,
-            'status_code' => $status_code,
-        ],
-        $status_code
-    );
-}
-
+        return $this->jsonResponse(
+            [
+                'message' => 'Validation failed',
+                'errors' => $errorMessages,
+                'status_code' => $status_code,
+            ],
+            $status_code
+        );
+    }
 
     /**
      * Determines if the exception type is Model not found exception.

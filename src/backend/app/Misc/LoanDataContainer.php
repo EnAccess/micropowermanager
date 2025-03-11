@@ -10,7 +10,6 @@ use App\Models\AssetRate;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property int $id
  * @property int $amount
  * @property int $tariff_id
- * @property int $period when the payment repeats itself
+ * @property int $period    when the payment repeats itself
  */
 class AccessRate extends BaseModel {
     use HasFactory;

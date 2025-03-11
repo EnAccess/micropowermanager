@@ -68,7 +68,7 @@ class MiniGridController extends Controller {
      *
      * @bodyParam name string The name of the MiniGrid.
      *
-     * @param int              $miniGridId
+     * @param int                   $miniGridId
      * @param UpdateMiniGridRequest $request
      *
      * @return ApiResource

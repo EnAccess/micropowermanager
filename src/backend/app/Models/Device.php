@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
-use App\Models\Person\Person;
-use App\Models\Meter\MeterTariff;
 use App\Models\Meter\Meter;
+use App\Models\Meter\MeterTariff;
+use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int $connection_group_id
+ * @property int            $connection_group_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\Models\Device $device
- * @property \App\Models\Manufacturer $manufacturer
+ * @property Device         $device
+ * @property Manufacturer   $manufacturer
  */
 class Device extends BaseModel {
     use HasFactory;
@@ -50,24 +50,21 @@ class Device extends BaseModel {
         return $this->belongsTo(MeterTariff::class);
     }
 
-    public function accessRate()
-    {
-        /**
+    public function accessRate() {
+        /*
          *
          * TODO: Implement the accessRate logic
          *
-        */
+         */
     }
 
     public function manufacturer(): BelongsTo {
         return $this->belongsTo(Manufacturer::class);
     }
 
-    public function getManufacturerAttribute()
-    {
+    public function getManufacturerAttribute() {
         return $this->manufacturer->name ?? 'Unknown Manufacturer';  // Adjust as needed
     }
-
 
     public function connectionType(): BelongsTo {
         return $this->belongsTo(ConnectionType::class);

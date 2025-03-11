@@ -10,7 +10,6 @@ use App\Services\ApplianceTypeService;
 use Illuminate\Http\Request;
 
 class AssetTypeController extends Controller {
-
     /**
      * @var ApplianceTypeService
      */

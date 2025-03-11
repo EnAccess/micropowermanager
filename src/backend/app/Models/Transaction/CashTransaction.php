@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int $user_id
- * @property int $status
- * @property int $manufacturer_transaction_id
+ * @property int    $user_id
+ * @property int    $status
+ * @property int    $manufacturer_transaction_id
  * @property string $manufacturer_transaction_type
  */
 class CashTransaction extends BaseModel implements IRawTransaction {

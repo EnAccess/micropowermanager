@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * Class AssetRate.
  *
- * @property int    $asset_person_id
- * @property int    $rate_cost
- * @property int    $remaining
- * @property string $due_date
+ * @property int         $asset_person_id
+ * @property int         $rate_cost
+ * @property int         $remaining
+ * @property string      $due_date
  * @property AssetPerson $assetPerson
  */
 class AssetRate extends BaseModel {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Meter\MeterTariff;
 use App\Services\MeterTariffService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,7 +35,7 @@ class MeterTariffController extends Controller {
      *
      * @responseFile responses/tariffs/tariff.detail.json
      *
-     * @param int $meterTariffId
+     * @param int     $meterTariffId
      * @param Request $request
      *
      * @return ApiResource

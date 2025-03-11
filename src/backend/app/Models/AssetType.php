@@ -28,4 +28,3 @@ class AssetType extends BaseModel {
         return $this->delete();
     }
 }
-

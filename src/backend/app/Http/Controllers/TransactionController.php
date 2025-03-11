@@ -34,13 +34,12 @@ class TransactionController extends Controller {
         $transaction = $transactionProvider->saveCommonData();
         event('transaction.saved', $transactionProvider);
 
-        if(isset($transaction->id)) {
+        if (isset($transaction->id)) {
             ProcessPayment::dispatch($transaction->id)
                 ->allOnConnection('redis')
                 ->onQueue(config('services.queues.payment'));
-        }else{
+        } else {
             // TODO: LOG ERROR
-
         }
     }
 }

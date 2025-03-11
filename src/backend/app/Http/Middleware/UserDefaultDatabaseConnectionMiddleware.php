@@ -92,7 +92,6 @@ class UserDefaultDatabaseConnectionMiddleware {
             $user = auth()->user();
             $companyId = $this->databaseProxyManager->findByEmail($user->email)->getCompanyId();
 
-
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }

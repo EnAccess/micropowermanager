@@ -127,8 +127,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return $this->id;
     }
 
-    public function meters()
-    {
+    public function meters() {
         return $this->hasMany(Meter::class);
     }
 }

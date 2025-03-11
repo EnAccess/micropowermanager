@@ -13,5 +13,4 @@ interface IRawTransaction {
     public function newQuery();
 
     public function save();
-
 }

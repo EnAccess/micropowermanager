@@ -17,7 +17,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::group(

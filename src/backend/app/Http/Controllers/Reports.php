@@ -14,7 +14,6 @@ use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
 use Generator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -237,8 +236,8 @@ class Reports {
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param string               $dateRange
+     * @param Worksheet  $sheet
+     * @param string     $dateRange
      * @param Collection $transactions
      *
      * @throws CustomerGroupNotFound
@@ -268,8 +267,8 @@ class Reports {
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param bool                 $addPurchaseBreakDown
+     * @param Worksheet                    $sheet
+     * @param bool                         $addPurchaseBreakDown
      * @param Collection<int, Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
@@ -292,7 +291,7 @@ class Reports {
 
             if (\count($transaction->paymentHistories)) {
                 $paymentHistory = $transaction->paymentHistories[0];
-                if(isset($paymentHistory->payer->name) && isset($paymentHistory->payer->surname)) {
+                if (isset($paymentHistory->payer->name) && isset($paymentHistory->payer->surname)) {
                     $sheet->setCellValue(
                         'I'.$sheetIndex,
                         $paymentHistory->payer->name.' '.
@@ -396,13 +395,13 @@ class Reports {
     }
 
     /**
- * @param Worksheet            $sheet
- * @param Collection|ConnectionGroup[] $connectionGroups
- * @param string               $startingColumn
- * @param int                  $startingRow
- *
- * @throws \PhpOffice\PhpSpreadsheet\Exception
- */
+     * @param Worksheet                    $sheet
+     * @param Collection|ConnectionGroup[] $connectionGroups
+     * @param string                       $startingColumn
+     * @param int                          $startingRow
+     *
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
     private function addConnectionGroupsToXLS(
         Worksheet $sheet,
         $connectionGroups,
@@ -412,7 +411,7 @@ class Reports {
         $tmpConnectionTypeName = null;
 
         foreach ($connectionGroups as $connectionGroup) {
-            if(!isset($connectionGroup->name)) {
+            if (!isset($connectionGroup->name)) {
                 continue;
             }
             $this->storeConnectionGroupColumn(

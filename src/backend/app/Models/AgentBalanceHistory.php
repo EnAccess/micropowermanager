@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $date
  * @property string $day
  * @property string $period
- * @property float $revenue
+ * @property float  $revenue
  */
 class AgentBalanceHistory extends BaseModel {
     use HasFactory;
