@@ -1,6 +1,6 @@
 <?php
 
-namespace MPM\Tenant\ApiResolvers;
+namespace MPM\TenantResolver\ApiResolvers;
 
 use Illuminate\Http\Request;
 

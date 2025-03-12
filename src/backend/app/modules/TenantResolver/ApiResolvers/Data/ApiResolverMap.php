@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace MPM\Tenant\ApiResolvers\Data;
+namespace MPM\TenantResolver\ApiResolvers\Data;
 
-use MPM\Tenant\ApiResolvers\AfricasTalkingApiResolver;
-use MPM\Tenant\ApiResolvers\AndroidGatewayCallbackApiResolver;
-use MPM\Tenant\ApiResolvers\DataExportResolver;
-use MPM\Tenant\ApiResolvers\DownloadingReportsResolver;
-use MPM\Tenant\ApiResolvers\SwiftaPaymentApiResolver;
-use MPM\Tenant\ApiResolvers\TestApiResolver;
-use MPM\Tenant\ApiResolvers\ViberMessagingApiResolver;
-use MPM\Tenant\ApiResolvers\WaveMoneyApiResolver;
+use MPM\TenantResolver\ApiResolvers\AfricasTalkingApiResolver;
+use MPM\TenantResolver\ApiResolvers\AndroidGatewayCallbackApiResolver;
+use MPM\TenantResolver\ApiResolvers\DataExportResolver;
+use MPM\TenantResolver\ApiResolvers\DownloadingReportsResolver;
+use MPM\TenantResolver\ApiResolvers\SwiftaPaymentApiResolver;
+use MPM\TenantResolver\ApiResolvers\TestApiResolver;
+use MPM\TenantResolver\ApiResolvers\ViberMessagingApiResolver;
+use MPM\TenantResolver\ApiResolvers\WaveMoneyApiResolver;
 
 class ApiResolverMap {
     public const VIBER_API = 'api/viber-messaging/webhook';

@@ -1,6 +1,6 @@
 <?php
 
-namespace MPM\Tenant\ApiResolvers;
+namespace MPM\TenantResolver\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
