@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
-namespace MPM\Sharding\ApiResolvers;
+namespace MPM\TenantResolver\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 
-class AfricasTalkingApiResolver implements ApiResolverInterface {
+class DownloadingReportsResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
         $segments = $request->segments();
         if (count($segments) !== 5) {
             throw new ValidationException('failed to parse company identifier from the webhook');
         }
 
-        $companyId = $segments[3];
+        $companyId = $segments[4];
 
         return (int) $companyId;
     }

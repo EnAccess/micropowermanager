@@ -40,13 +40,13 @@ abstract class AbstractSharedCommand extends Command {
         if ($companyId) {
             $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
         } else {
-            $this->runForAllShards($databaseProxyManagerService, $input, $output);
+            $this->runForAllTenants($databaseProxyManagerService, $input, $output);
         }
 
         return $this->EXECUTION_TYPE;
     }
 
-    private function runForAllShards(
+    private function runForAllTenants(
         DatabaseProxyManagerService $databaseProxyManagerService,
         InputInterface $input,
         OutputInterface $output,

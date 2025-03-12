@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MPM\Sharding;
+namespace MPM\TenantResolver;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use MPM\Sharding\ApiResolvers\ApiResolverInterface;
-use MPM\Sharding\ApiResolvers\Data\ApiResolverMap;
+use MPM\TenantResolver\ApiResolvers\ApiResolverInterface;
+use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
 
 class ApiCompanyResolverService {
     public function __construct(private ApiResolverMap $apiResolverMap) {}

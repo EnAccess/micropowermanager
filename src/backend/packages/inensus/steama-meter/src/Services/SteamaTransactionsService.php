@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -237,7 +238,10 @@ class SteamaTransactionsService implements ISynchronizeService {
         ]);
 
         $token->transaction()->associate($mainTransaction);
-        $token->meter()->associate($mainTransaction->meter);
+        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
+        if ($meter) {
+            $token->meter()->associate($meter);
+        }
         $token->save();
 
         return $token;

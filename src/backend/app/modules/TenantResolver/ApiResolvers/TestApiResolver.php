@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MPM\Sharding\ApiResolvers;
+namespace MPM\TenantResolver\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
