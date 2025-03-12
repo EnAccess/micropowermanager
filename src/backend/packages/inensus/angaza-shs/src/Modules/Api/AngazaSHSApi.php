@@ -5,6 +5,7 @@ namespace Inensus\AngazaSHS\Modules\Api;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +22,7 @@ class AngazaSHSApi implements IManufacturerAPI {
         private ApiRequests $apiRequests,
     ) {}
 
-    public function chargeMeter(TransactionDataContainer $transactionContainer): array {
+    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
         $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
         $minimumPurchaseAmount = $transactionContainer->installmentCost;
         $minimumPurchaseAmountPerDay =
@@ -87,7 +88,7 @@ class AngazaSHSApi implements IManufacturerAPI {
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearMeter(Meter $meters) {
+    public function clearDevice(Device $device) {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }
