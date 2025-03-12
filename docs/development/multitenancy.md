@@ -8,11 +8,9 @@ order: 4
 > MPM's multitenancy feature was sometimes called **sharding** (and the corresponding databases **shards**).
 > We are moving away from this notion in favour of **multitenancy** and **tenants**.
 
-## Sharding in Micropower Manager
+## Multitenancy in Micropower Manager
 
-Sharding is a technique employed to partition a large database into smaller, more agile, and easily manageable segments
-known as data shards. In the context of Micropower Manager, sharding is integral to the implementation of Software as a
-Service (SaaS) functionality.
+Multitenancy in Micropower Manager is implemented using a database-per-tenant approach, where each tenant has a dedicated database. This ensures data isolation, enhances security, and allows for more flexible scaling. By storing each tenant's data in a separate database, Micropower Manager enables efficient management of Software as a Service (SaaS) functionality while maintaining performance and customization per tenant.
 
 ### Tenant Representation
 
