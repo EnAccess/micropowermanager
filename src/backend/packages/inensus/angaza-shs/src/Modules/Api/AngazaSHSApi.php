@@ -82,7 +82,7 @@ class AngazaSHSApi implements IManufacturerAPI {
     }
 
     /**
-     * @param Meter $meters
+     * @param Device $device
      *
      * @return void
      *
