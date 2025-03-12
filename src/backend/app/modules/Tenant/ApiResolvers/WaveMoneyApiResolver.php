@@ -1,11 +1,11 @@
 <?php
 
-namespace MPM\Sharding\ApiResolvers;
+namespace MPM\Tenant\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 
-class DownloadingReportsResolver implements ApiResolverInterface {
+class WaveMoneyApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
         $segments = $request->segments();
         if (count($segments) !== 5) {

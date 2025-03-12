@@ -1,18 +1,20 @@
 <?php
 
-namespace MPM\Sharding\ApiResolvers;
+declare(strict_types=1);
+
+namespace MPM\Tenant\ApiResolvers;
 
 use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
 
-class JetsonApiResolver implements ApiResolverInterface {
+class ViberMessagingApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
         $segments = $request->segments();
-        if (count($segments) < 6) {
+        if (count($segments) !== 4) {
             throw new ValidationException('failed to parse company identifier from the webhook');
         }
 
-        $companyId = $segments[5];
+        $companyId = $segments[3];
 
         return (int) $companyId;
     }
