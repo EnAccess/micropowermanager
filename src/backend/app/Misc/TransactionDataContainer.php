@@ -39,7 +39,8 @@ class TransactionDataContainer {
         $container->amount = $transaction->amount;
         $container->rawAmount = $transaction->amount;
 
-        $container->meter = $transaction->meter()->first();
+        $meter = Meter::where('serial_number', $transaction->message)->first();
+        $container->meter = $meter;
 
         try {
             $container->device = $deviceService->getBySerialNumber($transaction->message);

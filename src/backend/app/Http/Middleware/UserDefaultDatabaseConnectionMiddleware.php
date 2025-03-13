@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
-use MPM\Sharding\ApiCompanyResolverService;
-use MPM\Sharding\ApiResolvers\Data\ApiResolverMap;
+use MPM\TenantResolver\ApiCompanyResolverService;
+use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
 
 /**
  * The goal is to have the database connection on each incomming http request.

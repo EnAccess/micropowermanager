@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -381,7 +382,10 @@ class TransactionService {
             'load' => $chargedEnergy,
         ]);
         $token->transaction()->associate($mainTransaction);
-        $token->meter()->associate($meterParameter->meter);
+        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
+        if ($meter) {
+            $token->meter()->associate($meter);
+        }
         $token->save();
 
         return $token;
