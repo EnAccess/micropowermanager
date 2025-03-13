@@ -20,7 +20,7 @@ const vuexLocalStorage = new VuexPersist({
     },
     settings: {
       mainSettings: state.settings.mainSettings,
-      ticketSettings: state.settings.ticketSettings,
+
       mapSettings: state.settings.mapSettings,
     },
     resolution: {
