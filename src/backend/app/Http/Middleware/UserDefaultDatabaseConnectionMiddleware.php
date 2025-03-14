@@ -97,7 +97,6 @@ class UserDefaultDatabaseConnectionMiddleware {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
             $companyId = auth('api')->payload()->get('companyId');
-
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }

@@ -7,14 +7,11 @@ use App\Http\Requests\AssetTypeUpdateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\AssetType;
 use App\Services\ApplianceTypeService;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
 class AssetTypeController extends Controller {
-    use SoftDeletes;
-
     /**
-     * @var AssetType
+     * @var ApplianceTypeService
      */
     private $applianceTypeService;
 
@@ -39,7 +36,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function store(AssetTypeCreateRequest $request): ApiResource {
-        $appliance = $this->applianceTypeService->createApplianceType($request);
+        $appliance = $this->applianceTypeService->createApplianceType($request->validated());
 
         return new ApiResource($appliance);
     }
@@ -53,7 +50,7 @@ class AssetTypeController extends Controller {
      * @return ApiResource
      */
     public function update(AssetTypeUpdateRequest $request, AssetType $assetType): ApiResource {
-        $appliance = $this->applianceTypeService->updateApplianceType($request, $assetType);
+        $appliance = $this->applianceTypeService->updateApplianceType($request->validated(), $assetType);
 
         return new ApiResource($appliance);
     }

@@ -115,7 +115,7 @@ class RevenueController extends Controller {
      *
      * @param Request $request
      *
-     * @return array|mixed
+     * @return ApiResource
      */
     public function revenueData(Request $request): ApiResource {
         $startDate = date('Y-m-d', strtotime($request->get('start_date') ?? '2018-01-01'));
@@ -135,7 +135,7 @@ class RevenueController extends Controller {
             $targets = $this->target->targetForCluster($miniGridIds, $endDate)->get();
             $target_data = $this->revenueService->fetchTargets($targets);
             $targets = $targets[0];
-            $targets->targets = $target_data;
+            $targets->setAttribute('targets', $target_data);
         }
 
         $formattedTarget = [];
@@ -152,7 +152,7 @@ class RevenueController extends Controller {
                     'average_revenue_per_month' => '-',
                 ];
             }
-        } elseif ($targets !== null && $targetType === 'mini-grid') {
+        } elseif ($targets !== null && $targetType === 'mini-grid' && isset($targets->subTargets)) {
             foreach ($targets->subTargets as $subTarget) {
                 $formattedTarget[$subTarget->connectionType->name] = [
                     'new_connections' => $subTarget->new_connections,

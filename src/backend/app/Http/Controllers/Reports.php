@@ -14,7 +14,6 @@ use App\Models\Target;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
 use Generator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -237,9 +236,9 @@ class Reports {
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param string               $dateRange
-     * @param Builder[]|Collection $transactions
+     * @param Worksheet  $sheet
+     * @param string     $dateRange
+     * @param Collection $transactions
      *
      * @throws CustomerGroupNotFound
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -268,9 +267,9 @@ class Reports {
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param bool                 $addPurchaseBreakDown
-     * @param Builder[]|Collection $transactions
+     * @param Worksheet                    $sheet
+     * @param bool                         $addPurchaseBreakDown
+     * @param Collection<int, Transaction> $transactions
      *
      * @throws CustomerGroupNotFound
      */
@@ -291,11 +290,14 @@ class Reports {
             $sheet->setCellValue('F'.$sheetIndex, $transaction->amount);
 
             if (\count($transaction->paymentHistories)) {
-                $sheet->setCellValue(
-                    'I'.$sheetIndex,
-                    $transaction->paymentHistories[0]->payer->name.' '.
-                    $transaction->paymentHistories[0]->payer->surname
-                );
+                $paymentHistory = $transaction->paymentHistories[0];
+                if (isset($paymentHistory->payer->name) && isset($paymentHistory->payer->surname)) {
+                    $sheet->setCellValue(
+                        'I'.$sheetIndex,
+                        $paymentHistory->payer->name.' '.
+                        $paymentHistory->payer->surname
+                    );
+                }
             }
             $sheet->setCellValue('K'.$sheetIndex, $balance);
 
@@ -393,11 +395,10 @@ class Reports {
     }
 
     /**
-     * @param Worksheet            $sheet
-     * @param                      $connectionGroups
-     * @param string               $startingColumn
-     * @param int                  $startingRow
-     * @param Builder[]|Collection $connectionGroups
+     * @param Worksheet                    $sheet
+     * @param Collection|ConnectionGroup[] $connectionGroups
+     * @param string                       $startingColumn
+     * @param int                          $startingRow
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -410,6 +411,9 @@ class Reports {
         $tmpConnectionTypeName = null;
 
         foreach ($connectionGroups as $connectionGroup) {
+            if (!isset($connectionGroup->name)) {
+                continue;
+            }
             $this->storeConnectionGroupColumn(
                 $connectionGroup->name,
                 $startingColumn
@@ -417,7 +421,9 @@ class Reports {
 
             $sheet->setCellValue($startingColumn.$startingRow, $connectionGroup->name);
 
-            if (($meters = $connectionGroup->meter()->get()) !== null) {
+            $meters = $connectionGroup->meters()->get();
+
+            if ($meters !== null) {
                 foreach ($meters as $meter) {
                     // store column to get them later when payments are placed
                     $accessRate = $meter->tariff->accessRate()->first();
@@ -509,7 +515,7 @@ class Reports {
     }
 
     // holds the connection group and its data for the target
-    private $monthlyTargetDatas = [];
+    private $monthlyTargetData = [];
 
     /**
      * @param int $cityId
@@ -618,9 +624,9 @@ class Reports {
             ->groupBy('connection_group_id')->get();
 
         foreach ($connectionGroupsCount as $connectionGroupCount) {
-            $this->monthlyTargetDatas[$connectionGroupCount->connectionGroup->name] = [
+            $this->monthlyTargetData[$connectionGroupCount->connectionGroup->name] = [
                 'connection_id' => $connectionGroupCount->connectionGroup->id,
-                'connections' => $connectionGroupCount->total,
+                'connections' => $connectionGroupCount->total ?? 0,
                 'energy_per_month' => 0,
                 'revenue' => 0,
                 'average_revenue_per_customer' => 0.0,
@@ -629,10 +635,10 @@ class Reports {
     }
 
     private function getCustomerGroupEnergyUsagePerMonth(array $dates): void {
-        foreach ($this->monthlyTargetDatas as $connectionName => $targetData) {
+        foreach ($this->monthlyTargetData as $connectionName => $targetData) {
             $customerGroupRevenue = $this->sumOfTransactions($targetData['connection_id'], $dates);
             foreach ($customerGroupRevenue as $groupRevenue) {
-                $this->monthlyTargetDatas[$connectionName]['revenue'] += $groupRevenue->revenue;
+                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue->revenue;
 
                 $energyRevenue = $groupRevenue->total;
 
@@ -646,11 +652,11 @@ class Reports {
                 }
                 $tariffPrice /= 100;
                 if ($energyRevenue !== 0) {
-                    $this->monthlyTargetDatas[$connectionName]['energy_per_month'] += $energyRevenue / $tariffPrice;
+                    $this->monthlyTargetData[$connectionName]['energy_per_month'] += $energyRevenue / $tariffPrice;
                 }
-                $this->monthlyTargetDatas[$connectionName]['average_revenue_per_customer']
-                    = $this->monthlyTargetDatas[$connectionName]['revenue'] /
-                    $this->monthlyTargetDatas[$connectionName]['connections'];
+                $this->monthlyTargetData[$connectionName]['average_revenue_per_customer']
+                    = $this->monthlyTargetData[$connectionName]['revenue'] /
+                    $this->monthlyTargetData[$connectionName]['connections'];
             }
         }
     }
@@ -681,7 +687,7 @@ class Reports {
     }
 
     private function addTargetsToXls(Worksheet $sheet): void {
-        foreach ($this->monthlyTargetDatas as $subConnection => $monthlyTargetData) {
+        foreach ($this->monthlyTargetData as $subConnection => $monthlyTargetData) {
             $row = $this->subConnectionRows[$subConnection];
             if (!$row) {
                 continue;

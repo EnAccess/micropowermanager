@@ -10,7 +10,6 @@ use App\Models\AssetRate;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -86,9 +85,9 @@ class LoanDataContainer {
     /**
      * @param $owner
      *
-     * @return Builder[]|Collection
+     * @return Collection<int, AssetRate>
      *
-     * @psalm-return Collection|array<array-key, Builder>
+     * @psalm-return Collection<int, AssetRate>
      */
     private function getCustomerDueRates($owner): Collection {
         $loans = AssetPerson::query()->where('person_id', $owner->id)->pluck('id');
@@ -103,7 +102,7 @@ class LoanDataContainer {
     /**
      * @param string $serialNumber
      *
-     * @return mixed
+     * @return Person|null
      *
      * @throws MeterIsNotInUse
      * @throws MeterIsNotAssignedToCustomer

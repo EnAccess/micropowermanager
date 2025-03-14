@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
- * @property int agent_id
- * @property int device_id
- * @property int status
- * @property string sender
+ * @property int    $agent_id
+ * @property int    $device_id
+ * @property int    $status
+ * @property string $sender
  */
 class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';
