@@ -11,7 +11,6 @@ use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
 use App\Models\Device;
-use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
@@ -125,9 +124,5 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
 
     public function getId(): int {
         return $this->id;
-    }
-
-    public function meters() {
-        return $this->hasMany(Meter::class);
     }
 }

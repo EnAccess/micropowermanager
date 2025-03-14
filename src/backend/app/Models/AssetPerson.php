@@ -47,8 +47,4 @@ class AssetPerson extends BaseModel {
     public function device(): BelongsTo {
         return $this->belongsTo(Device::class);
     }
-
-    public function assetType(): BelongsTo {
-        return $this->belongsTo(AssetType::class);
-    }
 }

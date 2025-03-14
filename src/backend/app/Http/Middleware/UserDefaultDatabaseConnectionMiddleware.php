@@ -89,18 +89,14 @@ class UserDefaultDatabaseConnectionMiddleware {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
-            $user = auth()->user();
-            $companyId = $this->databaseProxyManager->findByEmail($user->email)->getCompanyId();
-
+            $companyId = auth('agent_api')->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
-            $user = auth()->user();
-            $companyId = $this->databaseProxyManager->findByEmail($user->email)->getCompanyId();
-
+            $companyId = auth('api')->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }

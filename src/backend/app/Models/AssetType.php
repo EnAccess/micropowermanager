@@ -11,20 +11,4 @@ class AssetType extends BaseModel {
     public function asset(): HasMany {
         return $this->hasMany(Asset::class);
     }
-
-    public function getApplianceTypes() {
-        return self::all();
-    }
-
-    public function createApplianceType(array $data) {
-        return self::create($data);
-    }
-
-    public function updateApplianceType(array $data) {
-        return $this->update($data);
-    }
-
-    public function deleteApplianceType() {
-        return $this->delete();
-    }
 }

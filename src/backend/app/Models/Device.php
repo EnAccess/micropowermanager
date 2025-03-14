@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,33 +42,5 @@ class Device extends BaseModel {
 
     public function appliance(): HasOne {
         return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
-    }
-
-    public function tariff() {
-        return $this->belongsTo(MeterTariff::class);
-    }
-
-    public function accessRate() {
-        /*
-         *
-         * TODO: Implement the accessRate logic
-         *
-         */
-    }
-
-    public function manufacturer(): BelongsTo {
-        return $this->belongsTo(Manufacturer::class);
-    }
-
-    public function getManufacturerAttribute() {
-        return $this->manufacturer->name ?? 'Unknown Manufacturer';  // Adjust as needed
-    }
-
-    public function connectionType(): BelongsTo {
-        return $this->belongsTo(ConnectionType::class);
-    }
-
-    public function connectionGroup(): BelongsTo {
-        return $this->belongsTo(ConnectionGroup::class);
     }
 }

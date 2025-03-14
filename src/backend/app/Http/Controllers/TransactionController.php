@@ -38,8 +38,6 @@ class TransactionController extends Controller {
             ProcessPayment::dispatch($transaction->id)
                 ->allOnConnection('redis')
                 ->onQueue(config('services.queues.payment'));
-        } else {
-            // TODO: LOG ERROR
         }
     }
 }
