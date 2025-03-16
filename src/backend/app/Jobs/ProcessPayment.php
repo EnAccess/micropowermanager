@@ -16,7 +16,7 @@ class ProcessPayment extends AbstractJob {
     use SerializesModels;
 
     /**
-     * @var Transaction
+     * @var int $transactionId
      */
     protected $transactionId;
 
