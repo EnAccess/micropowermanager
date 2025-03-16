@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id;
- * @property int $database_name;
+ * @property string $database_name;
  * @property int $company_id;
  */
 class CompanyDatabase extends BaseModelCore {
