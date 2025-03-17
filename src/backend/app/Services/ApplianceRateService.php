@@ -153,7 +153,6 @@ class ApplianceRateService {
             ->with(['assetPerson.asset', 'assetPerson.person'])
             ->where('due_date', '<', $toDate->format('Y-m-d'))
             ->where('remaining', '>', 0)
-            ->groupBy('asset_person_id')
             ->orderBy('id');
     }
 }
