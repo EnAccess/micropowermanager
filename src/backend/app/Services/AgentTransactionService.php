@@ -47,7 +47,7 @@ class AgentTransactionService implements IBaseService {
         return $query->get();
     }
 
-    public function getById(int $agentId, ?int $customerId = null): AgentTransaction {
+    public function getById(int $agentId, ?int $customerId = null): ?Transaction {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->pluck('device_serial');
 

@@ -61,7 +61,7 @@ class Address extends BaseModel {
     }
 
     public function setIsPrimary(bool $isPrimary): void {
-        $this->is_primary = $isPrimary;
+        $this->is_primary = $isPrimary ? 1 : 0;
     }
 
     public function setStreet(?string $street): void {

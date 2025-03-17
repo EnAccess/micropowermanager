@@ -56,7 +56,7 @@ class AccessRate {
             throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meter === null ? 'Meter is not set' : ''));
         }
         // get current date and add AccessRate.period days
-        $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period)->toDateString();
+        $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period);
         // create accessRatePayment instance and fill with the variables
         $accessRatePayment = new AccessRatePayment();
         $accessRatePayment->accessRate()->associate($this->accessRate);

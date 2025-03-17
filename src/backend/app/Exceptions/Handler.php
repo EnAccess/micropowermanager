@@ -6,7 +6,6 @@ use App\Traits\RestExceptionHandler;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class Handler extends ExceptionHandler {
@@ -15,7 +14,7 @@ class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
-     * @var array
+     * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
     ];
@@ -23,7 +22,7 @@ class Handler extends ExceptionHandler {
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $dontFlash = [
         'password',
@@ -48,7 +47,7 @@ class Handler extends ExceptionHandler {
      * @param Request    $request
      * @param \Throwable $exception
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, \Exception|\Throwable $exception) {
         // api request outputs are json

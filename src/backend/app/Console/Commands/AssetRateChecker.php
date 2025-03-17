@@ -11,6 +11,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Services\TicketService;
 
@@ -121,7 +122,7 @@ class AssetRateChecker extends AbstractSharedCommand {
         );
     }
 
-    private function getApplianceRemindRates(): Collection|array {
+    private function getApplianceRemindRates(): SupportCollection|Collection|array {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }
 }

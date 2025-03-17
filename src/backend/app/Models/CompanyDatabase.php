@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id;
- * @property int $database_name;
- * @property int $company_id;
+ * @property int    $id;
+ * @property string $database_name;
+ * @property int    $company_id;
  */
 class CompanyDatabase extends BaseModelCore {
     use HasFactory;
