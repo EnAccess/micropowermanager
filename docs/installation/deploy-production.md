@@ -27,7 +27,7 @@ This section describes the deployment scenario of a cloud-hosted [Kubernetes](ht
 As an example we provide manifests for [Google Cloud Platform (GCP)](https://cloud.google.com/) with [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine).
 Other cloud providers might require adjustments to the manifest files.
 
-1. Create the GCP infrastructure (for example using [Terraform](https://www.terraform.io/))
+1. Create the GCP infrastructure using [Terraform](https://www.terraform.io/) (a ready-to-use Terraform module can be found in [`terraform/gcp_kubernetes/`](https://github.com/EnAccess/micropowermanager/blob/main/terraform/gcp_kubernetes/) folder.)
 2. Create a `kustomize.yaml` and configure your DNS names
 
    ::: code-group
