@@ -29,7 +29,9 @@ class AgentAuthController extends Controller {
      * @return JWTGuard
      */
     protected function guard(): JWTGuard {
-        /** @var JWTGuard */
+        /**
+         *  @var JWTGuard
+         */
         return auth()->guard('agent_api');
     }
 
