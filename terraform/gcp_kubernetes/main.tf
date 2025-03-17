@@ -2,10 +2,10 @@
 # Pre-amble
 #
 locals {
-    k8s_cluster_name = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
-    db_instance_name = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
-    db_name = "micro_power_manager"
-    network_global_address_name = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
+  k8s_cluster_name            = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
+  db_instance_name            = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
+  db_name                     = "micro_power_manager"
+  network_global_address_name = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
 }
 
 data "google_project" "gcp_project" {}
@@ -101,7 +101,7 @@ resource "google_compute_global_address" "http_loadbalancer_global_address" {
 resource "google_container_cluster" "k8s" {
   count = var.create_k8s_cluster ? 1 : 0
 
-  project =  var.gcp_project_id
+  project = var.gcp_project_id
 
   name     = local.k8s_cluster_name
   location = var.gcp_region
@@ -123,7 +123,7 @@ resource "google_sql_database_instance" "mysql" {
 
   settings {
     tier              = var.db_tier
-    edition = "ENTERPRISE"
+    edition           = "ENTERPRISE"
     availability_type = "ZONAL"
 
     deletion_protection_enabled = true
@@ -138,9 +138,9 @@ resource "google_sql_database_instance" "mysql" {
       ipv4_enabled    = var.db_enabled_public_ip
       private_network = data.google_compute_network.default.id
       # FIXME: Use `ENCRYPTED_ONLY`
-      ssl_mode        = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
+      ssl_mode = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
 
-      dynamic authorized_networks {
+      dynamic "authorized_networks" {
         for_each = var.db_enabled_public_ip ? var.db_authorized_networks : []
 
         content {
