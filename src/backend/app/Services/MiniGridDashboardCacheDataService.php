@@ -58,7 +58,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                 $miniGridId,
                 $startDate,
                 $endDate,
-                $this->miniGridDeviceService
+                miniGridDeviceService: $this->miniGridDeviceService
             );
 
             $targets = $this->target->targetForMiniGrid($miniGridId, $endDate)->first();
@@ -72,7 +72,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     'average_revenue_per_month' => '-',
                 ];
             }
-            if ($targets !== null) {
+            if ($targets !== null && isset($targets->subTargets)) {
                 foreach ($targets->subTargets as $subTarget) {
                     $formattedTarget[$subTarget->connectionType->name] = [
                         'new_connections' => $subTarget->new_connections,

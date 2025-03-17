@@ -14,7 +14,7 @@ class AndroidGateway implements ISmsProvider {
      * @param string            $number
      * @param string            $body
      * @param string            $callback
-     * @param SmsAndroidSetting $smsAndroidSettings
+     * @param SmsAndroidSetting $smsAndroidSetting
      */
     public function sendSms(string $number, string $body, string $callback, SmsAndroidSetting $smsAndroidSetting) {
         if (!config('app.env') == 'production') {

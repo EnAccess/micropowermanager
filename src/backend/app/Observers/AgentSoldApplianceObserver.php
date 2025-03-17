@@ -39,7 +39,7 @@ class AgentSoldApplianceObserver {
     private function processSaleIfIsNotCreatedByFactory($agentSoldAppliance) {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
-        $appliance = $assignedAppliance->applianceType()->first();
+        $appliance = $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
 
         // create agent transaction
@@ -70,7 +70,7 @@ class AgentSoldApplianceObserver {
             'rate_count' => request()->input('tenure'),
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => request()->input('down_payment'),
-            'asset_type_id' => $assignedAppliance->applianceType->id,
+            'asset_type_id' => $assignedAppliance->appliance->id,
         ];
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
         $this->agentAppliancePersonService->setAssignee($agent);

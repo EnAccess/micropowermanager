@@ -49,7 +49,9 @@ class AgentWebController extends Controller {
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-        $companyId = auth('api')->payload()->get('companyId');
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
+        $companyId = $guard->payload()->get('companyId');
         $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
         $databaseProxyData = [
             'email' => $request['email'],
@@ -74,7 +76,7 @@ class AgentWebController extends Controller {
         $agent = $this->agentService->getById($agentId);
         $agentData = $request->all();
 
-        return ApiResource::make($this->agentService->update($agent, $agentData, $this->personService));
+        return ApiResource::make($this->agentService->update($agent, $agentData));
     }
 
     public function destroy($agentId, Request $request): ApiResource {

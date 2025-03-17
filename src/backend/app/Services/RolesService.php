@@ -34,7 +34,7 @@ class RolesService {
      * @psalm-return Collection|array<array-key, Builder>
      */
     public function findRoleByDefinition(RoleDefinition $definition) {
-        return $this->role->with()->get();
+        return $this->role->with($definition)->get();
     }
 
     /**

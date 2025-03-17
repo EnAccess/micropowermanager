@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * Class MeterParameter.
  *
- * @property string owner_type
- * @property int owner_id
- * @property int meter_id
- * @property int tariff_id
- * @property int connection_type_id
- * @property int sub_connection_type_id
- * @property int connection_group_id
- * @property int tariff_access_rate_id
+ * @property string      $owner_type
+ * @property int         $owner_id
+ * @property int         $meter_id
+ * @property int         $tariff_id
+ * @property int         $connection_type_id
+ * @property int         $sub_connection_type_id
+ * @property int         $connection_group_id
+ * @property int         $tariff_access_rate_id
  * @property MeterTariff $tariff
  */
 class MeterParameter extends BaseModel {

@@ -27,7 +27,9 @@ class AddMeterAddress extends AbstractSharedCommand {
                 ]
             );
             $address->owner()->associate($meter);
-            $address->geo()->associate($meter->geo()->first());
+            if ($meter->geo()->exists()) {
+                $address->geo()->create($meter->geo()->first()->toArray());
+            }
             $address->save();
         }
     }

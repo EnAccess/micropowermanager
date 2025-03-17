@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 /**
  * Class AccessRate.
  *
- * @property int id
- * @property int amount
- * @property int tariff_id
- * @property int period when the payment repeats itself
+ * @property int $id
+ * @property int $amount
+ * @property int $tariff_id
+ * @property int $period    when the payment repeats itself
  */
 class AccessRate extends BaseModel {
     use HasFactory;

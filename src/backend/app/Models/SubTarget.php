@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $target_id
  * @property int $connection_id
  * @property int $revenue
- * @property int new_connections
+ * @property int $new_connections
  */
 class SubTarget extends BaseModel {
     use HasFactory;

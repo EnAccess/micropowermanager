@@ -85,7 +85,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
                 ->raw('DATE_FORMAT(created_at,\'%Y-%m-%d\'),date,id,trigger_Type,amount,'.
                     'available_balance,due_to_supplier'))->get();
 
-        if (count($history) === 1 && $history[0]->trigger_Type === 'agent_receipt') {
+        if (count($history) === 1 && $history[0]->trigger_type === 'agent_receipt') {
             $period[$history[0]->date]['balance'] = -1 * ($history[0]->due_to_supplier - $history[0]->amount);
             $period[$history[0]->date]['due'] = $history[0]->due_to_supplier - $history[0]->amount;
         } elseif (count($history) === 0) {

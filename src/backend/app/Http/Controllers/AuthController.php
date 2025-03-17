@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @group   Authenticator
@@ -78,7 +79,7 @@ class AuthController extends Controller {
             [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60,
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'user' => auth('api')->user(),
             ]
         );

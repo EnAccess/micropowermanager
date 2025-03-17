@@ -14,11 +14,15 @@ use Illuminate\Support\Facades\DB;
 /**
  * Class PaymentHistory.
  *
- * @property int amount
- * @property string payment_service
- * @property string sender
- * @property string payment_type
- * @property int transaction_id
+ * @property int    $amount
+ * @property string $payment_service
+ * @property string $sender
+ * @property string $payment_type
+ * @property string $paid_for_type
+ * @property int    $paid_for_id
+ * @property string $payer_type
+ * @property int    $payer_id
+ * @property int    $transaction_id
  */
 class PaymentHistory extends BaseModel {
     public function paidFor(): MorphTo {

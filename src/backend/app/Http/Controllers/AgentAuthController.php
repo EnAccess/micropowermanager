@@ -6,6 +6,7 @@ use App\Models\Agent;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTGuard;
 
 /**
  * @group   Agent-Authenticator
@@ -23,6 +24,15 @@ class AgentAuthController extends Controller {
     }
 
     /**
+     * Get the JWT authentication guard.
+     *
+     * @return JWTGuard
+     */
+    protected function guard(): JWTGuard {
+        return auth('agent_api');
+    }
+
+    /**
      * Get JWT via given credentials.
      *
      * @bodyParam email string required
@@ -33,11 +43,11 @@ class AgentAuthController extends Controller {
     public function login(Request $request) {
         $credentials = $request->only(['email', 'password']);
 
-        if (!$token = auth('agent_api')->setTTL(525600)->attempt($credentials)) {
+        if (!$token = $this->guard()->setTTL(525600)->attempt($credentials)) {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
 
-        $agentId = auth('agent_api')->user()->id;
+        $agentId = $this->guard()->user()->id;
         $agent = $this->agentService->getById($agentId);
         $deviceId = $request->header('device-id');
         $this->agentService->updateDevice($agent, $deviceId);
@@ -72,7 +82,7 @@ class AgentAuthController extends Controller {
      * @return JsonResponse
      */
     public function refresh() {
-        return $this->respondWithToken(auth('agent_api')->refresh());
+        return $this->respondWithToken($this->guard()->refresh());
     }
 
     /**
@@ -88,7 +98,7 @@ class AgentAuthController extends Controller {
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth('agent_api')->factory()->getTTL() * 60,
-                'agent' => auth('agent_api')->user(),
+                'agent' => $this->guard()->user(),
             ]
         );
     }
