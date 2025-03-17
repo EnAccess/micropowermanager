@@ -15,7 +15,6 @@ import UserData from "./shared/UserData"
 import Default from "./layouts/Default"
 import i18n from "./i18n"
 import { MapSettingsService } from "./services/MapSettingsService"
-import { TicketSettingsService } from "./services/TicketSettingsService"
 import { MainSettingsService } from "./services/MainSettingsService"
 import Steamaco from "@/plugins/steama-meter/js/modules/Overview/Credential"
 import Spark from "@/plugins/spark-meter/js/modules/Overview/Credential"
@@ -112,7 +111,6 @@ const app = new Vue({
     return {
       mainSettingsService: new MainSettingsService(),
       mapSettingService: new MapSettingsService(),
-      ticketSettingsService: new TicketSettingsService(),
       resolution: {
         width: window.innerWidth,
         height: window.innerHeight,

@@ -11,13 +11,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('tenant')->create('ticket_settings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('api_token');
-            $table->string('api_url');
-            $table->string('api_key');
-            $table->timestamps();
+        Schema::connection('tenant')->table('tickets', function (Blueprint $table) {
+            $table->dropColumn('ticket_id');
         });
     }
 
@@ -27,6 +22,8 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('tenant')->dropIfExists('ticket_settings');
+        Schema::connection('tenant')->table('tickets', function (Blueprint $table) {
+            $table->string('ticket_id');
+        });
     }
 };

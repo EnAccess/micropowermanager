@@ -15,7 +15,6 @@ class TicketFactory extends Factory {
      */
     public function definition() {
         return [
-            'ticket_id' => strval($this->faker->uuid),
             'creator_id' => $this->faker->numberBetween(1, 10),
             'creator_type' => $this->faker->randomElement(['user', 'agent']),
             'assigned_id' => $this->faker->numberBetween(1, 10),

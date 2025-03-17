@@ -38,7 +38,6 @@ use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 
@@ -710,20 +709,9 @@ trait CreateEnvironments {
     }
 
     protected function createTicket($ticketCount = 1, $status = 0, $customerId = null, $agentId = null) {
+        $this->createTicketCategory(1);
         while ($ticketCount > 0) {
-            $trelloParams = [
-                'idList' => $this->ticketCard->card_id,
-                'name' => $this->faker->word,
-                'desc' => $this->faker->sentence,
-                'due' => $this->faker->date('Y-m-d'),
-                'idMembers' => $this->ticketUser->extern_id,
-            ];
-            $ticketService = app()->make(TicketService::class);
-            $trelloTicket = $ticketService->create($trelloParams);
-            $ticketId = $trelloTicket->id;
-
             $ticket = TicketFactory::new()->create([
-                'ticket_id' => $ticketId,
                 'category_id' => $this->ticketCategory->id,
                 'assigned_id' => $this->ticketUser->id,
                 'status' => $status,

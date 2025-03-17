@@ -165,11 +165,6 @@ Route::group(['prefix' => 'map-settings'], static function () {
     Route::get('/key/{key}', 'MapSettingsController@checkBingApiKey');
     Route::put('/{mapSettings}', ['uses' => 'MapSettingsController@update', 'middleware' => 'jwt.verify']);
 });
-// Ticket Settings
-Route::group(['prefix' => 'ticket-settings'], static function () {
-    Route::get('/', 'TicketSettingsController@index');
-    Route::put('/{ticketSettings}', ['uses' => 'TicketSettingsController@update', 'middleware' => 'jwt.verify']);
-});
 
 // Settings
 Route::group(['prefix' => 'settings'], static function () {

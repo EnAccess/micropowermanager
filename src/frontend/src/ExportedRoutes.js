@@ -26,7 +26,6 @@ import TransactionList from "./pages/Transaction/index.vue"
 import TransactionSearch from "./pages/Transaction/index.vue"
 import TransactionDetail from "./pages/Transaction/_id.vue"
 import TicketList from "./pages/Ticket/index.vue"
-import TicketSettingsUsers from "./pages/Ticket/Setting/User/index.vue"
 import TicketSettingsCategories from "./pages/Ticket/Setting/Category/index.vue"
 import TariffList from "./pages/Tariff/index.vue"
 import TariffDetail from "./pages/Tariff/_id.vue"
@@ -406,13 +405,6 @@ export const exportedRoutes = [
             enabled: true,
             name: "List",
           },
-        },
-      },
-      {
-        path: "tickets-settings/users",
-        component: TicketSettingsUsers,
-        meta: {
-          layout: "default",
         },
       },
       {

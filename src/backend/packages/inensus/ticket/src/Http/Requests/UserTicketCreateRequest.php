@@ -3,7 +3,6 @@
 namespace Inensus\Ticket\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Ramsey\Uuid\Uuid;
 
 class UserTicketCreateRequest extends FormRequest {
     public function rules(): array {
@@ -24,7 +23,6 @@ class UserTicketCreateRequest extends FormRequest {
 
     public function getMappedArray(): array {
         return [
-            'ticket_id' => Uuid::uuid4(),
             'title' => $this->getTitle(),
             'assigned_id' => $this->getAssignedPerson(),
             'due_date' => $this->getDueDate(),

@@ -5288,47 +5288,6 @@ paths:
         required: true
         schema:
           type: string
-  /api/ticket-settings:
-    get:
-      summary: ''
-      operationId: getApiTicketSettings
-      description: ''
-      parameters: []
-      responses:
-        500:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Server Error'
-                properties:
-                  message:
-                    type: string
-                    example: 'Server Error'
-      tags:
-        - Endpoints
-      security: []
-  '/api/ticket-settings/{ticketSettings}':
-    put:
-      summary: ''
-      operationId: putApiTicketSettingsTicketSettings
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Endpoints
-      security: []
-    parameters:
-      -
-        in: path
-        name: ticketSettings
-        description: ''
-        example: a
-        required: true
-        schema:
-          type: string
   /api/settings/main:
     get:
       summary: ''

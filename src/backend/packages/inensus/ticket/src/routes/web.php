@@ -7,7 +7,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/', 'TicketController@index');
         Route::post('/', 'TicketCustomerController@store');
         Route::delete('/{ticketId}', 'TicketController@destroy');
-        Route::get('/{trelloId}', 'TicketController@show');
+        Route::get('/{id}', 'TicketController@show');
     });
 
     Route::group(['prefix' => 'users'], function () {

@@ -1,11 +1,8 @@
-import { TicketTrelloService } from "./TicketTrelloService"
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
 
 export class AgentTicketService {
   constructor(agentId) {
-    this.trelloService = new TicketTrelloService()
-    this.ticket = this.trelloService.ticket
     this.list = []
     this.paginator = new Paginator(resources.agents.tickets + "/" + agentId)
   }

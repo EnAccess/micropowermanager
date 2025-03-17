@@ -1,7 +1,6 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { Paginator } from "@/Helpers/Paginator"
 import { resources } from "@/resources"
-import { TicketTrelloService } from "./TicketTrelloService"
 import TicketRepository from "@/repositories/TicketRepository"
 
 export class Ticket {
@@ -97,8 +96,6 @@ export class UserTickets {
 export class TicketService {
   constructor() {
     this.repository = TicketRepository
-    this.trelloService = new TicketTrelloService()
-    this.ticket = this.trelloService.ticket
     this.categories = []
     this.openedList = []
     this.closedList = []
