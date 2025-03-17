@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Agent;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

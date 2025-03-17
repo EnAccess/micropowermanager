@@ -1,4 +1,3 @@
-import { TicketSettingsService } from "@/services/TicketSettingsService"
 import { MapSettingsService } from "@/services/MapSettingsService"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import i18n from "../../i18n"
@@ -6,14 +5,13 @@ import { PluginService } from "@/services/PluginService"
 
 const serviceMap = new MapSettingsService()
 const serviceMain = new MainSettingsService()
-const serviceTicket = new TicketSettingsService()
+
 const servicePlugin = new PluginService()
 
 export const namespaced = true
 
 export const state = {
   mainSettings: {},
-  ticketSettings: {},
   mapSettings: {},
   plugins: [],
 }
@@ -25,9 +23,6 @@ export const mutations = {
   FETCH_MAP_SETTINGS(state, payload) {
     state.mapSettings = payload
   },
-  FETCH_TICKET_SETTINGS(state, payload) {
-    state.ticketSettings = payload
-  },
   FETCH_PLUGINS(state, payload) {
     state.plugins = payload
   },
@@ -36,7 +31,6 @@ export const actions = {
   getSettings({ dispatch }) {
     dispatch("setMainSettings")
     dispatch("setMapSettings")
-    dispatch("setTicketSettings")
   },
   setMainSettings({ commit }) {
     return new Promise((resolve, reject) => {
@@ -57,19 +51,6 @@ export const actions = {
         .list()
         .then((res) => {
           commit("FETCH_MAP_SETTINGS", res)
-          resolve(res)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  setTicketSettings({ commit }) {
-    return new Promise((resolve, reject) => {
-      serviceTicket
-        .list()
-        .then((res) => {
-          commit("FETCH_TICKET_SETTINGS", res)
           resolve(res)
         })
         .catch((e) => {
@@ -98,9 +79,6 @@ export const getters = {
   },
   getMapSettings: (state) => {
     return state.mapSettings
-  },
-  getTicketSettings: (state) => {
-    return state.ticketSettings
   },
   getEnabledPlugins: (state) =>
     state.plugins
