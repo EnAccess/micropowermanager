@@ -93,7 +93,7 @@ class ApplianceRateService {
             $this->applianceRate->newQuery()->create(
                 [
                     'asset_person_id' => $assetPerson->id,
-                    'rate_cost' => $assetPerson->down_payment,
+                    'rate_cost' => round($assetPerson->down_payment),
                     'remaining' => 0,
                     'due_date' => Carbon::parse(date('Y-m-d'))->toDateTimeString(),
                     'remind' => 0,
@@ -141,7 +141,7 @@ class ApplianceRateService {
         /** @var ?AssetRate $result */
         $result = $this->applianceRate->newQuery()
             ->where('asset_person_id', $assetPerson->id)
-            ->where('rate_cost', $assetPerson->down_payment)
+            ->where('rate_cost', round($assetPerson->down_payment))
             ->where('remaining', 0)
             ->first();
 
