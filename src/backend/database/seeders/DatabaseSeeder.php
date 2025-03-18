@@ -32,9 +32,9 @@ class DatabaseSeeder extends Seeder {
                 CountrySeeder::class,
                 SubConnectionTypeSeeder::class,
                 SmsSeeder::class,
-                AgentBalanceHistorySeeder::class,
                 TargetSeeder::class,
                 PluginsSeeder::class,
+                AgentApplianceSalesSeeder::class,
             ]);
         } else {
             // If the database already includes the Demo data we don't throw an error,

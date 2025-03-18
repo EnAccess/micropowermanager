@@ -97,4 +97,10 @@ class AgentSoldApplianceService implements IBaseService {
             )->latest()
             ->paginate();
     }
+
+    public function getAgentsByCustomerId(int $customerId): Collection {
+        return Agent::whereHas('soldAppliances', function ($query) use ($customerId) {
+            $query->where('person_id', $customerId);
+        })->get();
+    }
 }
