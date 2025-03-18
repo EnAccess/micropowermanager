@@ -23,7 +23,7 @@ export class AgentSoldApplianceService {
   fromJson(data) {
     let soldAppliance = {
       id: data.id,
-      applianceName: data.assigned_appliance.appliance_type.name,
+      applianceName: data.assigned_appliance.appliance.name,
       amount: data.assigned_appliance.cost,
       customerName: data.person.name + " " + data.person.surname,
       createdAt: data.created_at
