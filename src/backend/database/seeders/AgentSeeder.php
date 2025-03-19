@@ -31,6 +31,8 @@ class AgentSeeder extends Seeder {
         // Get available MiniGrids
         $minigrids = MiniGrid::all();
 
+        $firstAgent = true; // Flag to ensure one agent gets the test email
+
         // For each Mini-Grid we create one Agent
         foreach ($minigrids as $minigrid) {
             $village = $minigrid->cities()->get()->random();
@@ -58,7 +60,9 @@ class AgentSeeder extends Seeder {
                 ->state(
                     ['name' => $person->name]
                 )
-                ->create();
+                ->create(['email' => $firstAgent ? 'demo_company_admin@example.com' : fake()->safeEmail()]);
+
+            $firstAgent = false; // Ensure only one agent gets the test email
 
             // Give our Agent some balance
             $agent_charge = AgentCharge::factory()
