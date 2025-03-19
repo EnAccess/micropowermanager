@@ -7,7 +7,6 @@ use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
 use App\Models\Asset;
 use App\Models\Person\Person;
-use App\Observers\AgentSoldApplianceObserver;
 use Illuminate\Database\Seeder;
 
 class AgentApplianceSalesSeeder extends Seeder {
@@ -52,12 +51,10 @@ class AgentApplianceSalesSeeder extends Seeder {
 
         // Simulate Sales and Trigger Observer
         $assignedAppliances->each(function ($assignedAppliance) use ($customers) {
-            $observer = app()->make(AgentSoldApplianceObserver::class);
-            $agentSoldAppliance = AgentSoldAppliance::factory()->create([
+            AgentSoldAppliance::factory()->create([
                 'agent_assigned_appliance_id' => $assignedAppliance->id,
                 'person_id' => $customers->random()->id,
             ]);
-            $observer->createdWithFactory($agentSoldAppliance);
         });
 
         $this->command->info('Agent Appliance Sales Seeded Successfully!');
