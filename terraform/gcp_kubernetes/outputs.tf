@@ -49,5 +49,5 @@ output "network_cloud_nat_static_ip_address" {
 }
 
 output "network_internal_loadbalancer_ip_address" {
-  value = length( google_compute_address.internal_loadbalancer_address) > 0 ?  google_compute_address.internal_loadbalancer_address[0].address : ""
+  value = length(google_compute_address.internal_loadbalancer_address) > 0 ? google_compute_address.internal_loadbalancer_address[0].address : ""
 }
