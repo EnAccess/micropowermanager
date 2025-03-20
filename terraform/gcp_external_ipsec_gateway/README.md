@@ -11,4 +11,4 @@ Using
 - StrongSwan
 - HAProxy
 
-When using this, should use the other module with creating an internal Ingress.
+When using this, should the Kubernetes cluster should be setup with an internal Ingress.

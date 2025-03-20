@@ -8,7 +8,7 @@ resources:
   - ../../base/gcp_gke/
 
 components:
-  - ../../components/external_ipsec_gateway
+  - ../../components/internal_ingress
 
 images:
   - name: enaccess/micropowermanager-backend:latest
