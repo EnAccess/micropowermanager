@@ -77,10 +77,17 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->update($agent, $agentData, $this->personService));
     }
 
-    public function destroy($agentId, Request $request): ApiResource {
+    public function destroy($agentId, Request $request): \Illuminate\Http\JsonResponse {
         $agent = $this->agentService->getById($agentId);
 
-        return ApiResource::make($this->agentService->delete($agent));
+        $result = $this->agentService->delete($agent);
+
+        return response()->json([
+            'success' => $result,
+            'message' => $result ? 'Agent deleted successfully' : 'Failed to delete agent'
+        ]);
+
+        // return ApiResource::make($this->agentService->delete($agent));
     }
 
     public function search(Request $request): ApiResource {

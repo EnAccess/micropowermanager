@@ -38,8 +38,15 @@ class PersonObserver {
             $address->delete();
         }
         // delete all meter-parameters
-        foreach ($person->meters()->get() as $meter) {
-            $meter->delete();
+        // foreach ($person->meters()->get() as $meter) {
+        //     $meter->delete();
+        // }
+        foreach ($person->devices()->get() as $device) {
+            // Get the device's polymorphic relation (meter or other device type)
+            if ($device->device) {
+                $device->device->delete();
+            }
+            $device->delete();
         }
         // delete all transactions which are belong to that person
         foreach ($person->payments()->get() as $transaction) {
