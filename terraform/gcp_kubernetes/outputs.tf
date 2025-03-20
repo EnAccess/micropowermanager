@@ -40,7 +40,7 @@ output "db_name" {
 ################################################################################
 # Network
 ################################################################################
-output "network_loadbalancer_ip_address" {
+output "network_external_loadbalancer_ip_address" {
   value = google_compute_global_address.http_loadbalancer_global_address.address
 }
 
@@ -48,3 +48,6 @@ output "network_cloud_nat_static_ip_address" {
   value = length(google_compute_address.nat_external_ip) > 0 ? google_compute_address.nat_external_ip[0].address : ""
 }
 
+output "network_internal_loadbalancer_ip_address" {
+  value = length(google_compute_address.internal_loadbalancer_address) > 0 ? google_compute_address.internal_loadbalancer_address[0].address : ""
+}

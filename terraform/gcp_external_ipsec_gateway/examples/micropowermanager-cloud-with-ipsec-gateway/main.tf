@@ -1,5 +1,5 @@
 module "micropowermanager_cloud" {
-  source = "../../"
+  source = "../../../gcp_kubernetes"
 
   gcp_project_id = "my-gcp-project"
   gcp_region     = "europe-west10" # Berlin
@@ -14,18 +14,12 @@ module "micropowermanager_cloud" {
   db_enabled_public_ip = true
 }
 
-module "micropowermanager_demo" {
+module "micropowermanager_cloud_vodacom_mz" {
   source = "../../"
 
   gcp_project_id = "my-gcp-project"
   gcp_region     = "europe-west10" # Berlin
 
-  configure_gcp_project = false
-  create_k8s_cluster    = false
-
-  resoure_prefix = ""
-  resoure_suffix = "-demo"
-
-  db_tier              = "db-f1-micro"
-  db_enabled_public_ip = true
+  resoure_prefix = "vodacom-mz-"
+  resoure_suffix = "-cloud"
 }

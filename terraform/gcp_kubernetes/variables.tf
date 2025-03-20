@@ -8,6 +8,18 @@ variable "gcp_region" {
   type        = string
 }
 
+variable "resoure_prefix" {
+  description = "Prefix used in resource creation. This can be useful to identify resources."
+  type        = string
+  default     = ""
+}
+
+variable "resoure_suffix" {
+  description = "Suffix used in resource creation. This can be useful to distinguish between different environments like `development` and `production`."
+  type        = string
+  default     = ""
+}
+
 variable "configure_gcp_project" {
   description = "Determines whether to configure the Google Cloud Platform (GCP) project for usage with MicroPowerManager. For example the default network and enables API. If you are using multiple instances of this module, this should be enabled only once per GCP project."
   type        = bool
@@ -20,17 +32,10 @@ variable "create_k8s_cluster" {
   default     = true
 }
 
-
-variable "resoure_prefix" {
-  description = "Prefix used in resource creation. This can be useful to identify resources."
-  type        = string
-  default     = ""
-}
-
-variable "resoure_suffix" {
-  description = "Suffix used in resource creation. This can be useful to distinguish between different environments like `development` and `production`."
-  type        = string
-  default     = ""
+variable "create_internal_loadbalancer_address" {
+  description = "Determines whether an internal IP address will be created (and managed) by this module. This is required in scenarios where IPSec tunnels are to be established."
+  type        = bool
+  default     = false
 }
 
 variable "db_tier" {

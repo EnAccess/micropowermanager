@@ -20,7 +20,7 @@ We "officially" support two deployment options for MicroPowerManager
 
 which are further explained in the sections below.
 
-### Kubernetes
+### Kubernetes (base setup)
 
 This section describes the deployment scenario of a cloud-hosted [Kubernetes](https://kubernetes.io/) cluster with dedicated databases.
 
@@ -39,60 +39,107 @@ Other cloud providers might require adjustments to the manifest files.
    namespace: micropowermanager
 
    resources:
-   - namespace.yaml
-   - ../../base/gcp_gke/
-
-   images:
-   - name: enaccess/micropowermanager-backend:latest
-       newTag: 0.0.12
-   - name: enaccess/micropowermanager-frontend:latest
-       newTag: 0.0.12
+     - namespace.yaml
+     - ../../base/gcp_gke/
 
    patches:
-   - patch: |-
-       apiVersion: networking.gke.io/v1
-       kind: ManagedCertificate
-       metadata:
+     - patch: |-
+         apiVersion: networking.gke.io/v1
+         kind: ManagedCertificate
+         metadata:
            name: mpm-managed-cert
-       spec:
+         spec:
            domains:
-           - api.demo.micropowermanager.io
-           - demo.micropowermanager.io
+             - api.demo.micropowermanager.io # [!code highlight]
+             - demo.micropowermanager.io # [!code highlight]
 
    replacements:
-   - source:
-       kind: ManagedCertificate
-       name: mpm-managed-cert
-       fieldPath: spec.domains.0
-       targets:
-       - select:
-           kind: Ingress
-           name: mpm-ingress
-           fieldPaths:
-           - spec.rules.0.host
-   - source:
-       kind: ManagedCertificate
-       name: mpm-managed-cert
-       fieldPath: spec.domains.1
-       targets:
-       - select:
-           kind: Ingress
-           name: mpm-ingress
-           fieldPaths:
-           - spec.rules.1.host
+     - source:
+         kind: ManagedCertificate
+         name: mpm-managed-cert
+         fieldPath: spec.domains.0
+         targets:
+           - select:
+               kind: Ingress
+               name: mpm-ingress
+               fieldPaths:
+                 - spec.rules.0.host
+     - source:
+         kind: ManagedCertificate
+         name: mpm-managed-cert
+         fieldPath: spec.domains.1
+         targets:
+           - select:
+               kind: Ingress
+               name: mpm-ingress
+               fieldPaths:
+                 - spec.rules.1.host
    ```
 
    The `kustomize.yaml` is meant as a starting point and might require further adjustment.
    A good reference is the working sample `kustomize.yaml` Kubernetes manifest file that is used to run the [MPM Demo Version](https://demo.micropowermanager.io/#/login).
    It can be found in the `k8s` directory of this repository.
 
-3. (Optional) Create a static IP address in GCP and populate the `kubernetes.io/ingress.global-static-ip-name` annotation in `Ingress` by using a Kustomize `patch`
-4. (Optional) Adjust `ConfigMap` entries by using a Kustomize `patch`
-5. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
+3. (Optional, but recommended) Pin the version of MicroPowerManager Docker images used in the deployment
+
+   ::: code-group
+
+   ```yaml [kustomize.yaml]
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+
+   namespace: micropowermanager
+
+   resources:
+     - namespace.yaml
+     - ../../base/gcp_gke/
+
+   [...]
+
+   images: # [!code ++]
+     - name: enaccess/micropowermanager-backend:latest # [!code ++]
+       newTag: 0.0.20 # [!code ++]
+     - name: enaccess/micropowermanager-frontend:latest # [!code ++]
+       newTag: 0.0.20 # [!code ++]
+
+   [...]
+   ```
+
+4. (Optional) Create a static IP address in GCP and populate the `kubernetes.io/ingress.global-static-ip-name` annotation in `Ingress` by using a Kustomize `patch`
+
+   ::: code-group
+
+   ```yaml [kustomize.yaml]
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+
+   namespace: micropowermanager
+
+   resources:
+     - namespace.yaml
+     - ../../base/gcp_gke/
+
+   [...]
+
+   patches:
+     [...]
+     - patch: |-  # [!code ++]
+         apiVersion: networking.k8s.io/v1  # [!code ++]
+         kind: Ingress  # [!code ++]
+       metadata:  # [!code ++]
+         name: mpm-ingress  # [!code ++]
+         annotations:  # [!code ++]
+           kubernetes.io/ingress.regional-static-ip-name: loadbalancer-global-address  # [!code ++]
+
+   [...]
+   ```
+
+5. (Optional) Adjust `ConfigMap` entries by using a Kustomize `patch`
+6. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
    Note: If you choose to run MicroPowerManager in a non-default namespace make sure the Kubernetes `Secret` gets deployed into the same namespace.
-6. Run `kubectl -k overlays/gcp_gke`
-7. Run `kubectl -f apply secrets.yaml`
-8. Retrieve the loadbalancer IP address using
+7. Run `kubectl -k overlays/gcp_gke`
+8. Run `kubectl -f apply secrets.yaml`
+9. Retrieve the loadbalancer IP address using
 
    ```sh
    kubectl describe ingress mpm-ingress
@@ -101,7 +148,51 @@ Other cloud providers might require adjustments to the manifest files.
    Create DNS records for the backend and frontend URLs.
    Note: It might take a while for the newly created DNS records to propagate.
 
-9. Proceed to the [Next Steps](#next-steps) section
+10. Proceed to the [Next Steps](#next-steps) section
+
+### Kubernetes (advanced setup with IPSec tunnels to external systems)
+
+Some payment provider require the establishment of a VPN Tunnel between MicroPowerManager and the corporate network.
+
+As prerequisite for a VPN Tunnel we need to add an Internal Ingress to the Kubernetes setup.
+
+1. Finish the [Kubernets (base setup)](#kubernetes-base-setup) from above
+2. Deploy an internal IP address reservation by setting `create_internal_loadbalancer_address = true` in Terraform
+3. Adapt `kustomize.yaml` to add the `internal_ingress` component and configure the reserved IP address
+
+   ::: code-group
+
+   ```yaml [kustomize.yaml]
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+
+   namespace: micropowermanager
+
+   resources:
+     - namespace.yaml
+     - ../../base/gcp_gke/
+
+   components: # [!code ++]
+     - ../../components/internal_ingress # [!code ++]
+
+   [...]
+
+   patches:
+     [...]
+     - patch: |- # [!code ++]
+       apiVersion: networking.k8s.io/v1 # [!code ++]
+       kind: Ingress # [!code ++]
+       metadata: # [!code ++]
+         name: mpm-ingress-internal # [!code ++]
+         annotations: # [!code ++]
+           kubernetes.io/ingress.regional-static-ip-name: internal-loadbalancer-address # [!code ++]
+   ```
+
+Deploy a VPN IPSec Gateway
+
+1. Using Terraform deploy the module [`terraform/gcp_external_ipsec_gateway/`](https://github.com/EnAccess/micropowermanager/blob/main/terraform/gcp_external_ipsec_gateway/)
+2. Using `ssh` configure the IPSec Gateway to install `haproxy` and `strongswan`.
+3. Configure according to provider request.
 
 ### Stand-alone server using Docker Compose
 

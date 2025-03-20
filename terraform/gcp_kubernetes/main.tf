@@ -2,10 +2,12 @@
 # Pre-amble
 #
 locals {
-  k8s_cluster_name            = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
-  db_instance_name            = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
-  db_name                     = "micro_power_manager"
-  network_global_address_name = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
+  k8s_cluster_name                           = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
+  db_instance_name                           = "${var.resoure_prefix}micropowermanager${var.resoure_suffix}"
+  db_name                                    = "micro_power_manager"
+  network_global_address_name                = "${var.resoure_prefix}loadbalancer-global-address${var.resoure_suffix}"
+  network_internal_loadbalancer_address_name = "${var.resoure_prefix}internal-loadbalancer-address${var.resoure_suffix}"
+  network_internal_proxy_only_subnet_name    = "${var.resoure_prefix}proxy-only-subnet${var.resoure_suffix}"
 }
 
 data "google_project" "gcp_project" {}
@@ -90,9 +92,58 @@ resource "google_service_networking_connection" "default" {
   reserved_peering_ranges = [google_compute_global_address.default_ip_range[0].name]
 }
 
-# Static IP address to be used in Kubernetes Ingress
+# Static IP address to be used in Kubernetes **External** Ingress
 resource "google_compute_global_address" "http_loadbalancer_global_address" {
+  project = var.gcp_project_id
+
   name = local.network_global_address_name
+}
+
+# Create a proxy-only subnet
+# https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#prepare-environment
+resource "google_compute_subnetwork" "proxy_only_subnet" {
+  count = var.create_internal_loadbalancer_address ? 1 : 0
+
+  project = var.gcp_project_id
+
+  name   = local.network_internal_proxy_only_subnet_name
+  region = var.gcp_region
+
+  # Avoiding: https://cloud.google.com/vpc/docs/subnets#additional-ipv4-considerations
+  ip_cidr_range = "172.16.0.0/23"
+  network       = data.google_compute_network.default.id
+  purpose       = "REGIONAL_MANAGED_PROXY"
+  role          = "ACTIVE"
+}
+
+resource "google_compute_firewall" "rules" {
+  count = var.create_internal_loadbalancer_address ? 1 : 0
+
+  project = var.gcp_project_id
+
+  name        = "${var.resoure_prefix}allow-proxy-connection${var.resoure_suffix}"
+  description = "Firewall rule to allow connections from the load balancer proxies in the proxy-only subnet"
+  network     = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443", "8080", "8443"]
+  }
+
+  source_ranges = [google_compute_subnetwork.proxy_only_subnet[0].ip_cidr_range]
+}
+
+# Static IP address to be used in Kubernetes **Internal** Ingress in a scenario
+# where IPSec tunnels are to be established.
+resource "google_compute_address" "internal_loadbalancer_address" {
+  count = var.create_internal_loadbalancer_address ? 1 : 0
+
+  project = var.gcp_project_id
+
+  name         = local.network_internal_loadbalancer_address_name
+  region       = var.gcp_region
+  address_type = "INTERNAL"
+  subnetwork   = "default"
 }
 
 #
