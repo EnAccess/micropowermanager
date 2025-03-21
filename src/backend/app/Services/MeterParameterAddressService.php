@@ -7,7 +7,7 @@ use App\Models\Meter\MeterParameter;
 use App\Services\Interfaces\IAssignationService;
 
 /**
- * @implements IAssignationService<MeterParameter, Address>
+ * @implements IAssignationService<Address, MeterParameter>
  */
 class MeterParameterAddressService implements IAssignationService {
     private MeterParameter $meterParameter;

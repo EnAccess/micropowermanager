@@ -118,24 +118,36 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 
 Set of environment variables that can be used to configure logging and logging providers in MicroPowerManager.
 
-| Environment Variable    | Default                          | Description                                                                                                                                                                 |
-| ----------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LOG_CHANNEL`           | `stack`                          | Log channel. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php) |
-| `LOGGLY_TOKEN`          | **Required** (When using Loggly) | Access token for [Loggly](https://www.loggly.com/).                                                                                                                         |
-| `LOG_LEVEL`             | `debug`                          | Level of the logs send to [Loggly](https://www.loggly.com/).                                                                                                                |
-| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack)  | Slack Webhook URL                                                                                                                                                           |
+| Environment Variable | Default     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `LOG_CHANNEL`        | `mpm_stack` | The default value `mpm_stack` configures a split logging where error logs go to `STDERR` and application info and debug logs to `STDOUT`. Additional log channels to external logging solutions are automatically enabled, if corresponding environment variables are configured, see below. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php). |
+| `LOG_LEVEL`          | `debug`     | General log level of the application. Note, that external logging systems may define their log level seperately. For example, it might be desired to only send critical errors to Slack, even if MicroPowerManager runs with an elevanted log level of `info`. Recommended to set this at least `info` or hire in normal operations of a production environment.                                                                                             |
+
+Slack
+
+| Environment Variable    | Default                                 | Description                                                                                                                                                                 |
+| ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOG_SLACK_LEVEL`       | `critical`                              | The log level sent to Slack. URL                                                                                                                                            |
+| `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL. This require a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
+| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook Username                                                                                                                                                      |
+| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook Emoji                                                                                                                                                         |
 
 #### Email
 
-Configure the following environment variable to enable MicroPowerManager to send email (signup confirmation, password reset, etc...)
+Configure the following environment variable to enable MicroPowerManager to send email via SMTP.
+These configure instance level email sent to tenants, for example signup confirmation, password reset, etc...
 
-| Environment Variable | Default                         | Description                                              |
-| -------------------- | ------------------------------- | -------------------------------------------------------- |
-| `MAIL_HOST`          | `smtp.mailgun.org`              | Mail server hostname. For example `smtp.mailserver.com`. |
-| `MAIL_PORT`          | `587`                           | Mail server port.                                        |
-| `MAIL_ENCRYPTION`    | `tls`                           | Mail encryption.                                         |
-| `MAIL_USERNAME`      | **Required** (when using email) | Mail server username.                                    |
-| `MAIL_PASSWORD`      | **Required** (when using email) | Mail server password.                                    |
+| Environment Variable        | Default                                        | Description                                                                                                                                                                 |
+| --------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MAIL_SMTP_HOST`            | `smtp.mailgun.org`                             | Mail server hostname. For example `smtp.mailserver.com`.                                                                                                                    |
+| `MAIL_SMTP_PORT`            | `587`                                          | Mail server port.                                                                                                                                                           |
+| `MAIL_SMTP_ENCRYPTION`      | `tls`                                          | Mail encryption.                                                                                                                                                            |
+| `MAIL_SMTP_AUTH`            | `false`                                        | Whether to use SMTP Auth.                                                                                                                                                   |
+| `MAIL_USERNAME`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The username used in SMTP Auth.                                                                                                                                             |
+| `MAIL_PASSWORD`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The password used in SMTP Auth.                                                                                                                                             |
+| `MAIL_SMTP_DEFAULT_SENDER`  | **Required**                                   | The email used in `from` and `replyTo` fields of sent email. Note: Depending on the mailserver this might be different from SMTP Auth username.                             |
+| `MAIL_SMTP_DEFAULT_MESSAGE` | `Please do not reply to this email`            | Default message body of emails.                                                                                                                                             |
+| `MAIL_SMTP_DEBUG_LEVEL`     | `0`                                            | Debug level used in [PHPMailer](https://github.com/PHPMailer/PHPMailer/blob/master/src/SMTP.php#L116-L126). `0` No output, `4` Noisy, low-level data output, rarely needed. |
 
 ### MPM Plugins
 

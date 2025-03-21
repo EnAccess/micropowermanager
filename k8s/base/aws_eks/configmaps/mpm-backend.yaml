@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mpm-configmap-backend
+data:
+  APP_ENV: demo
+  APP_DEBUG: "false"
+  MPM_LOAD_DEMO_DATA: "true"
+  LOG_LEVEL: info
+  DB_CONNECTION: micro_power_manager
+  DB_PORT: "3306"
+  DB_DATABASE: micro_power_manager
+  REDIS_HOST: redis-db-service
+  REDIS_PORT: "6379"
+  CACHE_DRIVER: redis
+  QUEUE_DRIVER: database

@@ -39,7 +39,7 @@ class AccessRatePayer {
                 $this->debtAmount -= $this->transactionData->transaction->amount;
                 $this->transactionData->transaction->amount = self::MINIMUM_AMOUNT;
             } else {
-                $this->transactionData->transaction->amount -= $this->debtAmount;
+                $this->transactionData->transaction->amount = (int) ($this->transactionData->transaction->amount - $this->debtAmount);
                 $this->debtAmount = self::MINIMUM_AMOUNT;
             }
 
@@ -61,7 +61,7 @@ class AccessRatePayer {
     }
 
     public function consumeAmount() {
-        $this->transaction->amount -= $this->debtAmount;
+        $this->transaction->amount = (int) ($this->transaction->amount - $this->debtAmount);
 
         return $this->transaction->amount;
     }

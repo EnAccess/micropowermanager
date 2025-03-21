@@ -17,8 +17,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('downloadDaily', '\App\Http\Controllers\Export\DailyTransactions@getDailyReport');
-
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::group(

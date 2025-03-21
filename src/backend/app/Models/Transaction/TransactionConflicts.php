@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * Class TransactionConflicts.
  *
- * @property int id
- * @property string state
+ * @property int    $id
+ * @property string $state
  */
 class TransactionConflicts extends BaseModel {
     public function transaction(): MorphTo {

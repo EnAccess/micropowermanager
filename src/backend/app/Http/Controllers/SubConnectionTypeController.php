@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SubConnectionTypeCreateRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\SubConnectionType;
 use App\Services\SubConnectionTypeService;
 use Illuminate\Http\Request;
 
@@ -37,7 +36,7 @@ class SubConnectionTypeController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param SubConnectionType $subConnectionType
+     * @param int $subConnectionTypeId
      *
      * @return ApiResource
      */

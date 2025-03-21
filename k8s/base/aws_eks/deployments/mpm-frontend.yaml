@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-frontend
+  template:
+    metadata:
+      labels:
+        app: mpm-frontend
+    spec:
+      containers:
+        - name: mpm-frontend
+          image: enaccess/micropowermanager-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-frontend
+            - secretRef:
+                name: mpm-secret-frontend

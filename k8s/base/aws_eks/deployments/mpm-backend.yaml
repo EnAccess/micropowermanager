@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-backend
+  template:
+    metadata:
+      labels:
+        app: mpm-backend
+    spec:
+      containers:
+        - name: mpm-backend
+          image: enaccess/micropowermanager-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-backend
+            - secretRef:
+                name: mpm-secret-backend

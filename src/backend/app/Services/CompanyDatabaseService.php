@@ -25,7 +25,7 @@ class CompanyDatabaseService implements IBaseService {
     }
 
     public function create(array $data): CompanyDatabase {
-        /** @var CompanyDatabase $result */
+        /** @var CompanyDatabase $company_database */
         $company_database = $this->companyDatabase->newQuery()->create($data);
         $database_name = $company_database->database_name;
         $company_id = $company_database->company_id;
@@ -43,7 +43,8 @@ class CompanyDatabaseService implements IBaseService {
             function () {
                 Artisan::call('migrate', [
                     '--database' => 'tenant',
-                    '--path' => '/database/migrations/micropowermanager',
+                    '--path' => '/database/migrations/tenant',
+                    '--force' => true,
                 ]);
             }
         );

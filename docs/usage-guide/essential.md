@@ -1,5 +1,5 @@
 ---
-order: 20
+order: 10
 ---
 
 # Micropower Manager Settings

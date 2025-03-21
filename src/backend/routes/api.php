@@ -108,8 +108,7 @@ Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], sta
 // Maintenance
 Route::group(['prefix' => '/maintenance', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'MaintenanceUserController@index');
-    Route::post('/user', 'MaintenanceUserController@store')
-        ->middleware('restriction:maintenance-user');
+    Route::post('/user', 'MaintenanceUserController@store');
 });
 // Manufacturers
 Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static function () {
@@ -165,11 +164,6 @@ Route::group(['prefix' => 'map-settings'], static function () {
     Route::get('/', 'MapSettingsController@index');
     Route::get('/key/{key}', 'MapSettingsController@checkBingApiKey');
     Route::put('/{mapSettings}', ['uses' => 'MapSettingsController@update', 'middleware' => 'jwt.verify']);
-});
-// Ticket Settings
-Route::group(['prefix' => 'ticket-settings'], static function () {
-    Route::get('/', 'TicketSettingsController@index');
-    Route::put('/{ticketSettings}', ['uses' => 'TicketSettingsController@update', 'middleware' => 'jwt.verify']);
 });
 
 // Settings
@@ -256,16 +250,14 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
     Route::post('/', 'MeterTariffController@store');
     Route::put('/{meterTariffId}', 'MeterTariffController@update');
     Route::delete('/{meterTariffId}', 'MeterTariffController@destroy');
-    Route::get('/{meterTariffId}/usage-count', 'MeterTariffMeterParameterController@show');
-    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffMeterParameterController@update');
-    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffMeterParameterController@updateForMeter');
+    Route::get('/{meterTariffId}/usage-count', 'MeterTariffController@showUsageCount');
+    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffController@updateTariff');
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffController@updateForMeter');
 });
 // Transactions
 Route::group(
     ['prefix' => 'transactions', 'middleware' => ['transaction.auth', 'transaction.request']],
     static function () {
-        Route::post('/airtel', 'TransactionController@store');
-        Route::post('/vodacom', ['as' => 'vodacomTransaction', 'uses' => 'TransactionController@store']);
         Route::post(
             '/agent',
             ['as' => 'agent-transaction', 'uses' => 'TransactionController@store', 'middleware' => 'agent.balance']
@@ -296,7 +288,6 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::post('/restrictions', 'RestrictionController@store');
 Route::get('/protected-pages', 'ProtectedPageController@index');
 
 Route::group(['prefix' => 'companies'], static function () {
@@ -309,9 +300,6 @@ Route::group(['prefix' => 'devices'], static function () {
 });
 Route::group(['prefix' => 'device-addresses'], function () {
     Route::post('/', 'DeviceAddressController@update');
-});
-Route::group(['prefix' => 'airtel-volt-terra'], static function () {
-    Route::get('/{meterSerial}/{amount}', 'AirtelVoltTerraController@store');
 });
 Route::group(['prefix' => 'solar-home-systems'], static function () {
     Route::get('/', 'SolarHomeSystemController@index');

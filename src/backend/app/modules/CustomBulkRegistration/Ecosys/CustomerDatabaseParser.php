@@ -98,16 +98,21 @@ class CustomerDatabaseParser {
 
                 $meterParameter = $this->createRecordFromCsv($row, MeterParameterService::class);
                 event('accessRatePayment.initialize', $meterParameter);
-                $row['meter_parameter_id'] = $meterParameter->id;
 
-                $this->createRecordFromCsv($row, GeographicalInformationService::class);
+                $geoInfo = $this->createRecordFromCsv($row, GeographicalInformationService::class);
+
                 $meterAddress = new Address();
                 $address = $meterAddress->newQuery()->create([
                     'city_id' => $city->id,
                 ]);
+
                 $address->owner()->associate($meterParameter);
-                $address->geo()->associate($meterParameter->geo);
                 $address->save();
+
+                if ($geoInfo) {
+                    $geoInfo->owner()->associate($address);
+                    $geoInfo->save();
+                }
 
                 $appliance = $this->createRecordFromCsv($row, ApplianceService::class);
                 $row['asset_id'] = $appliance->id;

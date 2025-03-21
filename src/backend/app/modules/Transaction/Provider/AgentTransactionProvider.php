@@ -36,7 +36,7 @@ class AgentTransactionProvider implements ITransactionProvider {
         $this->agentTransaction->device_id = (int) $data['device_id'];
 
         // common transaction data
-        $this->transaction->amount = (float) $data['amount'];
+        $this->transaction->amount = (int) $data['amount'];
         $this->transaction->sender = 'Agent-'.$data['agent_id'];
         $this->transaction->message = $data['device_serial'];
         $this->transaction->type = 'energy';

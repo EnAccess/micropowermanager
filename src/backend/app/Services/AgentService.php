@@ -28,7 +28,7 @@ class AgentService implements IBaseService {
         try {
             $newPassword = PasswordGenerator::generatePassword();
         } catch (Exception $exception) {
-            $newPassword = time();
+            $newPassword = (string) time();
         }
         try {
             $agent = $this->agent->newQuery()->where('email', $email)->firstOrFail();

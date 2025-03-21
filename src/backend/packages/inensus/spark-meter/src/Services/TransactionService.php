@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -106,29 +107,18 @@ class TransactionService {
             '*'
         )->find($smTransaction['external_id']);
 
-        if ($transaction && $transaction->originalAirtel) {
-            $transaction->originalAirtel->update([
+        if ($transaction && $transaction->orginalAgent) {
+            $transaction->orginalAgent->update([
                 'status' => $status,
             ]);
         } else {
-            if ($transaction && $transaction->originalVodacom) {
-                $transaction->originalVodacom->update([
+            if ($transaction && $transaction->originalThirdParty) {
+                $transaction->originalThirdParty->update([
                     'status' => $status,
                 ]);
-            } else {
-                if ($transaction && $transaction->orginalAgent) {
-                    $transaction->orginalAgent->update([
-                        'status' => $status,
-                    ]);
-                } else {
-                    if ($transaction && $transaction->originalThirdParty) {
-                        $transaction->originalThirdParty->update([
-                            'status' => $status,
-                        ]);
-                    }
-                }
             }
         }
+
         $smTransaction->update([
             'status' => $smStatus,
         ]);
@@ -392,7 +382,10 @@ class TransactionService {
             'load' => $chargedEnergy,
         ]);
         $token->transaction()->associate($mainTransaction);
-        $token->meter()->associate($meterParameter->meter);
+        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
+        if ($meter) {
+            $token->meter()->associate($meter);
+        }
         $token->save();
 
         return $token;

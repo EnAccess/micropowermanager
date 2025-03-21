@@ -1,0 +1,53 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: mpm-managed-cert
+spec:
+  domains:
+    - <MPM_BACKEND_URL>
+    - <MPM_FRONTEND_URL>
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: mpm-frontend-config
+spec:
+  redirectToHttps:
+    enabled: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mpm-ingress
+  annotations:
+    networking.gke.io/managed-certificates: mpm-managed-cert
+    networking.gke.io/v1beta1.FrontendConfig: mpm-frontend-config
+    # Eventhough Kubernetes may throw a
+    #   Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
+    # we have to use this annotation in GKE, see
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balance-ingress#deploy-ingress
+    kubernetes.io/ingress.class: gce
+spec:
+  rules:
+    # MicroPowerManager backend
+    - host: <MPM_BACKEND_URL>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mpm-backend-service
+                port:
+                  number: 80
+    # MicroPowerManager frontend
+    - host: <MPM_FRONTEND_URL>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mpm-frontend-service
+                port:
+                  number: 80

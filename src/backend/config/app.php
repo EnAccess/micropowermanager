@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'MPManager'),
+    'name' => env('APP_NAME', 'MicroPowerManager'),
 
     /*
     |--------------------------------------------------------------------------
@@ -159,7 +159,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        App\Providers\VodacomServiceProvider::class,
         App\Providers\ServicesProvider::class, // for helper services
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Inensus\Ticket\Providers\TicketServiceProvider::class,

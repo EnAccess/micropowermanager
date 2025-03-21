@@ -51,7 +51,7 @@ class Agent extends Authenticatable implements JWTSubject {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -77,7 +77,7 @@ class Agent extends Authenticatable implements JWTSubject {
      *
      * @return array
      *
-     * @psalm-return array<empty, empty>
+     * @psalm-return array{companyId: mixed}
      */
     public function getJWTCustomClaims() {
         return [

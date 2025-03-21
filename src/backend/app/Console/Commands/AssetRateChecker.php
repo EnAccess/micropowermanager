@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\AssetRate;
+use App\Models\SmsApplianceRemindRate;
 use App\Models\User;
 use App\Services\MainSettingsService;
 use App\Services\SmsApplianceRemindRateService;
@@ -10,6 +11,7 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Inensus\Ticket\Models\TicketCategory;
 use Inensus\Ticket\Services\TicketService;
 
@@ -35,7 +37,7 @@ class AssetRateChecker extends AbstractSharedCommand {
 
     private function remindUpComingRates(): void {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
-        $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
+        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
             $dueAssetRates = $this->assetRate::with([
                 'assetPerson.asset.smsReminderRate',
                 'assetPerson.person.addresses',
@@ -59,7 +61,7 @@ class AssetRateChecker extends AbstractSharedCommand {
 
     private function findOverDueRates(): void {
         $smsApplianceRemindRates = $this->getApplianceRemindRates();
-        $smsApplianceRemindRates->each(function ($smsApplianceRemindRate) {
+        $smsApplianceRemindRates->each(function (SmsApplianceRemindRate $smsApplianceRemindRate) {
             $overDueRates = $this->assetRate::with(['assetPerson.asset', 'assetPerson.person.addresses'])
                 ->whereBetween('due_date', [
                     now()->toDateString(),
@@ -120,7 +122,7 @@ class AssetRateChecker extends AbstractSharedCommand {
         );
     }
 
-    private function getApplianceRemindRates(): Collection|array {
+    private function getApplianceRemindRates(): SupportCollection|Collection|array {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }
 }

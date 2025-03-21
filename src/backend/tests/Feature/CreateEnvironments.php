@@ -38,7 +38,6 @@ use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 
@@ -233,7 +232,7 @@ trait CreateEnvironments {
             'sender' => $this->faker->phoneNumber,
             'message' => $meter->serial_number,
             'original_transaction_id' => $this->faker->unique()->randomNumber(),
-            'original_transaction_type' => 'airtel_transaction',
+            'original_transaction_type' => 'agent_transaction',
         ]);
         $this->token = MeterTokenFactory::new()->create([
             'meter_id' => $meter->id,
@@ -242,7 +241,7 @@ trait CreateEnvironments {
         $paymentHistory = PaymentHistoryFactory::new()->create([
             'transaction_id' => $this->transaction->id,
             'amount' => $this->transaction->amount,
-            'payment_service' => 'airtel_transaction',
+            'payment_service' => 'agent_transaction',
             'sender' => $this->faker->phoneNumber,
             'payment_type' => 'energy',
             'paid_for_type' => 'token',
@@ -666,11 +665,7 @@ trait CreateEnvironments {
                 'id' => 1,
                 'transaction_id' => $this->faker->numberBetween(1, 100),
                 'amount' => $this->faker->randomFloat(2, 0, 100),
-                'payment_service' => $this->faker->randomElement([
-                    'vodacom_transaction',
-                    'airtel_transaction',
-                    'agent_transaction',
-                ]),
+                'payment_service' => 'agent_transaction',
                 'sender' => $this->faker->phoneNumber,
                 'payment_type' => $this->faker->randomElement(['appliance', 'energy', 'installment', 'access rate']),
             ]);
@@ -714,20 +709,9 @@ trait CreateEnvironments {
     }
 
     protected function createTicket($ticketCount = 1, $status = 0, $customerId = null, $agentId = null) {
+        $this->createTicketCategory(1);
         while ($ticketCount > 0) {
-            $trelloParams = [
-                'idList' => $this->ticketCard->card_id,
-                'name' => $this->faker->word,
-                'desc' => $this->faker->sentence,
-                'due' => $this->faker->date('Y-m-d'),
-                'idMembers' => $this->ticketUser->extern_id,
-            ];
-            $ticketService = app()->make(TicketService::class);
-            $trelloTicket = $ticketService->create($trelloParams);
-            $ticketId = $trelloTicket->id;
-
             $ticket = TicketFactory::new()->create([
-                'ticket_id' => $ticketId,
                 'category_id' => $this->ticketCategory->id,
                 'assigned_id' => $this->ticketUser->id,
                 'status' => $status,

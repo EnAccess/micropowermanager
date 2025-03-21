@@ -95,7 +95,7 @@ class ApplianceRateService {
                     'asset_person_id' => $assetPerson->id,
                     'rate_cost' => $assetPerson->down_payment,
                     'remaining' => 0,
-                    'due_date' => Carbon::parse(date('Y-m-d'))->toIso8601ZuluString(),
+                    'due_date' => Carbon::parse(date('Y-m-d'))->toDateTimeString(),
                     'remind' => 0,
                 ]
             );
@@ -153,7 +153,6 @@ class ApplianceRateService {
             ->with(['assetPerson.asset', 'assetPerson.person'])
             ->where('due_date', '<', $toDate->format('Y-m-d'))
             ->where('remaining', '>', 0)
-            ->groupBy('asset_person_id')
             ->orderBy('id');
     }
 }
