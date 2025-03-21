@@ -18,9 +18,9 @@ return new class extends Migration {
             $users = DB::connection('tenant')->table('users')->get();
 
             // Insert users into main schema if the main users table exists
-            if (Schema::hasTable('users')) {
+            if (Schema::connection('micro_power_manager')->hasTable('users')) {
                 foreach ($users as $user) {
-                    DB::table('users')->insert([
+                    DB::connection('micro_power_manager')->table('users')->insert([
                         'id' => $user->id,
                         'name' => $user->name,
                         'company_id' => $user->company_id,

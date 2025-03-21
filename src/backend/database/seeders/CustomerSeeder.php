@@ -6,8 +6,8 @@ use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
-use Illuminate\Database\Seeder;
 use App\Services\CompanyService;
+use Illuminate\Database\Seeder;
 
 class CustomerSeeder extends Seeder {
     public function __construct(
