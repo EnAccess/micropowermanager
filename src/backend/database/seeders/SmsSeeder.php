@@ -7,13 +7,13 @@ use App\Models\SmsAndroidSetting;
 use App\Models\SmsResendInformationKey;
 use App\Models\SmsVariableDefaultValue;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
+use App\Services\CompanyService;
 
 class SmsSeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

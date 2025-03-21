@@ -132,4 +132,8 @@ class UserService {
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
     }
+
+    public function findByEmail(string $email): User {
+        return $this->user->findByEmail($email);
+    }
 }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
 use App\Models\Transaction\AgentTransaction;
+use App\Services\CompanyService;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\TokenFactory;
@@ -18,13 +19,12 @@ use Inensus\CalinMeter\Models\CalinTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TransactionSeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     private $transactionTypes = [
