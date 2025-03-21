@@ -3,11 +3,11 @@
 namespace MPM\TenantResolver\ApiResolvers;
 
 use App\Exceptions\ValidationException;
+use App\Services\CompanyService;
 use Illuminate\Http\Request;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class DataExportResolver implements ApiResolverInterface {
-    public function __construct(private DatabaseProxyManagerService $databaseProxyManager) {}
+    public function __construct(private CompanyService $companyService) {}
 
     public function resolveCompanyId(Request $request): int {
         $segments = $request->segments();
@@ -16,8 +16,8 @@ class DataExportResolver implements ApiResolverInterface {
         }
 
         $email = $segments[3];
-        $databaseProxy = $this->databaseProxyManager->findByEmail($email);
-        $companyId = $databaseProxy->getCompanyId();
+        $user = $this->companyService->findByEmail($email);
+        $companyId = $user->getCompanyId();
 
         return (int) $companyId;
     }

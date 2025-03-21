@@ -74,10 +74,11 @@ class UserService {
         return $user;
     }
 
-    public function list(): LengthAwarePaginator {
+    public function list(int $companyId): LengthAwarePaginator {
         return $this->buildQuery()
             ->select('id', 'name', 'email')
             ->with(['addressDetails'])
+            ->where('company_id', $companyId) // filter user list with company_id
             ->paginate();
     }
 
@@ -130,5 +131,9 @@ class UserService {
 
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
+    }
+
+    public function findByEmail(string $email): User {
+        return $this->user->findByEmail($email);
     }
 }

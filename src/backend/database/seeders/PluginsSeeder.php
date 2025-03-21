@@ -3,17 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\Plugins;
+use App\Services\CompanyService;
 use Database\Factories\CalinCredentialFactory;
 use Database\Factories\CsvDataFactory;
 use Database\Factories\WaveMoneyCredentialFactory;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class PluginsSeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

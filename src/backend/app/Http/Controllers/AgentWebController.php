@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
 use App\Services\CountryService;
-use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
@@ -23,7 +21,6 @@ class AgentWebController extends Controller {
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
-        private DatabaseProxyService $databaseProxyService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -49,16 +46,7 @@ class AgentWebController extends Controller {
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
-        $guard = auth('api');
-        $companyId = $guard->payload()->get('companyId');
-        $companyDatabase = CompanyDatabase::query()->where('company_id', $companyId)->firstOrFail();
-        $databaseProxyData = [
-            'email' => $request['email'],
-            'fk_company_id' => $companyId,
-            'fk_company_database_id' => $companyDatabase->getId(),
-        ];
-        $this->databaseProxyService->create($databaseProxyData);
+        $companyId = auth('api')->payload()->get('companyId');
 
         return ApiResource::make($this->agentService->create(
             $agentData,
