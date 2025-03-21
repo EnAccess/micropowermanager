@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\URL;
 use Inensus\WaveMoneyPaymentProvider\Http\Requests\WaveMoneyCredentialRequest;
 use Inensus\WaveMoneyPaymentProvider\Http\Resources\WaveMoneyResource;
 use Inensus\WaveMoneyPaymentProvider\Services\WaveMoneyCredentialService;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class WaveMoneyCredentialController extends Controller {
     public function __construct(
         private WaveMoneyCredentialService $credentialService,
-        private DatabaseProxyManagerService $databaseProxyManagerService,
         private CompanyService $companyService,
     ) {}
 
@@ -22,7 +20,7 @@ class WaveMoneyCredentialController extends Controller {
     }
 
     public function update(WaveMoneyCredentialRequest $request): WaveMoneyResource {
-        $databaseProxy = $this->databaseProxyManagerService->findByEmail(auth('api')->user()->email);
+        $databaseProxy = $this->companyService->findByEmail(auth('api')->user()->email);
         $companyId = $databaseProxy->getCompanyId();
         $company = $this->companyService->getById($companyId);
         $merchantId = $request->input('merchant_id');

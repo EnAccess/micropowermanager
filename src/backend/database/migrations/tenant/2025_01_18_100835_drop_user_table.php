@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -11,6 +12,27 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
+        // Check if the users table exists in the tenant connection
+        if (Schema::connection('tenant')->hasTable('users')) {
+            // Fetch records from tenant users table
+            $users = DB::connection('tenant')->table('users')->get();
+
+            // Insert users into main schema if the main users table exists
+            if (Schema::hasTable('users')) {
+                foreach ($users as $user) {
+                    DB::table('users')->insert([
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'company_id' => $user->company_id,
+                        'email' => $user->email,
+                        'password' => $user->password,
+                        'created_at' => $user->created_at,
+                        'updated_at' => $user->updated_at,
+                    ]);
+                }
+            }
+        }
+        // Drop the users table in the tenant schema
         Schema::connection('tenant')->dropIfExists('users');
     }
 

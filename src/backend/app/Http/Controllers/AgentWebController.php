@@ -7,7 +7,6 @@ use App\Http\Resources\ApiResource;
 use App\Services\AddressesService;
 use App\Services\AgentService;
 use App\Services\CompanyDatabaseService;
-use App\Services\CompanyService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
 use App\Services\PersonService;
@@ -22,7 +21,6 @@ class AgentWebController extends Controller {
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
         private CompanyDatabaseService $companyDatabaseService,
-        private CompanyService $companyService,
     ) {}
 
     public function index(Request $request): ApiResource {
