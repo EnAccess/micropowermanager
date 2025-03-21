@@ -154,6 +154,14 @@ These configure instance level email sent to tenants, for example signup confirm
 Certain MicroPowerManager plugins require configuration before they can be used.
 Find below a reference of configurations which are required if the corresponding plugin is used.
 
+#### SunKing
+
+For detailed information see [SunKing Developer Documentation](https://sunking.com/)
+
+| Environment Variable | Default                            | Description                                                                      |
+| -------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
+| `SUNKING_API_URL`    | **Required** (when plugin is used) | SunKing API URL. For example `https://dev.assetcontrol.central.glp apps.com/v2`. |
+
 #### WaveMoney
 
 For detailed information see [WaveMoney Developer Documentation](https://partners.wavemoney.com.mm/documentation)
