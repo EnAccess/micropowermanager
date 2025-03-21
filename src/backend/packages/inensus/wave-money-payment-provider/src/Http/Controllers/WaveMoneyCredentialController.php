@@ -20,8 +20,8 @@ class WaveMoneyCredentialController extends Controller {
     }
 
     public function update(WaveMoneyCredentialRequest $request): WaveMoneyResource {
-        $databaseProxy = $this->companyService->findByEmail(auth('api')->user()->email);
-        $companyId = $databaseProxy->getCompanyId();
+        $user = $this->companyService->findByEmail(auth('api')->user()->email);
+        $companyId = $user->getCompanyId();
         $company = $this->companyService->getById($companyId);
         $merchantId = $request->input('merchant_id');
         $secretKey = $request->input('secret_key');

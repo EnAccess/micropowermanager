@@ -26,10 +26,6 @@ class CompanyService implements IBaseService {
         return $this->company->where('name', $name)->firstOrFail();
     }
 
-    public function getByDatabaseProxy($databaseProxy): Company {
-        return $this->getById($databaseProxy->getCompanyId());
-    }
-
     public function getById($id): Company {
         $result = $this->company->newQuery()->findOrFail($id);
 

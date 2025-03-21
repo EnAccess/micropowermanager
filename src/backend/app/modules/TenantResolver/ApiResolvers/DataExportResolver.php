@@ -16,8 +16,8 @@ class DataExportResolver implements ApiResolverInterface {
         }
 
         $email = $segments[3];
-        $databaseProxy = $this->companyService->findByEmail($email);
-        $companyId = $databaseProxy->getCompanyId();
+        $user = $this->companyService->findByEmail($email);
+        $companyId = $user->getCompanyId();
 
         return (int) $companyId;
     }
