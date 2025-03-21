@@ -41,7 +41,7 @@ class CompanyController extends Controller {
                 Carbon::now()->timestamp,
         ]);
 
-        // Create Admin user and DatabaseProxy
+        // Create Admin user
         $this->companyService->runForCompany(
             $company->getId(),
             fn () => $this->userService->create(

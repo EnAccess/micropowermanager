@@ -40,7 +40,7 @@ class TenantSeeder extends Seeder {
             'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ]);
 
-        // Create Admin user and DatabaseProxy
+        // Create Admin user
         $this->companyService->runForCompany(
             $company->getId(),
             fn () => $this->userService->create(

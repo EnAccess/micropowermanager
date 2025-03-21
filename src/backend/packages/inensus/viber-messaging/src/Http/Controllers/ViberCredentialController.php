@@ -20,8 +20,8 @@ class ViberCredentialController extends Controller {
     }
 
     public function update(ViberCredentialRequest $request): ViberResource {
-        $databaseProxy = $this->companyService->findByEmail(auth('api')->user()->email);
-        $companyId = $databaseProxy->getCompanyId();
+        $user = $this->companyService->findByEmail(auth('api')->user()->email);
+        $companyId = $user->getCompanyId();
         $apiToken = $request->input('api_token');
         $id = $request->input('id');
         $webhookUrl = URL::to('/')."/api/viber-messaging/webhook/$companyId";
