@@ -37,7 +37,7 @@ class AgentSoldApplianceController extends Controller {
      * @return ApiResource
      */
     public function store(CreateAgentSoldApplianceRequest $request) {
-        $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
+        $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id', 'down_payment', 'tenure', 'first_payment_date']);
 
         return ApiResource::make($this->agentSoldApplianceService->create($soldApplianceData));
     }

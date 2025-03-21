@@ -31,12 +31,10 @@ class AgentSoldApplianceObserver {
     ) {}
 
     public function created(AgentSoldAppliance $agentSoldAppliance): void {
-        if (request()->all()) {
-            $this->processSaleIfIsNotCreatedByFactory($agentSoldAppliance);
-        }
+        $this->processSale($agentSoldAppliance);
     }
 
-    private function processSaleIfIsNotCreatedByFactory($agentSoldAppliance) {
+    private function processSale($agentSoldAppliance) {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->appliance()->first();
@@ -52,7 +50,7 @@ class AgentSoldApplianceObserver {
 
         // assign agent transaction to transaction
         $transactionData = [
-            'amount' => request()->input('down_payment') ?: 0,
+            'amount' => $agentSoldAppliance->down_payment ?: 0,
             'sender' => $agent->device_id,
             'message' => '-',
         ];
@@ -65,12 +63,12 @@ class AgentSoldApplianceObserver {
 
         // assign agent to appliance person
         $appliancePersonData = [
-            'person_id' => request()->input('person_id'),
-            'first_payment_date' => request()->input('first_payment_date'),
-            'rate_count' => request()->input('tenure'),
+            'person_id' => $agentSoldAppliance->person_id,
+            'first_payment_date' => $agentSoldAppliance->first_payment_date,
+            'rate_count' => $agentSoldAppliance->tenure,
             'total_cost' => $assignedAppliance->cost,
-            'down_payment' => request()->input('down_payment'),
-            'asset_type_id' => $assignedAppliance->appliance->id,
+            'down_payment' => $agentSoldAppliance->down_payment,
+            'asset_id' => $assignedAppliance->appliance->id,
         ];
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
         $this->agentAppliancePersonService->setAssignee($agent);
@@ -81,7 +79,8 @@ class AgentSoldApplianceObserver {
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',
             [
-                'assetType' => $appliance,
+                'asset' => $appliance,
+                'assetType' => $appliance->assetType,
                 'assetPerson' => $appliancePerson,
                 'transaction' => $transaction,
             ]
@@ -92,7 +91,7 @@ class AgentSoldApplianceObserver {
         // assign agent assigned appliance to agent balance history
         $agentBalanceHistoryData = [
             'agent_id' => $agent->id,
-            'amount' => (-1 * request()->input('down_payment')),
+            'amount' => (-1 * $agentSoldAppliance->down_payment),
             'transaction_id' => $transaction->id,
             'available_balance' => $agent->balance,
             'due_to_supplier' => $agent->due_to_energy_supplier,
