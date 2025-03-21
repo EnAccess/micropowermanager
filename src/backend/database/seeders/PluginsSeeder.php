@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Plugins;
+use App\Services\CompanyService;
 use Database\Factories\CalinCredentialFactory;
 use Database\Factories\CsvDataFactory;
 use Database\Factories\WaveMoneyCredentialFactory;
 use Illuminate\Database\Seeder;
-use App\Services\CompanyService;
 
 class PluginsSeeder extends Seeder {
     public function __construct(

@@ -13,8 +13,9 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
-use Illuminate\Database\Seeder;
 use App\Services\CompanyService;
+use Illuminate\Database\Seeder;
+
 class MeterSeeder extends Seeder {
     public function __construct(
         private CompanyService $companyService,

@@ -9,8 +9,8 @@ use App\Models\AgentCommission;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
-use Illuminate\Database\Seeder;
 use App\Services\CompanyService;
+use Illuminate\Database\Seeder;
 
 class AgentSeeder extends Seeder {
     public function __construct(
