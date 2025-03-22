@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
+use Illuminate\Http\JsonResponse;
 use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
@@ -77,17 +78,15 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->update($agent, $agentData, $this->personService));
     }
 
-    public function destroy($agentId, Request $request): \Illuminate\Http\JsonResponse {
+    public function destroy($agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
 
-        $result = $this->agentService->delete($agent);
+        $deleted = $this->agentService->delete($agent);
 
-        return response()->json([
-            'success' => $result,
-            'message' => $result ? 'Agent deleted successfully' : 'Failed to delete agent'
+        return ApiResource::make([
+            'message' => $deleted ? 'Agent deleted successfully' : 'Failed to delete agent',
+            'status_code' => $deleted ? 200 : 400
         ]);
-
-        // return ApiResource::make($this->agentService->delete($agent));
     }
 
     public function search(Request $request): ApiResource {
