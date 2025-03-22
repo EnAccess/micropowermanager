@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentRequest;
 use App\Http\Resources\ApiResource;
-use Illuminate\Http\JsonResponse;
 use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
@@ -85,7 +84,7 @@ class AgentWebController extends Controller {
 
         return ApiResource::make([
             'message' => $deleted ? 'Agent deleted successfully' : 'Failed to delete agent',
-            'status_code' => $deleted ? 200 : 400
+            'status_code' => $deleted ? 200 : 400,
         ]);
     }
 
