@@ -18,7 +18,9 @@ class DeviceService implements IBaseService, IAssociative {
     ) {}
 
     public function make($deviceData): Device {
-        $result = $this->device->newQuery()->create([
+        // This method is used to create a new instance of the model
+        // without saving it to the database immediately.
+        $result = $this->device->newInstance([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
         ]);
