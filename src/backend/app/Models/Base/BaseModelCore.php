@@ -16,6 +16,7 @@ abstract class BaseModelCore extends Model {
 
     public function __construct(array $attributes = []) {
         $this->setConnection('micro_power_manager');
+
         parent::__construct($attributes);
     }
 }

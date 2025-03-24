@@ -26,7 +26,7 @@ class User extends Authenticatable implements JWTSubject {
     use Notifiable;
     use HasFactory;
 
-    public const RELATION_NAME = 'admin';
+    public const RELATION_NAME = 'users';
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
 

@@ -11,7 +11,6 @@ class ModelShowTenant extends Command {
      *
      * @var string
      */
-    // protected $signature = 'model:show-tenant';
     protected $signature = 'model:show-tenant {model : The model to show}';
 
     /**
