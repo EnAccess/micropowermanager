@@ -61,6 +61,9 @@ class ApplianceTransactionProcessor extends AbstractJob {
         $applianceInstallmentPayer->initialize($container);
         $applianceInstallmentPayer->payInstallmentsForDevice($container);
         $container->paidRates = $applianceInstallmentPayer->paidRates;
+        $container->applianceInstallmentsFullFilled = $container->appliancePerson->rates->every(function ($installment) {
+            return $installment->remaining === 0;
+        });
 
         return $container;
     }
