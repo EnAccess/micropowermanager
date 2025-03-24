@@ -29,7 +29,7 @@ return new class extends Migration {
                 ]);
             }
         } else {
-            throw new Exception('micro_power_manager.users table does not exist');
+            throw new Exception('Table `micro_power_manager.users` does not exist. Please make sure the Central Database migration have been run.');
         }
 
         // Drop the users table in the tenant schema
