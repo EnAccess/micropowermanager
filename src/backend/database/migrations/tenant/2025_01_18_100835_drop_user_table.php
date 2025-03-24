@@ -12,26 +12,26 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        // Check if the users table exists in the tenant connection
-        if (Schema::connection('tenant')->hasTable('users')) {
-            // Fetch records from tenant users table
-            $users = DB::connection('tenant')->table('users')->get();
+        // Fetch records from tenant users table
+        $users = DB::connection('tenant')->table('users')->get();
 
-            // Insert users into main schema if the main users table exists
-            if (Schema::connection('micro_power_manager')->hasTable('users')) {
-                foreach ($users as $user) {
-                    DB::connection('micro_power_manager')->table('users')->insert([
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'company_id' => $user->company_id,
-                        'email' => $user->email,
-                        'password' => $user->password,
-                        'created_at' => $user->created_at,
-                        'updated_at' => $user->updated_at,
-                    ]);
-                }
+        // Insert users into main schema if the main users table exists
+        if (Schema::connection('micro_power_manager')->hasTable('users')) {
+            foreach ($users as $user) {
+                DB::connection('micro_power_manager')->table('users')->insert([
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'company_id' => $user->company_id,
+                    'email' => $user->email,
+                    'password' => $user->password,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                ]);
             }
+        } else {
+            throw new Exception('micro_power_manager.users table does not exist');
         }
+
         // Drop the users table in the tenant schema
         Schema::connection('tenant')->dropIfExists('users');
     }
