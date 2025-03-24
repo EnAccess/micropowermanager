@@ -53,4 +53,23 @@ resource "google_compute_instance" "ipsec_gateway" {
       nat_ip = google_compute_address.ipsec_gateway_external_ip.address
     }
   }
+
+  metadata = {
+    startup-script = <<-EOT
+      #!/bin/bash
+      set -e
+
+      echo "Updating packages..."
+      apt update -y
+
+      echo "Installing HAProxy and StrongSwan..."
+      apt install -y haproxy strongswan
+
+      echo "Enabling and starting services..."
+      systemctl enable haproxy strongswan
+      systemctl start haproxy strongswan
+
+      echo "Setup complete."
+    EOT
+  }
 }
