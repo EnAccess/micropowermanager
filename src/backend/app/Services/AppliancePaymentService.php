@@ -14,13 +14,16 @@ use MPM\Device\DeviceService;
 
 class AppliancePaymentService {
     private float $paymentAmount;
+    public bool $applianceInstallmentsFullFilled;
 
     public function __construct(
         private CashTransactionService $cashTransactionService,
         private MainSettings $mainSettings,
         private AppliancePersonService $appliancePersonService,
         private DeviceService $deviceService,
-    ) {}
+    ) {
+        $this->applianceInstallmentsFullFilled = false;
+    }
 
     public function getPaymentForAppliance($request, $appliancePerson) {
         $creatorId = auth('api')->user()->id;
@@ -33,16 +36,18 @@ class AppliancePaymentService {
         $sender = $ownerAddress == null ? '-' : $ownerAddress->phone;
         $transaction =
             $this->cashTransactionService->createCashTransaction($creatorId, $amount, $sender, $deviceSerial);
-        if ($applianceDetail->device_serial) {
-            $this->processPaymentForDevice($deviceSerial, $transaction, $applianceDetail);
-        } else {
-            $this->createPaymentLog($appliancePerson, $amount, $creatorId);
-        }
+        $totalRemainingAmount = $applianceDetail->rates->sum('remaining');
+        $this->applianceInstallmentsFullFilled = $totalRemainingAmount <= $amount;
         $applianceDetail->rates->map(fn ($installment) => $this->payInstallment(
             $installment,
             $applianceOwner,
             $transaction
         ));
+        if ($applianceDetail->device_serial) {
+            $this->processPaymentForDevice($deviceSerial, $transaction, $applianceDetail);
+        } else {
+            $this->createPaymentLog($appliancePerson, $amount, $creatorId);
+        }
 
         return $appliancePerson;
     }
@@ -138,6 +143,8 @@ class AppliancePaymentService {
         $transactionData->dayDifferenceBetweenTwoInstallments = $dayDiff;
         $transactionData->appliancePerson = $applianceDetail;
         $manufacturerApi = resolve($manufacturer->api_name);
+        $transactionData->applianceInstallmentsFullFilled = $this->applianceInstallmentsFullFilled;
+
         $tokenData = $manufacturerApi->chargeDevice($transactionData);
         $token = Token::query()->make([
             'token' => $tokenData['token'],

@@ -28,7 +28,7 @@ class TransactionDataContainer {
     public ?AssetPerson $appliancePerson;
     public float $installmentCost;
     public string $dayDifferenceBetweenTwoInstallments;
-    public Meter $meter;
+    public bool $applianceInstallmentsFullFilled;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
@@ -38,16 +38,14 @@ class TransactionDataContainer {
         $container->totalAmount = $transaction->amount;
         $container->amount = $transaction->amount;
         $container->rawAmount = $transaction->amount;
-
-        $meter = Meter::where('serial_number', $transaction->message)->first();
-        $container->meter = $meter;
+        $container->applianceInstallmentsFullFilled = false;
 
         try {
             $container->device = $deviceService->getBySerialNumber($transaction->message);
             $container->tariff = null;
             $container->manufacturer = $container->device->device->manufacturer()->first();
 
-            if ($container->device->device_type === 'meter') {
+            if ($container->device->device_type === Meter::RELATION_NAME) {
                 $meter = $container->device->device;
                 $container->tariff = $meter->tariff()->first();
             }
