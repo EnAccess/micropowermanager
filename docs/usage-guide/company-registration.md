@@ -11,8 +11,8 @@ order: 3
 3. Create a password for password protected areas, so that only the team members with knowledge of the password can access sensitive information (Password protected areas are: Tariff-setting, Targets-setting, Overall company Settings, Addition of locations (village, mini-grid, cluster)\*.
 4. Create the locations (under “Settings”) where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
-   a) To register new mini-grid customers, the Customer Registration App is required. Basic customer data together with the electricity meter serial number are required (kindly see the “Register a customer & device” section for further information.
-   b) To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check the “Register a customer & device” section of this User Manual.
+   a) To register new mini-grid customers, the Customer Registration App is required. Basic customer data together with the electricity meter serial number are required (kindly see the “Before Using MPM” section for further information.
+   b) To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check the “Before Using MPM” section of this User Manual.
 
 \*Password-setting to protect some sections of your account can only be generated at account setting stage. To change this password ex-post, you will have to contact EnAccess (Enaccess can change the password directly on the database).
 
