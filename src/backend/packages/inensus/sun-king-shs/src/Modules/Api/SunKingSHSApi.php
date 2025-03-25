@@ -14,6 +14,7 @@ use Inensus\SunKingSHS\Services\SunKingCredentialService;
 class SunKingSHSApi implements IManufacturerAPI {
     public const API_CALL_TOKEN_GENERATION = '/token';
     public const COMMAND_ADD_CREDIT = 'add_credit';
+    public const COMMAND_UNLOCK_DEVICE = 'unlock';
 
     public function __construct(
         private SunKingCredentialService $credentialService,
@@ -31,50 +32,81 @@ class SunKingSHSApi implements IManufacturerAPI {
         Log::debug('ENERGY TO BE CHARGED as Day '.$transactionContainer->chargedEnergy.
             ' Manufacturer => SunKingSHSApi');
 
-        $device = $transactionContainer->device;
         $energy = $transactionContainer->chargedEnergy;
-
-        $params = [
-            'device' => $device->device_serial,
-            'command' => self::COMMAND_ADD_CREDIT,
-            'payload' => $energy,
-            'time_unit' => 'day',
-        ];
+        $params = $this->buildParams($transactionContainer);
         $credentials = $this->credentialService->getCredentials();
+        $response = $this->handleApiRequest($credentials, $params);
 
-        try {
-            $authResponse = $this->apiRequests->authentication($credentials);
-            $this->credentialService->updateCredentials($credentials, $authResponse);
-            $response = $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
-        } catch (SunKingApiResponseException $e) {
-            $this->credentialService->updateCredentials(
-                $credentials,
-                ['access_token' => null, 'token_expires_in' => null]
-            );
-            throw new SunKingApiResponseException($e->getMessage());
-        }
-
-        $manufacturerTransaction = $this->sunKingTransaction->newQuery()->create([]);
-        $transactionContainer->transaction->originalTransaction()->first()->update([
-            'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'sun_king_transaction',
-        ]);
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => -1,
-                    'affected' => $transactionContainer->appliancePerson,
-                    'action' => 'Token: '.$response['token'].' created for '.$energy.
-                        ' days usage.',
-                ],
-            ]
-        );
+        $this->recordTransaction($transactionContainer);
+        $this->logAction($transactionContainer, $response['token']);
 
         return [
             'token' => $response['token'],
             'load' => $energy,
         ];
+    }
+
+    private function buildParams(TransactionDataContainer $transactionContainer): array {
+        $deviceSerial = $transactionContainer->device->device_serial;
+
+        if (!$this->isInstallmentsCompleted($transactionContainer)) {
+            return [
+                'device' => $deviceSerial,
+                'command' => self::COMMAND_ADD_CREDIT,
+                'payload' => $transactionContainer->chargedEnergy,
+                'time_unit' => 'day',
+            ];
+        }
+
+        return [
+            'device' => $deviceSerial,
+            'command' => self::COMMAND_UNLOCK_DEVICE,
+        ];
+    }
+
+    private function handleApiRequest(&$credentials, array $params): array {
+        try {
+            $authResponse = $this->apiRequests->authentication($credentials);
+            $this->credentialService->updateCredentials($credentials, $authResponse);
+
+            return $this->apiRequests->post($credentials, $params, self::API_CALL_TOKEN_GENERATION);
+        } catch (SunKingApiResponseException $e) {
+            $this->credentialService->updateCredentials($credentials, [
+                'access_token' => null,
+                'token_expires_in' => null,
+            ]);
+
+            throw new SunKingApiResponseException($e->getMessage());
+        }
+    }
+
+    private function recordTransaction(TransactionDataContainer $transactionContainer): void {
+        $manufacturerTransaction = $this->sunKingTransaction->newQuery()->create([]);
+
+        $transactionContainer->transaction->originalTransaction()->first()->update([
+            'manufacturer_transaction_id' => $manufacturerTransaction->id,
+            'manufacturer_transaction_type' => 'sun_king_transaction',
+        ]);
+    }
+
+    private function logAction(TransactionDataContainer $transactionContainer, string $token): void {
+        $isInstallmentsCompleted = $this->isInstallmentsCompleted($transactionContainer);
+        $energy = $transactionContainer->chargedEnergy;
+        $action = $isInstallmentsCompleted
+            ? "Token: $token created for unlocking device."
+            : "Token: $token created for $energy days usage.";
+
+        event('new.log', [
+            'logData' => [
+                'user_id' => -1,
+                'affected' => $transactionContainer->appliancePerson,
+                'action' => $action,
+            ],
+        ]);
+    }
+
+    private function isInstallmentsCompleted(TransactionDataContainer $transactionContainer): bool {
+        return $transactionContainer->applianceInstallmentsFullFilled;
     }
 
     public function clearDevice(Device $device) {

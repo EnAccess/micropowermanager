@@ -6,10 +6,10 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\Handler;
 use App\Exceptions\ValidationException;
+use App\Services\CompanyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\TenantResolver\ApiCompanyResolverService;
 use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
 
@@ -19,7 +19,7 @@ use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
  */
 class UserDefaultDatabaseConnectionMiddleware {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManager,
+        private CompanyService $companyService,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
     ) {}
@@ -83,11 +83,11 @@ class UserDefaultDatabaseConnectionMiddleware {
 
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
+            $user = $this->companyService->findByEmail($request->input('email'));
+            $companyId = $user->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
-            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
-            $companyId = $databaseProxy->getCompanyId();
+            $user = $this->companyService->findByEmail($request->input('email'));
+            $companyId = $user->getCompanyId();
         } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
             $companyId = auth('agent_api')->payload()->get('companyId');
             if (!is_numeric($companyId)) {
@@ -102,7 +102,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             }
         }
 
-        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request) {
+        return $this->companyService->runForCompany($companyId, function () use ($next, $request) {
             return $next($request);
         });
     }

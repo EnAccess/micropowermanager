@@ -18,7 +18,7 @@ class DeviceService implements IBaseService, IAssociative {
     ) {}
 
     public function make($deviceData): Device {
-        $result = $this->device->newQuery()->create([
+        $result = $this->device->newQuery()->make([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
         ]);

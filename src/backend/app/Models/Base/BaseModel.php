@@ -16,7 +16,8 @@ abstract class BaseModel extends Model {
     public static $rules = [];
 
     public function __construct(array $attributes = []) {
-        parent::__construct($attributes);
         $this->setConnection('tenant');
+
+        parent::__construct($attributes);
     }
 }

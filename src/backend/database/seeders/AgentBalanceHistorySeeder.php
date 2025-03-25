@@ -4,14 +4,14 @@ namespace Database\Seeders;
 
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
+use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class AgentBalanceHistorySeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

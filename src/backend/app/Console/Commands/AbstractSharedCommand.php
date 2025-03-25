@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\CompanyDatabase;
+use App\Services\CompanyService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,36 +30,35 @@ abstract class AbstractSharedCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        /** @var DatabaseProxyManagerService $databaseProxyManagerService */
-        $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
+        $companyService = app()->make(CompanyService::class);
 
         $companyId = null;
         if ($this->hasOption('company-id')) {
             $companyId = $this->option('company-id');
         }
         if ($companyId) {
-            $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
+            $this->runForCompany($companyService, (int) $companyId, $input, $output);
         } else {
-            $this->runForAllTenants($databaseProxyManagerService, $input, $output);
+            $this->runForAllTenants($companyService, $input, $output);
         }
 
         return $this->EXECUTION_TYPE;
     }
 
     private function runForAllTenants(
-        DatabaseProxyManagerService $databaseProxyManagerService,
+        CompanyService $companyService,
         InputInterface $input,
         OutputInterface $output,
     ): void {
-        $databaseProxyManagerService->queryAllConnections()
-            ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
+        $companyService->queryAllConnections()
+            ->chunkById(50, function (Collection $modelCollection) use ($companyService, $input, $output) {
                 $modelCollection->map(function (CompanyDatabase $companyDatabase) use (
-                    $databaseProxyManagerService,
+                    $companyService,
                     $input,
                     $output
                 ) {
                     $this->runForCompany(
-                        $databaseProxyManagerService,
+                        $companyService,
                         $companyDatabase->getCompanyId(),
                         $input,
                         $output
@@ -69,13 +68,13 @@ abstract class AbstractSharedCommand extends Command {
     }
 
     private function runForCompany(
-        DatabaseProxyManagerService $databaseProxyManagerService,
+        CompanyService $companyService,
         int $companyId,
         InputInterface $input,
         OutputInterface $output,
     ): void {
         $this->info('Running '.$this->name.' for company ID : '.$companyId);
-        $databaseProxyManagerService->runForCompany($companyId, function () use ($input, $output) {
+        $companyService->runForCompany($companyId, function () use ($input, $output) {
             parent::execute($input, $output);
         });
     }

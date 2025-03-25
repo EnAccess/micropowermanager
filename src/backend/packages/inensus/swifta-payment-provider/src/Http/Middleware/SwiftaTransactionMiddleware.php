@@ -23,7 +23,7 @@ class SwiftaTransactionMiddleware {
 
         $swiftaTransaction = $transactionProvider->getSubTransaction();
         $transaction = $swiftaTransaction->transaction()->first();
-        $owner = $transaction->meter->meterParameter->owner;
+        $owner = $transaction->meter->device()->person;
 
         $request->attributes->add(['transactionId' => $transaction->id]);
         $request->attributes->add(['customerName' => $owner->name.' '.$owner->surname]);
