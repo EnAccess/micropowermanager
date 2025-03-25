@@ -2,7 +2,6 @@
   "data": {
     "data": [
       {
-        "ticket_id": "60646eff6e453831d355230c",
         "owner_type": "person",
         "owner_id": 1065,
         "creator_id": 22,
@@ -12,94 +11,6 @@
         "updated_at": "2021-03-31T12:45:51.000000Z",
         "created_at": "2021-03-31T12:45:51.000000Z",
         "id": 118,
-        "ticket": {
-          "id": "60646eff6e453831d355230c",
-          "address": null,
-          "checkItemStates": [],
-          "closed": false,
-          "coordinates": null,
-          "creationMethod": null,
-          "dateLastActivity": "2021-03-31T12:45:51.593Z",
-          "desc": "test",
-          "descData": null,
-          "dueReminder": null,
-          "idBoard": "5e600b95a5476b18dc10388a",
-          "idLabels": [],
-          "idList": "5e600c8fd7de8461aa19d195",
-          "idMembersVoted": [],
-          "idShort": 175,
-          "idAttachmentCover": null,
-          "locationName": null,
-          "manualCoverAttachment": false,
-          "name": "test",
-          "pos": 2654208,
-          "shortLink": "VsCW54Ge",
-          "isTemplate": false,
-          "cardRole": null,
-          "dueComplete": false,
-          "due": null,
-          "email": null,
-          "labels": [],
-          "shortUrl": "https://trello.com/c/VsCW54Ge",
-          "start": null,
-          "url": "https://trello.com/c/VsCW54Ge/175-test",
-          "idMembers": [],
-          "limits": {
-            "attachments": {
-              "perCard": {
-                "status": "ok",
-                "disableAt": 1000,
-                "warnAt": 900
-              }
-            },
-            "checklists": {
-              "perCard": {
-                "status": "ok",
-                "disableAt": 500,
-                "warnAt": 450
-              }
-            },
-            "stickers": {
-              "perCard": {
-                "status": "ok",
-                "disableAt": 70,
-                "warnAt": 63
-              }
-            }
-          },
-          "badges": {
-            "attachmentsByType": {
-              "trello": {
-                "board": 0,
-                "card": 0
-              }
-            },
-            "location": false,
-            "votes": 0,
-            "viewingMemberVoted": false,
-            "subscribed": false,
-            "fogbugz": "",
-            "checkItems": 0,
-            "checkItemsChecked": 0,
-            "checkItemsEarliestDue": null,
-            "comments": 0,
-            "attachments": 0,
-            "description": true,
-            "due": null,
-            "dueComplete": false,
-            "start": null
-          },
-          "subscribed": false,
-          "idChecklists": [],
-          "cover": {
-            "idAttachment": null,
-            "color": null,
-            "idUploadedBackground": null,
-            "size": "normal",
-            "brightness": "dark",
-            "idPlugin": null
-          }
-        },
         "actions": []
       }
     ]

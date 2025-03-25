@@ -59,12 +59,20 @@ Then
 ```php
 $mailHelper = app(App\Helpers\MailHelper::class);
 $mailHelper->sendPlain('test@example.org', '[TEST] Welcome to MicroPowerManager', 'lorem ipsum');
+$mailHelper->sendViaTemplate('test@example.org', '[TEST] Welcome to MicroPowerManager', 'templates.mail.register_welcome', ['userName' => 'Lorem', 'companyName' => 'Ipsum']);
 ```
 
 ## Logging
 
 > [!INFO]
 > This section is optional, but recommended.
+
+By default we are running MicroPowerManager using `debug` logging level.
+In normal operation it is recommended to set at least `info` using
+
+- `LOG_LEVEL`
+
+When debugging errors or problems it can be helpful to temporarily revert `LOG_LEVEL` to `debug`.
 
 Set up a logging channel which allows you to monitor critical errors of the application in realtime.
 
@@ -73,10 +81,15 @@ Set the following environment variables
 
 - `LOG_SLACK_WEBHOOK_URL`
 
-By default, we are logging `CRITICAL` errors.
-To increase the logging level (for example to investigate errors), set
+By default, we are logging `CRITICAL` errors to Slack.
 
-- `LOG_LEVEL`
+### Testing logging setup
+
+To test logging setup run the Artisan logging test command
+
+```sh
+php artisan log:test
+```
 
 ## Agent Apps
 

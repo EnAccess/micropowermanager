@@ -22,7 +22,7 @@ class AgentSoldApplianceService implements IBaseService {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function getById(int $agentId, ?int $customerId = null): AgentSoldAppliance {
+    public function getById(int $agentId, ?int $customerId = null): ?AssetPerson {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',

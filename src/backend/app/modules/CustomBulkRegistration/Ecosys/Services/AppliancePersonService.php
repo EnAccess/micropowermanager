@@ -5,7 +5,7 @@ namespace MPM\CustomBulkRegistration\Ecosys\Services;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\MainSettings;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Person\Person;
 use App\Models\Transaction\CashTransaction;
@@ -17,7 +17,6 @@ class AppliancePersonService extends CreatorService {
     private $newTarifName;
     private ?float $price = null;
     private $minimumAmount;
-    private $meterParameterId;
     private $personId;
     private $downPayment;
     private $applianceId;
@@ -61,7 +60,6 @@ class AppliancePersonService extends CreatorService {
         $this->newTarifName = $csvData['appliance_name'].'-'.$csvData['serial_number'];
         $this->price = floor((intval($csvData[$appliancePersonConfig['minimum_payment_amount']]) / 7) * 4);
         $this->minimumAmount = $csvData[$appliancePersonConfig['minimum_payment_amount']];
-        $this->meterParameterId = $csvData['meter_parameter_id'];
         $this->personId = $csvData['person_id'];
         $this->downPayment = $csvData[$appliancePersonConfig['down_payment']];
         $this->applianceId = $csvData[$appliancePersonConfig['asset_id']];
@@ -95,26 +93,19 @@ class AppliancePersonService extends CreatorService {
             'minimum_purchase_amount' => $this->minimumAmount,
         ];
         $newTariff = MeterTariff::query()->firstOrCreate($newTariffData, $newTariffData);
-        $meterParameter = MeterParameter::query()->where('id', $this->meterParameterId)->first();
-        $meterParameter->tariff_id = $newTariff->id;
-        $meterParameter->save();
         $appliancePerson = AssetPerson::query()->firstOrCreate($appliancePersonData, $appliancePersonData);
 
         $person = Person::query()->where('id', $this->personId)->first();
         $buyerAddress = $person->addresses()->where('is_primary', 1)->first();
         $sender = $buyerAddress == null ? '-' : $buyerAddress->phone;
-        $meterParameter = $person->meters()->whereHas(
-            'meter',
-            static function ($q) {
-                $q->whereHas(
-                    'manufacturer',
-                    static function ($q) {
-                        $q->where('name', 'SunKing SHS');
-                    }
-                );
-            }
-        )->first();
-        $meter = $meterParameter?->meter;
+        $personId = $person->id;
+        $meter = Meter::whereHas('device', function ($query) use ($personId) {
+            $query->whereHas('person', function ($personQuery) use ($personId) {
+                $personQuery->where('id', $personId); // Match the person ID
+            });
+        })->whereHas('manufacturer', function ($manufacturerQuery) {
+            $manufacturerQuery->where('name', 'SunKing SHS');
+        })->first();
 
         $cashTransaction = CashTransaction::query()->create(
             [

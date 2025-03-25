@@ -6,6 +6,7 @@ data:
   APP_ENV: demo
   APP_DEBUG: "false"
   MPM_LOAD_DEMO_DATA: "true"
+  LOG_LEVEL: info
   DB_CONNECTION: micro_power_manager
   DB_PORT: "3306"
   DB_DATABASE: micro_power_manager

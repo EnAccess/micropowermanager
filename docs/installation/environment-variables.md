@@ -118,94 +118,41 @@ We recommend running MicroPowerManager with [Pusher Channels](https://pusher.com
 
 Set of environment variables that can be used to configure logging and logging providers in MicroPowerManager.
 
+| Environment Variable | Default     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `LOG_CHANNEL`        | `mpm_stack` | The default value `mpm_stack` configures a split logging where error logs go to `STDERR` and application info and debug logs to `STDOUT`. Additional log channels to external logging solutions are automatically enabled, if corresponding environment variables are configured, see below. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php). |
+| `LOG_LEVEL`          | `debug`     | General log level of the application. Note, that external logging systems may define their log level seperately. For example, it might be desired to only send critical errors to Slack, even if MicroPowerManager runs with an elevanted log level of `info`. Recommended to set this at least `info` or hire in normal operations of a production environment.                                                                                             |
+
+Slack
+
 | Environment Variable    | Default                                 | Description                                                                                                                                                                 |
 | ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LOG_CHANNEL`           | `stack`                                 | Log channel. For more information about available log channels, see [`logging.php`](https://github.com/EnAccess/micropowermanager/blob/main/src/backend/config/logging.php) |
-| `LOG_LEVEL`             | `debug`                                 | Level of the logs.                                                                                                                                                          |
+| `LOG_SLACK_LEVEL`       | `critical`                              | The log level sent to Slack. URL                                                                                                                                            |
 | `LOG_SLACK_WEBHOOK_URL` | **Required** (When using Slack Logging) | Slack Webhook URL. This require a [Slack incoming webhook](https://api.slack.com/messaging/webhooks). If `LOG_SLACK_WEBHOOK_URL` is provided Slack logging will be enabled. |
-| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook URL                                                                                                                                                           |
-| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook URL                                                                                                                                                           |
+| `LOG_SLACK_USERNAME`    | `Laravel Log`                           | Slack Webhook Username                                                                                                                                                      |
+| `LOG_SLACK_EMOJI`       | `:boom:`                                | Slack Webhook Emoji                                                                                                                                                         |
 
 #### Email
 
 Configure the following environment variable to enable MicroPowerManager to send email via SMTP.
 These configure instance level email sent to tenants, for example signup confirmation, password reset, etc...
 
-| Environment Variable        | Default                                        | Description                                                                                                                                     |
-| --------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MAIL_SMTP_HOST`            | `smtp.mailgun.org`                             | Mail server hostname. For example `smtp.mailserver.com`.                                                                                        |
-| `MAIL_SMTP_PORT`            | `587`                                          | Mail server port.                                                                                                                               |
-| `MAIL_SMTP_ENCRYPTION`      | `tls`                                          | Mail encryption.                                                                                                                                |
-| `MAIL_SMTP_AUTH`            | `false`                                        | Whether to use SMTP Auth.                                                                                                                       |
-| `MAIL_USERNAME`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The username used in SMTP Auth.                                                                                                                 |
-| `MAIL_PASSWORD`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The password used in SMTP Auth.                                                                                                                 |
-| `MAIL_SMTP_DEFAULT_SENDER`  | **Required**                                   | The email used in `from` and `replyTo` fields of sent email. Note: Depending on the mailserver this might be different from SMTP Auth username. |
-| `MAIL_SMTP_DEFAULT_MESSAGE` | `Please do not reply to this email`            | Default message body of emails.                                                                                                                 |
-| `MAIL_SMTP_DEBUG_LEVEL`     | `0`                                            | Debug level used in [PHPMailer](https://github.com/PHPMailer/PHPMailer/). `0` No output, `4` Noisy, low-level data output, rarely needed.       |
+| Environment Variable        | Default                                        | Description                                                                                                                                                                 |
+| --------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MAIL_SMTP_HOST`            | `smtp.mailgun.org`                             | Mail server hostname. For example `smtp.mailserver.com`.                                                                                                                    |
+| `MAIL_SMTP_PORT`            | `587`                                          | Mail server port.                                                                                                                                                           |
+| `MAIL_SMTP_ENCRYPTION`      | `tls`                                          | Mail encryption.                                                                                                                                                            |
+| `MAIL_SMTP_AUTH`            | `false`                                        | Whether to use SMTP Auth.                                                                                                                                                   |
+| `MAIL_USERNAME`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The username used in SMTP Auth.                                                                                                                                             |
+| `MAIL_PASSWORD`             | **Required** (when `MAIL_SMTP_AUTH` is `true`) | The password used in SMTP Auth.                                                                                                                                             |
+| `MAIL_SMTP_DEFAULT_SENDER`  | **Required**                                   | The email used in `from` and `replyTo` fields of sent email. Note: Depending on the mailserver this might be different from SMTP Auth username.                             |
+| `MAIL_SMTP_DEFAULT_MESSAGE` | `Please do not reply to this email`            | Default message body of emails.                                                                                                                                             |
+| `MAIL_SMTP_DEBUG_LEVEL`     | `0`                                            | Debug level used in [PHPMailer](https://github.com/PHPMailer/PHPMailer/blob/master/src/SMTP.php#L116-L126). `0` No output, `4` Noisy, low-level data output, rarely needed. |
 
 ### MPM Plugins
 
 Certain MicroPowerManager plugins require configuration before they can be used.
 Find below a reference of configurations which are required if the corresponding plugin is used.
-
-#### Airtel
-
-For detailed information see [Airtel Developer Documentation](https://developers.airtel.africa/developer).
-
-| Environment Variable | Default                            | Description                                 |
-| -------------------- | ---------------------------------- | ------------------------------------------- |
-| `AIRTEL_REQUEST_URL` | **Required** (when plugin is used) | The Airtel service URL.                     |
-| `AIRTEL_USERNAME`    | **Required** (when plugin is used) | The Airtel username.                        |
-| `AIRTEL_PASSWORD`    | **Required** (when plugin is used) | The Airtel password.                        |
-| `AIRTEL_IPS`         | `[]`                               | List of IP whitelisted for Airtel services. |
-
-#### Calin STS Meters
-
-For detailed information see [Calin Meter Developer Documentation](https://www.szcalinmeter.com/).
-
-| Environment Variable | Default                            | Description                                              |
-| -------------------- | ---------------------------------- | -------------------------------------------------------- |
-| `CALIN_CLIENT_URL`   | **Required** (when plugin is used) | Calin Meter client URL used for generating STS tokens.   |
-| `CALIN_USER_ID`      | **Required** (when plugin is used) | Calin Meter API username used for generating STS tokens. |
-| `CALIN_KEY`          | **Required** (when plugin is used) | Calin Meter API key used for generating STS tokens.      |
-
-If you meters are used which can send their consumption data to Calin's
-API the following environment variables need to be set.
-
-| Environment Variable | Default                            | Description                                                |
-| -------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `METER_DATA_URL`     | **Required** (when plugin is used) | Calin Meter API URL used for consumption data upload.      |
-| `METER_DATA_KEY`     | **Required** (when plugin is used) | Calin Meter API key used for consumption data upload.      |
-| `METER_DATA_USER`    | **Required** (when plugin is used) | Calin Meter API username used for consumption data upload. |
-
-#### Calin Smart Meters
-
-For detailed information see [Calin Smart Meter Developer Documentation](https://www.szcalinmeter.com/).
-
-| Environment Variable           | Default                            | Description                                                               |
-| ------------------------------ | ---------------------------------- | ------------------------------------------------------------------------- |
-| `CALIN_SMART_COMPANY_NAME`     | **Required** (when plugin is used) | Calin Smart Meter company name used for communication with Calin API.     |
-| `CALIN_SMART_PURCHASE_API_URL` | **Required** (when plugin is used) | Calin Smart Meter Purchase API URL used for communication with Calin API. |
-| `CALIN_SMART_CLEAR_API_URL`    | **Required** (when plugin is used) | Calin Smart Meter Clear API URL used for communication with Calin API.    |
-| `CALIN_SMART_USER_NAME`        | **Required** (when plugin is used) | Calin Smart Meter username used for communication with Calin API.         |
-| `CALIN_SMART_PASSWORD`         | **Required** (when plugin is used) | Calin Smart Meter password used for communication with Calin API.         |
-| `CALIN_SMART_PASSWORD_VENT`    | **Required** (when plugin is used) | Calin Smart Meter password vent used for communication with Calin API.    |
-
-#### Vodacom
-
-Vodacom integration requires a VPN tunnel with Vodacom infrastructure.
-For detailed information see [Vodacom Developer Documentation](https://business.m-pesa.com/vodacom-tanzania/business-onboarding-tanzania/)
-
-| Environment Variable            | Default                            | Description                 |
-| ------------------------------- | ---------------------------------- | --------------------------- |
-| `VODACOM_SPID`                  | **Required** (when plugin is used) | Vodacom SPID.               |
-| `VODACOM_SPPASSWORD`            | **Required** (when plugin is used) | Vodacom SPPASSWORD.         |
-| `VODACOM_IPS`                   | **Required** (when plugin is used) | Vodacom IPs.                |
-| `VODACOM_REQUEST_URL`           | **Required** (when plugin is used) | Vodacom Request API URL.    |
-| `VODACOM_BROKER_CRT`            | **Required** (when plugin is used) | Path to broker `.crt` file. |
-| `VODACOM_SLL_KEY`               | **Required** (when plugin is used) | Path to `.key` file.        |
-| `VODACOM_CERTIFICATE_AUTHORITY` | **Required** (when plugin is used) | Path to `.cer` file.        |
-| `VODACOM_SSL_CERT`              | **Required** (when plugin is used) | Path to `.pem` file.        |
 
 #### SunKing
 
@@ -222,13 +169,3 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | Environment Variable | Default                            | Description                                                                 |
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `WAVEMONEY_API_URL`  | **Required** (when plugin is used) | WaveMoney API URL. For example `https://preprodpayments.wavemoney.io:8107`. |
-
-#### BingMaps
-
-> [!WARNING]
-> BingMaps is deprecated in favour of OpenStreetMap.
-> It's not recommended for production use.
-
-| Environment Variable | Default                              | Description                                                                                                               |
-| -------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `BINGMAP_API_URL`    | **Required** (when BingMaps is used) | BingMaps API URL (including the API key). For example `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=` |

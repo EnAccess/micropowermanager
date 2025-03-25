@@ -7,7 +7,6 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
@@ -25,7 +24,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
     ) {}
 
@@ -34,11 +32,11 @@ abstract class AbstractPaymentAggregatorTransactionService {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
-        if (!$meterTariff = $meter->meterParameter->tariff) {
+        if (!$meterTariff = $meter->tariff) {
             throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 
-        $customerId = $meter->MeterParameter->owner_id;
+        $customerId = $meter->device->person->id;
 
         if (!$customerId) {
             throw new ModelNotFoundException('Customer not found with meter serial number you entered');
@@ -99,15 +97,14 @@ abstract class AbstractPaymentAggregatorTransactionService {
     }
 
     private function getTransactionSender($meterSerialNumber) {
-        $meterParameter = $this->meterParameter->newQuery()
-            ->whereHas(
-                'meter',
-                function ($q) use ($meterSerialNumber) {
-                    $q->where('serial_number', $meterSerialNumber);
-                }
+        $meter = $this->meter->newQuery()
+            ->where(
+                'serial_number',
+                $meterSerialNumber
             )->first();
 
-        $personId = $meterParameter->owner_id;
+        $personId = $meter->device->person->id;
+
         try {
             $address = $this->address->newQuery()
                 ->whereHasMorph(

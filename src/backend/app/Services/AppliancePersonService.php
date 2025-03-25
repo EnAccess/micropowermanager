@@ -56,7 +56,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
 
         $meter = null;
         if ($asset->assetType->id === AssetType::APPLIANCE_TYPE_SHS) {
-            $meterParameter = $person->meters()->whereHas(
+            $meter = $person->meters()->whereHas(
                 'meter',
                 static function ($q) {
                     $q->whereHas(
@@ -67,7 +67,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
                     );
                 }
             )->first();
-            $meter = $meterParameter?->meter;
+            $meter = $meter?->meter;
         }
         if ((int) $request->input('downPayment') > 0) {
             $transaction = $this->cashTransactionService->createCashTransaction(

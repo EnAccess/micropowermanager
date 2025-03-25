@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -227,24 +228,24 @@ class TransactionService {
                         if (!$sparkCustomer) {
                             return true;
                         }
-                        $meterParameter = $sparkCustomer->mpmPerson->meters[0];
+                        $meter = $sparkCustomer->mpmPerson->meters[0];
                         $mainTransaction = $this->createTransaction(
                             $transaction,
                             $thirdPartyTransaction,
-                            $meterParameter
+                            $meter
                         );
                         $sparkTariff = $sparkTariffs->firstWhere(
                             'mpm_tariff_id',
-                            $meterParameter->tariff()->first()->id
+                            $meter->tariff()->first()->id
                         );
                         $token = $this->createToken(
                             $sparkTariff,
                             $mainTransaction,
                             $transaction,
                             $sparkTransaction,
-                            $meterParameter
+                            $meter
                         );
-                        $this->createPayment($meterParameter, $mainTransaction, $token);
+                        $this->createPayment($meter, $mainTransaction, $token);
                     }
                 } else {
                     $transactionRecord->update([
@@ -349,11 +350,11 @@ class TransactionService {
         return $thirdPartyTransaction;
     }
 
-    private function createTransaction($transaction, $thirdPartyTransaction, $meterParameter) {
+    private function createTransaction($transaction, $thirdPartyTransaction, $meter) {
         $transaction = $this->transaction->newQuery()->make([
             'amount' => (int) $transaction['amount'],
             'sender' => $sparkCustomer->mpmPerson->addresses[0]->phone ?? '-',
-            'message' => $meterParameter->meter->serial_number,
+            'message' => $meter->serial_number,
             'type' => 'energy',
             'created_at' => $transaction['created'],
             'updated_at' => $transaction['created'],
@@ -381,14 +382,17 @@ class TransactionService {
             'load' => $chargedEnergy,
         ]);
         $token->transaction()->associate($mainTransaction);
-        $token->meter()->associate($meterParameter->meter);
+        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
+        if ($meter) {
+            $token->meter()->associate($meter);
+        }
         $token->save();
 
         return $token;
     }
 
-    private function createPayment($meterParameter, $mainTransaction, $token) {
-        $owner = $meterParameter->owner;
+    private function createPayment($meter, $mainTransaction, $token) {
+        $owner = $meter->device()->person;
         event('payment.successful', [
             'amount' => $mainTransaction->amount,
             'paymentService' => $mainTransaction->original_transaction_type,

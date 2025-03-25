@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Transaction\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,14 +15,14 @@ class ProcessPayment extends AbstractJob {
     use SerializesModels;
 
     /**
-     * @var Transaction
+     * @var int
      */
     protected $transactionId;
 
     /**
      * Create a new job instance.
      *
-     * @param int $transaction_id
+     * @param int $transactionId
      */
     public function __construct(int $transactionId) {
         $this->transactionId = $transactionId;

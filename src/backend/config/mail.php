@@ -43,7 +43,7 @@ return [
             'password' => env('MAIL_SMTP_PASSWORD'),
             'default_sender' => env('MAIL_SMTP_DEFAULT_SENDER'),
             'default_message' => env('MAIL_SMTP_DEFAULT_MESSAGE', 'Please do not reply to this email'),
-            'debug_level' => env('MAIL_SMTP_DEBUG_LEVEL', 'Please do not reply to this email'),
+            'debug_level' => env('MAIL_SMTP_DEBUG_LEVEL', 0),
             'timeout' => null,
             'auth_mode' => null,
         ],

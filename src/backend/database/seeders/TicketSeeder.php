@@ -8,21 +8,20 @@ use App\Models\MaintenanceUsers;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
 use App\Models\User;
+use App\Services\CompanyService;
 use Database\Factories\TicketFactory;
 use Database\Factories\TicketOutsourceFactory;
 use Database\Factories\TicketUserFactory;
 use Illuminate\Console\View\Components\Info;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Inensus\Ticket\Models\TicketCategory;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TicketSeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     private $amount = 100;
@@ -169,7 +168,6 @@ class TicketSeeder extends Seeder {
         $status = rand(0, 1);
 
         $ticket = (new TicketFactory())->make([
-            'ticket_id' => Str::random(10),
             'creator_type' => 'admin',
             'creator_id' => $randomCreator->id,
             'status' => $status,

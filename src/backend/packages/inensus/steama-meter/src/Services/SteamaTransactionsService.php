@@ -2,6 +2,7 @@
 
 namespace Inensus\SteamaMeter\Services;
 
+use App\Models\Meter\Meter;
 use App\Models\Meter\MeterToken;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -81,7 +82,7 @@ class SteamaTransactionsService implements ISynchronizeService {
                 $url = $this->rootUrl.'?ordering=timestamp&created_before='.
                     Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
             }
-            $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.meterParameter.owner'])->get();
+            $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
             try {
                 $result = $this->steamaApi->get($url);
                 $transactions = $result['results'];
@@ -237,14 +238,17 @@ class SteamaTransactionsService implements ISynchronizeService {
         ]);
 
         $token->transaction()->associate($mainTransaction);
-        $token->meter()->associate($mainTransaction->meter);
+        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
+        if ($meter) {
+            $token->meter()->associate($meter);
+        }
         $token->save();
 
         return $token;
     }
 
     private function createPayment($steamaMeter, $mainTransaction, $token) {
-        $owner = $steamaMeter->mpmMeter->meterParameter->owner;
+        $owner = $steamaMeter->mpmMeter->device()->person;
 
         if ($owner) {
             event('payment.successful', [

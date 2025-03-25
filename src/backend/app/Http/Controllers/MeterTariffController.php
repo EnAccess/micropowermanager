@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TariffCreateRequest;
 use App\Http\Resources\ApiResource;
-use App\Models\Meter\MeterTariff;
 use App\Services\MeterTariffService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,7 +35,8 @@ class MeterTariffController extends Controller {
      *
      * @responseFile responses/tariffs/tariff.detail.json
      *
-     * @param MeterTariff $tariff
+     * @param int     $meterTariffId
+     * @param Request $request
      *
      * @return ApiResource
      */
@@ -54,7 +54,7 @@ class MeterTariffController extends Controller {
      *
      * @param TariffCreateRequest $request
      *
-     * @return ApiResource
+     * @return JsonResponse
      */
     public function store(TariffCreateRequest $request): JsonResponse {
         $meterTariffData = $request->only(['name', 'factor', 'currency', 'price', 'minimum_purchase_amount']);
@@ -88,5 +88,34 @@ class MeterTariffController extends Controller {
         $meterTariff = $this->meterTariffService->getById($meterTariffId);
 
         return $this->meterTariffService->delete($meterTariff);
+    }
+
+    /**
+     * @param     $meterTariffId
+     * @param int $changeId
+     *
+     * @return ApiResource
+     */
+    public function updateTariff($meterTariffId, int $changeId): ApiResource {
+        $result = $this->meterTariffService->changeMetersTariff($meterTariffId, $changeId);
+
+        return ApiResource::make($result);
+    }
+
+    public function updateForMeter($meterSerial, $tariffId): ApiResource {
+        $result = $this->meterTariffService->changeMeterTariff($meterSerial, $tariffId);
+
+        return ApiResource::make($result);
+    }
+
+    /**
+     * Display a list of meters which using a particular tariff.
+     *
+     * @param $meterTariffId
+     *
+     * @return ApiResource
+     */
+    public function showUsageCount($meterTariffId): ApiResource {
+        return ApiResource::make($this->meterTariffService->getCountById($meterTariffId));
     }
 }

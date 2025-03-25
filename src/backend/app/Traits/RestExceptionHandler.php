@@ -28,14 +28,14 @@ trait RestExceptionHandler {
                 return response()->json(['error' => 'Token is invalid'], 401);
             case $e instanceof JWTException:
                 return response()->json(['error' => 'Unauthorized. '.$e->getMessage().' Make sure you are logged in.'], 401);
-            case $this->isModelNotFoundException($e):
-                $response = $this->modelNotFound(['model not found '.implode(' ', $e->getIds()), $e->getMessage(), $e->getTrace()]);
+            case $e instanceof ModelNotFoundException:
+                $response = $this->modelNotFound('model not found '.implode(' ', $e->getIds()));
                 break;
-            case $this->isValidationException($e):
-                $response = $this->validationError($e->errors());
+            case $e instanceof ValidationException:
+                $response = $this->validationError($e);
                 break;
             default:
-                $response = $this->badRequest([$e->getMessage(), $e->getTrace()]);
+                $response = $this->badRequest($e->getMessage());
         }
 
         return $response;
@@ -80,15 +80,18 @@ trait RestExceptionHandler {
     /**
      * Generates validation error response.
      *
-     * @param string $message
-     * @param int    $status_code
+     * @param array|string $errors
+     * @param int          $status_code
      *
      * @return JsonResponse
      */
-    protected function validationError($message = 'Validation failed', $status_code = 422) {
+    protected function validationError($errors = 'Validation failed', $status_code = 422) {
+        $errorMessages = ($errors instanceof \Illuminate\Support\MessageBag) ? $errors->toArray() : [$errors];
+
         return $this->jsonResponse(
             [
-                'message' => $message,
+                'message' => 'Validation failed',
+                'errors' => $errorMessages,
                 'status_code' => $status_code,
             ],
             $status_code

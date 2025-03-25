@@ -34,11 +34,6 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     Route::get('/{user}', 'UserController@show');
     Route::get('/', 'UserController@index');
 
-    Route::group(['prefix' => '/{user}/addresses'], static function () {
-        Route::post('/', 'UserAddressController@store');
-        Route::put('/', 'UserAddressController@update');
-        Route::get('/', 'UserAddressController@show');
-    });
     Route::group(['prefix' => '/password'], static function () {
         Route::put('/{user}', 'UserPasswordController@update');
     });
@@ -108,8 +103,7 @@ Route::group(['prefix' => 'connection-types', 'middleware' => 'jwt.verify'], sta
 // Maintenance
 Route::group(['prefix' => '/maintenance', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', 'MaintenanceUserController@index');
-    Route::post('/user', 'MaintenanceUserController@store')
-        ->middleware('restriction:maintenance-user');
+    Route::post('/user', 'MaintenanceUserController@store');
 });
 // Manufacturers
 Route::group(['prefix' => 'manufacturers', 'middleware' => 'jwt.verify'], static function () {
@@ -165,11 +159,6 @@ Route::group(['prefix' => 'map-settings'], static function () {
     Route::get('/', 'MapSettingsController@index');
     Route::get('/key/{key}', 'MapSettingsController@checkBingApiKey');
     Route::put('/{mapSettings}', ['uses' => 'MapSettingsController@update', 'middleware' => 'jwt.verify']);
-});
-// Ticket Settings
-Route::group(['prefix' => 'ticket-settings'], static function () {
-    Route::get('/', 'TicketSettingsController@index');
-    Route::put('/{ticketSettings}', ['uses' => 'TicketSettingsController@update', 'middleware' => 'jwt.verify']);
 });
 
 // Settings
@@ -256,9 +245,9 @@ Route::group(['middleware' => 'jwt.verify', 'prefix' => 'tariffs'], static funct
     Route::post('/', 'MeterTariffController@store');
     Route::put('/{meterTariffId}', 'MeterTariffController@update');
     Route::delete('/{meterTariffId}', 'MeterTariffController@destroy');
-    Route::get('/{meterTariffId}/usage-count', 'MeterTariffMeterParameterController@show');
-    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffMeterParameterController@update');
-    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffMeterParameterController@updateForMeter');
+    Route::get('/{meterTariffId}/usage-count', 'MeterTariffController@showUsageCount');
+    Route::put('/{meterTariffId}/change-meters-tariff/{changeId}', 'MeterTariffController@updateTariff');
+    Route::put('/{meterSerial}/change-meter-tariff/{tariffId}', 'MeterTariffController@updateForMeter');
 });
 // Transactions
 Route::group(
@@ -294,7 +283,6 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::post('/restrictions', 'RestrictionController@store');
 Route::get('/protected-pages', 'ProtectedPageController@index');
 
 Route::group(['prefix' => 'companies'], static function () {

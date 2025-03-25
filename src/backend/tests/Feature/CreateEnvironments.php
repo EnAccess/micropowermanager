@@ -24,7 +24,6 @@ use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterFactory;
 use Database\Factories\Meter\MeterTariffFactory;
 use Database\Factories\Meter\MeterTypeFactory;
-use Database\Factories\MeterParameterFactory;
 use Database\Factories\MeterTokenFactory;
 use Database\Factories\MiniGridFactory;
 use Database\Factories\PaymentHistoryFactory;
@@ -38,7 +37,6 @@ use Database\Factories\TimeOfUsageFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
-use Inensus\Ticket\Services\TicketService;
 use Inensus\Ticket\Services\TicketUserService;
 use Tests\RefreshMultipleDatabases;
 
@@ -55,7 +53,6 @@ trait CreateEnvironments {
     private $manufacturer;
     private $meterType;
     private $meter;
-    private $meterParameter;
     private $meterTariff;
     private $person;
     private $token;
@@ -174,15 +171,6 @@ trait CreateEnvironments {
             'serial_number' => str_random(36),
         ]);
 
-        $meterParameter = MeterParameterFactory::new()->create([
-            'owner_type' => 'person',
-            'owner_id' => $this->person->id,
-            'meter_id' => $meter->id,
-            'tariff_id' => $this->meterTariff->id,
-            'connection_type_id' => $this->connectionType->id,
-            'connection_group_id' => $this->connectionGroup->id,
-        ]);
-
         return $meter;
     }
 
@@ -203,14 +191,6 @@ trait CreateEnvironments {
                 'geo_id' => $geographicalInformation->id,
             ];
 
-            $meterParameter = MeterParameterFactory::new()->create([
-                'owner_type' => 'person',
-                'owner_id' => $this->person->id,
-                'meter_id' => $meter->id,
-                'tariff_id' => $this->meterTariff->id,
-                'connection_type_id' => $this->connectionType->id,
-                'connection_group_id' => $this->connectionGroup->id,
-            ]);
             $address = Address::query()->make([
                 'email' => isset($addressData['email']) ?: null,
                 'phone' => isset($addressData['phone']) ?: null,
@@ -219,8 +199,8 @@ trait CreateEnvironments {
                 'geo_id' => isset($addressData['geo_id']) ?: null,
                 'is_primary' => isset($addressData['is_primary']) ?: 0,
             ]);
-            $address->owner()->associate($meterParameter)->save();
-            $geographicalInformation->owner()->associate($meterParameter)->save();
+            $address->owner()->associate($meter)->save();
+            $geographicalInformation->owner()->associate($meter)->save();
             --$meterCunt;
         }
     }
@@ -266,14 +246,6 @@ trait CreateEnvironments {
                     'serial_number' => str_random(36),
                 ]);
 
-                $meterParameter = MeterParameterFactory::new()->create([
-                    'owner_type' => 'person',
-                    'owner_id' => $this->person->id,
-                    'meter_id' => $meter->id,
-                    'tariff_id' => $this->meterTariff->id,
-                    'connection_type_id' => $this->connectionType->id,
-                    'connection_group_id' => $this->connectionGroup->id,
-                ]);
                 --$meterCountPerMeterType;
             }
             --$meterTypeCount;
@@ -385,14 +357,7 @@ trait CreateEnvironments {
                 'city_id' => $this->getRandomIdFromList($this->cities),
                 'geo_id' => $geographicalInformation->id,
             ];
-            $meterParameter = MeterParameterFactory::new()->create([
-                'owner_type' => 'person',
-                'owner_id' => $person->id,
-                'meter_id' => $meter->id,
-                'tariff_id' => $this->getRandomIdFromList($this->meterTariffs),
-                'connection_type_id' => $this->getRandomIdFromList($this->connectonTypes),
-                'connection_group_id' => $this->getRandomIdFromList($this->connectionGroups),
-            ]);
+
             $address = Address::query()->make([
                 'email' => $addressData['email'] ?? null,
                 'phone' => $addressData['phone'] ?? null,
@@ -401,8 +366,8 @@ trait CreateEnvironments {
                 'geo_id' => $addressData['geo_id'] ?? null,
                 'is_primary' => $addressData['is_primary'] ?? 0,
             ]);
-            $address->owner()->associate($meterParameter)->save();
-            $geographicalInformation->owner()->associate($meterParameter)->save();
+            $address->owner()->associate($meter)->save();
+            $geographicalInformation->owner()->associate($meter->device()->person)->save();
 
             --$meterCount;
         }
@@ -710,20 +675,9 @@ trait CreateEnvironments {
     }
 
     protected function createTicket($ticketCount = 1, $status = 0, $customerId = null, $agentId = null) {
+        $this->createTicketCategory(1);
         while ($ticketCount > 0) {
-            $trelloParams = [
-                'idList' => $this->ticketCard->card_id,
-                'name' => $this->faker->word,
-                'desc' => $this->faker->sentence,
-                'due' => $this->faker->date('Y-m-d'),
-                'idMembers' => $this->ticketUser->extern_id,
-            ];
-            $ticketService = app()->make(TicketService::class);
-            $trelloTicket = $ticketService->create($trelloParams);
-            $ticketId = $trelloTicket->id;
-
             $ticket = TicketFactory::new()->create([
-                'ticket_id' => $ticketId,
                 'category_id' => $this->ticketCategory->id,
                 'assigned_id' => $this->ticketUser->id,
                 'status' => $status,

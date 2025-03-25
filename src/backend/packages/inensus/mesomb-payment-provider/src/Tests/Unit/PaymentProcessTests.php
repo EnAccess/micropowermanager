@@ -9,7 +9,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterToken;
 use App\Models\Meter\MeterType;
@@ -79,19 +78,15 @@ class PaymentProcessTests extends TestCase {
 
     private function initializeData() {
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->create();
 
         // create meter-type
         MeterType::query()->create([
             'online' => 0,
             'phase' => 1,
             'max_current' => 10,
-        ]);
-        $meterParameter = MeterParameter::query()->make([
-            'connection_type_id' => 1,
-            'connection_group_id' => 1,
         ]);
         // create calin manufacturer
         Manufacturer::query()->create([
@@ -105,16 +100,16 @@ class PaymentProcessTests extends TestCase {
             'meter_type_id' => 1,
             'in_use' => 1,
             'manufacturer_id' => 1,
+            'connection_type_id' => 1,
+            'connection_group_id' => 1,
         ]);
 
         // associate meter with a person
         $p = Person::query()->first();
-        $meterParameter->meter()->associate($meter);
-
-        $meterParameter->owner()->associate($p);
-
-        $meterParameter->tariff()->associate(MeterTariff::query()->first());
-        $meterParameter->save();
+        $meter->device()->create([
+            'person_id' => $p->id,
+            'device_type' => 'meter',
+        ]);
         // associate address with a person
         $address = Address::query()->make([
             'phone' => '237400001019',

@@ -7,7 +7,6 @@ use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\RestrictionMiddleware;
 use App\Http\Middleware\Transaction;
 use App\Http\Middleware\TransactionRequest;
 use App\Http\Middleware\TrimStrings;
@@ -36,7 +35,7 @@ class Kernel extends HttpKernel {
      *
      * These middleware are run during every request to your application.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $middleware = [
         //        CorsMiddleware::class,
@@ -52,7 +51,7 @@ class Kernel extends HttpKernel {
     /**
      * The application's route middleware groups.
      *
-     * @var array
+     * @var array<string, array<int, string>>
      */
     protected $middlewareGroups = [
         'web' => [
@@ -78,7 +77,7 @@ class Kernel extends HttpKernel {
      *
      * These middleware may be assigned to groups or used individually.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $routeMiddleware = [
         'auth' => Authenticate::class,
@@ -93,7 +92,6 @@ class Kernel extends HttpKernel {
         'transaction.request' => TransactionRequest::class,
         'admin' => AdminJWT::class,
         'jwt.verify' => JwtMiddleware::class,
-        'restriction' => RestrictionMiddleware::class,
         'agent.balance' => AgentBalanceMiddleware::class,
     ];
 }

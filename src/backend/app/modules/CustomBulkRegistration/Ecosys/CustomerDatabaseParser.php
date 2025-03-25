@@ -17,7 +17,6 @@ use MPM\CustomBulkRegistration\Ecosys\Services\ApplianceService;
 use MPM\CustomBulkRegistration\Ecosys\Services\CityService;
 use MPM\CustomBulkRegistration\Ecosys\Services\ConnectionGroupService;
 use MPM\CustomBulkRegistration\Ecosys\Services\GeographicalInformationService;
-use MPM\CustomBulkRegistration\Ecosys\Services\MeterParameterService;
 use MPM\CustomBulkRegistration\Ecosys\Services\MeterService;
 use MPM\CustomBulkRegistration\Ecosys\Services\PersonService;
 use ParseCsv\Csv;
@@ -96,18 +95,22 @@ class CustomerDatabaseParser {
                 $row['serial_number'] = $meter->serial_number;
                 $this->checkRecordWasRecentlyCreated($meter, 'meter');
 
-                $meterParameter = $this->createRecordFromCsv($row, MeterParameterService::class);
-                event('accessRatePayment.initialize', $meterParameter);
-                $row['meter_parameter_id'] = $meterParameter->id;
+                event('accessRatePayment.initialize', $meter);
 
-                $this->createRecordFromCsv($row, GeographicalInformationService::class);
+                $geoInfo = $this->createRecordFromCsv($row, GeographicalInformationService::class);
+
                 $meterAddress = new Address();
                 $address = $meterAddress->newQuery()->create([
                     'city_id' => $city->id,
                 ]);
-                $address->owner()->associate($meterParameter);
-                $address->geo()->associate($meterParameter->geo);
+
+                $address->owner()->associate($meter);
                 $address->save();
+
+                if ($geoInfo) {
+                    $geoInfo->owner()->associate($address);
+                    $geoInfo->save();
+                }
 
                 $appliance = $this->createRecordFromCsv($row, ApplianceService::class);
                 $row['asset_id'] = $appliance->id;

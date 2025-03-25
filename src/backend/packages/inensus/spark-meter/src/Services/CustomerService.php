@@ -10,7 +10,6 @@ use App\Models\ConnectionType;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use GuzzleHttp\Exception\GuzzleException;
@@ -37,7 +36,6 @@ class CustomerService implements ISynchronizeService {
     private $smSite;
     private $meter;
     private $manufacturer;
-    private $meterParameter;
     private $connectionType;
     private $connectionGroup;
     private $city;
@@ -56,7 +54,6 @@ class CustomerService implements ISynchronizeService {
         SmSite $smSite,
         Meter $meter,
         Manufacturer $manufacturer,
-        MeterParameter $meterParameter,
         ConnectionType $connectionType,
         ConnectionGroup $connectionGroup,
         City $city,
@@ -71,7 +68,6 @@ class CustomerService implements ISynchronizeService {
         $this->smCustomer = $smCustomer;
         $this->meter = $meter;
         $this->manufacturer = $manufacturer;
-        $this->meterParameter = $meterParameter;
         $this->smMeterModel = $smMeterModel;
         $this->smTariff = $smTariff;
         $this->connectionType = $connectionType;
@@ -177,16 +173,14 @@ class CustomerService implements ISynchronizeService {
             $person = null;
             if ($meter === null) {
                 $meter = new Meter();
-                $meterParameter = new MeterParameter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
-                $geoLocation = $meterParameter->geo()->first();
+                $geoLocation = $meter->device->person->addresses()->first()->geo()->first();
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
-                $person = $this->person->newQuery()->whereHas('meters', static function ($q) use ($meterParameter) {
-                    return $q->where('id', $meterParameter->id);
+                $person = $this->person->newQuery()->whereHas('meters', static function ($q) use ($meter) {
+                    return $q->where('id', $meter->id);
                 })->first();
             }
             if ($person === null) {
@@ -212,11 +206,8 @@ class CustomerService implements ISynchronizeService {
             $geoLocation->points = $customer['meters'][0]['coords'];
             $connectionType = $this->connectionType->newQuery()->first();
             $connectionGroup = $this->connectionGroup->newQuery()->first();
-            $meterParameter->connection_type_id = $connectionType->id;
-            $meterParameter->connection_group_id = $connectionGroup->id;
 
-            $meterParameter->meter()->associate($meter);
-            $meterParameter->owner()->associate($person);
+            $meter->device()->associate($person);
             $currentTariffName = $customer['meters'][0]['current_tariff_name'];
 
             $smTariff = $this->smTariff->newQuery()->with('mpmTariff')->whereHas(
@@ -226,13 +217,13 @@ class CustomerService implements ISynchronizeService {
                 }
             )->first();
             if ($smTariff) {
-                $meterParameter->tariff()->associate($smTariff->mpmTariff);
+                $meter->tariff()->associate($smTariff->mpmTariff);
             }
-            $meterParameter->save();
+            $meter->save();
             if ($geoLocation->points == null) {
                 $geoLocation->points = config('spark.geoLocation');
             }
-            $meterParameter->geo()->save($geoLocation);
+            $meter->device->person->addresses()->first()->geo()->save($geoLocation);
 
             $site = $this->smSite->newQuery()->with('mpmMiniGrid')->where('site_id', $site_id)->firstOrFail();
 
@@ -241,8 +232,8 @@ class CustomerService implements ISynchronizeService {
             $address = $address->newQuery()->create([
                 'city_id' => request()->input('city_id') ?? $sparkCity->id,
             ]);
-            $address->owner()->associate($meterParameter);
-            $address->geo()->associate($meterParameter->geo);
+            $address->owner()->associate($meter);
+            $address->geo()->associate($meter->device->person->addresses()->first()->geo()->first());
             $address->save();
             DB::connection('tenant')->commit();
 
@@ -282,11 +273,10 @@ class CustomerService implements ISynchronizeService {
             'phone' => $customer['phone_number'],
             'street' => $customer['meters'][0]['street1'],
         ]);
-        $meterParameters = $person->meters()->first();
-        $meterParameters->address()->update([
+        $meter = $person->meters()->first();
+        $meter->device()->address()->update([
             'city_id' => $sparkCity->id,
         ]);
-        $meter = $meterParameters->meter();
         if ($meter) {
             $meter->update([
                 'serial_number' => $sparkCustomerMeterSerial,
@@ -300,15 +290,15 @@ class CustomerService implements ISynchronizeService {
         )->first();
 
         if ($smTariff) {
-            $meterParameters->tariff()->associate($smTariff->mpmTariff);
-            $meterParameters->save();
+            $meter->tariff()->associate($smTariff->mpmTariff);
+            $meter->save();
         }
-        $geo = $meterParameters->geo()->first();
+        $geo = $meter->device->person->addresses()->first()->geo()->first();
         if ($geo && array_key_exists('coords', $customer['meters'][0])) {
             $geo->points = $customer['meters'][0]['coords'] === '' ?
                 config('spark.geoLocation') : $customer['meters'][0]['coords'];
             $geo->update();
-            $meterParameters->address()->update([
+            $meter->device()->address()->update([
                 'geo_id' => $geo->id,
             ]);
         }

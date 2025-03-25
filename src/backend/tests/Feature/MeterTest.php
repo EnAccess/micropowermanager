@@ -11,14 +11,13 @@ use Database\Factories\CompanyDatabaseFactory;
 use Database\Factories\CompanyFactory;
 use Database\Factories\ConnectionTypeFactory;
 use Database\Factories\ManufacturerFactory;
+use Database\Factories\Meter\MeterFactory;
+use Database\Factories\Meter\MeterTariffFactory;
+use Database\Factories\Meter\MeterTypeFactory;
 use Database\Factories\MeterConsumptionFactory;
-use Database\Factories\MeterFactory;
-use Database\Factories\MeterParameterFactory;
-use Database\Factories\MeterTariffFactory;
 use Database\Factories\MeterTokenFactory;
-use Database\Factories\MeterTypeFactory;
 use Database\Factories\PaymentHistoryFactory;
-use Database\Factories\PersonFactory;
+use Database\Factories\Person\PersonFactory;
 use Database\Factories\TransactionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,10 +33,11 @@ class MeterTest extends TestCase {
     private $company;
     private $city;
     private $connectionType;
+    private $connectionGroup;
+    private $companyDatabase;
     private $manufacturer;
     private $meterType;
     private $meter;
-    private $meterParameter;
     private $meterTariff;
     private $person;
     private $token;
@@ -54,14 +54,7 @@ class MeterTest extends TestCase {
                 'manufacturer_id' => 1,
                 'serial_number' => str_random(36),
             ]);
-            $meterParameter = MeterParameterFactory::new()->create([
-                'owner_type' => 'person',
-                'owner_id' => $person->id,
-                'meter_id' => $meter->id,
-                'tariff_id' => $this->meterTariff->id,
-                'connection_type_id' => $this->connectionType->id,
-                'connection_group_id' => $this->connectionGroup->id,
-            ]);
+
             --$meterCunt;
         }
         $response = $this->actingAs($this->user)->get('/api/meters');
@@ -200,15 +193,6 @@ class MeterTest extends TestCase {
             'serial_number' => str_random(36),
         ]);
 
-        $meterParameter = MeterParameterFactory::new()->create([
-            'owner_type' => 'person',
-            'owner_id' => $this->person->id,
-            'meter_id' => $meter->id,
-            'tariff_id' => $this->meterTariff->id,
-            'connection_type_id' => $this->connectionType->id,
-            'connection_group_id' => $this->connectionGroup->id,
-        ]);
-
         return $meter;
     }
 
@@ -229,14 +213,6 @@ class MeterTest extends TestCase {
                 'geo_id' => $geographicalInformation->id,
             ];
 
-            $meterParameter = MeterParameterFactory::new()->create([
-                'owner_type' => 'person',
-                'owner_id' => $this->person->id,
-                'meter_id' => $meter->id,
-                'tariff_id' => $this->meterTariff->id,
-                'connection_type_id' => $this->connectionType->id,
-                'connection_group_id' => $this->connectionGroup->id,
-            ]);
             $address = Address::query()->make([
                 'email' => isset($addressData['email']) ?: null,
                 'phone' => isset($addressData['phone']) ?: null,
@@ -245,8 +221,8 @@ class MeterTest extends TestCase {
                 'geo_id' => isset($addressData['geo_id']) ?: null,
                 'is_primary' => isset($addressData['is_primary']) ?: 0,
             ]);
-            $address->owner()->associate($meterParameter)->save();
-            $geographicalInformation->owner()->associate($meterParameter)->save();
+            $address->owner()->associate($meter)->save();
+            $geographicalInformation->owner()->associate($meter->device()->person)->save();
             --$meterCunt;
         }
     }

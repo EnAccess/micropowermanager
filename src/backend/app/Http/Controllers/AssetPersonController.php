@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\Asset;
 use App\Models\AssetPerson;
-use App\Models\AssetType;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
 use App\Services\AddressGeographicalInformationService;
@@ -40,9 +39,9 @@ class AssetPersonController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param AssetType $assetType
-     * @param Person    $person
-     * @param Request   $request
+     * @param Asset   $asset
+     * @param Person  $person
+     * @param Request $request
      *
      * @return ApiResource
      */

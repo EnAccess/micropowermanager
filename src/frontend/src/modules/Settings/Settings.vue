@@ -27,7 +27,6 @@ import MapSettings from "./MapSettings"
 import SmsSettings from "./SmsSettings"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { MapSettingsService } from "@/services/MapSettingsService"
-import { TicketSettingsService } from "@/services/TicketSettingsService"
 
 import PluginSettings from "@/modules/Settings/PluginSettings"
 import { MpmPluginService } from "@/services/MpmPluginService"
@@ -48,10 +47,8 @@ export default {
     return {
       mainSettingsService: new MainSettingsService(),
       mapSettingService: new MapSettingsService(),
-      ticketSettingsService: new TicketSettingsService(),
       mpmPluginsService: new MpmPluginService(),
       pluginsService: new PluginService(),
-      ticketSettings: {},
       mapSettings: {},
       mainSettings: {},
       center: null,
