@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Base\BaseModelCentral;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -18,16 +25,17 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string      $name
  * @property string|null $email
  */
-class User extends Authenticatable implements JWTSubject {
+class User extends BaseModelCentral implements JWTSubject, AuthenticatableContract, AuthorizableContract, CanResetPasswordContract {
     use HasFactory;
+
+    use Authenticatable;
+    use Authorizable;
+    use CanResetPassword;
+    use MustVerifyEmail;
 
     public const RELATION_NAME = 'users';
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
-
-    public function __construct(array $attributes = []) {
-        parent::__construct($attributes);
-    }
 
     public function setPasswordAttribute($password): void {
         $this->attributes['password'] = Hash::make($password);
