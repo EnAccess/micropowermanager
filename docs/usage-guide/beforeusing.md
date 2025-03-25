@@ -6,6 +6,8 @@ order: 2
 
 The key component(s) of the system is a mixture of device/customer. That means both melts into each other a bit. The only way to register a customer and a new device, is to register them both at the same time. For that reason from now on, every registered person will be mentioned as a **customer**.
 
+Clarification note: MPM users cannot create other devices. Each new device (whether a mini-grid pre-paid meter, SHS or e-bike) must be assigned under a pre-defined cluster, mini-grid project and village (i.e. even if a company is only managing 100 SHSs (and no mini-grid customers), a “mini-grid project” must be defined in MPM under which the 100 SHSs are registered. Potential development work would include substituting the term “mini-grid” for “catchment area”. 
+
 ## Register a customer & device
 
 **Registering new mini-grid customers (electricity meter devices):** To register new mini-grid customers, the Customer Registration App has to be used. After introducing the customer’s basic details (name, phone number, etc.), the app allows you to select the village where the customer lives, the meter manufacturer and the energy tariff that should be assigned to the meter. **Note that while new customers can be created via the website interface and existing meter devices can be re-assigned to customers, new meter devices can only be registered via the mentioned Customer Registration App.**
