@@ -34,11 +34,6 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.verify'], static functio
     Route::get('/{user}', 'UserController@show');
     Route::get('/', 'UserController@index');
 
-    Route::group(['prefix' => '/{user}/addresses'], static function () {
-        Route::post('/', 'UserAddressController@store');
-        Route::put('/', 'UserAddressController@update');
-        Route::get('/', 'UserAddressController@show');
-    });
     Route::group(['prefix' => '/password'], static function () {
         Route::put('/{user}', 'UserPasswordController@update');
     });

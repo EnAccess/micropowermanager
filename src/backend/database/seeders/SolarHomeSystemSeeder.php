@@ -7,14 +7,14 @@ use App\Models\AssetType;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\SolarHomeSystem;
+use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
-use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class SolarHomeSystemSeeder extends Seeder {
     public function __construct(
-        private DatabaseProxyManagerService $databaseProxyManagerService,
+        private CompanyService $companyService,
     ) {
-        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+        $this->companyService->buildDatabaseConnectionDemoCompany();
     }
 
     /**
