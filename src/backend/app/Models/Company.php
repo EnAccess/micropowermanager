@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Base\BaseModelCore;
+use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int    $id
  * @property string $name;
  */
-class Company extends BaseModelCore {
+class Company extends BaseModelCentral {
     use HasFactory;
 
     public const COL_ID = 'id';
