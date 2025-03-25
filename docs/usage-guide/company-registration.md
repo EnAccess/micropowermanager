@@ -46,31 +46,7 @@ sequenceDiagram
 In order to use MPM software to manage your customer portfolio, you will have to activate the relevant (manufacturer) plug-ins as well as the relevant telecommunication provider plug-ins.
 For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the “Calin” and “SunKing” plug-ins to be able to manage your customers with MPM software. Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
 
-Currently the following manufacturer plug-ins are available:
-
-- Spark Meter
-- Steama Meter
-- Calin Meter
-- Calin Smart Meter
-- Kelin Meter
-- Stron Meter
-- Microstar Meter
-- Gomelong Meter
-- SunKing Solar Home System (SHS)
-- Angaza Solar Home System (SHS)
-- DalyBms (e-bike)
-
-Currently the following telecommunication provider plug-ins are available:
-
-- Swifta Payment
-- Mesomb Payment
-- Viber Messaging
-- Wave Money Payment
-- Wavecom Payment
-- Airtel Tanzania (plug-in activation requires additional support by EnAccess)
-- Vodacom Tanzania (plug-in activation requires additional support by EnAccess)
-- Airtel Uganda (plug-in activation requires additional support by EnAccess)
-- Vodacom Mozambique (integration currently on-going)
+Check the section "Plug-ins" to have an overview of active and available plug-ins.
 
 Note that the activated plug-ins can be changed/removed/added later on from the website interface (under “Settings”).
 
