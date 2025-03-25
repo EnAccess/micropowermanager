@@ -3,14 +3,21 @@
 namespace App\Models;
 
 use App\Models\Address\Address;
+use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\Ticket;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -32,15 +39,15 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $remember_token
  * @property int    $company_id
  */
-class Agent extends Authenticatable implements JWTSubject {
+class Agent extends BaseModel implements JWTSubject, AuthenticatableContract, AuthorizableContract, CanResetPasswordContract {
     use HasFactory;
 
-    public const RELATION_NAME = 'agent';
+    use Authenticatable;
+    use Authorizable;
+    use CanResetPassword;
+    use MustVerifyEmail;
 
-    public function __construct(array $attributes = []) {
-        $this->setConnection('tenant');
-        parent::__construct($attributes);
-    }
+    public const RELATION_NAME = 'agent';
 
     public function setPasswordAttribute($password): void {
         $this->attributes['password'] = Hash::make($password);

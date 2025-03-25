@@ -50,8 +50,8 @@ php artisan model:show-tenant "Meter\Meter"
 As a first step in a Tinker shell configure the DemoCompany `tenant` connection like so:
 
 ```php
-$databaseProxyManagerService = app(\MPM\DatabaseProxy\DatabaseProxyManagerService::class);
-$databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
+$companyService = app(\CompanyService::class);
+$companyService->buildDatabaseConnectionDemoCompany();
 ```
 
 Then you can use Tinker to create Tenant models
