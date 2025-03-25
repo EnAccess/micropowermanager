@@ -6,7 +6,6 @@ namespace Inensus\WaveMoneyPaymentProvider\Modules\Transaction;
 
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Services\AbstractPaymentAggregatorTransactionService;
 use App\Services\Interfaces\IBaseService;
@@ -23,17 +22,14 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
     private Meter $meter;
     private Address $address;
     private Transaction $transaction;
-    private MeterParameter $meterParameter;
     private WaveMoneyTransaction $waveMoneyTransaction;
 
     public function __construct(
         Meter $meter,
         Address $address,
         Transaction $transaction,
-        MeterParameter $meterParameter,
         WaveMoneyTransaction $waveMoneyTransaction,
     ) {
-        $this->meterParameter = $meterParameter;
         $this->transaction = $transaction;
         $this->address = $address;
         $this->meter = $meter;
@@ -43,7 +39,6 @@ class WaveMoneyTransactionService extends AbstractPaymentAggregatorTransactionSe
             $this->meter,
             $this->address,
             $this->transaction,
-            $this->meterParameter,
             $this->waveMoneyTransaction
         );
     }

@@ -126,7 +126,6 @@ return [
         'ConnectionTypeService' => 'Inensus\BulkRegistration\Services\ConnectionTypeService',
         'ConnectionGroupService' => 'Inensus\BulkRegistration\Services\ConnectionGroupService',
         'ApplianceTypeService' => 'Inensus\BulkRegistration\Services\ApplianceTypeService',
-        'MeterParameterService' => 'Inensus\BulkRegistration\Services\MeterParameterService',
         'MeterService' => 'Inensus\BulkRegistration\Services\MeterService',
         'ManufacturerService' => 'Inensus\BulkRegistration\Services\ManufacturerService',
     ],

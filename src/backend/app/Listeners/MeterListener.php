@@ -18,6 +18,6 @@ class MeterListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('meterparameter.saved', 'App\Listeners\MeterListener@onParameterSaved');
+        // $events->listen('meterparameter.saved', 'App\Listeners\MeterListener@onParameterSaved');
     }
 }
