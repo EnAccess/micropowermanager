@@ -3,7 +3,7 @@
 namespace Inensus\SteamaMeter\Observers;
 
 use App\Models\GeographicalInformation;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
@@ -14,26 +14,26 @@ class GeographicalInformationObserver {
     private $stmMeter;
     private $person;
     private $stmCustomer;
-    private $meterParameter;
+    private $meter;
 
     public function __construct(
         SteamaMeterService $stmMeterService,
         SteamaMeter $stmMeter,
         Person $person,
         SteamaCustomer $steamaCustomer,
-        MeterParameter $meterParameter,
+        Meter $meter,
     ) {
         $this->stmMeterService = $stmMeterService;
         $this->stmMeter = $stmMeter;
         $this->person = $person;
         $this->stmCustomer = $steamaCustomer;
-        $this->meterParameter = $meterParameter;
+        $this->meter = $meter;
     }
 
     public function updated(GeographicalInformation $geographicalInformation) {
         if ($geographicalInformation->owner_type === 'meter_parameter') {
-            $meterParameter = $this->meterParameter->newQuery()->find($geographicalInformation->owner_id);
-            $stmMeter = $this->stmMeter->newQuery()->where('mpm_meter_id', $meterParameter->meter_id)->first();
+            $meter = $this->meter->newQuery()->find($geographicalInformation->owner_id);
+            $stmMeter = $this->stmMeter->newQuery()->where('mpm_meter_id', $meter->id)->first();
             if ($stmMeter) {
                 $points = explode(',', $geographicalInformation->points);
                 $putParams = [

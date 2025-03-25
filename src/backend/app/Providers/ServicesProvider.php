@@ -9,7 +9,6 @@ use App\Models\AgentCharge;
 use App\Models\AgentReceipt;
 use App\Models\AgentSoldAppliance;
 use App\Models\Country;
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Role\RoleDefinition;
 use App\Models\Role\Roles;
@@ -19,7 +18,6 @@ use App\Observers\AgentChargeObserver;
 use App\Observers\AgentObserver;
 use App\Observers\AgentReceiptObserver;
 use App\Observers\AgentSoldApplianceObserver;
-use App\Observers\MeterParameterObserver;
 use App\Observers\PersonObserver;
 use App\Services\CountryService;
 use App\Services\RolesService;
@@ -35,7 +33,6 @@ class ServicesProvider extends ServiceProvider {
     public function boot(): void {
         Person::observe(PersonObserver::class);
         Address::observe(AddressesObserver::class);
-        MeterParameter::observe(MeterParameterObserver::class);
         Horizon::auth(
             static function ($request) {
                 return true;

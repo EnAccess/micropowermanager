@@ -82,7 +82,7 @@ class SteamaTransactionsService implements ISynchronizeService {
                 $url = $this->rootUrl.'?ordering=timestamp&created_before='.
                     Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
             }
-            $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.meterParameter.owner'])->get();
+            $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
             try {
                 $result = $this->steamaApi->get($url);
                 $transactions = $result['results'];
@@ -248,7 +248,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     }
 
     private function createPayment($steamaMeter, $mainTransaction, $token) {
-        $owner = $steamaMeter->mpmMeter->meterParameter->owner;
+        $owner = $steamaMeter->mpmMeter->device()->person;
 
         if ($owner) {
             event('payment.successful', [

@@ -15,7 +15,7 @@ class SparkSmsMeterResetFeedbackHeader extends SmsBodyParser {
 
     protected function getVariableValue($variable) {
         if (!is_array($this->data)) {
-            $person = $this->data->meterParameter->whereHasMorph('owner', [Person::class])->first()->owner()->first();
+            $person = $this->data->meter->whereHasMorph('owner', [Person::class])->first()->owner()->first();
         } else {
             try {
                 $person = Person::query()->with([
