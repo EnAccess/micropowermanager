@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Address\Address;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Inensus\Ticket\Models\TicketUser;
@@ -72,22 +69,6 @@ class User extends Authenticatable implements JWTSubject {
         return [
             'companyId' => $this->getCompanyId(),
         ];
-    }
-
-    public function address(): MorphOne {
-        return $this->morphOne(Address::class, 'owner');
-    }
-
-    public function addressDetails(): MorphOne {
-        return $this->address()->with('city');
-    }
-
-    public function balanceHistory(): HasMany {
-        return $this->hasMany(AgentBalanceHistory::class);
-    }
-
-    public function assignedAppliance(): HasMany {
-        return $this->hasMany(AgentAssignedAppliances::class);
     }
 
     // belongsTo company
