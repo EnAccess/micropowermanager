@@ -9,12 +9,14 @@ use App\Services\RegistrationTailService;
 use App\Services\UserService;
 use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class TenantSeeder extends Seeder {
     public function __construct(
         private CompanyDatabaseService $companyDatabaseService,
         private CompanyService $companyService,
         private UserService $userService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
     ) {}
@@ -40,8 +42,8 @@ class TenantSeeder extends Seeder {
             'database_name' => DemoCompany::DEMO_COMPANY_DATABASE_NAME,
         ]);
 
-        // Create Admin user
-        $this->companyService->runForCompany(
+        // Create Admin user and DatabaseProxy
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             fn () => $this->userService->create(
                 [
@@ -55,7 +57,7 @@ class TenantSeeder extends Seeder {
         );
 
         // Set some meaningful settings by default
-        $this->companyService->runForCompany(
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () {
                 $mainSettings = $this->mainSettingsService->getAll()->first();
@@ -71,7 +73,7 @@ class TenantSeeder extends Seeder {
 
         // Plugin and Registration Tail magic
         // TBD: For now, only Registration Tail
-        $this->companyService->runForCompany(
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () {
                 // Do not prompt demo users to configure their default settings

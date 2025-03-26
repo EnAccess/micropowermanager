@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Services\CompanyService;
 use Illuminate\Console\Command;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ModelShowTenant extends Command {
     /**
@@ -26,7 +26,7 @@ class ModelShowTenant extends Command {
      * @return void
      */
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
         parent::__construct();
     }
@@ -35,7 +35,7 @@ class ModelShowTenant extends Command {
      * Execute the console command.
      */
     public function handle() {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
 
         $this->call('model:show', [
             'model' => $this->argument('model'),
