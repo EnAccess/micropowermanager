@@ -11,7 +11,7 @@ order: 1
 <p align="center">
   <a href="https://github.com/EnAccess/micropowermanager">
     <img
-      src="https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png"
+      src="https://micropowermanager.io/mpmlogo_raw.png"
       alt="MicroPowerManager"
       width="320"
     >

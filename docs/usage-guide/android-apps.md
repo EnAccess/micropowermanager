@@ -8,13 +8,13 @@ As outlined in the [Get Started with MPM](../get-started), the MPM software pack
 
 The 3 apps (APK files) can be downloaded and installed as follows:
 
-1. Accessing this link: <https://cloud.micropowermanager.com/#/welcome>
+1. Accessing this link: <https://cloud.micropowermanager.io/#/welcome>
 
 2. Click on the APK app files via your phone (Android required) – For Agent App Android version 6 or above is required)
 
 3. Apps get installed
 
-4. Once the app is installed on the phone, you will be asked for an URL. Following URL can be used: <https://cloud.micropowermanager.com>
+4. Once the app is installed on the phone, you will be asked for an URL. Following URL can be used: <https://cloud.micropowermanager.io>
 
 5. Log in to the apps with the login credentials used to access MPM website interface (in case you have access to the website interface) or with the credentials given to you by management.
 
