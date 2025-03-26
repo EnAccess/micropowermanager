@@ -12,7 +12,7 @@ The steps to sell a SHS or e-bike to a customer as well as registering a new ele
 
 In this subsection, the procedure to sell/assign a new appliance (non-device) to a customer is outlined:
 
-1. If the customer is not registered, first use MPM website interface to register a new customer (see "Customers" section below"). If the customer already exists, skip this point.
+1. If the customer is not registered, first use MPM website interface to register a new customer (see [Customers](customers)). If the customer already exists, skip this point.
 
 2. Go to the "Appliance" menu of the website interface, click on ":heavy_plus_sign:" and define a new appliance (name and appliance cost/price).
 
@@ -22,7 +22,7 @@ In this subsection, the procedure to sell/assign a new appliance (non-device) to
 
    b) **Instalment cost based**: unlike the case above, in this case the user defines the instalment amount (as well as total appliance cost and payment rates (weekly or monthly). MPM then calculates the number of instalments under which the total appliance cost is to be paid.
 
-Kindly note that appliances can also be sold through the Agent App (see "Android Apps" section for further information).
+Kindly note that appliances can also be sold through the Agent App (see [Android Apps](/usage-guide/android-apps) for further information).
 
 > [!NOTE]
 > Future development work would include to update the Agent App so that not only appliances but also SHS and e-bike devices can be registered (right now Agent App does not enable to add a device with a serial number).

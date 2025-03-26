@@ -4,7 +4,7 @@ order: 19
 
 # Android Apps
 
-As outlined in the "Get Started with MPM section", the MPM software package comes with 3 Android Apps, which are presented in more detail in this section:
+As outlined in the [Get Started with MPM](../get-started), the MPM software package comes with 3 Android Apps, which are presented in more detail in this section:
 
 The 3 apps (APK files) can be downloaded and installed as follows:
 
@@ -18,13 +18,11 @@ The 3 apps (APK files) can be downloaded and installed as follows:
 
 5. Log in to the apps with the login credentials used to access MPM website interface (in case you have access to the website interface) or with the credentials given to you by management.
 
-For more information on how to use the Android Apps, kindly check the "Android Apps" section of this user manual.
-
 ![App Overview](images/apps-overview.png)
 
 ## Customer Registration App
 
-New customer profiles can be created via this app or through the website directly. The Customer Registration App enables the user/Agent to register new SHS and e-bike devices. The Agent/user has to first install the app by following the steps outlined on the "Get Started with MPM" section. The app can be accessed using the log in credentials provided to the Agent/user by the company management.
+New customer profiles can be created via this app or through the website directly. The Customer Registration App enables the user/Agent to register new SHS and e-bike devices. The Agent/user has to first install the app by following the steps outlined on the [Get Started with MPM](../get-started). The app can be accessed using the log in credentials provided to the Agent/user by the company management.
 
 Once logged in, the user should go to "Add Customer" on the bottom right of the screen and introduce the relevant customer data. Kindly note that the "Meter Type", "Tariff", "Connection Group", "Connection Type" and "Sub Connection Type" fields are only relevant for mini-grid customers (not SHS and e-bike devices). The device’s ID as per the manufacturer should be inserted on the field "Serial Number". This will serve as the device identified to receive payments for that device.
 

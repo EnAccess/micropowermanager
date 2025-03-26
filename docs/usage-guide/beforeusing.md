@@ -27,11 +27,11 @@ If user wants to register a new SHS or e-bike device via the website interface, 
 
 It is basically the energy price per kWh with an optional access rate/subscription fee. The operator is free to define the period of that fee. Ex: Every 7 days. Such a subscription fee may also not be introduced at all. This feature only applies for mini-grid meter device type, NOT for SHS and e-bikes. For SHS and e-bikes, the payment scheme is set up at the time of registering the device on MPM.
 
-To define payment schemes for SHS and e-bikes go to "Appliance" menu (see "Appliance" section below).
+To define payment schemes for SHS and e-bikes go to "Appliance" menu (see [Appliance](appliances)).
 
 ## Payment Channels
 
-The list of payment channels through which MPM can receive mobile money is outlined on the section "Getting Started with MPM above".
+The list of payment channels through which MPM can receive mobile money is outlined in [Getting Started with MPM](../get-started).
 
 ## Payments
 
