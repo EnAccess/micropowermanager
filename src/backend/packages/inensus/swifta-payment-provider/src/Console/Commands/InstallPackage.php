@@ -5,6 +5,7 @@ namespace Inensus\SwiftaPaymentProvider\Console\Commands;
 use App\Models\User;
 use App\Services\CompanyDatabaseService;
 use App\Services\CompanyService;
+use App\Services\DatabaseProxyService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -20,6 +21,7 @@ class InstallPackage extends Command {
         private SwiftaAuthentication $authentication,
         private CompanyService $companyService,
         private CompanyDatabaseService $companyDatabaseService,
+        private DatabaseProxyService $databaseProxyService,
     ) {
         parent::__construct();
     }
@@ -70,6 +72,13 @@ class InstallPackage extends Command {
             'email' => $company->getName().'-swifta-user-'.Carbon::now()->timestamp,
             'company_id' => $companyId,
         ]);
+        $companyDatabase = $this->companyDatabaseService->getById($companyId);
+        $databaseProxyData = [
+            'email' => $user->getEmail(),
+            'fk_company_id' => $user->getCompanyId(),
+            'fk_company_database_id' => $companyDatabase->getId(),
+        ];
+        $this->databaseProxyService->create($databaseProxyData);
         $customClaims = ['usr' => 'swifta-token', 'exp' => Carbon::now()->addYears(3)->timestamp];
         $token = JWTAuth::customClaims($customClaims)->fromUser($user);
         $payload = JWTAuth::setToken($token)->getPayload();

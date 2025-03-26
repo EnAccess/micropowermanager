@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\CompanyJob;
-use App\Services\CompanyService;
 use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 abstract class AbstractJob implements ShouldQueue {
     use Dispatchable;
@@ -40,8 +40,8 @@ abstract class AbstractJob implements ShouldQueue {
 
     public function handle() {
         $this->setJobUuid($this->job->uuid());
-        $companyService = app()->make(CompanyService::class);
-        $companyService->runForCompany($this->companyId, function () {
+        $databaseProxyManager = app()->make(DatabaseProxyManagerService::class);
+        $databaseProxyManager->runForCompany($this->companyId, function () {
             $this->executeJob();
         });
 

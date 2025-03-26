@@ -13,14 +13,14 @@ use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
-use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class MeterSeeder extends Seeder {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

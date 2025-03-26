@@ -14,6 +14,7 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CompanyController extends Controller {
     public function __construct(
@@ -21,6 +22,7 @@ class CompanyController extends Controller {
         private CompanyDatabaseService $companyDatabaseService,
         private PluginsService $pluginsService,
         private UserService $userService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
@@ -41,8 +43,8 @@ class CompanyController extends Controller {
                 Carbon::now()->timestamp,
         ]);
 
-        // Create Admin user
-        $this->companyService->runForCompany(
+        // Create Admin user and DatabaseProxy
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             fn () => $this->userService->create(
                 [
@@ -56,7 +58,7 @@ class CompanyController extends Controller {
         );
 
         // Set some meaningful settings by default
-        $this->companyService->runForCompany(
+        $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () use ($company, $usageType) {
                 $mainSettings = $this->mainSettingsService->getAll()->first();
@@ -68,7 +70,7 @@ class CompanyController extends Controller {
         );
 
         // Plugin and Registration Tail magic
-        return $this->companyService->runForCompany(
+        return $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
             function () use ($company, $plugins) {
                 // Prompt new users to configure their default settings
@@ -105,6 +107,8 @@ class CompanyController extends Controller {
     }
 
     public function get($email): ApiResource {
-        return ApiResource::make($this->companyService->findByEmail($email));
+        $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
+
+        return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));
     }
 }

@@ -3,14 +3,14 @@
 namespace Database\Seeders;
 
 use App\Models\SubConnectionType;
-use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class SubConnectionTypeSeeder extends Seeder {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

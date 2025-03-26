@@ -7,14 +7,14 @@ use App\Models\Cluster;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\User;
-use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class ClusterSeeder extends Seeder {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

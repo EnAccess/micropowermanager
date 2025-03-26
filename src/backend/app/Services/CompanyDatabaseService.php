@@ -7,6 +7,7 @@ use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 /**
  * @implements IBaseService<CompanyDatabase>
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class CompanyDatabaseService implements IBaseService {
     public function __construct(
         private CompanyDatabase $companyDatabase,
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {}
 
     public function getById(int $id): CompanyDatabase {
@@ -37,7 +38,7 @@ class CompanyDatabaseService implements IBaseService {
         // }
         DB::unprepared("CREATE DATABASE IF NOT EXISTS $database_name");
 
-        $this->companyService->runForCompany(
+        $this->databaseProxyManagerService->runForCompany(
             $company_id,
             function () {
                 Artisan::call('migrate', [

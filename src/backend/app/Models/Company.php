@@ -26,6 +26,10 @@ class Company extends BaseModelCentral {
         return $this->hasOne(CompanyDatabase::class);
     }
 
+    public function databaseProxies(): HasMany {
+        return $this->hasMany(DatabaseProxy::class);
+    }
+
     public function getId(): int {
         return $this->id;
     }

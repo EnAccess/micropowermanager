@@ -44,7 +44,7 @@ Then
 ```sh
 docker exec -it backend-dev bash
 php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
-php artisan erd:generate tenant --path=/database/migrations/tenant --excludes=companies,company_databases,company_jobs --file=tenant_database.sql
+php artisan erd:generate tenant --path=/database/migrations/tenant --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
 php artisan export
 ```
 

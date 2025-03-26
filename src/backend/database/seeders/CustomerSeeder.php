@@ -6,14 +6,14 @@ use App\Models\Address\Address;
 use App\Models\City;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
-use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CustomerSeeder extends Seeder {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     /**

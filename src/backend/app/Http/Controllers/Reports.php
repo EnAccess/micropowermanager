@@ -6,6 +6,7 @@ use App\Exceptions\CustomerGroup\CustomerGroupNotFound;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
+use App\Models\DatabaseProxy;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Report;
@@ -586,7 +587,8 @@ class Reports {
         $writer = new Xlsx($this->spreadsheet);
         $dirPath = storage_path('./'.$reportType);
         $user = User::query()->first();
-        $companyId = $user->getCompanyId();
+        $databaseProxy = app()->make(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
         if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));

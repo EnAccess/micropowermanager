@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\DatabaseProxy;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
@@ -30,8 +31,8 @@ abstract class AbstractDashboardCacheDataService {
 
     protected function cacheKeyGenerator(): string {
         $user = User::query()->first();
-
-        $companyId = $user->getCompanyId();
+        $databaseProxy = app()->make(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
         return $this->cacheDataKey.'-'.$companyId;
     }
