@@ -12,7 +12,8 @@ order: 3
 4. Create the locations (under "Settings") where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
 
-   1. To register new mini-grid customers, the Customer Registration App is required. Basic customer data together with the electricity meter serial number are required (see [Before Using MPM](beforeusing) for further information).
+   1. To register new mini-grid customers, the Customer Registration App is required.
+      Basic customer data together with the electricity meter serial number are required (see [Before Using MPM](beforeusing) for further information).
    2. To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check [Before Using MPM](beforeusing).
 
 > [!WARNING]
@@ -47,7 +48,8 @@ sequenceDiagram
 ```
 
 In order to use MPM software to manage your customer portfolio, you will have to activate the relevant (manufacturer) plug-ins as well as the relevant telecommunication provider plug-ins.
-For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the "Calin" and "SunKing" plug-ins to be able to manage your customers with MPM software. Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
+For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the "Calin" and "SunKing" plug-ins to be able to manage your customers with MPM software.
+Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
 
 See [Plugin Overview](/usage-guide/plugin-overview) to have an overview of active and available plug-ins.
 
