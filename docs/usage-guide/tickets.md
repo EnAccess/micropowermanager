@@ -19,7 +19,7 @@ To create a new ticket, however, following steps must be done (depending on whet
 
    > [!NOTE]
    > Agents at present can create tickets but cannot be assigned tickets (unlike maintenance service providers).
-   > This may be adjusted with additional development work or by first registering the Agent as well as a "Maintenance Service Provider" in MPM.
+   > This may be adjusted with additional development work or by first registering the Agent as well as a "Maintenance Service Provider" in MicroPowerManager.
 
    The newly created ticket will now be shown on both that customer’s page as well as on the "Ticket" menu.
 

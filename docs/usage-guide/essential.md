@@ -11,7 +11,7 @@ Upon accessing the `/settings` page, users are greeted with the default tab wher
 
 - **Title**: This field allows users to set a custom title for their Mini-Grid management.
 - **Currency**: Users can select the currency in which they wish to operate.
-- **Country**: The country setting is crucial for compliance with local regulations and represents the country where the MPM user's Mini-Grids are located.
+- **Country**: The country setting is crucial for compliance with local regulations and represents the country where the MicroPowerManager user's Mini-Grids are located.
 - **VAT Energy**: This field is used to input the VAT rate applicable to energy consumption, which is a tax applied to energy sales.
 - **Usage Type**: Users can specify the type of usage, such as Mini-Grid, Solar Home System, or E-Bike Rental.
 - **Company Name**: The name of the company managing the Mini-Grid can be entered here.
@@ -23,7 +23,7 @@ Once all settings are configured, users can click the **SAVE** button to apply t
 ## SMS Settings
 
 In this section, users can define the structure of automated messages sent to their end customers.
-The MPM user can customize the following message types:
+The MicroPowerManager user can customize the following message types:
 
 - **Transaction Confirmation**: This message is sent when a payment is successfully processed.
   For example:
@@ -38,7 +38,7 @@ The MPM user can customize the following message types:
 
 ### Android Gateway Settings
 
-The Android Gateway settings allow MPM users to configure message sending methods through the embedded Android gateway application
+The Android Gateway settings allow MicroPowerManager users to configure message sending methods through the embedded Android gateway application
 Users can add as many gateways as they wish, with each gateway representing an Android phone that has the MPM SMS Gateway application installed.
 
 To obtain the token information, users can use the "Copy Tokens" button available in the app.
@@ -58,7 +58,7 @@ Once all settings are configured, users can click the **SAVE** button to apply t
 
 ## Plugin Management
 
-In this section, MPM users have the flexibility to activate and deactivate the plugins they wish to utilize within the MicroPowerManager.
+In this section, MicroPowerManager users have the flexibility to activate and deactivate the plugins they wish to utilize within the MicroPowerManager.
 Once activated, these plugins will be prominently displayed in the sidebar, enabling users to easily access and configure specific settings, as well as view any relevant plugin-specific information.
 
 Plugins are designed to enhance functionality and often rely on third-party applications.

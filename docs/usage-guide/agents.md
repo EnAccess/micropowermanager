@@ -8,7 +8,7 @@ Agents are company staff that are on site (or close to the site) and are able to
 
 Agents require the apps to do their work (see [Android apps](/usage-guide/android-apps)).
 
-The user can register a new Agent on the MPM account by going to the "Agents" menu and then pressing on ":heavy_plus_sign:".
+The user can register a new Agent on the MicroPowerManager account by going to the "Agents" menu and then pressing on ":heavy_plus_sign:".
 
 The defined log in credentials by the user are then to be shared with the Agent, for them to be able to use the Agent account.
 For more information on how to generate and manage tickets, see [Tickets](/usage-guide/tickets).
@@ -20,7 +20,7 @@ An agent's **outstanding balance** is the money it owes the company (i.e. it is 
 
 The **risk balance** is the maximum amount of money that an agent can collect before it has to transfer the money to the company.
 When that balance is reached, agents will not be able to collect money anymore (generate tokens) or sell appliances (his account on the app will not work.
-So, when the agent sends the balance money to the company, then headquarters has to manually adjust the outstanding balance by that agent through MPM desktop.
+So, when the agent sends the balance money to the company, then headquarters has to manually adjust the outstanding balance by that agent through MicroPowerManager desktop.
 This is done by creating a **receipt** on the specific agent’s profile.
 When that receipt is created, balance of agent is removed/decreased to 0.
 

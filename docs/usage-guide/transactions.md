@@ -22,5 +22,5 @@ The detail page contains the `Mobile Provider-specific data`,`Basic Data`, `Sent
 **Mobile Money Provider-Specific Information:** The name of the provider and the transaction details
 This information is required by the mobile money provider in case of an issue.
 
-**Transaction Processing:** A list and pie chart that shows how the incoming money from that customer has been used by MPM system.
+**Transaction Processing:** A list and pie chart that shows how the incoming money from that customer has been used by MicroPowerManager system.
 For example: a payment of UGX 20,000 is split in UGX 3,000 for mini-grid electricity, UGX 2,000 for mini-grid electricity Access Rate (if appliable), and UGX 15,000 for the repayment/instalment of a milling machine (appliance).

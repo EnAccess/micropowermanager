@@ -4,10 +4,10 @@ order: 3
 
 # Onboarding and Company registration
 
-## Setting up your MPM company account
+## Setting up your MicroPowerManager company account
 
 1. During the sign-up process, you will be required to select the plug-ins relevant to your company (for further information on plug-ins, see further below on this page).
-2. Create users under that company account (a user should be created for every person that should be able to access the company’s MPM account via the website interface as well as persons that should work with the Android apps outlined above).
+2. Create users under that company account (a user should be created for every person that should be able to access the company’s MicroPowerManager account via the website interface as well as persons that should work with the Android apps outlined above).
 3. Create a password for password protected areas, so that only the team members with knowledge of the password can access sensitive information (Password protected areas are: Tariff-setting, Targets-setting, Overall company Settings, Addition of locations (village, mini-grid, cluster)\*.
 4. Create the locations (under "Settings") where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
@@ -22,7 +22,7 @@ order: 3
 
 ## MPM Software Plug-ins
 
-The below diagram depicts the integration layers of MPM with mobile money providers and device manufacturers (whether electricity meter, SHS or e-bike).
+The below diagram depicts the integration layers of MicroPowerManager with mobile money providers and device manufacturers (whether electricity meter, SHS or e-bike).
 
 ```mermaid
 sequenceDiagram

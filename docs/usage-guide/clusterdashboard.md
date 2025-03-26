@@ -18,7 +18,7 @@ The cluster dashboard is composed of the following sections:
 
 3. A map visualizing where the clusters/mini-grids/SHSs/e-bikes are installed.
 
-In order to add a new mini-grid, cluster or village to the MPM account, following steps must be undertaken (as depicted on the photos below):
+In order to add a new mini-grid, cluster or village to the MicroPowerManager account, following steps must be undertaken (as depicted on the photos below):
 
 1. Click on "Locations" at the top right of the screen
 
