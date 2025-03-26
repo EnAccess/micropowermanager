@@ -21,7 +21,7 @@ MPManager customers are listed under `Customers` in the sidebar. This table cont
 • A list of the devices which belong to the customer and a map where the meters are visually displayed.
 
 Some of the elements are editable (i.e.: name, surname) or addable (i.e.: ticket, address).
-New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the "+" on the "Customer" Menu.
+New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the ":heavy_plus_sign:" on the "Customer" Menu.
 
 ![Customers Overview](images/customers-overview.png)
 

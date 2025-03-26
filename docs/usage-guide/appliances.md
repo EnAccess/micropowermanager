@@ -14,9 +14,9 @@ In this subsection, the procedure to sell/assign a new appliance (non-device) to
 
 1. If the customer is not registered, first use MPM website interface to register a new customer (see "Customers" section below"). If the customer already exists, skip this point.
 
-2. Go to the "Appliance" menu of the website interface, click on "+" and define a new appliance (name and appliance cost/price).
+2. Go to the "Appliance" menu of the website interface, click on ":heavy_plus_sign:" and define a new appliance (name and appliance cost/price).
 
-3. Go to the "Customer" menu, find the customer to which the created appliance is to be sold, go to "Sold Appliances", click "+" and assign the mentioned customer the recently created appliance. MPM asks the user to select one of the 2 re-payment scheme options:
+3. Go to the "Customer" menu, find the customer to which the created appliance is to be sold, go to "Sold Appliances", click ":heavy_plus_sign:" and assign the mentioned customer the recently created appliance. MPM asks the user to select one of the 2 re-payment scheme options:
 
    a) **Installation count based**: user defines the down payment, the number of instalments under which the total appliance cost is to be financed, and the rate type (monthly or weekly). MPM gives as output the instalment amount the customer has to pay.
 

@@ -42,7 +42,7 @@ The purpose of the Agent app is to:
 
    b) Select the customer for which a token should be generated
 
-   c) Click on the "+" at the bottom right of the skin
+   c) Click on the ":heavy_plus_sign:" at the bottom right of the skin
 
    d) Insert the currency amount the customer has paid (which should be converted into a token)
 
@@ -60,7 +60,7 @@ The purpose of the Agent app is to:
 
    c) Click on the "Appliance" logo at the bottom of the screen
 
-   d) Click on "+" and define the appliance data (name, cost, etc.).
+   d) Click on ":heavy_plus_sign:" and define the appliance data (name, cost, etc.).
 
    ![Agent App Selling Appliance](images/agent-app-selling-appliance.png)
 
@@ -72,7 +72,7 @@ The purpose of the Agent app is to:
 
    c) Click on the "Tickets" logo at the bottom right of the screen
 
-   d) Click on "+" and insert customer issue to be resolved.
+   d) Click on ":heavy_plus_sign:" and insert customer issue to be resolved.
 
    ![Agent App Create Ticket](images/agent-app-create-ticket.png)
 

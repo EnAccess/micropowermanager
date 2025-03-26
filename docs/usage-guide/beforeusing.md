@@ -19,7 +19,7 @@ The key component(s) of the system is a mixture of device/customer. That means b
 
 If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MPM (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for "meter serial number" but in fact also refers to "SHS serial number" or "e-bike serial number", as applicable). Future development work would entail adapting this field name to a more generic "device serial number".
 
-If user wants to register a new SHS or e-bike device via the website interface, applicable menu section should be clicked (left side bar, click on "Solar Home System" or "e-bike"). Then click on the "+" button at the top right corner of the applicable screen and introduce requested data (device serial number, manufacturer, appliance (device) type.) Kindly check the "Solar Home Systems" and "E-bike" sections of the documentation to see a screenshot of the applicable menus.
+If user wants to register a new SHS or e-bike device via the website interface, applicable menu section should be clicked (left side bar, click on "Solar Home System" or "e-bike"). Then click on the ":heavy_plus_sign:" button at the top right corner of the applicable screen and introduce requested data (device serial number, manufacturer, appliance (device) type.) Kindly check the "Solar Home Systems" and "E-bike" sections of the documentation to see a screenshot of the applicable menus.
 
 ![MPM Architecture](images/mpm-architecture.png)
 

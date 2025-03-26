@@ -8,7 +8,7 @@ Agents are company staff that are on site (or close to the site) and are able to
 
 Agents require the apps to do their work (see [Android apps](/usage-guide/android-apps)).
 
-The user can register a new Agent on the MPM account by going to the "Agents" menu and then pressing on "+".
+The user can register a new Agent on the MPM account by going to the "Agents" menu and then pressing on ":heavy_plus_sign:".
 
 The defined log in credentials by the user are then to be shared with the Agent, for them to be able to use the Agent account.
 For more information on how to generate and manage tickets, see [Tickets](/usage-guide/tickets).
