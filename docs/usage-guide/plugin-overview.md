@@ -13,7 +13,7 @@ order: 20
 | **Calin Smart Meter**         | Ready                                                                                                        | They do not provide API docs online                                                                                     |
 | **Microstar Meter**           | Ready (Companies have to make an agreement with MicroStarElectric to get their .p12 certificate)             | They do not provide API docs online                                                                                     |
 | **DalyBms (e-bike)**          | Ready (Battery Management System API, works only with e-bikes with Daly BMS installed)                       | [Website](https://www.dalybms.com/bms-electric-bike/)                                                                   |
-| **Wavecom Payment**           | (Manual) Ready (MPM users must export transaction data, paste into template, and upload)                     | N/A                                                                                                                     |
+| **Wavecom Payment**           | (Manual) Ready (MicroPowerManager users must export transaction data, paste into template, and upload)       | N/A                                                                                                                     |
 | **Angaza Solar Home System**  | (`unlockDevice` not implemented, see [here](https://github.com/EnAccess/micropowermanager/issues/570))       | [API Docs](https://developers.angaza.com/docs/dev-portal-nexus/77a9ea5040a3b-retrieve-a-unit-s-payg-credit-information) |
 
 ## Needs Refactoring / Development

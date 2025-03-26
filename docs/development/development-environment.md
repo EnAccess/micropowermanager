@@ -13,7 +13,8 @@ In a local development environment
 
 ## Preamble
 
-This guide requires a Unix-like environment. Supported platforms include:
+This guide requires a Unix-like environment.
+Supported platforms include:
 
 1. macOS: Any recent version of macOS (13 Ventura or later)
 2. various Linux distributions (Ubuntu, Fedora, Debian)
@@ -113,7 +114,8 @@ Configurations for a different editor will work a like.
 For local development and editor integration it can be helpful to have a local instance of PHP.
 This will allow you to run composer scripts like `larastan` without the need to use Docker.
 
-These steps are highly dependant on your system setup. For example using `brew` on MacOS
+These steps are highly dependant on your system setup.
+For example using `brew` on MacOS
 
 ```sh
 brew install php@8.2
@@ -173,7 +175,9 @@ And configure the following database connection
 - **Port:** `3306`
 - **User:** `root`
 - **Password:** Take it from [`.env.mysql`](https://github.com/EnAccess/micropowermanager/blob/main/dev/.env.mysql)
-- **Database:** Leave empty if possible, as we will be interacting with multiple databases. Alternatively configure a seperate connection for each database. For example `micro_power_manager` and `DemoCompany_1`.
+- **Database:** Leave empty if possible, as we will be interacting with multiple databases.
+  Alternatively configure a seperate connection for each database.
+  For example `micro_power_manager` and `DemoCompany_1`.
 
 ![SQL Editor database connection](/screenshots/sql-editor-database-connection.png)
 
@@ -243,4 +247,5 @@ To run the backend tests use the command:
 php artisan test
 ```
 
-Note: The test suite is being worked up, so expect many failling tests.
+> [!NOTE]
+> The test suite is currently being worked up, so expect many failling tests.

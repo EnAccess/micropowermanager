@@ -12,17 +12,21 @@ The steps to sell a SHS or e-bike to a customer as well as registering a new ele
 
 In this subsection, the procedure to sell/assign a new appliance (non-device) to a customer is outlined:
 
-1. If the customer is not registered, first use MPM website interface to register a new customer (see “Customers” section below”). If the customer already exists, skip this point.
+1. If the customer is not registered, first use MicroPowerManager website interface to register a new customer (see [Customers](customers)).
+   If the customer already exists, skip this point.
 
-2. Go to the “Appliance” menu of the website interface, click on “+” and define a new appliance (name and appliance cost/price).
+2. Go to the "Appliance" menu of the website interface, click on ":heavy_plus_sign:" and define a new appliance (name and appliance cost/price).
 
-3. Go to the “Customer” menu, find the customer to which the created appliance is to be sold, go to “Sold Appliances”, click “+” and assign the mentioned customer the recently created appliance. MPM asks the user to select one of the 2 re-payment scheme options:
+3. Go to the "Customer" menu, find the customer to which the created appliance is to be sold, go to "Sold Appliances", click ":heavy_plus_sign:" and assign the mentioned customer the recently created appliance.
+   MicroPowerManager asks the user to select one of the 2 re-payment scheme options:
 
-   a) **Installation count based**: user defines the down payment, the number of instalments under which the total appliance cost is to be financed, and the rate type (monthly or weekly). MPM gives as output the instalment amount the customer has to pay.
+   a) **Installation count based**: user defines the down payment, the number of instalments under which the total appliance cost is to be financed, and the rate type (monthly or weekly).
+   MicroPowerManager gives as output the instalment amount the customer has to pay.
 
-   b) **Instalment cost based**: unlike the case above, in this case the user defines the instalment amount (as well as total appliance cost and payment rates (weekly or monthly). MPM then calculates the number of instalments under which the total appliance cost is to be paid.
+   b) **Instalment cost based**: unlike the case above, in this case the user defines the instalment amount (as well as total appliance cost and payment rates (weekly or monthly).
+   MicroPowerManager then calculates the number of instalments under which the total appliance cost is to be paid.
 
-Kindly note that appliances can also be sold through the Agent App (see "Android Apps" section for further information).
+Kindly note that appliances can also be sold through the Agent App (see [Android Apps](/usage-guide/android-apps) for further information).
 
 > [!NOTE]
 > Future development work would include to update the Agent App so that not only appliances but also SHS and e-bike devices can be registered (right now Agent App does not enable to add a device with a serial number).

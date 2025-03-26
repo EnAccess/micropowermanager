@@ -5,13 +5,14 @@ order: 1
 # Get Started with MPM
 
 > [!WARNING]
-> The MPM documentation is currently getting reworked. It might not be fully up-to-date.
+> The MicroPowerManager documentation is currently getting reworked.
+> It might not be fully up-to-date.
 > Use this rendered documentation with caution.
 
 <p align="center">
   <a href="https://github.com/EnAccess/micropowermanager">
     <img
-      src="https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png"
+      src="https://micropowermanager.io/mpmlogo_raw.png"
       alt="MicroPowerManager"
       width="320"
     >
@@ -42,19 +43,23 @@ order: 1
 MicroPowerManager (MPM) is an open source, free-of-charge customer relationship manager (CRM) software that enables companies in the rural electrification space to manage their portfolio of customers.
 
 It is designed to be suitable to both Mini-Grid operators as well as Solar-Some-System (SHS) and e-bike distributors.
-The software was originally developed by INENSUS GmbH and is now hosted and co-developed by EnAccess. This User Manual is designed for persons with a basic understanding of what a CRM tool, Mini-Grid and SHS are.
+The software was originally developed by INENSUS GmbH and is now hosted and co-developed by EnAccess.
+This User Manual is designed for persons with a basic understanding of what a CRM tool, Mini-Grid and SHS are.
 
-The MPM package includes:
+The MicroPowerManager package includes:
 
-1. The **website interface** (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed. Customer complaints and technical faults can also be managed in a centralized manner via this interface. “Bulk-registration” of an existing portfolio of customers (transferring customer data from legacy systems to MPM software) can be offered by EnAccess as-a-service.
+1. The **website interface** (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed.
+   Customer complaints and technical faults can also be managed in a centralized manner via this interface.
+   "Bulk-registration" of an existing portfolio of customers (transferring customer data from legacy systems to MicroPowerManager software) can be offered by EnAccess as-a-service.
 
 2. **MPM Android Apps**:
 
    2.1. **Customer Registration App**: it is required to be able to register new customers.
 
-   2.2. **Agent/Merchant App**: serves as the bilateral communication channel between the company headquarters (users of MPM website interface) and the team of agents on site, managing and responding to customer complaints. The Agent App is also used to manually generate STS tokens (where customers are not able to do so themselves with their own phones).
+   2.2. **Agent/Merchant App**: serves as the bilateral communication channel between the company headquarters (users of MicroPowerManager website interface) and the team of agents on site, managing and responding to customer complaints.
+   The Agent App is also used to manually generate STS tokens (where customers are not able to do so themselves with their own phones).
 
-   2.3. **SMS Gateway App**: required to enable the possibility of sending bulk SMS to customer portfolio via the MPM website interface as well as communicating via SMS with company's agents/maintenance service providers via the MPM website interface.
+   2.3. **SMS Gateway App**: required to enable the possibility of sending bulk SMS to customer portfolio via the MicroPowerManager website interface as well as communicating via SMS with company's agents/maintenance service providers via the MicroPowerManager website interface.
 
 ## Get Started
 

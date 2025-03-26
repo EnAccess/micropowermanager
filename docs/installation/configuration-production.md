@@ -39,7 +39,8 @@ If your Email provider requires authentication, also populate:
 
 Alternatively, when using an Email provider with IP whitelisting:
 
-- Make sure cluster egress is using a static IP. For example of GKE, see [`egress-nat-policy.yaml`](https://github.com/EnAccess/micropowermanager/blob/main/k8s/base/gcp_gke/kustomization.yaml).
+- Make sure cluster egress is using a static IP.
+  For example of GKE, see [`egress-nat-policy.yaml`](https://github.com/EnAccess/micropowermanager/blob/main/k8s/base/gcp_gke/kustomization.yaml).
 - Whitelist the NAT Gateway's static IP in the Email provider.
 
 Optionally, to debug Email you can set:

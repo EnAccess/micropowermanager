@@ -136,7 +136,10 @@ Other cloud providers might require adjustments to the manifest files.
 
 5. (Optional) Adjust `ConfigMap` entries by using a Kustomize `patch`
 6. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
-   Note: If you choose to run MicroPowerManager in a non-default namespace make sure the Kubernetes `Secret` gets deployed into the same namespace.
+
+   > [!NOTE]
+   > If you choose to run MicroPowerManager in a non-default namespace make sure the Kubernetes `Secret` gets deployed into the same namespace.
+
 7. Run `kubectl -k overlays/gcp_gke`
 8. Run `kubectl -f apply secrets.yaml`
 9. Retrieve the loadbalancer IP address using
@@ -146,7 +149,7 @@ Other cloud providers might require adjustments to the manifest files.
    ```
 
    Create DNS records for the backend and frontend URLs.
-   Note: It might take a while for the newly created DNS records to propagate.
+   It might take a while for the newly created DNS records to propagate.
 
 10. Proceed to the [Next Steps](#next-steps) section
 
