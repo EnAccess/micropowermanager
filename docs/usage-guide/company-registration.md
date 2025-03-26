@@ -14,7 +14,9 @@ order: 3
    a) To register new mini-grid customers, the Customer Registration App is required. Basic customer data together with the electricity meter serial number are required (kindly see the “Before Using MPM” section for further information.
    b) To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check the “Before Using MPM” section of this User Manual.
 
-\*Password-setting to protect some sections of your account can only be generated at account setting stage. To change this password ex-post, you will have to contact EnAccess (Enaccess can change the password directly on the database).
+> [!WARNING]
+> Password-setting to protect some sections of your account can only be generated at account setting stage.
+> To change this password ex-post, you will have to contact EnAccess (EnAccess can change the password directly on the database).
 
 ## MPM Software Plug-ins
 
@@ -46,7 +48,7 @@ sequenceDiagram
 In order to use MPM software to manage your customer portfolio, you will have to activate the relevant (manufacturer) plug-ins as well as the relevant telecommunication provider plug-ins.
 For example, if you have Calin pre-paid meters or SunKing Solar Home Systems in your portfolio, you should activate the “Calin” and “SunKing” plug-ins to be able to manage your customers with MPM software. Additionally, if your customers rely on Airtel or Vodacom, you should activate the applicable Airtel or Vodacom plug-ins to enable MPM to generate tokens when receiving mobile money payments.
 
-Check the section "Plug-ins" to have an overview of active and available plug-ins.
+See [Plugin Overview](/usage-guide/plugin-overview) to have an overview of active and available plug-ins.
 
 Note that the activated plug-ins can be changed/removed/added later on from the website interface (under “Settings”).
 
