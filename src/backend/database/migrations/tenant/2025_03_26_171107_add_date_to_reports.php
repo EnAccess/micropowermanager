@@ -12,8 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('reports', function (Blueprint $table) {
-            // `date` column is actually a stringified "date range"
-            $table->string('date')->after('type');
+            $table->string('date')->comment('`date` column is actually a stringified `date_range`')->after('type');
         });
     }
 
