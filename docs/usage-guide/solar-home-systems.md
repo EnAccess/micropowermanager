@@ -8,4 +8,4 @@ This is the section listing all SHS devices registered under your company accoun
 
 SHS devices can be registered via the Customer Registration App (see "Android Apps" section) or directly through the website interface (Select "Solar Home System" menu on the left sidebar --> Click "+" --> introduce device data as requested.)
 
-![alt text](image.png)
+![New SHS](images/new-shs.png)

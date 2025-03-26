@@ -8,4 +8,4 @@ This is the section listing all e-bike devices registered under your company acc
 
 E-bike devices can be registered via the Customer Registration App (see "Android Apps" section) or directly through the website interface (Select "E-bike" menu on the left sidebar --> Click "+" --> introduce device data as requested.)
 
-![alt text](image-1.png)
+![New E-Bike](images/new-ebike.png)
