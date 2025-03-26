@@ -46,7 +46,7 @@ The software was originally developed by INENSUS GmbH and is now hosted and co-d
 
 The MPM package includes:
 
-1. The **website interface** (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed. Customer complaints and technical faults can also be managed in a centralized manner via this interface. “Bulk-registration” of an existing portfolio of customers (transferring customer data from legacy systems to MPM software) can be offered by EnAccess as-a-service.
+1. The **website interface** (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed. Customer complaints and technical faults can also be managed in a centralized manner via this interface. "Bulk-registration" of an existing portfolio of customers (transferring customer data from legacy systems to MPM software) can be offered by EnAccess as-a-service.
 
 2. **MPM Android Apps**:
 

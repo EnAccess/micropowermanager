@@ -4,7 +4,7 @@ order: 11
 
 # Transactions
 
-The “Transactions” menu includes a list of all transactions (regardless of purpose/device/appliance).
+The "Transactions" menu includes a list of all transactions (regardless of purpose/device/appliance).
 
 The page contains two main sections:
 

@@ -25,7 +25,7 @@ connections.
 
 By clicking on `Targets` in the sidebar, a page with the already set targets will be loaded. The list shows only the key fields of each target. To see the details of a target, click on the `Expand` button.
 
-To add a **new Target** just click on the ”+” on the right top
+To add a **new Target** just click on the "+" on the right top
 side. After clicking on that button, a new page will be loaded. Firstly, the manager/admin should assign a Cluster or a Mini-Grid. Then,
 the date by when that target should be accomplished should be selected.
 

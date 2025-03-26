@@ -8,8 +8,8 @@ The key component(s) of the system is a mixture of device/customer. That means b
 
 > [!INFO]
 > MicroPowerManager users cannot create other devices.
-> Each new device (whether a mini-grid pre-paid meter, SHS or e-bike) must be assigned under a pre-defined cluster, mini-grid project and village (i.e. even if a company is only managing 100 SHSs (and no mini-grid customers), a “mini-grid project” must be defined in MPM under which the 100 SHSs are registered.
-> Potential development work would include substituting the term “mini-grid” for “catchment area”.
+> Each new device (whether a mini-grid pre-paid meter, SHS or e-bike) must be assigned under a pre-defined cluster, mini-grid project and village (i.e. even if a company is only managing 100 SHSs (and no mini-grid customers), a "mini-grid project" must be defined in MPM under which the 100 SHSs are registered.
+> Potential development work would include substituting the term "mini-grid" for "catchment area".
 
 ## Register a customer & device
 
@@ -17,7 +17,7 @@ The key component(s) of the system is a mixture of device/customer. That means b
 
 **Registering SHSs and e-bike devices:** Registration of these devices can be done both via the Customer Registration App as well as the website interface.
 
-If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MPM (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for “meter serial number” but in fact also refers to “SHS serial number” or “e-bike serial number”, as applicable). Future development work would entail adapting this field name to a more generic “device serial number”.
+If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MPM (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for "meter serial number" but in fact also refers to "SHS serial number" or "e-bike serial number", as applicable). Future development work would entail adapting this field name to a more generic "device serial number".
 
 If user wants to register a new SHS or e-bike device via the website interface, applicable menu section should be clicked (left side bar, click on "Solar Home System" or "e-bike"). Then click on the "+" button at the top right corner of the applicable screen and introduce requested data (device serial number, manufacturer, appliance (device) type.) Kindly check the "Solar Home Systems" and "E-bike" sections of the documentation to see a screenshot of the applicable menus.
 
@@ -27,11 +27,11 @@ If user wants to register a new SHS or e-bike device via the website interface, 
 
 It is basically the energy price per kWh with an optional access rate/subscription fee. The operator is free to define the period of that fee. Ex: Every 7 days. Such a subscription fee may also not be introduced at all. This feature only applies for mini-grid meter device type, NOT for SHS and e-bikes. For SHS and e-bikes, the payment scheme is set up at the time of registering the device on MPM.
 
-To define payment schemes for SHS and e-bikes go to “Appliance” menu (see “Appliance” section below).
+To define payment schemes for SHS and e-bikes go to "Appliance" menu (see "Appliance" section below).
 
 ## Payment Channels
 
-The list of payment channels through which MPM can receive mobile money is outlined on the section “Getting Started with MPM above”.
+The list of payment channels through which MPM can receive mobile money is outlined on the section "Getting Started with MPM above".
 
 ## Payments
 

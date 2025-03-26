@@ -17,11 +17,11 @@ and follow these steps bellow;
 
 ### step 1
 
-Go to the list of your services (in “My Applications”) and click on the name or the “View” button of your service
+Go to the list of your services (in "My Applications") and click on the name or the "View" button of your service
 
 ### step 2
 
-On the detail page, click on the cog icon then on “Webhook”
+On the detail page, click on the cog icon then on "Webhook"
 
 ### step 3
 
