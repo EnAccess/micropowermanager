@@ -13,8 +13,6 @@ The user can register a new Agent on the MPM account by going to the "Agents" me
 The defined log in credentials by the user are then to be shared with the Agent, for them to be able to use the Agent account.
 For more information on how to generate and manage tickets, see [Tickets](/usage-guide/tickets).
 
-![alt text](image-3.png)
-
 ## Agent Commission Types
 
 Agents receive cash from customers on site.
