@@ -6,11 +6,20 @@ order: 2
 
 The key component(s) of the system is a mixture of device/customer. That means both melts into each other a bit. The only way to register a customer and a new device, is to register them both at the same time. For that reason from now on, every registered person will be mentioned as a **customer**.
 
+> [!INFO]
+> MicroPowerManager users cannot create other devices.
+> Each new device (whether a mini-grid pre-paid meter, SHS or e-bike) must be assigned under a pre-defined cluster, mini-grid project and village (i.e. even if a company is only managing 100 SHSs (and no mini-grid customers), a “mini-grid project” must be defined in MPM under which the 100 SHSs are registered.
+> Potential development work would include substituting the term “mini-grid” for “catchment area”.
+
 ## Register a customer & device
 
 **Registering new mini-grid customers (electricity meter devices):** To register new mini-grid customers, the Customer Registration App has to be used. After introducing the customer’s basic details (name, phone number, etc.), the app allows you to select the village where the customer lives, the meter manufacturer and the energy tariff that should be assigned to the meter. **Note that while new customers can be created via the website interface and existing meter devices can be re-assigned to customers, new meter devices can only be registered via the mentioned Customer Registration App.**
 
-**Registering SHSs and e-bike devices:** Registration of these devices can be done both via the Customer Registration App as well as the website interface. If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MPM (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for “meter serial number” but in fact also refers to “SHS serial number” or “e-bike serial number”, as applicable). Future development work would entail adapting this field name to a more generic “device serial number”.
+**Registering SHSs and e-bike devices:** Registration of these devices can be done both via the Customer Registration App as well as the website interface.
+
+If user wants to use the app, there are two relevant inputs (on top of the usual customer data): 1) a dropdown menu listing all manufacturers integrated with MPM (including both SHS and electricity meter manufacturers) and 2) an input field to insert the device serial number (kindly note that the app requests for “meter serial number” but in fact also refers to “SHS serial number” or “e-bike serial number”, as applicable). Future development work would entail adapting this field name to a more generic “device serial number”.
+
+If user wants to register a new SHS or e-bike device via the website interface, applicable menu section should be clicked (left side bar, click on "Solar Home System" or "e-bike"). Then click on the "+" button at the top right corner of the applicable screen and introduce requested data (device serial number, manufacturer, appliance (device) type.) Kindly check the "Solar Home Systems" and "E-bike" sections of the documentation to see a screenshot of the applicable menus.
 
 ![MPM Architecture](images/mpm-architecture.png)
 
@@ -35,25 +44,3 @@ MPM is designed in a way that the transferred money by the customer will first b
 Note: a device number is required even if the customer intends not to generate a token for any of the devices (electricity meter, SHS or e-bike) but simply repay an appliance. In which case the customer should transfer the money amount matching the outstanding appliance debt (to avoid MPM generating a token for that device with the surplus amount).
 
 Note: If the entered device serial number is not valid, the system refuses the payment automatically.
-
-## Selling an Appliance
-
-The system supports to sell SHS and e-bike devices as well as appliances to customers on a rate basis plan. User can create whatever appliance it uses to sell (water pump, electric pressure cooker, mill, TV, etc.). The steps to sell a SHS or e-bike to a customer as well as registering a new electricity device are explained on the subsection “Register a customer & device” above.
-
-In this subsection, the procedure to sell/assign a new appliance (non-device) to a customer is outlined:
-
-1. If the customer is not registered, first use MPM website interface to register a new customer (see “Customers” section below”). If the customer already exists, skip this point.
-
-2. Go to the “Appliance” menu of the website interface, click on “+” and define a new appliance (name and appliance cost/price).
-
-3. Go to the “Customer” menu, find the customer to which the created appliance is to be sold, go to “Sold Appliances”, click “+” and assign the mentioned customer the recently created appliance. MPM asks the user to select one of the 2 re-payment scheme options:
-
-   a) **Installation count based**: user defines the down payment, the number of instalments under which the total appliance cost is to be financed, and the rate type (monthly or weekly). MPM gives as output the instalment amount the customer has to pay.
-
-   b) **Instalment cost based**: unlike the case above, in this case the user defines the instalment amount (as well as total appliance cost and payment rates (weekly or monthly). MPM then calculates the number of instalments under which the total appliance cost is to be paid.
-
-   Note: Future development work would include to update the Agent App so that not only appliances but also SHS and e-bike devices can be registered (right now Agent App does not enable to add a device with a serial number).
-
-![New Appliance](images/new-appliance.png)
-![Customer Sold Appliance](images/customer-sold-appliance.png)
-![Appliance Payment Scheme](images/appliance-payment-scheme.png)
