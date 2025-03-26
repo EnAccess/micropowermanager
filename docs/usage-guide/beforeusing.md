@@ -41,6 +41,8 @@ Each incoming payment has to contain the device serial number. That is the uniqu
 
 MPM is designed in a way that the transferred money by the customer will first be used to clear outstanding debt by that customer (from an appliance loan and tariff access (if applicable)) before being converted into a token. Therefore, only the remaining money after debt clearing will be converted into a token for the device number for which the transaction has been done.
 
-Note: a device number is required even if the customer intends not to generate a token for any of the devices (electricity meter, SHS or e-bike) but simply repay an appliance. In which case the customer should transfer the money amount matching the outstanding appliance debt (to avoid MPM generating a token for that device with the surplus amount).
+> [!NOTE]
+> a device number is required even if the customer intends not to generate a token for any of the devices (electricity meter, SHS or e-bike) but simply repay an appliance. In which case the customer should transfer the money amount matching the outstanding appliance debt (to avoid MPM generating a token for that device with the surplus amount).
 
-Note: If the entered device serial number is not valid, the system refuses the payment automatically.
+> [!WARNING]
+> If the entered device serial number is not valid, the system refuses the payment automatically.

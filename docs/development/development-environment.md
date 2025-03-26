@@ -243,4 +243,5 @@ To run the backend tests use the command:
 php artisan test
 ```
 
-Note: The test suite is being worked up, so expect many failling tests.
+> [!NOTE]
+> The test suite is currently being worked up, so expect many failling tests.
