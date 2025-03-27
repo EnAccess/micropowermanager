@@ -39,6 +39,10 @@ class AgentSoldApplianceController extends Controller {
     public function store(CreateAgentSoldApplianceRequest $request) {
         $soldApplianceData = $request->only(['person_id', 'agent_assigned_appliance_id']);
 
-        return ApiResource::make($this->agentSoldApplianceService->create($soldApplianceData));
+        $soldAppliance = $this->agentSoldApplianceService->create($soldApplianceData);
+        // proccess agent sales
+        $this->agentSoldApplianceService->processSale($soldAppliance);
+
+        return ApiResource::make($soldAppliance);
     }
 }
