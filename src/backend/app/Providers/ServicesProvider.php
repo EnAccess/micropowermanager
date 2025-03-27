@@ -7,7 +7,6 @@ use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCharge;
 use App\Models\AgentReceipt;
-use App\Models\AgentSoldAppliance;
 use App\Models\Country;
 use App\Models\Person\Person;
 use App\Models\Role\RoleDefinition;
