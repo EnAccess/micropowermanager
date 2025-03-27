@@ -116,7 +116,7 @@ class AgentSoldApplianceService implements IBaseService {
         })->get();
     }
 
-    public function processSale(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
+    public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->appliance()->first();
