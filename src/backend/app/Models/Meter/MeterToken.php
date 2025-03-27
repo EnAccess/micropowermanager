@@ -6,6 +6,7 @@ use App\Models\Base\BaseModel;
 use App\Models\PaymentHistory;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\DB;
  * @property float  $energy
  */
 class MeterToken extends BaseModel {
+    use HasFactory;
+
     public const RELATION_NAME = 'meter_token';
 
     public function transaction(): BelongsTo {
