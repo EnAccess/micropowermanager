@@ -21,13 +21,25 @@ jobs:
           MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
         ports:
           - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P3306 -u root -pwF9zLp2qRxaS2e --silent; do
+            sleep 1
+          done
+
       - name: Create ERD database
-        run: docker exec $(docker ps -q -f ancestor=mysql:8.4) mysql -u root -pwF9zLp2qRxaS2e -e "CREATE DATABASE IF NOT EXISTS erd;"
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -pwF9zLp2qRxaS2e -e "CREATE DATABASE IF NOT EXISTS erd;"
 
       - name: Generate ERD for micro_power_manager
         run: php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
