@@ -41,7 +41,7 @@ class AgentSoldApplianceController extends Controller {
 
         $soldAppliance = $this->agentSoldApplianceService->create($soldApplianceData);
         // proccess agent sales
-        $this->agentSoldApplianceService->processSale($soldAppliance);
+        $this->agentSoldApplianceService->processSale($soldAppliance, $request->all());
 
         return ApiResource::make($soldAppliance);
     }
