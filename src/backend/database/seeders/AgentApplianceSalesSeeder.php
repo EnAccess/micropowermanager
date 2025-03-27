@@ -52,13 +52,13 @@ class AgentApplianceSalesSeeder extends Seeder {
 
         // Simulate Sales and Trigger Observer
         $assignedAppliances->each(function ($assignedAppliance) use ($customers) {
-            AgentSoldAppliance::factory()->create([
+            $soldAppliance = AgentSoldAppliance::factory()->create([
                 'agent_assigned_appliance_id' => $assignedAppliance->id,
                 'person_id' => $customers->random()->id,
             ]);
             // proccess sales
             $agentSoldApplianceService = app()->make(AgentSoldApplianceService::class);
-            $agentSoldApplianceService->processSale($assignedAppliance, [
+            $agentSoldApplianceService->processSale($soldAppliance, [
                 'person_id' => $customers->random()->id,
                 'first_payment_date' => now(),
                 'tenure' => 12,

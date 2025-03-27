@@ -27,6 +27,7 @@ class AgentSoldApplianceService implements IBaseService {
         private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
+        private AgentService $agentService,
     ) {}
 
     public function create($applianceData): AgentSoldAppliance {
@@ -119,7 +120,7 @@ class AgentSoldApplianceService implements IBaseService {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->appliance()->first();
-        $agent = $this->getById($assignedAppliance->agent_id);
+        $agent = $this->agentService->getById($assignedAppliance->agent_id);
 
         // create agent transaction
         $agentTransactionData = [

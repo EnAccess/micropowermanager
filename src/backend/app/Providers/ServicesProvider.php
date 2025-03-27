@@ -17,7 +17,6 @@ use App\Observers\AgentBalanceHistoryObserver;
 use App\Observers\AgentChargeObserver;
 use App\Observers\AgentObserver;
 use App\Observers\AgentReceiptObserver;
-use App\Observers\AgentSoldApplianceObserver;
 use App\Observers\PersonObserver;
 use App\Services\CountryService;
 use App\Services\RolesService;
@@ -39,7 +38,6 @@ class ServicesProvider extends ServiceProvider {
             }
         );
         AgentBalanceHistory::observe(AgentBalanceHistoryObserver::class);
-        AgentSoldAppliance::observe(AgentSoldApplianceObserver::class);
         AgentReceipt::observe(AgentReceiptObserver::class);
         Agent::observe(AgentObserver::class);
         AgentCharge::observe(AgentChargeObserver::class);
