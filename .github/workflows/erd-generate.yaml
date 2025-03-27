@@ -38,6 +38,12 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer dump-autoload
+        working-directory: ./src/backend
+
       - name: Wait for MySQL to be ready
         run: |
           while ! mysqladmin ping -h"127.0.0.1" -P3306 -u root -pwF9zLp2qRxaS2e --silent; do
