@@ -37,10 +37,14 @@ class PersonObserver {
         foreach ($person->addresses()->get() as $address) {
             $address->delete();
         }
-        // delete all meter-parameters
-        foreach ($person->meters()->get() as $meter) {
-            $meter->delete();
+
+        foreach ($person->devices()->get() as $device) {
+            if ($device->device_type === 'meter' && $device->device) {
+                $device->device->delete();
+            }
+            $device->delete();
         }
+
         // delete all transactions which are belong to that person
         foreach ($person->payments()->get() as $transaction) {
             $transaction->delete();
