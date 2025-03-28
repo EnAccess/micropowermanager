@@ -11,7 +11,7 @@ use MPM\TenantResolver\ApiResolvers\DownloadingReportsResolver;
 use MPM\TenantResolver\ApiResolvers\SwiftaPaymentApiResolver;
 use MPM\TenantResolver\ApiResolvers\TestApiResolver;
 use MPM\TenantResolver\ApiResolvers\ViberMessagingApiResolver;
-use MPM\Sharding\ApiResolvers\VodacomMobileMoneyApiResolver;
+use MPM\TenantResolver\ApiResolvers\VodacomMobileMoneyApiResolver;
 use MPM\TenantResolver\ApiResolvers\WaveMoneyApiResolver;
 
 class ApiResolverMap {
