@@ -13,6 +13,7 @@ return new class extends Migration {
                 $table->decimal('amount', 15, 2);
                 $table->string('payerPhoneNumber');
                 $table->string('referenceId')->unique();
+                $table->string('status');
                 $table->timestamps();
             });
         }
