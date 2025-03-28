@@ -100,7 +100,7 @@ class AgentAuthController extends Controller {
             [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'expires_in' => $this->guard()->factory()->getTTL() * 60,
                 'agent' => $this->guard()->user(),
             ]
         );

@@ -25,7 +25,7 @@ class JwtMiddleware extends BaseMiddleware {
      */
     public function handle(Request $request, \Closure $next, string $type = 'user'): mixed {
         try {
-            $id = JWTAuth::parseToken()->getPayload()->get('sub');
+            $id = $this->auth->parseToken()->getPayload()->get('sub');
             if ($type === 'agent') {
                 $user = Agent::query()->findOrFail($id);
             } elseif ($type === 'user') {
