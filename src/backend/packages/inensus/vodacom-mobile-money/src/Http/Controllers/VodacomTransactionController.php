@@ -52,7 +52,7 @@ class VodacomTransactionController extends Controller {
      * @return VodacomResource
      */
     public function validateTransaction(VodacomTransactionValidationRequest $request): VodacomTransactionResource {
-        $validatedData = $request->validate();
+        $validatedData = $request->validated();
 
         try {
             $result = $this->vodacomService->validateTransaction($validatedData);
@@ -92,7 +92,7 @@ class VodacomTransactionController extends Controller {
      * @return VodacomResource
      */
     public function processTransaction(VodacomTransactionProcessRequest $request): VodacomTransactionResource {
-        $validatedData = $request->validate();
+        $validatedData = $request->validated();
 
         try {
             $result = $this->vodacomService->processTransaction($validatedData);
@@ -133,7 +133,7 @@ class VodacomTransactionController extends Controller {
      * @return VodacomResource
      */
     public function transactionEnquiryStatus(VodacomTransactionEnquiryStatusRequest $request): VodacomTransactionResource {
-        $validatedData = $request->validate();
+        $validatedData = $request->validated();
 
         try {
             $result = $this->vodacomService->transactionEnquiryStatus($validatedData);

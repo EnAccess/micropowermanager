@@ -2,7 +2,6 @@
 
 namespace Inensus\VodacomMobileMoney\Http\Resources;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,14 +25,14 @@ class VodacomTransactionResource extends JsonResource {
      * @param string $message
      * @param int    $statusCode
      *
-     * @return JsonResponse
+     * @return VodacomTransactionResource
      */
-    public static function error(string $message, int $statusCode = 400): JsonResponse {
-        return response()->json([
-            'data' => [
-                'message' => $message,
-                'success' => false,
-            ],
-        ], $statusCode);
+    public static function error(string $message, int $statusCode = 400): VodacomTransactionResource {
+        $errorData = [
+            'message' => $message,
+            'success' => false,
+        ];
+
+        return new self((object) $errorData);
     }
 }
