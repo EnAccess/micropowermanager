@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up() {
-        if (!Schema::hasTable('vodacom_mobile_money_transactions')) {
-            Schema::create('vodacom_mobile_money_transactions', static function (Blueprint $table) {
+        if (!Schema::connection('tenant')->hasTable('vodacom_mobile_money_transactions')) {
+            Schema::connection('tenant')->create('vodacom_mobile_money_transactions', static function (Blueprint $table) {
                 $table->id();
                 $table->string('serialNumber');
                 $table->decimal('amount', 15, 2);
@@ -20,6 +20,6 @@ return new class extends Migration {
     }
 
     public function down() {
-        Schema::dropIfExists('vodacom_mobile_money_transactions');
+        Schema::connection('tenant')->dropIfExists('vodacom_mobile_money_transactions');
     }
 };
