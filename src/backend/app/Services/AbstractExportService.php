@@ -8,11 +8,11 @@ use App\Exceptions\SpreadSheetNotSavedException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Webpatser\Uuid\Uuid;
 
 abstract class AbstractExportService {
     protected IReader $reader;
@@ -106,7 +106,7 @@ abstract class AbstractExportService {
 
     public function saveSpreadSheet(): string {
         try {
-            $uuid = (string) Uuid::generate(4);
+            $uuid = Str::uuid()->toString();
             $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
             $this->setRecentlyCreatedSpreadSheetId($uuid);
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');
