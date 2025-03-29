@@ -278,9 +278,7 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (!$transaction->meter) {
-                continue;
-            }
+            if(!$transaction->device || !$transaction->device->device->device_type === Meter::RELATION_NAME) continue;
 
             $sheetIndex = $index + 7;
             $balance += $transaction->amount;

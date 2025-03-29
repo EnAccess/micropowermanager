@@ -6,6 +6,7 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
+use App\Models\Meter\Meter;
 
 class AccessRatePayer {
     public const MINIMUM_AMOUNT = 0;
@@ -51,7 +52,7 @@ class AccessRatePayer {
                 'paymentService' => $this->transactionData->transaction->original_transaction_type,
                 'paymentType' => 'access rate',
                 'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => $meter->accessRate(),
+                'paidFor' => $meter instanceof Meter ? $meter->accessRate() : null,
                 'payer' => $owner,
                 'transaction' => $this->transactionData->transaction,
             ]);
