@@ -55,8 +55,9 @@ class CustomerRegistrationAppService {
             'in_use' => 1,
         ];
         $meter = $this->meterService->create($meterData);
+        $personData = (array)$person;
         $device = $this->deviceService->make([
-            'person_id' => $person->id,
+            'person_id' => $personData['id'],
             'device_serial' => $meter->serial_number,
         ]);
         $this->meterDeviceService->setAssigned($device);
@@ -81,6 +82,7 @@ class CustomerRegistrationAppService {
         // initializes a new Access Rate Payment for the next Period
         event('accessRatePayment.initialize', $meter);
 
+        /** @var \App\Models\Person\Person $person */
         return $person instanceof Person ? $person : Person::find($person->id);
     }
 }

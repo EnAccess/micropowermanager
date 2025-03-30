@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Str;
 
 abstract class AbstractExportService {
     protected IReader $reader;
@@ -106,7 +106,7 @@ abstract class AbstractExportService {
 
     public function saveSpreadSheet(): string {
         try {
-            $uuid = (string) Uuid::generate(4);
+            $uuid = (string) Str::uuid();
             $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.xlsx';
             $this->setRecentlyCreatedSpreadSheetId($uuid);
             $writer = IOFactory::createWriter($this->spreadsheet, 'Xlsx');

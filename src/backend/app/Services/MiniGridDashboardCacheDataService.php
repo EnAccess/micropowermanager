@@ -152,8 +152,8 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
             foreach ($period as $d) {
                 $day = $d->format('o-W');
                 foreach ($ticketCategories as $tC) {
-                    $result[$day][$tC->label_name]['opened'] = 0;
-                    $result[$day][$tC->label_name]['closed'] = 0;
+                    $result[$day][$tC['label_name']]['opened'] = 0;
+                    $result[$day][$tC['label_name']]['closed'] = 0;
                 }
             }
             foreach ($closedTicketsWithCategories as $closedTicketsWithCategory) {

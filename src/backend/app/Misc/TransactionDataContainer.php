@@ -45,11 +45,11 @@ class TransactionDataContainer {
         try {
             $container->device = $deviceService->getBySerialNumber($transaction->message);
             $container->tariff = null;
-            $container->manufacturer = $container->device->device->manufacturer()->first();
+            $container->manufacturer = $container->device->device->manufacturer ?? null;
 
             if ($container->device->device_type === 'meter') {
                 $meter = $container->device->device;
-                $container->tariff = $meter->tariff()->first();
+                $container->tariff = $meter->tariff ?? null;
             }
 
             $container->appliancePerson = $transaction->appliance()->first();

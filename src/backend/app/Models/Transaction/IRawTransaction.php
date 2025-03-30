@@ -9,4 +9,7 @@ interface IRawTransaction {
     public function transaction();
 
     public function manufacturerTransaction();
+
+    public function newQuery();
+    public function save();
 }
