@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Tymon\JWTAuth\JWTGuard;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWTGuard;
 
 /**
  * @group   Authenticator

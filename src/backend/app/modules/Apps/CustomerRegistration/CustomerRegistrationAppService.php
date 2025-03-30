@@ -82,7 +82,7 @@ class CustomerRegistrationAppService {
         // initializes a new Access Rate Payment for the next Period
         event('accessRatePayment.initialize', $meter);
 
-        /** @var \App\Models\Person\Person $person */
+        /* @var \App\Models\Person\Person $person */
         return $person instanceof Person ? $person : Person::find($person->id);
     }
 }

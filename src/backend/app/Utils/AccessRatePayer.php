@@ -4,9 +4,9 @@ namespace App\Utils;
 
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
+use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
-use App\Models\Meter\Meter;
 
 class AccessRatePayer {
     public const MINIMUM_AMOUNT = 0;
