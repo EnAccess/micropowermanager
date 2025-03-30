@@ -83,6 +83,6 @@ class CustomerRegistrationAppService {
         event('accessRatePayment.initialize', $meter);
 
         /* @var \App\Models\Person\Person $person */
-        return $person instanceof Person ? $person : Person::find($person->id);
+        return $person instanceof Person ? $person : Person::find($person['id']);
     }
 }
