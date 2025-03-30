@@ -55,7 +55,7 @@ class CustomerRegistrationAppService {
             'in_use' => 1,
         ];
         $meter = $this->meterService->create($meterData);
-        $personData = (array)$person;
+        $personData = $person->toArray();
         $device = $this->deviceService->make([
             'person_id' => $personData['id'],
             'device_serial' => $meter->serial_number,
