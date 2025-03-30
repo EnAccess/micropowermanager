@@ -21,10 +21,10 @@ class GeographicalInformationObserver {
 
     public function updated(GeographicalInformation $geographicalInformation) {
         if ($this->pluginsService->isPluginActive(MpmPlugin::SPARK_METER) && $geographicalInformation->owner_type === 'meter_parameter') {
-            $meterParameterId = $geographicalInformation->owner_id;
+            $meterId = $geographicalInformation->owner_id;
             $customer = $this->person->newQuery()->with(['meters.tariff', 'meters.geo', 'meters.meter'])
-                ->whereHas('meters', function ($q) use ($meterParameterId) {
-                    return $q->where('id', $meterParameterId);
+                ->whereHas('meters', function ($q) use ($meterId) {
+                    return $q->where('id', $meterId);
                 })->first();
             $smCustomer = $this->smCustomer->newQuery()
                 ->where('mpm_customer_id', $customer->id)->first();

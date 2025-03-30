@@ -8,7 +8,6 @@ use App\Models\ConnectionGroup;
 use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -38,7 +37,6 @@ class SteamaMeterService implements ISynchronizeService {
         private City $city,
         private MeterType $meterType,
         private SteamaMeterType $stmMeterType,
-        private MeterParameter $meterParameter,
         private SteamaTariff $tariff,
         private SteamaSyncSettingService $steamaSyncSettingService,
         private StemaSyncActionService $steamaSyncActionService,
@@ -161,11 +159,9 @@ class SteamaMeterService implements ISynchronizeService {
             )->first();
             if ($meter === null) {
                 $meter = new Meter();
-                $meterParameter = new MeterParameter();
                 $geoLocation = new GeographicalInformation();
             } else {
-                $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
-                $geoLocation = $meterParameter->geo()->first();
+                $geoLocation = $meter->device->person->addresses()->first()->geo()->first();
                 if ($geoLocation === null) {
                     $geoLocation = new GeographicalInformation();
                 }
@@ -195,15 +191,12 @@ class SteamaMeterService implements ISynchronizeService {
                         'name' => 'default',
                     ]);
                 }
-                $meterParameter->connection_type_id = $connectionType->id;
-                $meterParameter->connection_group_id = $connectionGroup->id;
-                $meterParameter->meter()->associate($meter);
+                $meter->connection_type_id = $connectionType->id;
+                $meter->connection_group_id = $connectionGroup->id;
 
-                $meterParameter->owner()->associate($stmCustomer->mpmPerson);
                 $tariff = $this->tariff->newQuery()->with('mpmTariff')->first();
-                $meterParameter->tariff()->associate($tariff->mpmTariff);
-                $meterParameter->save();
-                $meterParameter->geo()->save($geoLocation);
+                $meter->tariff()->associate($tariff->mpmTariff);
+                $meter->save();
                 $stmCustomerAddress = $stmCustomer->mpmPerson()->newQuery()->with('addresses.city')
                     ->whereHas('addresses', function ($q) {
                         return $q->where('is_primary', 1);
@@ -215,8 +208,8 @@ class SteamaMeterService implements ISynchronizeService {
                 $address = $address->newQuery()->create([
                     'city_id' => request()->input('city_id') ?? $steamaCity->id,
                 ]);
-                $address->owner()->associate($meterParameter);
-                $address->geo()->save($meterParameter?->geo()->first());
+                $address->owner()->associate($meter);
+                $address->geo()->save($meter?->geo()->first());
                 $address->save();
             }
             DB::connection('tenant')->commit();
@@ -241,12 +234,10 @@ class SteamaMeterService implements ISynchronizeService {
         if ($stmCustomer) {
             $points = $stmMeter['latitude'] === null ?
                 config('steama.geoLocation') : $stmMeter['latitude'].','.$stmMeter['longitude'];
-            $meterParameter = $this->meterParameter->newQuery()->where('meter_id', $meter->id)->first();
-            $meterParameter->owner()->associate($stmCustomer->mpmPerson());
-            $meterParameter->geo()->update([
+            $meter->device->person->addresses()->first()->geo->geo()->update([
                 'points' => $points,
             ]);
-            $meterParameter->save();
+            $meter->save();
         }
 
         return $meter;

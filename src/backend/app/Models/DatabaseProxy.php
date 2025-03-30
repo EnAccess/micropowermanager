@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Base\BaseModelCore;
+use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $fk_company_id
  */
-class DatabaseProxy extends BaseModelCore {
+class DatabaseProxy extends BaseModelCentral {
     public const COL_DATABASE_CONNECTION = 'database_connection';
     public const COL_COMPANY_ID = 'fk_company_id';
     public const COL_EMAIL = 'email';

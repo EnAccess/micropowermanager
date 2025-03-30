@@ -278,7 +278,9 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if(!$transaction->device || !$transaction->device->device->device_type === Meter::RELATION_NAME) continue;
+            if (!$transaction->device->device) {
+                continue;
+            }
 
             $sheetIndex = $index + 7;
             $balance += $transaction->amount;
@@ -554,7 +556,7 @@ class Reports {
         $transactions = $this->transaction::with(['device.device.tariff', 'device.device.connectionType'])
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
-                'device.device.address',
+                'device.address',
                 function ($q) use ($cityId) {
                     $q->where('city_id', $cityId);
                 }
@@ -568,6 +570,7 @@ class Reports {
             )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('message')
+            ->groupBy('id')
             ->latest()
             ->get();
 
@@ -582,6 +585,7 @@ class Reports {
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $this->addStaticText($sheet2, $dateRange);
             $sheet2->setTitle($dateRange);
+
             // Add transactions, customer name, balances to the sheet
             $this->addTransactions($sheet2, $transactions, false);
         } elseif ($reportType === 'monthly') {

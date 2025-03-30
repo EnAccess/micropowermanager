@@ -1,0 +1,77 @@
+name: ERD Generate Check
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-erd-generate:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ["8.2"]
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: micro_power_manager
+          MYSQL_ROOT_PASSWORD: wF9zLp2qRxaS2e
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer dump-autoload
+        working-directory: ./src/backend
+
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P3306 -u root -pwF9zLp2qRxaS2e --silent; do
+            sleep 1
+          done
+
+      - name: Create ERD database
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -pwF9zLp2qRxaS2e -e "CREATE DATABASE IF NOT EXISTS erd;"
+
+      - name: Generate ERD for micro_power_manager
+        run: php artisan erd:generate micro_power_manager --excludes=plugins --file=central_database.sql
+        working-directory: ./src/backend
+        env:
+          DB_CONNECTION: micro_power_manager
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e
+
+      - name: Generate ERD for tenant
+        run: php artisan erd:generate tenant --path=/database/migrations/tenant --excludes=companies,company_databases,company_jobs,database_proxies --file=tenant_database.sql
+        working-directory: ./src/backend
+        env:
+          DB_CONNECTION: micro_power_manager
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: micro_power_manager
+          DB_USERNAME: root
+          DB_PASSWORD: wF9zLp2qRxaS2e

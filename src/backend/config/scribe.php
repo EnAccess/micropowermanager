@@ -9,7 +9,7 @@ return [
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => <<<DESC
 
-![MPM Logo](https://micropowermanager.com/assets/images/Website_Illustrations_Logo.png)
+![MPM Logo](https://micropowermanager.io/mpmlogo_raw.png)
 
 <p align="center">
     <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>

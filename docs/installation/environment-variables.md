@@ -154,65 +154,6 @@ These configure instance level email sent to tenants, for example signup confirm
 Certain MicroPowerManager plugins require configuration before they can be used.
 Find below a reference of configurations which are required if the corresponding plugin is used.
 
-#### Airtel
-
-For detailed information see [Airtel Developer Documentation](https://developers.airtel.africa/developer).
-
-| Environment Variable | Default                            | Description                                 |
-| -------------------- | ---------------------------------- | ------------------------------------------- |
-| `AIRTEL_REQUEST_URL` | **Required** (when plugin is used) | The Airtel service URL.                     |
-| `AIRTEL_USERNAME`    | **Required** (when plugin is used) | The Airtel username.                        |
-| `AIRTEL_PASSWORD`    | **Required** (when plugin is used) | The Airtel password.                        |
-| `AIRTEL_IPS`         | `[]`                               | List of IP whitelisted for Airtel services. |
-
-#### Calin STS Meters
-
-For detailed information see [Calin Meter Developer Documentation](https://www.szcalinmeter.com/).
-
-| Environment Variable | Default                            | Description                                              |
-| -------------------- | ---------------------------------- | -------------------------------------------------------- |
-| `CALIN_CLIENT_URL`   | **Required** (when plugin is used) | Calin Meter client URL used for generating STS tokens.   |
-| `CALIN_USER_ID`      | **Required** (when plugin is used) | Calin Meter API username used for generating STS tokens. |
-| `CALIN_KEY`          | **Required** (when plugin is used) | Calin Meter API key used for generating STS tokens.      |
-
-If you meters are used which can send their consumption data to Calin's
-API the following environment variables need to be set.
-
-| Environment Variable | Default                            | Description                                                |
-| -------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `METER_DATA_URL`     | **Required** (when plugin is used) | Calin Meter API URL used for consumption data upload.      |
-| `METER_DATA_KEY`     | **Required** (when plugin is used) | Calin Meter API key used for consumption data upload.      |
-| `METER_DATA_USER`    | **Required** (when plugin is used) | Calin Meter API username used for consumption data upload. |
-
-#### Calin Smart Meters
-
-For detailed information see [Calin Smart Meter Developer Documentation](https://www.szcalinmeter.com/).
-
-| Environment Variable           | Default                            | Description                                                               |
-| ------------------------------ | ---------------------------------- | ------------------------------------------------------------------------- |
-| `CALIN_SMART_COMPANY_NAME`     | **Required** (when plugin is used) | Calin Smart Meter company name used for communication with Calin API.     |
-| `CALIN_SMART_PURCHASE_API_URL` | **Required** (when plugin is used) | Calin Smart Meter Purchase API URL used for communication with Calin API. |
-| `CALIN_SMART_CLEAR_API_URL`    | **Required** (when plugin is used) | Calin Smart Meter Clear API URL used for communication with Calin API.    |
-| `CALIN_SMART_USER_NAME`        | **Required** (when plugin is used) | Calin Smart Meter username used for communication with Calin API.         |
-| `CALIN_SMART_PASSWORD`         | **Required** (when plugin is used) | Calin Smart Meter password used for communication with Calin API.         |
-| `CALIN_SMART_PASSWORD_VENT`    | **Required** (when plugin is used) | Calin Smart Meter password vent used for communication with Calin API.    |
-
-#### Vodacom
-
-Vodacom integration requires a VPN tunnel with Vodacom infrastructure.
-For detailed information see [Vodacom Developer Documentation](https://business.m-pesa.com/vodacom-tanzania/business-onboarding-tanzania/)
-
-| Environment Variable            | Default                            | Description                 |
-| ------------------------------- | ---------------------------------- | --------------------------- |
-| `VODACOM_SPID`                  | **Required** (when plugin is used) | Vodacom SPID.               |
-| `VODACOM_SPPASSWORD`            | **Required** (when plugin is used) | Vodacom SPPASSWORD.         |
-| `VODACOM_IPS`                   | **Required** (when plugin is used) | Vodacom IPs.                |
-| `VODACOM_REQUEST_URL`           | **Required** (when plugin is used) | Vodacom Request API URL.    |
-| `VODACOM_BROKER_CRT`            | **Required** (when plugin is used) | Path to broker `.crt` file. |
-| `VODACOM_SLL_KEY`               | **Required** (when plugin is used) | Path to `.key` file.        |
-| `VODACOM_CERTIFICATE_AUTHORITY` | **Required** (when plugin is used) | Path to `.cer` file.        |
-| `VODACOM_SSL_CERT`              | **Required** (when plugin is used) | Path to `.pem` file.        |
-
 #### SunKing
 
 For detailed information see [SunKing Developer Documentation](https://sunking.com/)
@@ -228,13 +169,3 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | Environment Variable | Default                            | Description                                                                 |
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `WAVEMONEY_API_URL`  | **Required** (when plugin is used) | WaveMoney API URL. For example `https://preprodpayments.wavemoney.io:8107`. |
-
-#### BingMaps
-
-> [!WARNING]
-> BingMaps is deprecated in favour of OpenStreetMap.
-> It's not recommended for production use.
-
-| Environment Variable | Default                              | Description                                                                                                               |
-| -------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `BINGMAP_API_URL`    | **Required** (when BingMaps is used) | BingMaps API URL (including the API key). For example `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/Aerial?key=` |

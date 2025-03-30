@@ -43,6 +43,7 @@ class PersonObserver {
             }
             $device->delete();
         }
+
         // delete all transactions which are belong to that person
         foreach ($person->payments()->get() as $transaction) {
             $transaction->delete();

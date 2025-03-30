@@ -7,7 +7,6 @@ use App\Exceptions\TransactionIsInvalidForProcessingIncomingRequestException;
 use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Person\Person;
 use App\Models\Transaction\IRawTransaction;
 use App\Models\Transaction\Transaction;
@@ -25,7 +24,6 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private MeterParameter $meterParameter,
         private IRawTransaction $paymentAggregatorTransaction,
     ) {}
 
