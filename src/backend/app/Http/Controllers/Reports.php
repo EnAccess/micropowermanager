@@ -108,11 +108,7 @@ class Reports {
         $subColumn = 'B';
         $row = 7;
         $connections = $this->connectionType::with(
-            [
-                'meters.connectionGroup' => function ($q) {
-                    $q->groupBy('connection_group_id');
-                },
-            ]
+            'meters.connectionGroup'
         )->get();
         foreach ($connections as $connection) {
             $sheet->setCellValue($column.$row, $connection->name);
@@ -640,11 +636,11 @@ class Reports {
         foreach ($this->monthlyTargetData as $connectionName => $targetData) {
             $customerGroupRevenue = $this->sumOfTransactions($targetData['connection_id'], $dates);
             foreach ($customerGroupRevenue as $groupRevenue) {
-                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue->revenue;
+                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue['revenue'];
 
-                $energyRevenue = $groupRevenue->total;
+                $energyRevenue = $groupRevenue['total'];
 
-                $tariffPrice = $groupRevenue->tariff_price;
+                $tariffPrice = $groupRevenue['tariff_price'];
 
                 if (!$tariffPrice || $tariffPrice === 0) {
                     continue;
