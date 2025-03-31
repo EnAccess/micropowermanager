@@ -46,9 +46,11 @@ class TransactionDataContainer {
             $container->tariff = null;
             $container->manufacturer = $container->device->device->manufacturer ?? null;
 
-            if ($container->device->device_type === Meter::RELATION_NAME) {
+            if ($container->device->device instanceof Meter) {
                 $meter = $container->device->device;
-                $container->tariff = $meter->tariff ?? null;
+                $container->manufacturer = $meter->manufacturer()->first();
+                $container->tariff = $meter->tariff()->first();
+                $container->meter = $meter;
             }
 
             $container->appliancePerson = $transaction->appliance()->first();
