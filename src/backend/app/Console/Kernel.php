@@ -59,9 +59,9 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00')->appendOutputTo(storage_path('logs/cron.log'));
-        $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00')->appendOutputTo(storage_path('logs/cron.log'));
-        $schedule->command('reports:outsource')->monthlyOn(1, '3:30')->appendOutputTo(storage_path('logs/cron.log'));
+        $schedule->command('reports:city-revenue weekly')->weeklyOn(1, '3:00');
+        $schedule->command('reports:city-revenue monthly')->monthlyOn(1, '3:00');
+        $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
         $schedule->command('demo:create-data 25 --company-id=11 --type=transaction')->dailyAt('00:00');
