@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
-use Database\Factories\AgentAssignedApplianceFactory;
+use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
 use Database\Factories\AgentFactory;
@@ -465,7 +465,7 @@ trait CreateEnvironments {
     protected function createAssignedAppliances($applianceCount = 1) {
         $this->createAssetType($applianceCount);
         while ($applianceCount > 0) {
-            $assignedAppliance = AgentAssignedApplianceFactory::new()->create([
+            $assignedAppliance = AgentAssignedAppliancesFactory::new()->create([
                 'agent_id' => $this->getRandomIdFromList($this->agents),
                 'appliance_type_id' => $this->getRandomIdFromList($this->assetTypes),
                 'user_id' => $this->user->id,

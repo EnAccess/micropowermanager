@@ -1,0 +1,31 @@
+meta {
+  name: Login (App)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{mpm_backend_url}}/api/app/login
+  body: json
+  auth: none
+}
+
+headers {
+  device-id: 1
+}
+
+body:json {
+  {
+    "email": "{{agent_email}}",
+    "password": "{{agent_password}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isString
+}
+
+script:post-response {
+  bru.setEnvVar("jwt_token", res.body.access_token);
+}

@@ -33,7 +33,7 @@ class TenantSeeder extends Seeder {
             'address' => 'Sample Address',
             'phone' => '+255123456789',
             'country_id' => -1,
-            'email' => 'demo_company@example.com',
+            'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
             'protected_page_password' => DemoCompany::DEMO_COMPANY_PASSWORD,
         ]);
 
@@ -48,7 +48,7 @@ class TenantSeeder extends Seeder {
             fn () => $this->userService->create(
                 [
                     'name' => 'Demo Company Admin',
-                    'email' => 'demo_company_admin@example.com',
+                    'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
                     'password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                     'company_id' => $company->getId(),
                 ],

@@ -15,9 +15,7 @@ class SoldApplianceListener {
 
     public function initializeApplianceRates(SoldApplianceDataContainer $soldAppliance): void {
         $assetPerson = $soldAppliance->getAssetPerson();
-        $assetType = $soldAppliance->getAssetType();
         $transaction = $soldAppliance->getTransaction();
-        $asset = $soldAppliance->getAsset();
         $buyer = $this->personService->getById($assetPerson->person_id);
 
         $this->applianceRateService->create($assetPerson);

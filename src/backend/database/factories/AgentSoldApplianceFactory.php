@@ -2,9 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\AgentSoldAppliance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AgentSoldApplianceFactory extends Factory {
+    protected $model = AgentSoldAppliance::class;
+
     /**
      * Define the model's default state.
      *

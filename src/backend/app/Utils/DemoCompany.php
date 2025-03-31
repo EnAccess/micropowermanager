@@ -8,4 +8,6 @@ class DemoCompany {
     public const DEMO_COMPANY_DATABASE_NAME = 'DemoCompany_1';
     public const DEMO_COMPANY_PASSWORD = '123123';
     public const DEMO_COMPANY_CURRENCY = 'TSZ';
+    public const DEMO_COMPANY_ADMIN_EMAIL = 'demo_company_admin@example.com';
+    public const DEMO_COMPANY_AGENT_EMAIL = 'demo_company_agent@example.com';
 }
