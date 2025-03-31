@@ -31,7 +31,6 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
-        Commands\AddMeterAddress::class,
         InstallSparkMeterPackage::class,
         InstallCalinMeterPackage::class,
         InstallCalinSmartMeterPackage::class,

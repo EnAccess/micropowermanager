@@ -15,7 +15,7 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void {
+    public function handle(): void {
         if ($this->option('start-date') !== '') {
             $toDay = Carbon::parse($this->option('start-date'))->format('Y-m-d');
         } else {

@@ -30,21 +30,26 @@
             @else
                 <td>-</td>
             @endif
-            @if(count($customer->meters))
+            @if(count($customer->devices))
 
-                @foreach($customer->meters as $meter)
+                @foreach($customer->devices as $device)
 
-                    <td>{{$meter->serial_number}}</td>
-                    <td> {{$meter->meterType}}</td>
-                    <td> {{$meter->connectionGroup->name ?? '-'}}</td>
-                    <td> {{$meter->connectionType->name ?? '-'}}</td>
+                    <td>{{$device->device->serial_number ?? '-'}}</td>
+                    <td> {{$device->device->meterType ?? '-'}}</td>
+                    <td> {{$device->device->connectionGroup->name ?? '-'}}</td>
+                    <td> {{$device->device->connectionType->name ?? '-'}}</td>
                     <td>
-                        {{$meter->tariff->name ?? '-'}}
-                    {{$meter->tariff->total_price/100}}</td>
+                        {{$device->device->tariff->name ?? '-'}}
+                        {{$device->device->tariff->total_price/100 ?? '-'}}
+                    </td>
 
                 @endforeach
 
             @else
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
                 <td>-</td>
             @endif
         </tr>

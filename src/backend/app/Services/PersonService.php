@@ -96,8 +96,8 @@ class PersonService implements IBaseService {
                 'addresses.city',
                 'citizenship',
                 'roleOwner.definitions',
-                'meters.meter',
-                'meters.tariff',
+                'devices.device',
+                'devices.device.tariff',
             ]
         )->whereIn('id', $peopleId);
     }
