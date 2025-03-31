@@ -31,7 +31,9 @@ class TransactionDataContainer {
     public bool $applianceInstallmentsFullFilled;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
+        /** @var TransactionDataContainer $container */
         $container = app()->make(TransactionDataContainer::class);
+        /** @var DeviceService $deviceService */
         $deviceService = app()->make(DeviceService::class);
         $container->chargedEnergy = 0;
         $container->transaction = $transaction;
