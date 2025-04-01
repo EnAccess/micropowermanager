@@ -105,7 +105,7 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     public function livingInClusterQuery(int $clusterId) {
-        return DB::table($this->getTable())
+        return DB::connection('tenant')->table($this->getTable())
             ->select('people.id')
             ->leftJoin('addresses', function (JoinClause $q) {
                 $q->on('addresses.owner_id', '=', 'people.id');

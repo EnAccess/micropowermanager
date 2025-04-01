@@ -31,7 +31,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void {
+    public function handle(): void {
         $startDate = $this->option('start-date') ? CarbonImmutable::make(
             $this->option('start-date')
         ) : CarbonImmutable::make('first day of last month');
@@ -85,7 +85,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand {
                 ],
                 [
                     'to' => $cluster->manager->email,
-                    'from' => 'alchalade@gmail.com',
+                    'from' => 'micropowermanager@enaccess.org',
                     'title' => 'Monthly payment report for '.$cluster->name,
                 ],
                 [$generatedPdfs[$cluster->name]]
