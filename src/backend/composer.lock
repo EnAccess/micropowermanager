@@ -1832,6 +1832,45 @@
             "time": "2025-02-03T10:55:03+00:00"
         },
         {
+            "name": "inensus/africas-talking",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./packages/inensus/africas-talking",
+                "reference": "98c3cc2179e331b2ea3c657cf1b8631fe2feaa34"
+            },
+            "require": {
+                "africastalking/africastalking": "^3.0"
+            },
+            "type": "package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Inensus\\AfricasTalking\\Providers\\AfricasTalkingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Inensus\\AfricasTalking\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kamuran engin",
+                    "email": "ke@inensus.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "AfricasTalking integration for MicroPowerManager",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "laravel/framework",
             "version": "v9.52.20",
             "source": {

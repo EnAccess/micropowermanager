@@ -76,9 +76,6 @@ class AuthController extends Controller {
      * @return JsonResponse
      */
     protected function respondWithToken($token) {
-        /** @var JWTGuard $guard */
-        $guard = auth()->guard('agent_api');
-
         return response()->json(
             [
                 'access_token' => $token,
