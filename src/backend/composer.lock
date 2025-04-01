@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b589312d0e403d3dd7f76d2d4d41565c",
+    "content-hash": "15249dc336cfa9a57d302ea7dad824ad",
     "packages": [
         {
             "name": "africastalking/africastalking",
@@ -13769,7 +13769,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "tymon/jwt-auth": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

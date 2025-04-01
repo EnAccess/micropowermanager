@@ -11,7 +11,9 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::dropIfExists('database_proxies');
+        Schema::connection('tenant')->table('reports', function (Blueprint $table) {
+            $table->string('date')->comment('`date` column is actually a stringified `date_range`')->after('type');
+        });
     }
 
     /**
@@ -20,12 +22,8 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::create('database_proxies', function (Blueprint $table) {
-            $table->id();
-            $table->string('email');
-            $table->integer('fk_company_id');
-            $table->integer('fk_company_database_id');
-            $table->timestamps();
+        Schema::connection('tenant')->table('reports', function (Blueprint $table) {
+            $table->dropColumn('date');
         });
     }
 };

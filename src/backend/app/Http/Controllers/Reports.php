@@ -6,6 +6,7 @@ use App\Exceptions\CustomerGroup\CustomerGroupNotFound;
 use App\Models\City;
 use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
+use App\Models\DatabaseProxy;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Report;
@@ -107,11 +108,7 @@ class Reports {
         $subColumn = 'B';
         $row = 7;
         $connections = $this->connectionType::with(
-            [
-                'meters.connectionGroup' => function ($q) {
-                    $q->groupBy('connection_group_id');
-                },
-            ]
+            'meters.connectionGroup'
         )->get();
         foreach ($connections as $connection) {
             $sheet->setCellValue($column.$row, $connection->name);
@@ -277,7 +274,7 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (!$transaction->meter) {
+            if (!$transaction->device->device) {
                 continue;
             }
 
@@ -301,19 +298,31 @@ class Reports {
             $sheet->setCellValue('K'.$sheetIndex, $balance);
 
             if ($transaction->device->device->device_type === Meter::RELATION_NAME) {
-                $tariff = $transaction->device->device->tariff()->first();
-                $connectionType = $transaction->device->device->connectionType()->first();
+                $tariff = null;
+                $connectionType = null;
+                $connectionGroupName = null;
+
+                $deviceModel = $transaction->device->device;
+                if (method_exists($deviceModel, 'tariff')) {
+                    $tariff = $deviceModel->tariff()->first();
+                }
+
+                if (method_exists($deviceModel, 'connectionType')) {
+                    $connectionType = $deviceModel->connectionType()->first();
+                }
                 $sheet->setCellValue(
                     'J'.$sheetIndex,
                     $tariff->name.'-'.
                     $connectionType->name
                 );
 
-                $connectionGroupName = $transaction->device->device->connectionGroup()->first()->name;
+                if (method_exists($deviceModel, 'connectionGroup')) {
+                    $connectionGroupName = $deviceModel->connectionGroup()->first()->name;
+                }
 
                 $paymentHistories = $this->paymentHistory
                     ->selectRaw('id, sum(amount) as amount, payment_type ')
-                    ->whereIn('transaction_id', explode(',', $transaction->transaction_ids))
+                    ->whereIn('transaction_id', explode(',', $transaction->getAttribute('transaction_ids')))
                     ->groupBy('payment_type')
                     ->get();
 
@@ -543,7 +552,7 @@ class Reports {
         $transactions = $this->transaction::with(['device.device.tariff', 'device.device.connectionType'])
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
-                'device.device.address',
+                'device.address',
                 function ($q) use ($cityId) {
                     $q->where('city_id', $cityId);
                 }
@@ -557,6 +566,7 @@ class Reports {
             )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('message')
+            ->groupBy('id')
             ->latest()
             ->get();
 
@@ -571,6 +581,7 @@ class Reports {
             $sheet2 = $this->spreadsheet->addSheet($sheet2);
             $this->addStaticText($sheet2, $dateRange);
             $sheet2->setTitle($dateRange);
+
             // Add transactions, customer name, balances to the sheet
             $this->addTransactions($sheet2, $transactions, false);
         } elseif ($reportType === 'monthly') {
@@ -586,7 +597,8 @@ class Reports {
         $writer = new Xlsx($this->spreadsheet);
         $dirPath = storage_path('./'.$reportType);
         $user = User::query()->first();
-        $companyId = $user->getCompanyId();
+        $databaseProxy = app()->make(DatabaseProxy::class);
+        $companyId = $databaseProxy->findByEmail($user->email)->getCompanyId();
 
         if (!file_exists($dirPath) && !mkdir($dirPath, 0774, true) && !is_dir($dirPath)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dirPath));
@@ -636,11 +648,11 @@ class Reports {
         foreach ($this->monthlyTargetData as $connectionName => $targetData) {
             $customerGroupRevenue = $this->sumOfTransactions($targetData['connection_id'], $dates);
             foreach ($customerGroupRevenue as $groupRevenue) {
-                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue->revenue;
+                $this->monthlyTargetData[$connectionName]['revenue'] += $groupRevenue['revenue'];
 
-                $energyRevenue = $groupRevenue->total;
+                $energyRevenue = $groupRevenue['total'];
 
-                $tariffPrice = $groupRevenue->tariff_price;
+                $tariffPrice = $groupRevenue['tariff_price'];
 
                 if (!$tariffPrice || $tariffPrice === 0) {
                     continue;

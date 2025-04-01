@@ -49,7 +49,7 @@ export default {
         this.$tc("words.id"),
         this.$tc("words.amount"),
         this.$tc("words.device"),
-        this.$tc("words.person"),
+        this.$tc("words.customer"),
         this.$tc("words.date"),
       ],
     }

@@ -68,19 +68,22 @@ class UserService {
             return null;
         }
 
+        /** @var User|null $user */
+        $user = $user->fresh()->with(['addressDetails'])->first();
+
         return $user;
     }
 
-    public function list(int $companyId): LengthAwarePaginator {
+    public function list(): LengthAwarePaginator {
         return $this->buildQuery()
             ->select('id', 'name', 'email')
-            ->where('company_id', $companyId) // filter user list with company_id
+            ->with(['addressDetails'])
             ->paginate();
     }
 
     public function get($id): User {
         /** @var User $user */
-        $user = User::query()
+        $user = User::with(['addressDetails'])
             ->where('id', '=', $id)
             ->firstOrFail();
 
@@ -127,9 +130,5 @@ class UserService {
 
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
-    }
-
-    public function findByEmail(string $email): User {
-        return $this->user->findByEmail($email);
     }
 }

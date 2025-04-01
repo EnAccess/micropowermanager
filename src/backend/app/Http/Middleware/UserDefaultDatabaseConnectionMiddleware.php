@@ -6,10 +6,10 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\Handler;
 use App\Exceptions\ValidationException;
-use App\Services\CompanyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\TenantResolver\ApiCompanyResolverService;
 use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
 
@@ -19,7 +19,7 @@ use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
  */
 class UserDefaultDatabaseConnectionMiddleware {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManager,
         private ApiCompanyResolverService $apiCompanyResolverService,
         private ApiResolverMap $apiResolverMap,
     ) {}
@@ -83,26 +83,30 @@ class UserDefaultDatabaseConnectionMiddleware {
 
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
-            $user = $this->companyService->findByEmail($request->input('email'));
-            $companyId = $user->getCompanyId();
+            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
+            $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
-            $user = $this->companyService->findByEmail($request->input('email'));
-            $companyId = $user->getCompanyId();
+            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
+            $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path())) { // agent app authenticated user requests
-            $companyId = auth('agent_api')->payload()->get('companyId');
+            /** @var \Tymon\JWTAuth\JWTGuard */
+            $guard = auth('agent_api');
+            $companyId = $guard->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
         } elseif ($this->resolveThirdPartyApi($request->path())) {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
-            $companyId = auth('api')->payload()->get('companyId');
+            /** @var \Tymon\JWTAuth\JWTGuard */
+            $guard = auth('api');
+            $companyId = $guard->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
             }
         }
 
-        return $this->companyService->runForCompany($companyId, function () use ($next, $request) {
+        return $this->databaseProxyManager->runForCompany($companyId, function () use ($next, $request) {
             return $next($request);
         });
     }

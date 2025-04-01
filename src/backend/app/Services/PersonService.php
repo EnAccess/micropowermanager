@@ -96,8 +96,8 @@ class PersonService implements IBaseService {
                 'addresses.city',
                 'citizenship',
                 'roleOwner.definitions',
-                'meters.meter',
-                'meters.tariff',
+                'devices.device',
+                'devices.device.tariff',
             ]
         )->whereIn('id', $peopleId);
     }
@@ -159,7 +159,7 @@ class PersonService implements IBaseService {
         ])->where('is_customer', $customerType)->paginate($limit);
     }
 
-    public function createFromRequest(Request $request): Model {
+    public function createFromRequest(Request $request): Person {
         $person = $this->person->newQuery()->create($request->only([
             'title',
             'education',

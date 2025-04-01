@@ -3,15 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\Country;
-use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class CountrySeeder extends Seeder {
     public function __construct(
-        private CompanyService $companyService,
+        private DatabaseProxyManagerService $databaseProxyManagerService,
     ) {
-        $this->companyService->buildDatabaseConnectionDemoCompany();
+        $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
     /**
