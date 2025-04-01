@@ -99,7 +99,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             $companyId = $this->apiCompanyResolverService->resolve($request);
         } else { // web client authenticated user requests
             /** @var \Tymon\JWTAuth\JWTGuard */
-            $guard = auth('agent_api');
+            $guard = auth('api');
             $companyId = $guard->payload()->get('companyId');
             if (!is_numeric($companyId)) {
                 throw new \Exception('JWT is not provided');
