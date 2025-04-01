@@ -49,7 +49,7 @@ class LoanDataContainer {
                 );
 
                 $this->paid_rates[] = [
-                    'asset_type_name' => $loan->assetPerson->assetType->name,
+                    'asset_type_name' => $loan->assetPerson->asset->assetType->name,
                     'paid' => $this->transaction->amount,
                 ];
 
@@ -70,7 +70,7 @@ class LoanDataContainer {
                     ]
                 );
                 $this->paid_rates[] = [
-                    'asset_type_name' => $loan->assetPerson->assetType->name,
+                    'asset_type_name' => $loan->assetPerson->asset->assetType->name,
                     'paid' => $loan->remaining,
                 ];
                 $this->transaction->amount -= $loan->remaining;

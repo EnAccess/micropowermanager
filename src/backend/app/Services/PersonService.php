@@ -159,7 +159,7 @@ class PersonService implements IBaseService {
         ])->where('is_customer', $customerType)->paginate($limit);
     }
 
-    public function createFromRequest(Request $request): Model {
+    public function createFromRequest(Request $request): Person {
         $person = $this->person->newQuery()->create($request->only([
             'title',
             'education',

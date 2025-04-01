@@ -37,7 +37,6 @@ class PersonObserver {
         foreach ($person->addresses()->get() as $address) {
             $address->delete();
         }
-
         foreach ($person->devices()->get() as $device) {
             if ($device->device_type === 'meter' && $device->device) {
                 $device->device->delete();

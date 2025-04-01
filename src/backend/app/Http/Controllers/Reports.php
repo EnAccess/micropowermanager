@@ -298,19 +298,31 @@ class Reports {
             $sheet->setCellValue('K'.$sheetIndex, $balance);
 
             if ($transaction->device->device->device_type === Meter::RELATION_NAME) {
-                $tariff = $transaction->device->device->tariff()->first();
-                $connectionType = $transaction->device->device->connectionType()->first();
+                $tariff = null;
+                $connectionType = null;
+                $connectionGroupName = null;
+
+                $deviceModel = $transaction->device->device;
+                if (method_exists($deviceModel, 'tariff')) {
+                    $tariff = $deviceModel->tariff()->first();
+                }
+
+                if (method_exists($deviceModel, 'connectionType')) {
+                    $connectionType = $deviceModel->connectionType()->first();
+                }
                 $sheet->setCellValue(
                     'J'.$sheetIndex,
                     $tariff->name.'-'.
                     $connectionType->name
                 );
 
-                $connectionGroupName = $transaction->device->device->connectionGroup()->first()->name;
+                if (method_exists($deviceModel, 'connectionGroup')) {
+                    $connectionGroupName = $deviceModel->connectionGroup()->first()->name;
+                }
 
                 $paymentHistories = $this->paymentHistory
                     ->selectRaw('id, sum(amount) as amount, payment_type ')
-                    ->whereIn('transaction_id', explode(',', $transaction->transaction_ids))
+                    ->whereIn('transaction_id', explode(',', $transaction->getAttribute('transaction_ids')))
                     ->groupBy('payment_type')
                     ->get();
 
