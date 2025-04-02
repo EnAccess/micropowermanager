@@ -32,8 +32,6 @@ class UserService {
             'company_id' => $companyId,
         ]);
 
-
-
         event(new UserCreatedEvent($user, $shouldSyncUserWithMasterDatabase));
 
         return $user;
