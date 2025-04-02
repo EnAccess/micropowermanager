@@ -21,7 +21,7 @@ class UserService {
             /** @var \Tymon\JWTAuth\JWTGuard $guard */
             $guard = auth('api');
             $payload = $guard->check() ? $guard->payload() : null;
-            $companyId ??= $payload?->get('companyId');
+            $companyId = $payload ?->get('companyId');
         }
 
         /** @var User $user */
