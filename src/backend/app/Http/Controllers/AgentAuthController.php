@@ -92,7 +92,6 @@ class AgentAuthController extends Controller {
      * Get the token array structure.
      *
      * @param string $token
-     * @method static \Tymon\JWTAuth\JWTGuard factory()
      *
      * @return JsonResponse
      */

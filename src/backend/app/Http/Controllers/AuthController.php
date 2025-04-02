@@ -61,7 +61,6 @@ class AuthController extends Controller {
      * Generates a new valid token for the next 3600 seconds
      * Inorder to generate the new token, a working (Bearer)token has to be provided in the header.
      *
-     * @method \Tymon\JWTAuth\JWTGuard refresh()
      * @return JsonResponse
      */
     public function refresh() {
