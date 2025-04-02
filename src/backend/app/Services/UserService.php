@@ -16,10 +16,13 @@ class UserService {
 
     public function create(array $userData, ?int $companyId = null): User {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
-        /** @var \Tymon\JWTAuth\JWTGuard $guard */
-        $guard = auth('api');
-        $payload = $guard->check() ? $guard->payload() : null;
-        $companyId ??= $payload?->get('companyId');
+
+        if ($companyId === null) {
+            /** @var \Tymon\JWTAuth\JWTGuard $guard */
+            $guard = auth('api');
+            $payload = $guard->check() ? $guard->payload() : null;
+            $companyId ??= $payload?->get('companyId');
+        }
 
         /** @var User $user */
         $user = $this->buildQuery()->newQuery()->create([
@@ -28,6 +31,8 @@ class UserService {
             'email' => $userData['email'],
             'company_id' => $companyId,
         ]);
+
+
 
         event(new UserCreatedEvent($user, $shouldSyncUserWithMasterDatabase));
 
