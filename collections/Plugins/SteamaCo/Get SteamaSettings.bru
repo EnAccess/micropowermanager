@@ -1,11 +1,11 @@
 meta {
-  name: Get Transaction Providers
+  name: Get SteamaSettings
   type: http
-  seq: 20
+  seq: 1
 }
 
 get {
-  url: {{mpm_backend_url}}/api/transaction-providers
+  url: {{mpm_backend_url}}/api/steama-meters/steama-setting/
   body: none
   auth: inherit
 }

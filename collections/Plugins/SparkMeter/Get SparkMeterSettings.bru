@@ -1,11 +1,11 @@
 meta {
-  name: Get Transaction Providers
+  name: Get SparkMeterSettings
   type: http
-  seq: 20
+  seq: 1
 }
 
 get {
-  url: {{mpm_backend_url}}/api/transaction-providers
+  url: {{mpm_backend_url}}/api/spark-meters/sm-setting/
   body: none
   auth: inherit
 }
