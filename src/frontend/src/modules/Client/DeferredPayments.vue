@@ -28,6 +28,7 @@
           <md-table-row
             v-for="(item, index) in assetPersonService.list"
             :key="index"
+            @click="showDetails(index)"
           >
             <md-table-cell md-label="Name" md-sort-by="name">
               {{ item.asset.name }}
@@ -40,14 +41,6 @@
             </md-table-cell>
             <md-table-cell md-label="Rates" md-sort-by="rate_count">
               {{ item.rate_count }}
-              <div
-                :class="index === -999 ? 'text-danger' : 'text-success'"
-                style="cursor: pointer; display: inline-block"
-                @click="showDetails(index)"
-              >
-                <md-icon>remove_red_eye</md-icon>
-                {{ $tc("words.detail", 1) }}
-              </div>
             </md-table-cell>
           </md-table-row>
         </md-table>
