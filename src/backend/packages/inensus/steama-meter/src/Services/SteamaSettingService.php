@@ -12,6 +12,6 @@ class SteamaSettingService {
     }
 
     public function getSettings() {
-        return $this->steamaSetting->newQuery()->with(['settingSms', 'settingSync'])->whereHasMorph('setting', '*')->get();
+        return $this->steamaSetting->newQuery()->whereHasMorph('setting', '*')->get();
     }
 }
