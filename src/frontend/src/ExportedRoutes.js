@@ -32,6 +32,7 @@ import MeterList from "./pages/Meter/index.vue"
 import MeterDetail from "./pages/Meter/_id.vue"
 import MeterTypeList from "./pages/MeterType/index.vue"
 import SolarHomeSystem from "./pages/SolarHomeSystem/index.vue"
+import SolarHomeSystemDetail from "./pages/SolarHomeSystem/_id.vue"
 import TargetList from "./pages/Target/index.vue"
 import TargetNew from "./pages/Target/New/index.vue"
 import ConnectionTypeList from "./pages/Connection/Type/index.vue"
@@ -516,6 +517,19 @@ export const exportedRoutes = [
         enabled: true,
         name: "Solar Home Systems",
         icon: "solar_power",
+      },
+    },
+  },
+  {
+    path: "/solar-home-systems/:id",
+    component: SolarHomeSystemDetail,
+    meta: {
+      layout: "default",
+      breadcrumb: {
+        level: "detail",
+        name: "Solar Home Systems",
+        link: "/solar-home-systems",
+        target: "id",
       },
     },
   },
