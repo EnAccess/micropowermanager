@@ -8,16 +8,19 @@ class SmsAndroidSettingService {
     private string $fireBaseKey;
     private string $callbackUrl;
 
-    public function __construct(private SmsAndroidSetting $smsAndroidSetting, private UserService $userService) {
-        $this->fireBaseKey = config('services.sms.android.key');
-        $this->callbackUrl = config('services.sms.callback').$this->userService->getCompanyId();
-    }
+    public function __construct(
+        private SmsAndroidSetting $smsAndroidSetting,
+        private UserService $userService,
+    ) {}
 
     public function getSmsAndroidSetting() {
         return $this->smsAndroidSetting->newQuery()->get();
     }
 
     public function createSmsAndroidSetting($androidPhoneToken) {
+        $this->fireBaseKey = config('services.sms.android.key');
+        $this->callbackUrl = config('services.sms.callback').$this->userService->getCompanyId();
+
         $smsAndroidSettingData = [
             'callback' => $this->callbackUrl,
             'token' => $androidPhoneToken,
@@ -29,8 +32,8 @@ class SmsAndroidSettingService {
     }
 
     public function updateSmsAndroidSetting(SmsAndroidSetting $smsAndroidSetting, $androidPhoneToken) {
-        $fireBaseKey = config('services.sms.android.key');
-        $callbackUrl = config('services.sms.android.callback_url').$this->userService->getCompanyId();
+        $this->fireBaseKey = config('services.sms.android.key');
+        $this->callbackUrl = config('services.sms.android.callback_url').$this->userService->getCompanyId();
 
         $smsAndroidSetting->update([
             'callback' => $this->callbackUrl,
