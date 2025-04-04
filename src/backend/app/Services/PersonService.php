@@ -149,14 +149,23 @@ class PersonService implements IBaseService {
         return $person->delete();
     }
 
-    public function getAll(?int $limit = null, $customerType = 1): LengthAwarePaginator {
-        return $this->person->newQuery()->with([
+    public function getAll(?int $limit = null, $customerType = 1, $agentId = null): LengthAwarePaginator {
+        $query = $this->person->newQuery()->with([
             'addresses' => function ($q) {
                 return $q->where('is_primary', 1);
             },
             'addresses.city',
             'devices',
-        ])->where('is_customer', $customerType)->paginate($limit);
+            'agentSoldAppliance.assignedAppliance.agent',
+        ])->where('is_customer', $customerType);
+
+        if ($agentId) {
+            $query->whereHas('agentSoldAppliance.assignedAppliance.agent', function ($q) use ($agentId) {
+                $q->where('id', $agentId);
+            });
+        }
+
+        return $query->paginate($limit);
     }
 
     public function createFromRequest(Request $request): Person {
