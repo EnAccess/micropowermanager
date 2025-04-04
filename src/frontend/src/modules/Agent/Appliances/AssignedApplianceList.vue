@@ -29,10 +29,7 @@
               {{ item.appliance.name }}
             </md-table-cell>
             <md-table-cell md-label="Cost" md-sort-by="total_cost">
-              {{
-                moneyFormat(item.cost) +
-                $store.getters["settings/getMainSettings"].currency
-              }}
+              {{ moneyFormat(item.cost) }}
             </md-table-cell>
           </md-table-row>
         </md-table>
