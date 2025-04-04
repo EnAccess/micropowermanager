@@ -41,13 +41,15 @@ class AgentApplianceSalesSeeder extends Seeder {
             return;
         }
 
-        // Assign Assets to Agents
+        // Assign 2 unique Appliances to each Agent
         $assignedAppliances = $agents->flatMap(function ($agent) use ($assets, $customers) {
-            return AgentAssignedAppliances::factory()->count(3)->create([
-                'agent_id' => $agent->id,
-                'appliance_id' => $assets->random()->id,  // Use existing assets
-                'user_id' => $customers->random()->id,    // Use existing customers
-            ]);
+            return collect($assets->shuffle()->take(2))->map(function ($asset) use ($agent, $customers) {
+                return AgentAssignedAppliances::factory()->create([
+                    'agent_id' => $agent->id,
+                    'appliance_id' => $asset->id,
+                    'user_id' => $customers->random()->id,
+                ]);
+            });
         });
 
         // Simulate Sales
