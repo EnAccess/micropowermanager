@@ -25,7 +25,7 @@
             {{ item.transactionId }}
           </md-table-cell>
           <md-table-cell md-label="Amount" md-sort-by="amount">
-            {{ item.amount }}
+            {{ moneyFormat(item.amount) }}
           </md-table-cell>
           <md-table-cell md-label="Category" md-sort-by="category">
             {{ item.category }}
