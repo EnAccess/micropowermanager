@@ -17,6 +17,10 @@ class TransactionProviderService {
     }
 
     public function getTransactionProviders() {
-        return $this->transaction->withAll('BelongsToMorph');
+        $types = Transaction::whereHas('originalTransaction')
+            ->distinct()
+            ->pluck('original_transaction_type');
+
+        return $types;
     }
 }

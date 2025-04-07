@@ -2,20 +2,17 @@
 
 namespace App\Models\Transaction;
 
-use App\Helpers\RelationsManager;
 use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
-use App\Relations\BelongsToMorph;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
-use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
 /**
  * Class Transaction.
@@ -28,8 +25,6 @@ use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
  * @property string $original_transaction_type
  */
 class Transaction extends BaseModel {
-    use RelationsManager;
-
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
@@ -132,17 +127,5 @@ class Transaction extends BaseModel {
 
     public function getMessage(): string {
         return $this->message;
-    }
-
-    public function originalAgent(): BelongsToMorph {
-        return BelongsToMorph::build($this, AgentTransaction::class, 'originalTransaction');
-    }
-
-    public function originalCash(): BelongsToMorph {
-        return BelongsToMorph::build($this, CashTransaction::class, 'originalTransaction');
-    }
-
-    public function originalWaveMoney(): BelongsToMorph {
-        return BelongsToMorph::build($this, WaveMoneyTransaction::class, 'originalTransaction');
     }
 }

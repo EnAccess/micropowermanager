@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('transactions/', 'TransactionController@index');
 Route::get('transactions/search', 'TransactionController@search');
 Route::get('transactions/cancelled', 'TransactionController@cancelled');

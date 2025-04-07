@@ -1,0 +1,16 @@
+meta {
+  name: Get SteamaSettings
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/steama-meters/steama-setting/
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

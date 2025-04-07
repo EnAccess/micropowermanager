@@ -27,7 +27,7 @@ class AgentTransactionService implements IBaseService {
         $query = $this->transaction->newQuery();
 
         if ($forApp) {
-            $query->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
+            $query->with(['originalTransaction', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
         } else {
             $query->with(['device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])]);
         }
@@ -40,11 +40,18 @@ class AgentTransactionService implements IBaseService {
             }
         );
 
-        if ($limit) {
-            return $query->paginate($limit);
-        }
+        $transactions = $limit ? $query->paginate($limit) : $query->get();
 
-        return $query->get();
+        // For backwards compatibility with the Agent App we are artificially adding
+        // the column `original_agent`.
+        // TODO: Confirm the app is actually using `original_agent`
+        // -> If yes, move to `original_transaction`
+        // -> If no, remove this code
+        $transactions->each(function ($transaction) {
+            $transaction->setAttribute('original_agent', $transaction->originalTransaction);
+        });
+
+        return $transactions;
     }
 
     public function getById(int $agentId, ?int $customerId = null): ?Transaction {
@@ -55,8 +62,8 @@ class AgentTransactionService implements IBaseService {
             return null;
         }
 
-        return $this->transaction->newQuery()
-            ->with(['originalAgent', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])
+        $transaction = $this->transaction->newQuery()
+            ->with(['originalTransaction', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])
             ->whereHasMorph(
                 'originalTransaction',
                 [AgentTransaction::class],
@@ -68,6 +75,17 @@ class AgentTransactionService implements IBaseService {
             // Commenting out for now to return a singleton.
             // ->paginate();
             ->first();
+
+        // For backwards compatibility with the Agent App we are artificially adding
+        // the column `original_agent`.
+        // TODO: Confirm the app is actually using `original_agent`
+        // -> If yes, move to `original_transaction`
+        // -> If no, remove this code
+        if ($transaction) {
+            $transaction->setAttribute('original_agent', $transaction->originalTransaction);
+        }
+
+        return $transaction;
     }
 
     public function create(array $transactionData): AgentTransaction {

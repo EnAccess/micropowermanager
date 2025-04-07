@@ -28,18 +28,11 @@ class SolarHomeSystemTransactionService {
         }
 
         if ($transactionProvider) {
-            $query->with($transactionProvider)->where(fn ($q) => $q->whereHas(
-                $transactionProvider,
-                fn ($q) => $q->whereNotNull('id')
-            ));
+            $query->where(fn ($q) => $q->whereHasMorph('originalTransaction', $transactionProvider, fn ($q) => $q->whereNotNull('id')));
         }
 
         if ($status) {
-            if ($transactionProvider && $transactionProvider !== '-1') {
-                $query->where(fn ($q) => $q->whereHas($transactionProvider, fn ($q) => $q->where('status', $status)));
-            } else {
-                $query->whereHasMorph('originalTransaction', '*', fn ($q) => $q->where('status', $status))->get();
-            }
+            $query->whereHasMorph('originalTransaction', ($transactionProvider !== '-1') ? $transactionProvider : '*', fn ($q) => $q->where('status', $status));
         }
 
         if ($fromDate) {
