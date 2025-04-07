@@ -41,8 +41,9 @@ class PersonController extends Controller {
     public function index(Request $request): ApiResource {
         $customerType = $request->input('is_customer', 1);
         $limit = $request->input('limit', config('settings.paginate'));
+        $agentId = $request->input('agent_id');
 
-        return ApiResource::make($this->personService->getAll($limit, $customerType));
+        return ApiResource::make($this->personService->getAll($limit, $customerType, $agentId));
     }
 
     /**
