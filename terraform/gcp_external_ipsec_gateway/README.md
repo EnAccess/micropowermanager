@@ -12,3 +12,10 @@ Using
 - HAProxy
 
 When using this, should the Kubernetes cluster should be setup with an internal Ingress.
+
+Additionally, this module creates a Ansible inventory which can be used with
+
+```yaml
+---
+plugin: cloud.terraform.terraform_provider
+```
