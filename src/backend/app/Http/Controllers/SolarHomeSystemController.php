@@ -45,4 +45,10 @@ class SolarHomeSystemController extends Controller {
 
         return ApiResource::make($this->solarHomeSystemService->search($term, $paginate));
     }
+
+    public function show($id): ApiResource {
+        $solarHomeSystem = $this->solarHomeSystemService->getById($id);
+
+        return ApiResource::make($solarHomeSystem->load(['manufacturer', 'appliance', 'device.person']));
+    }
 }
