@@ -40,6 +40,7 @@ import Angaza from "@/plugins/angaza-shs/js/modules/Overview/Credential"
 import DalyBms from "@/plugins/daly-bms/js/modules/Overview/Credential"
 import AfricasTalking from "@/plugins/africas-talking/js/modules/Overview/Credential"
 import Snackbar from "@/shared/Snackbar.vue"
+import ChintMeter from "@/plugins/chint-meter/js/modules/Overview/Credential"
 
 Vue.component("default", Default)
 Vue.component("Spark-Meter", Spark)
@@ -66,6 +67,7 @@ Vue.component("Angaza-SHS", Angaza)
 Vue.component("Daly-Bms", DalyBms)
 Vue.component("Africas-Talking", AfricasTalking)
 Vue.component("Snackbar", Snackbar)
+Vue.component("Chint-Meter", ChintMeter)
 
 const unauthorizedPaths = [
   "login",
