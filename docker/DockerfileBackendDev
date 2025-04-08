@@ -1,33 +1,27 @@
 FROM php:8.2-apache
 
+# install basic apt packages
 RUN apt-get update && apt-get install -y \
-    bzip2 \
-    cron \
     git \
     libfreetype6-dev \
     libjpeg-dev \
     libssl-dev \
     libxml2-dev \
     libzip-dev \
-    supervisor \
-    vim \
     zlib1g-dev
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
 
-# install and configure php extensions
+# install and configure basic php extensions
 RUN docker-php-ext-install \
     bcmath \
     exif \
-    ftp \
     gd \
-    mysqli \
     opcache \
     pcntl \
     pdo \
     pdo_mysql \
-    soap \
     zip
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-configure pcntl --enable-pcntl
@@ -36,7 +30,7 @@ RUN pecl install redis-5.3.7 && docker-php-ext-enable redis
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-RUN php composer-setup.php --version=2.8.3
+RUN php composer-setup.php --version=2.8.8
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
@@ -48,17 +42,31 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
+# configure PHP
+COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
+
 # configure apache
 COPY docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
 RUN a2enmod rewrite
 
-# get MicroPowerManager source code and configuration
-COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
+# get MicroPowerManager source code and addition files
 VOLUME ["/var/www/html"]
 
-# install MicroPowerManager
-COPY docker/entrypoint-backend-dev.sh /usr/local/bin/
+COPY docker/entrypoint-backend.sh /usr/local/bin/entrypoint-backend-dev.sh
 RUN chmod +x /usr/local/bin/entrypoint-backend-dev.sh
+
+# install MicroPowerManager
+#
+# For development, we don't want to install MicroPowerManager into the Docker image,
+# but instead run `composer install` at runtime by adding it to the entrypoint script.
+# This way, we will ensure that local changes are exposed in the container and
+# benefit from hot-reloading.
+RUN sed -i '1a\
+echo "Installing MicroPowerManager in development mode..."\n\
+cd /var/www/html\n\
+composer install' /usr/local/bin/entrypoint-backend-dev.sh
+
+# define entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint-backend-dev.sh"]
 
 EXPOSE 80

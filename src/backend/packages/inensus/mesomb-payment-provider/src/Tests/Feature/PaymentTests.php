@@ -6,7 +6,6 @@ use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
@@ -60,7 +59,7 @@ class PaymentTests extends TestCase {
 
     public function testOnlyOneConnectingMeterIsValidForOneNumber() {
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
         // associate meter with a person
         $p = Person::query()->first();
         // associate address with a person
@@ -132,9 +131,9 @@ class PaymentTests extends TestCase {
 
     private function initializeData() {
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
         // create meter-tariff
-        factory(MeterTariff::class)->create();
+        MeterTariff::factory()->create();
 
         // create meter-type
         MeterType::query()->create([
@@ -142,10 +141,7 @@ class PaymentTests extends TestCase {
             'phase' => 1,
             'max_current' => 10,
         ]);
-        $meterParameter = MeterParameter::query()->make([
-            'connection_type_id' => 1,
-            'connection_group_id' => 1,
-        ]);
+
         // create calin manufacturer
         Manufacturer::query()->create([
             'name' => 'Spark Meters',
@@ -158,16 +154,16 @@ class PaymentTests extends TestCase {
             'meter_type_id' => 1,
             'in_use' => 1,
             'manufacturer_id' => 1,
+            'connection_type_id' => 1,
+            'connection_group_id' => 1,
         ]);
 
         // associate meter with a person
         $p = Person::query()->first();
-        $meterParameter->meter()->associate($meter);
-
-        $meterParameter->owner()->associate($p);
-
-        $meterParameter->tariff()->associate(MeterTariff::query()->first());
-        $meterParameter->save();
+        $meter->device()->create([
+            'owner_type' => 'person',
+            'owner_id' => $p->id,
+        ]);
         // associate address with a person
         $address = Address::query()->make([
             'phone' => '237400001019',

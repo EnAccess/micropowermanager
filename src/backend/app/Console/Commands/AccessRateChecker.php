@@ -9,7 +9,7 @@ class AccessRateChecker extends AbstractSharedCommand {
     protected $signature = 'accessrate:check';
     protected $description = 'Updates the "debt" field, based on "due_date" field';
 
-    public function runInCompanyScope(): void {
+    public function handle(): void {
         // get all access-rate payments where due Date is <= today
         $accessRatePayments = AccessRatePayment::where('due_date', '<=', Carbon::now())->get();
 

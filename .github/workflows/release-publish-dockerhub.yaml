@@ -1,6 +1,6 @@
 # mostly based on:
 # https://docs.docker.com/build/ci/github-actions/multi-platform/
-name: Publish images to DockerHub, deploy Demo environment to AWS
+name: Publish images to DockerHub, Deploy Demo environment
 
 on:
   release:
@@ -21,6 +21,9 @@ jobs:
           - id: micropowermanager-backend
             repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileBackendProd
+          - id: micropowermanager-scheduler
+            repo: enaccess/micropowermanager-scheduler
+            dockerfile: ./docker/DockerfileSchedulerProd
         platform:
           - id: amd64
             arch: linux/amd64
@@ -111,6 +114,9 @@ jobs:
           - id: micropowermanager-backend
             repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileBackendProd
+          - id: micropowermanager-scheduler
+            repo: enaccess/micropowermanager-scheduler
+            dockerfile: ./docker/DockerfileSchedulerProd
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -192,5 +198,6 @@ jobs:
       # We need to restart the pods to pick up latest images
       - name: Restart MicroPowerManager pods on GKE
         run: |
-          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
           kubectl rollout restart deployment/mpm-backend -n micropowermanager-demo
+          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
+          kubectl rollout restart deployment/mpm-scheduler -n micropowermanager-demo

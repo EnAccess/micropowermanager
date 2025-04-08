@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
+use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentService;
 
@@ -51,7 +52,7 @@ class AccessRatePayer {
                 'paymentService' => $this->transactionData->transaction->original_transaction_type,
                 'paymentType' => 'access rate',
                 'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => $meter->accessRate(),
+                'paidFor' => $meter instanceof Meter ? $meter->accessRate() : null,
                 'payer' => $owner,
                 'transaction' => $this->transactionData->transaction,
             ]);

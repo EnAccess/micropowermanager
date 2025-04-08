@@ -7,7 +7,6 @@ use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
@@ -164,7 +163,7 @@ class ValidationTests extends TestCase {
 
     private function initializeData() {
         // create person
-        factory(Person::class)->create();
+        Person::factory()->create();
         // create meter-tariff
         $tariff = MeterTariff::query()->create([
             'name' => 'test tariff',
@@ -196,19 +195,11 @@ class ValidationTests extends TestCase {
         // associate meter with a person
         $p = Person::query()->first();
 
-        $meterParameter = MeterParameter::query()->make([
-            'connection_group_id' => 1,
-            'connection_type_id' => 1,
-            'tariff_id' => 1,
-            'meter_id' => 1,
-        ]);
-        $meterParameter->owner()->associate($p);
         $address = Address::query()->make([
             'phone' => '237400001019',
             'is_primary' => 1,
             'owner_type' => 'person',
         ]);
-        $meterParameter->save();
         $address->owner()->associate($p);
         $address->save();
     }

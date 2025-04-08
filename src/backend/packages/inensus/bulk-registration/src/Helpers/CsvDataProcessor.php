@@ -67,20 +67,19 @@ class CsvDataProcessor {
                     if ($meter) {
                         $row['meter_id'] = $meter->id;
                         $this->checkRecordWasRecentlyCreated($meter, 'meter');
-                        $meterParameter = $this->createRecordFromCsv($row, $this->reflections['MeterParameterService']);
                         // initializes a new Access Rate Payment for the next Period
-                        event('accessRatePayment.initialize', $meterParameter);
+                        event('accessRatePayment.initialize', $meter);
                         $geographicalInformationService =
                             app()->make($this->reflections['GeographicalInformationService']);
-                        $geographicalInformationService->resolveCsvDataFromComingRow($row, $meterParameter);
+                        $geographicalInformationService->resolveCsvDataFromComingRow($row, $meter);
 
                         $address = new Address();
                         $address = $address->newQuery()->create([
                             'city_id' => $city->id,
                         ]);
-                        $address->owner()->associate($meterParameter);
+                        $address->owner()->associate($meter);
 
-                        $address->geo()->associate($meterParameter->geo);
+                        $address->geo()->associate($meter->device->person->addresses()->first()->geo());
                         $address->save();
                     }
                 }

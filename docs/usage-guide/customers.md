@@ -4,7 +4,11 @@ order: 8
 
 # Customers
 
-MPManager customers are listed under `Customers` in the sidebar. This table contains the customers' name, phone number, city, and device number. The search function also includes all those fields. By clicking on a customer, the customer’s profile page will be loaded. Data parameters included are:
+MicroPowerManager customers are listed under `Customers` in the sidebar.
+This table contains the customers' name, phone number, city, and device number.
+The search function also includes all those fields.
+By clicking on a customer, the customer’s profile page will be loaded
+Data parameters included are:
 
 • Basic information: Name, Surname, Birth date, etc.
 
@@ -21,7 +25,7 @@ MPManager customers are listed under `Customers` in the sidebar. This table cont
 • A list of the devices which belong to the customer and a map where the meters are visually displayed.
 
 Some of the elements are editable (i.e.: name, surname) or addable (i.e.: ticket, address).
-New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the “+” on the “Customer” Menu.
+New Customers can be added through both the customer registration app (together with a device) or the website interface by clicking on the ":heavy_plus_sign:" on the "Customer" Menu.
 
 ![Customers Overview](images/customers-overview.png)
 

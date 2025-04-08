@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpm-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpm-scheduler
+  template:
+    metadata:
+      labels:
+        app: mpm-scheduler
+    spec:
+      containers:
+        - name: mpm-scheduler
+          image: enaccess/micropowermanager-scheduler:latest
+          imagePullPolicy: Always
+          # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
+          envFrom:
+            - configMapRef:
+                name: mpm-configmap-backend
+            - secretRef:
+                name: mpm-secret-backend

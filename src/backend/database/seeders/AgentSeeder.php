@@ -9,12 +9,19 @@ use App\Models\AgentCommission;
 use App\Models\GeographicalInformation;
 use App\Models\MiniGrid;
 use App\Models\Person\Person;
+use App\Services\CompanyDatabaseService;
+use App\Services\CompanyService;
+use App\Services\DatabaseProxyService;
+use App\Utils\DemoCompany;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 
 class AgentSeeder extends Seeder {
     public function __construct(
         private DatabaseProxyManagerService $databaseProxyManagerService,
+        private DatabaseProxyService $databaseProxyService,
+        private CompanyService $companyService,
+        private CompanyDatabaseService $companyDatabaseService,
     ) {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
@@ -30,6 +37,8 @@ class AgentSeeder extends Seeder {
 
         // Get available MiniGrids
         $minigrids = MiniGrid::all();
+
+        $firstAgent = true; // Flag to ensure one agent gets the test email
 
         // For each Mini-Grid we create one Agent
         foreach ($minigrids as $minigrid) {
@@ -51,6 +60,22 @@ class AgentSeeder extends Seeder {
                 )
                 ->create();
 
+            // Create Agent user and DatabaseProxy
+            if ($firstAgent) {
+                $company = $this->companyService->getByName(DemoCompany::DEMO_COMPANY_NAME);
+                $companyId = $company->getId();
+                $companyDatabase = $this->companyDatabaseService->findByCompanyId($companyId);
+                $databaseProxyData = [
+                    'email' => DemoCompany::DEMO_COMPANY_AGENT_EMAIL,
+                    'fk_company_id' => $companyId,
+                    'fk_company_database_id' => $companyDatabase->id,
+                ];
+                $this->databaseProxyManagerService->runForCompany(
+                    $company->getId(),
+                    fn () => $this->databaseProxyService->create($databaseProxyData)
+                );
+            }
+
             $agent = Agent::factory()
                 ->for($minigrid)
                 ->for($agentCommission, 'commission')
@@ -58,7 +83,11 @@ class AgentSeeder extends Seeder {
                 ->state(
                     ['name' => $person->name]
                 )
-                ->create();
+                ->create([
+                    'email' => $firstAgent ? DemoCompany::DEMO_COMPANY_AGENT_EMAIL : fake()->safeEmail(),
+                    'password' => $firstAgent ? DemoCompany::DEMO_COMPANY_PASSWORD : fake()->password(),
+                ]);
+            $firstAgent = false; // Ensure only one agent gets the test email
 
             // Give our Agent some balance
             $agent_charge = AgentCharge::factory()

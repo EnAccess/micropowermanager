@@ -60,11 +60,7 @@
       "App\\": "app/",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/",
-      "MPM\\": "app/modules"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
+      "MPM\\": "app/modules",
       "Inensus\\Ticket\\": "packages/inensus/ticket/src",
       "Inensus\\SparkMeter\\": "packages/inensus/spark-meter/src",
       "Inensus\\SteamaMeter\\": "packages/inensus/steama-meter/src",
@@ -83,7 +79,11 @@
       "Inensus\\WavecomPaymentProvider\\": "packages/inensus/wavecom-payment-provider/src",
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
-      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
+      "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Inensus\\ChintMeter\\": "packages/inensus/chint-meter/src",
       "Tests\\": "tests/"
     }
@@ -106,6 +106,6 @@
     "php-cs-fixer-check": "php-cs-fixer check --diff",
     "php-cs-fixer-version": "php-cs-fixer --version",
     "larastan": "phpstan analyse --memory-limit=2G --no-progress",
-    "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=2"
+    "larastan-next": "phpstan analyse --memory-limit=2G --no-progress --level=4"
   }
 }

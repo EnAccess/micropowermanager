@@ -6,6 +6,7 @@ resources:
   - configmaps/mpm-frontend.yaml
   - deployments/mpm-backend.yaml
   - deployments/mpm-frontend.yaml
+  - deployments/mpm-scheduler.yaml
   - deployments/redis.yaml
   - services/mpm-backend.yaml
   - services/mpm-frontend.yaml

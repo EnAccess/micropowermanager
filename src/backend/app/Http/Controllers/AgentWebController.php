@@ -82,7 +82,12 @@ class AgentWebController extends Controller {
     public function destroy($agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
 
-        return ApiResource::make($this->agentService->delete($agent));
+        $deleted = $this->agentService->delete($agent);
+
+        return ApiResource::make([
+            'message' => $deleted ? 'Agent deleted successfully' : 'Failed to delete agent',
+            'status_code' => $deleted ? 200 : 400,
+        ]);
     }
 
     public function search(Request $request): ApiResource {

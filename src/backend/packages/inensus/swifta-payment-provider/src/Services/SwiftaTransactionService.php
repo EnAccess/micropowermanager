@@ -4,7 +4,6 @@ namespace Inensus\SwiftaPaymentProvider\Services;
 
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use App\Services\AbstractPaymentAggregatorTransactionService;
@@ -23,14 +22,12 @@ class SwiftaTransactionService extends AbstractPaymentAggregatorTransactionServi
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private MeterParameter $meterParameter,
         private SwiftaTransaction $swiftaTransaction,
     ) {
         parent::__construct(
             $this->meter,
             $this->address,
             $this->transaction,
-            $this->meterParameter,
             $this->swiftaTransaction
         );
     }

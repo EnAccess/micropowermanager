@@ -3,7 +3,7 @@
 namespace Inensus\BulkRegistration\Services;
 
 use App\Models\GeographicalInformation;
-use App\Models\Meter\MeterParameter;
+use App\Models\Meter\Meter;
 use App\Models\MiniGrid;
 use Inensus\BulkRegistration\Helpers\GeographicalLocationFinder;
 
@@ -24,7 +24,7 @@ class GeographicalInformationService {
         if ($ownerModel instanceof MiniGrid) {
             $this->createMiniGridRelatedGeographicalInformation($ownerModel);
         } else {
-            $geographicalInformationData = $this->createMeterParameterRelatedGeographicalInformation(
+            $geographicalInformationData = $this->createMeterRelatedGeographicalInformation(
                 $geographicalInformationData,
                 $csvData,
                 $ownerModel
@@ -53,18 +53,18 @@ class GeographicalInformationService {
         return $geographicalInformation->save();
     }
 
-    private function createMeterParameterRelatedGeographicalInformation(
+    private function createMeterRelatedGeographicalInformation(
         $geographicalInformationData,
         $csvData,
         $ownerModel,
     ) {
-        $meterParameterId = $ownerModel->id;
+        $meterId = $ownerModel->id;
         $geographicalInformation = GeographicalInformation::query()->with(['owner'])
             ->whereHasMorph(
                 'owner',
-                [MeterParameter::class],
-                function ($q) use ($meterParameterId) {
-                    $q->where('id', $meterParameterId);
+                [Meter::class],
+                function ($q) use ($meterId) {
+                    $q->where('id', $meterId);
                 }
             )->first();
         if ($geographicalInformation) {

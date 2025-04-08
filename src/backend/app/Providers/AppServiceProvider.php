@@ -22,7 +22,6 @@ use App\Models\EBike;
 use App\Models\MaintenanceUsers;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterParameter;
 use App\Models\Meter\MeterTariff;
 use App\Models\Meter\MeterToken;
 use App\Models\MiniGrid;
@@ -60,7 +59,6 @@ class AppServiceProvider extends ServiceProvider {
                 Person::RELATION_NAME => Person::class,
                 Manufacturer::RELATION_NAME => Manufacturer::class,
                 MeterToken::RELATION_NAME => MeterToken::class,
-                MeterParameter::RELATION_NAME => MeterParameter::class,
                 Transaction::RELATION_NAME => Transaction::class,
                 AgentTransaction::RELATION_NAME => AgentTransaction::class,
                 AccessRate::RELATION_NAME => AccessRate::class,

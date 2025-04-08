@@ -1,0 +1,21 @@
+meta {
+  name: List All AgentTransactions
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/transactions/?per_page=15&page=3
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 15
+  page: 3
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

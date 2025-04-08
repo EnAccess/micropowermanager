@@ -13,7 +13,9 @@ export class TransactionProviderService {
 
   fromJson(providerData) {
     return {
-      name: providerData.split("original")[1],
+      name: providerData
+        .replace(/_transaction$/, "")
+        .replace(/(?:^|_)([a-z])/g, (_, letter) => letter.toUpperCase()),
       value: providerData,
     }
   }

@@ -1,0 +1,16 @@
+meta {
+  name: Get SparkMeterSettings
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/spark-meters/sm-setting/
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

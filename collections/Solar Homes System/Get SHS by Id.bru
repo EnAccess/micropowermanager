@@ -1,0 +1,11 @@
+meta {
+  name: Get SHS by Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/solar-home-systems/1
+  body: none
+  auth: inherit
+}

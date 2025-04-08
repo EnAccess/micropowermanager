@@ -2,7 +2,6 @@
 
 namespace Inensus\KelinMeter\Providers;
 
-use App\Models\Meter\MeterParameter;
 use App\Models\Transaction\Transaction;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -65,7 +64,6 @@ class KelinMeterServiceProvider extends ServiceProvider {
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind('KelinMeterApi', function ($app) {
             return new KelinMeterApi(
-                $app->make(MeterParameter::class),
                 $app->make(KelinCustomer::class),
                 $app->make(KelinMeter::class),
                 $app->make(KelinMeterService::class),
