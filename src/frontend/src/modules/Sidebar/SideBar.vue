@@ -1,9 +1,9 @@
 <template>
   <div class="sidebar" :data-color="sidebarItemColor">
-    <div class="logo">
+    <!-- Fixed logo section that won't scroll -->
+    <div class="logo fixed-logo">
       <div class="brand-column">
         <img class="logo" alt="logo" :src="imgLogo" />
-
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
           <br />
@@ -12,6 +12,7 @@
       </div>
     </div>
 
+    <!-- Scrollable wrapper with single scrollbar -->
     <div class="sidebar-wrapper">
       <slot name="content"></slot>
       <md-list class="no-bg p-15" md-expand-single>
@@ -107,9 +108,12 @@
           </template>
         </template>
       </md-list>
+      <!-- Bottom buffer space -->
+      <div class="sidebar-bottom-buffer"></div>
     </div>
   </div>
 </template>
+
 <script>
 import { translateItem } from "@/Helpers/TranslateItem"
 import PasswordProtection from "@/shared/PasswordProtection"
@@ -189,41 +193,46 @@ export default {
   },
 }
 </script>
+
 <style>
 .sidebar {
   background: #2b2b2b;
-}
-
-.brand-column {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  position: relative;
   display: flex;
-  overflow: visible;
-  margin-top: 0px;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  grid-auto-columns: 1fr;
-  grid-column-gap: 16px;
-  grid-row-gap: 16px;
-  -ms-grid-columns: 1fr 1fr;
-  grid-template-columns: 1fr 1fr;
-  -ms-grid-rows: auto auto;
-  grid-template-rows: auto auto;
-  -o-object-fit: fill;
-  object-fit: fill;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fixed-logo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #2b2b2b;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 10px;
+}
+
+.sidebar-bottom-buffer {
+  height: 30px;
 }
 
 .brand-column {
-  text-align: center;
+  display: flex;
+  align-items: center;
   padding-left: 2rem !important;
 }
 
 @media screen and (min-width: 991px) {
   .brand-column {
-    text-align: center;
     padding-left: 1rem !important;
   }
 }
