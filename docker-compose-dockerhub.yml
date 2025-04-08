@@ -28,6 +28,7 @@ services:
   scheduler:
     container_name: scheduler
     image: enaccess/micropowermanager-scheduler:latest
+    # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       mysql:
