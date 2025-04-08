@@ -41,6 +41,18 @@ export class SolarHomeSystemService {
     this.paginator = new Paginator(`${this.repository.resource}/search`)
     EventBus.$emit("loadPage", this.paginator, { term: term })
   }
+  async getSolarHomeSystem(id) {
+    try {
+      const response = await this.repository.detail(id)
+      if (response && response.data && response.data.data) {
+        return convertObjectKeysToCamelCase(response.data.data)
+      }
+      return null
+    } catch (e) {
+      const errorMessage = e.response.data.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 
   showAll() {
     this.paginator = new Paginator(this.repository.resource)

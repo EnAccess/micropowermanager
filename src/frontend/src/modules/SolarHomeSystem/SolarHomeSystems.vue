@@ -43,6 +43,7 @@
           v-for="shs in solarHomeSystemService.list"
           :key="shs.id"
           @click="navigateToDetails(shs.id)"
+          class="cursor-pointer"
         >
           <md-table-cell>{{ shs.serialNumber }}</md-table-cell>
           <md-table-cell>{{ shs.manufacturer.name }}</md-table-cell>
@@ -68,6 +69,7 @@ import { timing } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
 import Widget from "@/shared/widget"
 import AddSolarHomeSystemModal from "@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue"
+import { getSolarHomeSystemDetailRoute } from "@/repositories/SolarHomeSystemRepository"
 
 export default {
   name: "SolarHomeSystems",
@@ -117,7 +119,7 @@ export default {
       this.solarHomeSystemService.search(searchTerm)
     },
     navigateToDetails(id) {
-      this.$router.push(`/solar-home-systems/${id}`)
+      this.$router.push(getSolarHomeSystemDetailRoute(id))
     },
     endSearching() {
       this.solarHomeSystemService.showAll()

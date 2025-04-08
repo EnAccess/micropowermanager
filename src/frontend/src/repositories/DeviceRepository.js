@@ -11,3 +11,6 @@ export default {
     return Client.get(`${resource}`)
   },
 }
+export function getDeviceDetailRoute(id) {
+  return `/devices/${id}`
+}

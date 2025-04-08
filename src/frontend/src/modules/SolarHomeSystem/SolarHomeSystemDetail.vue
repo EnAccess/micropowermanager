@@ -1,156 +1,123 @@
 <template>
   <div class="page-container">
-    <div class="md-layout md-gutter">
-      <div class="md-layout-item md-size-50 md-small-size-100">
-        <widget
-          :title="$tc('words.details')"
-          color="green"
-          :subscriber="'shs-details'"
-        >
-          <md-list class="md-double-line">
-            <md-list-item>
-              <div class="md-list-item-text">
-                <span>{{ $tc("phrases.serialNumber") }}</span>
-                <span>{{ shs.serialNumber }}</span>
-              </div>
-            </md-list-item>
-            <md-divider></md-divider>
-            <md-list-item>
-              <div class="md-list-item-text">
-                <span>{{ $tc("words.manufacturer") }}</span>
-                <span>{{ shs.manufacturer?.name || "-" }}</span>
-              </div>
-            </md-list-item>
-            <md-divider></md-divider>
-            <md-list-item>
-              <div class="md-list-item-text">
-                <span>{{ $tc("words.appliance") }}</span>
-                <span>{{ shs.appliance?.name || "-" }}</span>
-              </div>
-            </md-list-item>
-            <md-divider></md-divider>
-            <md-list-item>
-              <div class="md-list-item-text">
-                <span>{{ $tc("phrases.lastUpdate") }}</span>
-                <span>{{ timeForTimeZone(shs.updatedAt) }}</span>
-              </div>
-            </md-list-item>
-          </md-list>
-        </widget>
-      </div>
-
-      <div class="md-layout-item md-size-50 md-small-size-100">
-        <widget
-          :title="$tc('words.owner')"
-          color="green"
-          :subscriber="'shs-owner'"
-          v-if="shs.device && shs.device.person"
-        >
-          <md-list class="md-double-line">
-            <md-list-item :to="`/people/${shs.device.person.id}`">
-              <div class="md-list-item-text">
-                <span>{{ $tc("words.name") }}</span>
-                <span>
-                  {{ shs.device.person.name }} {{ shs.device.person.surname }}
-                </span>
-              </div>
-              <md-icon>arrow_forward</md-icon>
-            </md-list-item>
-          </md-list>
-        </widget>
-      </div>
+    <div v-if="isLoading" class="loading-container">
+      <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </div>
-
-    <div class="md-layout md-gutter">
-      <div class="md-layout-item md-size-100">
-        <widget
-          :title="$tc('words.location')"
-          color="green"
-          :subscriber="'shs-location'"
-          v-if="shs.device && shs.device.address"
-        >
-          <client-map
-            :mappingService="mappingService"
-            ref="shsMapRef"
-            :edit="false"
-            :zoom="12"
+    <div v-else>
+      <div class="md-layout md-gutter">
+        <div class="md-layout-item md-size-50 md-small-size-100">
+          <basic-details-widget
+            :shs="shs"
+            @widget-loaded="handleWidgetLoaded"
           />
-        </widget>
+        </div>
+
+        <div
+          class="md-layout-item md-size-50 md-small-size-100"
+          v-if="hasPersonData"
+        >
+          <owner-widget
+            :person="shs.device.person"
+            @widget-loaded="handleWidgetLoaded"
+          />
+        </div>
+      </div>
+
+      <div class="md-layout md-gutter" v-if="hasAddressData">
+        <div class="md-layout-item md-size-100">
+          <location-widget
+            :device="shs.device"
+            :serialNumber="shs.serialNumber"
+            :id="shs.id"
+            @widget-loaded="handleWidgetLoaded"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Widget from "@/shared/widget"
-import ClientMap from "@/modules/Map/ClientMap.vue"
-import { MappingService, MARKER_TYPE } from "@/services/MappingService"
+import BasicDetailsWidget from "./BasicDetailsWidget.vue"
+import OwnerWidget from "./OwnerWidget.vue"
+import LocationWidget from "./LocationWidget.vue"
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
-import { timing, notify } from "@/mixins"
+import { notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
 
 export default {
   name: "SolarHomeSystemDetail",
-  mixins: [timing, notify],
+  mixins: [notify],
   components: {
-    Widget,
-    ClientMap,
+    BasicDetailsWidget,
+    OwnerWidget,
+    LocationWidget,
   },
   data() {
     return {
       solarHomeSystemService: new SolarHomeSystemService(),
       shs: {},
-      mappingService: new MappingService(),
+      isLoading: true,
+      loadedWidgets: {
+        details: false,
+        owner: false,
+        location: false,
+      },
     }
+  },
+  computed: {
+    hasPersonData() {
+      return this.shs.device && this.shs.device.person
+    },
+    hasAddressData() {
+      return this.shs.device && this.shs.device.address
+    },
   },
   created() {
     const shsId = this.$route.params.id
     this.loadSolarHomeSystem(shsId)
+
+    setTimeout(() => {
+      if (this.isLoading) {
+        console.warn("Loading timeout reached, forcing load completion")
+        this.isLoading = false
+      }
+    }, 10000)
   },
   methods: {
     async loadSolarHomeSystem(id) {
       try {
-        this.shs = await this.solarHomeSystemService.getSolarHomeSystem(id)
-        EventBus.$emit("widgetContentLoaded", "shs-details", 1)
-        EventBus.$emit("widgetContentLoaded", "shs-owner", 1)
+        const result = await this.solarHomeSystemService.getSolarHomeSystem(id)
+        this.shs = result
 
-        if (this.shs.device && this.shs.device.address) {
-          this.setMapData()
-          EventBus.$emit("widgetContentLoaded", "shs-location", 1)
-        }
+        console.log("Full SHS data:", this.shs)
+        console.log("Device data:", this.shs.device)
+        console.log("Person data:", this.shs.device?.person)
+        console.log("Address data:", this.shs.device?.address)
+        this.isLoading = false
       } catch (e) {
+        console.error("Error loading SHS:", e)
+        this.isLoading = false
         this.alertNotify(
           "error",
           e.message || this.$tc("phrases.errorLoadingShs"),
         )
       }
     },
-    setMapData() {
-      if (this.shs.device.address.geo && this.shs.device.address.geo.points) {
-        const points = this.shs.device.address.geo.points.split(",")
-        if (points.length === 2) {
-          const lat = parseFloat(points[0])
-          const lon = parseFloat(points[1])
+    handleWidgetLoaded(widgetName) {
+      console.log(`Widget ${widgetName} loaded`)
+      this.loadedWidgets[widgetName] = true
 
-          const markingInfo = {
-            id: this.shs.id,
-            name: this.shs.serialNumber,
-            serialNumber: this.shs.serialNumber,
-            lat: lat,
-            lon: lon,
-            deviceType: "solar_home_system",
-            markerType: MARKER_TYPE.SHS,
-          }
-
-          this.mappingService.setCenter([lat, lon])
-          this.mappingService.setMarkingInfos([markingInfo])
-
-          this.$nextTick(() => {
-            if (this.$refs.shsMapRef) {
-              this.$refs.shsMapRef.setDeviceMarkers()
-            }
-          })
-        }
+      switch (widgetName) {
+        case "details":
+          EventBus.$emit("widgetContentLoaded", "shs-details", 1)
+          break
+        case "owner":
+          EventBus.$emit("widgetContentLoaded", "shs-owner", 1)
+          break
+        case "location":
+          EventBus.$emit("widgetContentLoaded", "shs-location", 1)
+          break
       }
     },
   },
@@ -160,5 +127,11 @@ export default {
 <style scoped>
 .page-container {
   padding: 16px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
 }
 </style>

@@ -18,3 +18,6 @@ export default {
   },
   resource,
 }
+export function getSolarHomeSystemDetailRoute(id) {
+  return `/solar-home-systems/${id}`
+}
