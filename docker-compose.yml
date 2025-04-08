@@ -34,6 +34,7 @@ services:
     container_name: scheduler-dev
     build:
       dockerfile: docker/DockerfileSchedulerDev
+    # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       mysql:
