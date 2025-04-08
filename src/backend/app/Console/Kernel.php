@@ -23,6 +23,7 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
+use Inensus\ChintMeter\Console\Commands\InstallPackage as InstallChintMeterPackage;
 
 class Kernel extends ConsoleKernel {
     /**
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel {
         InstallAngazaSHSPackage::class,
         InstallDalyBmsPackage::class,
         InstallAfricasTalkingPackage::class,
+        InstallChintMeterPackage::class,
     ];
 
     /**
