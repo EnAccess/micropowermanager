@@ -30,6 +30,7 @@ class MpmPlugin extends BaseModelCore {
     public const DALY_BMS = 16;
     public const AGAZA_SHS = 17;
     public const AFRICAS_TALKING = 18;
+    public const CHINT_METER = 19;
 
     protected $table = 'mpm_plugins';
 
