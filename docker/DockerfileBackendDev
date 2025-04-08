@@ -1,33 +1,27 @@
 FROM php:8.2-apache
 
+# install basic apt packages
 RUN apt-get update && apt-get install -y \
-    bzip2 \
-    cron \
     git \
     libfreetype6-dev \
     libjpeg-dev \
     libssl-dev \
     libxml2-dev \
     libzip-dev \
-    supervisor \
-    vim \
     zlib1g-dev
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
 
-# install and configure php extensions
+# install and configure basic php extensions
 RUN docker-php-ext-install \
     bcmath \
     exif \
-    ftp \
     gd \
-    mysqli \
     opcache \
     pcntl \
     pdo \
     pdo_mysql \
-    soap \
     zip
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-configure pcntl --enable-pcntl
