@@ -30,10 +30,11 @@ services:
       - ./src/frontend:/app/
       - frontend_node_modules:/app/node_modules/
 
-  cron:
-    container_name: cron
+  scheduler-dev:
+    container_name: scheduler-dev
     build:
-      dockerfile: docker/DockerfileCron
+      dockerfile: docker/DockerfileSchedulerDev
+    # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       mysql:

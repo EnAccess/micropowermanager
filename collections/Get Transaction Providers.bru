@@ -1,0 +1,16 @@
+meta {
+  name: Get Transaction Providers
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{mpm_backend_url}}/api/transaction-providers
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

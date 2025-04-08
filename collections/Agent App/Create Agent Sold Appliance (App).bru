@@ -1,0 +1,21 @@
+meta {
+  name: Create Agent Sold Appliance (App)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{mpm_backend_url}}/api/app/agents/appliances
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+   "person_id": 1,
+    "down_payment": "10",
+   "tenure": "69",
+    "first_payment_date": "2025-04-19",
+   "agent_assigned_appliance_id": 1
+  }
+}

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AgentSoldAppliance extends BaseModel {
+    use HasFactory;
     protected $guarded = [];
 
     public function assignedAppliance(): BelongsTo {

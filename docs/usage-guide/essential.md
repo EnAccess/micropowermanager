@@ -2,15 +2,16 @@
 order: 10
 ---
 
-# Micropower Manager Settings
+# MicroPowerManager Settings
 
-The **Micropower Manager** (MPM) provides a user-friendly interface for managing your Mini-Grid settings. Upon accessing the `/settings` page, users are greeted with the default tab where they can configure essential settings.
+The **MicroPowerManager** (MPM) provides a user-friendly interface for managing your Mini-Grid settings.
+Upon accessing the `/settings` page, users are greeted with the default tab where they can configure essential settings.
 
 ## Key Settings
 
 - **Title**: This field allows users to set a custom title for their Mini-Grid management.
 - **Currency**: Users can select the currency in which they wish to operate.
-- **Country**: The country setting is crucial for compliance with local regulations and represents the country where the MPM user's Mini-Grids are located.
+- **Country**: The country setting is crucial for compliance with local regulations and represents the country where the MicroPowerManager user's Mini-Grids are located.
 - **VAT Energy**: This field is used to input the VAT rate applicable to energy consumption, which is a tax applied to energy sales.
 - **Usage Type**: Users can specify the type of usage, such as Mini-Grid, Solar Home System, or E-Bike Rental.
 - **Company Name**: The name of the company managing the Mini-Grid can be entered here.
@@ -21,9 +22,11 @@ Once all settings are configured, users can click the **SAVE** button to apply t
 
 ## SMS Settings
 
-In this section, users can define the structure of automated messages sent to their end customers. The MPM user can customize the following message types:
+In this section, users can define the structure of automated messages sent to their end customers.
+The MicroPowerManager user can customize the following message types:
 
-- **Transaction Confirmation**: This message is sent when a payment is successfully processed. For example:
+- **Transaction Confirmation**: This message is sent when a payment is successfully processed.
+  For example:
 
   ```plaintext
   Dear [name] [surname], we received your transaction [transaction_amount].
@@ -35,13 +38,17 @@ In this section, users can define the structure of automated messages sent to th
 
 ### Android Gateway Settings
 
-The Android Gateway settings allow MPM users to configure message sending methods through the embedded Android gateway application. Users can add as many gateways as they wish, with each gateway representing an Android phone that has the MPM SMS Gateway application installed.
+The Android Gateway settings allow MicroPowerManager users to configure message sending methods through the embedded Android gateway application
+Users can add as many gateways as they wish, with each gateway representing an Android phone that has the MPM SMS Gateway application installed.
 
-To obtain the token information, users can use the "Copy Tokens" button available in the app. Each gateway registered here will be randomly selected for sending automated or manual messages.
+To obtain the token information, users can use the "Copy Tokens" button available in the app.
+Each gateway registered here will be randomly selected for sending automated or manual messages.
 
 ## Map Settings
 
-In this section, users can configure the settings for the maps displayed within the Micropower Manager. Users can set the default zoom level and choose the default provider for the map. Additionally, users can specify the starting points for the map by entering the latitude and longitude coordinates.
+In this section, users can configure the settings for the maps displayed within the MicroPowerManager.
+Users can set the default zoom level and choose the default provider for the map.
+Additionally, users can specify the starting points for the map by entering the latitude and longitude coordinates.
 
 - **Default Zoom**: This setting allows users to define the initial zoom level of the map when it is first displayed.
 - **Default Provider**: Users can select the preferred map provider for displaying the map.
@@ -51,9 +58,11 @@ Once all settings are configured, users can click the **SAVE** button to apply t
 
 ## Plugin Management
 
-In this section, MPM users have the flexibility to activate and deactivate the plugins they wish to utilize within the Micropower Manager. Once activated, these plugins will be prominently displayed in the sidebar, enabling users to easily access and configure specific settings, as well as view any relevant plugin-specific information.
+In this section, MicroPowerManager users have the flexibility to activate and deactivate the plugins they wish to utilize within the MicroPowerManager.
+Once activated, these plugins will be prominently displayed in the sidebar, enabling users to easily access and configure specific settings, as well as view any relevant plugin-specific information.
 
-Plugins are designed to enhance functionality and often rely on third-party applications. To configure the necessary credentials or URLs for an activated plugin, users can simply click on the corresponding entry in the sidebar.
+Plugins are designed to enhance functionality and often rely on third-party applications.
+To configure the necessary credentials or URLs for an activated plugin, users can simply click on the corresponding entry in the sidebar.
 
 ### Africa's Talking Plugin Settings
 
@@ -63,7 +72,8 @@ Once the Africa's Talking plugin is activated, users must fill in the following 
 - **API Key**: The API key provided by Africa's Talking.
 - **Short Code**: The short code used for sending messages.
 
-The **Incoming Messages URL** and **Delivery Reports URL** will be automatically generated by the Micropower Manager (MPM). Users should copy these URLs and paste them into the Africa's Talking platform.
+The **Incoming Messages URL** and **Delivery Reports URL** will be automatically generated by MicroPowerManager.
+Users should copy these URLs and paste them into the Africa's Talking platform.
 
 For detailed information on setting up the Africa's Talking plugin, please refer to the [Africa's Talking Documentation](https://developers.africastalking.com/tutorials?products=sms).
 

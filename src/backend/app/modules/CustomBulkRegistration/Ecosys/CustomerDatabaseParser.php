@@ -17,7 +17,6 @@ use MPM\CustomBulkRegistration\Ecosys\Services\ApplianceService;
 use MPM\CustomBulkRegistration\Ecosys\Services\CityService;
 use MPM\CustomBulkRegistration\Ecosys\Services\ConnectionGroupService;
 use MPM\CustomBulkRegistration\Ecosys\Services\GeographicalInformationService;
-use MPM\CustomBulkRegistration\Ecosys\Services\MeterParameterService;
 use MPM\CustomBulkRegistration\Ecosys\Services\MeterService;
 use MPM\CustomBulkRegistration\Ecosys\Services\PersonService;
 use ParseCsv\Csv;
@@ -96,8 +95,7 @@ class CustomerDatabaseParser {
                 $row['serial_number'] = $meter->serial_number;
                 $this->checkRecordWasRecentlyCreated($meter, 'meter');
 
-                $meterParameter = $this->createRecordFromCsv($row, MeterParameterService::class);
-                event('accessRatePayment.initialize', $meterParameter);
+                event('accessRatePayment.initialize', $meter);
 
                 $geoInfo = $this->createRecordFromCsv($row, GeographicalInformationService::class);
 
@@ -106,7 +104,7 @@ class CustomerDatabaseParser {
                     'city_id' => $city->id,
                 ]);
 
-                $address->owner()->associate($meterParameter);
+                $address->owner()->associate($meter);
                 $address->save();
 
                 if ($geoInfo) {

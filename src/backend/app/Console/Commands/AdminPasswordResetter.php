@@ -12,7 +12,7 @@ class AdminPasswordResetter extends AbstractSharedCommand {
         parent::__construct();
     }
 
-    public function runInCompanyScope(): void {
+    public function handle(): void {
         $admin = $this->userService->resetAdminPassword();
         $this->alert('
         Please use following credentials to login:

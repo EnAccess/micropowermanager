@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Base\BaseModelCore;
+use App\Models\Base\BaseModelCentral;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property string|null $tail_tag
  * @property string|null $installation_command
  */
-class MpmPlugin extends BaseModelCore {
+class MpmPlugin extends BaseModelCentral {
     use HasFactory;
 
     public const SPARK_METER = 1;
