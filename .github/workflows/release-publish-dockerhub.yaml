@@ -21,6 +21,9 @@ jobs:
           - id: micropowermanager-backend
             repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileBackendProd
+          - id: micropowermanager-scheduler
+            repo: enaccess/micropowermanager-scheduler
+            dockerfile: ./docker/DockerfileSchedulerProd
         platform:
           - id: amd64
             arch: linux/amd64
