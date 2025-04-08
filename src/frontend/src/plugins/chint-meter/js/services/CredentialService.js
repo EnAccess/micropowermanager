@@ -1,6 +1,9 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import CredentialRepository from "../repositories/CredentialRepository"
-import { convertObjectKeysToCamelCase, convertObjectKeysToSnakeCase } from "@/Helpers/Utils"
+import {
+  convertObjectKeysToCamelCase,
+  convertObjectKeysToSnakeCase,
+} from "@/Helpers/Utils"
 
 export class CredentialService {
   constructor() {

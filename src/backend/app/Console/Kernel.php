@@ -10,6 +10,7 @@ use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
 use Inensus\CalinSmartMeter\Console\Commands\InstallPackage as InstallCalinSmartMeterPackage;
+use Inensus\ChintMeter\Console\Commands\InstallPackage as InstallChintMeterPackage;
 use Inensus\DalyBms\Console\Commands\InstallPackage as InstallDalyBmsPackage;
 use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
 use Inensus\KelinMeter\Console\Commands\InstallPackage as InstallKelinMeterPackage;
@@ -23,7 +24,6 @@ use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwif
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
-use Inensus\ChintMeter\Console\Commands\InstallPackage as InstallChintMeterPackage;
 
 class Kernel extends ConsoleKernel {
     /**
