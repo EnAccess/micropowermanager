@@ -1,6 +1,6 @@
 # mostly based on:
 # https://docs.docker.com/build/ci/github-actions/multi-platform/
-name: Publish images to DockerHub, deploy Demo environment to AWS
+name: Publish images to DockerHub, Deploy Demo environment
 
 on:
   release:
@@ -114,6 +114,9 @@ jobs:
           - id: micropowermanager-backend
             repo: enaccess/micropowermanager-backend
             dockerfile: ./docker/DockerfileBackendProd
+          - id: micropowermanager-scheduler
+            repo: enaccess/micropowermanager-scheduler
+            dockerfile: ./docker/DockerfileSchedulerProd
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
