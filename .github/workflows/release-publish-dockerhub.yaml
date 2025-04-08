@@ -198,5 +198,6 @@ jobs:
       # We need to restart the pods to pick up latest images
       - name: Restart MicroPowerManager pods on GKE
         run: |
-          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
           kubectl rollout restart deployment/mpm-backend -n micropowermanager-demo
+          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
+          kubectl rollout restart deployment/mpm-scheduler -n micropowermanager-demo
