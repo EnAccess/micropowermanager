@@ -10,6 +10,7 @@ return new class extends Migration {
         DB::table('mpm_plugins')->insert([
             [
                 'id' => MpmPlugin::CHINT_METER,
+                'usage_type' => 'mini-grid',
                 'name' => 'ChintMeter',
                 'description' => 'This plugin integrates Chint meters to Micropowermanager. It uses username & password for creating tokens for energy.',
                 'tail_tag' => 'Chint Meter',
