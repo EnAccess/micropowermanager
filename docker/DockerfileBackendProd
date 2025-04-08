@@ -48,22 +48,26 @@ RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
+# configure PHP
+COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
+
 # configure apache
 COPY docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
 RUN a2enmod rewrite
 
-# get MicroPowerManager source code and configuration
-COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
+# get MicroPowerManager source code and addition files
 COPY src/backend /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage
 
+COPY docker/entrypoint-backend.sh /usr/local/bin/entrypoint-backend-prod.sh
+RUN chmod +x /usr/local/bin/entrypoint-backend-prod.sh
+
 # install MicroPowerManager
 WORKDIR /var/www/html
-RUN composer install
+RUN composer install --no-dev
 
-COPY docker/entrypoint-backend-prod.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint-backend-prod.sh
+# define entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint-backend-prod.sh"]
 
 EXPOSE 80
