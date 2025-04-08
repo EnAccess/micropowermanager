@@ -1389,7 +1389,7 @@ export const exportedRoutes = [
       },
     ],
   },
-    {
+  {
     path: "/chint-meters",
     component: ChildRouteWrapper,
     meta: {
