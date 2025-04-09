@@ -18,6 +18,8 @@
       <md-table-row
         v-for="(item, index) in agentSoldApplianceService.list"
         :key="index"
+        @click="showSoldApplianceDetail(item.id)"
+        style="cursor: pointer"
       >
         <md-table-cell md-label="ID" md-sort-by="name">
           {{ item.id }}
@@ -82,6 +84,9 @@ export default {
         this.subscriber,
         this.agentSoldApplianceService.list.length,
       )
+    },
+    showSoldApplianceDetail(id) {
+      this.$router.push({ path: "/sold-appliance-detail/" + id })
     },
   },
 }
