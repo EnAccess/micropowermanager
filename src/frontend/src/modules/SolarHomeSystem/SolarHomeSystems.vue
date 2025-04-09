@@ -39,7 +39,12 @@
             {{ $tc("phrases.lastUpdate") }}
           </md-table-head>
         </md-table-row>
-        <md-table-row v-for="shs in solarHomeSystemService.list" :key="shs.id">
+        <md-table-row
+          v-for="shs in solarHomeSystemService.list"
+          :key="shs.id"
+          @click="navigateToDetails(shs.id)"
+          class="cursor-pointer"
+        >
           <md-table-cell>{{ shs.serialNumber }}</md-table-cell>
           <md-table-cell>{{ shs.manufacturer.name }}</md-table-cell>
           <md-table-cell>{{ shs.appliance.name }}</md-table-cell>
@@ -111,6 +116,9 @@ export default {
     },
     searching(searchTerm) {
       this.solarHomeSystemService.search(searchTerm)
+    },
+    navigateToDetails(id) {
+      this.$router.push(`/solar-home-systems/${id}`)
     },
     endSearching() {
       this.solarHomeSystemService.showAll()
