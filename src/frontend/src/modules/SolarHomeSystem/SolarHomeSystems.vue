@@ -119,7 +119,7 @@ export default {
       this.solarHomeSystemService.search(searchTerm)
     },
     navigateToDetails(id) {
-      this.$router.push(getSolarHomeSystemDetailRoute(id))
+      this.$router.push(`/solar-home-systems/${id}`)
     },
     endSearching() {
       this.solarHomeSystemService.showAll()

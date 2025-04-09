@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import BasicDetailsWidget from "./BasicDetailsWidget.vue"
-import OwnerWidget from "./OwnerWidget.vue"
-import LocationWidget from "./LocationWidget.vue"
+import BasicDetailsWidget from "./BasicDetails.vue"
+import OwnerWidget from "./Owner.vue"
+import LocationWidget from "./Location.vue"
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
 import { notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"

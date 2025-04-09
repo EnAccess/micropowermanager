@@ -14,6 +14,3 @@ export default {
     return Client.put(`${resource}`, meters)
   },
 }
-export function getMeterDetailRoute(id) {
-  return `/meters/${id}`
-}

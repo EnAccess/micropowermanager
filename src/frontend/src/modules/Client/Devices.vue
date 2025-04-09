@@ -50,10 +50,6 @@
 <script>
 import Widget from "@/shared/widget.vue"
 import { EventBus } from "@/shared/eventbus"
-import { getSolarHomeSystemDetailRoute } from "@/repositories/SolarHomeSystemRepository"
-import { getMeterDetailRoute } from "@/repositories/MeterRepository"
-import { getEBikeDetailRoute } from "@/repositories/EBikeRepository"
-import { getDeviceDetailRoute } from "@/repositories/DeviceRepository"
 export default {
   name: "Devices",
   props: {
@@ -73,13 +69,7 @@ export default {
   mounted: function () {
     EventBus.$emit("widgetContentLoaded", this.subscriber, this.devices.length)
   },
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /**
-   * Emit event to set map center for the given device
-   *
-   * @param {Object} device - device object
-   */
-  /*******  b22be44d-29b2-44df-8ac2-f22996c0ee68  *******/ methods: {
+  methods: {
     setMapCenter(device) {
       EventBus.$emit("setMapCenterForDevice", device)
     },
@@ -88,16 +78,16 @@ export default {
 
       switch (device.device_type) {
         case "meter":
-          route = getMeterDetailRoute(device.device_serial)
+          route = `/meters/${device.device_serial}`
           break
         case "solar_home_system":
-          route = getSolarHomeSystemDetailRoute(device.id)
+          route = `/solar-home-systems/${device.device_id}`
           break
         case "e_bike":
-          route = getEBikeDetailRoute(device.id)
+          route = `/e-bikes/${device.device_id}`
           break
         default:
-          route = getDeviceDetailRoute(device.id)
+          route = `/devices/${device.device_id}`
       }
       this.$router.push(route)
     },

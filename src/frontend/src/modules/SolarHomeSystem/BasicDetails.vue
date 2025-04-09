@@ -1,4 +1,4 @@
-// BasicDetailsWidget.vue
+
 <template>
   <widget
     :title="$tc('SolarHomeSystem')"

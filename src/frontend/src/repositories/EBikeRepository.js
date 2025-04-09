@@ -22,6 +22,3 @@ export default {
   resource,
 }
 
-export function getEBikeDetailRoute(id) {
-  return `/e-bikes/${id}`
-}
