@@ -22,7 +22,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
     public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:smsNotifier';
-    protected $description = 'Notifies customers on payments and low balance limits';
+    protected $description = 'Notifies customers on payments and low balance limits for SparkMeters';
 
     private $smsSettingsService;
     private $sms;
@@ -68,6 +68,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                 if (!$notifyCustomer) {
                     return true;
                 }
+
                 if (
                     !$notifyCustomer->mpmPerson->addresses
                     || $notifyCustomer->mpmPerson->addresses[0]->phone === null
@@ -80,6 +81,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
                     SmsTypes::TRANSACTION_CONFIRMATION,
                     SmsConfigs::class
                 );
+
                 $this->smSmsNotifiedCustomerService->createTransactionSmsNotify(
                     $notifyCustomer->customer_id,
                     $smTransaction->id
