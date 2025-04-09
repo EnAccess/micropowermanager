@@ -22,7 +22,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
     public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:smsNotifier';
-    protected $description = '';
+    protected $description = 'Notifies customers on payments and low balance limits for SteamaCoMeters';
 
     private $smsSettingsService;
     private $sms;
@@ -50,7 +50,10 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
 
     private function sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers) {
         $this->steamaTransactionService->getSteamaTransactions($transactionMin)
-            ->each(function ($steamaTransaction) use ($smsNotifiedCustomers, $customers) {
+            ->each(function ($steamaTransaction) use (
+                $smsNotifiedCustomers,
+                $customers
+            ) {
                 $smsNotifiedCustomers = $smsNotifiedCustomers->where(
                     'notify_id',
                     $steamaTransaction->id
@@ -127,23 +130,37 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
 
         $timeStart = microtime(true);
         $this->info('#############################');
-        $this->info('# Steamaco Meter Package #');
+        $this->info('# SteamaCo Meter Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('smsNotifier command started at '.$startedAt);
         try {
             $smsSettings = $this->smsSettingsService->getSmsSettings();
-            $transactionMin = $smsSettings->where('state', 'Transactions')
-                ->first()->not_send_elder_than_mins;
-            $lowBalanceMin = $smsSettings->where('state', 'Low Balance Warning')
-                ->first()->not_send_elder_than_mins;
+            $transactionsSettings = $smsSettings->where('state', 'Transactions')->first();
+
+            if (!$transactionsSettings) {
+                throw new CronJobException('Transaction min is not set');
+            }
+            $transactionMin = $transactionsSettings->not_send_elder_than_mins;
+
+            $lowBalanceWarningSetting = $smsSettings->where('state', 'Low Balance Warning')->first();
+
+            if (!$lowBalanceWarningSetting) {
+                throw new CronJobException('Low balance min is not set');
+            }
+
+            $lowBalanceMin = $lowBalanceWarningSetting->not_send_elder_than_mins;
             $smsNotifiedCustomers = $this->steamaSmsNotifiedCustomerService->getSteamaSmsNotifiedCustomers();
             $customers = $this->steamaCustomerService->getSteamaCustomersWithAddress();
-            $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
-            $this->sendLowBalanceWarningNotifySms($customers->where(
-                'updated_at',
-                '>=',
-                Carbon::now()->subMinutes($lowBalanceMin)
-            )->get(), $smsNotifiedCustomers, $lowBalanceMin);
+
+            if ($customers->count() && $smsNotifiedCustomers->count()) {
+                $this->sendTransactionNotifySms($transactionMin, $smsNotifiedCustomers, $customers);
+                $this->sendLowBalanceWarningNotifySms($customers
+                    ->where(
+                        'updated_at',
+                        '>=',
+                        Carbon::now()->subMinutes($lowBalanceMin)
+                    ), $smsNotifiedCustomers, $lowBalanceMin);
+            }
         } catch (CronJobException $e) {
             $this->warn('dataSync command is failed. message => '.$e->getMessage());
         }
