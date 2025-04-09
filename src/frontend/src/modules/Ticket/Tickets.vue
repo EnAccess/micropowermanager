@@ -2,6 +2,7 @@
   <div>
     <widget
       :button="true"
+      color="blue"
       :button-text="$tc('words.filter')"
       @widgetAction="
         () => {

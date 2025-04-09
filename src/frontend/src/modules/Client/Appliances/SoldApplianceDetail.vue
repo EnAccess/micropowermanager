@@ -16,7 +16,7 @@
     <div class="md-layout-item md-size-60">
       <widget
         :title="'Details of ' + soldAppliance.applianceType.name"
-        color="green"
+        color="blue"
         :key="updateDetail"
         :subscriber="subscriber"
       >

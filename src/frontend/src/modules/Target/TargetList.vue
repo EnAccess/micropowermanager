@@ -8,7 +8,7 @@
       :paginator="targets.paginator"
       :subscriber="subscriber"
       @widgetAction="newTarget"
-      color="green"
+      color="blue"
     >
       <!-- list of targets -->
       <md-table>

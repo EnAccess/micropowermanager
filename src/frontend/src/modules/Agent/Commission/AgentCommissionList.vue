@@ -7,7 +7,7 @@
       :button="true"
       :title="$tc('phrases.commissionType', 2)"
       @widgetAction="newCommission"
-      color="green"
+      color="blue"
       :subscriber="subscriber"
     >
       <md-progress-bar md-mode="indeterminate" v-if="loading" />

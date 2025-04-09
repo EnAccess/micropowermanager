@@ -3,7 +3,7 @@
     :id="'revenue-types'"
     :title="$tc('phrases.revenueAnalysis')"
     :subscriber="subscriber"
-    color="green"
+    color="blue"
   >
     <md-table>
       <md-table-row>

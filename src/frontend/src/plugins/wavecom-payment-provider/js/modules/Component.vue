@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget color="green" :title="title">
+    <widget color="blue" :title="title">
       <div class="md-layout md-gutter">
         <div
           class="md-layout-item md-size-100"
