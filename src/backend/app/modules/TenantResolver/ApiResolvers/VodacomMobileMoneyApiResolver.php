@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 
 class VodacomMobileMoneyApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
-        $companyId = auth('api')->payload()->get('companyId');
+        /** @var \Tymon\JWTAuth\JWTGuard $guard */
+        $guard = auth('api');
+        $payload = $guard->check() ? $guard->payload() : null;
+        $companyId ??= $payload?->get('companyId');
 
         if (!$companyId) {
             throw new ValidationException('failed to parse company identifier from the webhook');
