@@ -8,7 +8,7 @@
       :button="true"
       :paginator="people.paginator"
       :route_name="'/people'"
-      color="green"
+      color="blue"
       :button-text="$tc('phrases.addCustomer')"
       @widgetAction="
         () => {

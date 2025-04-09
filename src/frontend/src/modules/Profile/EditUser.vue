@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget v-if="showEditUser" :title="$tc('words.edit')" color="green">
+    <widget v-if="showEditUser" :title="$tc('words.edit')" color="blue">
       <form data-vv-scope="Edit-Form">
         <div class="edit-container">
           <md-card>

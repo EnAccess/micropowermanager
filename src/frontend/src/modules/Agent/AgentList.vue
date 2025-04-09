@@ -9,7 +9,7 @@
       :button-text="$tc('phrases.newAgent')"
       @widgetAction="showAddNewAgent"
       :paginator="agentService.paginator"
-      color="green"
+      color="blue"
     >
       <md-table>
         <md-table-row>
