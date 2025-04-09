@@ -26,7 +26,7 @@
           {{ item.applianceName }}
         </md-table-cell>
         <md-table-cell md-label="Amount" md-sort-by="amount">
-          {{ item.amount }}
+          {{ moneyFormat(item.amount) }}
         </md-table-cell>
         <md-table-cell md-label="Customer" md-sort-by="customerName">
           {{ item.customerName }}

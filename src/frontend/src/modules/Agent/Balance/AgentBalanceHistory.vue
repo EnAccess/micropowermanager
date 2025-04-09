@@ -32,7 +32,7 @@
               {{ item.type }}
             </md-table-cell>
             <md-table-cell md-label="Amount">
-              {{ item.amount }}
+              {{ moneyFormat(item.amount) }}
             </md-table-cell>
             <md-table-cell md-label="Date">
               {{ item.createdAt }}
