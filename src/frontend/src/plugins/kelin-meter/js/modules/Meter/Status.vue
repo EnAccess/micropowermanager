@@ -3,7 +3,7 @@
     <widget
       id="meter-status"
       :title="title"
-      color="green"
+      color="blue"
       :newRecordButton="false"
     >
       <div class="md-layout md-gutter">

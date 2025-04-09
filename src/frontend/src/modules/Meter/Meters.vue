@@ -7,7 +7,7 @@
       :search="true"
       :subscriber="subscriber"
       :route_name="'/meters'"
-      color="green"
+      color="blue"
     >
       <md-table md-card style="margin-left: 0">
         <md-table-row>

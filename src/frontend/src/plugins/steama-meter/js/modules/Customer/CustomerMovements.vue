@@ -8,7 +8,7 @@
       :route_name="transactionsService.routeName"
       :show_per_page="true"
       :subscriber="subscriber"
-      color="green"
+      color="blue"
       :newRecordButton="false"
     >
       <md-table

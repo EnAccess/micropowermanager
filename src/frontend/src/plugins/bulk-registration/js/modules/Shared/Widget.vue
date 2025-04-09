@@ -215,6 +215,28 @@ export default {
   }
 }
 
+.md-toolbar[data-color="blue"] {
+  background: #1b75ba;
+  background: linear-gradient(45deg, #1b75ba, #77d9f7);
+  box-shadow:
+    0 12px 20px -10px #1b75ba71,
+    0 4px 20px 0 #17456931,
+    0 7px 8px -5px #17456951;
+
+  h4 {
+    color: #fefefe;
+  }
+
+  svg {
+    color: #fefefe;
+  }
+
+  .chic-button {
+    background-color: #325932 !important;
+    color: #fefefe !important;
+  }
+}
+
 .md-toolbar[data-color="orange"] {
   background: rgb(164, 106, 0);
   background: linear-gradient(

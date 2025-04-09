@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newCluster', 1)" color="green">
+    <widget :title="$tc('phrases.newCluster', 1)" color="blue">
       <md-card class="md-layout-item md-size-100">
         <md-card-content>
           <div class="md-layout md-gutter">

@@ -6,7 +6,7 @@
       :button="false"
       button-text="Add new User"
       @widgetAction="showAddUser"
-      color="green"
+      color="blue"
       :subscriber="subscriber"
     >
       <md-table

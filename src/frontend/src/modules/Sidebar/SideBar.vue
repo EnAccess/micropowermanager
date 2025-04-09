@@ -2,7 +2,7 @@
   <div class="sidebar" :data-color="sidebarItemColor">
     <div class="logo">
       <div class="brand-column">
-        <img class="logo" alt="logo" :src="imgLogo" />
+        <img class="logologo" alt="logo" :src="imgLogo" />
 
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
@@ -137,7 +137,7 @@ export default {
     },
     imgLogo: {
       type: String,
-      default: require("@/assets/images/Logo1.png"),
+      default: require("@/assets/images/mpmlogo_stylized.svg"),
     },
     sidebarItemColor: {
       type: String,
@@ -252,7 +252,7 @@ export default {
   background: #6b6a6a !important;
   position: relative;
   width: calc(100%) !important;
-  border-right: 5px solid #9d302a;
+  border-right: 5px solid #1b75ba;
 }
 
 .no-bg {
@@ -283,5 +283,9 @@ export default {
 
 .p-15 {
   padding: 10px;
+}
+
+.logologo {
+  max-width: 50px;
 }
 </style>
