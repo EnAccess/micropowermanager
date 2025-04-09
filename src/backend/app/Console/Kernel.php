@@ -21,6 +21,7 @@ use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPacka
 use Inensus\SunKingSHS\Console\Commands\InstallPackage as InstallSunKingSHSPackage;
 use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
+use Inensus\VodacomMobileMoney\Console\Commands\InstallPackage as InstallVodacomMobileMoneyPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel {
         InstallAngazaSHSPackage::class,
         InstallDalyBmsPackage::class,
         InstallAfricasTalkingPackage::class,
+        InstallVodacomMobileMoneyPackage::class,
     ];
 
     /**

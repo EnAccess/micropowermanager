@@ -180,6 +180,7 @@ return [
         Inensus\AngazaSHS\Providers\AngazaSHSServiceProvider::class,
         Inensus\DalyBms\Providers\DalyBmsServiceProvider::class,
         Inensus\AfricasTalking\Providers\AfricasTalkingServiceProvider::class,
+        Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider::class,
     ],
 
     /*
