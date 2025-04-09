@@ -14,7 +14,7 @@ hero:
       text: Demo Version
       link: https://demo.micropowermanager.io/#/login
   image:
-    src: /mpmlogo_raw.png
+    src: /mpmlogo_stylized.svg
     alt: MicroPowerManager
 
 features:

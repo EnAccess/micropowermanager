@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://github.com/EnAccess/micropowermanager">
     <img
-      src="https://micropowermanager.io/mpmlogo_raw.png"
+      src="https://enaccess.org/wp-content/uploads/2024/07/MPM-Icon.svg"
       alt="OpenSmartMeter"
       width="320"
     >
