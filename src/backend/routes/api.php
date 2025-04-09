@@ -304,6 +304,7 @@ Route::group(['prefix' => 'device-addresses'], function () {
 Route::group(['prefix' => 'solar-home-systems'], static function () {
     Route::get('/', 'SolarHomeSystemController@index');
     Route::post('/', 'SolarHomeSystemController@store');
+    Route::get('/{id}', 'SolarHomeSystemController@show');
     Route::get('/search', 'SolarHomeSystemController@search');
 });
 Route::group(['prefix' => 'e-bikes'], static function () {

@@ -73,3 +73,15 @@ resource "google_compute_instance" "ipsec_gateway" {
     EOT
   }
 }
+
+resource "ansible_host" "ipsec_gateway" {
+  name = "vodacom-mz-ipsec-gateway-cloud"
+
+  variables = {
+    ansible_host = google_compute_address.ipsec_gateway_external_ip.address
+    # TODO: Can we get the user dynamically from Google Auth somehow
+    # ansible_user                = "me"
+    # TODO: Can we get this to work fully dynamically?
+    # ansible_ssh_common_args     = "'-o ProxyCommand=\"gcloud compute ssh vodacom-mz-ipsec-gateway-cloud --zone=europe-west10-a --ssh-flag=-W --quiet\"'"
+  }
+}

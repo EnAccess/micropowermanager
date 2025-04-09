@@ -1,0 +1,23 @@
+meta {
+  name: Advanced Transaction Search
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{mpm_backend_url}}/api/transactions/advanced?page=1&per_page=15&status=1&provider=agent_transaction
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  per_page: 15
+  status: 1
+  provider: agent_transaction
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
 # install basic apt packages
 RUN apt-get update && apt-get install -y \
@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     zlib1g-dev
+
+# install container specific apt packages
+RUN apt-get update && apt-get install -y \
+    cron
 
 # remove apt lists
 RUN rm -rf /var/lib/apt/lists/*
@@ -38,30 +42,30 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_enable=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_autostart=0 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_connect_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
+    echo xdebug.remote_connephpct_back=1 >> /usr/local/etc/php/conf.d/xdebug.ini; \
     echo xdebug.remote_port=9000 >> /usr/local/etc/php/conf.d/xdebug.ini; \
-    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
+    echo xdebug.remote_log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;log=/tmp/php5-xdebug.log >> /usr/local/etc/php/conf.d/xdebug.ini;
 
 # configure PHP
 COPY docker/config/php/php.ini /usr/local/etc/php/php.ini
 
-# configure apache
-COPY docker/config/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled
-RUN a2enmod rewrite
+# configure cron
+ADD docker/config/cron/crontab /etc/cron.d/cron
+RUN chmod 0644 /etc/cron.d/cron
+# create the log file to be able to run tail
+RUN touch /var/log/cron.log
 
 # get MicroPowerManager source code and addition files
 COPY src/backend /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage
 
-COPY docker/entrypoint-backend.sh /usr/local/bin/entrypoint-backend-prod.sh
-RUN chmod +x /usr/local/bin/entrypoint-backend-prod.sh
+COPY docker/entrypoint-scheduler.sh /usr/local/bin/entrypoint-scheduler-prod.sh
+RUN chmod +x /usr/local/bin/entrypoint-scheduler-prod.sh
 
 # install MicroPowerManager
 WORKDIR /var/www/html
 RUN composer install --no-dev
 
 # define entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint-backend-prod.sh"]
-
-EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/entrypoint-scheduler-prod.sh"]

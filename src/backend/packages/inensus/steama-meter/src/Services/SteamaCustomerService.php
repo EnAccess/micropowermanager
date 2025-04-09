@@ -351,7 +351,7 @@ class SteamaCustomerService implements ISynchronizeService {
         switch ($plan) {
             case 'Subscription Plan':
                 $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()
-                    ->with('paymentPlanSubscription')->where(
+                    ->whereHasMorph('paymentPlan', $this->subscriptionPaymentPlan->getMorphClass())->where(
                         'customer_id',
                         $customer['id']
                     )->first();
@@ -364,7 +364,7 @@ class SteamaCustomerService implements ISynchronizeService {
 
             case 'Hybrid':
                 $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()
-                    ->with('paymentPlanSubscription')->where(
+                    ->whereHasMorph('paymentPlan', $this->hybridPaymentPlan->getMorphClass())->where(
                         'customer_id',
                         $customer['id']
                     )->first();
@@ -377,7 +377,7 @@ class SteamaCustomerService implements ISynchronizeService {
                 break;
             case 'Minimum Top-Up':
                 $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()
-                    ->with('paymentPlanMinimumTopUp')->where(
+                    ->whereHasMorph('paymentPlan', $this->minimumTopUpPaymentPlan->getMorphClass())->where(
                         'customer_id',
                         $customer['id']
                     )->first();
@@ -389,10 +389,11 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setMinimumTopUpPlan($customer);
                 break;
             case 'Per kWh':
-                $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()->with('paymentPlanPerKwh')->where(
-                    'customer_id',
-                    $customer['id']
-                )->first();
+                $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()
+                    ->whereHasMorph('paymentPlan', $this->perKwhPaymentPlan->getMorphClass())->where(
+                        'customer_id',
+                        $customer['id']
+                    )->first();
                 if ($customerBasisPlan) {
                     $customerBasisPlan->paymentPlanPerKwh()->delete();
                     $customerBasisPlan->delete();
@@ -400,10 +401,11 @@ class SteamaCustomerService implements ISynchronizeService {
                 $this->setPerKwhPlan($customer);
                 break;
             default:
-                $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()->with('paymentPlanFlatRate')->where(
-                    'customer_id',
-                    $customer['id']
-                )->first();
+                $customerBasisPlan = $this->customerBasisPaymentPlan->newQuery()
+                    ->whereHasMorph('paymentPlan', $this->flatRatePaymentPlan->getMorphClass())->where(
+                        'customer_id',
+                        $customer['id']
+                    )->first();
                 if ($customerBasisPlan) {
                     $customerBasisPlan->paymentPlanFlatRate()->delete();
                     $customerBasisPlan->delete();
