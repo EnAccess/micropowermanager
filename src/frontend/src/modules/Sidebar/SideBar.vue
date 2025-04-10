@@ -1,9 +1,9 @@
 <template>
   <div class="sidebar" :data-color="sidebarItemColor">
-    <div class="logo">
+    <!-- Fixed logo section that won't scroll -->
+    <div class="logo fixed-logo">
       <div class="brand-column">
         <img class="logo" alt="logo" :src="imgLogo" />
-
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
           <br />
@@ -12,6 +12,7 @@
       </div>
     </div>
 
+    <!-- Scrollable wrapper with single scrollbar -->
     <div class="sidebar-wrapper">
       <slot name="content"></slot>
       <md-list class="no-bg p-15" md-expand-single>
@@ -107,9 +108,12 @@
           </template>
         </template>
       </md-list>
+      <!-- Bottom buffer space -->
+      <div class="sidebar-bottom-buffer"></div>
     </div>
   </div>
 </template>
+
 <script>
 import { translateItem } from "@/Helpers/TranslateItem"
 import PasswordProtection from "@/shared/PasswordProtection"
@@ -189,41 +193,41 @@ export default {
   },
 }
 </script>
+
 <style>
 .sidebar {
   background: #2b2b2b;
-}
-
-.brand-column {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 260px;
   display: flex;
-  overflow: visible;
-  margin-top: 0px;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  grid-auto-columns: 1fr;
-  grid-column-gap: 16px;
-  grid-row-gap: 16px;
-  -ms-grid-columns: 1fr 1fr;
-  grid-template-columns: 1fr 1fr;
-  -ms-grid-rows: auto auto;
-  grid-template-rows: auto auto;
-  -o-object-fit: fill;
-  object-fit: fill;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logo.fixed-logo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #2b2b2b;
+  padding: 15px 0;
+  width: 100%;
+}
+.sidebar-bottom-buffer {
+  height: 30px;
 }
 
 .brand-column {
-  text-align: center;
-  padding-left: 2rem !important;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 @media screen and (min-width: 991px) {
   .brand-column {
-    text-align: center;
     padding-left: 1rem !important;
   }
 }
