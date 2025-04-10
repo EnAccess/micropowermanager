@@ -14,7 +14,7 @@
       :button-text="$tc('phrases.newMaintenanceUser')"
       :button="true"
       @widgetAction="openNewUser"
-      color="green"
+      color="blue"
     >
       <form @submit.prevent="submitMaintainForm">
         <md-card>

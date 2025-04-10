@@ -6,7 +6,7 @@
     :id="'meter-transactions'"
     :paginator="transactions.paginator"
     :subscriber="subscriber"
-    color="green"
+    color="blue"
   >
     <md-card>
       <md-card-content>
