@@ -12,7 +12,7 @@ For that reason from now on, every registered person will be mentioned as a **cu
 > [!INFO]
 > MicroPowerManager users cannot create other device types.
 > Each new device (whether a mini-grid pre-paid meter, SHS or e-bike) must be assigned under 1) 
-a pre-defined cluster, 2) a mini-grid project and 3) village (i.e. even if a company is only managing SHSs or e-bikess (and no mini-grid meters/customers), a "mini-grid project" must still be defined in MicroPowerManager under which the SHSs/e-bikes are registered. This is so because originally MPM software was developed exclusively for mini-grid operations. Further development work could now entail changing the name of the layer "mini-grid project" to "device catchment area".
+a pre-defined cluster, 2) a mini-grid project and 3) village (i.e. even if a company is only managing SHSs or e-bikes (and no mini-grid meters/customers), a "mini-grid project" must still be defined in MicroPowerManager under which the SHSs/e-bikes are registered. This is so because originally MPM software was developed exclusively for mini-grid operations. Further development work could now entail changing the name of the layer "mini-grid project" to "device catchment area".
 
 ## Register a customer & device
 
