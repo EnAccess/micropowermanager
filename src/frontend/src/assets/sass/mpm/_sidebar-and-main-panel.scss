@@ -61,36 +61,6 @@
     background-color: rgba(200, 200, 200, 0.4) !important;
   }
 
-  .sidebar-wrapper {
-    position: relative;
-    height: calc(100vh - 75px);
-    overflow: auto;
-    z-index: 4;
-    overflow-x: hidden;
-
-    .dropdown .dropdown-backdrop {
-      display: none !important;
-    }
-
-    .navbar-form {
-      border: none;
-    }
-
-    .nav {
-      padding: 0;
-
-      [data-toggle="collapse"] ~ div > ul > li > a {
-        padding-left: 60px;
-      }
-
-      .caret {
-        margin-top: 13px;
-        position: absolute;
-        right: 18px;
-      }
-    }
-  }
-
   .logo-tim {
     border-radius: 50%;
     border: 1px solid #333;
@@ -174,10 +144,9 @@
   }
 
   .logo {
-    position: relative;
     padding: $padding-base 0;
-    z-index: 4;
-
+    position: sticky;
+    top: 0;
     &:after {
       content: "";
       position: absolute;
