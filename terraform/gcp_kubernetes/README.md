@@ -1,32 +1,39 @@
-# MicroPowerManager on Google Cloud Platform (GCP)
+# MicroPowerManager on Google Cloud Platform
 
-Very basic setup on GCP.
+Basic setup on Google Cloud Platform (GCP).
 
-- A Kubernetes cluster in Auto Pilot mode
-- A dedicated Postgres
-- Dedicated Redis cluster
-- Basic networking configuration using the `default` network
+- A Kubernetes cluster in [Autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview) mode
+- A dedicated MySQL database
+- In-cluster Redis cluster
+- Basic networking configuration using the GCP `default` network
 
-This is intended to be run in a dedicated GCP Project which only runs MPM.
+This is intended to be run in a dedicated GCP Project which only runs MicroPowerManager.
 
 ## Pre-requisites
 
-A Google Cloud Project (GCP) with
+The main requisites to use the Terraform module is a dedicated GCP project which is provisioned.
 
-- billing enabled
-- folllwing API's enabled
+A few manual steps have to be configured prior to using this Terraform module.
 
-```sh
-compute.googleapis.com
-servicenetworking.googleapis.com
-iap.googleapis.com
-```
+1. [Billing](https://cloud.google.com/billing/docs/concepts) has to be enabled and a billing account with valid payment details has to be linked to the project.
 
-Future
+2. The folllwing API's have to be enabled on project level
 
-```sh
-redis.googleapis.com
-```
+   ```sh
+   compute.googleapis.com
+   servicenetworking.googleapis.com
+   iap.googleapis.com
+   ```
+
+   Future
+
+   ```sh
+   redis.googleapis.com
+   ```
+
+3. Using GKE Autopilot required `Persistent Disk SSD (GB)` quota of at least 1000 GB.
+   Depending on when the project was created the default quota may or may not suffice this criteria.
+   Check the [quota](https://console.cloud.google.com/iam-admin/quotas) overview page to confirm or adjust if required.
 
 ## Usage
 
