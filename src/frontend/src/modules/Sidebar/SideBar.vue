@@ -197,30 +197,25 @@ export default {
 <style>
 .sidebar {
   background: #2b2b2b;
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 260px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
 }
 
-.fixed-logo {
+.logo.fixed-logo {
   position: sticky;
   top: 0;
   z-index: 10;
   background: #2b2b2b;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 15px 0;
+  width: 100%;
 }
-
-.sidebar-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 10px;
-}
-
 .sidebar-bottom-buffer {
   height: 30px;
 }
@@ -228,7 +223,7 @@ export default {
 .brand-column {
   display: flex;
   align-items: center;
-  padding-left: 2rem !important;
+  gap: 1rem;
 }
 
 @media screen and (min-width: 991px) {
