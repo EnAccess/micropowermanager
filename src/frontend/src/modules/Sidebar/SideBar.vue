@@ -207,6 +207,31 @@ export default {
   flex-direction: column;
   height: 100%;
 }
+.sidebar-wrapper {
+  position: relative;
+  z-index: 4;
+  .dropdown .dropdown-backdrop {
+    display: none !important;
+  }
+
+  .navbar-form {
+    border: none;
+  }
+
+  .nav {
+    padding: 0;
+
+    [data-toggle="collapse"] ~ div > ul > li > a {
+      padding-left: 60px;
+    }
+
+    .caret {
+      margin-top: 13px;
+      position: absolute;
+      right: 18px;
+    }
+  }
+}
 
 .logo.fixed-logo {
   position: sticky;
