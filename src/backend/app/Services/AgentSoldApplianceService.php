@@ -8,6 +8,7 @@ use App\Models\AssetPerson;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use MPM\Device\DeviceService;
 use MPM\Transaction\TransactionService;
 
 /**
@@ -28,6 +29,7 @@ class AgentSoldApplianceService implements IBaseService {
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
         private AgentService $agentService,
+        private DeviceService $deviceService,
     ) {}
 
     public function create($applianceData): AgentSoldAppliance {
@@ -121,6 +123,7 @@ class AgentSoldApplianceService implements IBaseService {
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
+        $deviceSerial = $requestData['device_serial'] ?? null;
 
         // create agent transaction
         $agentTransactionData = [
@@ -151,6 +154,7 @@ class AgentSoldApplianceService implements IBaseService {
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => $requestData['down_payment'],
             'asset_id' => $assignedAppliance->appliance->id,
+            'device_serial' => $deviceSerial,
         ];
 
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
@@ -158,6 +162,12 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentAppliancePersonService->setAssigned($appliancePerson);
         $this->agentAppliancePersonService->assign();
         $this->appliancePersonService->save($appliancePerson);
+
+        if ($deviceSerial) {
+            $device = $this->deviceService->getBySerialNumber($deviceSerial);
+            $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
+            $appliancePerson->device_serial = $deviceSerial;
+        }
 
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',

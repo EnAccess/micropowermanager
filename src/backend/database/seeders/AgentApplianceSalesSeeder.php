@@ -6,7 +6,11 @@ use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
 use App\Models\Asset;
+use App\Models\AssetType;
+use App\Models\Device;
+use App\Models\Manufacturer;
 use App\Models\Person\Person;
+use App\Models\SolarHomeSystem;
 use App\Services\AgentSoldApplianceService;
 use Illuminate\Database\Seeder;
 
@@ -34,7 +38,8 @@ class AgentApplianceSalesSeeder extends Seeder {
         }
 
         // Fetch Existing Assets
-        $assets = Asset::all();
+        $assetType = AssetType::where('name', 'Solar Home System')->first();
+        $assets = Asset::where('asset_type_id', $assetType->id)->get();
         if ($assets->isEmpty()) {
             $this->command->warn('No existing assets found. Skipping seeder.');
 
@@ -53,11 +58,22 @@ class AgentApplianceSalesSeeder extends Seeder {
         });
 
         // Simulate Sales
-        $assignedAppliances->each(function ($assignedAppliance) use ($customers) {
+        $assignedAppliances->each(function ($assignedAppliance) use ($customers, $assets) {
             $soldAppliance = AgentSoldAppliance::factory()->create([
                 'agent_assigned_appliance_id' => $assignedAppliance->id,
                 'person_id' => $customers->random()->id,
             ]);
+
+            $solarHomeSystem = SolarHomeSystem::factory()
+                ->for($assets->random(), 'appliance')
+                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->create();
+
+            $device = Device::factory()
+                ->for($solarHomeSystem, 'device')
+                ->create([
+                    'device_serial' => $solarHomeSystem->serial_number,
+                ]);
             // proccess sales
             $agentSoldApplianceService = app()->make(AgentSoldApplianceService::class);
             $agentSoldApplianceService->processSaleFromRequest($soldAppliance, [
@@ -65,6 +81,7 @@ class AgentApplianceSalesSeeder extends Seeder {
                 'first_payment_date' => now(),
                 'tenure' => 12,
                 'down_payment' => 1000,
+                'device_serial' => $device->device_serial,
             ]);
         });
 
