@@ -80,7 +80,6 @@ class AddressesService implements IBaseService, IAssociative {
             'phone' => $addressData['phone'] ?? null,
             'street' => $addressData['street'] ?? null,
             'city_id' => $addressData['city_id'] ?? null,
-            'geo_id' => $addressData['geo_id'] ?? null,
             'is_primary' => $addressData['is_primary'] ?? 0,
         ]);
     }

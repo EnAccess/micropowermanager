@@ -27,6 +27,8 @@ class CreateAgentSoldApplianceRequest extends FormRequest {
             'first_payment_date' => 'required',
             'agent_assigned_appliance_id' => 'required',
             'device_serial' => 'nullable|string',
+            'address' => 'nullable|array',
+            'points' => 'nullable|string',
         ];
     }
 }

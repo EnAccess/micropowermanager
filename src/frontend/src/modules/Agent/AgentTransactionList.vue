@@ -39,8 +39,11 @@
 import Widget from "../../shared/widget"
 import { AgentTransactionService } from "@/services/AgentTransactionService"
 import { EventBus } from "@/shared/eventbus"
+import { currency } from "@/mixins/currency"
+
 export default {
   name: "AgentTransactionList",
+  mixins: [currency],
   data() {
     return {
       subscriber: "agent-transactions",
