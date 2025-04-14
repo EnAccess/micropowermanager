@@ -47,6 +47,12 @@ resource "google_compute_instance" "ipsec_gateway" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      boot_disk[0].initialize_params[0].image
+    ]
+  }
+
   network_interface {
     network = "default"
     access_config {
