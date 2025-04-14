@@ -29,19 +29,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $appliancePerson->save();
     }
 
-    public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction) {
-        $soldApplianceDataContainer = app()->makeWith(
-            SoldApplianceDataContainer::class,
-            [
-                'asset' => $asset,
-                'assetType' => $asset->assetType,
-                'assetPerson' => $assetPerson,
-                'transaction' => $transaction,
-            ]
-        );
-        event('appliance.sold', $soldApplianceDataContainer);
-    }
-
     public function createLogForSoldAppliance($assetPerson, $cost, $preferredPrice) {
         $currency = $this->getCurrencyFromMainSettings();
 
