@@ -1,5 +1,5 @@
 <?php
 
-namespace App\Exceptions\Meter;
+namespace App\Exceptions\Meters;
 
 class MeterNotFound extends \Exception {}
