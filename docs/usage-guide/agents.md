@@ -15,7 +15,7 @@ For more information on how to generate and manage tickets, see [Tickets](/usage
 
 ## Agent Commission Types
 
-![alt text](image.png)
+![Agent Commission Types](images/agent-commission-types.png)
 
 Agents receive cash from customers on site.
 An agent's **outstanding balance** is the money it owes the company (i.e. it is the money it has collected on behalf of the company and has to transfer accordingly).
