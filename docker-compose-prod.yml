@@ -16,6 +16,12 @@ services:
     ports:
       - 8000:80
       - 8443:443
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
 
   frontend-prod:
     container_name: frontend-prod
@@ -38,6 +44,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      backend-prod:
+        condition: service_healthy
     links:
       - mysql:db
       - redis:redis
