@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
