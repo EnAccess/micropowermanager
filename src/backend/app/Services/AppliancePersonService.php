@@ -37,65 +37,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
         }
     }
 
-    public function createFromRequest($request, $person, $asset) {
-        $this->checkDownPaymentIsBigger($request->input('down_payment'), $request->input('cost'));
-        $assetPerson = $this->assetPerson::query()->make(
-            [
-                'person_id' => $person->id,
-                'asset_id' => $asset->id,
-                'total_cost' => $request->input('cost'),
-                'down_payment' => $request->input('downPayment'),
-                'rate_count' => $request->input('rate'),
-                'creator_id' => $request->input('creatorId'),
-            ]
-        );
-
-        $buyerAddress = $person->addresses()->where('is_primary', 1)->first();
-        $sender = $buyerAddress == null ? '-' : $buyerAddress->phone;
-        $transaction = null;
-
-        $meter = null;
-        if ($asset->assetType->id === AssetType::APPLIANCE_TYPE_SHS) {
-            $meter = $person->meters()->whereHas(
-                'meter',
-                static function ($q) {
-                    $q->whereHas(
-                        'manufacturer',
-                        static function ($q) {
-                            $q->where('name', 'SunKing SHS');
-                        }
-                    );
-                }
-            )->first();
-            $meter = $meter?->meter;
-        }
-        if ((int) $request->input('downPayment') > 0) {
-            $transaction = $this->cashTransactionService->createCashTransaction(
-                $request->input('creatorId'),
-                $request->input('downPayment'),
-                $sender,
-                $meter
-            );
-        }
-
-        $assetPerson->save();
-        $cost = $request->input('cost');
-        $preferredPrice = $request->input('preferredPrice');
-
-        // if appliance sold cost different than appliance preferred price
-        if ($cost !== $preferredPrice) {
-            $this->createLogForSoldAppliance($assetPerson, $cost, $preferredPrice);
-        }
-
-        $this->initSoldApplianceDataContainer(
-            $asset,
-            $assetPerson,
-            $transaction
-        );
-
-        return $assetPerson;
-    }
-
     public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction) {
         $soldApplianceDataContainer = app()->makeWith(
             SoldApplianceDataContainer::class,
