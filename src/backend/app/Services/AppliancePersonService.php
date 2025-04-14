@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Exceptions\DownPaymentBiggerThanAppliancePriceException;
 use App\Misc\SoldApplianceDataContainer;
 use App\Models\AssetPerson;
-use App\Models\AssetType;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
@@ -29,12 +27,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
 
     public function save($appliancePerson): bool {
         return $appliancePerson->save();
-    }
-
-    private function checkDownPaymentIsBigger($downPayment, $cost) {
-        if ($downPayment > $cost) {
-            throw new DownPaymentBiggerThanAppliancePriceException('Down payment is not bigger than appliance sold cost ');
-        }
     }
 
     public function initSoldApplianceDataContainer($asset, $assetPerson, $transaction) {
