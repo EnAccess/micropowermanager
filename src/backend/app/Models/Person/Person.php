@@ -7,6 +7,7 @@ use App\Models\Address\Address;
 use App\Models\Address\HasAddressesInterface;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
+use App\Models\AssetPerson;
 use App\Models\Base\BaseModel;
 use App\Models\Country;
 use App\Models\CustomerGroup;
@@ -98,6 +99,10 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
 
     public function agentSoldAppliance(): HasOne {
         return $this->hasOne(AgentSoldAppliance::class);
+    }
+
+    public function assetPerson(): HasMany {
+        return $this->HasMany(AssetPerson::class, 'person_id', 'id');
     }
 
     public function __toString() {

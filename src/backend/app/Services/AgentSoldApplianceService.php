@@ -8,6 +8,8 @@ use App\Models\AssetPerson;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use MPM\Device\DeviceAddressService;
+use MPM\Device\DeviceService;
 use MPM\Transaction\TransactionService;
 
 /**
@@ -28,6 +30,11 @@ class AgentSoldApplianceService implements IBaseService {
         private AgentCommissionService $agentCommissionService,
         private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
         private AgentService $agentService,
+        private DeviceService $deviceService,
+        private DeviceAddressService $deviceAddressService,
+        private AddressesService $addressesService,
+        private AddressGeographicalInformationService $addressGeographicalInformationService,
+        private GeographicalInformationService $geographicalInformationService,
     ) {}
 
     public function create($applianceData): AgentSoldAppliance {
@@ -121,6 +128,7 @@ class AgentSoldApplianceService implements IBaseService {
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);
         $appliance = $assignedAppliance->appliance()->first();
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
+        $deviceSerial = $requestData['device_serial'] ?? null;
 
         // create agent transaction
         $agentTransactionData = [
@@ -151,6 +159,7 @@ class AgentSoldApplianceService implements IBaseService {
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => $requestData['down_payment'],
             'asset_id' => $assignedAppliance->appliance->id,
+            'device_serial' => $deviceSerial,
         ];
 
         $appliancePerson = $this->appliancePersonService->make($appliancePersonData);
@@ -158,6 +167,32 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentAppliancePersonService->setAssigned($appliancePerson);
         $this->agentAppliancePersonService->assign();
         $this->appliancePersonService->save($appliancePerson);
+
+        if ($deviceSerial) {
+            $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
+            $addressData = $requestData['address'] ?? ['street' => $addressFromCustomer->street, 'city_id' => $addressFromCustomer->city_id];
+            $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
+            $device = $this->deviceService->getBySerialNumber($deviceSerial);
+            $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
+            $address = $this->addressesService->make([
+                'street' => $addressData['street'],
+                'city_id' => $addressData['city_id'],
+            ]);
+
+            $this->deviceAddressService->setAssigned($address);
+            $this->deviceAddressService->setAssignee($device);
+            $this->deviceAddressService->assign();
+            $this->addressesService->save($address);
+
+            $geoInfo = $this->geographicalInformationService->make([
+                'points' => $points,
+            ]);
+
+            $this->addressGeographicalInformationService->setAssigned($geoInfo);
+            $this->addressGeographicalInformationService->setAssignee($address);
+            $this->addressGeographicalInformationService->assign();
+            $this->geographicalInformationService->save($geoInfo);
+        }
 
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',

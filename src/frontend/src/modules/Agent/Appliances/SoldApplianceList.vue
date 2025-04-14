@@ -44,9 +44,11 @@
 import Widget from "../../../shared/widget"
 import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService"
 import { EventBus } from "@/shared/eventbus"
+import { currency } from "@/mixins/currency"
 
 export default {
   name: "SoldApplianceList",
+  mixins: [currency],
   data() {
     return {
       subscriber: "agent-sold-appliances",

@@ -50,10 +50,11 @@ import Widget from "../../../shared/widget"
 import { EventBus } from "@/shared/eventbus"
 import AddAgentBalance from "./AddBalance"
 import { notify } from "@/mixins/notify"
+import { currency } from "@/mixins/currency"
 
 export default {
   name: "agentBalanceHistoryList",
-  mixins: [notify],
+  mixins: [notify, currency],
   data() {
     return {
       subscriber: "agent-balance-histories",
