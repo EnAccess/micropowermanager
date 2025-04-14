@@ -53,7 +53,7 @@ EOT
   default     = null
 
   validation {
-    condition     = (
+    condition = (
       var.internal_loadbalancer_address == null ||
       can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}$", var.internal_loadbalancer_address))
     )
