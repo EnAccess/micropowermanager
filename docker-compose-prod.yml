@@ -17,7 +17,7 @@ services:
       - 8000:80
       - 8443:443
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      test: [CMD, curl, -f, http://localhost/up]
       start_period: 60s
       interval: 30s
       timeout: 10s
