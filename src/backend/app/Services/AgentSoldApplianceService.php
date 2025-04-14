@@ -166,6 +166,7 @@ class AgentSoldApplianceService implements IBaseService {
         $this->agentAppliancePersonService->setAssignee($agent);
         $this->agentAppliancePersonService->setAssigned($appliancePerson);
         $this->agentAppliancePersonService->assign();
+        $this->appliancePersonService->save($appliancePerson);
 
         if ($deviceSerial) {
             $addressFromCustomer = $appliancePerson->person()->first()->addresses()->first();
@@ -173,7 +174,6 @@ class AgentSoldApplianceService implements IBaseService {
             $points = $requestData['points'] ?? $addressFromCustomer->geo()->first()->points;
             $device = $this->deviceService->getBySerialNumber($deviceSerial);
             $this->deviceService->update($device, ['person_id' => $requestData['person_id']]);
-            $appliancePerson->device_serial = $deviceSerial;
             $address = $this->addressesService->make([
                 'street' => $addressData['street'],
                 'city_id' => $addressData['city_id'],
@@ -193,8 +193,6 @@ class AgentSoldApplianceService implements IBaseService {
             $this->addressGeographicalInformationService->assign();
             $this->geographicalInformationService->save($geoInfo);
         }
-
-        $this->appliancePersonService->save($appliancePerson);
 
         $soldApplianceDataContainer = app()->makeWith(
             'App\Misc\SoldApplianceDataContainer',

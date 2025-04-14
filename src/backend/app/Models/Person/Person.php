@@ -101,8 +101,8 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
         return $this->hasOne(AgentSoldAppliance::class);
     }
 
-    public function assetPerson(): HasOne {
-        return $this->hasOne(AssetPerson::class, 'person_id', 'id');
+    public function assetPerson(): HasMany {
+        return $this->HasMany(AssetPerson::class, 'person_id', 'id');
     }
 
     public function __toString() {
