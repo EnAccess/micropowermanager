@@ -38,6 +38,29 @@ variable "create_internal_loadbalancer_address" {
   default     = false
 }
 
+variable "internal_loadbalancer_address" {
+  description = <<EOT
+Optional static internal IP address for the load balancer.
+
+If provided, the load balancer will use this specific IP instead of automatically assigning one.
+This IP must be part of the subnet associated with the region.
+
+In most cases, this can be left blank. However, specifying a static IP is useful when the same
+address needs to be reused — for example, during reprovisioning — to ensure continuity for external systems
+that depend on a consistent internal IP.
+EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition = (
+      var.internal_loadbalancer_address == null ||
+      can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}$", var.internal_loadbalancer_address))
+    )
+    error_message = "If set, internal_loadbalancer_address must be a valid IPv4 address."
+  }
+}
+
 variable "db_tier" {
   description = "The machine type to use for the Cloud SQL database. See tiers for more details and supported versions."
   type        = string
