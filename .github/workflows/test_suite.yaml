@@ -39,9 +39,11 @@ jobs:
           composer dump-autoload
         working-directory: ./src/backend
 
-      # - name: Generate key
-      #   run: php artisan key:generate
-      #   working-directory: ./src/backend
+      - name: Generate key
+        run: php artisan key:generate
+        working-directory: ./src/backend
+        env:
+          APP_KEY: ""
 
       - name: Run Migrations
         run: |
