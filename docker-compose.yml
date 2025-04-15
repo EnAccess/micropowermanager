@@ -18,6 +18,12 @@ services:
       - 8443:443
     volumes:
       - ./src/backend:/var/www/html
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
 
   frontend-dev:
     container_name: frontend-dev
@@ -41,6 +47,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      backend-dev:
+        condition: service_healthy
     links:
       - mysql:db
       - redis:redis

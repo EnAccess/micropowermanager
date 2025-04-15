@@ -20,7 +20,7 @@
           {{ item.id }}
         </md-table-cell>
         <md-table-cell md-label="Amount">
-          {{ item.amount }}
+          {{ moneyFormat(item.amount) }}
         </md-table-cell>
         <md-table-cell md-label="Device">
           {{ item.meter }}
@@ -39,8 +39,11 @@
 import Widget from "../../shared/widget"
 import { AgentTransactionService } from "@/services/AgentTransactionService"
 import { EventBus } from "@/shared/eventbus"
+import { currency } from "@/mixins/currency"
+
 export default {
   name: "AgentTransactionList",
+  mixins: [currency],
   data() {
     return {
       subscriber: "agent-transactions",

@@ -1,0 +1,27 @@
+{
+  "name": "inensus/vodacom-mobile-money",
+  "description": "Vodacom Mobile Money integration for MicroPowerManager",
+  "type": "package",
+  "require": {},
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Obinna Ikeh",
+      "email": "Hikenike6@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Inensus\\VodacomMobileMoney\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Inensus\\VodacomMobileMoney\\Providers\\VodacomMobileMoneyServiceProvider"
+      ]
+    }
+  }
+}

@@ -18,6 +18,8 @@
       <md-table-row
         v-for="(item, index) in agentSoldApplianceService.list"
         :key="index"
+        @click="showSoldApplianceDetail(item.id)"
+        style="cursor: pointer"
       >
         <md-table-cell md-label="ID" md-sort-by="name">
           {{ item.id }}
@@ -26,7 +28,7 @@
           {{ item.applianceName }}
         </md-table-cell>
         <md-table-cell md-label="Amount" md-sort-by="amount">
-          {{ item.amount }}
+          {{ moneyFormat(item.amount) }}
         </md-table-cell>
         <md-table-cell md-label="Customer" md-sort-by="customerName">
           {{ item.customerName }}
@@ -42,9 +44,11 @@
 import Widget from "../../../shared/widget"
 import { AgentSoldApplianceService } from "@/services/AgentSoldApplianceService"
 import { EventBus } from "@/shared/eventbus"
+import { currency } from "@/mixins/currency"
 
 export default {
   name: "SoldApplianceList",
+  mixins: [currency],
   data() {
     return {
       subscriber: "agent-sold-appliances",
@@ -82,6 +86,9 @@ export default {
         this.subscriber,
         this.agentSoldApplianceService.list.length,
       )
+    },
+    showSoldApplianceDetail(id) {
+      this.$router.push({ path: "/sold-appliance-detail/" + id })
     },
   },
 }

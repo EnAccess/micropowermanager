@@ -20,7 +20,7 @@
         :color="['#ef5350', '#e53935']"
         :header-text="$tc('phrases.processedTransactions')"
         :header-text-color="'#dddddd'"
-        :sub-text="readable(miniGridData.transactions[0].amount).toString()"
+        :sub-text="moneyFormat(miniGridData.transactions[0].amount)"
         :sub-text-color="'#e3e3e3'"
         box-icon="list"
         :box-icon-color="'#578839'"

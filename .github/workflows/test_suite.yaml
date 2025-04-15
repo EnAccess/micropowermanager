@@ -66,4 +66,4 @@ jobs:
           DB_DATABASE: micro_power_manager
           DB_USERNAME: root
           DB_PASSWORD: wF9zLp2qRxaS2e
-          JWT_SECRET: YOUR-JWT-SECRET
+          JWT_SECRET: TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU

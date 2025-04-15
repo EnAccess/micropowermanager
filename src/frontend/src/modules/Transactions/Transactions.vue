@@ -62,10 +62,7 @@
             <div class="md-layout-item">
               <div class="md-layout">
                 <span>
-                  {{
-                    readable(analyticsData.current.amount) +
-                    $store.getters["settings/getMainSettings"].currency
-                  }}
+                  {{ moneyFormat(analyticsData.current.amount) }}
                 </span>
               </div>
               <div class="md-layout">
@@ -166,10 +163,7 @@
           :color="['#ffa726', '#fb8c00']"
           :header-text="$tc('words.revenue')"
           :header-text-color="'#dddddd'"
-          :sub-text="
-            readable(analyticsData.current.amount) +
-            $store.getters['settings/getMainSettings'].currency
-          "
+          :sub-text="moneyFormat(analyticsData.current.amount)"
           :sub-text-color="'#e3e3e3'"
           box-icon="attach_money"
           :box-icon-color="'#578839'"
@@ -332,10 +326,7 @@
                   {{ transaction.sender }}
                 </md-table-cell>
                 <md-table-cell>
-                  {{
-                    readable(transaction.amount) +
-                    $store.getters["settings/getMainSettings"].currency
-                  }}
+                  {{ moneyFormat(transaction.amount) }}
                 </md-table-cell>
                 <md-table-cell>
                   {{ transaction.type }}

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWTGuard;
 
 /**
  * @group   Authenticator
@@ -64,7 +64,10 @@ class AuthController extends Controller {
      * @return JsonResponse
      */
     public function refresh() {
-        return $this->respondWithToken(auth()->refresh());
+        /** @var JWTGuard $guard */
+        $guard = auth()->guard('api');
+
+        return $this->respondWithToken($guard->refresh());
     }
 
     /**
@@ -75,11 +78,14 @@ class AuthController extends Controller {
      * @return JsonResponse
      */
     protected function respondWithToken($token) {
+        /** @var JWTGuard $guard */
+        $guard = auth()->guard('api');
+
         return response()->json(
             [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'expires_in' => $guard->factory()->getTTL() * 60,
                 'user' => auth('api')->user(),
             ]
         );

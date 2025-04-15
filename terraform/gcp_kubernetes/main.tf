@@ -143,6 +143,8 @@ resource "google_compute_address" "internal_loadbalancer_address" {
   name         = local.network_internal_loadbalancer_address_name
   region       = var.gcp_region
   address_type = "INTERNAL"
+  address      = var.internal_loadbalancer_address
+  purpose      = "SHARED_LOADBALANCER_VIP"
   subnetwork   = "default"
 }
 

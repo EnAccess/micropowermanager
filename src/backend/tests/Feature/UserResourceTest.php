@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserResource extends TestCase {
+class UserResourceTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 

@@ -22,6 +22,7 @@ use Inensus\StronMeter\Console\Commands\InstallPackage as InstallStronMeterPacka
 use Inensus\SunKingSHS\Console\Commands\InstallPackage as InstallSunKingSHSPackage;
 use Inensus\SwiftaPaymentProvider\Console\Commands\InstallPackage as InstallSwiftaPaymentProviderPackage;
 use Inensus\ViberMessaging\Console\Commands\InstallPackage as InstallViberMessagingPackage;
+use Inensus\VodacomMobileMoney\Console\Commands\InstallPackage as InstallVodacomMobileMoneyPackage;
 use Inensus\WavecomPaymentProvider\Console\Commands\InstallPackage as InstallWaveComPackage;
 use Inensus\WaveMoneyPaymentProvider\Console\Commands\InstallPackage as InstallWaveMoneyPaymentProviderPackage;
 
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel {
         InstallDalyBmsPackage::class,
         InstallAfricasTalkingPackage::class,
         InstallChintMeterPackage::class,
+        InstallVodacomMobileMoneyPackage::class,
     ];
 
     /**
@@ -66,8 +68,6 @@ class Kernel extends ConsoleKernel {
         $schedule->command('reports:outsource')->monthlyOn(1, '3:30');
         $schedule->command('sms:resend-rejected 5')->everyMinute();
         $schedule->command('update:cachedClustersDashboardData')->everyFifteenMinutes();
-        $schedule->command('demo:create-data 25 --company-id=11 --type=transaction')->dailyAt('00:00');
-        $schedule->command('demo:create-data 2 --company-id=11 --type=ticket')->dailyAt('00:00');
         $schedule->command('asset-rate:check')->dailyAt('00:00');
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');

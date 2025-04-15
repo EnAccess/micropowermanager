@@ -27,7 +27,7 @@
           {{ item.sender }}
         </md-table-cell>
         <md-table-cell :md-label="$tc('words.amount')" md-sort-by="amount">
-          {{ item.amount + " " + currency }}
+          {{ moneyFormat(item.amount) }}
         </md-table-cell>
         <md-table-cell :md-label="$tc('phrases.paidFor')" md-sort-by="type">
           {{ item.type }}

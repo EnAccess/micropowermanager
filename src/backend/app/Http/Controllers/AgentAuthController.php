@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Services\AgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\JWTGuard;
 
 /**
@@ -104,7 +103,7 @@ class AgentAuthController extends Controller {
             [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'expires_in' => $this->guard()->factory()->getTTL() * 60,
                 'agent' => $this->guard()->user(),
             ]
         );

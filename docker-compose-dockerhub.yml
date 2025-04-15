@@ -15,6 +15,12 @@ services:
     ports:
       - 8000:80
       - 8443:443
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
 
   frontend:
     container_name: frontend
@@ -35,12 +41,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      backend:
+        condition: service_healthy
     links:
       - mysql:db
       - redis:redis
-    volumes:
-      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
-      - ./src/backend:/var/www/html
 
   worker:
     container_name: worker

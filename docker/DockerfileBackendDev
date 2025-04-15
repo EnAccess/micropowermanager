@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libxml2-dev \
     libzip-dev \
+    unzip \
     zlib1g-dev
 
 # remove apt lists

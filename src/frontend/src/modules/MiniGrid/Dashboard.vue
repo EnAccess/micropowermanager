@@ -124,7 +124,7 @@
           </div>
         </div>
         <div class="md-layout-item md-size-100 map-area">
-          <widget :title="$tc('phrases.miniGridMap')" id="miniGrid-map">
+          <Widget :title="$tc('phrases.miniGridMap')" id="miniGrid-map">
             <mini-grid-map
               ref="miniGridMapRef"
               :mapping-service="mappingService"
@@ -132,7 +132,7 @@
               :miniGridId="miniGridId"
               @locationEdited="deviceLocationsEditedSet"
             />
-          </widget>
+          </Widget>
         </div>
         <!--
                 <div class="md-layout-item md-size-100">
@@ -247,6 +247,7 @@ import i18n from "@/i18n"
 import { ICONS, MappingService } from "@/services/MappingService"
 import { DeviceAddressService } from "@/services/DeviceAddressService"
 import moment from "moment"
+import Widget from "../../shared/widget"
 
 export default {
   name: "Dashboard",
@@ -257,6 +258,7 @@ export default {
     BoxGroup,
     TicketsOverview,
     RevenuePerCustomerType,
+    Widget,
   },
   mixins: [currency, notify],
   data() {
