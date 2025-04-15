@@ -17,6 +17,9 @@ export const mutations = {
   SET_PROTECTED_PAGE_PASSWORD(state, password) {
     state.password = password
   },
+  SET_PASSWORD(state, password) {
+    state.password = password
+  },
 }
 export const actions = {
   getProtectedPages({ commit }) {
@@ -48,6 +51,9 @@ export const actions = {
           reject(e)
         })
     })
+  },
+  setPassword({ commit }, password) {
+    commit("SET_PASSWORD", password)
   },
 }
 
