@@ -1,6 +1,6 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import MainSettingsRepository from "@/repositories/MainSettingsRepository"
-
+import store from "@/store/store"
 export class MainSettingsService {
   constructor() {
     this.repository = MainSettingsRepository
@@ -13,6 +13,7 @@ export class MainSettingsService {
       vatEnergy: null,
       vatAppliance: null,
       usageType: null,
+      password: null,
     }
   }
 
@@ -27,6 +28,7 @@ export class MainSettingsService {
       vatEnergy: mainSettings.vat_energy,
       vatAppliance: mainSettings.vat_appliance,
       usageType: mainSettings.usage_type,
+      password: store.getters["protection/getPassword"] ?? "",
     }
     return this.mainSettings
   }
@@ -36,6 +38,7 @@ export class MainSettingsService {
       let response = await this.repository.list()
       if (response.status === 200) {
         this.fromJson(response.data.data)
+
         return this.mainSettings
       } else {
         return new ErrorHandler(response.error, "http", response.status)
@@ -57,13 +60,17 @@ export class MainSettingsService {
         vat_energy: this.mainSettings.vatEnergy,
         vat_appliance: this.mainSettings.vatAppliance,
         usage_type: this.mainSettings.usageType,
+        password: this.mainSettings.password,
       }
+
       let response = await this.repository.update(
         mainSettingsPm.id,
         mainSettingsPm,
       )
       if (response.status === 200) {
+        store.dispatch("protection/setPassword", this.mainSettings.password)
         this.fromJson(response.data.data)
+
         return this.mainSettings
       } else {
         return new ErrorHandler(response.error, "http", response.status)
