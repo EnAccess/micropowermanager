@@ -45,7 +45,9 @@ jobs:
         working-directory: ./src/backend
 
       - name: Generate key
-        run: php artisan key:generate
+        run:  |
+          mv .env.example.ci .env
+          php artisan key:generate
         working-directory: ./src/backend
 
       - name: Run Migrations
