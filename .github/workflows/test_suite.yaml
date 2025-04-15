@@ -33,37 +33,27 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
 
+      - name: Config environment file
+        uses: c-py/action-dotenv-to-setenv@v5
+        with:
+          env-file: ./dev/.env.micropowermanager-ci
+
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
           composer dump-autoload
         working-directory: ./src/backend
 
-      # - name: Generate key
-      #   run: php artisan key:generate
-      #   working-directory: ./src/backend
+      - name: Generate key
+        run: php artisan key:generate
+        working-directory: ./src/backend
 
       - name: Run Migrations
         run: |
           php artisan migrate:fresh --seed
         working-directory: ./src/backend
-        env:
-          DB_CONNECTION: micro_power_manager
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: micro_power_manager
-          DB_USERNAME: root
-          DB_PASSWORD: wF9zLp2qRxaS2e
 
       - name: Execute tests
         run: php artisan test
         working-directory: ./src/backend
         continue-on-error: true
-        env:
-          DB_CONNECTION: micro_power_manager
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: micro_power_manager
-          DB_USERNAME: root
-          DB_PASSWORD: wF9zLp2qRxaS2e
-          JWT_SECRET: TihQ232bmMermM8HKaLHwzRl5JSuxwqhfEAQKxRHrQqjRUwrsw1FRZhAcLkihEDU
