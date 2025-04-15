@@ -40,7 +40,7 @@ jobs:
         working-directory: ./src/backend
 
       - name: Generate key
-        run:  |
+        run: |
           mv .env.ci .env
           php artisan key:generate
         working-directory: ./src/backend
