@@ -44,12 +44,6 @@ jobs:
           composer dump-autoload
         working-directory: ./src/backend
 
-      - name: Generate key
-        run: |
-          mv .env.example.ci .env
-          php artisan key:generate
-        working-directory: ./src/backend
-
       - name: Run Migrations
         run: |
           php artisan migrate:fresh --seed
