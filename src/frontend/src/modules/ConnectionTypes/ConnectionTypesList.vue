@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"

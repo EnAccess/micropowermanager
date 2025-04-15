@@ -52,14 +52,14 @@
 </template>
 
 <script>
-import widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { currency, notify } from "@/mixins"
 import SellApplianceModal from "@/modules/Client/Appliances/SellApplianceModal.vue"
 import { PersonService } from "@/services/PersonService"
 
 export default {
   name: "SoldAppliancesList",
-  components: { widget, SellApplianceModal },
+  components: { Widget, SellApplianceModal },
   mixins: [currency, notify],
   props: {
     soldAppliancesList: {

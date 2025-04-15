@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { currency } from "@/mixins/currency"
 import Add from "@/modules/Tariff/Add"
 import { EventBus } from "@/shared/eventbus"

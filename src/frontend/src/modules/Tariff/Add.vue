@@ -535,7 +535,7 @@
 
 <script>
 import { EventBus } from "@/shared/eventbus"
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { TariffService } from "@/services/TariffService"
 import { notify } from "@/mixins/notify"
 

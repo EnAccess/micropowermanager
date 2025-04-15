@@ -46,7 +46,7 @@
 <script>
 import { AgentService } from "@/services/AgentService"
 import { AgentBalanceHistoryService } from "@/services/AgentBalanceHistoryService"
-import Widget from "../../../shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import AddAgentBalance from "./AddBalance"
 import { notify } from "@/mixins/notify"

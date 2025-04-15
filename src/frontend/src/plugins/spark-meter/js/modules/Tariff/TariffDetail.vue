@@ -386,7 +386,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { TariffService } from "../../services/TariffService"
 import { notify } from "@/mixins/notify"
 

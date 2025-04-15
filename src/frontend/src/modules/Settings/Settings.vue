@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import MainSettings from "./MainSettings"
 import MapSettings from "./MapSettings"
 import SmsSettings from "./SmsSettings"

@@ -167,7 +167,7 @@
   </div>
 </template>
 <script>
-import Widget from "../../../shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import NewCommission from "../Commission/NewCommission"

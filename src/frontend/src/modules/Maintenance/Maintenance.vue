@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import NewUser from "./NewUser"
 import { EventBus } from "@/shared/eventbus"
 import { TicketService } from "@/services/TicketService"

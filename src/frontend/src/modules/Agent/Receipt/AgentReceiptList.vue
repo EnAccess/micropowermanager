@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import Widget from "../../../shared/widget"
+import Widget from "@/shared/Widget"
 import NewReceipt from "./NewReceipt"
 import { AgentReceiptService } from "@/services/AgentReceiptService"
 import { EventBus } from "@/shared/eventbus"

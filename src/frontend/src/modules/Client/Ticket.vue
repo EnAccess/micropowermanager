@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { Ticket, UserTickets } from "@/services/TicketService"
 import { resources } from "@/resources"
 import { EventBus } from "@/shared/eventbus"

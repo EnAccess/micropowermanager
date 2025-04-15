@@ -279,7 +279,7 @@
   </div>
 </template>
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { AgentService } from "@/services/AgentService"
 import { MiniGridService } from "@/services/MiniGridService"
 import CountryService from "../../services/CountryService"

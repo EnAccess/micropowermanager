@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { MiniGridService } from "@/services/MiniGridService"
 import { CityService } from "@/services/CityService"
 import { MappingService } from "@/services/MappingService"

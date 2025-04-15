@@ -290,7 +290,7 @@ import { timing } from "@/mixins/timing"
 import { currency } from "@/mixins/currency"
 import PaymentHistoryChart from "@/modules/Transactions/PaymentHistoryChart"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { TransactionService } from "@/services/TransactionService"
 import { PersonService } from "@/services/PersonService"
 

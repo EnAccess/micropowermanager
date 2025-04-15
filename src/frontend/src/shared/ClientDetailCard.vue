@@ -70,14 +70,14 @@
 </template>
 
 <script>
-import widget from "./widget"
+import Widget from "@/shared/Widget"
 import { PersonService } from "@/services/PersonService"
 import { notify } from "@/mixins/notify"
 
 export default {
   name: "ClientDetailCard",
   mixins: [notify],
-  components: { widget },
+  components: { Widget },
   data() {
     return {
       personService: new PersonService(),

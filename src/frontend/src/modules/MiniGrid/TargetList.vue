@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import moment from "moment"
 import { currency } from "@/mixins/currency"
 import { EventBus } from "@/shared/eventbus"

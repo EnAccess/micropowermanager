@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import { currency } from "@/mixins/currency"
 import { timing } from "@/mixins/timing"

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 
 export default {
   name: "AddNewUser",

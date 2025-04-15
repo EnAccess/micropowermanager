@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import AddAssetType from "./AddAssetType"
 import { EventBus } from "@/shared/eventbus"
 import { AssetTypeService } from "@/services/AssetTypeService"

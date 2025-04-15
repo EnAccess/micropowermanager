@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import { BookKeepingService } from "@/services/BookKeepingService"
 

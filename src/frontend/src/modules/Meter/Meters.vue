@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { Meters } from "@/services/MeterService"
 import { Manufacturers } from "@/services/ManufacturerService"
 import { EventBus } from "@/shared/eventbus"

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 import { ReportsService } from "@/services/ReportsService"
 export default {

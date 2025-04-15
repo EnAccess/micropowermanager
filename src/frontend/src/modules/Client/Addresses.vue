@@ -154,7 +154,7 @@
 <script>
 import { EventBus } from "@/shared/eventbus"
 import { Address, Addresses } from "@/services/AddressService"
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import { CityService } from "@/services/CityService"
 
 export default {

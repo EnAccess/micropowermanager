@@ -102,7 +102,7 @@
 <script>
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
-import widget from "../../../shared/widget"
+import Widget from "@/shared/Widget"
 import { notify } from "@/mixins/notify"
 
 export default {
@@ -114,7 +114,7 @@ export default {
       loading: false,
     }
   },
-  components: { widget },
+  components: { Widget },
   props: {
     addNewCommission: {
       type: Boolean,

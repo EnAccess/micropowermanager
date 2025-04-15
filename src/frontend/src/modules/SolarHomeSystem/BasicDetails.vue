@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { timing } from "@/mixins"
 
 export default {

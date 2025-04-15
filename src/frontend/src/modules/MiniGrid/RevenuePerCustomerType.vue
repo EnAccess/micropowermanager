@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import Loader from "@/shared/Loader.vue"
 import { EventBus } from "@/shared/eventbus"
 

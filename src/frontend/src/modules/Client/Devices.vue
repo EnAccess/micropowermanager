@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget.vue"
+import Widget from "@/shared/Widget"
 import { EventBus } from "@/shared/eventbus"
 export default {
   name: "Devices",

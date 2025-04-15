@@ -149,7 +149,7 @@
 import { ClusterService } from "@/services/ClusterService"
 import { ICONS, MappingService } from "@/services/MappingService"
 import { MiniGridService } from "@/services/MiniGridService"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import RedirectionModal from "@/shared/RedirectionModal"
 import MgMap from "@/modules/Map/MiniGridMap.vue"
 import { notify } from "@/mixins"

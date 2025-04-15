@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { StatusService } from "../../services/StatusService"
 import { CredentialService } from "../../services/CredentialService"
 import RedirectionModal from "@/shared/RedirectionModal"

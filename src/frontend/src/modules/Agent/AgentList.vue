@@ -34,7 +34,7 @@
 </template>
 <script>
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { AgentService } from "@/services/AgentService"
 import AddAgent from "@/modules/Agent/NewAgent"
 import { notify } from "@/mixins/notify"

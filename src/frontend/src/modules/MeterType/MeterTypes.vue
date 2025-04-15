@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { MeterTypeService } from "@/services/MeterTypeService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"

@@ -93,7 +93,7 @@ import RedirectionModal from "@/shared/RedirectionModal"
 
 import { EventBus } from "@/shared/eventbus"
 import { CredentialService } from "../../services/CredentialService"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget"
 import { CustomerService } from "../../services/CustomerService"
 import { MeterService } from "../../services/MeterService"
 import { notify } from "@/mixins/notify"

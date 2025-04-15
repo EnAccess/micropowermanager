@@ -38,7 +38,7 @@
   </div>
 </template>
 <script>
-import Widget from "../../../shared/widget"
+import Widget from "@/shared/Widget"
 import { AgentAssignedApplianceService } from "@/services/AgentAssignedApplianceService"
 import { AgentService } from "@/services/AgentService"
 import AssignAppliance from "./AssignAppliance"

@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import moment from "moment"
 import { Consumptions } from "@/services/MeterConsumptionService"
 import { currency } from "@/mixins/currency"

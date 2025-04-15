@@ -304,7 +304,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget"
 import {
   ConnectionTypes,
   NumberOfCustomers,
