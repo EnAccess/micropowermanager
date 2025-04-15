@@ -17,24 +17,26 @@ use MPM\Transaction\TransactionService;
  */
 class AgentSoldApplianceService implements IBaseService {
     public function __construct(
-        private AgentSoldAppliance $agentSoldAppliance,
-        private AssetPerson $assetPerson,
-        private AgentAssignedApplianceService $agentAssignedApplianceService,
-        private AgentBalanceHistoryService $agentBalanceHistoryService,
-        private AgentTransactionService $agentTransactionService,
-        private TransactionService $transactionService,
-        private AgentTransactionTransactionService $agentTransactionTransactionService,
-        private AppliancePersonService $appliancePersonService,
-        private AgentAppliancePersonService $agentAppliancePersonService,
-        private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
-        private AgentCommissionService $agentCommissionService,
-        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
-        private AgentService $agentService,
-        private DeviceService $deviceService,
-        private DeviceAddressService $deviceAddressService,
         private AddressesService $addressesService,
         private AddressGeographicalInformationService $addressGeographicalInformationService,
+        private AgentAppliancePersonService $agentAppliancePersonService,
+        private AgentAssignedApplianceHistoryBalanceService $agentAssignedApplianceHistoryBalanceService,
+        private AgentAssignedApplianceService $agentAssignedApplianceService,
+        private AgentBalanceHistoryService $agentBalanceHistoryService,
+        private AgentCommissionHistoryBalanceService $agentCommissionHistoryBalanceService,
+        private AgentCommissionService $agentCommissionService,
+        private AgentService $agentService,
+        private AgentSoldAppliance $agentSoldAppliance,
+        private AgentTransactionService $agentTransactionService,
+        private AgentTransactionTransactionService $agentTransactionTransactionService,
+        private AppliancePersonService $appliancePersonService,
+        private ApplianceRateService $applianceRateService,
+        private AssetPerson $assetPerson,
+        private DeviceAddressService $deviceAddressService,
+        private DeviceService $deviceService,
         private GeographicalInformationService $geographicalInformationService,
+        private PersonService $personService,
+        private TransactionService $transactionService,
     ) {}
 
     public function create($applianceData): AgentSoldAppliance {
@@ -194,17 +196,25 @@ class AgentSoldApplianceService implements IBaseService {
             $this->geographicalInformationService->save($geoInfo);
         }
 
-        $soldApplianceDataContainer = app()->makeWith(
-            'App\Misc\SoldApplianceDataContainer',
-            [
-                'asset' => $appliance,
-                'assetType' => $appliance->assetType,
-                'assetPerson' => $appliancePerson,
-                'transaction' => $transaction,
-            ]
-        );
+        // initalize appliance Rates
+        $buyer = $this->personService->getById($appliancePerson->person_id);
+        $this->applianceRateService->create($appliancePerson);
 
-        event('appliance.sold', $soldApplianceDataContainer);
+        if ($appliancePerson->down_payment > 0) {
+            $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
+            event(
+                'payment.successful',
+                [
+                    'amount' => $transaction->amount,
+                    'paymentService' => $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
+                    'paymentType' => 'down payment',
+                    'sender' => $transaction->sender,
+                    'paidFor' => $applianceRate,
+                    'payer' => $buyer,
+                    'transaction' => $transaction,
+                ]
+            );
+        }
 
         // assign agent assigned appliance to agent balance history
         $agentBalanceHistoryData = [
