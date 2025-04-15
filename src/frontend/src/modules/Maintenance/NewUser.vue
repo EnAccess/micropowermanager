@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { CityService } from "@/services/CityService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { MaintenanceService } from "@/services/MaintenanceService"

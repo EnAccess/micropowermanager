@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { WaveComService } from "@/plugins/wavecom-payment-provider/js/services/WaveComService"
 import { notify } from "@/mixins/notify"
 

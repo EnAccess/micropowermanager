@@ -367,7 +367,7 @@
 import { timing } from "@/mixins/timing"
 import { currency } from "@/mixins/currency"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
 import Box from "@/modules/Box"
 import { TransactionService } from "@/services/TransactionService"

@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import NewReceipt from "./NewReceipt"
 import { AgentReceiptService } from "@/services/AgentReceiptService"
 import { EventBus } from "@/shared/eventbus"

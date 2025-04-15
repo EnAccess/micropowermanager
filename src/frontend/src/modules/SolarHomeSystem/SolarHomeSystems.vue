@@ -67,7 +67,7 @@
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
 import { timing } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import AddSolarHomeSystemModal from "@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue"
 
 export default {

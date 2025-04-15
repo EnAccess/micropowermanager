@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { StatusService } from "../../services/StatusService"
 import { CredentialService } from "../../services/CredentialService"
 import RedirectionModal from "@/shared/RedirectionModal"

@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { CustomerService } from "../../services/CustomerService"
 import { EventBus } from "@/shared/eventbus"

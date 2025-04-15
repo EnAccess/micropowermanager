@@ -75,7 +75,7 @@
 <script>
 import { notify, timing } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import AddEBikeModal from "@/modules/EBikes/AddEBikeModal.vue"
 import { EBikeService } from "@/services/EBikeService"
 import EBikeDetailModal from "@/modules/EBikes/EBikeDetailModal.vue"

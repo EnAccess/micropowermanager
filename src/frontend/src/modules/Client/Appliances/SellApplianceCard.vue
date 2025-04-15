@@ -277,7 +277,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { ApplianceService } from "@/services/ApplianceService"
 import { AssetPersonService } from "@/services/AssetPersonService"
 import { currency, notify } from "@/mixins"

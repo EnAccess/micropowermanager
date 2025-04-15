@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { MiniGridService } from "@/services/MiniGridService"
 import { CityService } from "@/services/CityService"
 import { MappingService } from "@/services/MappingService"

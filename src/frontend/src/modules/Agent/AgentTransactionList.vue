@@ -36,7 +36,7 @@
   </widget>
 </template>
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { AgentTransactionService } from "@/services/AgentTransactionService"
 import { EventBus } from "@/shared/eventbus"
 import { currency } from "@/mixins/currency"

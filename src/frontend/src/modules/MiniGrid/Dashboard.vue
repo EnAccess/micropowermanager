@@ -247,7 +247,7 @@ import i18n from "@/i18n"
 import { ICONS, MappingService } from "@/services/MappingService"
 import { DeviceAddressService } from "@/services/DeviceAddressService"
 import moment from "moment"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Dashboard",

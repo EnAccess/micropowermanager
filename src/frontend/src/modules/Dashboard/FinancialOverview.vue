@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import moment from "moment"
 import { ClusterService } from "@/services/ClusterService"
 import ChartCard from "@/shared/ChartCard.vue"

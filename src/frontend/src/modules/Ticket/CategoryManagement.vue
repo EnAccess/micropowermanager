@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { TicketLabelService } from "@/services/TicketLabelService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"

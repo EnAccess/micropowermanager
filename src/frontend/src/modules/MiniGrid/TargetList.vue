@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import moment from "moment"
 import { currency } from "@/mixins/currency"
 import { EventBus } from "@/shared/eventbus"

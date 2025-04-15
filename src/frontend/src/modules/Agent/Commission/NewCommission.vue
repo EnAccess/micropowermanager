@@ -102,7 +102,7 @@
 <script>
 import { EventBus } from "@/shared/eventbus"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
 
 export default {

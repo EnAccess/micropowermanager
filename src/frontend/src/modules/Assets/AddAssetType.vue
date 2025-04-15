@@ -54,7 +54,7 @@
   </div>
 </template>
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { AssetTypeService } from "@/services/AssetTypeService"
 import { EventBus } from "@/shared/eventbus"
 

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import ClientMap from "@/modules/Map/ClientMap.vue"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService"
 

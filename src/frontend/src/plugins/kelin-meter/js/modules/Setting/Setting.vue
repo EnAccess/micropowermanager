@@ -121,7 +121,7 @@
 
 <script>
 import { SettingService } from "../../services/SettingService"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
 
 export default {

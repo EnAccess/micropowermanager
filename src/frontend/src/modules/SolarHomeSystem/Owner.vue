@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "OwnerWidget",

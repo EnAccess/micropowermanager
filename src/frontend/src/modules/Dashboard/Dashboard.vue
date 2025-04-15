@@ -43,7 +43,7 @@ import BoxGroup from "@/modules/Dashboard/BoxGroup"
 import FinancialOverview from "@/modules/Dashboard/FinancialOverview"
 import DashboardMap from "@/modules/Map/DashboardMap.vue"
 import { notify } from "@/mixins/notify"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import moment from "moment"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService"
 

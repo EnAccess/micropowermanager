@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import AddAssetType from "./AddAssetType"
 import { EventBus } from "@/shared/eventbus"
 import { AssetTypeService } from "@/services/AssetTypeService"

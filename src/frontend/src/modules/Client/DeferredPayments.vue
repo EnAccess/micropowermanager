@@ -60,7 +60,7 @@ import { AssetRateService } from "@/services/AssetRateService"
 import { AssetPersonService } from "@/services/AssetPersonService"
 import { currency, notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import SellApplianceModal from "@/modules/Client/Appliances/SellApplianceModal.vue"
 
 export default {

@@ -53,7 +53,7 @@ import RedirectionModal from "@/shared/RedirectionModal"
 import { SiteService } from "../../services/SiteService"
 import { EventBus } from "@/shared/eventbus"
 import { CredentialService } from "../../services/CredentialService"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
 
 export default {

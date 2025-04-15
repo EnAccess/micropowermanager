@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import MainSettings from "./MainSettings"
 import MapSettings from "./MapSettings"
 import SmsSettings from "./SmsSettings"

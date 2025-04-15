@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { ClusterService } from "@/services/ClusterService"
 import Loader from "@/shared/Loader.vue"
 import { EventBus } from "@/shared/eventbus"

@@ -181,7 +181,7 @@
   </widget>
 </template>
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { AgentService } from "@/services/AgentService"
 import { AgentCommissionService } from "@/services/AgentCommissionService"
 import { EventBus } from "@/shared/eventbus"

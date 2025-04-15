@@ -43,7 +43,7 @@
 
 <script>
 import { notify } from "@/mixins/notify"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { TicketUserService } from "@/services/TicketUserService"
 import { EventBus } from "@/shared/eventbus"
 

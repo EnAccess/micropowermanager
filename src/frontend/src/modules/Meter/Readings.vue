@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import moment from "moment"
 import { Consumptions } from "@/services/MeterConsumptionService"
 import { currency } from "@/mixins/currency"

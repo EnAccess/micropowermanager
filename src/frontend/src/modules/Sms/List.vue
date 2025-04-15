@@ -170,7 +170,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
 import { SmsService } from "@/services/SmsService"
 import moment from "moment"

@@ -90,7 +90,7 @@
 import { resources } from "@/resources"
 import { Paginator } from "@/Helpers/Paginator"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { People } from "@/services/PersonService"
 import { timing } from "@/mixins/timing"
 import i18n from "../../i18n"

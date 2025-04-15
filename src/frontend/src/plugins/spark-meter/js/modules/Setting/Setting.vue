@@ -334,7 +334,7 @@
 
 <script>
 import { SettingService } from "../../services/SettingService"
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { SmsVariableDefaultValueService } from "../../services/SmsVariableDefaultValueService"
 import { SmsBodiesService } from "../../services/SmsBodiesService"
 import SmsBody from "./SmsBody"

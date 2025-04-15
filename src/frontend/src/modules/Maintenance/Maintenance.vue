@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import NewUser from "./NewUser"
 import { EventBus } from "@/shared/eventbus"
 import { TicketService } from "@/services/TicketService"
