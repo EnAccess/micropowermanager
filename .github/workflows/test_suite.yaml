@@ -40,10 +40,10 @@ jobs:
         working-directory: ./src/backend
 
       - name: Generate key
-        run: php artisan key:generate
+        run:  |
+          mv .env.example .env
+          php artisan key:generate
         working-directory: ./src/backend
-        env:
-          APP_KEY: ""
 
       - name: Run Migrations
         run: |
