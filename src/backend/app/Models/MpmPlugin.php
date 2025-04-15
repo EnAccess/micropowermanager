@@ -32,7 +32,7 @@ class MpmPlugin extends BaseModelCentral {
     public const AFRICAS_TALKING = 18;
     public const VODACOM_MOBILE_MONEY = 19;
     public const CHINT_METER = 20;
-  
+
     protected $table = 'mpm_plugins';
 
     public function plugins() {
