@@ -9,7 +9,6 @@ use App\Listeners\MeterListener;
 use App\Listeners\PaymentListener;
 use App\Listeners\PaymentPeriodListener;
 use App\Listeners\SmsListener;
-use App\Listeners\SoldApplianceListener;
 use App\Listeners\TransactionListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use MPM\User\UserEventSubscriber;
@@ -33,7 +32,6 @@ class EventServiceProvider extends ServiceProvider {
         PaymentPeriodListener::class,
         LogListener::class,
         SmsListener::class,
-        SoldApplianceListener::class,
         UserEventSubscriber::class,
     ];
 
