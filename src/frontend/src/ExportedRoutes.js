@@ -91,6 +91,7 @@ import WavecomTransactionUpload from "./plugins/wavecom-payment-provider/js/modu
 import EBikeList from "./pages/EBikes/index.vue"
 import DalyBmsOverview from "./plugins/daly-bms/js/modules/Overview/Overview"
 import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview"
+import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
   {
@@ -1392,6 +1393,30 @@ export const exportedRoutes = [
       {
         path: "africas-talking-overview",
         component: AfricasTalkingOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/chint-meters",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 19,
+        name: "Chint Meter",
+        icon: "bolt",
+      },
+    },
+    children: [
+      {
+        path: "chint-overview",
+        component: ChintMeterOverview,
         meta: {
           layout: "default",
           sidebar: {

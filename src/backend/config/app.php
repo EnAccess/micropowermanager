@@ -181,6 +181,7 @@ return [
         Inensus\DalyBms\Providers\DalyBmsServiceProvider::class,
         Inensus\AfricasTalking\Providers\AfricasTalkingServiceProvider::class,
         Inensus\VodacomMobileMoney\Providers\VodacomMobileMoneyServiceProvider::class,
+        Inensus\ChintMeter\Providers\ChintMeterServiceProvider::class,
     ],
 
     /*
