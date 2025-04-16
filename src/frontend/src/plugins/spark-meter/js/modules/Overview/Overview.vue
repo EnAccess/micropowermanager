@@ -6,42 +6,33 @@
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
+            :box-color="'blue'"
             :center-text="true"
-            :color="['#0080ff', '#0040ff']"
+            :header-text="'Sites'"
             :sub-text="siteService.count.toString()"
-            :header-text-color="'#dddddd'"
-            header-text="Sites"
-            :sub-text-color="'#e3e3e3'"
-            box-icon="settings_input_component"
-            :box-icon-color="'#385a76'"
+            :box-icon="'settings_input_component'"
           />
         </div>
         <div
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
+            :box-color="'red'"
             :center-text="true"
-            :color="['#ef5350', '#e53935']"
+            :header-text="'Meter Models'"
             :sub-text="meterModelService.count.toString()"
-            :header-text-color="'#dddddd'"
-            header-text="Meter Models"
-            :sub-text-color="'#e3e3e3'"
-            box-icon="settings_input_hdmi"
-            :box-icon-color="'#604058'"
+            :box-icon="'settings_input_hdmi'"
           />
         </div>
         <div
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
+            :box-color="'green'"
             :center-text="true"
-            :color="['#6eaa44', '#578839']"
+            :header-text="'Tariffs'"
             :sub-text="tariffService.count.toString()"
-            :header-text-color="'#dddddd'"
-            header-text="Tariffs "
-            :sub-text-color="'#e3e3e3'"
-            box-icon="attach_money"
-            :box-icon-color="'#5c5837'"
+            :box-icon="'attach_money'"
           />
         </div>
         <div
@@ -49,13 +40,10 @@
         >
           <box
             :center-text="true"
-            :color="['#ffa726', '#fb8c00']"
+            :box-color="'orange'"
+            :header-text="'Customers'"
             :sub-text="customerService.count.toString()"
-            :header-text-color="'#dddddd'"
-            header-text="Customers"
-            :sub-text-color="'#e3e3e3'"
-            box-icon="supervisor_account"
-            :box-icon-color="'#385a76'"
+            :box-icon="'supervisor_account'"
           />
         </div>
       </div>
@@ -73,7 +61,7 @@
 </template>
 
 <script>
-import Box from "./Box"
+import Box from "@/shared/Box.vue"
 import Credential from "./Credential"
 import { CustomerService } from "../../services/CustomerService"
 import { MeterModelService } from "../../services/MeterModelService"
