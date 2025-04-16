@@ -1,7 +1,7 @@
 <template>
   <md-card class="card-list-item-content">
     <div class="card-list-item-header">
-      <div class="box" style="font-size: 1.5rem" :style="backgroundColor">
+      <div class="box" style="font-size: 1.5rem" v-bind:box-color="boxColor">
         <md-icon style="color: white" v-if="!customIcon">
           {{ boxIcon }}
         </md-icon>
@@ -28,9 +28,9 @@
 export default {
   name: "Box",
   props: {
-    color: {
-      type: Array,
-      default: () => ["#c3c3c3", "#e1e1e1"],
+    boxColor: {
+      type: String,
+      default: "default"
     },
     centerText: {
       type: Boolean,
@@ -53,17 +53,6 @@ export default {
       default: false,
     },
   },
-  computed: {
-    backgroundColor: function () {
-      let color =
-        "background:linear-gradient(135deg," +
-        this.color[0] +
-        " 0%, " +
-        this.color[1] +
-        " 100%)"
-      return color
-    },
-  },
 }
 </script>
 
@@ -76,6 +65,38 @@ export default {
     0 12px 20px -10px rgba(53, 53, 53, 0.3),
     0 4px 20px 0 rgba(0, 0, 0, 0.12),
     0 7px 8px -5px rgb(142, 142, 142);
+}
+
+.box[box-color="blue"] {
+  background: linear-gradient(
+    135deg,
+    #26c6da 0%,
+    #00acc1 100%
+  );
+}
+
+.box[box-color="orange"] {
+  background: linear-gradient(
+    135deg,
+    #ffa726 0%,
+    #fb8c00 100%
+  );
+}
+
+.box[box-color="red"] {
+  background: linear-gradient(
+    135deg,
+    #ef5350 0%,
+    #e53935 100%
+  );
+}
+
+.box[box-color="green"] {
+  background: linear-gradient(
+    135deg,
+    #6eaa44 0%,
+    #578839 100%
+  );
 }
 
 .header-text {

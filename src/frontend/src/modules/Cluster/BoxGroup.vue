@@ -4,8 +4,8 @@
       class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25 small-size-style"
     >
       <box
+        :box-color="'blue'"
         :center-text="true"
-        :color="['#26c6da', '#00acc1']"
         :header-text="$tc('words.miniGrid')"
         :header-text-color="'#dddddd'"
         :sub-text="cluster.mini_grids.length.toString()"
@@ -18,11 +18,11 @@
       class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25 small-size-style"
     >
       <box
+        :box-color="'orange'"
         :center-text="true"
-        :color="['#ffa726', '#fb8c00']"
-        :sub-text="cluster.population.toString()"
-        :header-text-color="'#dddddd'"
         :header-text="$tc('words.people')"
+        :header-text-color="'#dddddd'"
+        :sub-text="cluster.population.toString()"
         :sub-text-color="'#e3e3e3'"
         :box-icon="'supervisor_account'"
         :box-icon-color="'#385a76'"
@@ -32,11 +32,11 @@
       class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25 small-size-style"
     >
       <box
+        :box-color="'red'"
         :center-text="true"
-        :color="['#ef5350', '#e53935']"
-        :sub-text="cluster.meterCount.toString()"
-        :header-text-color="'#dddddd'"
         :header-text="$tc('phrases.connectedMeters')"
+        :header-text-color="'#dddddd'"
+        :sub-text="cluster.meterCount.toString()"
         :sub-text-color="'#e3e3e3'"
         :box-icon="'settings_input_hdmi'"
         :box-icon-color="'#604058'"
@@ -47,18 +47,18 @@
     >
       <box
         v-if="cluster.revenue.toString()"
+        :box-color="'green'"
         :center-text="true"
-        :color="['#6eaa44', '#578839']"
-        :sub-text="
-          readable(cluster.revenue) +
-          $store.getters['settings/getMainSettings'].currency
-        "
-        :header-text-color="'#dddddd'"
         :header-text="
           $tc('words.revenue') +
           ' (' +
           $tc('phrases.lastXDays', 1, { x: 30 }) +
           ')'
+        "
+        :header-text-color="'#dddddd'"
+        :sub-text="
+          readable(cluster.revenue) +
+          $store.getters['settings/getMainSettings'].currency
         "
         :sub-text-color="'#e3e3e3'"
         :box-icon="'attach_money'"

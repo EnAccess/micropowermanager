@@ -4,7 +4,7 @@
       <box
         v-if="miniGridData.soldEnergy"
         :center-text="true"
-        :color="['#ffa726', '#fb8c00']"
+        :box-color="'orange'"
         :header-text="$tc('phrases.soldEnergy')"
         :header-text-color="'#dddddd'"
         :sub-text="miniGridData.soldEnergy.data.toString() + 'kWh'"
@@ -17,7 +17,7 @@
       <box
         v-if="miniGridData.transactions"
         :center-text="true"
-        :color="['#ef5350', '#e53935']"
+        :box-color="'red'"
         :header-text="$tc('phrases.processedTransactions')"
         :header-text-color="'#dddddd'"
         :sub-text="moneyFormat(miniGridData.transactions[0].amount)"
@@ -30,7 +30,7 @@
       <box
         v-if="miniGridData.transactions"
         :center-text="true"
-        :color="['#6eaa44', '#578839']"
+        :box-color="'green'"
         :header-text="$tc('words.revenue')"
         :header-text-color="'#dddddd'"
         :sub-text="

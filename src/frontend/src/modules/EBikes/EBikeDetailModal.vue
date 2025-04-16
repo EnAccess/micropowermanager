@@ -23,7 +23,7 @@
         >
           <div class="md-layout-item md-size-50">
             <box
-              :color="['#26c6da', '#00acc1']"
+              :box-color="'blue'"
               :center-text="true"
               :header-text="$tc('words.mileage')"
               :header-text-color="'#dddddd'"
@@ -35,7 +35,7 @@
           </div>
           <div class="md-layout-item md-size-50">
             <box
-              :color="['#ffa726', '#fb8c00']"
+              :box-color="'orange'"
               :center-text="true"
               :header-text="$tc('words.speed')"
               :header-text-color="'#dddddd'"

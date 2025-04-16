@@ -93,7 +93,7 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
-          :color="['#26c6da', '#00acc1']"
+          :color="['#26c6da', '#00acc2']"
           :center-text="true"
           :header-text="$tc('phrases.incomingTransactions')"
           :header-text-color="'#dddddd'"
@@ -115,7 +115,7 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
-          :color="['#6eaa44', '#578839']"
+          :box-color="'green'"
           :center-text="true"
           :header-text="$tc('words.confirm', 2)"
           :header-text-color="'#dddddd'"
@@ -137,7 +137,7 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
-          :color="['#ef5350', '#e53935']"
+          :box-color="'red'"
           :center-text="true"
           :header-text="$tc('words.cancel', 2)"
           :header-text-color="'#dddddd'"
@@ -159,7 +159,7 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
-          :color="['#ffa726', '#fb8c00']"
+          :box-color="'orange'"
           :center-text="true"
           :header-text="$tc('words.revenue')"
           :header-text-color="'#dddddd'"
