@@ -10,17 +10,9 @@
     </div>
     <md-card-content>
       <div class="information" style="text-align: end">
-        <div
-          class="header-text"
-          v-if="headerText"
-          v-text="headerText"
-        ></div>
+        <div class="header-text" v-if="headerText" v-text="headerText"></div>
 
-        <div
-          class="sub-text"
-          v-if="subText"
-          v-html="subText"
-        ></div>
+        <div class="sub-text" v-if="subText" v-html="subText"></div>
 
         <div
           class="additional-text"
@@ -38,7 +30,7 @@ export default {
   props: {
     boxColor: {
       type: String,
-      default: "default"
+      default: "default",
     },
     centerText: {
       type: Boolean,
@@ -64,35 +56,19 @@ export default {
 }
 
 .box[box-color="blue"] {
-  background: linear-gradient(
-    135deg,
-    #26c6da 0%,
-    #00acc1 100%
-  );
+  background: linear-gradient(135deg, #26c6da 0%, #00acc1 100%);
 }
 
 .box[box-color="orange"] {
-  background: linear-gradient(
-    135deg,
-    #ffa726 0%,
-    #fb8c00 100%
-  );
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
 }
 
 .box[box-color="red"] {
-  background: linear-gradient(
-    135deg,
-    #ef5350 0%,
-    #e53935 100%
-  );
+  background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
 }
 
 .box[box-color="green"] {
-  background: linear-gradient(
-    135deg,
-    #6eaa44 0%,
-    #578839 100%
-  );
+  background: linear-gradient(135deg, #6eaa44 0%, #578839 100%);
 }
 
 .header-text {
