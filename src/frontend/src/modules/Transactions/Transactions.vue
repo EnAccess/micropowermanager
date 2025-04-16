@@ -93,7 +93,7 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
-          :color="['#26c6da', '#00acc2']"
+          :box-color="'blue'"
           :center-text="true"
           :header-text="$tc('phrases.incomingTransactions')"
           :sub-text="
