@@ -33,7 +33,7 @@ class ReadMinutelyMeterConsumptions extends AbstractSharedCommand {
         $this->info('# Kelin Meter Package #');
         $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('read-minutely-consumptions command started at '.$startedAt);
-        if ($credentials->is_authenticated == 1) {
+        if ($credentials && $credentials->is_authenticated == 1) {
             $this->minutelyConsumptionService->getMinutelyDataFromAPI();
         } else {
             $this->info('# Kelin credentials not authenticated #');
