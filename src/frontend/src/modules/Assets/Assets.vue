@@ -126,7 +126,7 @@
 
 <script>
 import AssetTypeList from "@/modules/Assets/AssetTypeList.vue"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { ApplianceService } from "@/services/ApplianceService"
 import { EventBus } from "@/shared/eventbus"
 import AddAsset from "@/modules/Assets/AddAsset.vue"

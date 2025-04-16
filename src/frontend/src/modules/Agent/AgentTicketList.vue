@@ -14,7 +14,7 @@
   </widget>
 </template>
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { AgentTicketService } from "@/services/AgentTicketService"
 import { EventBus } from "@/shared/eventbus"
 import { UserTickets } from "@/services/TicketService"

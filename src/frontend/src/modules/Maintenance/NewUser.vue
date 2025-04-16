@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { CityService } from "@/services/CityService"
 import { MiniGridService } from "@/services/MiniGridService"
 import { MaintenanceService } from "@/services/MaintenanceService"
@@ -191,7 +191,7 @@ import { notify } from "@/mixins/notify"
 export default {
   name: "NewUser",
   mixins: [notify],
-  components: { widget, RedirectionModal },
+  components: { Widget, RedirectionModal },
   props: {
     newUser: {
       type: Boolean,

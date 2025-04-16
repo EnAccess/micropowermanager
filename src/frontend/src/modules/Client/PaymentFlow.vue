@@ -76,7 +76,7 @@
 <script>
 import { currency } from "@/mixins/currency"
 import { GChart } from "vue-google-charts"
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { PaymentService } from "@/services/PaymentService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"

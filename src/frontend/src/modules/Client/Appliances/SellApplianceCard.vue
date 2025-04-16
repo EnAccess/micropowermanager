@@ -277,7 +277,7 @@
 </template>
 
 <script>
-import widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { ApplianceService } from "@/services/ApplianceService"
 import { AssetPersonService } from "@/services/AssetPersonService"
 import { currency, notify } from "@/mixins"
@@ -290,7 +290,7 @@ const APPLIANCE_TYPE_SHS_NAME = "Solar Home System"
 
 export default {
   name: "SellApplianceCard",
-  components: { widget },
+  components: { Widget },
   mixins: [currency, notify],
   props: {
     personId: {
