@@ -314,7 +314,4 @@ export default {
   padding: 10px;
 }
 
-.logologo {
-  max-width: 50px;
-}
 </style>
