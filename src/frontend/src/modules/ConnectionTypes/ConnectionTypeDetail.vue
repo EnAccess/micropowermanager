@@ -288,7 +288,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { SubConnectionTypeService } from "@/services/SubConnectionTypeService"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { TariffService } from "@/services/TariffService"

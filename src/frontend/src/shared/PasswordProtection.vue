@@ -9,12 +9,21 @@ import { EventBus } from "@/shared/eventbus"
 export default {
   name: "PasswordProtection",
 
+  created() {
+    this.confirm(this.$route.path)
+  },
+
   mounted() {
     EventBus.$on("checkPageProtection", (to) => {
       console.log("route changed")
       this.confirm(to.path)
     })
   },
+
+  beforeDestroy() {
+    EventBus.$off("checkPageProtection")
+  },
+
   computed: {
     ...mapGetters({
       password: "protection/getPassword",

@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
 import { UserService } from "@/services/UserService"
 import { CityService } from "@/services/CityService"

@@ -93,19 +93,16 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
+          :box-color="'blue'"
           :center-text="true"
-          :color="['#26c6da', '#00acc1']"
           :header-text="$tc('phrases.incomingTransactions')"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.total + '/' + analyticsData.past.total
           "
-          :sub-text-color="'#e3e3e3'"
-          box-icon="add"
-          :box-icon-color="'#578839'"
+          :box-icon="'add'"
           :additional-text="
             analyticsData.analytics.totalPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -115,19 +112,16 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
+          :box-color="'green'"
           :center-text="true"
-          :color="['#6eaa44', '#578839']"
           :header-text="$tc('words.confirm', 2)"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.confirmed + '/' + analyticsData.past.confirmed
           "
-          :sub-text-color="'#e3e3e3'"
-          box-icon="check"
-          :box-icon-color="'#578839'"
+          :box-icon="'check'"
           :additional-text="
             analyticsData.analytics.confirmationPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -137,19 +131,16 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
+          :box-color="'red'"
           :center-text="true"
-          :color="['#ef5350', '#e53935']"
           :header-text="$tc('words.cancel', 2)"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.cancelled + '/' + analyticsData.past.cancelled
           "
-          :sub-text-color="'#e3e3e3'"
-          box-icon="cancel"
-          :box-icon-color="'#578839'"
+          :box-icon="'cancel'"
           :additional-text="
             analyticsData.analytics.cancelationPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -159,17 +150,14 @@
         class="md-layout-item md-size-25 md-small-size-50"
       >
         <box
+          :box-color="'orange'"
           :center-text="true"
-          :color="['#ffa726', '#fb8c00']"
           :header-text="$tc('words.revenue')"
-          :header-text-color="'#dddddd'"
           :sub-text="moneyFormat(analyticsData.current.amount)"
-          :sub-text-color="'#e3e3e3'"
-          box-icon="attach_money"
-          :box-icon-color="'#578839'"
+          :box-icon="'attach_money'"
           :additional-text="
             analyticsData.analytics.amountPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -367,9 +355,9 @@
 import { timing } from "@/mixins/timing"
 import { currency } from "@/mixins/currency"
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
-import Box from "@/modules/Box"
+import Box from "@/shared/Box"
 import { TransactionService } from "@/services/TransactionService"
 
 import airtelLogo from "@/assets/icons/airtel.png"
@@ -540,11 +528,11 @@ span {
   margin-right: auto;
 }
 
-.box {
+/* .box {
   border-right: 2px solid #6d7f94;
   padding-left: 45px;
   color: #6d7f94;
-}
+} */
 
 .information {
   font-size: 2.5rem;

@@ -66,7 +66,7 @@
 <script>
 import { SalesAccountService } from "../../services/SalesAccountService"
 import { CredentialService } from "../../services/CredentialService"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import RedirectionModal from "@/shared/RedirectionModal"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"

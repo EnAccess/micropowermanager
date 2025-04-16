@@ -23,26 +23,20 @@
         >
           <div class="md-layout-item md-size-50">
             <box
-              :centerText="true"
-              :color="['#26c6da', '#00acc1']"
-              :subText="eBike.mileage"
-              :headerTextColor="'#dddddd'"
+              :box-color="'blue'"
+              :center-text="true"
               :header-text="$tc('words.mileage')"
-              :subTextColor="'#e3e3e3'"
-              :boxIcon="'merge'"
-              :boxIconColor="'#578839'"
+              :sub-text="eBike.mileage"
+              :box-icon="'merge'"
             />
           </div>
           <div class="md-layout-item md-size-50">
             <box
-              :centerText="true"
-              :color="['#ffa726', '#fb8c00']"
-              :subText="eBike.speed"
-              :headerTextColor="'#dddddd'"
+              :box-color="'orange'"
+              :center-text="true"
               :header-text="$tc('words.speed')"
-              :subTextColor="'#e3e3e3'"
-              :boxIcon="'speed'"
-              :boxIconColor="'#578839'"
+              :sub-text="eBike.speed"
+              :box-icon="'speed'"
             />
           </div>
 
@@ -141,7 +135,7 @@
 <script>
 import { notify, timing } from "@/mixins"
 import { EBikeService } from "@/services/EBikeService"
-import Box from "@/modules/Box.vue"
+import Box from "@/shared/Box.vue"
 
 export default {
   name: "EBikeDetailModal",

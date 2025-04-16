@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { PersonService } from "@/services/PersonService"
 
 export default {

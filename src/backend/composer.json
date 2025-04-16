@@ -12,6 +12,7 @@
     "africastalking/africastalking": "^3.0",
     "barryvdh/laravel-dompdf": "^v2.0.0",
     "bogdaan/viber-bot-php": "^0.0.15",
+    "fakerphp/faker": "^1.24",
     "guzzlehttp/guzzle": "^7.3.0",
     "laravel/framework": "^11",
     "laravel/helpers": "^1.2",
@@ -78,7 +79,8 @@
       "Inensus\\DalyBms\\": "packages/inensus/daly-bms/src",
       "Inensus\\AngazaSHS\\": "packages/inensus/angaza-shs/src",
       "Inensus\\AfricasTalking\\": "packages/inensus/africas-talking/src",
-      "Inensus\\VodacomMobileMoney\\": "packages/inensus/vodacom-mobile-money/src"
+      "Inensus\\VodacomMobileMoney\\": "packages/inensus/vodacom-mobile-money/src",
+      "Inensus\\ChintMeter\\": "packages/inensus/chint-meter/src"
     }
   },
   "autoload-dev": {

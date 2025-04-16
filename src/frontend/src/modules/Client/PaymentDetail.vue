@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
 import { PaymentService } from "@/services/PaymentService"
 import { notify } from "@/mixins/notify"

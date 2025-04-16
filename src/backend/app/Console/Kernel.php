@@ -10,6 +10,7 @@ use Inensus\AngazaSHS\Console\Commands\InstallPackage as InstallAngazaSHSPackage
 use Inensus\BulkRegistration\Console\Commands\InstallPackage as InstallBulkRegistrationPackage;
 use Inensus\CalinMeter\Console\Commands\InstallPackage as InstallCalinMeterPackage;
 use Inensus\CalinSmartMeter\Console\Commands\InstallPackage as InstallCalinSmartMeterPackage;
+use Inensus\ChintMeter\Console\Commands\InstallPackage as InstallChintMeterPackage;
 use Inensus\DalyBms\Console\Commands\InstallPackage as InstallDalyBmsPackage;
 use Inensus\GomeLongMeter\Console\Commands\InstallPackage as InstallGomeLongMeterPackage;
 use Inensus\KelinMeter\Console\Commands\InstallPackage as InstallKelinMeterPackage;
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel {
         InstallAngazaSHSPackage::class,
         InstallDalyBmsPackage::class,
         InstallAfricasTalkingPackage::class,
+        InstallChintMeterPackage::class,
         InstallVodacomMobileMoneyPackage::class,
     ];
 

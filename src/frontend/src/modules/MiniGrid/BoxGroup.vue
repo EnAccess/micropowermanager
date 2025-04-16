@@ -3,43 +3,34 @@
     <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
       <box
         v-if="miniGridData.soldEnergy"
+        :box-color="'orange'"
         :center-text="true"
-        :color="['#ffa726', '#fb8c00']"
         :header-text="$tc('phrases.soldEnergy')"
-        :header-text-color="'#dddddd'"
         :sub-text="miniGridData.soldEnergy.data.toString() + 'kWh'"
-        :sub-text-color="'#e3e3e3'"
-        box-icon="wb_iridescent"
-        :box-icon-color="'#578839'"
+        :box-icon="'wb_iridescent'"
       />
     </div>
     <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
       <box
         v-if="miniGridData.transactions"
+        :box-color="'red'"
         :center-text="true"
-        :color="['#ef5350', '#e53935']"
         :header-text="$tc('phrases.processedTransactions')"
-        :header-text-color="'#dddddd'"
         :sub-text="moneyFormat(miniGridData.transactions[0].amount)"
-        :sub-text-color="'#e3e3e3'"
-        box-icon="list"
-        :box-icon-color="'#578839'"
+        :box-icon="'list'"
       />
     </div>
     <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
       <box
         v-if="miniGridData.transactions"
+        :box-color="'green'"
         :center-text="true"
-        :color="['#6eaa44', '#578839']"
         :header-text="$tc('words.revenue')"
-        :header-text-color="'#dddddd'"
         :sub-text="
           readable(miniGridData.transactions[0].revenue).toString() +
           $store.getters['settings/getMainSettings'].currency
         "
-        :sub-text-color="'#e3e3e3'"
-        box-icon="attach_money"
-        :box-icon-color="'#578839'"
+        :box-icon="'attach_money'"
       />
     </div>
   </div>
@@ -47,7 +38,7 @@
 
 <script>
 import { MiniGridService } from "@/services/MiniGridService"
-import Box from "../Box"
+import Box from "@/shared/Box.vue"
 import { currency } from "@/mixins/currency"
 
 export default {

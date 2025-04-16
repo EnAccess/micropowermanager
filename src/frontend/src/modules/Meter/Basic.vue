@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { currency } from "@/mixins/currency"
 import { PersonService } from "@/services/PersonService"
 import { timing } from "@/mixins/timing"

@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import Widget from "./Shared/Widget"
+import Widget from "@/shared/Widget.vue"
 import { CsvUploadService } from "../services/CsvUploadService"
 import { notify } from "@/mixins/notify"
 

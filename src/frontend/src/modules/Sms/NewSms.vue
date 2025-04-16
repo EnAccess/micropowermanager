@@ -186,7 +186,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { MiniGridService } from "@/services/MiniGridService"
 import { SmsService } from "@/services/SmsService"
 import { notify } from "@/mixins/notify"
