@@ -47,7 +47,6 @@ export class MainSettingsService {
 
       return data.data
     } catch (e) {
-      debugger
       const errorMessage = e.response.data.data.message
       throw new ErrorHandler(errorMessage, "http")
     }
