@@ -71,6 +71,7 @@ export default {
 .box {
   border-radius: 5px;
   padding: 30px;
+  margin-top: 1vh;
   box-shadow:
     0 12px 20px -10px rgba(53, 53, 53, 0.3),
     0 4px 20px 0 rgba(0, 0, 0, 0.12),
