@@ -1408,7 +1408,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 19,
+        enabled_by_mpm_plugin_id: 20,
         name: "Chint Meter",
         icon: "bolt",
       },
