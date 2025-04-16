@@ -3,7 +3,7 @@
     <!-- Fixed logo section that won't scroll -->
     <div class="logo fixed-logo">
       <div class="brand-column">
-        <img class="logo" alt="logo" :src="imgLogo" />
+        <img class="logo icon" alt="logo" :src="imgLogo" />
         <div class="company-header">
           {{ $store.getters["settings/getMainSettings"].companyName }}
           <br />
@@ -241,6 +241,11 @@ export default {
   padding: 15px 0;
   width: 100%;
 }
+
+.logo.icon {
+  max-width: 64px;
+}
+
 .sidebar-bottom-buffer {
   height: 30px;
 }
