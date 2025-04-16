@@ -1,0 +1,11 @@
+meta {
+  name: Get Agent Performance Metrics
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{mpm_backend_url}}/api/dashboard/agents
+  body: none
+  auth: inherit
+}
