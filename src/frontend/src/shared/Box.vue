@@ -2,10 +2,9 @@
   <md-card class="card-list-item-content">
     <div class="card-list-item-header">
       <div class="box" style="font-size: 1.5rem" v-bind:box-color="boxColor">
-        <md-icon style="color: white" v-if="!customIcon">
+        <md-icon style="color: white">
           {{ boxIcon }}
         </md-icon>
-        <img :src="boxIcon" alt="" v-else />
         <slot></slot>
       </div>
     </div>
@@ -49,10 +48,6 @@ export default {
     subText: String,
     boxIcon: String,
     additionalText: String,
-    customIcon: {
-      type: Boolean,
-      default: false,
-    },
   },
 }
 </script>
