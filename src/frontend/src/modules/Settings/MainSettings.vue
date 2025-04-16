@@ -151,8 +151,8 @@
             name="protected_page_password"
             id="protected_page_password"
             type="password"
-            v-model="mainSettingsService.mainSettings.password"
-            v-validate="'required|min:5'"
+            v-model="mainSettingsService.mainSettings.protectedPagePassword"
+            v-validate="'min:5'"
           ></md-input>
           <span class="md-error">
             {{ errors.first("protected_page_password") }}

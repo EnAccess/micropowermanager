@@ -1,24 +1,14 @@
-import { CompanyService } from "@/services/CompanyService"
 import { ProtectedPageService } from "@/services/ProtectedPageService"
-import store from "@/store/store"
 
 export const namespaced = true
 
 export const state = {
-  companyService: new CompanyService(),
   protectedPageService: new ProtectedPageService(),
-  password: "",
   protectedPages: [],
 }
 export const mutations = {
   SET_PROTECTED_PAGES(state, protectedPages) {
     state.protectedPages = protectedPages
-  },
-  SET_PROTECTED_PAGE_PASSWORD(state, password) {
-    state.password = password
-  },
-  SET_PASSWORD(state, password) {
-    state.password = password
   },
 }
 export const actions = {
@@ -38,26 +28,8 @@ export const actions = {
         })
     })
   },
-  getProtectedPagePassword({ commit }) {
-    return new Promise((resolve, reject) => {
-      const user = store.getters["auth/getAuthenticateUser"]
-      state.companyService
-        .getCompanyByUser(user)
-        .then((company) => {
-          commit("SET_PROTECTED_PAGE_PASSWORD", company.protected_page_password)
-          resolve(company.protected_page_password)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  setPassword({ commit }, password) {
-    commit("SET_PASSWORD", password)
-  },
 }
 
 export const getters = {
   getProtectedPages: (state) => state.protectedPages,
-  getPassword: (state) => state.password,
 }

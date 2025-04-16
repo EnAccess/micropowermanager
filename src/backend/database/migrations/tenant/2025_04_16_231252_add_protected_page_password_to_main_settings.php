@@ -11,8 +11,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table('companies', function (Blueprint $table) {
-            $table->longText('protected_page_password')->change();
+        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
+            $table->longText('protected_page_password')->nullable();
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::table('companies', function (Blueprint $table) {
-            $table->string('protected_page_password')->change();
+        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
+            $table->dropColumn('protected_page_password');
         });
     }
 };
