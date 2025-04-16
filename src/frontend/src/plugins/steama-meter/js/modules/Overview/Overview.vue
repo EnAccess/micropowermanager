@@ -6,13 +6,13 @@
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
-            :center-text="true"
             :color="['#0080ff', '#0040ff']"
-            :sub-text="siteService.count.toString()"
+            :center-text="true"
+            :header-text="'Sites'"
             :header-text-color="'#dddddd'"
-            header-text="Sites"
+            :sub-text="siteService.count.toString()"
             :sub-text-color="'#e3e3e3'"
-            box-icon="settings_input_component"
+            :box-icon="'settings_input_component'"
             :box-icon-color="'#385a76'"
           />
         </div>
@@ -20,13 +20,13 @@
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
-            :center-text="true"
             :color="['#ef5350', '#e53935']"
-            :sub-text="meterService.count.toString()"
+            :center-text="true"
+            :header-text="'Meters'"
             :header-text-color="'#dddddd'"
-            header-text="Meters"
+            :sub-text="meterService.count.toString()"
             :sub-text-color="'#e3e3e3'"
-            box-icon="settings_input_hdmi"
+            :box-icon="'settings_input_hdmi'"
             :box-icon-color="'#604058'"
           />
         </div>
@@ -34,13 +34,13 @@
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
-            :center-text="true"
             :color="['#6eaa44', '#578839']"
-            :sub-text="customerService.count.toString()"
+            :center-text="true"
+            :header-text="'Customers'"
             :header-text-color="'#dddddd'"
-            header-text="Customers"
+            :sub-text="customerService.count.toString()"
             :sub-text-color="'#e3e3e3'"
-            box-icon="supervisor_account"
+            :box-icon="'supervisor_account'"
             :box-icon-color="'#385a76'"
           />
         </div>
@@ -48,13 +48,13 @@
           class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-25"
         >
           <box
-            :center-text="true"
             :color="['#ffa726', '#fb8c00']"
-            :sub-text="agentService.count.toString()"
+            :center-text="true"
+            :header-text="'Agents'"
             :header-text-color="'#dddddd'"
-            header-text="Agents"
+            :sub-text="agentService.count.toString()"
             :sub-text-color="'#e3e3e3'"
-            box-icon="support_agent"
+            :box-icon="'support_agent'"
             :box-icon-color="'#385a76'"
           />
         </div>

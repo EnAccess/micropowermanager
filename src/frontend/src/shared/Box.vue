@@ -47,11 +47,11 @@ export default {
       default: "#525252",
     },
     boxIcon: String,
+    boxIconColor: String,
     customIcon: {
       type: Boolean,
       default: false,
     },
-    boxIconColor: String,
   },
   computed: {
     backgroundColor: function () {

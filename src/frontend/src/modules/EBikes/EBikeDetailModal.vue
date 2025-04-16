@@ -23,26 +23,26 @@
         >
           <div class="md-layout-item md-size-50">
             <box
-              :centerText="true"
               :color="['#26c6da', '#00acc1']"
-              :subText="eBike.mileage"
-              :headerTextColor="'#dddddd'"
+              :center-text="true"
               :header-text="$tc('words.mileage')"
-              :subTextColor="'#e3e3e3'"
-              :boxIcon="'merge'"
-              :boxIconColor="'#578839'"
+              :header-text-color="'#dddddd'"
+              :sub-text="eBike.mileage"
+              :sub-text-color="'#e3e3e3'"
+              :box-icon="'merge'"
+              :box-icon-color="'#578839'"
             />
           </div>
           <div class="md-layout-item md-size-50">
             <box
-              :centerText="true"
               :color="['#ffa726', '#fb8c00']"
-              :subText="eBike.speed"
-              :headerTextColor="'#dddddd'"
+              :center-text="true"
               :header-text="$tc('words.speed')"
-              :subTextColor="'#e3e3e3'"
-              :boxIcon="'speed'"
-              :boxIconColor="'#578839'"
+              :header-text-color="'#dddddd'"
+              :sub-text="eBike.speed"
+              :sub-text-color="'#e3e3e3'"
+              :box-icon="'speed'"
+              :box-icon-color="'#578839'"
             />
           </div>
 
