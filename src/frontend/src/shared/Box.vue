@@ -11,13 +11,23 @@
     </div>
     <md-card-content>
       <div class="information" style="text-align: end">
-        <div class="header-text" v-if="headerText" v-text="headerText"></div>
+        <div
+          class="header-text"
+          v-if="headerText"
+          v-text="headerText"
+        ></div>
 
-        <small
+        <div
           class="sub-text"
           v-if="subText"
           v-html="subText"
-        ></small>
+        ></div>
+
+        <div
+          class="additional-text"
+          v-if="additionalText"
+          v-html="additionalText"
+        ></div>
       </div>
     </md-card-content>
   </md-card>
@@ -38,6 +48,7 @@ export default {
     headerText: String,
     subText: String,
     boxIcon: String,
+    additionalText: String,
     customIcon: {
       type: Boolean,
       default: false,

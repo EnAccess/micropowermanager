@@ -102,7 +102,7 @@
           :box-icon="'add'"
           :additional-text="
             analyticsData.analytics.totalPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -121,7 +121,7 @@
           :box-icon="'check'"
           :additional-text="
             analyticsData.analytics.confirmationPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -140,7 +140,7 @@
           :box-icon="'cancel'"
           :additional-text="
             analyticsData.analytics.cancelationPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
@@ -157,7 +157,7 @@
           :box-icon="'attach_money'"
           :additional-text="
             analyticsData.analytics.amountPercentage.percentage +
-            '%' +
+            '% of ' +
             analyticsPeriods[analyticsPeriod]
           "
         />
