@@ -1,10 +1,15 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import MainSettingsRepository from "@/repositories/MainSettingsRepository"
-import store from "@/store/store"
+import {
+  convertObjectKeysToCamelCase,
+  convertObjectKeysToSnakeCase,
+} from "@/Helpers/Utils"
+
 export class MainSettingsService {
   constructor() {
     this.repository = MainSettingsRepository
     this.mainSettings = {
+      id: null,
       siteTitle: null,
       companyName: null,
       currency: null,
@@ -13,70 +18,38 @@ export class MainSettingsService {
       vatEnergy: null,
       vatAppliance: null,
       usageType: null,
-      password: null,
+      protectedPagePassword: null,
     }
-  }
-
-  fromJson(mainSettings) {
-    this.mainSettings = {
-      id: mainSettings.id,
-      siteTitle: mainSettings.site_title,
-      companyName: mainSettings.company_name,
-      currency: mainSettings.currency,
-      country: mainSettings.country,
-      language: mainSettings.language,
-      vatEnergy: mainSettings.vat_energy,
-      vatAppliance: mainSettings.vat_appliance,
-      usageType: mainSettings.usage_type,
-      password: store.getters["protection/getPassword"] ?? "",
-    }
-    return this.mainSettings
   }
 
   async list() {
     try {
-      let response = await this.repository.list()
-      if (response.status === 200) {
-        this.fromJson(response.data.data)
-
-        return this.mainSettings
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
+      const { data, status, error } = await this.repository.list()
+      if (status !== 200) throw new ErrorHandler(error, "http", status)
+      this.mainSettings = convertObjectKeysToCamelCase(data.data)
+      this.mainSettings.protectedPagePassword = null
+      return this.mainSettings
     } catch (e) {
-      return new ErrorHandler(e.response.data.message, "http")
+      const errorMessage = e.response.data.data.message
+      throw new ErrorHandler(errorMessage, "http")
     }
   }
 
   async update() {
     try {
-      let mainSettingsPm = {
-        id: this.mainSettings.id,
-        site_title: this.mainSettings.siteTitle,
-        company_name: this.mainSettings.companyName,
-        currency: this.mainSettings.currency,
-        country: this.mainSettings.country,
-        language: this.mainSettings.language,
-        vat_energy: this.mainSettings.vatEnergy,
-        vat_appliance: this.mainSettings.vatAppliance,
-        usage_type: this.mainSettings.usageType,
-        password: this.mainSettings.password,
-      }
-
-      let response = await this.repository.update(
-        mainSettingsPm.id,
-        mainSettingsPm,
+      const postData = convertObjectKeysToSnakeCase(this.mainSettings)
+      const { data, status, error } = await this.repository.update(
+        this.mainSettings.id,
+        postData,
       )
-      if (response.status === 200) {
-        store.dispatch("protection/setPassword", this.mainSettings.password)
-        this.fromJson(response.data.data)
+      if (status !== 200 && status !== 201)
+        throw new ErrorHandler(error, "http", status)
 
-        return this.mainSettings
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
+      return data.data
     } catch (e) {
-      return new ErrorHandler(e.response.data.message, "http")
+      debugger
+      const errorMessage = e.response.data.data.message
+      throw new ErrorHandler(errorMessage, "http")
     }
   }
 }

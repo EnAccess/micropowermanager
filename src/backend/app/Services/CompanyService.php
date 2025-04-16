@@ -16,25 +16,11 @@ class CompanyService implements IBaseService {
     ) {}
 
     public function getByName($name): Company {
-        $result = $this->company->where('name', $name)->firstOrFail();
-        if (isset($result->protected_page_password)) {
-            if (str_starts_with($result->protected_page_password, 'eyJ')) {
-                $result->protected_page_password = Crypt::decrypt($result->protected_page_password);
-            }
-        }
-
-        return $result;
+        return $this->company->where('name', $name)->firstOrFail();
     }
 
     public function getByDatabaseProxy($databaseProxy): Company {
-        $result = $this->getById($databaseProxy->getCompanyId());
-        if (isset($result->protected_page_password)) {
-            if (str_starts_with($result->protected_page_password, 'eyJ')) {
-                $result->protected_page_password = Crypt::decrypt($result->protected_page_password);
-            }
-        }
-
-        return $result;
+        return $this->getById($databaseProxy->getCompanyId());
     }
 
     public function getById($id): Company {
@@ -49,18 +35,10 @@ class CompanyService implements IBaseService {
     }
 
     public function create($data): Company {
-        if (isset($data['protected_page_password'])) {
-            $data['protected_page_password'] = Crypt::encrypt($data['protected_page_password']);
-        }
-        $company = $this->company->newQuery()->create($data);
-
-        return $company;
+        return $this->company->newQuery()->create($data);
     }
 
     public function update($model, array $data): Company {
-        if (isset($data['protected_page_password'])) {
-            $data['protected_page_password'] = Crypt::encrypt($data['protected_page_password']);
-        }
         $model->update($data);
 
         return $model;

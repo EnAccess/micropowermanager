@@ -30,14 +30,9 @@ class MainSettingsController extends Controller {
             'usage_type',
         ]);
 
-        $password = $request->input('password');
-
-        if ($password) {
-            $authUser = auth('api')->user();
-            $user = $this->userService->get($authUser->id);
-            $companyId = $user->getCompanyId();
-            $company = $this->companyService->getById($companyId);
-            $this->companyService->update($company, ['protected_page_password' => $password]);
+        $protectedPagePassword = $request->input('protected_page_password');
+        if ($protectedPagePassword) {
+            $mainSettingsData['protected_page_password'] = $protectedPagePassword;
         }
 
         return ApiResource::make($this->mainSettingsService->update($mainSettings, $mainSettingsData));
