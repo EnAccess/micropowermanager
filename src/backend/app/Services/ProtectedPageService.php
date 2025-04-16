@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Crypt;
 
+/**
+ * @implements IBaseService<ProtectedPage>
+ */
 class ProtectedPageService implements IBaseService {
     public function __construct(private ProtectedPage $protectedPage) {}
 
@@ -26,8 +29,8 @@ class ProtectedPageService implements IBaseService {
     }
 
     public function update(Model $model, array $data): ProtectedPage {
+        /** @var ProtectedPage $model */
         $model->update($data);
-
         return $model;
     }
 
