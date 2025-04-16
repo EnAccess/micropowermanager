@@ -5,64 +5,52 @@
         class="md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <box
-          :centerText="true"
-          :color="['#26c6da', '#00acc1']"
-          :subText="clusters.length.toString()"
-          :headerTextColor="'#dddddd'"
-          :headerText="$tc('phrases.registeredClusters')"
-          :subTextColor="'#e3e3e3'"
-          :boxIcon="'map'"
-          :boxIconColor="'#578839'"
+          :box-color="'blue'"
+          :center-text="true"
+          :header-text="$tc('phrases.registeredClusters')"
+          :sub-text="clusters.length.toString()"
+          :box-icon="'map'"
         />
       </div>
       <div
         class="md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <box
-          :centerText="true"
-          :color="['#ffa726', '#fb8c00']"
-          :subText="readable(population).toString()"
-          :headerTextColor="'#dddddd'"
-          :headerText="$tc('phrases.registeredCustomers')"
-          :subTextColor="'#e3e3e3'"
-          :boxIcon="'supervisor_account'"
-          :boxIconColor="'#385a76'"
+          :box-color="'orange'"
+          :center-text="true"
+          :header-text="$tc('phrases.registeredCustomers')"
+          :sub-text="readable(population).toString()"
+          :box-icon="'supervisor_account'"
         />
       </div>
       <div
         class="md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <box
-          :centerText="true"
-          :color="['#ef5350', '#e53935']"
-          :subText="readable(connections).toString()"
-          :headerTextColor="'#dddddd'"
+          :box-color="'red'"
+          :center-text="true"
           :header-text="$tc('phrases.connectedMeters')"
-          :subTextColor="'#e3e3e3'"
-          boxIcon="settings_input_hdmi"
-          :boxIconColor="'#604058'"
+          :sub-text="readable(connections).toString()"
+          :box-icon="'settings_input_hdmi'"
         />
       </div>
       <div
         class="md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <box
-          :centerText="true"
-          :color="['#6eaa44', '#578839']"
-          :sub-text="
-            readable(revenue).toString() +
-            $store.getters['settings/getMainSettings'].currency
-          "
-          :headerTextColor="'#dddddd'"
+          :box-color="'green'"
+          :center-text="true"
           :header-text="
             $tc('words.revenue') +
             ' (' +
             $tc('phrases.lastXDays', 1, { x: 30 }) +
             ')'
           "
-          :subTextColor="'#e3e3e3'"
-          :boxIcon="'attach_money'"
-          :boxIconColor="'#5c5837'"
+          :sub-text="
+            readable(revenue).toString() +
+            $store.getters['settings/getMainSettings'].currency
+          "
+          :box-icon="'attach_money'"
         />
       </div>
     </div>
@@ -70,7 +58,7 @@
 </template>
 
 <script>
-import Box from "../Box"
+import Box from "@/shared/Box.vue"
 import { currency } from "@/mixins/currency"
 
 export default {

@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget.vue"
+import Widget from "@/shared/Widget.vue"
 import { ApplianceService } from "@/services/ApplianceService"
 import { AssetTypeService } from "@/services/AssetTypeService"
 import { EventBus } from "@/shared/eventbus"

@@ -160,7 +160,7 @@ import { ClusterService } from "@/services/ClusterService"
 import { notify } from "@/mixins/notify"
 import ClusterMap from "@/modules/Map/ClusterMap.vue"
 import UserList from "@/modules/Dashboard/UserList.vue"
-import Widget from "@/shared/widget.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "AddCluster",

@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { TariffService } from "@/services/TariffService"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { ConnectionGroupService } from "@/services/ConnectionGroupService"

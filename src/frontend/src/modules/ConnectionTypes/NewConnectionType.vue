@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { EventBus } from "@/shared/eventbus"
 import { notify } from "@/mixins/notify"

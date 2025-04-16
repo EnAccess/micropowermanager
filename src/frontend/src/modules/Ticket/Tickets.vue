@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import TicketItem from "@/shared/TicketItem"
 import { EventBus } from "@/shared/eventbus"
 import Filtering from "@/modules/Ticket/Filtering"

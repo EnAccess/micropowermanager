@@ -44,7 +44,7 @@
 
 <script>
 import { EventBus } from "@/shared/eventbus"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { SteamaTransactionsService } from "../../services/SteamaTransactionsService"
 import { CustomerService } from "../../services/CustomerService"
 

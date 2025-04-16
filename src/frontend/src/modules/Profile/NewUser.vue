@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import Widget from "../../shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { notify } from "@/mixins/notify"
 export default {
   name: "NewUser",

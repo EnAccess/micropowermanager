@@ -55,7 +55,7 @@
 import RedirectionModal from "@/shared/RedirectionModal"
 import { EventBus } from "@/shared/eventbus"
 import { CredentialService } from "../../services/CredentialService"
-import Widget from "@/shared/widget"
+import Widget from "@/shared/Widget.vue"
 import { CustomerService } from "../../services/CustomerService"
 import { notify } from "@/mixins/notify"
 
