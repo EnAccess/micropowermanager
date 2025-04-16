@@ -17,7 +17,6 @@
           class="sub-text"
           v-if="subText"
           v-html="subText"
-          :style="'color:' + boxIconColor"
         ></small>
       </div>
     </md-card-content>
@@ -37,17 +36,8 @@ export default {
       default: false,
     },
     headerText: String,
-    headerTextColor: {
-      type: String,
-      default: "#000",
-    },
     subText: String,
-    subTextColor: {
-      type: String,
-      default: "#525252",
-    },
     boxIcon: String,
-    boxIconColor: String,
     customIcon: {
       type: Boolean,
       default: false,
@@ -106,6 +96,7 @@ export default {
 }
 
 .sub-text {
+  color: #525252;
   font-weight: bold;
   font-size: 1.6rem;
 }

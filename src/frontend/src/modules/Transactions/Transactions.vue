@@ -96,13 +96,10 @@
           :color="['#26c6da', '#00acc2']"
           :center-text="true"
           :header-text="$tc('phrases.incomingTransactions')"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.total + '/' + analyticsData.past.total
           "
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'add'"
-          :box-icon-color="'#578839'"
           :additional-text="
             analyticsData.analytics.totalPercentage.percentage +
             '%' +
@@ -118,13 +115,10 @@
           :box-color="'green'"
           :center-text="true"
           :header-text="$tc('words.confirm', 2)"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.confirmed + '/' + analyticsData.past.confirmed
           "
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'check'"
-          :box-icon-color="'#578839'"
           :additional-text="
             analyticsData.analytics.confirmationPercentage.percentage +
             '%' +
@@ -140,13 +134,10 @@
           :box-color="'red'"
           :center-text="true"
           :header-text="$tc('words.cancel', 2)"
-          :header-text-color="'#dddddd'"
           :sub-text="
             analyticsData.current.cancelled + '/' + analyticsData.past.cancelled
           "
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'cancel'"
-          :box-icon-color="'#578839'"
           :additional-text="
             analyticsData.analytics.cancelationPercentage.percentage +
             '%' +
@@ -162,11 +153,8 @@
           :box-color="'orange'"
           :center-text="true"
           :header-text="$tc('words.revenue')"
-          :header-text-color="'#dddddd'"
           :sub-text="moneyFormat(analyticsData.current.amount)"
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'attach_money'"
-          :box-icon-color="'#578839'"
           :additional-text="
             analyticsData.analytics.amountPercentage.percentage +
             '%' +

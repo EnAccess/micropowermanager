@@ -9,11 +9,8 @@
             :box-color="'blue'"
             :center-text="true"
             :header-text="'Sites'"
-            :header-text-color="'#dddddd'"
             :sub-text="siteService.count.toString()"
-            :sub-text-color="'#e3e3e3'"
             :box-icon="'settings_input_component'"
-            :box-icon-color="'#385a76'"
           />
         </div>
         <div
@@ -23,11 +20,8 @@
             :box-color="'red'"
             :center-text="true"
             :header-text="'Meters'"
-            :header-text-color="'#dddddd'"
             :sub-text="meterService.count.toString()"
-            :sub-text-color="'#e3e3e3'"
             :box-icon="'settings_input_hdmi'"
-            :box-icon-color="'#604058'"
           />
         </div>
         <div
@@ -37,11 +31,8 @@
             :box-color="'green'"
             :center-text="true"
             :header-text="'Customers'"
-            :header-text-color="'#dddddd'"
             :sub-text="customerService.count.toString()"
-            :sub-text-color="'#e3e3e3'"
             :box-icon="'supervisor_account'"
-            :box-icon-color="'#385a76'"
           />
         </div>
         <div
@@ -51,11 +42,8 @@
             :box-color="'orange'"
             :center-text="true"
             :header-text="'Agents'"
-            :header-text-color="'#dddddd'"
             :sub-text="agentService.count.toString()"
-            :sub-text-color="'#e3e3e3'"
             :box-icon="'support_agent'"
-            :box-icon-color="'#385a76'"
           />
         </div>
       </div>

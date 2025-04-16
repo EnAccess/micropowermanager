@@ -26,11 +26,8 @@
               :box-color="'blue'"
               :center-text="true"
               :header-text="$tc('words.mileage')"
-              :header-text-color="'#dddddd'"
               :sub-text="eBike.mileage"
-              :sub-text-color="'#e3e3e3'"
               :box-icon="'merge'"
-              :box-icon-color="'#578839'"
             />
           </div>
           <div class="md-layout-item md-size-50">
@@ -38,11 +35,8 @@
               :box-color="'orange'"
               :center-text="true"
               :header-text="$tc('words.speed')"
-              :header-text-color="'#dddddd'"
               :sub-text="eBike.speed"
-              :sub-text-color="'#e3e3e3'"
               :box-icon="'speed'"
-              :box-icon-color="'#578839'"
             />
           </div>
 

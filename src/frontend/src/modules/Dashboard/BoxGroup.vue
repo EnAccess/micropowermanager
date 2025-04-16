@@ -8,11 +8,8 @@
           :box-color="'blue'"
           :center-text="true"
           :header-text="$tc('phrases.registeredClusters')"
-          :header-text-color="'#dddddd'"
           :sub-text="clusters.length.toString()"
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'map'"
-          :box-icon-color="'#578839'"
         />
       </div>
       <div
@@ -22,11 +19,8 @@
           :box-color="'orange'"
           :center-text="true"
           :header-text="$tc('phrases.registeredCustomers')"
-          :header-text-color="'#dddddd'"
           :sub-text="readable(population).toString()"
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'supervisor_account'"
-          :box-icon-color="'#385a76'"
         />
       </div>
       <div
@@ -36,11 +30,8 @@
           :box-color="'red'"
           :center-text="true"
           :header-text="$tc('phrases.connectedMeters')"
-          :header-text-color="'#dddddd'"
           :sub-text="readable(connections).toString()"
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'settings_input_hdmi'"
-          :box-icon-color="'#604058'"
         />
       </div>
       <div
@@ -55,14 +46,11 @@
             $tc('phrases.lastXDays', 1, { x: 30 }) +
             ')'
           "
-          :header-text-color="'#dddddd'"
           :sub-text="
             readable(revenue).toString() +
             $store.getters['settings/getMainSettings'].currency
           "
-          :sub-text-color="'#e3e3e3'"
           :box-icon="'attach_money'"
-          :box-icon-color="'#5c5837'"
         />
       </div>
     </div>
