@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import Box from "../Box"
+import Box from "@/shared/Box.vue"
 import { currency } from "@/mixins/currency"
 
 export default {
