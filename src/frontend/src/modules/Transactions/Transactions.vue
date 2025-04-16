@@ -369,7 +369,7 @@ import { currency } from "@/mixins/currency"
 import { EventBus } from "@/shared/eventbus"
 import Widget from "@/shared/Widget.vue"
 import FilterTransaction from "@/modules/Transactions/FilterTransaction"
-import Box from "@/modules/Box"
+import Box from "@/shared/Box"
 import { TransactionService } from "@/services/TransactionService"
 
 import airtelLogo from "@/assets/icons/airtel.png"

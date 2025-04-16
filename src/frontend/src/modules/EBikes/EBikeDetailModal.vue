@@ -141,7 +141,7 @@
 <script>
 import { notify, timing } from "@/mixins"
 import { EBikeService } from "@/services/EBikeService"
-import Box from "@/modules/Box.vue"
+import Box from "@/shared/Box.vue"
 
 export default {
   name: "EBikeDetailModal",

@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import Box from "./Box"
+import Box from "@/shared/Box.vue"
 import Credential from "./Credential"
 import { CustomerService } from "../../services/CustomerService"
 import { MeterModelService } from "../../services/MeterModelService"
