@@ -29,8 +29,9 @@ class ProtectedPageService implements IBaseService {
     }
 
     public function update(Model $model, array $data): ProtectedPage {
-        /** @var ProtectedPage $model */
+        /* @var ProtectedPage $model */
         $model->update($data);
+
         return $model;
     }
 
