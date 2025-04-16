@@ -52,7 +52,7 @@ class AgentAuthController extends Controller {
         // if the Agent app sends us a agent-device-id in the header
         // we update the agent in db
         $deviceId = $request->header('device-id');
-        if (!$deviceId) {
+        if ($deviceId) {
             $agentId = $this->guard()->user()->id;
             $agent = $this->agentService->getById($agentId);
             $this->agentService->updateDevice($agent, $deviceId);
