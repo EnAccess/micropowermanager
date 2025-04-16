@@ -49,14 +49,14 @@ class AgentAuthController extends Controller {
             return response()->json(['data' => ['message' => 'Unauthorized', 'status' => 401]], 401);
         }
 
+        // if the Agent app sends us a agent-device-id in the header
+        // we update the agent in db
         $deviceId = $request->header('device-id');
         if (!$deviceId) {
-            return response()->json(['data' => ['message' => 'Missing device-id header', 'status' => 400]], 400);
+            $agentId = $this->guard()->user()->id;
+            $agent = $this->agentService->getById($agentId);
+            $this->agentService->updateDevice($agent, $deviceId);
         }
-
-        $agentId = $this->guard()->user()->id;
-        $agent = $this->agentService->getById($agentId);
-        $this->agentService->updateDevice($agent, $deviceId);
 
         return $this->respondWithToken($token);
     }
