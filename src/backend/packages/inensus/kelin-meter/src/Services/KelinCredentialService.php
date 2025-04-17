@@ -10,16 +10,11 @@ use Inensus\KelinMeter\Models\KelinCredential;
 
 class KelinCredentialService {
     private $rootUrl = '/login';
-    private $credential;
-    private $kelinApi;
 
     public function __construct(
-        KelinCredential $credential,
-        KelinMeterApiClient $kelinApi,
-    ) {
-        $this->credential = $credential;
-        $this->kelinApi = $kelinApi;
-    }
+        private KelinCredential $credential,
+        private KelinMeterApiClient $kelinApi,
+    ) {}
 
     /**
      * This function uses one time on installation of the package.
@@ -73,7 +68,7 @@ class KelinCredentialService {
 
     public function refreshAccessToken() {
         $credential = $this->getCredentials();
-        if (!$credential->username && !$credential->password) {
+        if (!$credential || (!$credential->username && !$credential->password)) {
             Log::debug('KelinMeter credentials is not registered yet.');
 
             return;

@@ -34,7 +34,7 @@ class ReadDailyMeterConsumptions extends AbstractSharedCommand {
         $startedAt = Carbon::now()->toIso8601ZuluString();
         $this->info('read-daily-consumptions command started at '.$startedAt);
 
-        if ($credentials->is_authenticated == 1) {
+        if ($credentials && $credentials->is_authenticated == 1) {
             $this->dailyConsumptionService->getDailyDataFromAPI();
         } else {
             $this->info('# Kelin credentials not authenticated #');
