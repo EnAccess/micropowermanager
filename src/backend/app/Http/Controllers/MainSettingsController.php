@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Models\MainSettings;
-use App\Services\CompanyService;
 use App\Services\MainSettingsService;
-use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class MainSettingsController extends Controller {
-    public function __construct(private MainSettingsService $mainSettingsService, private UserService $userService, private CompanyService $companyService) {}
+    public function __construct(
+        private MainSettingsService $mainSettingsService,
+    ) {}
 
     public function index(): ApiResource {
         return ApiResource::make($this->mainSettingsService->getAll()->first());
