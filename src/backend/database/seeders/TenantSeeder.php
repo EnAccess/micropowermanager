@@ -34,7 +34,6 @@ class TenantSeeder extends Seeder {
             'phone' => '+255123456789',
             'country_id' => -1,
             'email' => DemoCompany::DEMO_COMPANY_ADMIN_EMAIL,
-            'protected_page_password' => DemoCompany::DEMO_COMPANY_PASSWORD,
         ]);
 
         $companyDatabase = $this->companyDatabaseService->create([
@@ -66,6 +65,7 @@ class TenantSeeder extends Seeder {
                     [
                         'company_name' => DemoCompany::DEMO_COMPANY_NAME,
                         'currency' => DemoCompany::DEMO_COMPANY_CURRENCY,
+                        'protected_page_password' => DemoCompany::DEMO_COMPANY_PASSWORD,
                     ]
                 );
             }

@@ -90,6 +90,7 @@ Route::group(['prefix' => '/dashboard', 'middleware' => 'jwt.verify'], static fu
     Route::get('/mini-grids', 'MiniGridDashboardCacheController@index');
     Route::put('/mini-grids', 'MiniGridDashboardCacheController@update');
     Route::get('/mini-grids/{miniGridId}', 'MiniGridDashboardCacheController@show');
+    Route::get('/agents', 'AgentPerformanceMetricsController@index');
 });
 // Connection-Groups
 Route::group(['prefix' => 'connection-groups', 'middleware' => 'jwt.verify'], static function () {
@@ -288,7 +289,10 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::get('/protected-pages', 'ProtectedPageController@index');
+Route::group(['prefix' => 'protected-pages'], static function () {
+    Route::get('/', 'ProtectedPageController@index');
+    Route::post('/compare', 'ProtectedPageController@compareProtectedPagePassword');
+});
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', 'CompanyController@store');

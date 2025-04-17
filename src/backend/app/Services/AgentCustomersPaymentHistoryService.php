@@ -38,8 +38,8 @@ class AgentCustomersPaymentHistoryService {
             WHERE
                 payer_id = :payer_id
                 AND payer_type = :payer_type
-            GROUP BY CONCAT({$period}), payment_type
-            ORDER BY created_at {$order};
+            GROUP BY period, payment_type
+            ORDER BY MIN(created_at) {$order};
             SQL;
 
         if ($limit !== null) {
@@ -93,8 +93,8 @@ class AgentCustomersPaymentHistoryService {
                 AND payer_type = :payer_type
                 AND agents.id = :agent_id
                 AND addresses.is_primary = 1
-            GROUP BY CONCAT({$period}), payment_type
-            ORDER BY payment_histories.created_at {$order};
+            GROUP BY period, payment_type
+            ORDER BY MIN(payment_histories.created_at) {$order};
             SQL;
 
         if ($limit !== null) {

@@ -8,7 +8,9 @@ use App\Services\MainSettingsService;
 use Illuminate\Http\Request;
 
 class MainSettingsController extends Controller {
-    public function __construct(private MainSettingsService $mainSettingsService) {}
+    public function __construct(
+        private MainSettingsService $mainSettingsService,
+    ) {}
 
     public function index(): ApiResource {
         return ApiResource::make($this->mainSettingsService->getAll()->first());
@@ -25,6 +27,11 @@ class MainSettingsController extends Controller {
             'vat_appliance',
             'usage_type',
         ]);
+
+        $protectedPagePassword = $request->input('protected_page_password');
+        if ($protectedPagePassword) {
+            $mainSettingsData['protected_page_password'] = $protectedPagePassword;
+        }
 
         return ApiResource::make($this->mainSettingsService->update($mainSettings, $mainSettingsData));
     }

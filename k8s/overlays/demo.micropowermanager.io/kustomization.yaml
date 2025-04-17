@@ -7,6 +7,15 @@ resources:
   - namespace.yaml
   - ../../base/gcp_gke/
 
+# customise `newTag` to deploy a specific version of MicroPowerManager
+images:
+  - name: enaccess/micropowermanager-backend:latest
+    newTag: latest
+  - name: enaccess/micropowermanager-frontend:latest
+    newTag: latest
+  - name: enaccess/micropowermanager-scheduler:latest
+    newTag: latest
+
 patches:
   # Setting a static IP address for our load balancer, see
   # https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip#use_an_ingress

@@ -266,7 +266,7 @@
     "overDueReminderRate": "Over Due Reminder Rate (Day)",
     "paginateLabels": "Showing {from} to {to} of {total} entries",
     "paidFor": "Paid For",
-    "passwordProtected": "Password Protected Zone | Please enter the password to access this area",
+    "passwordProtected": "Password Protected Zone | Please enter the password to access this area | Password for Protected Zones",
     "paymentDistribution": "Payment Distribution",
     "paymentFlow": "Payment Flow | Monthly Avg. {currency} over {count} Months",
     "paymentOverview": "Payment Overview {period}",
