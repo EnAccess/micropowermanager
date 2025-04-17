@@ -5,7 +5,6 @@ namespace MPM\Transaction\Export;
 use App\Services\AbstractExportService;
 
 class TransactionExportService extends AbstractExportService {
-    private $path = __DIR__.'/export_transactions_template.xlsx';
     private $transactionData;
 
     public function writeTransactionData(): void {
