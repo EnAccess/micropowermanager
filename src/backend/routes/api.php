@@ -321,6 +321,7 @@ Route::group(['prefix' => 'e-bikes'], static function () {
 Route::group(['prefix' => 'export'], static function () {
     Route::get('/transactions/{slug}', 'TransactionExportController@download');
     Route::get('/debts/{slug}', 'OutstandingDebtsExportController@download');
+    Route::get('/customers/{slug}', 'PersonExportController@download');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', 'UsageTypeController@index');

@@ -117,4 +117,20 @@ abstract class AbstractExportService {
             throw new SpreadSheetNotSavedException($e->getMessage());
         }
     }
+
+    public function saveCsv(): string {
+        try {
+            $uuid = Str::uuid()->toString();
+            $fileName = storage_path('appliance').'/'.$this->getPrefix().'-'.$uuid.'.csv';
+            $this->setRecentlyCreatedSpreadSheetId($uuid);
+
+            // Create CSV writer
+            $writer = IOFactory::createWriter($this->spreadsheet, 'Csv');
+            $writer->save($fileName);
+
+            return $fileName;
+        } catch (\Exception $e) {
+            throw new SpreadSheetNotSavedException($e->getMessage());
+        }
+    }
 }
