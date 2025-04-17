@@ -1,0 +1,11 @@
+meta {
+  name: Get All Customers Balances Daily (App)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/customers/graph/D/
+  body: json
+  auth: inherit
+}
