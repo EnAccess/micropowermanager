@@ -191,13 +191,14 @@ jobs:
           cluster_name: ${{ secrets.GCP_GKE_CLUSTER_NAME }}
           location: ${{ secrets.GCP_REGION }}
 
+      - name: Set Demo deploy version
+        run: |
+          sed -i "s/newTag: latest/newTag: $(<version)/g" k8s/overlays/demo.micropowermanager.io/kustomization.yaml
+
+      - name: Show diff with GKE
+        run: |
+          kubectl diff -k k8s/overlays/demo.micropowermanager.io/
+
       - name: Deploy to GKE
         run: |
           kubectl apply -k k8s/overlays/demo.micropowermanager.io/
-
-      # We need to restart the pods to pick up latest images
-      - name: Restart MicroPowerManager pods on GKE
-        run: |
-          kubectl rollout restart deployment/mpm-backend -n micropowermanager-demo
-          kubectl rollout restart deployment/mpm-frontend -n micropowermanager-demo
-          kubectl rollout restart deployment/mpm-scheduler -n micropowermanager-demo
