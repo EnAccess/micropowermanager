@@ -6,6 +6,7 @@ use App\Models\MainSettings;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @implements IBaseService<MainSettings>
@@ -17,18 +18,22 @@ class MainSettingsService implements IBaseService {
     ) {}
 
     public function getById(int $id): MainSettings {
-        throw new \Exception('Method getById() not yet implemented.');
-
-        return new MainSettings();
+        return $this->mainSettings->newQuery()->findOrFail($id);
     }
 
     public function create(array $data): MainSettings {
-        throw new \Exception('Method create() not yet implemented.');
+        if (isset($data['protected_page_password'])) {
+            $data['protected_page_password'] = Crypt::encrypt($data['protected_page_password']);
+        }
 
-        return new MainSettings();
+        return $this->mainSettings->newQuery()->create($data);
     }
 
     public function update($mainSettings, $mainSettingsData): MainSettings {
+        if (isset($mainSettingsData['protected_page_password'])) {
+            $mainSettingsData['protected_page_password'] = Crypt::encrypt($mainSettingsData['protected_page_password']);
+        }
+
         $mainSettings->update($mainSettingsData);
         $mainSettings->fresh();
 
@@ -36,7 +41,7 @@ class MainSettingsService implements IBaseService {
     }
 
     public function delete($model): ?bool {
-        throw new \Exception('Method getById() not yet implemented.');
+        throw new \Exception('Method delete() not yet implemented.');
     }
 
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {

@@ -142,6 +142,23 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <md-field
+          :class="{ 'md-invalid': errors.has('protected_page_password') }"
+        >
+          <label>{{ $tc("phrases.passwordProtected", 3) }}</label>
+          <md-input
+            name="protected_page_password"
+            id="protected_page_password"
+            type="password"
+            v-model="mainSettingsService.mainSettings.protectedPagePassword"
+            v-validate="'min:5'"
+          ></md-input>
+          <span class="md-error">
+            {{ errors.first("protected_page_password") }}
+          </span>
+        </md-field>
+      </div>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
           class="md-primary md-dense md-raised"
@@ -221,12 +238,12 @@ export default {
       }
     },
     async updateMainSettings() {
-      this.progress = true
       let validator = await this.$validator.validateAll()
       if (!validator) {
         return
       }
       try {
+        this.progress = true
         await this.mainSettingsService.update()
         this.$store
           .dispatch(

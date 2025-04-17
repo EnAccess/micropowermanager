@@ -288,7 +288,10 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::get('/protected-pages', 'ProtectedPageController@index');
+Route::group(['prefix' => 'protected-pages'], static function () {
+    Route::get('/', 'ProtectedPageController@index');
+    Route::post('/compare', 'ProtectedPageController@compareProtectedPagePassword');
+});
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', 'CompanyController@store');
