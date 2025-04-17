@@ -7,9 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class AgentPerformanceMetricsService {
     public function __construct(
+        private PeriodService $periodService,
     ) {}
 
-    public function getMetrics($startDate = null, $endDate = null) {
+    public function getMetrics($startDate = null, $endDate = null, $interval = 'monthly') {
         $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->subMonths(3)->startOfDay();
         $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now()->endOfDay();
 
@@ -44,9 +45,41 @@ class AgentPerformanceMetricsService {
             ->limit(5)
             ->get();
 
+        // Periodic metrics
+        $groupFormat = $interval === 'weekly' ? '%x-W%v' : '%Y-%m';
+
+        $periodicData = DB::connection('tenant')
+            ->table('asset_people')
+            ->selectRaw("
+                DATE_FORMAT(asset_people.created_at, '{$groupFormat}') as period,
+                SUM(agents.commission_revenue) AS agent_commissions,
+                COUNT(asset_people.id) AS appliance_sales
+            ")
+            ->leftJoin('agents', 'asset_people.creator_id', '=', 'agents.id')
+            ->where('creator_type', 'agent')
+            ->whereBetween('asset_people.created_at', [$startDate, $endDate])
+            ->groupBy('period')
+            ->get();
+
+        // Fill all periods with default values
+        $intervalData = $this->periodService->generatePeriodicList(
+            $startDate->toDateString(),
+            $endDate->toDateString(),
+            $interval,
+            ['agent_commissions' => 0, 'appliance_sales' => 0]
+        );
+
+        foreach ($periodicData as $row) {
+            $intervalData[$row->period] = [
+                'agent_commissions' => (float) $row->agent_commissions,
+                'appliance_sales' => (int) $row->appliance_sales,
+            ];
+        }
+
         return [
             'metrics' => $overall,
             'top_agents' => $topAgents,
+            'period' => $intervalData,
         ];
     }
 }

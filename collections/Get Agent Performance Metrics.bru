@@ -5,7 +5,13 @@ meta {
 }
 
 get {
-  url: {{mpm_backend_url}}/api/dashboard/agents
+  url: {{mpm_backend_url}}/api/dashboard/agents?period=monthly
   body: none
   auth: inherit
+}
+
+params:query {
+  period: monthly
+  ~start_date: 2025-02-01
+  ~end_date: 2025-04-10
 }
