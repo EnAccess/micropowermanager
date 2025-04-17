@@ -196,6 +196,8 @@ jobs:
           sed -i "s/newTag: latest/newTag: $(<version)/g" k8s/overlays/demo.micropowermanager.io/kustomization.yaml
 
       - name: Show diff with GKE
+        # kubectl diff exists with error code 1 if diff's where found
+        continue-on-error: true
         run: |
           kubectl diff -k k8s/overlays/demo.micropowermanager.io/
 
