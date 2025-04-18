@@ -452,6 +452,7 @@
     "host": "Host",
     "id": "ID",
     "incoming": "Entrant",
+    "isActive": "Est actif",
     "key": "Key",
     "last": "Dernier",
     "latitude": "Latitude",
@@ -556,7 +557,6 @@
     "village": "Village",
     "week": "Semaine | Hebdomadaire",
     "yes": "Oui",
-    "yesterday": "Hier",
-    "isActive": "Est actif"
+    "yesterday": "Hier"
   }
 }

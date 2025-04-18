@@ -453,6 +453,7 @@
     "host": "လက်ခံသူ",
     "id": "ID",
     "incoming": "Incoming",
+    "isActive": "အသက်ဝင်သည်။",
     "key": " အဓိကအချက်",
     "last": "Last",
     "latitude": "Latude",
@@ -556,7 +557,6 @@
     "village": "ရွာ",
     "week": "ရက်သတf ပတ် | အပတ်စV်",
     "yes": "ဟတု ်/မှန",
-    "yesterday": "မေနက့ ",
-    "isActive": "အသက်ဝင်သည်။"
+    "yesterday": "မေနက့ "
   }
 }
