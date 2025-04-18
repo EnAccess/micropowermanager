@@ -556,6 +556,7 @@
     "village": "Village",
     "week": "Week | Weekly",
     "yes": "Yes",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "isActive": "Is Active"
   }
 }
