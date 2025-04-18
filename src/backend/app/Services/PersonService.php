@@ -157,6 +157,7 @@ class PersonService implements IBaseService {
             'addresses.city',
             'devices',
             'agentSoldAppliance.assignedAppliance.agent',
+            'payments',
         ])->where('is_customer', $customerType);
 
         if ($agentId) {

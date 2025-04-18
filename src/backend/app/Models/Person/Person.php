@@ -15,6 +15,7 @@ use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Role\RoleInterface;
 use App\Models\Role\Roles;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,6 +47,8 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     public const RELATION_NAME = 'person';
 
     protected $guarded = [];
+
+    protected $appends = ['is_active'];
 
     protected $casts = [
         'additional_json' => 'array',
@@ -129,5 +132,15 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
 
     public function getId(): int {
         return $this->id;
+    }
+
+    public function getIsActiveAttribute(): bool {
+        $lastPayment = $this->payments()->latest('created_at')->first();
+
+        if (!$lastPayment) {
+            return false;
+        }
+
+        return Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
     }
 }

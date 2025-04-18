@@ -37,6 +37,9 @@
                 {{ $tc("words.city") }}
               </md-table-head>
               <md-table-head>
+                {{ $tc("words.isActive") }}
+              </md-table-head>
+              <md-table-head>
                 {{ $tc("words.device") }}
               </md-table-head>
               <md-table-head>
@@ -62,6 +65,9 @@
                 {{
                   client.addresses[0].city ? client.addresses[0].city.name : "-"
                 }}
+              </md-table-cell>
+              <md-table-cell>
+                {{ client.is_active ? $tc("words.yes") : $tc("words.no") }}
               </md-table-cell>
               <md-table-cell v-if="client.devices.length > 0">
                 {{ deviceList(client.devices) }}

@@ -453,6 +453,7 @@
     "host": "Host",
     "id": "ID",
     "incoming": "Incoming",
+    "isActive": "Is Active",
     "key": "Key",
     "last": "Last",
     "latitude": "Latitude",
