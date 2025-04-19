@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use Illuminate\Support\Facades\Route;
 
 /* Address */
-Route::group(['prefix' => 'addresses', 'middleware' => 'jwt.verify'], function () {
-    Route::get('/', 'AddressController@index');
-    Route::get('/{id}', 'AddressController@show');
-    Route::post('/', 'AddressController@store');
-    Route::put('/{id}', 'AddressController@update');
-});
+Route::middleware('jwt.verify')
+    ->prefix('addresses')
+    ->group(function () {
+        Route::get('/', [AddressController::class, 'index']);
+        Route::get('/{id}', [AddressController::class, 'show']);
+        Route::post('/', [AddressController::class, 'store']);
+        Route::put('/{id}', [AddressController::class, 'update']);
+    });
