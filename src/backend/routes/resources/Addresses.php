@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
+use Illuminate\Support\Facades\Route;
 
 /* Address */
 Route::middleware('jwt.verify')

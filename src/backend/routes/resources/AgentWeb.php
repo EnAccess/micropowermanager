@@ -1,14 +1,14 @@
 <?php
 
 // Web panel routes for agent
-use App\Http\Controllers\AgentWebController;
 use App\Http\Controllers\AgentAssignedApplianceWebController;
-use App\Http\Controllers\AgentSoldApplianceWebController;
-use App\Http\Controllers\AgentCommissionWebController;
-use App\Http\Controllers\AgentReceiptWebController;
-use App\Http\Controllers\AgentTransactionWebController;
 use App\Http\Controllers\AgentBalanceHistoryWebController;
 use App\Http\Controllers\AgentChargeWebController;
+use App\Http\Controllers\AgentCommissionWebController;
+use App\Http\Controllers\AgentReceiptWebController;
+use App\Http\Controllers\AgentSoldApplianceWebController;
+use App\Http\Controllers\AgentTransactionWebController;
+use App\Http\Controllers\AgentWebController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api', 'jwt.verify'])

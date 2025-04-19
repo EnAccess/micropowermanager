@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AssetController;
@@ -60,6 +58,8 @@ use App\Http\Controllers\UsageTypeController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
 require 'resources/Cities.php';

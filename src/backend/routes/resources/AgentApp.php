@@ -1,18 +1,18 @@
 <?php
 
+use App\Http\Controllers\AgentAssignedAppliancesController;
 use App\Http\Controllers\AgentAuthController;
-use App\Http\Controllers\AgentFirebaseController;
 use App\Http\Controllers\AgentBalanceController;
 use App\Http\Controllers\AgentCustomerController;
 use App\Http\Controllers\AgentCustomersPaymentHistoryController;
-use App\Http\Controllers\AgentTransactionsController;
-use App\Http\Controllers\AgentSoldApplianceController;
-use App\Http\Controllers\AgentAssignedAppliancesController;
-use App\Http\Controllers\AgentTicketController;
 use App\Http\Controllers\AgentCustomerTicketController;
-use App\Http\Controllers\AgentDashboardBoxesController;
 use App\Http\Controllers\AgentDashboardBalanceHistoryController;
+use App\Http\Controllers\AgentDashboardBoxesController;
 use App\Http\Controllers\AgentDashboardRevenueController;
+use App\Http\Controllers\AgentFirebaseController;
+use App\Http\Controllers\AgentSoldApplianceController;
+use App\Http\Controllers\AgentTicketController;
+use App\Http\Controllers\AgentTransactionsController;
 use Illuminate\Support\Facades\Route;
 
 // Android App Services

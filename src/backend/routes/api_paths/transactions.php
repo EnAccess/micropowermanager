@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransactionAdvancedController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionProviderController;
-
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('transactions')->group(function () {
     Route::get('/', [TransactionController::class, 'index']);
