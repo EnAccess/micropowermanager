@@ -16,16 +16,16 @@ use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Event;
 use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::group(
-    ['prefix' => '/jobs', 'middleware' => 'auth'],
-    static function () {
-        Route::get('/token/{id}/{recreate?}', static function () {
-            $id = request('id');
-            $recreate = (bool) request('recreate');
+Route::prefix('jobs')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/token/{id}/{recreate?}', function (string $id, ?string $recreate = null) {
+            $recreate = (bool) $recreate;
             TokenProcessor::dispatch(
                 TransactionDataContainer::initialize(Transaction::find($id)),
                 $recreate,
@@ -35,32 +35,32 @@ Route::group(
             );
         })->where('id', '[0-9]+')->name('jobs.token');
 
-        Route::get('energy/{id}', function () {
-            $id = request('id');
+        Route::get('energy/{id}', function (string $id) {
             $transaction = Transaction::find($id);
-            EnergyTransactionProcessor::dispatch($transaction)->allOnConnection('redis')->onQueue('energy_payment');
+            EnergyTransactionProcessor::dispatch($transaction)
+                ->allOnConnection('redis')
+                ->onQueue('energy_payment');
         });
-    }
-);
+    });
 
 /*
  * the group in which events can be fired manually again.
  */
-Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
-    /*
-     * Confirms a transaction (again).
-     */
-    Route::get('transaction/confirm/{id}', function () {
-        // get id from the request
-        $id = request('id');
-        // find the transaction
-        $transaction = Transaction::find($id);
+Route::prefix('events')
+    ->middleware('auth')
+    ->group(function () {
+        /*
+         * Confirms a transaction (again).
+         */
+        Route::get('transaction/confirm/{id}', function (string $id) {
+            // find the transaction
+            $transaction = Transaction::find($id);
 
-        // fire event which confirms the transaction
-        event('transaction.successfull', [$transaction]);
-    })->where('id', '[0-9]+');
-});
+            // fire event which confirms the transaction
+            Event::dispatch('transaction.successfull', [$transaction]);
+        })->where('id', '[0-9]+');
+    });
 
-Route::group(['middleware' => 'auth'], function () {
-    // Route::get('/user-data', 'AdminController@auth');
+Route::middleware('auth')->group(function () {
+    // Route::get('/user-data', [AdminController::class, 'auth']);
 });

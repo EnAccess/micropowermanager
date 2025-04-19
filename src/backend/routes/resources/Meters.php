@@ -1,29 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MeterConsumptionController;
+use App\Http\Controllers\MeterController;
+use App\Http\Controllers\MeterGeographicalInformationController;
+use App\Http\Controllers\MeterPaymentHistoryController;
+use App\Http\Controllers\MeterRevenueController;
+use App\Http\Controllers\MeterTypeController;
+use App\Http\Controllers\MeterTypeMeterController;
 
 /* Meter */
-Route::group(['prefix' => 'meters'], function () {
-    Route::get('/', 'MeterController@index');
-    Route::post('/', 'MeterController@store');
-    Route::get('/connection-types', 'MeterController@showConnectionTypes');
-    Route::put('/{meter}', 'MeterController@update');
-    Route::get('/search', 'MeterController@search');
-    Route::get('/{serialNumber}', 'MeterController@show');
-    Route::delete('/{meterId}', 'MeterController@destroy');
-    Route::get('/{meterId}/all', 'MeterController@allRelations');
-    Route::put('/', 'MeterGeographicalInformationController@update');
-    Route::get('/{serialNumber}/transactions', 'MeterPaymentHistoryController@show');
-    Route::get('/{serialNumber}/consumptions/{start}/{end}', 'MeterConsumptionController@show');
-    Route::get('/{serialNumber}/revenue', 'MeterRevenueController@show');
-    Route::get('/{miniGrid}/geoList', 'MeterGeographicalInformationController@index');
+Route::prefix('meters')->group(function () {
+    Route::get('/', [MeterController::class, 'index']);
+    Route::post('/', [MeterController::class, 'store']);
+    Route::get('/connection-types', [MeterController::class, 'showConnectionTypes']);
+    Route::put('/{meter}', [MeterController::class, 'update']);
+    Route::get('/search', [MeterController::class, 'search']);
+    Route::get('/{serialNumber}', [MeterController::class, 'show']);
+    Route::delete('/{meterId}', [MeterController::class, 'destroy']);
+    Route::get('/{meterId}/all', [MeterController::class, 'allRelations']);
+    Route::put('/', [MeterGeographicalInformationController::class, 'update']);
+    Route::get('/{serialNumber}/transactions', [MeterPaymentHistoryController::class, 'show']);
+    Route::get('/{serialNumber}/consumptions/{start}/{end}', [MeterConsumptionController::class, 'show']);
+    Route::get('/{serialNumber}/revenue', [MeterRevenueController::class, 'show']);
+    Route::get('/{miniGrid}/geoList', [MeterGeographicalInformationController::class, 'index']);
 });
 
 /* Meter types */
-Route::group(['prefix' => 'meter-types'], function () {
-    Route::get('/', 'MeterTypeController@index');
-    Route::get('/{meterTypeId}', 'MeterTypeController@show');
-    Route::post('/', 'MeterTypeController@store');
-    Route::put('/{meterTypeId}', 'MeterTypeController@update');
-    Route::get('/{meterTypeId}/list', 'MeterTypeMeterController@show');
+Route::prefix('meter-types')->group(function () {
+    Route::get('/', [MeterTypeController::class, 'index']);
+    Route::get('/{meterTypeId}', [MeterTypeController::class, 'show']);
+    Route::post('/', [MeterTypeController::class, 'store']);
+    Route::put('/{meterTypeId}', [MeterTypeController::class, 'update']);
+    Route::get('/{meterTypeId}/list', [MeterTypeMeterController::class, 'show']);
 });
