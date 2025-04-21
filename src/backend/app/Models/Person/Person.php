@@ -135,12 +135,16 @@ class Person extends BaseModel implements HasAddressesInterface, RoleInterface {
     }
 
     public function getIsActiveAttribute(): bool {
-        $lastPayment = $this->payments()->latest('created_at')->first();
+        $lastPayment = $this->latestPayment;
 
         if (!$lastPayment) {
             return false;
         }
 
         return Carbon::parse($lastPayment->created_at)->diffInDays(now()) <= 25;
+    }
+
+    public function latestPayment(): HasOne {
+        return $this->hasOne(PaymentHistory::class, 'payer_id')->latestOfMany('created_at');
     }
 }

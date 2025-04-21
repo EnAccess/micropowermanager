@@ -33,6 +33,9 @@ class PersonController extends Controller {
      * [ To get a list of registered customers or non-customer like contact person of Meter Manufacturer. ].
      *
      * @urlParam is_customer int optinal. To get a list of customers or non customer. Default : 1
+     * @urlParam agent_id int optional. To gget a list of customers of a specific agent.
+     * @urlParam limit int optional. The number of items per page.
+     * @urlParam active_customer int optional. To get a list of active customers. Default: 0
      *
      * @responseFile responses/people/people.list.json
      *
@@ -42,8 +45,9 @@ class PersonController extends Controller {
         $customerType = $request->input('is_customer', 1);
         $limit = $request->input('limit', config('settings.paginate'));
         $agentId = $request->input('agent_id');
+        $activeCustomer = $request->has('active_customer') ? (bool) $request->input('active_customer') : null;
 
-        return ApiResource::make($this->personService->getAll($limit, $customerType, $agentId));
+        return ApiResource::make($this->personService->getAll($limit, $customerType, $agentId, $activeCustomer));
     }
 
     /**
