@@ -84,13 +84,12 @@ class TransactionExportController {
             $fromDate,
             $toDate,
         );
-        $this->transactionExportService->createSpreadSheetFromTemplate($this->transactionExportService->getTemplatePath());
         $this->transactionExportService->setCurrency($currency);
         $this->transactionExportService->setTimeZone($timeZone);
         $this->transactionExportService->setTransactionData($data);
         $this->transactionExportService->setExportingData();
-        $this->transactionExportService->writeTransactionData();
-        $csvPath = $this->transactionExportService->saveCsv();
+        $headers = ['Status', 'Payment Service', 'Customer', 'Serial Number', 'Amount', 'Type', 'Date'];
+        $csvPath = $this->transactionExportService->saveCsv($headers);
 
         return response()->download($csvPath, 'transactions'.$fromDate.'-'.$toDate.'.csv', [
             'Content-Type' => 'text/csv',

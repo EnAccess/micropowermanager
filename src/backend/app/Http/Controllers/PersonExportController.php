@@ -37,11 +37,10 @@ class PersonExportController extends Controller {
     public function downloadCsv(Request $request): BinaryFileResponse {
         $people = $this->personService->getAllForExport();
 
-        $this->peopleExportService->createSpreadSheetFromTemplate($this->peopleExportService->getTemplatePath());
         $this->peopleExportService->setPeopleData($people);
         $this->peopleExportService->setExportingData();
-        $this->peopleExportService->writePeopleData();
-        $csvPath = $this->peopleExportService->saveCsv();
+        $headers = ['Title', 'Name', 'Surname', 'Birth Date', 'Sex', 'Email', 'Phone', 'City', 'Device Serial', 'Agent Name'];
+        $csvPath = $this->peopleExportService->saveCsv($headers);
 
         return response()->download($csvPath, 'customer_export_'.now()->format('Ymd_His').'.csv', [
             'Content-Type' => 'text/csv',

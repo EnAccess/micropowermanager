@@ -318,10 +318,10 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/{serialNumber}', 'EBikeController@show');
     Route::post('/switch', 'EBikeController@switch');
 });
-Route::group(['prefix' => 'export'], static function () {
-    Route::get('/transactions/{slug}', 'TransactionExportController@download');
-    Route::get('/debts/{slug}', 'OutstandingDebtsExportController@download');
-    Route::get('/customers/{slug}', 'PersonExportController@download');
+Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
+    Route::get('/transactions', 'TransactionExportController@download');
+    Route::get('/debts', 'OutstandingDebtsExportController@download');
+    Route::get('/customers', 'PersonExportController@download');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', 'UsageTypeController@index');
