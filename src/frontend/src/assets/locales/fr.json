@@ -452,6 +452,7 @@
     "host": "Host",
     "id": "ID",
     "incoming": "Entrant",
+    "isActive": "Est actif",
     "key": "Key",
     "last": "Dernier",
     "latitude": "Latitude",

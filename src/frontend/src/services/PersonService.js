@@ -20,6 +20,7 @@ export class Person {
     this.nationality = null
     this.city = null
     this.devices = []
+    this.is_active = null
   }
 
   initialize(personData) {
@@ -36,6 +37,7 @@ export class Person {
     this.gender = personData.sex
     this.addresses = personData.addresses
     this.devices = personData.devices
+    this.is_active = personData.is_active
 
     return this
   }
@@ -66,6 +68,7 @@ export class Person {
     this.addresses = data.addresses
     this.lastUpdate = data.updated_at
     this.devices = data.devices
+    this.is_active = data.is_active
 
     return this
   }
@@ -149,6 +152,7 @@ export class PersonService {
         email: null,
         phone: null,
       },
+      is_active: null,
     }
     this.fullName = null
   }
@@ -186,6 +190,7 @@ export class PersonService {
         gender: personData.sex,
         addresses: personData.addresses,
         devices: personData.devices,
+        is_active: personData.is_active,
       }
 
       return this.person
