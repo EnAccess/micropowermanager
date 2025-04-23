@@ -4,7 +4,7 @@ export class OutstandingDebtsExportService {
   constructor() {
     this.repository = OutstandingDebtsExportRepository
   }
-  exportOutstandingDebts(email) {
-    return this.repository.download(email)
+  async exportOutstandingDebts() {
+    return this.repository.download()
   }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\ActiveSheetNotCreatedException;
+use App\Exceptions\CsvNotSavedException;
 use App\Exceptions\SpreadSheetNotCreatedException;
 use App\Exceptions\SpreadSheetNotSavedException;
 use Carbon\Carbon;
@@ -115,6 +116,44 @@ abstract class AbstractExportService {
             return $fileName;
         } catch (\Exception $e) {
             throw new SpreadSheetNotSavedException($e->getMessage());
+        }
+    }
+
+    public function saveCsv(array $headers = []): string {
+        $uuid = Str::uuid()->toString();
+        $filePath = storage_path('appliance/'.$this->getPrefix().'-'.$uuid.'.csv');
+
+        try {
+            $handle = fopen($filePath, 'w');
+
+            if ($this->exportingData->isEmpty()) {
+                fclose($handle);
+
+                return $filePath;
+            }
+
+            // Write header row
+            if (empty($headers)) {
+                // Use keys from the first row if no custom headers provided
+                fputcsv($handle, array_keys($this->exportingData->first()));
+            } else {
+                // Use the provided custom headers
+                fputcsv($handle, $headers);
+            }
+
+            // Write each data row
+            foreach ($this->exportingData as $row) {
+                fputcsv($handle, $row);
+            }
+
+            fclose($handle);
+
+            return $filePath;
+        } catch (\Exception $e) {
+            Log::critical('An error occurred while creating the CSV file', [
+                'message' => $e->getMessage(),
+            ]);
+            throw new CsvNotSavedException($e->getMessage());
         }
     }
 }

@@ -5,7 +5,7 @@ export class TransactionExportService {
     this.repository = TransactionExportRepository
   }
 
-  exportTransactions(email, payload) {
+  async exportTransactions(payload) {
     const queryParameters = []
     for (const key in payload) {
       // eslint-disable-next-line no-prototype-builtins
@@ -16,6 +16,6 @@ export class TransactionExportService {
       }
     }
     const slug = queryParameters.join("&")
-    return this.repository.download(email, slug)
+    return this.repository.download(slug)
   }
 }

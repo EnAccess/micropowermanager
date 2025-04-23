@@ -1,0 +1,15 @@
+meta {
+  name: Export Customers Data CSV
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/export/customers?format=csv
+  body: none
+  auth: inherit
+}
+
+params:query {
+  format: csv
+}

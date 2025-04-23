@@ -99,6 +99,7 @@ import { EventBus } from "@/shared/eventbus"
 import Widget from "@/shared/Widget.vue"
 import { People } from "@/services/PersonService"
 import { timing } from "@/mixins/timing"
+import { notify } from "@/mixins/notify"
 import i18n from "../../i18n"
 import AddClientModal from "@/modules/Client/AddClientModal.vue"
 import { OutstandingDebtsExportService } from "@/services/OutstandingDebtsExportService"
@@ -107,7 +108,7 @@ const debounce = require("debounce")
 
 export default {
   name: "Clients",
-  mixins: [timing],
+  mixins: [timing, notify],
   components: { AddClientModal, Widget },
   data() {
     return {
@@ -209,11 +210,29 @@ export default {
     clearSearch() {
       this.searchTerm = ""
     },
-    exportDebts() {
-      const email = this.$store.getters["auth/getAuthenticateUser"].email
-      window.open(
-        this.outstandingDebtsExportService.exportOutstandingDebts(email),
-      )
+    async exportDebts() {
+      try {
+        const response =
+          await this.outstandingDebtsExportService.exportOutstandingDebts()
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        a.download = fileNameMatch
+          ? fileNameMatch[1]
+          : "export_customers_debts.xlsx"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+      } catch (e) {
+        this.alertNotify(
+          "error",
+          "Error occured while exporting Customers' debts",
+        )
+      }
     },
   },
 }

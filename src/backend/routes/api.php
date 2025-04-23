@@ -436,9 +436,10 @@ Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/{serialNumber}', [EBikeController::class, 'show']);
     Route::post('/switch', [EBikeController::class, 'switch']);
 });
-Route::group(['prefix' => 'export'], static function () {
-    Route::get('/transactions/{slug}', [TransactionExportController::class, 'download']);
-    Route::get('/debts/{slug}', [OutstandingDebtsExportController::class, 'download']);
+Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
+    Route::get('/transactions', 'TransactionExportController@download');
+    Route::get('/debts', 'OutstandingDebtsExportController@download');
+    Route::get('/customers', 'PersonExportController@download');
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);
