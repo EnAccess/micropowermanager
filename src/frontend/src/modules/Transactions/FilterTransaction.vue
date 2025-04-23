@@ -157,9 +157,11 @@ import { mapGetters } from "vuex"
 import moment from "moment-timezone"
 import store from "@/store/store"
 import { TransactionExportService } from "@/services/TransactionExportService"
+import { notify } from "@/mixins"
 
 export default {
   name: "FilterTransaction",
+  mixins: [notify],
   data() {
     return {
       transactionService: new TransactionService(),
@@ -258,8 +260,29 @@ export default {
         timeZone: moment.tz.guess(),
         currency: store.getters["settings/getMainSettings"].currency,
       }
-      const email = this.$store.getters["auth/getAuthenticateUser"].email
-      window.open(this.transactionExportService.exportTransactions(email, data))
+      try {
+        const response =
+          await this.transactionExportService.exportTransactions(data)
+        const blob = new Blob([response.data])
+        const downloadUrl = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = downloadUrl
+
+        const contentDisposition = response.headers["content-disposition"]
+        const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+        const defaultFileName =
+          data.format === "csv"
+            ? "export_transactions.csv"
+            : "export_transactions.xlsx"
+        a.download = fileNameMatch ? fileNameMatch[1] : defaultFileName
+
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+      } catch (e) {
+        this.alertNotify("error", "Error occured while exporting transactions")
+      }
     },
     getSearch() {
       let search = this.$store.getters.search
