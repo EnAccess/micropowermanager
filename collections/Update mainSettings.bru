@@ -1,0 +1,22 @@
+meta {
+  name: Update mainSettings
+  type: http
+  seq: 23
+}
+
+put {
+  url: {{mpm_backend_url}}/api/settings/main/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "company_name": "Test Company"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

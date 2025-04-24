@@ -1,0 +1,16 @@
+meta {
+  name: Get mainSettings
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{mpm_backend_url}}/api/settings/main
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
