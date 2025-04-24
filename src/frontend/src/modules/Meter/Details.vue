@@ -1,41 +1,43 @@
 <template>
-  <widget>
+  <widget :title="$tc('Meter Detail')" color="green">
     <div class="meter-overview-card">
-      <div class="md-subheading">{{ $tc("phrases.meterDetail", 2) }}</div>
       <div
         class="meter-overview-detail"
         v-if="meter !== null && meter.loaded === true"
       >
-        <div class="md-layout">
-          <div class="md-layout-item">
-            {{ $tc("words.manufacturer") }}
-          </div>
-          <div class="md-layout-item">
-            {{ meter.manufacturer.name }} ( {{ meter.manufacturer.website }})
-          </div>
-        </div>
-
-        <div class="md-layout">
-          <div class="md-layout-item">
-            {{ $tc("phrases.serialNumber") }}
-          </div>
-          <div class="md-layout-item">{{ meter.serialNumber }}</div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">{{ $tc("words.tariff") }}</div>
-          <div class="md-layout-item">
-            <div v-if="editTariff === false">
-              {{ meter.tariff.name }}
-              <span
-                style="cursor: pointer"
-                @click="editTariff = true"
-                v-if="meter.tariff.factor !== 2"
-              >
-                <md-icon>edit</md-icon>
+        <md-list class="md-double-line">
+          <md-list-item>
+            <div class="list-column">
+              <span>{{ $tc("words.manufacturer") }}</span>
+              <span class="list-item-label">
+                {{ meter.manufacturer.name }} ({{ meter.manufacturer.website }})
               </span>
             </div>
-            <div class="md-layout" v-else>
-              <div class="md-layout-item">
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="list-column">
+              <span>{{ $tc("phrases.serialNumber") }}</span>
+              <span class="list-item-label">{{ meter.serialNumber }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="list-column">
+              <span>{{ $tc("words.tariff") }}</span>
+              <span class="list-item-label" v-if="editTariff === false">
+                {{ meter.tariff.name }}
+                <span
+                  style="cursor: pointer"
+                  @click="editTariff = true"
+                  v-if="meter.tariff.factor !== 2"
+                >
+                  <md-icon>edit</md-icon>
+                </span>
+              </span>
+              <div v-else>
                 <md-field>
                   <label for="tariff">
                     {{ $tc("words.tariff") }}
@@ -51,29 +53,32 @@
                     </md-option>
                   </md-select>
                 </md-field>
+                <div class="edit-actions">
+                  <md-button class="md-icon-button" @click="updateTariff()">
+                    <md-icon class="md-primary">save</md-icon>
+                  </md-button>
+                  <md-button class="md-icon-button" @click="editTariff = false">
+                    <md-icon class="md-accent">cancel</md-icon>
+                  </md-button>
+                </div>
               </div>
-              <md-button class="md-icon-button" @click="updateTariff()">
-                <md-icon class="md-primary">save</md-icon>
-              </md-button>
-              <md-button class="md-icon-button" @click="editTariff = false">
-                <md-icon class="md-accent">cancel</md-icon>
-              </md-button>
             </div>
-          </div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">
-            {{ $tc("phrases.connectionGroup") }}
-          </div>
-          <div class="md-layout-item">
-            <div v-if="!editConnectionGroup">
-              {{ meter.connectionGroup.name }}
-              <span style="cursor: pointer" @click="editConnectionGroup = true">
-                <md-icon>edit</md-icon>
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="list-column">
+              <span>{{ $tc("phrases.connectionGroup") }}</span>
+              <span v-if="!editConnectionGroup" class="list-item-label">
+                {{ meter.connectionGroup.name }}
+                <span
+                  style="cursor: pointer"
+                  @click="editConnectionGroup = true"
+                >
+                  <md-icon>edit</md-icon>
+                </span>
               </span>
-            </div>
-            <div class="md-layout" v-else>
-              <div class="md-layout-item">
+              <div v-else>
                 <md-field>
                   <label for="connectionGroup">
                     {{ $tc("phrases.connectionGroup") }}
@@ -91,35 +96,38 @@
                     </md-option>
                   </md-select>
                 </md-field>
+                <div class="edit-actions">
+                  <md-button
+                    class="md-icon-button"
+                    @click="updateConnectionGroup()"
+                  >
+                    <md-icon class="md-primary">save</md-icon>
+                  </md-button>
+                  <md-button
+                    class="md-icon-button"
+                    @click="editConnectionGroup = false"
+                  >
+                    <md-icon class="md-accent">cancel</md-icon>
+                  </md-button>
+                </div>
               </div>
-              <md-button
-                class="md-icon-button"
-                @click="updateConnectionGroup()"
-              >
-                <md-icon class="md-primary">save</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                @click="editConnectionGroup = false"
-              >
-                <md-icon class="md-accent">cancel</md-icon>
-              </md-button>
             </div>
-          </div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">
-            {{ $tc("phrases.connectionType") }}
-          </div>
-          <div class="md-layout-item">
-            <div v-if="editConnectionType === false">
-              {{ meter.connectionType.name }}
-              <span style="cursor: pointer" @click="editConnectionType = true">
-                <md-icon>edit</md-icon>
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="list-column">
+              <span>{{ $tc("phrases.connectionType") }}</span>
+              <span v-if="editConnectionType === false" class="list-item-label">
+                {{ meter.connectionType.name }}
+                <span
+                  style="cursor: pointer"
+                  @click="editConnectionType = true"
+                >
+                  <md-icon>edit</md-icon>
+                </span>
               </span>
-            </div>
-            <div class="md-layout" v-else>
-              <div class="md-layout-item">
+              <div v-else>
                 <md-field>
                   <label for="connectionType">
                     {{ $tc("phrases.connectionType") }}
@@ -137,19 +145,24 @@
                     </md-option>
                   </md-select>
                 </md-field>
+                <div class="edit-actions">
+                  <md-button
+                    class="md-icon-button"
+                    @click="updateConnectionType()"
+                  >
+                    <md-icon class="md-primary">save</md-icon>
+                  </md-button>
+                  <md-button
+                    class="md-icon-button"
+                    @click="editConnectionType = false"
+                  >
+                    <md-icon class="md-accent">cancel</md-icon>
+                  </md-button>
+                </div>
               </div>
-              <md-button class="md-icon-button" @click="updateConnectionType()">
-                <md-icon class="md-primary">save</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                @click="editConnectionType = false"
-              >
-                <md-icon class="md-accent">cancel</md-icon>
-              </md-button>
             </div>
-          </div>
-        </div>
+          </md-list-item>
+        </md-list>
       </div>
     </div>
   </widget>
@@ -162,10 +175,11 @@ import { ConnectionTypeService } from "@/services/ConnectionTypeService"
 import { ConnectionGroupService } from "@/services/ConnectionGroupService"
 import { MeterService } from "@/services/MeterService"
 import { currency } from "@/mixins/currency"
+import { notify } from "@/mixins/notify"
 
 export default {
-  name: "Details.vue",
-  mixins: [currency],
+  name: "MeterDetail",
+  mixins: [currency, notify],
   components: { Widget },
   props: {
     meter: {
@@ -176,6 +190,7 @@ export default {
     this.getTariffs()
     this.getConnectionGroups()
     this.getConnectionTypes()
+    this.$emit("widget-loaded", "meter-detail")
   },
   data() {
     return {
@@ -238,3 +253,23 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.list-column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.list-item-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 4px;
+}
+
+.list-item-value {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  align-items: center;
+}
+</style>

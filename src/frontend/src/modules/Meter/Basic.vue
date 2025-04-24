@@ -1,22 +1,23 @@
 <template>
-  <widget>
+  <widget :title="$tc('words.basic')" color="green">
     <div class="meter-overview-card">
-      <div class="md-subheading">{{ $tc("words.basic") }}</div>
       <div
         class="meter-overview-detail"
         v-if="meter !== null && meter.loaded === true"
       >
-        <div class="md-layout">
-          <div class="md-layout-item">{{ $tc("words.register", 2) }}:</div>
-          <div class="md-layout-item">
-            {{ timeForTimeZone(meter.registered) }}
-          </div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">{{ $tc("words.owner") }}:</div>
-          <div class="md-layout">
-            <div class="md-layout-item">
-              <div v-if="!showOwnerEdit">
+        <md-list class="md-double-line">
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("words.register", 2) }}</span>
+              <span>{{ timeForTimeZone(meter.registered) }}</span>
+            </div>
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="">
+              <span class="">{{ $tc("words.owner") }}</span>
+              <div v-if="!showOwnerEdit" class="column">
                 <router-link :to="`/people/${meter.owner.id}`">
                   {{ meter.owner.name }}
                   {{ meter.owner.surname }}
@@ -25,8 +26,7 @@
                   <md-icon>edit</md-icon>
                 </span>
               </div>
-
-              <div class="md-layout-item" v-if="showOwnerEdit">
+              <div v-if="showOwnerEdit">
                 <md-autocomplete
                   v-model="customerSearchTerm"
                   :md-options="searchNames"
@@ -39,35 +39,42 @@
                     {{ item.name }}
                   </template>
                 </md-autocomplete>
-                <md-button
-                  v-if="showOwnerEdit"
-                  class="md-icon-button"
-                  @click="updateOwner()"
-                >
-                  <md-icon class="md-primary">save</md-icon>
-                </md-button>
-                <md-button class="md-icon-button" @click="resetOwnerEditing()">
-                  <md-icon class="md-accent">cancel</md-icon>
-                </md-button>
+                <div class="check">
+                  <md-button class="md-icon-button" @click="updateOwner()">
+                    <md-icon class="md-primary">save</md-icon>
+                  </md-button>
+                  <md-button
+                    class="md-icon-button"
+                    @click="resetOwnerEditing()"
+                  >
+                    <md-icon class="md-accent">cancel</md-icon>
+                  </md-button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">{{ $tc("phrases.totalRevenue") }}:</div>
-          <div class="md-layout-item">
-            <div v-if="meter.totalRevenue">
-              {{ moneyFormat(meter.totalRevenue) }}
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("phrases.totalRevenue") }}</span>
+              <span>
+                <div v-if="meter.totalRevenue">
+                  {{ moneyFormat(meter.totalRevenue) }}
+                </div>
+                <div v-else>{{ $tc("phrases.noData") }}</div>
+              </span>
             </div>
-            <div v-else>{{ $tc("phrases.noData") }}</div>
-          </div>
-        </div>
-        <div class="md-layout">
-          <div class="md-layout-item">{{ $tc("phrases.lastPayment") }}:</div>
-          <div class="md-layout-item">
-            {{ timeForHuman(meter.lastPaymentDate) }}
-          </div>
-        </div>
+          </md-list-item>
+          <md-divider></md-divider>
+
+          <md-list-item>
+            <div class="md-list-item-text">
+              <span>{{ $tc("phrases.lastPayment") }}</span>
+              <span>{{ timeForHuman(meter.lastPaymentDate) }}</span>
+            </div>
+          </md-list-item>
+        </md-list>
       </div>
     </div>
   </widget>
@@ -179,5 +186,24 @@ export default {
       this.newOwner = c
     },
   },
+  mounted() {
+    this.$emit("widget-loaded", "meter-basic")
+  },
 }
 </script>
+
+<style scoped>
+.md-list-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.column {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.check {
+  margin-right: 10px;
+}
+</style>
