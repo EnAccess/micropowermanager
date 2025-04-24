@@ -1,0 +1,17 @@
+meta {
+  name: Get All Customers (alternative route)
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{mpm_backend_url}}/api/people/all?limit=4
+  body: none
+  auth: inherit
+}
+
+params:query {
+  limit: 4
+  ~active_customer: 1
+  ~agent_id: 1
+}
