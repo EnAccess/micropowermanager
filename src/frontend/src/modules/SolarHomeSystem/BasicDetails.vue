@@ -41,7 +41,7 @@ import Widget from "@/shared/Widget.vue"
 import { timing } from "@/mixins"
 
 export default {
-  name: "BasicDetailsWidget",
+  name: "BasicDetails",
   mixins: [timing],
   components: {
     Widget,
