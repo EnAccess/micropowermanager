@@ -6,10 +6,7 @@
     <div v-else>
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-50 md-small-size-100">
-          <basic-details
-            :shs="shs"
-            @widget-loaded="handleWidgetLoaded"
-          />
+          <basic-details :shs="shs" @widget-loaded="handleWidgetLoaded" />
         </div>
 
         <div
