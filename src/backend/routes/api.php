@@ -21,7 +21,7 @@ require 'resources/AgentWeb.php';
 require 'resources/CustomerRegistrationApp.php';
 
 // JWT authentication
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function (){
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], static function () {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
