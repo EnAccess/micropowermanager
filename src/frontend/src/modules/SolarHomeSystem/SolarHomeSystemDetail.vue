@@ -6,17 +6,14 @@
     <div v-else>
       <div class="md-layout md-gutter">
         <div class="md-layout-item md-size-50 md-small-size-100">
-          <basic-details-widget
-            :shs="shs"
-            @widget-loaded="handleWidgetLoaded"
-          />
+          <basic-details :shs="shs" @widget-loaded="handleWidgetLoaded" />
         </div>
 
         <div
           class="md-layout-item md-size-50 md-small-size-100"
           v-if="hasPersonData"
         >
-          <owner-widget
+          <owner
             :person="shs.device.person"
             @widget-loaded="handleWidgetLoaded"
           />
@@ -25,7 +22,7 @@
 
       <div class="md-layout md-gutter" v-if="hasAddressData">
         <div class="md-layout-item md-size-100">
-          <location-widget
+          <location
             :device="shs.device"
             :serialNumber="shs.serialNumber"
             :id="shs.id"
@@ -38,9 +35,9 @@
 </template>
 
 <script>
-import BasicDetailsWidget from "./BasicDetails.vue"
-import OwnerWidget from "./Owner.vue"
-import LocationWidget from "./Location.vue"
+import BasicDetails from "./BasicDetails.vue"
+import Owner from "./Owner.vue"
+import Location from "./Location.vue"
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService"
 import { notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
@@ -49,9 +46,9 @@ export default {
   name: "SolarHomeSystemDetail",
   mixins: [notify],
   components: {
-    BasicDetailsWidget,
-    OwnerWidget,
-    LocationWidget,
+    BasicDetails,
+    Owner,
+    Location,
   },
   data() {
     return {
@@ -89,11 +86,6 @@ export default {
       try {
         const result = await this.solarHomeSystemService.getSolarHomeSystem(id)
         this.shs = result
-
-        console.log("Full SHS data:", this.shs)
-        console.log("Device data:", this.shs.device)
-        console.log("Person data:", this.shs.device?.person)
-        console.log("Address data:", this.shs.device?.address)
         this.isLoading = false
       } catch (e) {
         console.error("Error loading SHS:", e)
@@ -105,7 +97,6 @@ export default {
       }
     },
     handleWidgetLoaded(widgetName) {
-      console.log(`Widget ${widgetName} loaded`)
       this.loadedWidgets[widgetName] = true
 
       switch (widgetName) {

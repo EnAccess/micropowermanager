@@ -149,6 +149,8 @@ Route::group(['prefix' => 'people', 'middleware' => 'jwt.verify'], static functi
     Route::get('/{personId}/meters/geo', 'MeterGeographicalInformationController@show');
 
     Route::get('/', 'PersonController@index');
+    // https://github.com/EnAccess/micropowermanager-customer-registration-app/issues/5
+    Route::get('/all', 'PersonController@index');
     Route::post('/', 'PersonController@store');
     Route::get('/search', 'PersonController@search');
     Route::get('/{personId}', 'PersonController@show');
@@ -289,10 +291,7 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', 'ClusterController@index');
 
-Route::group(['prefix' => 'protected-pages'], static function () {
-    Route::get('/', 'ProtectedPageController@index');
-    Route::post('/compare', 'ProtectedPageController@compareProtectedPagePassword');
-});
+Route::get('/protected-pages', 'ProtectedPageController@index');
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', 'CompanyController@store');

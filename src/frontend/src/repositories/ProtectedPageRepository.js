@@ -7,7 +7,4 @@ export default {
   list() {
     return Client.get(`${resource}`)
   },
-  compare(data) {
-    return Client.post(`${resource}/compare`, data)
-  },
 }

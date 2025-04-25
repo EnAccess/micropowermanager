@@ -28,11 +28,6 @@ class MainSettingsController extends Controller {
             'usage_type',
         ]);
 
-        $protectedPagePassword = $request->input('protected_page_password');
-        if ($protectedPagePassword) {
-            $mainSettingsData['protected_page_password'] = $protectedPagePassword;
-        }
-
         return ApiResource::make($this->mainSettingsService->update($mainSettings, $mainSettingsData));
     }
 }
