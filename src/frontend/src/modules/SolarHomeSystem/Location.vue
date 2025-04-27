@@ -19,7 +19,7 @@ import ClientMap from "@/modules/Map/ClientMap.vue"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService"
 
 export default {
-  name: "LocationWidget",
+  name: "Location",
   components: {
     Widget,
     ClientMap,

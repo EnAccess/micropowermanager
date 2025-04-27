@@ -1,8 +1,10 @@
-import { baseUrl } from "@/repositories/Client/AxiosClient"
+import Client, { baseUrl } from "@/repositories/Client/AxiosClient"
 
 const resource = `${baseUrl}/api/export/transactions`
 export default {
-  download(email, slug) {
-    return `${resource}/${email}?${slug}`
+  async download(slug) {
+    return Client.get(`${resource}?${slug}`, {
+      responseType: "blob",
+    })
   },
 }

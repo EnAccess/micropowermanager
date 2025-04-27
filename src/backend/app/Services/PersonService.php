@@ -149,7 +149,7 @@ class PersonService implements IBaseService {
         return $person->delete();
     }
 
-    public function getAll(?int $limit = null, $customerType = 1, $agentId = null): LengthAwarePaginator {
+    public function getAll(?int $limit = null, $customerType = 1, $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([
             'addresses' => function ($q) {
                 return $q->where('is_primary', 1);
@@ -157,6 +157,7 @@ class PersonService implements IBaseService {
             'addresses.city',
             'devices',
             'agentSoldAppliance.assignedAppliance.agent',
+            'latestPayment',
         ])->where('is_customer', $customerType);
 
         if ($agentId) {
@@ -165,7 +166,31 @@ class PersonService implements IBaseService {
             });
         }
 
+        if (!is_null($activeCustomer)) {
+            // For active customers (true), show those with recent payments
+            if ($activeCustomer) {
+                $query->whereHas('payments', function ($q) {
+                    $q->where('created_at', '>=', Carbon::now()->subDays(25));
+                });
+            } else {
+                // For inactive customers (false), exclude those with recent payments
+                $query->whereDoesntHave('payments', function ($q) {
+                    $q->where('created_at', '>=', Carbon::now()->subDays(25));
+                });
+            }
+        }
+
         return $query->paginate($limit);
+    }
+
+    public function getAllForExport($customerType = 1): Collection|array {
+        return $this->person->newQuery()->with([
+            'addresses' => function ($q) {
+                return $q->where('is_primary', 1);
+            },
+            'addresses.city',
+            'devices',
+        ])->where('is_customer', $customerType)->get();
     }
 
     public function createFromRequest(Request $request): Person {

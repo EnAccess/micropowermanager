@@ -16,7 +16,7 @@
 import Widget from "@/shared/Widget.vue"
 
 export default {
-  name: "OwnerWidget",
+  name: "Owner",
   components: {
     Widget,
   },
