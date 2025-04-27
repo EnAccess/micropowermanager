@@ -12,8 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('meter_consumptions', function (Blueprint $table) {
-            $table->renameColumn('daily_consumption', 'consumption');
-            $table->double('consumption')->default(0)->change();
+            $table->renameColumn('daily_consumption', 'consumption')->double('consumption')->default(0)->change();
             $table->datetime('reading_date')->change();
         });
     }
