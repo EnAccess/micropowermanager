@@ -549,7 +549,11 @@ class Reports {
         $sheet = $this->spreadsheet->getActiveSheet();
         $sheet->setTitle('graphs'.$startDate.'-'.$endDate);
 
-        $transactions = $this->transaction::with(['device.device.tariff', 'device.device.connectionType'])
+        $transactions = $this->transaction::with([
+            'device.device' => function ($query) {
+                $query->select('id'); // Only load necessary fields for MorphTo
+            },
+        ])
             ->selectRaw('id,message,SUM(amount) as amount,GROUP_CONCAT(DISTINCT id SEPARATOR \',\') AS transaction_ids')
             ->whereHas(
                 'device.address',
@@ -565,10 +569,22 @@ class Reports {
                 }
             )
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('message')
-            ->groupBy('id')
+            ->groupBy(['message', 'id'])
             ->latest()
             ->get();
+
+        // Then load only if device model has the relationship
+        foreach ($transactions as $transaction) {
+            if ($transaction->device && $transaction->device->device) {
+                $device = $transaction->device->device;
+                if (method_exists($device, 'tariff')) {
+                    $device->loadMissing('tariff');
+                }
+                if (method_exists($device, 'connectionType')) {
+                    $device->loadMissing('connectionType');
+                }
+            }
+        }
 
         $connectionGroups = $this->connectionGroup::with('meters.connectionType')->get();
 
