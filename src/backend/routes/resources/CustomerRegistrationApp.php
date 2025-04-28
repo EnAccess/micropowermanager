@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
@@ -10,6 +9,7 @@ use App\Http\Controllers\MeterTariffController;
 use App\Http\Controllers\MeterTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SubConnectionTypeController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'customer-registration-app'], static function () {
     Route::get('/people', [PersonController::class, 'index']);

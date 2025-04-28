@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\MeterConsumptionController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MeterController;
 use App\Http\Controllers\MeterGeographicalInformationController;
 use App\Http\Controllers\MeterPaymentHistoryController;
 use App\Http\Controllers\MeterRevenueController;
 use App\Http\Controllers\MeterTypeController;
 use App\Http\Controllers\MeterTypeMeterController;
+use Illuminate\Support\Facades\Route;
 
 /* Meter */
 Route::group(['prefix' => 'meters'], function () {

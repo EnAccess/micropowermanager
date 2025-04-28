@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
+use Illuminate\Support\Facades\Route;
 
 /* City */
 Route::middleware('jwt.verify')

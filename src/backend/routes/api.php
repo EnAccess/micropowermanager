@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgentPerformanceMetricsController;
 use App\Http\Controllers\AppliancePaymentController;
 use App\Http\Controllers\AssetController;
@@ -61,6 +59,8 @@ use App\Http\Controllers\UsageTypeController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 // Routes for City resource
 require 'resources/Cities.php';
@@ -327,7 +327,8 @@ Route::group(
         Route::post('/agent', [TransactionController::class, 'store'])
             ->name('agent-transaction')
             ->middleware('agent.balance');
-    });
+    }
+);
 
 Route::group(['prefix' => 'time-of-usages', 'middleware' => 'jwt.verify'], static function () {
     Route::delete('/{timeOfUsageId}', [TimeOfUsageController::class, 'destroy']);

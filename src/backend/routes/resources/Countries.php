@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CountryController;
+use Illuminate\Support\Facades\Route;
 
 /* Country */
 Route::middleware('jwt.verify')

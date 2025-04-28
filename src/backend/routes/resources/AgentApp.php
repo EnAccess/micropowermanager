@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AgentAssignedAppliancesController;
 use App\Http\Controllers\AgentAuthController;
 use App\Http\Controllers\AgentBalanceController;
 use App\Http\Controllers\AgentCustomerController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\AgentFirebaseController;
 use App\Http\Controllers\AgentSoldApplianceController;
 use App\Http\Controllers\AgentTicketController;
 use App\Http\Controllers\AgentTransactionsController;
-use App\Http\Controllers\AgentAssignedAppliancesController;
+use Illuminate\Support\Facades\Route;
 
 // Android App Services
 Route::group([
