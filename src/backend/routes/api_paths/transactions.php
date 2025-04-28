@@ -1,12 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TransactionAdvancedController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionProviderController;
 
-Route::get('transactions/', 'TransactionController@index');
-Route::get('transactions/search', 'TransactionController@search');
-Route::get('transactions/cancelled', 'TransactionController@cancelled');
-Route::get('transactions/confirmed', 'TransactionController@confirmed');
-Route::get('transactions/{id}', 'TransactionController@show')->where('id', '[0-9]+');
-Route::get('transaction-providers/', 'TransactionProviderController@index');
-Route::get('transactions/analytics/{period}', 'TransactionAdvancedController@compare')->where('period', '[0-3]+');
-Route::get('transactions/advanced', 'TransactionAdvancedController@searchAdvanced');
+Route::prefix('transactions')->group(function () {
+    Route::get('/', [TransactionController::class, 'index']);
+    Route::get('/search', [TransactionController::class, 'search']);
+    Route::get('/cancelled', [TransactionController::class, 'cancelled']);
+    Route::get('/confirmed', [TransactionController::class, 'confirmed']);
+    Route::get('/{id}', [TransactionController::class, 'show'])->where('id', '[0-9]+');
+    Route::get('/analytics/{period}', [TransactionAdvancedController::class, 'compare'])->where('period', '[0-3]+');
+    Route::get('/advanced', [TransactionAdvancedController::class, 'searchAdvanced']);
+});
+
+Route::get('transaction-providers/', [TransactionProviderController::class, 'index']);
