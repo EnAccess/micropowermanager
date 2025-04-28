@@ -16,8 +16,9 @@ use App\Jobs\TokenProcessor;
 use App\Misc\TransactionDataContainer;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::group(
     ['prefix' => '/jobs', 'middleware' => 'auth'],
@@ -61,5 +62,5 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    // Route::get('/user-data', 'AdminController@auth');
+    // Route::get('/user-data', [AdminController::class, 'auth']);
 });
