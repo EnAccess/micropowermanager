@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\People\Export;
+namespace App\People\Export;
 
 use App\Services\AbstractExportService;
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Modules\People\Export\PersonExportService;
+use App\People\Export\PersonExportService;
 use App\Services\PersonService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
