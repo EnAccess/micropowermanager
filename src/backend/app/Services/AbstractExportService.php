@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Exceptions\ActiveSheetNotCreatedException;
-use App\Exceptions\CsvNotSavedException;
-use App\Exceptions\SpreadSheetNotCreatedException;
-use App\Exceptions\SpreadSheetNotSavedException;
+use App\Exceptions\Export\CsvNotSavedException;
+use App\Exceptions\Export\SpreadSheetNotCreatedException;
+use App\Exceptions\Export\SpreadSheetNotSavedException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
