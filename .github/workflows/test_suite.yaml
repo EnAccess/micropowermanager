@@ -41,7 +41,10 @@ jobs:
       - name: Install Composer Dependencies
         run: |
           composer install --no-interaction --prefer-dist
-          composer dump-autoload
+          composer dump-autoload 2>&1 | grep -q "does not comply with psr-4 autoloading standard" && {
+            echo "❌ PSR-4 autoloading violation detected.";
+            exit 1;
+          }
         working-directory: ./src/backend
 
       - name: Run Migrations
