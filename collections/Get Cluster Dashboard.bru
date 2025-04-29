@@ -1,0 +1,16 @@
+meta {
+  name: Get Cluster Dashboard
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{mpm_backend_url}}/api/dashboard/clusters
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
