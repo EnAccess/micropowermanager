@@ -33,6 +33,10 @@ class PeriodService {
         if ($interval === 'weekly') {
             $i = new \DateInterval('P1W');
         } else {
+            // Make sure we don't overflow (and hence skip) a month if this is called with end date 31st.
+            // See: https://www.php.net/manual/en/datetime.examples-arithmetic.php
+            $begin = (new \DateTime($startDate))->modify('first day of this month');
+            $end = (new \DateTime($endDate))->modify('last day of this month')->setTime(0, 0, 1);
             $i = new \DateInterval('P1M');
         }
         $period = new \DatePeriod($begin, $i, $end);
