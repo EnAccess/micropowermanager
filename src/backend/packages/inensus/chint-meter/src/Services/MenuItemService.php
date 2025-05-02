@@ -2,19 +2,16 @@
 
 namespace Inensus\ChintMeter\Services;
 
+class MenuItemService {
+    public const MENU_ITEM = 'Chint Meter';
 
-class MenuItemService
-{
-    const MENU_ITEM = 'Chint Meter';
-
-    public function createMenuItems()
-    {
+    public function createMenuItems() {
         $menuItem = [
             'name' => 'Chint Meter',
             'url_slug' => '',
-            'md_icon' => 'bolt'
+            'md_icon' => 'bolt',
         ];
-        $subMenuItems = array();
+        $subMenuItems = [];
 
         $subMenuItem1 = [
             'name' => 'Overview',
@@ -23,6 +20,5 @@ class MenuItemService
         array_push($subMenuItems, $subMenuItem1);
 
         return ['menuItem' => $menuItem, 'subMenuItems' => $subMenuItems];
-
     }
 }
