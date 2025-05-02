@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('agent_charges', function (Blueprint $table) {
-            $table->float('amount')->after('user_id');
+            $table->double('amount')->after('user_id');
         });
     }
 

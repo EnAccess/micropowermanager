@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->char('currency', 10);
             $table->char('country', 100);
             $table->char('language', 10);
-            $table->float('vat_energy', 5);
-            $table->float('vat_appliance', 5);
+            $table->double('vat_energy');
+            $table->double('vat_appliance');
             $table->timestamps();
         });
 
