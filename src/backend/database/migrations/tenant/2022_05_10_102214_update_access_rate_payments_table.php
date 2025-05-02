@@ -17,8 +17,8 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('tenant')->table('access_rate_payments', function (Blueprint $table) {
-            $table->double('debt', 15, 6)->change();
-            $table->double('unpaid_in_row', 15, 6)->change();
+            $table->double('debt')->change();
+            $table->double('unpaid_in_row')->change();
         });
     }
 

@@ -17,7 +17,7 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('tenant')->table('meter_consumptions', function (Blueprint $table) {
-            $table->renameColumn('daily_consumption', 'consumption')->double('consumption', 15, 4)->default(0)->change();
+            $table->renameColumn('daily_consumption', 'consumption')->double('consumption')->default(0)->change();
             $table->datetime('reading_date')->change();
         });
     }

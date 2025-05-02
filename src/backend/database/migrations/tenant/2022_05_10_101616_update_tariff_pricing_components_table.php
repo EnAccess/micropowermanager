@@ -17,7 +17,7 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('tenant')->table('tariff_pricing_components', function (Blueprint $table) {
-            $table->double('price', 15, 6)->change();
+            $table->double('price')->change();
         });
     }
 
