@@ -19,10 +19,10 @@ return new class extends Migration {
             $table->integer('node_id');
             $table->string('device_id');
             $table->double('total_energy');
-            $table->float('used_energy_since_last');
+            $table->double('used_energy_since_last');
             $table->string('total_absorbed_unit');
-            $table->float('total_absorbed');
-            $table->float('absorbed_energy_since_last');
+            $table->double('total_absorbed');
+            $table->double('absorbed_energy_since_last');
             $table->string('absorbed_energy_since_last_unit');
             $table->timestamp('read_out');
             $table->timestamps();
