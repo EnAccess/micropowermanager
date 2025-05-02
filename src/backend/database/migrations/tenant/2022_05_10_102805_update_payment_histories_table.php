@@ -17,7 +17,7 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('tenant')->table('payment_histories', function (Blueprint $table) {
-            $table->double('amount', 15, 6)->change();
+            $table->double('amount')->change();
         });
     }
 

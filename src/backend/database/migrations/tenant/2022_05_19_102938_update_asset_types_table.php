@@ -17,7 +17,7 @@ return new class extends Migration {
             Type::addType('double', FloatType::class);
         }
         Schema::connection('tenant')->table('asset_types', function (Blueprint $table) {
-            $table->double('price', 15, 6)->nullable()->change();
+            $table->double('price')->nullable()->change();
         });
     }
 
