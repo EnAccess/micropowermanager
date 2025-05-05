@@ -3,8 +3,12 @@
 namespace App\Listeners;
 
 use App\Models\Log;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Log as ConsoleLog;
 
+// FIXME: Shouldn't this be queue-able?
+// class LogListener implements ShouldQueue {
 class LogListener {
     /**
      * @var Log
@@ -23,7 +27,10 @@ class LogListener {
         $this->log->save();
     }
 
-    public function subscribe(Dispatcher $event): void {
-        $event->listen('new.log', '\App\Listeners\LogListener@storeLog');
+    public function handle(Dispatcher $eventData): void {
+        // For debugging
+        ConsoleLog::info('Log data received:', ['data' => $eventData]);
+
+        $this->storeLog($eventData);
     }
 }
