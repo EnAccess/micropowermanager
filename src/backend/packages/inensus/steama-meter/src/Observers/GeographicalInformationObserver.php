@@ -34,7 +34,7 @@ class GeographicalInformationObserver {
 
     public function updated(GeographicalInformation $geographicalInformation) {
         if ($geographicalInformation->owner_type === 'address') {
-            $address = Address::find($geographicalInformation->owner_id);
+            $address = $geographicalInformation->owner;
             if ($address && $address->owner_type === 'device') {
                 $device = $address->owner;
 
