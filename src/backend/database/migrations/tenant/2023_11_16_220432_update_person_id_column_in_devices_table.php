@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('devices', function (Blueprint $table) {
-            $table->integer('person_id')->nullable()->change();
+            $table->integer('person_id')->unsigned()->nullable()->change();
         });
     }
 
