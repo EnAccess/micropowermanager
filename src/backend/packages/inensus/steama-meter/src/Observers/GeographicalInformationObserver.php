@@ -2,7 +2,6 @@
 
 namespace Inensus\SteamaMeter\Observers;
 
-use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
