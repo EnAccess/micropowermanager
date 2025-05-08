@@ -5,6 +5,7 @@ namespace Inensus\SteamaMeter\Observers;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
+use App\Models\Device;
 use Inensus\SteamaMeter\Models\SteamaCustomer;
 use Inensus\SteamaMeter\Models\SteamaMeter;
 use Inensus\SteamaMeter\Services\SteamaMeterService;
@@ -31,16 +32,21 @@ class GeographicalInformationObserver {
     }
 
     public function updated(GeographicalInformation $geographicalInformation) {
-        if ($geographicalInformation->owner_type === 'meter_parameter') {
-            $meter = $this->meter->newQuery()->find($geographicalInformation->owner_id);
-            $stmMeter = $this->stmMeter->newQuery()->where('mpm_meter_id', $meter->id)->first();
-            if ($stmMeter) {
-                $points = explode(',', $geographicalInformation->points);
-                $putParams = [
-                    'latitude' => floatval($points[0]),
-                    'longitude' => floatval($points[1]),
-                ];
-                $this->stmMeterService->updateSteamaMeterInfo($stmMeter, $putParams);
+        if ($geographicalInformation->owner_type === 'device') {
+            $device = Device::find($geographicalInformation->owner_id);
+
+            if($device && $device->device_type === 'meter') {
+                $meter = $device->device;
+                $stmMeter = $this->stmMeter->newQuery()->where('mpm_meter_id', $meter->id)->first();
+
+                if ($stmMeter) {
+                    $points = explode(',', $geographicalInformation->points);
+                    $putParams = [
+                        'latitude' => floatval($points[0]),
+                        'longitude' => floatval($points[1]),
+                    ];
+                    $this->stmMeterService->updateSteamaMeterInfo($stmMeter, $putParams);
+                }
             }
         }
     }
