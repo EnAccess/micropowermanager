@@ -36,18 +36,31 @@ class GeographicalInformationObserver {
             $device = Device::find($geographicalInformation->owner_id);
 
             if($device && $device->device_type === 'meter') {
-                $meter = $device->device;
-                $stmMeter = $this->stmMeter->newQuery()->where('mpm_meter_id', $meter->id)->first();
-
-                if ($stmMeter) {
-                    $points = explode(',', $geographicalInformation->points);
-                    $putParams = [
-                        'latitude' => floatval($points[0]),
-                        'longitude' => floatval($points[1]),
-                    ];
-                    $this->stmMeterService->updateSteamaMeterInfo($stmMeter, $putParams);
-                }
+                $this->updateSteamaMeterGeolocation($device, $geographicalInformation);
             }
+        }
+    }
+
+    /**
+     * Update Steama meter geolocation information
+     *
+     * @param Device $device
+     * @param GeographicalInformation $geographicalInformation
+     * @return void
+     */
+    private function updateSteamaMeterGeolocation(Device $device, GeographicalInformation $geographicalInformation) {
+        $meter = $device->device;
+        $stmMeter = $this->stmMeter->newQuery()
+            ->where('mpm_meter_id', $meter->id)
+            ->first();
+
+        if ($stmMeter) {
+            $points = explode(',', $geographicalInformation->points);
+            $putParams = [
+                'latitude' => floatval($points[0]),
+                'longitude' => floatval($points[1]),
+            ];
+            $this->stmMeterService->updateSteamaMeterInfo($stmMeter, $putParams);
         }
     }
 }
