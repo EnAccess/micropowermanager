@@ -7,6 +7,7 @@ use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -42,5 +43,9 @@ class Device extends BaseModel {
 
     public function appliance(): HasOne {
         return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
+    }
+
+    public function shs_tokens(): HasMany {
+        return $this->hasMany(SHSToken::class);
     }
 }

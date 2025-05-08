@@ -2,10 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address\Address;
 use App\Models\Asset;
 use App\Models\AssetType;
 use App\Models\Device;
+use App\Models\GeographicalInformation;
 use App\Models\Manufacturer;
+use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use Illuminate\Database\Seeder;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -55,7 +58,49 @@ class SolarHomeSystemSeeder extends Seeder {
             )
             ->create();
 
-        // Create not-yet-sold SHS such that we can "sell" them in the Demo
+        // Get available customers
+        $persons = Person::all();
+
+        // Calculate how many customers should get SHS (random between 20% and 40%)
+        $percentage = rand(20, 40);
+        $numberOfCustomers = (int) ceil($persons->count() * ($percentage / 100));
+
+        // Get random subset of customers
+        $selectedPersons = $persons->random($numberOfCustomers);
+
+        // Create and assign SHS to selected customers
+        foreach ($selectedPersons as $person) {
+            // Create a Solar Home System
+            $solarHomeSystem = SolarHomeSystem::factory()
+                ->for(Asset::all()->random(), 'appliance')
+                ->for(Manufacturer::where('type', 'shs')->get()->random())
+                ->create();
+
+            // Assign the SHS to the customer by creating a device
+            $device = Device::factory()
+                ->for($person)
+                ->for($solarHomeSystem, 'device')
+                ->has(
+                    Address::factory()
+                        ->for($person->addresses->first()->city)
+                        ->has(
+                            GeographicalInformation::factory()
+                                ->state(function (array $attributes, Address $address) {
+                                    /** @var Device $device */
+                                    $device = $address->owner()->first();
+
+                                    return ['points' => $device->person->addresses->first()->geo->points];
+                                })
+                                ->randomizePointsInHousehold(),
+                            'geo'
+                        )
+                )
+                ->create([
+                    'device_serial' => $solarHomeSystem->serial_number,
+                ]);
+        }
+
+        // Create additional not-yet-sold SHS
         for ($i = 1; $i <= 10; ++$i) {
             $solarHomeSystem = SolarHomeSystem::factory()
                 ->for(Asset::all()->random(), 'appliance')

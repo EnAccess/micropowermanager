@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\SHSToken;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
@@ -19,6 +20,7 @@ class AngazaSHSApi implements IManufacturerAPI {
         private AngazaCredentialService $credentialService,
         private AngazaTransaction $angazaTransaction,
         private ApiRequests $apiRequests,
+        private SHSToken $shsToken,
     ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -62,6 +64,8 @@ class AngazaSHSApi implements IManufacturerAPI {
         ]);
 
         $token = $response['_embedded']['latest_keycode']['keycode'];
+        $this->storeToken($transactionContainer, $token, $energy);
+
         event(
             'new.log',
             [
@@ -78,6 +82,18 @@ class AngazaSHSApi implements IManufacturerAPI {
             'token' => $token,
             'load' => $energy,
         ];
+    }
+
+    private function storeToken(TransactionDataContainer $transactionContainer, string $token, float $amount): void {
+        $shsToken = $this->shsToken->newQuery()->make([
+            'token' => $token,
+            'token_type' => SHSToken::TYPE_TIME,
+            'token_amount' => $amount,
+        ]);
+
+        $shsToken->transaction()->associate($transactionContainer->transaction);
+        $shsToken->device()->associate($transactionContainer->device);
+        $shsToken->save();
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\SHSToken;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingTransaction;
@@ -20,6 +21,7 @@ class SunKingSHSApi implements IManufacturerAPI {
         private SunKingCredentialService $credentialService,
         private SunKingTransaction $sunKingTransaction,
         private ApiRequests $apiRequests,
+        private SHSToken $shsToken,
     ) {}
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -38,6 +40,7 @@ class SunKingSHSApi implements IManufacturerAPI {
         $response = $this->handleApiRequest($credentials, $params);
 
         $this->recordTransaction($transactionContainer);
+        $this->storeToken($transactionContainer, $response['token'], $energy);
         $this->logAction($transactionContainer, $response['token']);
 
         return [
@@ -87,6 +90,18 @@ class SunKingSHSApi implements IManufacturerAPI {
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
             'manufacturer_transaction_type' => 'sun_king_transaction',
         ]);
+    }
+
+    private function storeToken(TransactionDataContainer $transactionContainer, string $token, float $amount): void {
+        $shsToken = $this->shsToken->newQuery()->make([
+            'token' => $token,
+            'token_type' => SHSToken::TYPE_TIME,
+            'token_amount' => $amount,
+        ]);
+
+        $shsToken->transaction()->associate($transactionContainer->transaction);
+        $shsToken->device()->associate($transactionContainer->device);
+        $shsToken->save();
     }
 
     private function logAction(TransactionDataContainer $transactionContainer, string $token): void {
