@@ -2,10 +2,10 @@
 
 namespace Inensus\SparkMeter\Observers;
 
+use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\MpmPlugin;
 use App\Models\Person\Person;
-use App\Models\Device;
 use App\Services\PluginsService;
 use Inensus\SparkMeter\Helpers\SmTableEncryption;
 use Inensus\SparkMeter\Models\SmCustomer;
@@ -25,13 +25,13 @@ class GeographicalInformationObserver {
             return;
         }
 
-        if($geographicalInformation->owner_type === 'address') {
+        if ($geographicalInformation->owner_type === 'address') {
             $address = $geographicalInformation->owner;
 
-            if($address && $address->owner_type === 'device') {
+            if ($address && $address->owner_type === 'device') {
                 $device = $address->owner;
 
-                if($device && $device->device_type === 'meter') {
+                if ($device && $device->device_type === 'meter') {
                     $this->updateSparkMetaCustomerInformation($device, $geographicalInformation);
                 }
             }
