@@ -35,7 +35,7 @@ class MiniGridRevenueService {
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
         $soldEnergy = $this->token->newQuery()
-            ->selectRaw('COUNT(id) as amount, SUM(COALESCE(energy, load)) as energy')
+            ->selectRaw('COUNT(id) as amount, SUM(load) as load')
             ->whereHas('device', function ($query) use ($miniGridMeters) {
                 $query->where('device_type', 'meter')
                     ->whereIn('device_id', $miniGridMeters->pluck('id'));
@@ -44,7 +44,7 @@ class MiniGridRevenueService {
         $energy = 0;
 
         if ($soldEnergy) {
-            $energy = round($soldEnergy[0]->energy, 3);
+            $energy = round($soldEnergy[0]->load, 3);
         }
 
         return ['data' => $energy];
