@@ -7,7 +7,6 @@ use App\Models\Meter\Meter;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use Database\Factories\AgentTransactionFactory;
-use Database\Factories\MeterTokenFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Illuminate\Console\View\Components\Info;
