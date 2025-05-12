@@ -50,9 +50,9 @@ class GeographicalInformationObserver {
         $meter = $device->device;
 
         $customer = $this->person->newQuery()
-            ->with(['meters.tariff', 'meters.geo', 'meters.meter'])
-            ->whereHas('meters', function ($q) use ($meter) {
-                return $q->where('id', $meter->id);
+            ->with(['devices.device.tariff', 'devices.address.geo'])
+            ->whereHas('devices', function ($q) use ($device) {
+                return $q->where('id', $device->id);
             })->first();
 
         if (!$customer) {
@@ -71,7 +71,7 @@ class GeographicalInformationObserver {
         $customerData = [
             'id' => $smCustomer->customer_id,
             'active' => true,
-            'meter_tariff_name' => $customer->meters[0]->tariff->name,
+            'meter_tariff_name' => $customer->devices[0]->device->tariff->name,
             'name' => $customer->name.' '.$customer->surname,
             'code' => strval($customer->id),
             'phone_number' => $primaryAddress->phone,
