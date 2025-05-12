@@ -30,15 +30,23 @@
 
       <p class="cloud-description">
         All required associated files to complete the installation of the
-        software as well as of its associated apps (Agent
-        App and Customer Registration App), can be found below:
+        software as well as of its associated apps (Agent App and Customer
+        Registration App), can be found below:
       </p>
       <div class="router-box">
         <p>You can download our applications' .apk files from Github</p>
         <p>
-          <a href="https://github.com/EnAccess/micropowermanager-agent-app/releases/download/v1.1.0/micropowermanager-agent-app-v1.1.0-release.apk">Agent App</a>
+          <a
+            href="https://github.com/EnAccess/micropowermanager-agent-app/releases/download/v1.1.0/micropowermanager-agent-app-v1.1.0-release.apk"
+          >
+            Agent App
+          </a>
           -
-          <a href="https://github.com/EnAccess/micropowermanager-customer-registration-app/releases/download/v1.3.0/micropowermanager-customer-registration-app-v1.3.0-release.apk">Customer Registration App</a>
+          <a
+            href="https://github.com/EnAccess/micropowermanager-customer-registration-app/releases/download/v1.3.0/micropowermanager-customer-registration-app-v1.3.0-release.apk"
+          >
+            Customer Registration App
+          </a>
         </p>
       </div>
     </div>
