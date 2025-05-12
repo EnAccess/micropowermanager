@@ -1,0 +1,11 @@
+meta {
+  name: Get specific Customer's meters
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{mpm_backend_url}}/api/people/5/meters
+  body: none
+  auth: inherit
+}
