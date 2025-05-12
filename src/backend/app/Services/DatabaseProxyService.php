@@ -14,8 +14,6 @@ class DatabaseProxyService implements IBaseService {
 
     public function getById($id): DatabaseProxy {
         throw new \Exception('Method getById() not yet implemented.');
-
-        return new DatabaseProxy();
     }
 
     public function create(array $databaseProxyData): DatabaseProxy {
