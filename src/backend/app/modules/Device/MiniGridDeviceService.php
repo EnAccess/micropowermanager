@@ -4,11 +4,10 @@ namespace MPM\Device;
 
 use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Models\MiniGrid;
 use Illuminate\Support\Collection;
 
 class MiniGridDeviceService {
-    public function __construct(private Device $device, private MiniGrid $miniGrid) {}
+    public function __construct(private Device $device) {}
 
     public function getMetersByMiniGridId($miniGridId) {
         return $this->device->newQuery()
