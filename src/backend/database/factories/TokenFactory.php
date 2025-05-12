@@ -18,6 +18,9 @@ class TokenFactory extends Factory {
             'transaction_id' => $this->faker->randomNumber(3),
             'token' => $this->generateToken(),
             'load' => 0.123,
+            'device_id' => $this->faker->randomNumber(3),
+            'token_type' => Token::TYPE_ENERGY,
+            'token_amount' => 0,
         ];
     }
 

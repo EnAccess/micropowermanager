@@ -4,20 +4,20 @@ namespace App\Services;
 
 use App\Models\ConnectionGroup;
 use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MeterRevenueService {
     public function __construct(
-        private MeterToken $meterToken,
+        private Token $token,
         private Transaction $transaction,
     ) {}
 
     public function getBySerialNumber(string $serialNumber) {
-        $tokens = $this->meterToken->newQuery()->whereHas(
-            'meter',
+        $tokens = $this->token->newQuery()->whereHas(
+            'device',
             function ($q) use ($serialNumber) {
                 $q->where('serial_number', $serialNumber);
             }

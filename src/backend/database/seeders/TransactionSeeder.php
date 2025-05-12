@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
+use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\MeterTokenFactory;
@@ -206,33 +207,20 @@ class TransactionSeeder extends Seeder {
                         $randomMeter['tariff']['price'],
                     2
                 ),
+                'token_type' => Token::TYPE_ENERGY,
+                'token_amount' => 0,
+                'device_id' => $randomMeter->id,
             ];
             $token = (new TokenFactory())->make([
                 'token' => $tokenData['token'],
                 'load' => $tokenData['load'],
+                'device_id' => $tokenData['device_id'],
+                'token_type' => $tokenData['token_type'],
+                'token_amount' => $tokenData['token_amount'],
             ]);
             $token->transaction()->associate($transaction);
             $token->save();
             $transactionData->token = $token;
-
-            // generate meter_token
-            $meterTokenData = [
-                'meter_id' => $randomMeter->id,
-                'token' => TokenFactory::generateToken(),
-                'energy' => round(
-                    $transactionData->transaction->amount /
-                    $randomMeter['tariff']['price'],
-                    2
-                ),
-                'transaction_id' => $transaction->id,
-            ];
-            $meterToken = (new MeterTokenFactory())->make([
-                'meter_id' => $meterTokenData['meter_id'],
-                'token' => $meterTokenData['token'],
-                'energy' => $meterTokenData['energy'],
-                'transaction_id' => $meterTokenData['transaction_id'],
-            ]);
-            $meterToken->save();
 
             // payment event
             event(

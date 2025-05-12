@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
+use App\Models\Meter\Meter;
 use App\Models\Token;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -114,6 +115,11 @@ class TokenProcessor extends AbstractJob {
 
     private function saveToken(array $tokenData): void {
         $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
+        $token->device_id = $this->transactionContainer->device->id;
+        if ($this->transactionContainer->meter !== null) {
+            $token->device_id = $this->transactionContainer->meter->id;
+            $token->token_type = Token::TYPE_ENERGY;
+        }
         $token->transaction()->associate($this->transactionContainer->transaction);
         $token->save();
 

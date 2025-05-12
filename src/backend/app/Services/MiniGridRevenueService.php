@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Carbon;
 
 class MiniGridRevenueService {
     public function __construct(
         private Transaction $transaction,
-        private MeterToken $meterToken,
+        private Token $token,
     ) {}
 
     public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService) {
@@ -34,9 +34,12 @@ class MiniGridRevenueService {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
-        $soldEnergy = $this->meterToken->newQuery()
-            ->selectRaw('COUNT(id) as amount, SUM(energy) as energy')
-            ->whereIn('meter_id', $miniGridMeters->pluck('id'))
+        $soldEnergy = $this->token->newQuery()
+            ->selectRaw('COUNT(id) as amount, SUM(COALESCE(energy, load)) as energy')
+            ->whereHas('device', function ($query) use ($miniGridMeters) {
+                $query->where('device_type', 'meter')
+                    ->whereIn('device_id', $miniGridMeters->pluck('id'));
+            })
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
         $energy = 0;
 
