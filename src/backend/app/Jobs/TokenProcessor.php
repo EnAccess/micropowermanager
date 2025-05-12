@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
+use App\Models\Meter\Meter;
 use App\Models\Token;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;

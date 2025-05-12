@@ -208,6 +208,9 @@ class TransactionSeeder extends Seeder {
                         $randomMeter['tariff']['price'],
                     2
                 ),
+                'token_type' => Token::TYPE_ENERGY,
+                'token_amount' => 0,
+                'device_id' => $randomMeter->id,
             ];
             $token = (new TokenFactory())->make([
                 'token' => $tokenData['token'],
