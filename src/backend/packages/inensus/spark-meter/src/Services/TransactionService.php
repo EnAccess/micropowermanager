@@ -381,7 +381,9 @@ class TransactionService {
             $token = $this->token->newQuery()->make([
                 'transaction_id' => $mainTransaction->id,
                 'token' => $token,
-                'load' => $chargedEnergy,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $chargedEnergy,
             ]);
             $token->save();
         }

@@ -4,33 +4,35 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Generic Token Model for all types of tokens i.e meter token, shs token, etc.
  *
  * @property string $token
- * @property float  $load
- * @property int    $transaction_id
  * @property string $token_type
+ * @property string $token_unit
+ * @property float  $token_amount
+ * @property int    $transaction_id
  * @property int    $device_id
- * @property int    $token_amount
  */
 class Token extends BaseModel {
     public const RELATION_NAME = 'token';
     public const TYPE_TIME = 'time';
     public const TYPE_ENERGY = 'energy';
 
+    public const UNIT_DAYS = 'days';
+    public const UNIT_MONTHS = 'months';
+    public const UNIT_KWH = 'kWh';
+
     protected $fillable = [
         'token',
-        'load',
-        'transaction_id',
         'token_type',
-        'device_id',
+        'token_unit',
         'token_amount',
+        'transaction_id',
+        'device_id',
     ];
 
     public function device(): BelongsTo {
@@ -39,11 +41,11 @@ class Token extends BaseModel {
 
     public function __toString(): string {
         if ($this->token_type === self::TYPE_TIME) {
-            return 'Token: '.$this->token.' for '.$this->token_amount.' days';
+            return sprintf('Token: %s for %.1f %s', $this->token, $this->token_amount, $this->token_unit);
         }
 
         if ($this->token_type === self::TYPE_ENERGY) {
-            return 'Token: '.$this->token.' for '.$this->load.' kWh';
+            return sprintf('Token: %s for %.3f %s', $this->token, $this->token_amount, $this->token_unit);
         }
 
         return 'Token: '.$this->token;
@@ -55,12 +57,5 @@ class Token extends BaseModel {
 
     public function paymentHistories(): MorphOne {
         return $this->morphOne(PaymentHistory::class, 'paid_for');
-    }
-
-    public function soldEnergyPerPeriod($startDate, $endDate): Builder {
-        return $this::query()
-            ->select(DB::raw(' SUM(load) as sold,YEARWEEK(created_at,3) as period'))
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy(DB::raw('YEARWEEK(created_at,3)'));
     }
 }

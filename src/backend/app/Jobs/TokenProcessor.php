@@ -113,11 +113,11 @@ class TokenProcessor extends AbstractJob {
     }
 
     private function saveToken(array $tokenData): void {
-        $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
+        $token = Token::query()->make(['token' => $tokenData['token'], 'token_amount' => $tokenData['load']]);
         $token->device_id = $this->transactionContainer->device->id;
         if ($this->transactionContainer->meter !== null) {
-            $token->device_id = $this->transactionContainer->meter->id;
             $token->token_type = Token::TYPE_ENERGY;
+            $token->token_unit = Token::UNIT_KWH;
         }
         $token->transaction()->associate($this->transactionContainer->transaction);
         $token->save();

@@ -13,8 +13,9 @@ return new class extends Migration {
     public function up() {
         Schema::connection('tenant')->table('tokens', function (Blueprint $table) {
             $table->integer('device_id')->nullable();
-            $table->integer('token_amount')->nullable();
             $table->string('token_type')->nullable();
+            $table->string('token_unit')->nullable();
+            $table->renameColumn('load', 'token_amount');
         });
     }
 
@@ -26,8 +27,9 @@ return new class extends Migration {
     public function down() {
         Schema::connection('tenant')->table('tokens', function (Blueprint $table) {
             $table->dropColumn('device_id');
-            $table->dropColumn('token_amount');
             $table->dropColumn('token_type');
+            $table->dropColumn('token_unit');
+            $table->renameColumn('token_amount', 'load');
         });
     }
 };

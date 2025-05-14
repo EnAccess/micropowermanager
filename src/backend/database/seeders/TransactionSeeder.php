@@ -201,21 +201,20 @@ class TransactionSeeder extends Seeder {
         if ($transactionData->transaction->amount > 0) {
             $tokenData = [
                 'token' => TokenFactory::generateToken(),
-                'load' => round(
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => round(
                     $transactionData->transaction->amount /
                         $randomMeter['tariff']['price'],
                     2
                 ),
-                'token_type' => Token::TYPE_ENERGY,
-                'token_amount' => 0,
-                'device_id' => $randomMeter->id,
             ];
             $token = (new TokenFactory())->make([
                 'token' => $tokenData['token'],
-                'load' => $tokenData['load'],
-                'device_id' => $tokenData['device_id'],
                 'token_type' => $tokenData['token_type'],
+                'token_unit' => $tokenData['token_unit'],
                 'token_amount' => $tokenData['token_amount'],
+                'device_id' => $randomMeter->id,
             ]);
             $token->transaction()->associate($transaction);
             $token->save();
