@@ -19,7 +19,7 @@ class TransactionAdvancedController extends Controller {
         $status = $request->input('status');
         $fromDate = $request->input('from');
         $toDate = $request->input('to');
-        $limit = (int) $request->input('per_page') ?? '15';
+        $limit = (int) ($request->input('per_page') ?? '15');
         $transactionService = $this->transactionService->getRelatedService($type);
 
         return ApiResource::make($transactionService->search(

@@ -116,13 +116,13 @@ class AssetRateChecker extends AbstractSharedCommand {
             title: $assetRate->assetPerson->asset->name.' rate reminder',
             content: $description,
             categoryId: $category->id,
-            assignedId: $creator?->id,
+            assignedId: $creator->id,
             dueDate: $assetRate->due_date === '1970-01-01' ? null : $assetRate->due_date,
             owner: $assetRate->assetPerson()->first()->person()->first(),
         );
     }
 
-    private function getApplianceRemindRates(): SupportCollection|Collection|array {
+    private function getApplianceRemindRates(): SupportCollection|Collection {
         return $this->smsApplianceRemindRateService->getApplianceRemindRates();
     }
 }
