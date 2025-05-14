@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
