@@ -21,6 +21,7 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
         'App\Events\ClusterEvent' => ['App\Listeners\ClusterGeoListener'],
+        'new.log' => [LogListener::class],
     ];
 
     protected $subscribe = [
@@ -30,7 +31,6 @@ class EventServiceProvider extends ServiceProvider {
         TransactionListener::class,
         HistoryListener::class,
         PaymentPeriodListener::class,
-        LogListener::class,
         SmsListener::class,
         UserEventSubscriber::class,
     ];
