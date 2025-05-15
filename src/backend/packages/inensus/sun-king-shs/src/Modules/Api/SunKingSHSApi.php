@@ -43,7 +43,7 @@ class SunKingSHSApi implements IManufacturerAPI {
 
         return [
             'token' => $response['token'],
-            'token_type' => Token::TYPE_ENERGY,
+            'token_type' => Token::TYPE_TIME,
             'token_unit' => Token::UNIT_DAYS,
             'token_amount' => $energy,
         ];
