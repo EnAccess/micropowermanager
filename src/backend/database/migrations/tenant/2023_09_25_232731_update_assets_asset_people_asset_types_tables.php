@@ -1,7 +1,5 @@
 <?php
 
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -44,9 +42,6 @@ return new class extends Migration {
             $table->renameColumn('price', 'default_price');
             $table->integer('default_rate');
         });
-        if (!Type::hasType('double')) {
-            Type::addType('double', FloatType::class);
-        }
         Schema::connection('tenant')->table('asset_types', function (Blueprint $table) {
             $table->double('price', 15, 6)->nullable();
         });
