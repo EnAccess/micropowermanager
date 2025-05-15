@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\AccessRateListener;
+use App\Listeners\ClusterGeoListener;
 use App\Listeners\HistoryListener;
 use App\Listeners\LogListener;
 use App\Listeners\MeterListener;
@@ -20,7 +21,7 @@ class EventServiceProvider extends ServiceProvider {
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        'App\Events\ClusterEvent' => ['App\Listeners\ClusterGeoListener'],
+        'App\Events\ClusterEvent' => [ClusterGeoListener::class],
     ];
 
     protected $subscribe = [
