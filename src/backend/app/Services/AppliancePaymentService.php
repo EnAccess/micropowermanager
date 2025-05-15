@@ -146,10 +146,7 @@ class AppliancePaymentService {
         $transactionData->applianceInstallmentsFullFilled = $this->applianceInstallmentsFullFilled;
 
         $tokenData = $manufacturerApi->chargeDevice($transactionData);
-        $token = Token::query()->make([
-            'token' => $tokenData['token'],
-            'load' => $tokenData['load'],
-        ]);
+        $token = Token::query()->make($tokenData);
         $token->transaction()->associate($transactionData->transaction);
         $token->save();
     }

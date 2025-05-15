@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inensus\AngazaSHS\Exceptions\AngazaApiResponseException;
@@ -76,7 +77,9 @@ class AngazaSHSApi implements IManufacturerAPI {
 
         return [
             'token' => $token,
-            'load' => $energy,
+            'token_type' => Token::TYPE_TIME,
+            'token_unit' => Token::UNIT_DAYS,
+            'token_amount' => $energy,
         ];
     }
 

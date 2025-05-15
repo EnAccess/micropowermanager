@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use Illuminate\Support\Facades\Log;
 use Inensus\SunKingSHS\Exceptions\SunKingApiResponseException;
 use Inensus\SunKingSHS\Models\SunKingTransaction;
@@ -42,7 +43,9 @@ class SunKingSHSApi implements IManufacturerAPI {
 
         return [
             'token' => $response['token'],
-            'load' => $energy,
+            'token_type' => Token::TYPE_TIME,
+            'token_unit' => Token::UNIT_DAYS,
+            'token_amount' => $energy,
         ];
     }
 

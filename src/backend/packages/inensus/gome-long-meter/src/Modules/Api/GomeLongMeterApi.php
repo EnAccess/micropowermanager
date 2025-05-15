@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use Illuminate\Support\Facades\Log;
 use Inensus\GomeLongMeter\Models\GomeLongTransaction;
 use Inensus\GomeLongMeter\Services\GomeLongCredentialService;
@@ -52,7 +53,9 @@ class GomeLongMeterApi implements IManufacturerAPI {
 
             return [
                 'token' => $response['Token'],
-                'load' => $energy,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $energy,
             ];
         }
     }
