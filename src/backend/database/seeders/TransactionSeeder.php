@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
-use App\Models\Token;
 use App\Models\SolarHomeSystem;
+use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use Database\Factories\AgentTransactionFactory;
 use Database\Factories\TokenFactory;
@@ -31,11 +31,14 @@ class TransactionSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $transactionTypes = [
+    private $meterTransactionTypes = [
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
+    ];
+
+    private $shsTransactionTypes = [
         SunKingTransaction::class,
         AngazaTransaction::class,
     ];
@@ -64,8 +67,13 @@ class TransactionSeeder extends Seeder {
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes() {
-        return $this->transactionTypes[array_rand($this->transactionTypes)];
+    private function getTransactionTypeRandomlyFromTransactionTypes($deviceModel) {
+        if ($deviceModel instanceof Meter) {
+            return $this->meterTransactionTypes[array_rand($this->meterTransactionTypes)];
+        } elseif ($deviceModel instanceof SolarHomeSystem) {
+            return $this->shsTransactionTypes[array_rand($this->shsTransactionTypes)];
+        }
+        throw new \Exception('Unsupported device type for transaction');
     }
 
     private function generateTransaction(): void {
@@ -107,7 +115,7 @@ class TransactionSeeder extends Seeder {
             $amount = 300;
         }
 
-        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
+        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes($deviceModel);
         $transactionType = app()->make($randomTransactionType);
 
         // Get device serial based on device type
@@ -235,15 +243,13 @@ class TransactionSeeder extends Seeder {
 
         // generate random token
         if ($transactionData->transaction->amount > 0) {
-            // Check if this is an SHS device
-            $device = $transactionData->device;
-
-            if ($device instanceof SolarHomeSystem) {
-                $tokenType = Token::TYPE_TIME;
-                $tokenUnit = Token::UNIT_DAYS;
-            } else {
+            // Check if this is an Meter device
+            if ($deviceModel instanceof Meter) {
                 $tokenType = Token::TYPE_ENERGY;
                 $tokenUnit = Token::UNIT_KWH;
+            } else {
+                $tokenType = Token::TYPE_TIME;
+                $tokenUnit = Token::UNIT_DAYS;
             }
 
             // Create device token
@@ -267,7 +273,6 @@ class TransactionSeeder extends Seeder {
             $token->transaction()->associate($transaction);
             $token->save();
             $transactionData->token = $token;
-
 
             // payment event
             event(
