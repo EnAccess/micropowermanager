@@ -4,6 +4,7 @@ namespace Inensus\SparkMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
+use App\Models\Token;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -124,7 +125,9 @@ class SparkMeterApi implements IManufacturerAPI {
 
             return [
                 'token' => $token,
-                'load' => $transactionContainer->chargedEnergy,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $transactionContainer->chargedEnergy,
             ];
         }
     }

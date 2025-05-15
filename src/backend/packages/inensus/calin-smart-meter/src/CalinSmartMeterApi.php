@@ -5,6 +5,7 @@ namespace Inensus\CalinSmartMeter;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Meter\Meter;
+use App\Models\Token;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -65,7 +66,9 @@ class CalinSmartMeterApi implements IManufacturerAPI {
 
         return [
             'token' => $token,
-            'load' => $energy,
+            'token_type' => Token::TYPE_ENERGY,
+            'token_unit' => Token::UNIT_KWH,
+            'token_amount' => $energy,
         ];
     }
 

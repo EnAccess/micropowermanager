@@ -23,6 +23,7 @@ class Token extends BaseModel {
     public const TYPE_ENERGY = 'energy';
 
     public const UNIT_DAYS = 'days';
+    public const UNIT_WEEKS = 'weeks';
     public const UNIT_MONTHS = 'months';
     public const UNIT_KWH = 'kWh';
 
