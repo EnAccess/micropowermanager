@@ -43,7 +43,7 @@ return new class extends Migration {
             $table->integer('default_rate');
         });
         Schema::connection('tenant')->table('asset_types', function (Blueprint $table) {
-            $table->double('price', 15, 6)->nullable();
+            $table->double('price')->nullable();
         });
     }
 };

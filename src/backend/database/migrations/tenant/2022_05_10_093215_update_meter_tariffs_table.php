@@ -12,8 +12,8 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('meter_tariffs', function (Blueprint $table) {
-            $table->double('price', 15, 6)->change();
-            $table->double('total_price', 15, 6)->change();
+            $table->double('price')->change();
+            $table->double('total_price')->change();
         });
     }
 

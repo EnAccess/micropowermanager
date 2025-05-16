@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('social_tariff_piggy_banks', function (Blueprint $table) {
-            $table->double('savings', 15, 6)->change();
+            $table->double('savings')->change();
         });
     }
 

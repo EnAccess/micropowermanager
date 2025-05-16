@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('tariff_pricing_components', function (Blueprint $table) {
-            $table->double('price', 15, 6)->change();
+            $table->double('price')->change();
         });
     }
 

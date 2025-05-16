@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('asset_people', function (Blueprint $table) {
-            $table->double('total_cost', 15, 6)->change();
+            $table->double('total_cost')->change();
         });
     }
 
