@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
+use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use Database\Factories\AgentTransactionFactory;
-use Database\Factories\MeterTokenFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Illuminate\Console\View\Components\Info;
@@ -201,7 +201,9 @@ class TransactionSeeder extends Seeder {
         if ($transactionData->transaction->amount > 0) {
             $tokenData = [
                 'token' => TokenFactory::generateToken(),
-                'load' => round(
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => round(
                     $transactionData->transaction->amount /
                         $randomMeter['tariff']['price'],
                     2
@@ -209,30 +211,14 @@ class TransactionSeeder extends Seeder {
             ];
             $token = (new TokenFactory())->make([
                 'token' => $tokenData['token'],
-                'load' => $tokenData['load'],
+                'token_type' => $tokenData['token_type'],
+                'token_unit' => $tokenData['token_unit'],
+                'token_amount' => $tokenData['token_amount'],
+                'device_id' => $randomMeter->id,
             ]);
             $token->transaction()->associate($transaction);
             $token->save();
             $transactionData->token = $token;
-
-            // generate meter_token
-            $meterTokenData = [
-                'meter_id' => $randomMeter->id,
-                'token' => TokenFactory::generateToken(),
-                'energy' => round(
-                    $transactionData->transaction->amount /
-                    $randomMeter['tariff']['price'],
-                    2
-                ),
-                'transaction_id' => $transaction->id,
-            ];
-            $meterToken = (new MeterTokenFactory())->make([
-                'meter_id' => $meterTokenData['meter_id'],
-                'token' => $meterTokenData['token'],
-                'energy' => $meterTokenData['energy'],
-                'transaction_id' => $meterTokenData['transaction_id'],
-            ]);
-            $meterToken->save();
 
             // payment event
             event(

@@ -5,6 +5,7 @@ namespace Inensus\SteamaMeter;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
@@ -100,7 +101,9 @@ class SteamaMeterApi implements IManufacturerAPI {
 
             return [
                 'token' => $token,
-                'load' => $transactionContainer->chargedEnergy,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $transactionContainer->chargedEnergy,
             ];
         }
     }

@@ -4,6 +4,7 @@ namespace Inensus\KelinMeter;
 
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
+use App\Models\Token;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -106,7 +107,9 @@ class KelinMeterApi implements IManufacturerAPI {
 
             return [
                 'token' => $token,
-                'loan' => $transactionContainer->chargedEnergy,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $transactionContainer->chargedEnergy,
             ];
         }
     }

@@ -9,6 +9,7 @@ use App\Models\ConnectionGroup;
 use App\Models\ConnectionType;
 use App\Models\Device;
 use App\Models\Manufacturer;
+use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,8 +65,9 @@ class Meter extends BaseModel {
         return $this->tariff->accessRate;
     }
 
-    public function tokens(): HasMany {
-        return $this->hasMany(MeterToken::class);
+    public function tokens(): \Illuminate\Database\Eloquent\Relations\HasManyThrough {
+        return $this->hasManyThrough(Token::class, Device::class, 'device_id', 'device_id', 'id', 'id')
+            ->where('device_type', Meter::class);
     }
 
     public function consumptions(): HasMany {

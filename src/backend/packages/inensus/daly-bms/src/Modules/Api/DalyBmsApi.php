@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Inensus\DalyBms\Exceptions\DalyBmsApiResponseException;
@@ -141,7 +142,9 @@ class DalyBmsApi implements IManufacturerAPI {
 
         return [
             'token' => '-',
-            'load' => $energy,
+            'token_type' => Token::TYPE_ENERGY,
+            'token_unit' => Token::UNIT_DAYS,
+            'token_amount' => $energy,
         ];
     }
 

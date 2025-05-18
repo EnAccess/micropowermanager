@@ -6,6 +6,7 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\Device;
+use App\Models\Token;
 use Illuminate\Support\Facades\Log;
 use Inensus\MicroStarMeter\Models\MicroStarTransaction;
 use Inensus\MicroStarMeter\Services\MicroStarCredentialService;
@@ -46,7 +47,9 @@ class MicroStarMeterApi implements IManufacturerAPI {
 
         return [
             'token' => $response['token'],
-            'load' => $energy,
+            'token_type' => Token::TYPE_ENERGY,
+            'token_unit' => Token::UNIT_KWH,
+            'token_amount' => $energy,
         ];
     }
 

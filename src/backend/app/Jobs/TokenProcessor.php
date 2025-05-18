@@ -113,7 +113,8 @@ class TokenProcessor extends AbstractJob {
     }
 
     private function saveToken(array $tokenData): void {
-        $token = Token::query()->make(['token' => $tokenData['token'], 'load' => $tokenData['load']]);
+        $token = Token::query()->make($tokenData);
+        $token->device_id = $this->transactionContainer->device->id;
         $token->transaction()->associate($this->transactionContainer->transaction);
         $token->save();
 
