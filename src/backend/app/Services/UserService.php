@@ -56,9 +56,6 @@ class UserService {
         /** @var User $user */
         $user = $this->buildQuery()->where('email', $email)->firstOrFail();
 
-        if ($user === null) {
-            return null;
-        }
         $user->update(['password' => $newPassword]);
 
         try {

@@ -52,7 +52,7 @@ class AccessRatePayer {
                 'paymentService' => $this->transactionData->transaction->original_transaction_type,
                 'paymentType' => 'access rate',
                 'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => $meter instanceof Meter ? $meter->accessRate() : null,
+                'paidFor' => method_exists($meter, 'accessRate') ? $meter->accessRate() : null,
                 'payer' => $owner,
                 'transaction' => $this->transactionData->transaction,
             ]);

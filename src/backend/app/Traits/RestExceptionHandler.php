@@ -80,7 +80,7 @@ trait RestExceptionHandler {
     /**
      * Generates validation error response.
      *
-     * @param array|string $errors
+     * @param \Illuminate\Support\MessageBag|array|string $errors
      * @param int          $status_code
      *
      * @return JsonResponse
