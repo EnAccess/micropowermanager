@@ -7,7 +7,6 @@ use App\Http\Resources\ApiResource;
 use App\Models\CompanyDatabase;
 use App\Services\AddressesService;
 use App\Services\AgentService;
-use App\Services\CompanyDatabaseService;
 use App\Services\CountryService;
 use App\Services\DatabaseProxyService;
 use App\Services\PersonAddressService;
@@ -22,7 +21,6 @@ class AgentWebController extends Controller {
         private PersonService $personService,
         private PersonAddressService $personAddressService,
         private CountryService $countryService,
-        private CompanyDatabaseService $companyDatabaseService,
         private DatabaseProxyService $databaseProxyService,
     ) {}
 

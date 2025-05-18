@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Helpers\PasswordGenerator;
 use App\Models\Agent;
-use App\Models\AgentBalanceHistory;
-use App\Models\AgentReceipt;
 use App\Services\Interfaces\IBaseService;
 use Complex\Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -18,9 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AgentService implements IBaseService {
     public function __construct(
         private Agent $agent,
-        private AgentReceipt $agentReceipt,
-        private AgentBalanceHistory $agentBalanceHistory,
-        private PeriodService $periodService,
         private PersonService $personService,
     ) {}
 

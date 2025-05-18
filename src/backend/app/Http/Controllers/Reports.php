@@ -671,10 +671,10 @@ class Reports {
 
                 $tariffPrice = $groupRevenue['tariff_price'];
 
-                if (!$tariffPrice || $tariffPrice === 0) {
+                if (!$tariffPrice) {
                     continue;
                 }
-                if (!$energyRevenue || $energyRevenue === 0) {
+                if (!$energyRevenue) {
                     continue;
                 }
                 $tariffPrice /= 100;

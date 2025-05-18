@@ -13,7 +13,7 @@ class AccessRate {
     /**
      * @var AccessRateModel
      */
-    private AccessRateModel $accessRate;
+    private ?AccessRateModel $accessRate = null;
     /**
      * @var Meter
      */
@@ -53,7 +53,11 @@ class AccessRate {
      */
     public function initializeAccessRatePayment(): AccessRatePayment {
         if ($this->accessRate === null) {
-            throw new NoAccessRateFound(sprintf('%s %s', $this->accessRate === null ? 'Access Rate is not set' : '', $this->meter === null ? 'Meter is not set' : ''));
+            throw new NoAccessRateFound(sprintf(
+                '%s %s',
+                'Access Rate is not set',
+                $this->meter === null ? 'Meter is not set' : ''
+            ));
         }
         // get current date and add AccessRate.period days
         $nextPaymentDate = Carbon::now()->addDays($this->accessRate->period);
