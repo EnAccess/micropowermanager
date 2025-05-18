@@ -16,7 +16,6 @@ class AssetRateController extends Controller {
      *
      * @return ApiResource
      */
-    
     private $applianceRateService;
 
     public function __construct(

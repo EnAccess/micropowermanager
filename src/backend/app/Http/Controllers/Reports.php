@@ -577,8 +577,8 @@ class Reports {
         foreach ($transactions as $transaction) {
             $deviceModel = $transaction->device?->device;
 
-            if($deviceModel) {
-                 if (method_exists($deviceModel, 'tariff')) {
+            if ($deviceModel) {
+                if (method_exists($deviceModel, 'tariff')) {
                     $deviceModel->loadMissing('tariff');
                 }
                 if (method_exists($deviceModel, 'connectionType')) {

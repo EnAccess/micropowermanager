@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Inensus\BulkRegistration\Services\AddressService;
 
 class MaintenanceUserController extends Controller {
-
     public function __construct(
         private MaintenanceUsers $maintenanceUsers,
         private Person $person,

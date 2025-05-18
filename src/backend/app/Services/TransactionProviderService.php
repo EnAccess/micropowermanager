@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Transaction\Transaction;
 
 class TransactionProviderService {
-
     /**
      * TransactionProviderService constructor.
      */

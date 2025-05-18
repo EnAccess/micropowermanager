@@ -19,6 +19,7 @@ class ApplianceRateService {
 
     public function getCurrencyFromMainSettings(): string {
         $mainSettings = $this->mainSettings->newQuery()->first();
+
         return $mainSettings?->currency ?? '€';
     }
 

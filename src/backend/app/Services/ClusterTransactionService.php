@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Cluster;
 use App\Models\Transaction\Transaction;
 
 class ClusterTransactionService {
