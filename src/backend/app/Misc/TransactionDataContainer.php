@@ -48,7 +48,9 @@ class TransactionDataContainer {
             $container->tariff = null;
             $container->manufacturer = $container->device->device->manufacturer ?? null;
 
-            if ($container->device->device instanceof Meter) {
+            // if ($container->device->device instanceof Meter) {
+            if (is_a($container->device->device, Meter::class)) {
+                /** @var Meter $meter */
                 $meter = $container->device->device;
                 $container->manufacturer = $meter->manufacturer()->first();
                 $container->tariff = $meter->tariff()->first();

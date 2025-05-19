@@ -8,14 +8,12 @@ use App\Exceptions\DownPaymentNotFoundException;
 use App\Exceptions\TransactionAmountNotFoundException;
 use App\Services\AgentAssignedApplianceService;
 use App\Services\AgentService;
-use App\Services\AgentTransactionService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AgentBalanceMiddleware {
     public function __construct(
         private AgentService $agentService,
         private AgentAssignedApplianceService $agentAssignedApplianceService,
-        private AgentTransactionService $agentTransactionService,
     ) {}
 
     /**

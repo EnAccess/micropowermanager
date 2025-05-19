@@ -2,12 +2,11 @@
 
 namespace MPM\Device;
 
-use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\Meter\Meter;
 
 class ClusterDeviceService {
-    public function __construct(private Cluster $cluster, private Device $device) {}
+    public function __construct(private Device $device) {}
 
     public function getCountByClusterId($clusterId): int {
         return $this->device->newQuery()
