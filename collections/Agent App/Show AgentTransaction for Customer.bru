@@ -1,11 +1,11 @@
 meta {
-  name: Show AgentTransaction
+  name: Show AgentTransaction for Customer
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: {{mpm_backend_url}}/api/app/agents/transactions/5
+  url: {{mpm_backend_url}}/api/app/agents/transactions/5000
   body: none
   auth: inherit
 }
