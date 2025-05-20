@@ -32,7 +32,11 @@
             </md-table-cell>
             <md-table-cell
               v-if="token.paid_for_type === 'App\\Models\\Token'"
-              v-text="token.paid_for.token_unit === 'days' ? token.paid_for.token_amount + ' days' : readable(token.paid_for.token_amount) + ' kWh'"
+              v-text="
+                token.paid_for.token_unit === 'days'
+                  ? token.paid_for.token_amount + ' days'
+                  : readable(token.paid_for.token_amount) + ' kWh'
+              "
             ></md-table-cell>
             <md-table-cell v-else>-</md-table-cell>
             <md-table-cell
@@ -59,7 +63,7 @@ export default {
   props: {
     transactions: {
       type: Object,
-      required: true
+      required: true,
     },
   },
   created() {
@@ -99,4 +103,4 @@ export default {
 }
 </script>
 
-<style scoped></style> 
+<style scoped></style>

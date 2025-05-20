@@ -29,7 +29,10 @@
 
     <div class="md-layout md-gutter">
       <div class="md-layout-item md-size-100">
-        <transactions :transactions="transactions" @widget-loaded="handleWidgetLoaded" />
+        <transactions
+          :transactions="transactions"
+          @widget-loaded="handleWidgetLoaded"
+        />
       </div>
     </div>
   </div>
@@ -40,7 +43,10 @@ import BasicDetails from "./BasicDetails.vue"
 import Owner from "./Owner.vue"
 import Location from "./Location.vue"
 import Transactions from "./Transactions.vue"
-import { SolarHomeSystemService, Transactions as TransactionsService } from "@/services/SolarHomeSystemService"
+import {
+  SolarHomeSystemService,
+  Transactions as TransactionsService,
+} from "@/services/SolarHomeSystemService"
 import { notify } from "@/mixins"
 import { EventBus } from "@/shared/eventbus"
 
@@ -82,7 +88,9 @@ export default {
   methods: {
     async getSolarHomeSystem() {
       try {
-        const shsData = await this.solarHomeSystemService.getSolarHomeSystem(this.serialNumber)
+        const shsData = await this.solarHomeSystemService.getSolarHomeSystem(
+          this.serialNumber,
+        )
         if (shsData) {
           this.shs = shsData
         }

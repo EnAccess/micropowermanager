@@ -15,8 +15,8 @@ export class Transactions {
       {
         perPage: 15,
         showPerPage: true,
-        subscriber: "shs.transactions"
-      }
+        subscriber: "shs.transactions",
+      },
     )
   }
 
