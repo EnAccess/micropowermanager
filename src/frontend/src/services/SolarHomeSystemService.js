@@ -7,6 +7,27 @@ import { ErrorHandler } from "@/Helpers/ErrorHandler"
 import { EventBus } from "@/shared/eventbus"
 import SolarHomeSystemRepository from "@/repositories/SolarHomeSystemRepository"
 
+export class Transactions {
+  constructor(shsId) {
+    this.tokens = []
+    this.paginator = new Paginator(
+      resources.solarHomeSystems.transactions + shsId + "/transactions",
+      {
+        perPage: 15,
+        showPerPage: true,
+        subscriber: "shs.transactions"
+      }
+    )
+  }
+
+  updateList(data) {
+    this.tokens = []
+    for (let t in data) {
+      this.tokens.push(data[t])
+    }
+  }
+}
+
 export class SolarHomeSystemService {
   constructor() {
     this.repository = SolarHomeSystemRepository
@@ -57,5 +78,18 @@ export class SolarHomeSystemService {
   showAll() {
     this.paginator = new Paginator(this.repository.resource)
     EventBus.$emit("loadPage", this.paginator)
+  }
+
+  async getTransactions(id) {
+    try {
+      const response = await this.repository.transactions(id)
+      if (response && response.data && response.data.data) {
+        return convertObjectKeysToCamelCase(response.data.data)
+      }
+      return null
+    } catch (e) {
+      const errorMessage = e.response.data.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
   }
 }

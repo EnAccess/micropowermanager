@@ -164,4 +164,9 @@ export let resources = {
     tickets: "/tickets/api/agents",
     receipts: "/api/agents/receipt",
   },
+  solarHomeSystems: {
+    list: "/api/solar-home-systems",
+    search: "/api/solar-home-systems/search",
+    transactions: "/api/solar-home-systems/",
+  },
 }

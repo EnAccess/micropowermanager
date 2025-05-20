@@ -369,7 +369,8 @@
     "writeMessage": "Write a message...",
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that"
+    "yourMessage": "Your message will seen like that",
+    "solarHomeSystemTransaction": "Solar Home System Transaction | Solar Home System Transactions"
   },
   "words": {
     "access": "Access",

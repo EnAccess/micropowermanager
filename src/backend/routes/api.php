@@ -366,11 +366,12 @@ Route::group(['prefix' => 'devices'], static function () {
 Route::group(['prefix' => 'device-addresses'], function () {
     Route::post('/', [DeviceAddressController::class, 'update']);
 });
-Route::group(['prefix' => 'solar-home-systems'], static function () {
+Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'jwt.verify'], static function () {
     Route::get('/', [SolarHomeSystemController::class, 'index']);
     Route::post('/', [SolarHomeSystemController::class, 'store']);
-    Route::get('/{id}', [SolarHomeSystemController::class, 'show']);
     Route::get('/search', [SolarHomeSystemController::class, 'search']);
+    Route::get('/{id}', [SolarHomeSystemController::class, 'show']);
+    Route::get('/{id}/transactions', [SolarHomeSystemController::class, 'transactions']);
 });
 Route::group(['prefix' => 'e-bikes'], static function () {
     Route::get('/', [EBikeController::class, 'index']);
