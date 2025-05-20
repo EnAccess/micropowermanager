@@ -128,7 +128,7 @@ class AgentTransactionProvider implements ITransactionProvider {
         $agent = auth('agent_api')->user();
         try {
             Agent::query()
-                ->where('device_id', $deviceId)
+                ->where('mobile_device_id', $deviceId)
                 ->where('id', $agentId)
                 ->firstOrFail();
         } catch (ModelNotFoundException $e) {
