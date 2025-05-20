@@ -14,6 +14,7 @@ use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
@@ -65,9 +66,15 @@ class Meter extends BaseModel {
         return $this->tariff->accessRate;
     }
 
-    public function tokens(): \Illuminate\Database\Eloquent\Relations\HasManyThrough {
-        return $this->hasManyThrough(Token::class, Device::class, 'device_id', 'device_id', 'id', 'id')
-            ->where('device_type', Meter::class);
+    public function tokens(): HasManyThrough {
+        return $this->hasManyThrough(
+            Token::class,
+            Device::class,
+            'device_id',
+            'device_id',
+            'id',
+            'id'
+        )->where('device_type', 'meter');
     }
 
     public function consumptions(): HasMany {
