@@ -2,8 +2,7 @@
 
 namespace Inensus\SteamaMeter\Services;
 
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -26,7 +25,7 @@ class SteamaTransactionsService implements ISynchronizeService {
     private $thirdPartyTransaction;
     private $rootUrl = '/transactions';
     private $transaction;
-    private $meterToken;
+    private $token;
     private $steamaCustomer;
     private $steamaSyncSettingService;
     private $steamaSyncActionService;
@@ -42,7 +41,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         Transaction $transaction,
         SteamaMeter $steamaMeter,
         ThirdPartyTransaction $thirdPartyTransaction,
-        MeterToken $meterToken,
+        Token $token,
         SteamaCustomer $steamaCustomer,
         SteamaSyncSettingService $steamaSyncSettingService,
         StemaSyncActionService $steamaSyncActionService,
@@ -57,7 +56,7 @@ class SteamaTransactionsService implements ISynchronizeService {
         $this->transaction = $transaction;
         $this->steamaMeter = $steamaMeter;
         $this->thirdPartyTransaction = $thirdPartyTransaction;
-        $this->meterToken = $meterToken;
+        $this->token = $token;
         $this->steamaCustomer = $steamaCustomer;
         $this->steamaSyncSettingService = $steamaSyncSettingService;
         $this->steamaSyncActionService = $steamaSyncActionService;
@@ -232,17 +231,15 @@ class SteamaTransactionsService implements ISynchronizeService {
             $transaction['provider'].'-'.
             $transaction['customer_id'];
 
-        $token = $this->meterToken->newQuery()->make([
-            'token' => $token,
-            'energy' => $chargedEnergy,
-        ]);
-
-        $token->transaction()->associate($mainTransaction);
-        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
-        if ($meter) {
-            $token->meter()->associate($meter);
+        $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
+        if (!$token) {
+            $token = $this->token->newQuery()->make([
+                'transaction_id' => $mainTransaction->id,
+                'token' => $token,
+                'load' => $chargedEnergy,
+            ]);
+            $token->save();
         }
-        $token->save();
 
         return $token;
     }

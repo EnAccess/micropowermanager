@@ -10,10 +10,10 @@ use App\Models\Address\Address;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterTariff;
-use App\Models\Meter\MeterToken;
 use App\Models\Meter\MeterType;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
+use App\Models\Token;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Queue;
@@ -45,8 +45,8 @@ class PaymentProcessTests extends TestCase {
         $transaction = $this->initializeTransaction();
         $transactionData = TransactionDataContainer::initialize($transaction);
         TokenProcessor::dispatchNow($transactionData);
-        $meterTokensCount = MeterToken::query()->get()->count();
-        $this->assertEquals(1, $meterTokensCount);
+        $tokensCount = Token::query()->get()->count();
+        $this->assertEquals(1, $tokensCount);
         $mesombPaymentCount = PaymentHistory::query()
             ->where('payment_service', 'mesomb_transaction')
             ->where('payment_type', 'energy')->get()->count();

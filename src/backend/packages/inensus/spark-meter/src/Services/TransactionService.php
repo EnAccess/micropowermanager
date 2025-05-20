@@ -2,8 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
-use App\Models\Meter\Meter;
-use App\Models\Meter\MeterToken;
+use App\Models\Token;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
@@ -32,12 +31,12 @@ class TransactionService {
     private $sparkTariff;
     private $thirdPartyTransaction;
     private $transaction;
-    private $meterToken;
     private $sparkSite;
     private $smCustomer;
     private $rootUrl = '/transaction/';
     private $smSyncSettingService;
     private $smSyncActionService;
+    private Token $token;
 
     public function __construct(
         SparkMeterApiRequests $sparkMeterApiRequests,
@@ -52,10 +51,10 @@ class TransactionService {
         SmOrganization $sparkOrganization,
         ThirdPartyTransaction $thirdPartyTransaction,
         Transaction $transaction,
-        MeterToken $meterToken,
         SmCustomer $smCustomer,
         SmSyncSettingService $smSyncSettingService,
         SmSyncActionService $smSyncActionService,
+        Token $token,
     ) {
         $this->sparkMeterApiRequests = $sparkMeterApiRequests;
         $this->sparkOrganization = $sparkOrganization;
@@ -69,10 +68,10 @@ class TransactionService {
         $this->sparkTransaction = $sparkTransaction;
         $this->thirdPartyTransaction = $thirdPartyTransaction;
         $this->transaction = $transaction;
-        $this->meterToken = $meterToken;
         $this->smCustomer = $smCustomer;
         $this->smSyncSettingService = $smSyncSettingService;
         $this->smSyncActionService = $smSyncActionService;
+        $this->token = $token;
     }
 
     public function updateTransactionStatus($smTransaction) {
@@ -377,16 +376,17 @@ class TransactionService {
 
         $token = $sparkTransaction->site_id.'-'.$transaction['source'].'-'.$sparkTransaction->customer_id;
 
-        $token = $this->meterToken->newQuery()->make([
-            'token' => $token,
-            'load' => $chargedEnergy,
-        ]);
-        $token->transaction()->associate($mainTransaction);
-        $meter = Meter::where('serial_number', $mainTransaction->message)->first();
-        if ($meter) {
-            $token->meter()->associate($meter);
+        $token = $this->token->newQuery()->where('transaction_id', $mainTransaction->id)->first();
+        if (!$token) {
+            $token = $this->token->newQuery()->make([
+                'transaction_id' => $mainTransaction->id,
+                'token' => $token,
+                'token_type' => Token::TYPE_ENERGY,
+                'token_unit' => Token::UNIT_KWH,
+                'token_amount' => $chargedEnergy,
+            ]);
+            $token->save();
         }
-        $token->save();
 
         return $token;
     }
