@@ -16,7 +16,7 @@ class AgentTransactionFactory extends Factory {
     public function definition() {
         return [
             'agent_id' => 1,
-            'device_id' => '123456789',
+            'mobile_device_id' => '123456789',
             'status' => 1,
             'manufacturer_transaction_type' => 'test',
             'manufacturer_transaction_id' => 1,

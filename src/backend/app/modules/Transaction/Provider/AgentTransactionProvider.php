@@ -33,7 +33,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     private function assignData(array $data): void {
         // provider specific data
         $this->agentTransaction->agent_id = (int) $data['agent_id'];
-        $this->agentTransaction->device_id = (int) $data['device_id'];
+        $this->agentTransaction->mobile_device_id = (int) $data['device_id'];
 
         // common transaction data
         $this->transaction->amount = (int) $data['amount'];

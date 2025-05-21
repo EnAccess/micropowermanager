@@ -117,7 +117,7 @@ class TransactionSeeder extends Seeder {
             $agent = $miniGrid->agent()->first();
             $subTransaction = (new AgentTransactionFactory())->create([
                 'agent_id' => $agent->id,
-                'device_id' => 'test-device',
+                'mobile_device_id' => 'test-device',
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',

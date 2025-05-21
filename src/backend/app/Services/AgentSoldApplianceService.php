@@ -135,7 +135,7 @@ class AgentSoldApplianceService implements IBaseService {
         // create agent transaction
         $agentTransactionData = [
             'agent_id' => $agent->id,
-            'device_id' => $agent->mobile_device_id,
+            'mobile_device_id' => $agent->mobile_device_id,
             'status' => 1,
         ];
         $agentTransaction = $this->agentTransactionService->create($agentTransactionData);
