@@ -135,7 +135,7 @@ class AgentSoldApplianceService implements IBaseService {
         // create agent transaction
         $agentTransactionData = [
             'agent_id' => $agent->id,
-            'device_id' => $agent->device_id,
+            'mobile_device_id' => $agent->mobile_device_id,
             'status' => 1,
         ];
         $agentTransaction = $this->agentTransactionService->create($agentTransactionData);
@@ -143,7 +143,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent transaction to transaction
         $transactionData = [
             'amount' => $requestData['down_payment'] ?: 0,
-            'sender' => $agent->device_id,
+            'sender' => $agent->mobile_device_id,
             'message' => '-',
         ];
 
