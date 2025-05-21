@@ -63,6 +63,7 @@ class AngazaSHSApi implements IManufacturerAPI {
         ]);
 
         $token = $response['_embedded']['latest_keycode']['keycode'];
+
         event(
             'new.log',
             [

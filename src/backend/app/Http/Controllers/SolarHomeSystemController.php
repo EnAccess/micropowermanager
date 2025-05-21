@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSolarHomeSystemRequest;
 use App\Http\Resources\ApiResource;
+use App\Services\PaymentHistoryService;
 use Illuminate\Http\Request;
 use MPM\Device\DeviceService;
 use MPM\SolarHomeSystem\SolarHomeSystemDeviceService;
@@ -14,6 +15,7 @@ class SolarHomeSystemController extends Controller {
         private DeviceService $deviceService,
         private SolarHomeSystemService $solarHomeSystemService,
         private SolarHomeSystemDeviceService $solarHomeSystemDeviceService,
+        private PaymentHistoryService $paymentHistoryService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -48,5 +50,12 @@ class SolarHomeSystemController extends Controller {
 
     public function show($id): ApiResource {
         return ApiResource::make($this->solarHomeSystemService->getById($id));
+    }
+
+    public function transactions($id): ApiResource {
+        $shs = $this->solarHomeSystemService->getById($id);
+        $paginate = request('paginate') ?? 15;
+
+        return ApiResource::make($this->paymentHistoryService->getBySerialNumber($shs->serial_number, $paginate));
     }
 }
