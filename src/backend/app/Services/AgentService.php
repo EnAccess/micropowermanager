@@ -147,7 +147,7 @@ class AgentService implements IBaseService {
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->phone = $agentData['phone'];
         $address->update();
-        $agent->name = $agentData['name'];
+        $agent->person->name = $agentData['name'];
         $agent->agent_commission_id = $agentData['commissionTypeId'];
         $agent->update();
 

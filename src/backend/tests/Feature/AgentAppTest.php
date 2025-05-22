@@ -34,7 +34,7 @@ class AgentAppTest extends TestCase {
         $response->assertStatus(200);
         $this->assertEquals($agent->id, $response['id']);
         $this->assertEquals($agent->email, $response['email']);
-        $this->assertEquals($agent->name, $response['name']);
+        $this->assertEquals($agent->person->name, $response['name']);
     }
 
     public function testAgentLogsOut() {
