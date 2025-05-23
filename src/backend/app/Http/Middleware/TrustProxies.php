@@ -11,14 +11,18 @@ class TrustProxies extends Middleware {
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = [
+        '127.0.0.1',
+        '::1',
+        // Add your production proxy IPs here
+        // For example: '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'
+    ];
 
     /**
      * The headers that should be used to detect proxies.
      *
      * @var int
      */
-    // After...
     protected $headers =
         Request::HEADER_X_FORWARDED_FOR |
         Request::HEADER_X_FORWARDED_HOST |

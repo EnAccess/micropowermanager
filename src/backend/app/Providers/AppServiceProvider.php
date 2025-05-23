@@ -39,6 +39,7 @@ use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 
@@ -83,6 +84,10 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
+
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 
     /**
