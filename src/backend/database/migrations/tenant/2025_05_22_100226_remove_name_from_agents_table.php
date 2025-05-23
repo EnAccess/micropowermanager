@@ -23,7 +23,7 @@ return new class extends Migration {
      */
     public function down() {
         Schema::connection('tenant')->table('agents', function (Blueprint $table) {
-            $table->string('name')->after('device_id');
+            $table->string('name');
         });
     }
 };
