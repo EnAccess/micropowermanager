@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class  extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::connection('tenant')->table('agents', function (Blueprint $table) {
             $table->dropColumn('name');
         });
@@ -23,8 +21,7 @@ return new class  extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::connection('tenant')->table('agents', function (Blueprint $table) {
             $table->string('name')->after('device_id');
         });
