@@ -53,7 +53,8 @@ class Handler extends ExceptionHandler {
         // api request outputs are json
         if ($request->expectsJson()
             || preg_match('/.*\.local\/api.*/', $request->url())
-            || preg_match('/.*\.com\/api.*/', $request->url())) {
+            || preg_match('/.*\.com\/api.*/', $request->url()) 
+            || strpos($request->url(), '/api') !== false) {
             return $this->getJsonResponseForException($request, $exception);
         }
 
