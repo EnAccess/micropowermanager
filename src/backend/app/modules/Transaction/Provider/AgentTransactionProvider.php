@@ -138,7 +138,7 @@ class AgentTransactionProvider implements ITransactionProvider {
                 $query->where('mobile_device_id', $deviceId);
             }
 
-            $query->firstOrFail(); // Will throw if no match was found
+            $query->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new \Exception($e->getMessage());
         }
