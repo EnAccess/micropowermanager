@@ -30,6 +30,7 @@ return new class extends Migration {
                     'device_id' => $device->id,
                     'token' => $meterToken->token,
                     'token_amount' => $meterToken->energy,
+                    'token_unit' => 'kWh',
                     'token_type' => 'energy',
                     'created_at' => $meterToken->created_at,
                     'updated_at' => $meterToken->updated_at,
