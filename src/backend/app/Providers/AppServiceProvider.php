@@ -84,7 +84,6 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
-
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
