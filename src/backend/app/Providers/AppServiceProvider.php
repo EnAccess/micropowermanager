@@ -84,7 +84,11 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
-        if (config('app.env') === 'production') {
+
+        // Quick workaround to provide https links in paging.
+        // Better, and more flexible solution described here:
+        // https://github.com/EnAccess/micropowermanager/issues/722
+        if (in_array(config('app.env'), ['production', 'demo'])) {
             URL::forceScheme('https');
         }
     }
