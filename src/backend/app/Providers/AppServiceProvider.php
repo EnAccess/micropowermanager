@@ -39,7 +39,6 @@ use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
 
@@ -84,13 +83,6 @@ class AppServiceProvider extends ServiceProvider {
                 EBike::RELATION_NAME => EBike::class,
             ]
         );
-
-        // Quick workaround to provide https links in paging.
-        // Better, and more flexible solution described here:
-        // https://github.com/EnAccess/micropowermanager/issues/722
-        if (in_array(config('app.env'), ['production', 'demo'])) {
-            URL::forceScheme('https');
-        }
     }
 
     /**

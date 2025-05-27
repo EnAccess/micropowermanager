@@ -11,7 +11,10 @@ class TrustProxies extends Middleware {
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    // Quick workaround to provide https links in paging.
+    // Better, and more flexible solution described here:
+    // https://github.com/EnAccess/micropowermanager/issues/722
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
