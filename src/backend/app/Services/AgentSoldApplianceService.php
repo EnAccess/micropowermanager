@@ -6,6 +6,7 @@ use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
 use App\Services\Interfaces\IBaseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use MPM\Device\DeviceAddressService;
@@ -135,7 +136,7 @@ class AgentSoldApplianceService implements IBaseService {
         // create agent transaction
         $agentTransactionData = [
             'agent_id' => $agent->id,
-            'device_id' => $agent->device_id,
+            'mobile_device_id' => $agent->mobile_device_id,
             'status' => 1,
         ];
         $agentTransaction = $this->agentTransactionService->create($agentTransactionData);
@@ -143,7 +144,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent transaction to transaction
         $transactionData = [
             'amount' => $requestData['down_payment'] ?: 0,
-            'sender' => $agent->device_id,
+            'sender' => $agent->mobile_device_id,
             'message' => '-',
         ];
 
@@ -156,7 +157,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent to appliance person
         $appliancePersonData = [
             'person_id' => $requestData['person_id'],
-            'first_payment_date' => $requestData['first_payment_date'],
+            'first_payment_date' => Carbon::parse($requestData['first_payment_date'])->toDateString(),
             'rate_count' => $requestData['tenure'],
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => $requestData['down_payment'],

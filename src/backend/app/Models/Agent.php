@@ -22,7 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int    $person_id
  * @property int    $mini_grid_id
  * @property int    $agent_commission_id
- * @property string $device_id
+ * @property string $mobile_device_id
  * @property string $name
  * @property string $email
  * @property string $password
@@ -56,7 +56,7 @@ class Agent extends Authenticatable implements JWTSubject {
     protected $hidden = [
         'password',
         'remember_token',
-        'device_id',
+        'mobile_device_id',
     ];
 
     public function miniGrid(): BelongsTo {

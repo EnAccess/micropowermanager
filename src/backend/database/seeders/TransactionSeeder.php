@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
+use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use Database\Factories\AgentTransactionFactory;
@@ -14,7 +16,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Inensus\AngazaSHS\Models\AngazaTransaction;
 use Inensus\CalinMeter\Models\CalinTransaction;
+use Inensus\SunKingSHS\Models\SunKingTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
@@ -27,11 +31,16 @@ class TransactionSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $transactionTypes = [
+    private $meterTransactionTypes = [
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
+    ];
+
+    private $shsTransactionTypes = [
+        SunKingTransaction::class,
+        AngazaTransaction::class,
     ];
 
     private $amount = 1000;
@@ -58,19 +67,30 @@ class TransactionSeeder extends Seeder {
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes() {
-        return $this->transactionTypes[array_rand($this->transactionTypes)];
+    private function getTransactionTypeRandomlyFromTransactionTypes($deviceModel) {
+        if ($deviceModel instanceof Meter) {
+            return $this->meterTransactionTypes[array_rand($this->meterTransactionTypes)];
+        } elseif ($deviceModel instanceof SolarHomeSystem) {
+            return $this->shsTransactionTypes[array_rand($this->shsTransactionTypes)];
+        }
+        throw new \Exception('Unsupported device type for transaction');
     }
 
     private function generateTransaction(): void {
         try {
-            // get randomly a user
-            $randomMeter = Meter::inRandomOrder()->with([
-                'device',
-                'tariff',
-            ])->limit(1)->firstOrFail();
+            // Get a random device (either Meter or SHS) that has a person with addresses
+            $randomDevice = Device::inRandomOrder()
+                ->whereHasMorph('device', [Meter::class, SolarHomeSystem::class])
+                ->whereHas('person', function ($query) {
+                    $query->whereHas('addresses');
+                })
+                ->with(['device', 'person.addresses'])
+                ->firstOrFail();
+
+            // Get the associated model (Meter or SolarHomeSystem)
+            $deviceModel = $randomDevice->device;
         } catch (ModelNotFoundException $x) {
-            echo 'failed to find a random meter';
+            echo 'failed to find a random device with person and addresses';
 
             return;
         } catch (\Exception $x) {
@@ -82,9 +102,9 @@ class TransactionSeeder extends Seeder {
         $demoDate = date('Y-m-d', strtotime('-'.mt_rand(0, 365).' days'));
 
         try {
-            $meterOwnerPhoneNumber = $randomMeter->device->person->addresses()->firstOrFail();
+            $deviceOwnerPhoneNumber = $randomDevice->person->addresses()->firstOrFail();
         } catch (\Exception $x) {
-            echo 'failed to get meter owner address';
+            echo 'failed to get device owner address';
 
             return;
         }
@@ -95,14 +115,17 @@ class TransactionSeeder extends Seeder {
             $amount = 300;
         }
 
-        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
+        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes($deviceModel);
         $transactionType = app()->make($randomTransactionType);
+
+        // Get device serial based on device type
+        $deviceSerial = $randomDevice->device_serial;
 
         $transaction = (new TransactionFactory())->make([
             'amount' => $amount,
             'type' => 'energy',
-            'message' => $randomMeter['serial_number'],
-            'sender' => $meterOwnerPhoneNumber['phone'],
+            'message' => $deviceSerial,
+            'sender' => $deviceOwnerPhoneNumber['phone'],
             'created_at' => $demoDate,
             'updated_at' => $demoDate,
         ]);
@@ -112,12 +135,12 @@ class TransactionSeeder extends Seeder {
         $manufacturerTransaction = CalinTransaction::query()->create([]);
 
         if ($transactionType instanceof AgentTransaction) {
-            $city = $randomMeter->device->person->addresses()->first()->city()->first();
+            $city = $randomDevice->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
             $agent = $miniGrid->agent()->first();
             $subTransaction = (new AgentTransactionFactory())->create([
                 'agent_id' => $agent->id,
-                'device_id' => 'test-device',
+                'mobile_device_id' => 'test-device',
                 'status' => 1,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
@@ -148,8 +171,8 @@ class TransactionSeeder extends Seeder {
                 'order_id' => Str::random(10),
                 'reference_id' => Str::random(10),
                 'currency' => $mainSettings ? $mainSettings->currency : '$',
-                'customer_id' => $randomMeter->device->person->id,
-                'meter_serial' => $randomMeter['serial_number'],
+                'customer_id' => $randomDevice->person->id,
+                'meter_serial' => $deviceSerial,
                 'external_transaction_id' => Str::random(10),
                 'attempts' => 1,
                 'created_at' => $demoDate,
@@ -162,14 +185,32 @@ class TransactionSeeder extends Seeder {
         if ($transactionType instanceof WaveComTransaction) {
             $subTransaction = WaveComTransaction::query()->create([
                 'transaction_id' => Str::random(10),
-                'sender' => $meterOwnerPhoneNumber['phone'],
-                'message' => $randomMeter['serial_number'],
+                'sender' => $deviceOwnerPhoneNumber['phone'],
+                'message' => $deviceSerial,
                 'status' => 1,
                 'amount' => $amount,
                 'manufacturer_transaction_id' => $manufacturerTransaction->id,
                 'manufacturer_transaction_type' => 'calin_transaction',
                 'created_at' => $demoDate,
                 'updated_at' => $demoDate,
+            ]);
+        }
+
+        if ($transactionType instanceof SunKingTransaction) {
+            $subTransaction = SunKingTransaction::query()->create([
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
+                'status' => 1,
+                'amount' => $amount,
+            ]);
+        }
+
+        if ($transactionType instanceof AngazaTransaction) {
+            $subTransaction = AngazaTransaction::query()->create([
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
+                'status' => 1,
+                'amount' => $amount,
             ]);
         }
 
@@ -184,10 +225,13 @@ class TransactionSeeder extends Seeder {
             throw $exception;
         }
 
-        // pay access rate
-        $accessRatePayer = resolve('AccessRatePayer');
-        $accessRatePayer->initialize($transactionData);
-        $transactionData = $accessRatePayer->pay();
+        // only process access rate for meter devices
+        if ($deviceModel instanceof Meter) {
+            // pay access rate
+            $accessRatePayer = resolve('AccessRatePayer');
+            $accessRatePayer->initialize($transactionData);
+            $transactionData = $accessRatePayer->pay();
+        }
 
         // pay appliance installments
         $applianceInstallmentPayer = resolve('ApplianceInstallmentPayer');
@@ -199,13 +243,23 @@ class TransactionSeeder extends Seeder {
 
         // generate random token
         if ($transactionData->transaction->amount > 0) {
+            // Check if this is an Meter device
+            if ($deviceModel instanceof Meter) {
+                $tokenType = Token::TYPE_ENERGY;
+                $tokenUnit = Token::UNIT_KWH;
+            } else {
+                $tokenType = Token::TYPE_TIME;
+                $tokenUnit = Token::UNIT_DAYS;
+            }
+
+            // Create device token
             $tokenData = [
                 'token' => TokenFactory::generateToken(),
-                'token_type' => Token::TYPE_ENERGY,
-                'token_unit' => Token::UNIT_KWH,
+                'token_type' => $tokenType,
+                'token_unit' => $tokenUnit,
                 'token_amount' => round(
                     $transactionData->transaction->amount /
-                        $randomMeter['tariff']['price'],
+                        ($deviceModel instanceof Meter ? $deviceModel->tariff->price : 1),
                     2
                 ),
             ];
@@ -214,7 +268,7 @@ class TransactionSeeder extends Seeder {
                 'token_type' => $tokenData['token_type'],
                 'token_unit' => $tokenData['token_unit'],
                 'token_amount' => $tokenData['token_amount'],
-                'device_id' => $randomMeter->id,
+                'device_id' => $randomDevice->id,
             ]);
             $token->transaction()->associate($transaction);
             $token->save();
@@ -233,9 +287,6 @@ class TransactionSeeder extends Seeder {
                     'transaction' => $transactionData->transaction,
                 ]
             );
-
-            // TODO: This currently doesn't work, it throws error that SMS is not configured.
-            // event('transaction.successful', [$transactionData->transaction]);
         }
     }
 }

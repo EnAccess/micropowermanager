@@ -79,7 +79,7 @@ class AgentSellApplianceTest extends TestCase {
             'person_id' => 1,
             'mini_grid_id' => 1,
             'agent_commission_id' => 1,
-            'device_id' => 1,
+            'mobile_device_id' => 1,
             'name' => 'alper',
             'email' => 'a@a.com',
             'fire_base_token' => 'sadadadasd3',

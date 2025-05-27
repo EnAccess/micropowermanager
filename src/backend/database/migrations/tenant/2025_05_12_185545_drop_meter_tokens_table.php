@@ -25,15 +25,18 @@ return new class extends Migration {
 
             if ($device) {
                 // Insert into tokens table
-                DB::connection('tenant')->table('tokens')->insert([
-                    'transaction_id' => $meterToken->transaction_id,
-                    'device_id' => $device->id,
-                    'token' => $meterToken->token,
-                    'load' => $meterToken->energy,
-                    'token_type' => 'energy',
-                    'created_at' => $meterToken->created_at,
-                    'updated_at' => $meterToken->updated_at,
-                ]);
+                DB::connection('tenant')->table('tokens')->upsert([
+                    [
+                        'transaction_id' => $meterToken->transaction_id,
+                        'device_id' => $device->id,
+                        'token' => $meterToken->token,
+                        'token_amount' => $meterToken->energy,
+                        'token_unit' => 'kWh',
+                        'token_type' => 'energy',
+                        'created_at' => $meterToken->created_at,
+                        'updated_at' => $meterToken->updated_at,
+                    ],
+                ], ['transaction_id']);
             }
         }
 
@@ -52,7 +55,7 @@ return new class extends Migration {
             $table->integer('transaction_id')->unique();
             $table->integer('meter_id');
             $table->string('token');
-            $table->double('energy'); // the number of kwH's
+            $table->double('energy');
             $table->timestamps();
         });
     }

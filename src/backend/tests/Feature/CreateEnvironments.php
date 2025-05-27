@@ -563,7 +563,7 @@ trait CreateEnvironments {
             $agent = collect($this->agents)->where('id', $agentId)->first();
             $agentTransaction = AgentTransactionFactory::new()->create([
                 'agent_id' => $agent->id,
-                'device_id' => '123456789',
+                'mobile_device_id' => '123456789',
                 'status' => 1,
                 'manufacturer_transaction_type' => 'test',
                 'manufacturer_transaction_id' => 1,

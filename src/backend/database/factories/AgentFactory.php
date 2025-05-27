@@ -17,7 +17,7 @@ class AgentFactory extends Factory {
         return [
             'password' => '123456',
             'email' => $this->faker->unique()->safeEmail,
-            'device_id' => '-',
+            'mobile_device_id' => '-',
             'fire_base_token' => '-',
             'balance' => 0,
             'commission_revenue' => 0,

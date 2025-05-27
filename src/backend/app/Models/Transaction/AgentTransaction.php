@@ -12,7 +12,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int    $agent_id
- * @property int    $device_id
+ * @property int    $mobile_device_id
  * @property int    $status
  * @property string $sender
  */

@@ -319,6 +319,7 @@
     "socialTariff": "Social Tariff | Price per kWh | Initial energy budget",
     "socialTariffLabels": "Daily allowance at social tariff | Maximum stacked energy",
     "socialTariffOptions": "Show Social Tariff Options | Hide Social Tariff Options ",
+    "solarHomeSystemTransaction": "Solar Home System Transaction | Solar Home System Transactions",
     "soldAppliances": "Sold Appliances",
     "soldAssets": "Sold Assets",
     "soldDate": "Sold Date",
