@@ -44,7 +44,7 @@ class AgentSoldApplianceService implements IBaseService {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function getById(int $agentId, ?int $customerId = null): ?AssetPerson {
+    public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
@@ -55,10 +55,11 @@ class AgentSoldApplianceService implements IBaseService {
             )
             ->where('person_id', $customerId)
             ->latest()
-            // Not sure why it want to return a paginate here.
-            // Commenting out for now to return a singleton.
-            // ->paginate();
-            ->first();
+            ->paginate();
+    }
+
+    public function getById(int $id): AssetPerson {
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
     public function update($model, array $data): AgentSoldAppliance {
