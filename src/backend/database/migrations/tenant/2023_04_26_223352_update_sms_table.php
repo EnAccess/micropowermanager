@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('sms', function (Blueprint $table) {
-            $table->string('uuid', 50)->change();
+            $table->string('uuid', 50)->nullable()->change();
             $table->dropColumn('attempts');
             $table->dropColumn('dispatched');
         });
