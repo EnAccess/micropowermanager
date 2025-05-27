@@ -58,7 +58,7 @@ class AgentSoldApplianceService implements IBaseService {
             ->paginate();
     }
 
-    public function getById(int $id): AssetPerson {
+    public function getById(int $id): AgentSoldAppliance {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
