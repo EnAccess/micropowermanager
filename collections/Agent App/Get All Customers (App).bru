@@ -1,0 +1,16 @@
+meta {
+  name: Get All Customers (App)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/customers/?per_page=15&page=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 15
+  page: 1
+}
