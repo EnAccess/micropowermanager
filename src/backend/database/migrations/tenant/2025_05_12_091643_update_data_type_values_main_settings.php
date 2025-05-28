@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -11,10 +12,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
-            $table->double('vat_energy')->change();
-            $table->double('vat_appliance')->change();
-        });
+        DB::connection('tenant')->statement('ALTER TABLE main_settings MODIFY vat_energy DOUBLE(5,2) NOT NULL');
+        DB::connection('tenant')->statement('ALTER TABLE main_settings MODIFY vat_appliance DOUBLE(5,2) NOT NULL');
     }
 
     /**
@@ -24,8 +23,8 @@ return new class extends Migration {
      */
     public function down() {
         Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
-            $table->float('vat_energy')->change();
-            $table->float('vat_appliance')->change();
+            $table->float('vat_energy', 5)->change();
+            $table->float('vat_appliance', 5)->change();
         });
     }
 };
