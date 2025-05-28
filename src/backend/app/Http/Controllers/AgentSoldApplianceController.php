@@ -26,7 +26,7 @@ class AgentSoldApplianceController extends Controller {
     public function show($customerId, Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
 
-        return ApiResource::make($this->agentSoldApplianceService->getById($agent->id, $customerId));
+        return ApiResource::make($this->agentSoldApplianceService->getByCustomerId($agent->id, $customerId));
     }
 
     /**

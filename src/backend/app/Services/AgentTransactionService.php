@@ -86,7 +86,7 @@ class AgentTransactionService implements IBaseService {
     }
 
     public function getById(int $id): AgentTransaction {
-        throw new \Exception('Method update() not yet implemented.');
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
     public function create(array $transactionData): AgentTransaction {

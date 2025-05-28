@@ -1,0 +1,15 @@
+meta {
+  name: Get Customer by Search (App)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/customers/search?term=1234
+  body: none
+  auth: inherit
+}
+
+params:query {
+  term: 1234
+}
