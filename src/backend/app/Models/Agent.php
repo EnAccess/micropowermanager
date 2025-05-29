@@ -23,7 +23,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int    $mini_grid_id
  * @property int    $agent_commission_id
  * @property string $mobile_device_id
- * @property string $name
  * @property string $email
  * @property string $password
  * @property string $fire_base_token

@@ -44,7 +44,7 @@ class PersonExportService extends AbstractExportService {
                 optional($primaryAddress)->phone,
                 optional($primaryAddress?->city)->name,
                 optional($device)->device_serial,
-                $agent->name ?? '',
+                $agent->person->name ?? '',
             ];
         });
     }
