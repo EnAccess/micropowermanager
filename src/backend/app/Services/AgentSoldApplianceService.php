@@ -110,7 +110,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     public function list($agentId) {
-        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
+        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
