@@ -12,7 +12,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        DB::connection('tenant')->statement('ALTER TABLE transactions MODIFY amount DOUBLE(8,2) NOT NULL');
+        DB::connection('tenant')->statement('ALTER TABLE transactions MODIFY amount DOUBLE NOT NULL');
     }
 
     /**
