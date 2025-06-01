@@ -16,8 +16,8 @@ return new class extends Migration {
         Schema::connection('tenant')->create('map_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('zoom');
-            $table->double('latitude', 10);
-            $table->double('longitude', 10);
+            $table->double('latitude');
+            $table->double('longitude');
             $table->string('bingMapApiKey')->nullable();
             $table->string('provider')->nullable();
             $table->timestamps();
