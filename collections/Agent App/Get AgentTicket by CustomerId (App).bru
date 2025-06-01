@@ -1,11 +1,11 @@
 meta {
-  name: Show AgentTransaction
+  name: Get AgentTicket by CustomerId (App)
   type: http
-  seq: 1
+  seq: 12
 }
 
 get {
-  url: {{mpm_backend_url}}/api/app/agents/transactions/5
+  url: {{mpm_backend_url}}/api/app/agents/ticket/customer/1
   body: none
   auth: inherit
 }

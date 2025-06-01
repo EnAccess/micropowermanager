@@ -54,15 +54,15 @@ class AgentTransactionService implements IBaseService {
         return $transactions;
     }
 
-    public function getById(int $agentId, ?int $customerId = null): ?Transaction {
+    public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->pluck('device_serial');
 
         if (!$customerDeviceSerials->count()) {
-            return null;
+            return new Collection();
         }
 
-        $transaction = $this->transaction->newQuery()
+        $transactions = $this->transaction->newQuery()
             ->with(['originalTransaction', 'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])
             ->whereHasMorph(
                 'originalTransaction',
@@ -71,21 +71,22 @@ class AgentTransactionService implements IBaseService {
             )
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()
-            // Not sure why it want to return a paginate here.
-            // Commenting out for now to return a singleton.
-            // ->paginate();
-            ->first();
+            ->paginate();
 
         // For backwards compatibility with the Agent App we are artificially adding
         // the column `original_agent`.
         // TODO: Confirm the app is actually using `original_agent`
         // -> If yes, move to `original_transaction`
         // -> If no, remove this code
-        if ($transaction) {
+        $transactions->each(function ($transaction) {
             $transaction->setAttribute('original_agent', $transaction->originalTransaction);
-        }
+        });
 
-        return $transaction;
+        return $transactions;
+    }
+
+    public function getById(int $id): AgentTransaction {
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
     public function create(array $transactionData): AgentTransaction {

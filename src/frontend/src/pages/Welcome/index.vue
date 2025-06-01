@@ -37,13 +37,13 @@
         <p>You can download our applications' .apk files from Github</p>
         <p>
           <a
-            href="https://github.com/EnAccess/micropowermanager-agent-app/releases/download/v1.1.0/micropowermanager-agent-app-v1.1.0-release.apk"
+            href="https://github.com/EnAccess/micropowermanager-agent-app/releases/download/v1.5.1/micropowermanager-agent-app-v1.5.1-release.apk"
           >
             Agent App
           </a>
           -
           <a
-            href="https://github.com/EnAccess/micropowermanager-customer-registration-app/releases/download/v1.3.0/micropowermanager-customer-registration-app-v1.3.0-release.apk"
+            href="https://github.com/EnAccess/micropowermanager-customer-registration-app/releases/download/v1.5.0/micropowermanager-customer-registration-app-v1.5.0-release.apk"
           >
             Customer Registration App
           </a>

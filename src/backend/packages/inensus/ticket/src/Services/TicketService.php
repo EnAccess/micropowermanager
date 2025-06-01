@@ -44,7 +44,7 @@ class TicketService implements IAssociative {
         $ticketData = ['status' => 1];
         $this->update($ticket, $ticketData);
 
-        return $ticket->fresh();
+        return $ticket;
     }
 
     public function getBatch($tickets) {

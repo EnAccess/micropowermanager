@@ -25,6 +25,6 @@ class AgentTransactionsController extends Controller {
     public function show($customerId, Request $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
 
-        return ApiResource::make($this->agentTransactionService->getById($agent->id, $customerId));
+        return ApiResource::make($this->agentTransactionService->getByCustomerId($agent->id, $customerId));
     }
 }

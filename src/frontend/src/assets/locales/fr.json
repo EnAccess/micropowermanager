@@ -319,6 +319,7 @@
     "socialTariff": "Tarif social | Prix par kWh | Budget énergétique initial",
     "socialTariffLabels": "Allocation quotidienne au tarif social | Énergie maximale empilée",
     "socialTariffOptions": "Afficher les options du tarif social | Cacher les options du tarif social",
+    "solarHomeSystemTransaction": "Transaction de système solaire domestique",
     "soldAppliances": "Appareils vendus",
     "soldAssets": "Biens vendus",
     "soldDate": "Date de vente",
@@ -368,7 +369,7 @@
     "writeMessage": "Rédiger un message...",
     "wrongPassword": "Mot de passe erroné",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
-    "yourMessage": "Your message will seen like that"
+    "yourMessage": "Votre message sera vu comme ça"
   },
   "words": {
     "access": "Accès",

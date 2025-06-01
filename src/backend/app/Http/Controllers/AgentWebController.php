@@ -43,7 +43,7 @@ class AgentWebController extends Controller {
             'email' => $request['email'],
             'mini_grid_id' => $request['city_id'],
             'agent_commission_id' => $request['agent_commission_id'],
-            'device_id' => '-',
+            'mobile_device_id' => '-',
             'fire_base_token' => '-',
             'connection' => ' ', // TODO:  solve this.  //auth('api')->user()->company->database->database_name
         ];

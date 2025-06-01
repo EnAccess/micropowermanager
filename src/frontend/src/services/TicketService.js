@@ -17,8 +17,6 @@ export class Ticket {
   }
 
   fromJson(ticketData) {
-    console.log("from json ", ticketData)
-
     let comments = ticketData?.comments
     this.created = ticketData.created_at
     this.id = ticketData.id
@@ -30,8 +28,6 @@ export class Ticket {
     this.status = ticketData.status
 
     if (comments) {
-      console.log("COMMENTS FOUND for " + ticketData.title)
-
       const commentList = comments.map(function (comment) {
         return {
           comment: comment.comment,
@@ -40,7 +36,6 @@ export class Ticket {
         }
       })
       this.comments = commentList
-      console.log("FINAL COMMENTS", commentList)
     }
 
     return this
@@ -175,8 +170,9 @@ export class TicketService {
       let response = await this.repository.close(id)
 
       if (response.status === 200 || response.status === 201) {
-        this.ticket.closed = true
-        return this.ticket
+        const ticket = new Ticket().fromJson(response.data.data)
+        ticket.closed = true
+        return ticket
       } else {
         return new ErrorHandler(response.error, "http", response.status)
       }

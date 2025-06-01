@@ -41,7 +41,7 @@ class AgentService implements IBaseService {
     }
 
     public function updateDevice($agent, $deviceId): void {
-        $agent->device_id = $deviceId;
+        $agent->mobile_device_id = $deviceId;
         $agent->update();
         $agent->fresh();
     }
