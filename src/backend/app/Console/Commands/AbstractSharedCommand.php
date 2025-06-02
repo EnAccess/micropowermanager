@@ -51,7 +51,7 @@ abstract class AbstractSharedCommand extends Command {
     ): void {
         $databaseProxyManagerService->queryAllConnections()
             ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-                /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
+                /* @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
                 $modelCollection->map(function (CompanyDatabase $companyDatabase) use (
                     $databaseProxyManagerService,
                     $input,

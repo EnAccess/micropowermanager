@@ -101,7 +101,7 @@ class PersonController extends Controller {
             }
 
             $address = $this->addressService->make($addressData);
-            /** @var \App\Models\Person\Person $person */
+            /* @var \App\Models\Person\Person $person */
             $this->personAddressService->setAssignee($person);
             $this->personAddressService->setAssigned($address);
             $this->personAddressService->assign();

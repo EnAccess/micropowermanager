@@ -19,7 +19,7 @@ class TransactionListener {
             $baseTransaction = TransactionAdapter::getTransaction($originalTransaction);
             $baseTransaction->addConflict($message);
             $baseTransaction->sendResult(false, $transaction);
-         }
+        }
     }
 
     public function onTransactionSuccess(Transaction $transaction): void {

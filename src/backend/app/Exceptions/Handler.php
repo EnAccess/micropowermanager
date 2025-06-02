@@ -53,13 +53,14 @@ class Handler extends ExceptionHandler {
         // api request outputs are json
         if ($request->expectsJson()
             || strpos($request->url(), '/api') !== false) {
-                $exceptionForJson = $exception instanceof Exception
-                    ? $exception
-                    : new Exception(
-                        $exception->getMessage(),
-                        (int) $exception->getCode(),
-                        $exception
-                    );
+            $exceptionForJson = $exception instanceof \Exception
+                ? $exception
+                : new \Exception(
+                    $exception->getMessage(),
+                    (int) $exception->getCode(),
+                    $exception
+                );
+
             return $this->getJsonResponseForException($request, $exceptionForJson);
         }
 
