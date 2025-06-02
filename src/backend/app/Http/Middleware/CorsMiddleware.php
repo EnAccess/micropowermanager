@@ -11,14 +11,14 @@ class CorsMiddleware {
 
         if ($request->getMethod() === 'OPTIONS') {
             return response('')->header('Access-Control-Allow-Origin', '*')
-                ->header('Access-Control-Max-Age', 0)
+                ->header('Access-Control-Max-Age', '0')
                 ->header('Access-Control-Allow-Methods', $accessControlRequestMethod)
                 ->header('Access-Control-Allow-Headers', $accessControlRequestHeaders);
         }
 
         $response = $next($request);
         $response->header('Access-Control-Allow-Origin', '*');
-        $response->header('Access-Control-Max-Age', 0);
+        $response->header('Access-Control-Max-Age', '0');
 
         if ($accessControlRequestMethod) {
             $response->header('Access-Control-Allow-Methods', $accessControlRequestMethod);

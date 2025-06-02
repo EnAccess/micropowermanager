@@ -38,6 +38,7 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand {
         );
         $this->info($startDate->format('Y-m-d').'- '.$endDate->format('Y-m-d'));
 
+        /** @var \Illuminate\Support\Collection<int, \App\Models\Cluster> $clusters */
         $clusters = $this->clusterService->getAll();
 
         $generatedPdfs = [];

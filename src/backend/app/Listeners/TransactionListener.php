@@ -14,14 +14,20 @@ class TransactionListener {
     }
 
     public function onTransactionFailed(Transaction $transaction, $message = null): void {
-        $baseTransaction = TransactionAdapter::getTransaction($transaction->originalTransaction()->first());
-        $baseTransaction->addConflict($message);
-        $baseTransaction->sendResult(false, $transaction);
+        $originalTransaction = $transaction->originalTransaction()->first();
+        if ($originalTransaction instanceof ITransactionProvider) {
+            $baseTransaction = TransactionAdapter::getTransaction($originalTransaction);
+            $baseTransaction->addConflict($message);
+            $baseTransaction->sendResult(false, $transaction);
+         }
     }
 
     public function onTransactionSuccess(Transaction $transaction): void {
-        $baseTransaction = TransactionAdapter::getTransaction($transaction->originalTransaction()->first());
-        $baseTransaction->sendResult(true, $transaction);
+        $originalTransaction = $transaction->originalTransaction()->first();
+        if ($originalTransaction instanceof ITransactionProvider) {
+            $baseTransaction = TransactionAdapter::getTransaction($originalTransaction);
+            $baseTransaction->sendResult(true, $transaction);
+        }
     }
 
     public function subscribe(Dispatcher $events): void {
