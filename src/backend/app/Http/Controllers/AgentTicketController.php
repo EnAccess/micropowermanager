@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Inensus\Ticket\Exceptions\TicketOwnerNotFoundException;
 use Inensus\Ticket\Http\Resources\TicketResource;
 use Inensus\Ticket\Services\TicketService;
-use Inensus\Ticket\Services\TicketUserService;
 
 class AgentTicketController extends Controller {
     public function __construct(
@@ -21,7 +20,6 @@ class AgentTicketController extends Controller {
         private AgentService $agentService,
         private TicketService $ticketService,
         private PersonService $personService,
-        private TicketUserService $ticketUserService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -44,9 +42,10 @@ class AgentTicketController extends Controller {
             'assignedId',
         ]);
         $ownerId = $ticketData['owner_id'];
-        $owner = $this->personService->getById($ownerId);
 
-        if (!$owner) {
+        try {
+            $owner = $this->personService->getById($ownerId);
+        } catch (TicketOwnerNotFoundException $e) {
             throw new TicketOwnerNotFoundException('Ticket owner with following id not found '.$ownerId);
         }
 

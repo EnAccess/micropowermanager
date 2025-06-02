@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Cluster;
-use App\Services\ClusterManagerService;
 use App\Services\ClusterService;
 use App\Services\MailService;
 use App\Services\PaymentHistoryService;
@@ -23,7 +22,6 @@ class SendNonPayingCustomerMailCommand extends AbstractSharedCommand {
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,
         private ClusterService $clusterService,
-        private ClusterManagerService $clusterManagerService,
         private PdfService $pdfService,
         private PersonService $personService,
         private MailService $mailService,

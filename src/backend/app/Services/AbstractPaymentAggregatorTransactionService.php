@@ -32,7 +32,8 @@ abstract class AbstractPaymentAggregatorTransactionService {
             throw new ModelNotFoundException('Meter not found with serial number you entered');
         }
 
-        if (!$meterTariff = $meter->tariff) {
+        $meterTariff = $meter->tariff;
+        if (!($meterTariff instanceof \App\Models\Meter\MeterTariff)) {
             throw new ModelNotFoundException('Tariff not found with meter serial number you entered');
         }
 

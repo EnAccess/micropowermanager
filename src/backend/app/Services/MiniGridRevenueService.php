@@ -43,7 +43,7 @@ class MiniGridRevenueService {
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
         $energy = 0;
 
-        if ($soldEnergy) {
+        if ($soldEnergy->isNotEmpty() && isset($soldEnergy[0]->token_amount)) {
             $energy = round($soldEnergy[0]->token_amount, 3);
         }
 

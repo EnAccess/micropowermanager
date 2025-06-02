@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
-use App\Services\CompanyDatabaseService;
 use App\Services\MpmPluginService;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
@@ -14,7 +13,6 @@ class PluginController extends Controller {
     public function __construct(
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
-        private CompanyDatabaseService $companyDatabaseService,
         private RegistrationTailService $registrationTailService,
     ) {}
 

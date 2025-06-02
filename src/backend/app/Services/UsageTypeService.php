@@ -21,20 +21,14 @@ class UsageTypeService implements IBaseService {
 
     public function getById(int $id): UsageType {
         throw new \Exception('Method getById() not yet implemented.');
-
-        return new UsageType();
     }
 
     public function create(array $data): UsageType {
         throw new \Exception('Method create() not yet implemented.');
-
-        return new UsageType();
     }
 
     public function update($model, array $data): UsageType {
         throw new \Exception('Method update() not yet implemented.');
-
-        return new UsageType();
     }
 
     public function delete($model): ?bool {

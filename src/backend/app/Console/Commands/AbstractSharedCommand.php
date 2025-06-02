@@ -33,10 +33,8 @@ abstract class AbstractSharedCommand extends Command {
         /** @var DatabaseProxyManagerService $databaseProxyManagerService */
         $databaseProxyManagerService = app()->make(DatabaseProxyManagerService::class);
 
-        $companyId = null;
-        if ($this->hasOption('company-id')) {
-            $companyId = $this->option('company-id');
-        }
+        $companyId = $this->option('company-id');
+
         if ($companyId) {
             $this->runForCompany($databaseProxyManagerService, (int) $companyId, $input, $output);
         } else {

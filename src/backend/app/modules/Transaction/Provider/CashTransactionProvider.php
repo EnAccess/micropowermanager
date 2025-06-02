@@ -8,7 +8,7 @@ use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
 
 class CashTransactionProvider implements ITransactionProvider {
-    private array $validData;
+    private array $validData = [];
 
     public function __construct(
         private CashTransaction $cashTransaction,

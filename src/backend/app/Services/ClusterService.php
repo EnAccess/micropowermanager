@@ -84,8 +84,6 @@ class ClusterService implements IBaseService {
 
     public function update($model, array $data): Cluster {
         throw new \Exception('Method update() not yet implemented.');
-
-        return new Cluster();
     }
 
     public function delete($model): ?bool {
