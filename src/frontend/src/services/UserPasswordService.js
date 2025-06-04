@@ -28,7 +28,7 @@ export class UserPasswordService {
     } catch (e) {
       this.resetUserPassword()
       let errorMessage = e.response.data.data.message
-      return new ErrorHandler(errorMessage, "http")
+      return new ErrorHandler(errorMessage, "http", e.response.data.data.status_code)
     }
   }
 
@@ -41,7 +41,7 @@ export class UserPasswordService {
       return data.data
     } catch (e) {
       let errorMessage = e.response.data.data.message
-      return new ErrorHandler(errorMessage, "http")
+      return new ErrorHandler(errorMessage, "http", e.response.data.data.status_code)
     }
   }
   resetUserPassword() {

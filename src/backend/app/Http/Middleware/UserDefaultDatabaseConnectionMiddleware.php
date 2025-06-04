@@ -81,8 +81,12 @@ class UserDefaultDatabaseConnectionMiddleware {
             return $next($request);
         }
 
+
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
+            $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
+            $companyId = $databaseProxy->getCompanyId();
+        } elseif ($request->path() === 'api/users/password' && $request->isMethod('post')) {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
             $companyId = $databaseProxy->getCompanyId();
         } elseif ($this->isAgentApp($request->path()) && Str::contains($request->path(), 'login')) { // agent app login
