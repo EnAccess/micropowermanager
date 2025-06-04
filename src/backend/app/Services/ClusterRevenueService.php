@@ -308,7 +308,9 @@ class ClusterRevenueService {
     public function setDatesForRequest($startDate, $endDate): array {
         if (!$startDate) {
             $start = new \DateTime();
-            $start->setDate($start->format('Y'), $start->format('n'), 1); // Normalize the day to 1
+            $year = (int) $start->format('Y');
+            $month = (int) $start->format('n');
+            $start->setDate($year, $month, 1); // Normalize the day to 1
             $start->setTime(0, 0, 0); // Normalize time to midnight
             $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
