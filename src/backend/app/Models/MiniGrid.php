@@ -6,7 +6,6 @@ use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Collection;
 use MPM\Target\TargetAssignable;
@@ -18,6 +17,7 @@ use MPM\Target\TargetAssignable;
  * @property string     $name
  * @property int        $cluster_id
  * @property Collection $cities
+ * @property Collection $agents
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
     use HasFactory;
@@ -37,8 +37,8 @@ class MiniGrid extends BaseModel implements TargetAssignable {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 
-    public function agent(): HasOne {
-        return $this->hasOne(Agent::class);
+    public function agents(): HasMany {
+        return $this->hasMany(Agent::class);
     }
 
     public function setClusterId(int $clusterId): void {
