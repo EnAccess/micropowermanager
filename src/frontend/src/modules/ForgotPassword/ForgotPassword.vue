@@ -87,7 +87,11 @@ export default {
         }
         this.sending = false
       } catch (error) {
-        this.alertNotify("error", error)
+        if (error.status_code === 404) {
+          this.alertNotify("error", "Email address not recognized")
+        } else {
+          this.alertNotify("error", error)
+        }
         this.sending = false
       }
     },
