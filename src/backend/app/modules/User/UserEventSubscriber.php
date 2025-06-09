@@ -8,7 +8,7 @@ use Illuminate\Events\Dispatcher;
 use MPM\User\Events\UserCreatedEvent;
 
 class UserEventSubscriber {
-    public function subscribe(Dispatcher $events) {
+    public function subscribe(Dispatcher $events): void {
         $events->listen([UserCreatedEvent::class], UserListener::class);
     }
 }
