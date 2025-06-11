@@ -80,9 +80,6 @@ class AgentSeeder extends Seeder {
                 ->for($minigrid)
                 ->for($agentCommission, 'commission')
                 ->for($person)
-                ->state(
-                    ['name' => $person->name]
-                )
                 ->create([
                     'email' => $firstAgent ? DemoCompany::DEMO_COMPANY_AGENT_EMAIL : fake()->safeEmail(),
                     'password' => $firstAgent ? DemoCompany::DEMO_COMPANY_PASSWORD : fake()->password(),
