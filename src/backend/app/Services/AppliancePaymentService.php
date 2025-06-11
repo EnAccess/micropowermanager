@@ -65,7 +65,7 @@ class AppliancePaymentService {
     public function createPaymentLog($appliancePerson, $amount, $creatorId): void {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
-        $currency = $mainSettings ? $mainSettings->currency : '€';
+        $currency = $mainSettings->currency ?? '€';
         event(
             'new.log',
             [

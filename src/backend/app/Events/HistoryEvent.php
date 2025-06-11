@@ -19,7 +19,7 @@ class HistoryEvent implements ShouldBroadcast {
      *
      * @param History $historyModel
      */
-    public function __construct(private readonly History $historyModel) {}
+    public function __construct(public readonly History $historyModel) {}
 
     /**
      * Get the channels the event should broadcast on.

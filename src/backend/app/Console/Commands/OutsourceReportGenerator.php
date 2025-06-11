@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use Inensus\Ticket\Http\Controllers\TicketExportController;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -11,7 +10,7 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
     protected $signature = 'reports:outsource {--start-date=}';
     protected $description = 'Create outsources reports';
 
-    public function __construct(private TicketExportController $reports) {
+    public function __construct() {
         parent::__construct();
     }
 

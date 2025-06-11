@@ -25,8 +25,6 @@ class TokenService implements IBaseService {
 
     public function update($model, array $data): Token {
         throw new \Exception('Method update() not yet implemented.');
-
-        return new Token();
     }
 
     public function delete($model): ?bool {
