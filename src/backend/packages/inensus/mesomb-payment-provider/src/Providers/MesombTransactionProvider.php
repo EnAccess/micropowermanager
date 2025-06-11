@@ -47,7 +47,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->validData = array_merge($this->validData, $requestData);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction():void {
         $this->mesombTransaction = $this->mesombTransactionService->assignIncomingDataToMesombTransaction($this->validData);
         $this->transaction = $this->mesombTransactionService->assignIncomingDataToTransaction($this->validData);
     }

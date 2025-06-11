@@ -41,7 +41,7 @@ class CashTransactionProvider implements ITransactionProvider {
         $cashTransaction->save();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         // TODO: Implement sendResult() method.
     }
 

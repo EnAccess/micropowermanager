@@ -72,7 +72,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $this->isImitationTransactionValid($this->transaction);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->paymentAggregatorTransaction->save();
         $this->transaction->originalTransaction()->associate($this->paymentAggregatorTransaction)->save();
     }
