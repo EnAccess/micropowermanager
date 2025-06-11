@@ -26,9 +26,6 @@ class TariffPriceCalculator {
         $timeOfUsage = $request->input('time_of_usage');
         $additionalComponents = $request->input('components');
 
-        $meterTariff->total_price = $meterTariff->price;
-        $meterTariff->save();
-
         $this->setAccessRate($accessRate, $meterTariff);
         $this->setSocialTariff($socialTariff, $meterTariff);
         $this->setTimeOfUsages($timeOfUsage, $meterTariff);
@@ -117,10 +114,7 @@ class TariffPriceCalculator {
         $this->tariffPricingComponentService->deleteByTariffId($meterTariff->id);
 
         if ($additionalComponents) {
-            $totalPrice = $meterTariff->price;
-
             foreach ($additionalComponents as $component) {
-                $totalPrice += $component['price'];
                 $tariffPricingComponentData = [
                     'name' => $component['name'],
                     'price' => $component['price'],
@@ -129,7 +123,6 @@ class TariffPriceCalculator {
                 $tariffPricingComponent = $this->tariffPricingComponentService->make($tariffPricingComponentData);
                 $meterTariff->pricingComponent()->save($tariffPricingComponent);
             }
-            $meterTariff->update(['total_price' => $totalPrice]);
         }
     }
 }
