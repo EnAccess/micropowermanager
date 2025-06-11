@@ -134,13 +134,19 @@ class TicketSeeder extends Seeder {
                 ->for($person)
                 ->create();
 
-            // Find the MiniGrid's Agent and also make them a Maintenance User
-            $agentPerson = $minigrid->agent()->first()->person()->first();
+            // Find the MiniGrid's Agents and make them all Maintenance Users
+            $agents = $minigrid->agents()->get();
 
-            $maintenanceUserAgent = MaintenanceUsers::factory()
-                ->for($minigrid)
-                ->for($agentPerson)
-                ->create();
+            foreach ($agents as $agent) {
+                $agentPerson = $agent->person()->first();
+
+                if ($agentPerson) {
+                    $maintenanceUserAgent = MaintenanceUsers::factory()
+                        ->for($minigrid)
+                        ->for($agentPerson)
+                        ->create();
+                }
+            }
         }
 
         // Seed tickets
