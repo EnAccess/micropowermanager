@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: "MicroPowerManager API docs"
-  description: "\n![MPM Logo](https://micropowermanager.io/mpmlogo_raw.png)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>\n</p>\n\n---\n\n# 💫 Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile)."
+  description: "\n![MPM Logo](https://enaccess.org/wp-content/uploads/2024/07/MPM-Icon.svg)\n\n<p align=\"center\">\n    <em>Decentralized utility management made simple. Manage customers, revenues and assets with this all-in one open source platform.</em>\n</p>\n\n---\n\n# 💫 Overview\nThis documentation will provide all the information you need to work with our API.\n\nAs you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).\nYou can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile)."
   version: 1.0.0
 servers:
   - url: "https://api.demo.micropowermanager.io"
