@@ -8,6 +8,9 @@ use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
 
 class CashTransactionProvider implements ITransactionProvider {
+    /**
+     * @var array<string, mixed>
+     */
     private array $validData = [];
 
     public function __construct(
@@ -26,6 +29,9 @@ class CashTransactionProvider implements ITransactionProvider {
         $this->saveData($this->cashTransaction);
     }
 
+     /**
+     * @param array<string, mixed> $data
+     */
     private function assignData(array $data): void {
         // provider specific data
         $this->cashTransaction->user_id = (int) $data['user_id'];
@@ -45,7 +51,10 @@ class CashTransactionProvider implements ITransactionProvider {
         // TODO: Implement sendResult() method.
     }
 
-    public function validateRequest($request) {
+    /**
+     * @param mixed $request
+     */
+    public function validateRequest($request): void {
         // TODO: Implement validateRequest() method.
     }
 

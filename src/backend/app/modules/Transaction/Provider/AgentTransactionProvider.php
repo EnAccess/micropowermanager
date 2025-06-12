@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class AgentTransactionProvider implements ITransactionProvider {
+    /**
+     * @var array<string, mixed>
+     */
     private array $validData;
 
     public function __construct(
@@ -31,6 +34,9 @@ class AgentTransactionProvider implements ITransactionProvider {
         $this->saveData($this->agentTransaction);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function assignData(array $data): void {
         // provider specific data
         $this->agentTransaction->agent_id = (int) $data['agent_id'];
@@ -90,6 +96,9 @@ class AgentTransactionProvider implements ITransactionProvider {
         $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
     }
 
+     /**
+     * @return array<string, mixed>
+     */
     private function prepareBodySuccess(Transaction $transaction): array {
         $transaction = Transaction::with(
             'token',
@@ -112,6 +121,9 @@ class AgentTransactionProvider implements ITransactionProvider {
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function prepareBodyFail(Transaction $transaction): array {
         return [
             'message' => 'Transaction failed',
@@ -122,6 +134,9 @@ class AgentTransactionProvider implements ITransactionProvider {
         ];
     }
 
+     /**
+     * @param mixed $request
+     */
     public function validateRequest($request): void {
         $deviceId = request()->header('device-id');
         $agent = Agent::query()->find(auth('agent_api')->user()->id);
