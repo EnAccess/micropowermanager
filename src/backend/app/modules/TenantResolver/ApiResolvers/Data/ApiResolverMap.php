@@ -25,6 +25,7 @@ class ApiResolverMap {
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MOBILE_MONEY = 'api/vodacom/';
 
+    /** @var array<int, string> */
     public const RESOLVABLE_APIS = [
         self::TEST_API,
         self::VIBER_API,
