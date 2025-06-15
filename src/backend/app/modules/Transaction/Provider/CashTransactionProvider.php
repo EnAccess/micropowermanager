@@ -29,7 +29,7 @@ class CashTransactionProvider implements ITransactionProvider {
         $this->saveData($this->cashTransaction);
     }
 
-     /**
+    /**
      * @param array<string, mixed> $data
      */
     private function assignData(array $data): void {
