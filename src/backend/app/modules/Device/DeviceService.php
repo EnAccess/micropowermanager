@@ -17,7 +17,10 @@ class DeviceService implements IBaseService, IAssociative {
         private Device $device,
     ) {}
 
-    public function make($deviceData): Device {
+    /**
+     * @param array<string, mixed> $deviceData
+     */
+    public function make(array $deviceData): Device {
         $result = $this->device->newQuery()->make([
             'person_id' => $deviceData['person_id'],
             'device_serial' => $deviceData['device_serial'],
@@ -26,7 +29,7 @@ class DeviceService implements IBaseService, IAssociative {
         return $result;
     }
 
-    public function getBySerialNumber($serialNumber): ?Device {
+    public function getBySerialNumber(string $serialNumber): ?Device {
         $result = $this->device->newQuery()
             ->with(['address.geo', 'device.manufacturer', 'person'])
             ->where('device_serial', $serialNumber)
@@ -43,10 +46,16 @@ class DeviceService implements IBaseService, IAssociative {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): Device {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $deviceData
+     */
     public function update($device, array $deviceData): Device {
         $device->update($deviceData);
         $device->fresh();
@@ -58,6 +67,9 @@ class DeviceService implements IBaseService, IAssociative {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, Device>|LengthAwarePaginator<Device>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->device->newQuery()->with(['person', 'device'])->paginate($limit);

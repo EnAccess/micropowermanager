@@ -4,12 +4,16 @@ namespace MPM\Device;
 
 use App\Models\Device;
 use App\Models\Meter\Meter;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
 class MiniGridDeviceService {
     public function __construct(private Device $device) {}
 
-    public function getMetersByMiniGridId($miniGridId) {
+    /**
+     * @return Collection<int, mixed>
+     */
+    public function getMetersByMiniGridId(int $miniGridId) {
         return $this->device->newQuery()
             ->with('device')
             ->whereHasMorph(
@@ -20,7 +24,10 @@ class MiniGridDeviceService {
             ->get()->pluck('device');
     }
 
-    public function getDevicesByMiniGridId($miniGridId): Collection {
+    /**
+     * @return EloquentCollection<int, Device>
+     */
+    public function getDevicesByMiniGridId(int $miniGridId): Collection {
         return $this->device->newQuery()
             ->with(['device', 'address.geo'])
             ->whereHasMorph(

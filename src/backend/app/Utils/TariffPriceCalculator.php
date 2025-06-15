@@ -20,7 +20,7 @@ class TariffPriceCalculator {
     public function calculateTotalPrice(
         MeterTariff $meterTariff,
         TariffCreateRequest $request,
-    ) {
+    ): void {
         $accessRate = $request->input('access_rate');
         $socialTariff = $request->input('social_tariff');
         $timeOfUsage = $request->input('time_of_usage');
@@ -35,7 +35,10 @@ class TariffPriceCalculator {
         $this->setAdditionalComponents($additionalComponents, $meterTariff);
     }
 
-    private function setAccessRate($accessRate, $meterTariff) {
+     /**
+     * @param array<string, mixed>|null $accessRate
+     */
+    private function setAccessRate(?array $accessRate, MeterTariff $meterTariff): void {
         if ($accessRate) {
             if (isset($accessRate['id'])) {
                 $updatedAccessRate = $this->accessRateService->getById($accessRate['id']);
@@ -59,7 +62,10 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setSocialTariff($socialTariff, $meterTariff) {
+    /**
+     * @param array<string, mixed>|null $socialTariff
+     */
+    private function setSocialTariff(?array $socialTariff, MeterTariff $meterTariff): void {
         if ($socialTariff) {
             if (isset($socialTariff['id'])) {
                 $updatedSocialTariff = $this->socialTariffService->getById($socialTariff['id']);
@@ -87,7 +93,10 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setTimeOfUsages($timeOfUsage, $meterTariff) {
+    /**
+     * @param array<int, array<string, mixed>>|null $timeOfUsage
+     */
+    private function setTimeOfUsages(?array $timeOfUsage, MeterTariff $meterTariff): void {
         if ($timeOfUsage) {
             foreach ($timeOfUsage as $key => $value) {
                 $tou = isset($timeOfUsage[$key]['id']) ? $this->timeOfUsageService->getById($timeOfUsage[$key]['id']) :
@@ -113,7 +122,10 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setAdditionalComponents($additionalComponents, $meterTariff) {
+    /**
+     * @param array<int, array<string, mixed>>|null $additionalComponents
+     */
+    private function setAdditionalComponents(?array $additionalComponents, MeterTariff $meterTariff): void {
         $this->tariffPricingComponentService->deleteByTariffId($meterTariff->id);
 
         if ($additionalComponents) {
