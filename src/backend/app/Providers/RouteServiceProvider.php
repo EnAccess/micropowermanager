@@ -22,8 +22,8 @@ class RouteServiceProvider extends ServiceProvider {
      */
     public function map() {
         $this->mapHealthRoute();
-        $this->mapApiRoutes();
 
+        $this->mapApiRoutes();
         $this->mapWebRoutes();
     }
 

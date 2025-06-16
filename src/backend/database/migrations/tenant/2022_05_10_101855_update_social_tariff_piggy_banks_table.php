@@ -1,7 +1,5 @@
 <?php
 
-use Doctrine\DBAL\Types\FloatType;
-use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +11,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        if (!Type::hasType('double')) {
-            Type::addType('double', FloatType::class);
-        }
         Schema::connection('tenant')->table('social_tariff_piggy_banks', function (Blueprint $table) {
-            $table->double('savings', 15, 6)->change();
+            $table->double('savings')->change();
         });
     }
 
