@@ -1,0 +1,11 @@
+meta {
+  name: Get Agent Sold Appliances for Customer (App)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/appliances/1
+  body: json
+  auth: inherit
+}

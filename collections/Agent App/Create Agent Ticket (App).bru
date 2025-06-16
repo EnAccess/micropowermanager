@@ -1,0 +1,21 @@
+meta {
+  name: Create Agent Ticket (App)
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{mpm_backend_url}}/api/app/agents/ticket
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "label": 1,
+    "owner_id": 1,
+    "due_date": "2025-05-27T18:24:03Z",
+    "description": "Something isn't working",
+    "title": "Ticket"
+  }
+}

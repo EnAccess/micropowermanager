@@ -10,6 +10,9 @@ export default {
   detail(shsId) {
     return Client.get(`${resource}/${shsId}`)
   },
+  transactions(shsId) {
+    return Client.get(`${resource}/${shsId}/transactions`)
+  },
   update(shsId, shs) {
     return Client.put(`${resource}/${shsId}`, shs)
   },

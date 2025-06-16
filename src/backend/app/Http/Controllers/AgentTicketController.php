@@ -53,13 +53,13 @@ class AgentTicketController extends Controller {
         $agent = $this->agentService->getByAuthenticatedUser();
         // reformat due date if it is set
         $dueDate = isset($ticketData['due_date']) ? date('Y-m-d H:i:00', strtotime($ticketData['due_date'])) : null;
-        $categoryId = $ticketData['label'];
 
         $ticketData = [
             'title' => $ticketData['title'],
             'content' => $ticketData['description'],
             'due_date' => $dueDate === '1970-01-01' ? null : $dueDate,
-            'category_id' => $categoryId,
+            'status' => $ticketData['status'] ?? 0,
+            'category_id' => $ticketData['label'],
             'assigned_id' => $ticketData['assignedId'] ?? null,
         ];
         $ticket = $this->ticketService->make($ticketData);

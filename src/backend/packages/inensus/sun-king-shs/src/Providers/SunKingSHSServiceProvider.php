@@ -40,25 +40,26 @@ class SunKingSHSServiceProvider extends ServiceProvider {
 
     public function publishMigrations($filesystem) {
         $this->publishes([
-            __DIR__.'/../../database/migrations/create_sun_king_tables.php.stub' => $this->getMigrationFileName($filesystem),
+            __DIR__.'/../../database/migrations/create_sun_king_tables.php.stub' => $this->getMigrationFileName($filesystem, 'create_sun_king_tables.php'),
+            __DIR__.'/../../database/migrations/add_sun_king_transactions_table_fields.php.stub' => $this->getMigrationFileName($filesystem, 'add_sun_king_transactions_table_fields.php'),
         ], 'migrations');
     }
 
-    protected function getMigrationFileName(Filesystem $filesystem): string {
+    protected function getMigrationFileName(Filesystem $filesystem, string $migrationName): string {
         $timestamp = date('Y_m_d_His');
 
         return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
-            ->flatMap(function ($path) use ($filesystem) {
-                if (count($filesystem->glob($path.'*_create_sun_king_tables.php'))) {
-                    $file = $filesystem->glob($path.'*_create_sun_king_tables.php')[0];
+            ->flatMap(function ($path) use ($filesystem, $migrationName) {
+                if (count($filesystem->glob($path.'*_'.$migrationName))) {
+                    $file = $filesystem->glob($path.'*_'.$migrationName)[0];
                     file_put_contents(
                         $file,
-                        file_get_contents(__DIR__.'/../../database/migrations/create_sun_king_tables.php.stub')
+                        file_get_contents(__DIR__.'/../../database/migrations/'.$migrationName.'.stub')
                     );
                 }
 
-                return $filesystem->glob($path.'*_create_sun_king_tables.php');
-            })->push($this->app->databasePath()."/migrations/{$timestamp}_create_sun_king_tables.php")
+                return $filesystem->glob($path.'*_'.$migrationName);
+            })->push($this->app->databasePath()."/migrations/{$timestamp}_{$migrationName}")
             ->first();
     }
 }

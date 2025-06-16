@@ -11,6 +11,7 @@ use App\Models\Transaction\TransactionConflicts;
 use App\Services\FirebaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class AgentTransactionProvider implements ITransactionProvider {
     private array $validData;
@@ -33,7 +34,7 @@ class AgentTransactionProvider implements ITransactionProvider {
     private function assignData(array $data): void {
         // provider specific data
         $this->agentTransaction->agent_id = (int) $data['agent_id'];
-        $this->agentTransaction->device_id = (int) $data['device_id'];
+        $this->agentTransaction->mobile_device_id = (int) $data['device_id'];
 
         // common transaction data
         $this->transaction->amount = (int) $data['amount'];
@@ -127,10 +128,17 @@ class AgentTransactionProvider implements ITransactionProvider {
         $agentId = $agent->id;
         $agent = auth('agent_api')->user();
         try {
-            Agent::query()
-                ->where('device_id', $deviceId)
-                ->where('id', $agentId)
-                ->firstOrFail();
+            Log::info('AgentTransactionProvider validateRequest', [
+                'deviceId' => $deviceId,
+                'agentId' => $agentId,
+            ]);
+            $query = Agent::query()->where('id', $agent->id);
+
+            if (!empty($deviceId)) {
+                $query->where('mobile_device_id', $deviceId);
+            }
+
+            $query->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new \Exception($e->getMessage());
         }
