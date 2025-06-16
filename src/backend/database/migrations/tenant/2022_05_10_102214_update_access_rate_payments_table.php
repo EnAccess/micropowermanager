@@ -12,8 +12,8 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('access_rate_payments', function (Blueprint $table) {
-            $table->double('debt')->change();
-            $table->double('unpaid_in_row')->change();
+            $table->double('debt')->default(0)->change();
+            $table->double('unpaid_in_row')->default(0)->change();
         });
     }
 

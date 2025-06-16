@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up() {
         Schema::connection('tenant')->table('swifta_authentication', function (Blueprint $table) {
-            $table->text('token')->change();
+            $table->text('token')->nullable()->change();
         });
     }
 
