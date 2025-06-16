@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -51,7 +50,7 @@ abstract class AbstractSharedCommand extends Command {
     ): void {
         $databaseProxyManagerService->queryAllConnections()
             ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-                /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
+                /* @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
                 $modelCollection->each(function ($companyDatabase) use (
                     $databaseProxyManagerService,
                     $input,
