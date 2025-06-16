@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
 
 class MeterGeographicalInformationService {
     public function __construct(
-        private GeographicalInformation $geographicalInformation,
         private Meter $meter,
     ) {}
 
@@ -17,7 +15,7 @@ class MeterGeographicalInformationService {
                 $meter['lat'],
                 $meter['lng'],
             ];
-            if ($points) {
+            if (!empty($meter['lat']) && !empty($meter['lng'])) {
                 $meter = $this->meter->newQuery()->where('id', $meter['id'])
                     ->first();
                 if ($meter) {

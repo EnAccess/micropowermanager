@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Cluster;
 use App\Models\MiniGrid;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,10 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<MiniGrid>
  */
 class MiniGridService implements IBaseService {
-    public function __construct(
-        private MiniGrid $miniGrid,
-        private Cluster $cluster,
-    ) {}
+    public function __construct(private MiniGrid $miniGrid) {}
 
     public function getByIdWithLocation($miniGridId) {
         return $this->miniGrid->newQuery()->with(['location'])->find($miniGridId);

@@ -6,6 +6,7 @@ use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
 use App\Services\Interfaces\IBaseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use MPM\Device\DeviceAddressService;
@@ -43,7 +44,7 @@ class AgentSoldApplianceService implements IBaseService {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
-    public function getById(int $agentId, ?int $customerId = null): ?AssetPerson {
+    public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
                 'creator',
@@ -54,10 +55,11 @@ class AgentSoldApplianceService implements IBaseService {
             )
             ->where('person_id', $customerId)
             ->latest()
-            // Not sure why it want to return a paginate here.
-            // Commenting out for now to return a singleton.
-            // ->paginate();
-            ->first();
+            ->paginate();
+    }
+
+    public function getById(int $id): AgentSoldAppliance {
+        throw new \Exception('Method getById() not yet implemented.');
     }
 
     public function update($model, array $data): AgentSoldAppliance {
@@ -108,7 +110,7 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     public function list($agentId) {
-        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
+        return $this->assetPerson->newQuery()->with(['person', 'device', 'rates', 'asset.assetType'])
             ->whereHasMorph(
                 'creator',
                 [Agent::class],
@@ -143,8 +145,9 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent transaction to transaction
         $transactionData = [
             'amount' => $requestData['down_payment'] ?: 0,
-            'sender' => $agent->mobile_device_id,
-            'message' => '-',
+            'sender' => 'Agent-'.$agent->id,
+            'message' => $deviceSerial ?? '-',
+            'type' => 'deferred_payment',
         ];
 
         $transaction = $this->transactionService->make($transactionData);
@@ -156,7 +159,7 @@ class AgentSoldApplianceService implements IBaseService {
         // assign agent to appliance person
         $appliancePersonData = [
             'person_id' => $requestData['person_id'],
-            'first_payment_date' => $requestData['first_payment_date'],
+            'first_payment_date' => Carbon::parse($requestData['first_payment_date'])->toDateString(),
             'rate_count' => $requestData['tenure'],
             'total_cost' => $assignedAppliance->cost,
             'down_payment' => $requestData['down_payment'],

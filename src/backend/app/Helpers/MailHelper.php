@@ -41,10 +41,10 @@ class MailHelper implements MailHelperInterface {
     }
 
     /**
-     * @param      $to
-     * @param      $title
-     * @param      $body
-     * @param null $attachment
+     * @param       $to
+     * @param       $title
+     * @param       $body
+     * @param mixed $attachment
      *
      * @throws MailNotSentException
      * @throws PHPMailerException

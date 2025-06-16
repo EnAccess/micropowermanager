@@ -53,6 +53,7 @@ class TransactionDataContainer {
             $container->device = $deviceService->getBySerialNumber($transaction->message);
 
             // Get the associated device model (Meter or SHS)
+            /** @var Meter|SolarHomeSystem $deviceModel */
             $deviceModel = $container->device->device;
             $container->manufacturer = $deviceModel->manufacturer ?? null;
 

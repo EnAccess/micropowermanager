@@ -51,7 +51,7 @@ class PeriodService {
                 foreach ($mPeriod as $mP) {
                     $result[$p->format('o-m')][$mP->format('o-W')] = $initialData;
                 }
-            } elseif ($period === 'weekly') {
+            } elseif ($interval === 'weekly') {
                 $result[$p->format('o-W')] = $initialData;
             } elseif ($interval === 'monthly') {
                 $result[$p->format('Y-m')] = $initialData;

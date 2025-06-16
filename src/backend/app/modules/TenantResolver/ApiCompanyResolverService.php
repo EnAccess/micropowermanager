@@ -15,7 +15,7 @@ class ApiCompanyResolverService {
 
     public function resolve(Request $request): int {
         $api = collect($this->apiResolverMap::RESOLVABLE_APIS)->filter(fn ($apiPath) => Str::startsWith(Str::lower($request->path()), Str::lower($apiPath)));
-        if (!$api) {
+        if ($api->isEmpty()) {
             throw new ValidationException('No api resolver registered for '.$request->path());
         }
 

@@ -1,0 +1,16 @@
+meta {
+  name: Get AgentTransaction for Customer (App)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/transactions/5
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Get All AgentTickets (App)
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{mpm_backend_url}}/api/app/agents/ticket/?per_page=15&page=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 15
+  page: 1
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}
