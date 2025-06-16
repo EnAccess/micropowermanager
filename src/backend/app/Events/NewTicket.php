@@ -19,9 +19,7 @@ class NewTicket implements ShouldBroadcast {
      *
      * @param Ticket $ticket
      */
-    public function __construct(private Ticket $ticket) {
-        $this->ticket = $ticket;
-    }
+    public function __construct(public Ticket $ticket) {}
 
     /**
      * Get the channels the event should broadcast on.

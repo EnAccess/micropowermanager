@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Log;
 class AccessRateListener {
     public function initializeAccessRatePayment(Meter $meter): void {
         try {
-            $accessRate = $meter->tariff()->first()->accessRate;
+            $tariff = $meter->tariff()->first();
+            $accessRate = $tariff?->accessRate;
             if (!$accessRate) {
                 throw new NoAccessRateFound('Access Rate is not set');
             }

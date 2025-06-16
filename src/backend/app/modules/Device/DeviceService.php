@@ -41,14 +41,10 @@ class DeviceService implements IBaseService, IAssociative {
 
     public function getById(int $id): Device {
         throw new \Exception('Method getById() not yet implemented.');
-
-        return new Device();
     }
 
     public function create(array $data): Device {
         throw new \Exception('Method create() not yet implemented.');
-
-        return new Device();
     }
 
     public function update($device, array $deviceData): Device {

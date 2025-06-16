@@ -13,14 +13,7 @@ class AssetPersonCreated {
     use InteractsWithSockets;
     use SerializesModels;
 
-    /**
-     * @var AssetPerson
-     */
-    private $assetPerson;
-
-    public function __construct(AssetPerson $assetPerson) {
-        $this->assetPerson = $assetPerson;
-    }
+    public function __construct(public AssetPerson $assetPerson) {}
 
     /**
      * Get the channels the event should broadcast on.
