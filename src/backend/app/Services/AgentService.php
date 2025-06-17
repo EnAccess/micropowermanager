@@ -59,13 +59,14 @@ class AgentService implements IBaseService {
 
     public function searchAgent($searchTerm, $paginate) {
         if ($paginate === 1) {
-            return $this->agent->newQuery()->with('miniGrid')->WhereHas(
+            return $this->agent->newQuery()->with(['miniGrid', 'person'])->WhereHas(
                 'miniGrid',
                 function ($q) use ($searchTerm) {
                     $q->where('name', 'LIKE', '%'.$searchTerm.'%');
                 }
-            )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
-                ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->paginate(15);
+            )->orWhereHas('person', function ($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', '%'.$searchTerm.'%');
+            })->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->paginate(15);
         }
 
         return $this->agent->newQuery()->with('miniGrid')->WhereHas(
@@ -73,7 +74,9 @@ class AgentService implements IBaseService {
             function ($q) use ($searchTerm) {
                 $q->where('name', 'LIKE', '%'.$searchTerm.'%');
             }
-        )->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
+        )->orWhereHas('person', function ($q) use ($searchTerm) {
+            $q->where('name', 'LIKE', '%'.$searchTerm.'%');
+        })->orWhere('name', 'LIKE', '%'.$searchTerm.'%')
             ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->get();
     }
 
@@ -120,7 +123,6 @@ class AgentService implements IBaseService {
         }
 
         $agentData['person_id'] = $person->id;
-        $agentData['name'] = $person->name;
         $address = $addressService->make($addressData);
         $personAddressService->setAssignee($person);
         $personAddressService->setAssigned($address);
@@ -142,7 +144,7 @@ class AgentService implements IBaseService {
         $address = $person->addresses()->where('is_primary', 1)->first();
         $address->phone = $agentData['phone'];
         $address->update();
-        $agent->name = $agentData['name'];
+        $agent->person->name = $agentData['name'];
         $agent->agent_commission_id = $agentData['commissionTypeId'];
         $agent->update();
 

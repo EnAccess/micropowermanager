@@ -51,7 +51,7 @@ class AgentTest extends TestCase {
         $lastCreatedAgent = Agent::query()->latest()->first();
         $personAddress = $lastCreatedPerson->addresses()->first();
         $this->assertEquals($lastCreatedPerson->id, $response['data']['person_id']);
-        $this->assertEquals($lastCreatedAgent->name, $response['data']['name']);
+        $this->assertEquals($lastCreatedAgent->person->name, $response['data']['name']);
         $this->assertEquals($personAddress->phone, $postData['phone']);
     }
 
@@ -104,9 +104,9 @@ class AgentTest extends TestCase {
         $this->createAgentCommission();
         $this->createAgent();
 
-        $response = $this->actingAs($this->user)->get('/api/agents/search?q='.$this->agents[0]->name);
+        $response = $this->actingAs($this->user)->get('/api/agents/search?q='.$this->agents[0]->person->name);
         $responseData = $response['data'][0];
-        $this->assertEquals($responseData['name'], $this->agents[0]->name);
+        $this->assertEquals($responseData['name'], $this->agents[0]->person->name);
     }
 
     public function testUserCanDeleteAnAgent() {
