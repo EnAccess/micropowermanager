@@ -39,7 +39,7 @@ class UserDefaultDatabaseConnectionMiddleware {
                 /** @var Request $request */
                 $r = $request;
 
-                return app(Handler::class)->render($r, $e);
+                // return app(Handler::class)->render($r, $e);
             }
             throw $e;
         }
