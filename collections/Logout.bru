@@ -21,7 +21,3 @@ assert {
   res.status: eq 200
   res.body.access_token: isString
 }
-
-script:post-response {
-  bru.setEnvVar("jwt_token", res.body.access_token);
-}
