@@ -1,23 +1,19 @@
 meta {
-  name: Login (Agent App)
+  name: Logout
   type: http
-  seq: 11
+  seq: 10
 }
 
 post {
-  url: {{mpm_backend_url}}/api/app/login
+  url: {{mpm_backend_url}}/api/auth/logout
   body: json
-  auth: none
-}
-
-headers {
-  device-id: 1
+  auth: inherit
 }
 
 body:json {
   {
-    "email": "{{agent_email}}",
-    "password": "{{agent_password}}"
+    "email": "{{email}}",
+    "password": "{{password}}"
   }
 }
 
