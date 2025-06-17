@@ -24,6 +24,6 @@ class LogListener {
     }
 
     public function subscribe(Dispatcher $event): void {
-        $event->listen('new.log', '\App\Listeners\LogListener@storeLog');
+        $event->listen('new.log', [$this, 'storeLog']);
     }
 }

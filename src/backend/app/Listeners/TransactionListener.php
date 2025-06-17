@@ -31,8 +31,8 @@ class TransactionListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('transaction.saved', 'App\Listeners\TransactionListener@onTransactionSaved');
-        $events->listen('transaction.successful', 'App\Listeners\TransactionListener@onTransactionSuccess');
-        $events->listen('transaction.failed', 'App\Listeners\TransactionListener@onTransactionFailed');
+        $events->listen('transaction.saved', [$this, 'onTransactionSaved']);
+        $events->listen('transaction.successful', [$this, 'onTransactionSuccess']);
+        $events->listen('transaction.failed', [$this, 'onTransactionFailed']);
     }
 }

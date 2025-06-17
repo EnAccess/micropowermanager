@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\CompanyDatabase;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
@@ -56,6 +57,7 @@ abstract class AbstractSharedCommand extends Command {
                     $input,
                     $output
                 ) {
+                    /* @var CompanyDatabase $companyDatabase */
                     $this->runForCompany(
                         $databaseProxyManagerService,
                         $companyDatabase->getCompanyId(),

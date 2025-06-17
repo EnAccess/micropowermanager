@@ -48,6 +48,6 @@ class SmsListener {
     }
 
     public function subscribe(Dispatcher $events) {
-        $events->listen('sms.stored', 'App\Listeners\SmsListener@onSmsStored');
+        $events->listen('sms.stored', [$this, 'onSmsStored']);
     }
 }
