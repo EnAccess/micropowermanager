@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\Handler;
-use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\TenantResolver\ApiCompanyResolverService;
@@ -24,28 +21,7 @@ class UserDefaultDatabaseConnectionMiddleware {
         private ApiResolverMap $apiResolverMap,
     ) {}
 
-    public function handle($request, \Closure $next) {
-        try {
-            if ($request instanceof Request) {
-                return $this->handleApiRequest($request, $next);
-            }
-            throw new ValidationException('was not able to handle the request');
-        } catch (\Exception $e) {
-            Log::error('Middleware Exception: '.$e->getMessage(), [
-                'exception' => $e,
-            ]);
-            // Either handle directly or ensure it propagates to your handler
-            if ($request->expectsJson() || strpos($request->url(), '/api') !== false) {
-                /** @var Request $request */
-                $r = $request;
-
-                // return app(Handler::class)->render($r, $e);
-            }
-            throw $e;
-        }
-    }
-
-    private function handleApiRequest(Request $request, \Closure $next) {
+    public function handle(Request $request, \Closure $next) {
         // REMOVE THIS WHEN THE TESTS ARE FIXED
         if ($request->path() === 'api/micro-star-meters/test' && $request->isMethod('get')) {
             return $next($request);
