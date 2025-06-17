@@ -20,6 +20,7 @@ class LoanDataContainer {
     public array $paid_rates = [];
 
     public function initialize(Transaction $transaction): void {
+        $this->transaction = $transaction;
         $this->meterOwner = $this->getMeterOwner($transaction->message);
     }
 

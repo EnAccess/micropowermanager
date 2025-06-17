@@ -8,17 +8,11 @@ use App\Models\MailSettings;
 use App\Services\MailSettingsService;
 
 class MailSettingsController extends Controller {
-    /**
-     * @MailSettings
-     */
-    private $mailSettings;
     private $mailSettingsService;
 
     public function __construct(
-        MailSettings $mailSettings,
         MailSettingsService $mailSettingsService,
     ) {
-        $this->mailSettings = $mailSettings;
         $this->mailSettingsService = $mailSettingsService;
     }
 

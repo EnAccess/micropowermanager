@@ -274,7 +274,7 @@ class Reports {
         $balance = 0;
 
         foreach ($transactions as $index => $transaction) {
-            if (!$transaction->device->device) {
+            if ($transaction->device->device === null) {
                 continue;
             }
 
@@ -575,13 +575,14 @@ class Reports {
 
         // Then load only if device model has the relationship
         foreach ($transactions as $transaction) {
-            if ($transaction->device && $transaction->device->device) {
-                $device = $transaction->device->device;
-                if (method_exists($device, 'tariff')) {
-                    $device->loadMissing('tariff');
+            $deviceModel = $transaction->device?->device;
+
+            if ($deviceModel) {
+                if (method_exists($deviceModel, 'tariff')) {
+                    $deviceModel->loadMissing('tariff');
                 }
-                if (method_exists($device, 'connectionType')) {
-                    $device->loadMissing('connectionType');
+                if (method_exists($deviceModel, 'connectionType')) {
+                    $deviceModel->loadMissing('connectionType');
                 }
             }
         }
@@ -670,10 +671,10 @@ class Reports {
 
                 $tariffPrice = $groupRevenue['tariff_price'];
 
-                if (!$tariffPrice || $tariffPrice === 0) {
+                if (!$tariffPrice) {
                     continue;
                 }
-                if (!$energyRevenue || $energyRevenue === 0) {
+                if (!$energyRevenue) {
                     continue;
                 }
                 $tariffPrice /= 100;

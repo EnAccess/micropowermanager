@@ -18,14 +18,10 @@ class MainSettingsService implements IBaseService {
 
     public function getById(int $id): MainSettings {
         throw new \Exception('Method getById() not yet implemented.');
-
-        return new MainSettings();
     }
 
     public function create(array $data): MainSettings {
         throw new \Exception('Method create() not yet implemented.');
-
-        return new MainSettings();
     }
 
     public function update($mainSettings, $mainSettingsData): MainSettings {

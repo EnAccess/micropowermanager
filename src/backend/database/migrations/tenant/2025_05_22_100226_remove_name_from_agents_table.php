@@ -11,8 +11,8 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        Schema::connection('tenant')->table('asset_people', function (Blueprint $table) {
-            $table->double('total_cost')->change();
+        Schema::connection('tenant')->table('agents', function (Blueprint $table) {
+            $table->dropColumn('name');
         });
     }
 
@@ -22,6 +22,8 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('tenant')->table('asset_people', function (Blueprint $table) {});
+        Schema::connection('tenant')->table('agents', function (Blueprint $table) {
+            $table->string('name');
+        });
     }
 };

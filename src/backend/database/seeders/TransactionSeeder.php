@@ -121,14 +121,30 @@ class TransactionSeeder extends Seeder {
         // Get device serial based on device type
         $deviceSerial = $randomDevice->device_serial;
 
-        $transaction = (new TransactionFactory())->make([
-            'amount' => $amount,
-            'type' => 'energy',
-            'message' => $deviceSerial,
-            'sender' => $deviceOwnerPhoneNumber['phone'],
-            'created_at' => $demoDate,
-            'updated_at' => $demoDate,
-        ]);
+        if ($transactionType instanceof AgentTransaction) {
+            $city = $randomDevice->person->addresses()->first()->city()->first();
+            $miniGrid = $city->miniGrid()->first();
+            // get a random agent from the mini grid
+            $agent = $miniGrid->agent()->inRandomOrder()->first();
+            $transaction = (new TransactionFactory())->make([
+                'amount' => $amount,
+                'type' => 'energy',
+                'message' => $deviceSerial,
+                'sender' => 'Agent-'.$agent->id,
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
+            ]);
+        } else {
+            $transaction = (new TransactionFactory())->make([
+                'amount' => $amount,
+                'type' => 'energy',
+                'message' => $deviceSerial,
+                'sender' => $deviceOwnerPhoneNumber['phone'],
+                'created_at' => $demoDate,
+                'updated_at' => $demoDate,
+            ]);
+        }
+
         $subTransaction = null;
 
         // FIXME: What is this?
