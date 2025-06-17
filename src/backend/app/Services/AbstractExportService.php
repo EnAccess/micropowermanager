@@ -72,7 +72,7 @@ abstract class AbstractExportService {
         $parts = explode('.', str_replace(' ', '', $amount));
 
         // Check if the array keys exist before accessing them
-        $whole = isset($parts[0]) ? number_format($parts[0], 0, '', $separator) : '';
+        $whole = isset($parts[0]) ? number_format((float) $parts[0], 0, '', $separator) : '';
         $decimal = isset($parts[1]) ? substr($parts[1].'00', 0, 2) : '';
 
         // Combine the whole number and decimal parts

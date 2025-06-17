@@ -51,17 +51,20 @@ abstract class AbstractSharedCommand extends Command {
     ): void {
         $databaseProxyManagerService->queryAllConnections()
             ->chunkById(50, function (Collection $modelCollection) use ($databaseProxyManagerService, $input, $output) {
-                $modelCollection->map(function (CompanyDatabase $companyDatabase) use (
+                /* @var \Illuminate\Support\Collection<int, \App\Models\CompanyDatabase> $modelCollection */
+                $modelCollection->each(function ($companyDatabase) use (
                     $databaseProxyManagerService,
                     $input,
                     $output
                 ) {
-                    $this->runForCompany(
-                        $databaseProxyManagerService,
-                        $companyDatabase->getCompanyId(),
-                        $input,
-                        $output
-                    );
+                    if ($companyDatabase instanceof CompanyDatabase) {
+                        $this->runForCompany(
+                            $databaseProxyManagerService,
+                            $companyDatabase->getCompanyId(),
+                            $input,
+                            $output
+                        );
+                    }
                 });
             });
     }

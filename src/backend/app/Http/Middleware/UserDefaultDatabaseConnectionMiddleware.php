@@ -36,7 +36,10 @@ class UserDefaultDatabaseConnectionMiddleware {
             ]);
             // Either handle directly or ensure it propagates to your handler
             if ($request->expectsJson() || strpos($request->url(), '/api') !== false) {
-                return app(Handler::class)->render($request, $e);
+                /** @var Request $request */
+                $r = $request;
+
+                return app(Handler::class)->render($r, $e);
             }
             throw $e;
         }

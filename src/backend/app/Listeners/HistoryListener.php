@@ -41,7 +41,7 @@ class HistoryListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('history.create', 'App\Listeners\HistoryListener@save');
+        $events->listen('history.create', [$this, 'save']);
         $events->listen(
             'history.hearth.beat',
             function () {

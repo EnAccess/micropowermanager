@@ -49,11 +49,19 @@ class Handler extends ExceptionHandler {
      *
      * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, \Exception|\Throwable $exception) {
+    public function render($request, \Throwable $exception) {
         // api request outputs are json
         if ($request->expectsJson()
             || strpos($request->url(), '/api') !== false) {
-            return $this->getJsonResponseForException($request, $exception);
+            $exceptionForJson = $exception instanceof \Exception
+                ? $exception
+                : new \Exception(
+                    $exception->getMessage(),
+                    (int) $exception->getCode(),
+                    $exception
+                );
+
+            return $this->getJsonResponseForException($request, $exceptionForJson);
         }
 
         return parent::render($request, $exception);

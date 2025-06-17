@@ -50,6 +50,6 @@ class PaymentPeriodListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('payment.period.recalculate', '\App\Listeners\PaymentPeriodListener@recalculate');
+        $events->listen('payment.period.recalculate', [$this, 'recalculate']);
     }
 }

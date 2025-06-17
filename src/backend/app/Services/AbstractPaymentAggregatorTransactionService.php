@@ -74,7 +74,9 @@ abstract class AbstractPaymentAggregatorTransactionService {
 
     public function saveTransaction() {
         $this->paymentAggregatorTransaction->save();
-        $this->transaction->originalTransaction()->associate($this->paymentAggregatorTransaction)->save();
+        /** @var \Illuminate\Database\Eloquent\Model $paymentAggregatorTransaction */
+        $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
+        $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
     }
 
     private function isImitationTransactionValid($transaction) {
