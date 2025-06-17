@@ -1,0 +1,29 @@
+meta {
+  name: Register Customer
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{mpm_backend_url}}/api/customer-registration-app
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Some",
+    "surname": "Some",
+    "phone": "+254123456789",
+    "tariff_id": "Some",
+    "geo_points": "Some",
+    "serial_number": "Some",
+    "manufacturer": "Some",
+    "meter_type": "Some"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isJson
+}

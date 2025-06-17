@@ -1,13 +1,13 @@
 meta {
-  name: Login
+  name: Logout
   type: http
-  seq: 2
+  seq: 10
 }
 
 post {
-  url: {{mpm_backend_url}}/api/auth/login
+  url: {{mpm_backend_url}}/api/auth/logout
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
@@ -20,8 +20,4 @@ body:json {
 assert {
   res.status: eq 200
   res.body.access_token: isString
-}
-
-script:post-response {
-  bru.setEnvVar("jwt_token", res.body.access_token);
 }
