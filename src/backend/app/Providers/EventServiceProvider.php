@@ -2,16 +2,17 @@
 
 namespace App\Providers;
 
-use App\Listeners\AccessRateListener;
-use App\Listeners\HistoryListener;
-use App\Listeners\LogListener;
-use App\Listeners\MeterListener;
-use App\Listeners\PaymentListener;
-use App\Listeners\PaymentPeriodListener;
-use App\Listeners\SmsListener;
-use App\Listeners\TransactionListener;
+use App\Events\ClusterEvent;
+use App\Listeners\AccessRateSubscriber;
+use App\Listeners\ClusterGeoListener;
+use App\Listeners\HistorySubscriber;
+use App\Listeners\LogSubscriber;
+use App\Listeners\PaymentSubscriber;
+use App\Listeners\SmsSubscriber;
+use App\Listeners\TransactionSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use MPM\User\UserEventSubscriber;
+use MPM\User\Events\UserCreatedEvent;
+use MPM\User\UserListener;
 
 class EventServiceProvider extends ServiceProvider {
     /**
@@ -20,19 +21,17 @@ class EventServiceProvider extends ServiceProvider {
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        'App\Events\ClusterEvent' => ['App\Listeners\ClusterGeoListener'],
+        ClusterEvent::class => [ClusterGeoListener::class],
+        UserCreatedEvent::class => [UserListener::class],
     ];
 
     protected $subscribe = [
-        AccessRateListener::class,
-        MeterListener::class,
-        PaymentListener::class,
-        TransactionListener::class,
-        HistoryListener::class,
-        PaymentPeriodListener::class,
-        LogListener::class,
-        SmsListener::class,
-        UserEventSubscriber::class,
+        AccessRateSubscriber::class,
+        PaymentSubscriber::class,
+        TransactionSubscriber::class,
+        HistorySubscriber::class,
+        LogSubscriber::class,
+        SmsSubscriber::class,
     ];
 
     /**

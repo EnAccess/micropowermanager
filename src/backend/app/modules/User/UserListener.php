@@ -20,10 +20,8 @@ class UserListener {
         private MailHelperInterface $mailHelper,
     ) {}
 
-    public function handle($event): void {
-        if ($event instanceof UserCreatedEvent) {
-            $this->handleUserCreatedEvent($event);
-        }
+    public function handle(UserCreatedEvent $event): void {
+        $this->handleUserCreatedEvent($event);
     }
 
     public function handleUserCreatedEvent(UserCreatedEvent $event): void {

@@ -10,7 +10,7 @@ use App\Sms\SmsTypes;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
-class SmsListener {
+class SmsSubscriber {
     private $smsResendInformationKeyService;
     private $transaction;
     private $smsService;
@@ -48,6 +48,9 @@ class SmsListener {
     }
 
     public function subscribe(Dispatcher $events) {
-        $events->listen('sms.stored', [$this, 'onSmsStored']);
+        $events->listen(
+            'sms.stored',
+            [SmsSubscriber::class, 'onSmsStored']
+        );
     }
 }

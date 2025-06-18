@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Models\Log;
 use Illuminate\Events\Dispatcher;
 
-class LogListener {
+class LogSubscriber {
     /**
      * @var Log
      */
@@ -24,6 +24,9 @@ class LogListener {
     }
 
     public function subscribe(Dispatcher $event): void {
-        $event->listen('new.log', [$this, 'storeLog']);
+        $event->listen(
+            'new.log',
+            [LogSubscriber::class, 'storeLog']
+        );
     }
 }
