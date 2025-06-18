@@ -153,7 +153,10 @@ class TransactionSeeder extends Seeder {
         if ($transactionType instanceof AgentTransaction) {
             $city = $randomDevice->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
-            $agent = $miniGrid->agent()->first();
+            $agent = $miniGrid->agents()->inRandomOrder()->first();
+            if (!$agent) {
+                return;
+            }
             $subTransaction = (new AgentTransactionFactory())->create([
                 'agent_id' => $agent->id,
                 'mobile_device_id' => 'test-device',
