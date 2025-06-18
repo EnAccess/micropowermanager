@@ -42,15 +42,6 @@ class AgentTransactionService implements IBaseService {
 
         $transactions = $limit ? $query->paginate($limit) : $query->get();
 
-        // For backwards compatibility with the Agent App we are artificially adding
-        // the column `original_agent`.
-        // TODO: Confirm the app is actually using `original_agent`
-        // -> If yes, move to `original_transaction`
-        // -> If no, remove this code
-        $transactions->each(function ($transaction) {
-            $transaction->setAttribute('original_agent', $transaction->originalTransaction);
-        });
-
         return $transactions;
     }
 
@@ -72,15 +63,6 @@ class AgentTransactionService implements IBaseService {
             ->whereHas('device', fn ($q) => $q->whereIn('device_serial', $customerDeviceSerials))
             ->latest()
             ->paginate();
-
-        // For backwards compatibility with the Agent App we are artificially adding
-        // the column `original_agent`.
-        // TODO: Confirm the app is actually using `original_agent`
-        // -> If yes, move to `original_transaction`
-        // -> If no, remove this code
-        $transactions->each(function ($transaction) {
-            $transaction->setAttribute('original_agent', $transaction->originalTransaction);
-        });
 
         return $transactions;
     }
