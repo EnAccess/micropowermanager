@@ -5,9 +5,8 @@ namespace App\Listeners;
 use App\Events\HistoryEvent;
 use App\Models\History;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\Log;
 
-class HistoryListener {
+class HistorySubscriber {
     /**
      * @var History
      */
@@ -41,12 +40,9 @@ class HistoryListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('history.create', [$this, 'save']);
         $events->listen(
-            'history.hearth.beat',
-            function () {
-                Log::debug('hearth beat of history listener');
-            }
+            'history.create',
+            [HistorySubscriber::class, 'save']
         );
     }
 }

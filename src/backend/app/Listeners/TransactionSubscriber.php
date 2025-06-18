@@ -7,7 +7,7 @@ use Illuminate\Events\Dispatcher;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
 
-class TransactionListener {
+class TransactionSubscriber {
     public function onTransactionSaved(ITransactionProvider $transactionProvider): void {
         // echos the confirmation output
         $transactionProvider->confirm();
@@ -31,8 +31,17 @@ class TransactionListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('transaction.saved', [$this, 'onTransactionSaved']);
-        $events->listen('transaction.successful', [$this, 'onTransactionSuccess']);
-        $events->listen('transaction.failed', [$this, 'onTransactionFailed']);
+        $events->listen(
+            'transaction.saved',
+            [TransactionSubscriber::class, 'onTransactionSaved']
+        );
+        $events->listen(
+            'transaction.successful',
+            [TransactionSubscriber::class, 'onTransactionSuccess']
+        );
+        $events->listen(
+            'transaction.failed',
+            [TransactionSubscriber::class, 'onTransactionFailed']
+        );
     }
 }

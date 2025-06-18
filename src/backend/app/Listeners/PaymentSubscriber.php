@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class PaymentListener {
+class PaymentSubscriber {
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,
         private PersonPaymentHistoryService $personPaymentHistoryService,
@@ -102,8 +102,17 @@ class PaymentListener {
     }
 
     public function subscribe(Dispatcher $events): void {
-        $events->listen('payment.energy', 'App\Listeners\PaymentListener@onEnergyPayment');
-        $events->listen('payment.failed', 'App\Listeners\PaymentListener@onPaymentFailed');
-        $events->listen('payment.successful', 'App\Listeners\PaymentListener@onPaymentSuccess');
+        $events->listen(
+            'payment.energy',
+            [PaymentSubscriber::class, 'onEnergyPayment']
+        );
+        $events->listen(
+            'payment.failed',
+            [PaymentSubscriber::class, 'onPaymentFailed']
+        );
+        $events->listen(
+            'payment.successful',
+            [PaymentSubscriber::class, 'onPaymentSuccess']
+        );
     }
 }
