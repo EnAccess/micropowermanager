@@ -5,7 +5,6 @@ namespace App\Listeners;
 use App\Events\HistoryEvent;
 use App\Models\History;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\Log;
 
 class HistorySubscriber {
     /**
