@@ -40,7 +40,7 @@ Agent transactions are payments processed through authorized agents who facilita
 - Automatically update agent balance history and commission tracking
 - Are associated with physical devices through device serial numbers
 
-### Cash Transactions  
+### Cash Transactions
 
 Cash transactions are manual payments processed directly by system users/administrators. These transactions:
 
