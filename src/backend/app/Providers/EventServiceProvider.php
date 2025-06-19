@@ -7,7 +7,10 @@ use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\HistorySubscriber;
 use App\Listeners\LogListener;
-use App\Listeners\PaymentSubscriber;
+use App\Listeners\PaymentEnergyListener;
+use App\Listeners\PaymentFailedListener;
+use App\Listeners\PaymentLoanListener;
+use App\Listeners\PaymentSuccessListener;
 use App\Listeners\SmsSubscriber;
 use App\Listeners\TransactionSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,12 +28,15 @@ class EventServiceProvider extends ServiceProvider {
         'accessRatePayment.initialize' => [AccessRateListener::class],
         ClusterEvent::class => [ClusterGeoListener::class],
         'new.log' => [LogListener::class],
+        'payment.successful' => [PaymentSuccessListener::class],
+        'payment.failed' => [PaymentFailedListener::class],
+        'payment.energy' => [PaymentEnergyListener::class],
+        'payment.loan' => [PaymentLoanListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],
     ];
 
     protected $subscribe = [
-        PaymentSubscriber::class,
         TransactionSubscriber::class,
         HistorySubscriber::class,
         SmsSubscriber::class,

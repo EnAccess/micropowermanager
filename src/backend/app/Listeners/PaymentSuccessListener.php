@@ -12,12 +12,11 @@ use App\Services\ApplianceRatePaymentHistoryService;
 use App\Services\PaymentHistoryService;
 use App\Services\PersonPaymentHistoryService;
 use App\Services\TransactionPaymentHistoryService;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use MPM\Transaction\Provider\ITransactionProvider;
 
-class PaymentSubscriber {
+class PaymentSuccessListener {
     public function __construct(
         private PaymentHistoryService $paymentHistoryService,
         private PersonPaymentHistoryService $personPaymentHistoryService,
@@ -25,23 +24,6 @@ class PaymentSubscriber {
         private AccessRatePaymentHistoryService $accessRatePaymentHistoryService,
         private TransactionPaymentHistoryService $transactionPaymentHistoryService,
     ) {}
-
-    public function onEnergyPayment(ITransactionProvider $transactionProvider): void {
-        $transaction = $transactionProvider->getTransaction();
-        // get meter preferences
-        try {
-            $meter = Meter::query()->where('meter_id', $transaction->message)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            Log::critical('Unkown meterId', ['meter_id' => $transaction->message, 'amount' => $transaction->amount]);
-            event('transaction.failed', $transactionProvider);
-        }
-    }
-
-    public function onLoanPayment(string $customer_id, int $amount): void {}
-
-    public function onPaymentFailed(): void {
-        Log::debug('payment failed event');
-    }
 
     /**
      * @param int    $amount
@@ -101,18 +83,23 @@ class PaymentSubscriber {
         $this->paymentHistoryService->save($paymentHistory);
     }
 
-    public function subscribe(Dispatcher $events): void {
-        $events->listen(
-            'payment.energy',
-            [PaymentSubscriber::class, 'onEnergyPayment']
-        );
-        $events->listen(
-            'payment.failed',
-            [PaymentSubscriber::class, 'onPaymentFailed']
-        );
-        $events->listen(
-            'payment.successful',
-            [PaymentSubscriber::class, 'onPaymentSuccess']
+    public function handle(
+        $amount,
+        $paymentService,
+        $paymentType,
+        $sender,
+        $paidFor,
+        $payer,
+        $transaction,
+    ): void {
+        $this->onPaymentSuccess(
+            $amount,
+            $paymentService,
+            $paymentType,
+            $sender,
+            $paidFor,
+            $payer,
+            $transaction
         );
     }
 }
