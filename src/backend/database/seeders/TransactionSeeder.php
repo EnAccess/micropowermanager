@@ -125,7 +125,7 @@ class TransactionSeeder extends Seeder {
             $city = $randomDevice->person->addresses()->first()->city()->first();
             $miniGrid = $city->miniGrid()->first();
             // get a random agent from the mini grid
-            $agent = $miniGrid->agent()->inRandomOrder()->first();
+            $agent = $miniGrid->agents()->inRandomOrder()->first();
             $transaction = (new TransactionFactory())->make([
                 'amount' => $amount,
                 'type' => 'energy',
