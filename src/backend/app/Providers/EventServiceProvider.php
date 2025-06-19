@@ -11,7 +11,7 @@ use App\Listeners\PaymentEnergyListener;
 use App\Listeners\PaymentFailedListener;
 use App\Listeners\PaymentLoanListener;
 use App\Listeners\PaymentSuccessListener;
-use App\Listeners\SmsSubscriber;
+use App\Listeners\SmsListener;
 use App\Listeners\TransactionSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use MPM\User\Events\UserCreatedEvent;
@@ -32,6 +32,7 @@ class EventServiceProvider extends ServiceProvider {
         'payment.failed' => [PaymentFailedListener::class],
         'payment.energy' => [PaymentEnergyListener::class],
         'payment.loan' => [PaymentLoanListener::class],
+        'sms.stored' => [SmsListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],
     ];
@@ -39,7 +40,6 @@ class EventServiceProvider extends ServiceProvider {
     protected $subscribe = [
         TransactionSubscriber::class,
         HistorySubscriber::class,
-        SmsSubscriber::class,
     ];
 
     /**

@@ -31,10 +31,7 @@ class TransactionListener {
         }
     }
 
-    public function subscribe(Dispatcher $events) {
-        $events->listen(
-            'transaction.successful',
-            'Inensus\SparkMeter\Listeners\TransactionListener@onTransactionSuccess'
-        );
+    public function handle(Transaction $transaction) {
+        $this->onTransactionSuccess($transaction);
     }
 }
