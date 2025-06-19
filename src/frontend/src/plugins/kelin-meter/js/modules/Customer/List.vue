@@ -9,7 +9,7 @@
       :search="false"
       :show_per_page="true"
       :subscriber="subscriber"
-      color="green"
+      color="blue"
       @widgetAction="syncCustomers()"
       :button="true"
       buttonIcon="cloud_download"
