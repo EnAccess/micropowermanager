@@ -9,7 +9,11 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class AccessRateSubscriber {
+class AccessRateListener {
+    /**
+     * Check if the meter's tariff has an access rate, and if so
+     * initiate the first payment of the access rate.
+     */
     public function initializeAccessRatePayment(Meter $meter): void {
         try {
             $tariff = $meter->tariff()->first();
@@ -23,15 +27,15 @@ class AccessRateSubscriber {
             $accessRatePayment->meter()->associate($meter);
             $accessRatePayment->due_date = $nextPaymentDate;
             $accessRatePayment->debt = 0;
+            // FIXME: $accessRatePayment is not getting saved, i.e. not persisted
+            // into the database. Is this correct?
+            // $accessRatePayment->save();
         } catch (NoAccessRateFound $exception) {
             Log::error($exception->getMessage(), ['id' => 'fj3g98suiq3z89fdhfjlsa']);
         }
     }
 
-    public function subscribe(Dispatcher $events): void {
-        $events->listen(
-            'accessRatePayment.initialize',
-            [AccessRateSubscriber::class, 'initializeAccessRatePayment']
-        );
+    public function handle(Meter $meter): void {
+        $this->initializeAccessRatePayment($meter);
     }
 }

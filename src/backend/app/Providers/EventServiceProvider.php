@@ -23,10 +23,10 @@ class EventServiceProvider extends ServiceProvider {
     protected $listen = [
         ClusterEvent::class => [ClusterGeoListener::class],
         UserCreatedEvent::class => [UserListener::class],
+        'accessRatePayment.initialize' => [AccessRateListener::class],
     ];
 
     protected $subscribe = [
-        AccessRateSubscriber::class,
         PaymentSubscriber::class,
         TransactionSubscriber::class,
         HistorySubscriber::class,
