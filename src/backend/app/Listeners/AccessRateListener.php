@@ -5,7 +5,6 @@ namespace App\Listeners;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
