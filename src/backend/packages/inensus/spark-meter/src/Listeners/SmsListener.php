@@ -4,7 +4,6 @@ namespace Inensus\SparkMeter\Listeners;
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;
@@ -67,8 +66,8 @@ class SmsListener {
         }
     }
 
-    public function subscribe(Dispatcher $events) {
+    public function handle($sender, $message) {
         // TODO: Uncomment this when spark-meter package is refactored with device->meter approach
-        // $events->listen('sms.stored', 'Inensus\SparkMeter\Listeners\SmsListener@onSmsStored');
+        // $this->onSmsStored($sender, $message);
     }
 }

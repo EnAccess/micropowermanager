@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Listeners;
 
 use App\Models\Transaction\Transaction;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TransactionService;
 
@@ -31,10 +30,7 @@ class TransactionListener {
         }
     }
 
-    public function subscribe(Dispatcher $events) {
-        $events->listen(
-            'transaction.successful',
-            'Inensus\SparkMeter\Listeners\TransactionListener@onTransactionSuccess'
-        );
+    public function handle(Transaction $transaction) {
+        $this->onTransactionSuccess($transaction);
     }
 }
