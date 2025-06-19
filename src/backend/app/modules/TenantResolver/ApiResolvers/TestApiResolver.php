@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MPM\TenantResolver\ApiResolvers;
 
-use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 // test-api passes the company id within the callback url
 class TestApiResolver implements ApiResolverInterface {
@@ -14,7 +14,7 @@ class TestApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
         $companyId = $request->input(self::QUERY_PARAM_COMPANY_ID);
         if (!is_numeric($companyId)) {
-            throw new ValidationException('the field which is used to identify the company is not provided');
+            throw ValidationException::withMessages(['companyId' => 'the field which is used to identify the company is not provided']);
         }
 
         return (int) $companyId;
