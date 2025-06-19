@@ -12,7 +12,9 @@ use App\Listeners\PaymentFailedListener;
 use App\Listeners\PaymentLoanListener;
 use App\Listeners\PaymentSuccessListener;
 use App\Listeners\SmsListener;
-use App\Listeners\TransactionSubscriber;
+use App\Listeners\TransactionFailedListener;
+use App\Listeners\TransactionSavedListener;
+use App\Listeners\TransactionSuccessListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
@@ -25,20 +27,23 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
         // default namespace
-        'accessRatePayment.initialize' => [AccessRateListener::class],
         ClusterEvent::class => [ClusterGeoListener::class],
+        // string-based Listeners
+        'accessRatePayment.initialize' => [AccessRateListener::class],
         'new.log' => [LogListener::class],
-        'payment.successful' => [PaymentSuccessListener::class],
-        'payment.failed' => [PaymentFailedListener::class],
         'payment.energy' => [PaymentEnergyListener::class],
+        'payment.failed' => [PaymentFailedListener::class],
         'payment.loan' => [PaymentLoanListener::class],
+        'payment.successful' => [PaymentSuccessListener::class],
         'sms.stored' => [SmsListener::class],
+        'transaction.failed' => [TransactionFailedListener::class],
+        'transaction.saved' => [TransactionSavedListener::class],
+        'transaction.successful' => [TransactionSuccessListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],
     ];
 
     protected $subscribe = [
-        TransactionSubscriber::class,
         HistorySubscriber::class,
     ];
 
