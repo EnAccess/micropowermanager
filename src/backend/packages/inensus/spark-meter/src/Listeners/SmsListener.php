@@ -4,7 +4,6 @@ namespace Inensus\SparkMeter\Listeners;
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SparkMeter\Exceptions\SparkAPIResponseException;
 use Inensus\SparkMeter\Services\CustomerService;
 use Inensus\SparkMeter\Services\SmSmsFeedbackWordService;

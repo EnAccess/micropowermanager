@@ -3,7 +3,6 @@
 namespace Inensus\SparkMeter\Listeners;
 
 use App\Models\Transaction\Transaction;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SparkMeter\Models\SmTransaction;
 use Inensus\SparkMeter\Services\TransactionService;
 
