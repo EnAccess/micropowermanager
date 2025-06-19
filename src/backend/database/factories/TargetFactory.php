@@ -14,11 +14,15 @@ class TargetFactory extends Factory {
      * @return array
      */
     public function definition() {
+        $ownerType = $this->faker->randomElement(['mini-grid', 'cluster']);
+
         return [
             'target_date' => $this->faker->date('Y-m-d'),
-            'type' => $this->faker->randomElement(['mini-grid', 'cluster']),
-            'owner_type' => $this->faker->randomElement(['mini-grid', 'cluster']),
-            'owner_id' => $this->faker->numberBetween(1, 10),
+            'type' => $ownerType,
+            'owner_type' => $ownerType,
+            'owner_id' => $ownerType === 'cluster'
+                ? $this->faker->numberBetween(1, 2)
+                : $this->faker->numberBetween(1, 5),
         ];
     }
 }
