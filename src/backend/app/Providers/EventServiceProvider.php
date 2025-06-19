@@ -6,7 +6,7 @@ use App\Events\ClusterEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\HistorySubscriber;
-use App\Listeners\LogSubscriber;
+use App\Listeners\LogListener;
 use App\Listeners\PaymentSubscriber;
 use App\Listeners\SmsSubscriber;
 use App\Listeners\TransactionSubscriber;
@@ -21,16 +21,18 @@ class EventServiceProvider extends ServiceProvider {
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        ClusterEvent::class => [ClusterGeoListener::class],
-        UserCreatedEvent::class => [UserListener::class],
+        // default namespace
         'accessRatePayment.initialize' => [AccessRateListener::class],
+        ClusterEvent::class => [ClusterGeoListener::class],
+        'new.log' => [LogListener::class],
+        // MPM\User namespace
+        UserCreatedEvent::class => [UserListener::class],
     ];
 
     protected $subscribe = [
         PaymentSubscriber::class,
         TransactionSubscriber::class,
         HistorySubscriber::class,
-        LogSubscriber::class,
         SmsSubscriber::class,
     ];
 
