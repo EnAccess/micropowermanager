@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Exceptions\ValidationException;
 use App\Models\Target;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use MPM\Target\TargetAssignable;
 
 class TargetService {
@@ -27,7 +27,7 @@ class TargetService {
             'type' => $targetForType,
         ]);
         if (!$targetOwner instanceof Model) {
-            throw new ValidationException('target owner should be a model');
+            throw ValidationException::withMessages(['target_owner' => 'target owner should be a model']);
         }
         $target->owner()->associate($targetOwner);
         $target->save();

@@ -1,7 +1,6 @@
 <?php
 
 use App\Console\Commands\MailApplianceDebtsCommand;
-use App\Exceptions\ValidationException;
 use App\Http\Middleware\AdminJWT;
 use App\Http\Middleware\AgentBalanceMiddleware;
 use App\Http\Middleware\JwtMiddleware;
@@ -15,6 +14,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 return Application::configure(basePath: dirname(__DIR__))

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MPM\TenantResolver\ApiResolvers;
 
-use App\Exceptions\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class VodacomMobileMoneyApiResolver implements ApiResolverInterface {
     public function resolveCompanyId(Request $request): int {
@@ -16,7 +16,7 @@ class VodacomMobileMoneyApiResolver implements ApiResolverInterface {
         $companyId = $payload?->get('companyId');
 
         if (!$companyId) {
-            throw new ValidationException('failed to parse company identifier from the webhook');
+            throw ValidationException::withMessages(['webhook' => 'failed to parse company identifier from the webhook']);
         }
 
         return (int) $companyId;
