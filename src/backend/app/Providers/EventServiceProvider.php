@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Events\ClusterEvent;
-use App\Listeners\AccessRateSubscriber;
+use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\HistorySubscriber;
 use App\Listeners\LogSubscriber;
