@@ -27,7 +27,9 @@
               {{ target.target.targetDate }}
             </md-table-cell>
             <md-table-cell>
-              {{ target.target.owner?.name || 'Unknown' }} ({{ target.owner || 'N/A' }})
+              {{ target.target.owner?.name || "Unknown" }} ({{
+                target.owner || "N/A"
+              }})
             </md-table-cell>
             <md-table-cell
               v-if="target.target.subTargets.length > 0"
@@ -50,7 +52,7 @@
               :key="subIndex"
             >
               <md-table-cell>
-                {{ subTarget.connections?.name || 'N\A' }}
+                {{ subTarget.connections?.name || "N\A" }}
               </md-table-cell>
               <md-table-cell>
                 {{ $tc("words.revenue") }}

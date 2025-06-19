@@ -15,6 +15,7 @@ class TargetFactory extends Factory {
      */
     public function definition() {
         $ownerType = $this->faker->randomElement(['mini-grid', 'cluster']);
+
         return [
             'target_date' => $this->faker->date('Y-m-d'),
             'type' => $ownerType,
