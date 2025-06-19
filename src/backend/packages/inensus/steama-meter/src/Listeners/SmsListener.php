@@ -4,7 +4,6 @@ namespace Inensus\SteamaMeter\Listeners;
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
