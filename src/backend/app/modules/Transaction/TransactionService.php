@@ -153,6 +153,7 @@ class TransactionService implements IAssociative, IBaseService {
 
     /**
      * @param array<string, array<string, string>> $comparisonPeriod
+     *
      * @return array<string, \Illuminate\Support\Collection<int, int>>
      */
     public function getByComparisonPeriod(array $comparisonPeriod): array {
@@ -181,6 +182,7 @@ class TransactionService implements IAssociative, IBaseService {
 
     /**
      * @param array<int> $transactionIds
+     *
      * @return array<string, int|float>|null
      */
     public function getAnalysis($transactionIds): ?array {
@@ -227,6 +229,7 @@ class TransactionService implements IAssociative, IBaseService {
     /**
      * @param array<string, int|float> $currentTransactions
      * @param array<string, int|float> $pastTransactions
+     *
      * @return array<string, array<string, float|string>>
      */
     public function comparePeriods(array $currentTransactions, array $pastTransactions): array {
