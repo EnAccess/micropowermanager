@@ -15,6 +15,9 @@ class EBikeService implements IBaseService {
         private EBike $eBike,
     ) {}
 
+    /**
+     * @return Collection<int, EBike>|LengthAwarePaginator<EBike>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
@@ -27,11 +30,17 @@ class EBikeService implements IBaseService {
         return $this->eBike->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): EBike {
         return $this->eBike->newQuery()->create($data);
     }
 
-    public function search($term, $paginate): LengthAwarePaginator {
+    /**
+     * @return LengthAwarePaginator<EBike>
+     */
+    public function search(string $term, int $paginate): LengthAwarePaginator {
         return $this->eBike->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
             ->whereHas(
@@ -49,6 +58,9 @@ class EBikeService implements IBaseService {
             )->paginate($paginate);
     }
 
+     /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): EBike {
         $model->newQuery()->update($data);
         $model->fresh();
@@ -56,7 +68,7 @@ class EBikeService implements IBaseService {
         return $model;
     }
 
-    public function getBySerialNumber($serialNumber) {
+    public function getBySerialNumber(string $serialNumber): ?EBike {
         return $this->eBike->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])->where(
                 'serial_number',

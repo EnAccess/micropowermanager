@@ -13,6 +13,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class SolarHomeSystemService implements IBaseService {
     public function __construct(private SolarHomeSystem $solarHomeSystem) {}
 
+    /**
+     * @return Collection<int, SolarHomeSystem>|LengthAwarePaginator<SolarHomeSystem>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->solarHomeSystem->newQuery()->with(['manufacturer', 'appliance', 'device.person'])->paginate($limit);
@@ -30,6 +33,9 @@ class SolarHomeSystemService implements IBaseService {
         return $result;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): SolarHomeSystem {
         /** @var SolarHomeSystem $result */
         $result = $this->solarHomeSystem->newQuery()->create($data);
@@ -37,6 +43,9 @@ class SolarHomeSystemService implements IBaseService {
         return $result;
     }
 
+    /**
+     * @return LengthAwarePaginator<SolarHomeSystem>
+     */
     public function search($term, $paginate): LengthAwarePaginator {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
@@ -55,6 +64,9 @@ class SolarHomeSystemService implements IBaseService {
             )->paginate($paginate);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): SolarHomeSystem {
         throw new \Exception('not implemented');
     }
