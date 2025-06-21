@@ -46,7 +46,7 @@ class SolarHomeSystemService implements IBaseService {
     /**
      * @return LengthAwarePaginator<SolarHomeSystem>
      */
-    public function search($term, $paginate): LengthAwarePaginator {
+    public function search(int $term, int $paginate): LengthAwarePaginator {
         return $this->solarHomeSystem->newQuery()
             ->with(['manufacturer', 'appliance', 'device.person'])
             ->whereHas(

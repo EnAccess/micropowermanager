@@ -20,7 +20,7 @@ class TariffPriceCalculator {
     public function calculateTotalPrice(
         MeterTariff $meterTariff,
         TariffCreateRequest $request,
-    ) {
+    ): void {
         $accessRate = $request->input('access_rate');
         $socialTariff = $request->input('social_tariff');
         $timeOfUsage = $request->input('time_of_usage');
@@ -35,7 +35,7 @@ class TariffPriceCalculator {
         $this->setAdditionalComponents($additionalComponents, $meterTariff);
     }
 
-    private function setAccessRate($accessRate, $meterTariff) {
+    private function setAccessRate(mixed $accessRate, MeterTariff $meterTariff): void {
         if ($accessRate) {
             if (isset($accessRate['id'])) {
                 $updatedAccessRate = $this->accessRateService->getById($accessRate['id']);
@@ -59,7 +59,7 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setSocialTariff($socialTariff, $meterTariff) {
+    private function setSocialTariff(mixed $socialTariff, MeterTariff $meterTariff): void {
         if ($socialTariff) {
             if (isset($socialTariff['id'])) {
                 $updatedSocialTariff = $this->socialTariffService->getById($socialTariff['id']);
@@ -87,7 +87,7 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setTimeOfUsages($timeOfUsage, $meterTariff) {
+    private function setTimeOfUsages(mixed $timeOfUsage, MeterTariff $meterTariff): void {
         if ($timeOfUsage) {
             foreach ($timeOfUsage as $key => $value) {
                 $tou = isset($timeOfUsage[$key]['id']) ? $this->timeOfUsageService->getById($timeOfUsage[$key]['id']) :
@@ -113,7 +113,7 @@ class TariffPriceCalculator {
         }
     }
 
-    private function setAdditionalComponents($additionalComponents, $meterTariff) {
+    private function setAdditionalComponents(mixed $additionalComponents, MeterTariff $meterTariff): void {
         $this->tariffPricingComponentService->deleteByTariffId($meterTariff->id);
 
         if ($additionalComponents) {
