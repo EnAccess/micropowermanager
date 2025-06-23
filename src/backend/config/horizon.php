@@ -5,7 +5,6 @@ $queues = [
     env('QUEUE_ENERGY', 'energy_payment'),
     env('QUEUE_TOKEN', 'token'),
     env('QUEUE_SMS', 'sms'),
-    env('QUEUE_HISTORY', 'history'),
     env('QUEUE_REPORT', 'report_generator'),
     env('QUEUE_MISC', 'misc'),
 ];

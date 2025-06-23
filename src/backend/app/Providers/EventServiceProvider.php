@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Events\ClusterEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
-use App\Listeners\HistorySubscriber;
 use App\Listeners\LogListener;
 use App\Listeners\PaymentEnergyListener;
 use App\Listeners\PaymentFailedListener;
@@ -43,9 +42,7 @@ class EventServiceProvider extends ServiceProvider {
         UserCreatedEvent::class => [UserListener::class],
     ];
 
-    protected $subscribe = [
-        HistorySubscriber::class,
-    ];
+    protected $subscribe = [];
 
     /**
      * Register any events for your application.
