@@ -11,7 +11,6 @@ order: 3
 3. Create a password for password protected areas, so that only the team members with knowledge of the password can access sensitive information (Password protected areas are: Tariff-setting, Targets-setting, Overall company Settings, Addition of locations (village, mini-grid, cluster)\*.
 4. Create the locations (under "Settings") where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
-
    1. To register new mini-grid customers, the Customer Registration App is required.
       Basic customer data together with the electricity meter serial number are required (see [Before Using MPM](beforeusing) for further information).
    2. To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check [Before Using MPM](beforeusing).
