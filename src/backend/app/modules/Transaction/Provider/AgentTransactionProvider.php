@@ -95,7 +95,7 @@ class AgentTransactionProvider implements ITransactionProvider {
         $this->fireBaseService->sendNotify($agent->fire_base_token, $body);
     }
 
-     /**
+    /**
      * @return array<string, mixed>
      */
     private function prepareBodySuccess(Transaction $transaction): array {

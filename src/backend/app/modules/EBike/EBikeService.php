@@ -58,7 +58,7 @@ class EBikeService implements IBaseService {
             )->paginate($paginate);
     }
 
-     /**
+    /**
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): EBike {

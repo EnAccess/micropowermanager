@@ -6,7 +6,6 @@ use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 class CashTransactionProvider implements ITransactionProvider {
@@ -51,7 +50,7 @@ class CashTransactionProvider implements ITransactionProvider {
         // TODO: Implement sendResult() method.
     }
 
-    public function validateRequest(Transaction|WaveComTransaction  $request): void {
+    public function validateRequest(Transaction|WaveComTransaction $request): void {
         // TODO: Implement validateRequest() method.
     }
 

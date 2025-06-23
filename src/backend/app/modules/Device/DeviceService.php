@@ -64,7 +64,7 @@ class DeviceService implements IBaseService, IAssociative {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-     /**
+    /**
      * @return Collection<int, Device>|LengthAwarePaginator<Device>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
