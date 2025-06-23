@@ -17,10 +17,6 @@ Broadcast::channel('tickets.*', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('histories', function ($user) {
-    return true;
-});
-
 Broadcast::channel('ticketcreated', function ($user) {
     return true;
 });
