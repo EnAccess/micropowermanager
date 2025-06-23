@@ -4,7 +4,6 @@ namespace Inensus\SteamaMeter\Listeners;
 
 use App\Models\Meter\Meter;
 use App\Services\SmsService;
-use Illuminate\Contracts\Events\Dispatcher;
 use Inensus\SteamaMeter\Services\SteamaCustomerService;
 use Inensus\SteamaMeter\Services\SteamaSmsFeedbackWordService;
 use Inensus\SteamaMeter\Sms\Senders\SteamaSmsConfig;
@@ -47,8 +46,8 @@ class SmsListener {
         }
     }
 
-    public function subscribe(Dispatcher $events) {
+    public function handle($sender, $message) {
         // TODO: Uncomment this when steamaco-meter package is refactored with device->meter approach
-        // $events->listen('sms.stored', 'Inensus\SteamaMeter\Listeners\SmsListener@onSmsStored');
+        // $this->onSmsStored($sender, $message);
     }
 }
