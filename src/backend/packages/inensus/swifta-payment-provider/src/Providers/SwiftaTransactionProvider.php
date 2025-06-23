@@ -23,7 +23,7 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         private TransactionConflicts $transactionConflicts,
     ) {}
 
-    public function validateRequest($request) {
+    public function validateRequest($request): void {
         $meterSerial = $request->input('meter_number');
         $amount = $request->input('amount');
 
@@ -40,11 +40,11 @@ class SwiftaTransactionProvider implements ITransactionProvider {
         $this->setValidData($swiftaTransactionData);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->swiftaTransactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         $swiftaTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $updateData = [

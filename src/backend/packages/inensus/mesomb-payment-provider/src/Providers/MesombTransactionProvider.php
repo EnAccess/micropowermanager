@@ -36,7 +36,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->address = $address;
     }
 
-    public function validateRequest($request) {
+    public function validateRequest($request): void {
         $requestData = $request->all();
         if ($requestData['status'] === 'FAILED') {
             throw new MesombStatusFailedException($requestData['status'].' Sender: '.$requestData['b_party']);
@@ -47,7 +47,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         $this->validData = array_merge($this->validData, $requestData);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->mesombTransaction = $this->mesombTransactionService->assignIncomingDataToMesombTransaction($this->validData);
         $this->transaction = $this->mesombTransactionService->assignIncomingDataToTransaction($this->validData);
     }
@@ -59,7 +59,7 @@ class MesombTransactionProvider implements ITransactionProvider {
         );
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         $this->mesombTransaction = $transaction->originalTransaction()->first();
         if ($requestType) {
             $this->mesombTransaction->status = 1;

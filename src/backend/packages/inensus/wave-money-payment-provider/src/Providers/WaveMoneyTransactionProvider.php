@@ -23,7 +23,7 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         private TransactionConflicts $transactionConflicts,
     ) {}
 
-    public function validateRequest($request) {
+    public function validateRequest($request): void {
         $meterSerial = $request->input('meterSerial');
         $amount = $request->input('amount');
 
@@ -40,11 +40,11 @@ class WaveMoneyTransactionProvider implements ITransactionProvider {
         $this->setValidData($waveMoneyTransactionData);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->waveMoneyTransactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         if ($requestType) {
             $waveMoneyTransaction = $transaction->originalTransaction()->first();
             $updateData = [

@@ -31,8 +31,11 @@ class TransactionService implements IAssociative, IBaseService {
         private EBikeTransactionService $eBikeTransactionService,
     ) {}
 
-    private function getTotalAmountOfConfirmedTransaction($transactionIds) {
-        return $this->transaction->newQuery()->whereHasMorph(
+    /**
+     * @param array<int> $transactionIds
+     */
+    private function getTotalAmountOfConfirmedTransaction($transactionIds): float {
+        return (float) $this->transaction->newQuery()->whereHasMorph(
             'originalTransaction',
             '*',
             static fn ($q) => $q->where('status', 1)
@@ -41,6 +44,9 @@ class TransactionService implements IAssociative, IBaseService {
             ->sum('amount');
     }
 
+    /**
+     * @param array<int> $transactionIds
+     */
     private function getTransactionCountByStatus($transactionIds, bool $status): int {
         $status = $status === true ? 1 : 0;
 
@@ -80,7 +86,10 @@ class TransactionService implements IAssociative, IBaseService {
         }
     }
 
-    public function determinePeriod($period): ?array {
+    /**
+     * @return array<string, array<string, string>>|null
+     */
+    public function determinePeriod(int $period): ?array {
         $comparisonPeriod = null;
         switch ($period) {
             case self::YESTERDAY:
@@ -142,6 +151,11 @@ class TransactionService implements IAssociative, IBaseService {
         return $comparisonPeriod;
     }
 
+    /**
+     * @param array<string, array<string, string>> $comparisonPeriod
+     *
+     * @return array<string, \Illuminate\Support\Collection<int, int>>
+     */
     public function getByComparisonPeriod(array $comparisonPeriod): array {
         $currentTransactions = $this->transaction->newQuery()->whereBetween(
             'created_at',
@@ -166,6 +180,11 @@ class TransactionService implements IAssociative, IBaseService {
         ];
     }
 
+    /**
+     * @param array<int> $transactionIds
+     *
+     * @return array<string, int|float>|null
+     */
     public function getAnalysis($transactionIds): ?array {
         if (count($transactionIds) === 0) {
             return null;
@@ -193,6 +212,9 @@ class TransactionService implements IAssociative, IBaseService {
         ];
     }
 
+    /**
+     * @return array<string, int|float>
+     */
     public function getEmptyCompareResult(): array {
         return [
             'total' => 0,
@@ -204,6 +226,12 @@ class TransactionService implements IAssociative, IBaseService {
         ];
     }
 
+    /**
+     * @param array<string, int|float> $currentTransactions
+     * @param array<string, int|float> $pastTransactions
+     *
+     * @return array<string, array<string, float|string>>
+     */
     public function comparePeriods(array $currentTransactions, array $pastTransactions): array {
         $totalPercentage = $this->getPercentage($pastTransactions['total'], $currentTransactions['total'], false);
         $confirmationPercentage = round(
@@ -236,6 +264,9 @@ class TransactionService implements IAssociative, IBaseService {
         ];
     }
 
+    /**
+     * @param array<string, mixed> $transactionData
+     */
     public function make(array $transactionData): Transaction {
         return $this->transaction->newQuery()->make($transactionData);
     }
@@ -254,6 +285,9 @@ class TransactionService implements IAssociative, IBaseService {
             'device' => fn ($q) => $q->whereHas('person')->with(['device', 'person'])])->find($id);
     }
 
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->transaction->newQuery()->with(['originalTransaction'])->latest()->paginate($limit);
@@ -262,10 +296,16 @@ class TransactionService implements IAssociative, IBaseService {
         return $this->transaction->newQuery()->latest()->get();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): Transaction {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): Transaction {
         throw new \Exception('Method update() not yet implemented.');
     }

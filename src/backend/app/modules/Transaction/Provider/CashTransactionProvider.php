@@ -6,8 +6,10 @@ use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Model;
+use Inensus\WavecomPaymentProvider\Models\WaveComTransaction;
 
 class CashTransactionProvider implements ITransactionProvider {
+    /** @var array<string, mixed> */
     private array $validData = [];
 
     public function __construct(
@@ -26,6 +28,9 @@ class CashTransactionProvider implements ITransactionProvider {
         $this->saveData($this->cashTransaction);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function assignData(array $data): void {
         // provider specific data
         $this->cashTransaction->user_id = (int) $data['user_id'];
@@ -41,11 +46,11 @@ class CashTransactionProvider implements ITransactionProvider {
         $cashTransaction->save();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         // TODO: Implement sendResult() method.
     }
 
-    public function validateRequest($request) {
+    public function validateRequest(Transaction|WaveComTransaction $request): void {
         // TODO: Implement validateRequest() method.
     }
 
@@ -69,7 +74,7 @@ class CashTransactionProvider implements ITransactionProvider {
         return $this->cashTransaction->transaction()->save($this->transaction);
     }
 
-    public function init($transaction): void {
+    public function init(mixed $transaction): void {
         $this->cashTransaction = $transaction;
         $this->transaction = $transaction->transaction()->first();
     }

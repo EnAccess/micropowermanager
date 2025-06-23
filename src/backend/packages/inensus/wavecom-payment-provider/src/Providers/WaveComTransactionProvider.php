@@ -25,11 +25,11 @@ class WaveComTransactionProvider implements ITransactionProvider {
         private WaveComTransaction $waveComTransaction,
     ) {}
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->transactionService->saveTransaction();
     }
 
-    public function sendResult(bool $requestType, Transaction $transaction) {
+    public function sendResult(bool $requestType, Transaction $transaction): void {
         /** @var WaveComTransaction $waveComTransaction */
         $waveComTransaction = $transaction->originalTransaction()->first();
         $this->transactionService->setStatus($waveComTransaction, $requestType);
@@ -42,7 +42,7 @@ class WaveComTransactionProvider implements ITransactionProvider {
         }
     }
 
-    public function validateRequest($request) {
+    public function validateRequest($request): void {
         // no need as the transaction initialized by uploading a separate file
     }
 
