@@ -21,7 +21,7 @@ interface PaymentProviderTransactionInterface {
      * This relationship is polymorphic and links the provider-specific transaction
      * to the core `Transaction` model used by the application.
      *
-     * @return Transaction
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function transaction();
 
@@ -37,8 +37,6 @@ interface PaymentProviderTransactionInterface {
 
     /**
      * Create a new Eloquent query builder instance for payment provider transactions.
-     *
-     * @return Builder
      */
     public function newQuery();
 

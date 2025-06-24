@@ -25,6 +25,13 @@ use Illuminate\Support\Facades\DB;
  *
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
+ *
+ * @property int    $id
+ * @property int    $amount
+ * @property string $type
+ * @property string $sender
+ * @property string $message
+ * @property string $original_transaction_type
  */
 class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
