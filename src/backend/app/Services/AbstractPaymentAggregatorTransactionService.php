@@ -8,7 +8,7 @@ use App\Misc\TransactionDataContainer;
 use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
-use App\Models\Transaction\IRawTransaction;
+use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use Inensus\SteamaMeter\Exceptions\ModelNotFoundException;
 
@@ -24,7 +24,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         private Meter $meter,
         private Address $address,
         private Transaction $transaction,
-        private IRawTransaction $paymentAggregatorTransaction,
+        private PaymentProviderTransactionInterface $paymentAggregatorTransaction,
     ) {}
 
     public function validatePaymentOwner(string $meterSerialNumber, float $amount): void {
@@ -140,7 +140,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->minimumPurchaseAmount;
     }
 
-    public function getPaymentAggregatorTransaction(): IRawTransaction {
+    public function getPaymentAggregatorTransaction(): PaymentProviderTransactionInterface {
         return $this->paymentAggregatorTransaction;
     }
 }

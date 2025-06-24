@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Inensus\WavecomPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\IRawTransaction;
+use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int    $id
@@ -20,7 +19,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property string $message
  * @property int    $amount
  */
-class WaveComTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
+class WaveComTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     protected $table = 'wavecom_transactions';
     public const RELATION_NAME = 'wavecom_transaction';
     public const STATUS_SUCCESS = 1;

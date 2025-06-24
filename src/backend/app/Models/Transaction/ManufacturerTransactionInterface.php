@@ -2,7 +2,7 @@
 
 namespace App\Models\Transaction;
 
-interface ISubTransaction {
+interface ManufacturerTransactionInterface {
     public function agentTransaction();
 
     public function thirdPartyTransaction();
