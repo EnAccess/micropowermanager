@@ -13,7 +13,7 @@ namespace App\Models\Transaction;
  *  Implementations may also expose additional metadata such as `site_ids`,
  * `external_ids`, device identifiers, or configuration parameters required
  * by the manufacturer’s systems.
- * These are should be exposed through custom methods or attributes on the implementing model.
+ * These should be exposed through custom methods or attributes on the implementing model.
  */
 interface ManufacturerTransactionInterface {
     public function agentTransaction();

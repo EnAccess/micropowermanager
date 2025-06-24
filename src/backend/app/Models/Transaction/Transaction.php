@@ -38,7 +38,7 @@ class Transaction extends BaseModel {
     public const TYPE_IMPORTED = 'imported';
 
     /**
-     * Get the opayment provider-specific transaction linked to this system transaction.
+     * Get the payment provider-specific transaction linked to this system transaction.
      */
     public function originalTransaction(): MorphTo {
         return $this->morphTo();

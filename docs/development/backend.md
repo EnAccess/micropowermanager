@@ -83,7 +83,7 @@ $person->save();
 
 ### Transactions abstractions
 
-To model real worl transactions and their implications in MicroPowerManager different abstractions are used.
+To model real world transactions and their implications in MicroPowerManager different abstractions are used.
 
 **Transactions:** General purpose system level Transaction.
 Used to interact and be linked with other MicroPowerManager objects and models.
