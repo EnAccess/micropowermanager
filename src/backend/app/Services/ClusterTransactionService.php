@@ -7,7 +7,14 @@ use App\Models\Transaction\Transaction;
 class ClusterTransactionService {
     public function __construct(private Transaction $transaction) {}
 
-    public function getById($clusterId, array $range) {
+    /**
+     * Get total transaction amount by cluster ID within a date range
+     *
+     * @param int $clusterId
+     * @param array<int, string> $range
+     * @return float
+     */
+    public function getById(int $clusterId, array $range): float {
         return $this->transaction->newQuery()->whereHas(
             'device',
             function ($q) use ($clusterId) {
