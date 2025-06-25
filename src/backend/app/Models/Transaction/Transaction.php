@@ -15,7 +15,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Transaction.
+ * General purpose system Transaction.
+ *
+ * Serves as a normalized abstraction of financial or operational transactions within
+ * the MicroPowerManager system. This model is used to track and interact with common
+ * system entities such as devices, users, or external transaction sources.
+ * It also provides a unified representation of a transaction, decoupling the system
+ * from payment provider-specific or manufacturer-specific transaction formats.
+ *
+ * The `originalTransaction()` method links this system-level transaction to the
+ * payment provider-specific transaction.
  *
  * @property int    $id
  * @property int    $amount
@@ -28,6 +37,9 @@ class Transaction extends BaseModel {
     public const RELATION_NAME = 'transaction';
     public const TYPE_IMPORTED = 'imported';
 
+    /**
+     * Get the payment provider-specific transaction linked to this system transaction.
+     */
     public function originalTransaction(): MorphTo {
         return $this->morphTo();
     }

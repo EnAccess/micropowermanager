@@ -23,6 +23,14 @@ Then open [docs](http://localhost:5173/) in a local web browser.
 This command starts a local development server and opens up a browser window.
 Most changes are reflected live without having to restart the server.
 
+## Modify drawings
+
+To edit the **drawings** please install
+
+- [Excalidraw VS Code Extension](https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor)
+
+Then, open files with the `.excalidraw.svg` or `.excalidraw.png` in VS Code.
+
 ## Deployment
 
 Deployment is done using Github Actions and does not involve manual steps.

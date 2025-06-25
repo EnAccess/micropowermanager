@@ -3,13 +3,13 @@
 namespace Inensus\SteamaMeter\Models;
 
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ISubTransaction;
+use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\ThirdPartyTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class SteamaTransaction extends BaseModel implements ISubTransaction {
+class SteamaTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'steama_transactions';
 
     public function site() {

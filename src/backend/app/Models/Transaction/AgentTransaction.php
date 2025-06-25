@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int    $agent_id
@@ -16,7 +15,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property int    $status
  * @property string $sender
  */
-class AgentTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
+class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';
 
     public function transaction(): MorphOne {
