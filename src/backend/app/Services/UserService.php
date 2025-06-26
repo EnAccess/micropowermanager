@@ -17,6 +17,9 @@ class UserService {
         private MailHelperInterface $mailHelper,
     ) {}
 
+    /**
+     * @param array{name: string, password: string, email: string} $userData
+     */
     public function create(array $userData, ?int $companyId = null): User {
         $shouldSyncUserWithMasterDatabase = $companyId !== null;
 
@@ -40,7 +43,10 @@ class UserService {
         return $user;
     }
 
-    public function update($user, $data) {
+    /**
+     * @param array{password: string} $data
+     */
+    public function update(User $user, array $data): User {
         $user->update(['password' => $data['password']]);
 
         return $user->fresh();
@@ -81,6 +87,9 @@ class UserService {
         return $user;
     }
 
+    /**
+     * @return LengthAwarePaginator<User>
+     */
     public function list(): LengthAwarePaginator {
         return $this->buildQuery()
             ->select('id', 'name', 'email')
@@ -123,18 +132,24 @@ class UserService {
         return $user->getCompanyId();
     }
 
-    public function getById($id) {
+    public function getById(int $id): ?User {
         return $this->user->newQuery()->find($id);
     }
 
-    public function delete($model): ?bool {
+    public function delete(User $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, User>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, User>
+     */
     public function getUsers(): Collection {
         return $this->user->newQuery()->get();
     }

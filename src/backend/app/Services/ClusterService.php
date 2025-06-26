@@ -55,6 +55,7 @@ class ClusterService implements IBaseService {
     /**
      * @param string|null $startDate
      * @param string|null $endDate
+     *
      * @return array<int, string>
      */
     public function getDateRangeFromRequest(?string $startDate, ?string $endDate): array {
@@ -93,7 +94,7 @@ class ClusterService implements IBaseService {
         return $this->cluster->newQuery()->with('miniGrids')->get();
     }
 
-     /**
+    /**
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): Cluster {
