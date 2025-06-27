@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ThirdPartyTransaction extends BaseModel implements IRawTransaction {
+class ThirdPartyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'third_party_transaction';
 
     public function transaction(): MorphOne {
@@ -20,5 +20,9 @@ class ThirdPartyTransaction extends BaseModel implements IRawTransaction {
 
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string {
+        return self::RELATION_NAME;
     }
 }

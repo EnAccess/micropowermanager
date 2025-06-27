@@ -3,14 +3,14 @@
 namespace Inensus\SparkMeter\Models;
 
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ISubTransaction;
+use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class SmTransaction extends BaseModel implements ISubTransaction {
+class SmTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'sm_transactions';
 
     public function mpmTransaction() {

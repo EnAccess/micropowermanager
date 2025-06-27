@@ -32,7 +32,6 @@ return [
         'energy' => env('QUEUE_ENERGY', 'energy_payment'),
         'token' => env('QUEUE_TOKEN', 'token'),
         'sms' => env('QUEUE_SMS', 'sms'),
-        'history' => env('QUEUE_HISTORY', 'history'),
         'report' => env('QUEUE_REPORT', 'report_generator'),
         'misc' => env('QUEUE_MISC', 'misc'),
     ],

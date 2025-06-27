@@ -4,13 +4,13 @@ namespace Inensus\CalinMeter\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Transaction\AgentTransaction;
-use App\Models\Transaction\ISubTransaction;
+use App\Models\Transaction\ManufacturerTransactionInterface;
 use App\Models\Transaction\ThirdPartyTransaction;
 use Inensus\MesombPaymentProvider\Models\MesombTransaction;
 use Inensus\SwiftaPaymentProvider\Models\SwiftaTransaction;
 use Inensus\WaveMoneyPaymentProvider\Models\WaveMoneyTransaction;
 
-class CalinTransaction extends BaseModel implements ISubTransaction {
+class CalinTransaction extends BaseModel implements ManufacturerTransactionInterface {
     protected $table = 'calin_transactions';
 
     public function agentTransaction() {

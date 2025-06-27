@@ -6,8 +6,8 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Inensus\SteamaMeter\Listeners\SmsListener;
 
 class EventServiceProvider extends ServiceProvider {
-    protected $subscribe = [
-        SmsListener::class,
+    protected $listen = [
+        'sms.stored' => [SmsListener::class],
     ];
 
     /**

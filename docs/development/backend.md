@@ -81,6 +81,21 @@ $person->save();
 > The schema of the central database is massive.
 > In `erd-editor` you can use `Right Click => Automatic Table Placement` to get nicer overview.
 
+### Transactions abstractions
+
+To model real world transactions and their implications in MicroPowerManager different abstractions are used.
+
+**Transactions:** General purpose system level Transaction.
+Used to interact and be linked with other MicroPowerManager objects and models.
+
+**Payment Provider Transactions:** Represents a transaction specific to a payment provider.
+Objects and models may contain information specific to the payment provider, for example external id, order id or reference id.
+
+**Manufacturer Transactions:** Represents how the transaction enables or interacts with manufacturer-specific devices.
+Objects and models may contain information specific to the manufacturer, for example external id or site id.
+
+![Transaction abstractions](images/transactions.excalidraw.svg)
+
 ## API docs
 
 <!-- prettier-ignore -->

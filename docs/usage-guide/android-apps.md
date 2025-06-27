@@ -15,7 +15,7 @@ The 3 apps (APK files) can be downloaded and installed as follows:
 3. Apps get installed
 
 4. Once the app is installed on the phone, you will be asked for an URL.
-   Following URL can be used: <https://cloud.micropowermanager.io>
+   Following URL can be used: <https://api.cloud.micropowermanager.io>
 
 5. Log in to the apps with the login credentials used to access MPM website interface (in case you have access to the website interface) or with the credentials given to you by management.
 

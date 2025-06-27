@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int    $manufacturer_transaction_id
  * @property string $manufacturer_transaction_type
  */
-class CashTransaction extends BaseModel implements IRawTransaction {
+class CashTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'cash_transaction';
 
     public function user(): BelongsTo {
@@ -32,5 +32,9 @@ class CashTransaction extends BaseModel implements IRawTransaction {
 
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
+    }
+
+    public static function getTransactionName(): string {
+        return self::RELATION_NAME;
     }
 }

@@ -3,10 +3,9 @@
 namespace Inensus\WaveMoneyPaymentProvider\Models;
 
 use App\Models\Base\BaseModel;
-use App\Models\Transaction\IRawTransaction;
+use App\Models\Transaction\PaymentProviderTransactionInterface;
 use App\Models\Transaction\Transaction;
 use App\Models\Transaction\TransactionConflicts;
-use MPM\Transaction\FullySupportedTransactionInterface;
 
 /**
  * @property int id
@@ -19,7 +18,7 @@ use MPM\Transaction\FullySupportedTransactionInterface;
  * @property int customer_id
  * @property string|null meter_serial
  */
-class WaveMoneyTransaction extends BaseModel implements IRawTransaction, FullySupportedTransactionInterface {
+class WaveMoneyTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'wave_money_transaction';
 
     public const STATUS_REQUESTED = 0;
