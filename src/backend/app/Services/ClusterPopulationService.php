@@ -7,7 +7,7 @@ use App\Models\Person\Person;
 class ClusterPopulationService {
     public function __construct(private Person $person) {}
 
-    public function getById($clusterId, $onlyCustomers = true): int {
+    public function getById(int $clusterId, bool $onlyCustomers = true): int {
         if ($onlyCustomers) {
             $population = $this->person->newQuery()
                 ->where('is_customer', 1)
