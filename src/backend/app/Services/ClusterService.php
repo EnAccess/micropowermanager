@@ -30,7 +30,7 @@ class ClusterService implements IBaseService {
     public function getCluster(
         Cluster $cluster,
         int $meterCount,
-        int $totalTransactionsAmount,
+        float $totalTransactionsAmount,
         int $populationCount,
     ): Cluster {
         $this->setClusterMeterCount($cluster, $meterCount);
