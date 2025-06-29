@@ -17,6 +17,11 @@ return new class extends Migration {
             ->whereNotNull('protected_page_password')
             ->pluck('protected_page_password', 'name');
 
+
+        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
+            $table->longText('protected_page_password')->nullable();
+        });
+
         foreach ($existingPasswords as $companyName => $password) {
             DB::connection('tenant')
                 ->table('main_settings')
