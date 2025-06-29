@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 
 class MainSettingsController extends Controller {
     public function __construct(
-        private MainSettingsService $mainSettingsService, private UserService $userService, private CompanyService $companyService,
+        private MainSettingsService $mainSettingsService,
+        private UserService $userService,
+        private CompanyService $companyService,
     ) {}
 
     public function index(): ApiResource {
