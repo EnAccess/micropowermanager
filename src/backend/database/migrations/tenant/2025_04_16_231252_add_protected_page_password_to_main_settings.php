@@ -45,9 +45,11 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
-            $table->string('protected_page_password')->nullable();
-        });
+        if (!Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
+            Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
+                $table->string('protected_page_password')->nullable();
+            });
+        }
         $mainSettingsPasswords = DB::connection('tenant')
             ->table('main_settings')
             ->whereNotNull('protected_page_password')
@@ -58,8 +60,10 @@ return new class extends Migration {
                 ->where('name', $companyName)
                 ->update(['protected_page_password' => Crypt::decrypt($password)]);
         }
-        Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
-            $table->dropColumn('protected_page_password');
-        });
+        if (Schema::connection('tenant')->hasColumn('main_settings', 'protected_page_password')) {
+            Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
+                $table->dropColumn('protected_page_password');
+            });
+        }
     }
 };
