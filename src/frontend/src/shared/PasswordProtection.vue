@@ -6,7 +6,6 @@
 import { mapGetters } from "vuex"
 import { EventBus } from "@/shared/eventbus"
 import { ProtectedPageService } from "@/services/ProtectedPageService"
-import { ProtectedPageService } from "@/services/ProtectedPageService"
 
 export default {
   name: "PasswordProtection",
@@ -34,7 +33,6 @@ export default {
   computed: {
     ...mapGetters({
       protectedPages: "protection/getProtectedPages",
-      mainSettings: "settings/getMainSettings",
     }),
   },
   methods: {
