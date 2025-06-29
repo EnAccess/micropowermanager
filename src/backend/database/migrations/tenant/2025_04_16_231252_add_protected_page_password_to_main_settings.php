@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -13,9 +13,13 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        $existingPasswords = DB::connection('micro_power_manager')->table('companies')
-            ->whereNotNull('protected_page_password')
-            ->pluck('protected_page_password', 'name');
+        if (Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
+            $existingPasswords = DB::connection('micro_power_manager')->table('companies')
+                ->whereNotNull('protected_page_password')
+                ->pluck('protected_page_password', 'name');
+        } else {
+            $existingPasswords = collect();
+        }
 
         Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
             $table->longText('protected_page_password')->nullable();
@@ -25,11 +29,14 @@ return new class extends Migration {
             DB::connection('tenant')
                 ->table('main_settings')
                 ->where('company_name', $companyName)
-                ->update(['protected_page_password' => $password]);
+                ->update(['protected_page_password' => Crypt::encrypt($password)]);
         }
-        Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
-            $table->dropColumn('protected_page_password');
-        });
+
+        if (Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
+            Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
+                $table->dropColumn('protected_page_password');
+            });
+        }
     }
 
     /**
@@ -44,12 +51,12 @@ return new class extends Migration {
         $mainSettingsPasswords = DB::connection('tenant')
             ->table('main_settings')
             ->whereNotNull('protected_page_password')
-            ->pluck('protected_page_password', 'name');
+            ->pluck('protected_page_password', 'company_name');
 
         foreach ($mainSettingsPasswords as $companyName => $password) {
             DB::connection('micro_power_manager')->table('companies')
                 ->where('name', $companyName)
-                ->update(['protected_page_password' => $password]);
+                ->update(['protected_page_password' => Crypt::decrypt($password)]);
         }
         Schema::connection('tenant')->table('main_settings', function (Blueprint $table) {
             $table->dropColumn('protected_page_password');
