@@ -8,15 +8,30 @@ export class ProtectedPageService {
 
   async getProtectedPages() {
     try {
-      let response = await this.repository.list()
-      if (response.status === 200 || response.status === 201) {
-        return response.data.data
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
+      const { data, status, error } = await this.repository.list()
+      if (status !== 200) {
+        throw new ErrorHandler(error, "http", status)
       }
+      return data.data
     } catch (e) {
-      let erorMessage = e.response.data.data.message
-      return new ErrorHandler(erorMessage, "http")
+      const errorMessage = e.response.data.data.message
+      throw new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async compareProtectedPagePassword(id, password) {
+    try {
+      const { data, status, error } = await this.repository.compare({
+        id,
+        password,
+      })
+      if (status !== 200) {
+        throw new ErrorHandler(error, "http", status)
+      }
+      return data.result
+    } catch (e) {
+      const errorMessage = e.response.data.data.message
+      throw new ErrorHandler(errorMessage, "http")
     }
   }
 }

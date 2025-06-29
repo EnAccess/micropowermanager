@@ -29,7 +29,8 @@ class CompanyController extends Controller {
     ) {}
 
     public function store(CompanyRegistrationRequest $request): JsonResponse {
-        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id', 'protected_page_password']);
+        $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id']);
+        $protectedPagePassword = $request->input('protected_page_password');
         $adminData = $request->input('user');
         $plugins = $request->input('plugins');
         $usageType = $request->input('usage_type');
@@ -37,7 +38,7 @@ class CompanyController extends Controller {
         // Create Company and CompanyDatabase
         $company = $this->companyService->create($companyData);
 
-        $companyDatabase = $this->companyDatabaseService->create([
+        $this->companyDatabaseService->create([
             'company_id' => $company->getId(),
             'database_name' => str_replace(' ', '', preg_replace('/[^a-z\d_ ]/i', '', $company->getName())).'_'.
                 Carbon::now()->timestamp,
@@ -60,11 +61,11 @@ class CompanyController extends Controller {
         // Set some meaningful settings by default
         $this->databaseProxyManagerService->runForCompany(
             $company->getId(),
-            function () use ($company, $usageType) {
+            function () use ($company, $usageType, $protectedPagePassword) {
                 $mainSettings = $this->mainSettingsService->getAll()->first();
                 $this->mainSettingsService->update(
                     $mainSettings,
-                    ['company_name' => $company->name, 'usage_type' => $usageType]
+                    ['company_name' => $company->name, 'usage_type' => $usageType, 'protected_page_password' => $protectedPagePassword]
                 );
             }
         );
