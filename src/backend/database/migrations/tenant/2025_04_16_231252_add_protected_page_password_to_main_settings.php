@@ -45,7 +45,7 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        if (!Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
+        if (Schema::connection('micro_power_manager')->hasTable('companies') && !Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
             Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
                 $table->string('protected_page_password')->nullable();
             });
