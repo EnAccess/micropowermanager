@@ -11,7 +11,7 @@ class TransactionConfirmation extends SmsSender {
     public string $body = '';
 
     /** @var array<string, string> */
-    protected array|null $references = [
+    protected ?array $references = [
         'header' => 'SmsTransactionHeader',
         'footer' => 'SmsTransactionFooter',
         'body' => '',

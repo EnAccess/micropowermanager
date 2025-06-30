@@ -19,7 +19,7 @@ use MPM\Target\TargetAssignable;
  * @property string $created_at
  * @property int    $population
  * @property int    $meterCount
- * @property float    $revenue
+ * @property float  $revenue
  */
 class Cluster extends BaseModel implements TargetAssignable {
     use HasFactory;

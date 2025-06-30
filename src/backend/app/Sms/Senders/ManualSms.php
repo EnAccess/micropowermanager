@@ -5,7 +5,7 @@ namespace App\Sms\Senders;
 class ManualSms extends SmsSender {
     protected mixed $data;
     public string $body = '';
-    protected array|null $references = [
+    protected ?array $references = [
         'body' => '',
     ];
 
