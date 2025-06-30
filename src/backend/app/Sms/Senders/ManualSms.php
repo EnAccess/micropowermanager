@@ -3,13 +3,13 @@
 namespace App\Sms\Senders;
 
 class ManualSms extends SmsSender {
-    protected $data;
-    public $body = '';
-    protected $references = [
+    protected mixed $data;
+    public string $body = '';
+    protected array|null $references = [
         'body' => '',
     ];
 
-    public function prepareBody() {
+    public function prepareBody(): void {
         $this->body .= $this->data['message'];
     }
 }

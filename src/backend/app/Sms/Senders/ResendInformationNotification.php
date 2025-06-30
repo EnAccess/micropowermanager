@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class ResendInformationNotification extends SmsSender {
-    protected $data;
-    public $body = '';
-    protected $references = [
+    protected mixed $data;
+    public string $body = '';
+    protected array|null $references = [
         'header' => 'SmsResendInformationHeader',
         'footer' => 'SmsResendInformationFooter',
         'body' => 'ResendInformation',
     ];
 
-    public function prepareBody() {
+    public function prepareBody(): void {
         if (!is_array($this->data)) {
             try {
                 $smsBody = $this->smsBodyService->getSmsBodyByReference('ResendInformation');

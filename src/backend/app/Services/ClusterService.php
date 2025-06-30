@@ -19,7 +19,7 @@ class ClusterService implements IBaseService {
         $cluster->meterCount = $meterCount;
     }
 
-    protected function setRevenue(Cluster $cluster, int $totalTransactionsAmount): void {
+    protected function setRevenue(Cluster $cluster, float $totalTransactionsAmount): void {
         $cluster->revenue = $totalTransactionsAmount;
     }
 

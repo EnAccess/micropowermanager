@@ -119,6 +119,9 @@ class UserService {
         return $admin;
     }
 
+    /**
+     * @return Builder<User>
+     */
     private function buildQuery(): Builder {
         return $this->user->newQuery();
     }

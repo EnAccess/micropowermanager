@@ -45,7 +45,7 @@ class ApplianceInstallmentPayer {
 
     // This function processes the payment of all installments (excluding device-recorded ones) that are due, right before generating the meter token.
     // If meter number is provided in transaction
-    public function payInstallments(): float {
+    public function payInstallments(): int {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
         $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds);
