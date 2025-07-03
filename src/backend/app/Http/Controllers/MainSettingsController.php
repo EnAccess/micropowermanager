@@ -39,9 +39,7 @@ class MainSettingsController extends Controller {
         }
 
         $updated = $this->mainSettingsService->update($mainSettings, $mainSettingsData);
-        if ($updated) {
-            unset($updated['protected_page_password']);
-        }
+        unset($updated['protected_page_password']);
 
         return ApiResource::make($updated);
     }
