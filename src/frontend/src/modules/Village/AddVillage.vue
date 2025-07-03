@@ -52,6 +52,33 @@
                 </span>
               </md-field>
             </div>
+            <div class="md-layout-item md-size-30 md-small-size-100">
+              <md-field
+                :class="{ 'md-invalid': errors.has($tc('words.country')) }"
+              >
+                <label for="country">Country</label>
+                <md-select
+                  v-model="selectedCountryId"
+                  name="country"
+                  id="country"
+                  v-validate="'required'"
+                >
+                  <md-option value selected disabled>
+                    -- {{ $tc("words.select") }} --
+                  </md-option>
+                  <md-option
+                    v-for="country in countries"
+                    :value="country.id"
+                    :key="country.id"
+                  >
+                    {{ country.country_name }}
+                  </md-option>
+                </md-select>
+                <span class="md-error">
+                  {{ errors.first($tc("words.country")) }}
+                </span>
+              </md-field>
+            </div>
           </div>
 
           <div class="md-layout md-gutter md-size-100">
@@ -157,6 +184,7 @@ import RedirectionModal from "@/shared/RedirectionModal"
 import { notify } from "@/mixins/notify"
 import { ICONS, MARKER_TYPE } from "@/services/MappingService"
 import VillageMap from "@/modules/Map/VillageMap.vue"
+import CountryService from "@/services/CountryService"
 
 export default {
   name: "AddVillage",
@@ -180,6 +208,9 @@ export default {
       cityName: null,
       cityIndex: 0,
       cityService: new CityService(),
+      countryService: new CountryService(),
+      countries: [],
+      selectedCountryId: null,
       cityLatLng: {
         lat: null,
         lon: null,
@@ -193,6 +224,7 @@ export default {
     this.redirectedMiniGridId = this.$route.params.id
     this.mappingService.setConstantMarkerUrl(ICONS.MINI_GRID)
     this.mappingService.setMarkerUrl(ICONS.VILLAGE)
+    this.getCountries()
   },
   mounted() {
     this.setMiniGridOfVillage()
@@ -240,15 +272,28 @@ export default {
         this.alertNotify("error", e.message)
       }
     },
+    async getCountries() {
+      try {
+        await this.countryService.getCountries()
+        this.countries = this.countryService.list
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     async saveVillage() {
       const validator = await this.$validator.validateAll()
       if (validator) {
+        if (!this.selectedCountryId) {
+          this.alertNotify("error", this.$tc("phrases.selectCountry"))
+          return
+        }
         try {
           this.loading = true
           const city = {
             name: this.cityName,
             clusterId: this.clusterId,
             miniGridId: this.selectedMiniGridId,
+            countryId: this.selectedCountryId,
             points: `${this.cityLatLng.lat},${this.cityLatLng.lon}`,
           }
           await this.cityService.createCity(city)
