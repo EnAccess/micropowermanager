@@ -53,8 +53,10 @@
               </md-field>
             </div>
             <div class="md-layout-item md-size-30 md-small-size-100">
-              <md-field :class="{ 'md-invalid': errors.has($tc('words.country')) }">
-                <label for="country"> Country </label>
+              <md-field
+                :class="{ 'md-invalid': errors.has($tc('words.country')) }"
+              >
+                <label for="country">Country</label>
                 <md-select
                   v-model="selectedCountryId"
                   name="country"
@@ -62,7 +64,7 @@
                   v-validate="'required'"
                 >
                   <md-option value selected disabled>
-                    -- {{ $tc('words.select') }} --
+                    -- {{ $tc("words.select") }} --
                   </md-option>
                   <md-option
                     v-for="country in countries"
@@ -73,7 +75,7 @@
                   </md-option>
                 </md-select>
                 <span class="md-error">
-                  {{ errors.first($tc('words.country')) }}
+                  {{ errors.first($tc("words.country")) }}
                 </span>
               </md-field>
             </div>
