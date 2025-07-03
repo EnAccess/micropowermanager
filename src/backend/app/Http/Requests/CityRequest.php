@@ -29,16 +29,8 @@ class CityRequest extends FormRequest {
         return [
             'name' => 'required',
             'mini_grid_id' => 'required',
+            'cluster_id' => 'required',
+            'country_id' => 'required|integer|exists:countries,id',
         ];
-    }
-
-    public function getCity(): City {
-        $city = new City();
-        $city->setName($this->input(self::PARAM_NAME));
-        $city->setCountryId($this->input(self::PARAM_COUNTRY_ID, 0));
-        $city->setClusterId($this->input(self::PARAM_CLUSTER_ID));
-        $city->setMiniGridId($this->input(self::PARAM_MINI_GRID));
-
-        return $city;
     }
 }
