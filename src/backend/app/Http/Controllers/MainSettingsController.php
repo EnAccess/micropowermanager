@@ -13,7 +13,12 @@ class MainSettingsController extends Controller {
     ) {}
 
     public function index(): ApiResource {
-        return ApiResource::make($this->mainSettingsService->getAll()->first());
+        $mainSettings = $this->mainSettingsService->getAll()->first();
+        if ($mainSettings) {
+            unset($mainSettings['protected_page_password']);
+        }
+
+        return ApiResource::make($mainSettings);
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
@@ -33,6 +38,11 @@ class MainSettingsController extends Controller {
             $mainSettingsData['protected_page_password'] = $protectedPagePassword;
         }
 
-        return ApiResource::make($this->mainSettingsService->update($mainSettings, $mainSettingsData));
+        $updated = $this->mainSettingsService->update($mainSettings, $mainSettingsData);
+        if ($updated) {
+            unset($updated['protected_page_password']);
+        }
+
+        return ApiResource::make($updated);
     }
 }
