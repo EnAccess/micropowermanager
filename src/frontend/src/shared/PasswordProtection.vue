@@ -33,6 +33,7 @@ export default {
   computed: {
     ...mapGetters({
       protectedPages: "protection/getProtectedPages",
+      mainSettings: "settings/getMainSettings",
     }),
   },
   methods: {
