@@ -16,11 +16,12 @@ class ClusterRevenueService {
     ) {}
 
     /**
-     * @param int $clusterId
+     * @param int                         $clusterId
      * @param array{0: string, 1: string} $period
-     * @param int|null $connectionType
-     * @param int|null $miniGridId
-     * @return Collection<int, \App\Models\Transaction\Transaction>
+     * @param int|null                    $connectionType
+     * @param int|null                    $miniGridId
+     *
+     * @return Collection<int, Transaction>
      */
     public function getTransactionsForMonthlyPeriodById(
         int $clusterId,
