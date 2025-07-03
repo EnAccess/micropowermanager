@@ -12,7 +12,7 @@ class SmsReminderHeader extends SmsBodyParser {
         $this->reminderData = $reminderData;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         $person = $this->reminderData->assetPerson->person;
         switch ($variable) {
             case 'name':

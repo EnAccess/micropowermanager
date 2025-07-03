@@ -3,7 +3,7 @@
 namespace App\Sms\Senders;
 
 class AssetRateNotification extends SmsSender {
-    protected $references = [
+    protected ?array $references = [
         'header' => 'SmsReminderHeader',
         'body' => 'AssetRateReminder',
         'footer' => 'SmsReminderFooter',

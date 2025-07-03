@@ -6,8 +6,8 @@ use App\Models\Address\Address;
 use App\Models\User;
 
 class UserAddressService {
-    private $address;
-    private $user;
+    private Address $address;
+    private User $user;
 
     public function __construct(Address $address, User $user) {
         $this->address = $address;
@@ -29,7 +29,7 @@ class UserAddressService {
         return $address->with(['city']);
     }
 
-    public function update(User $user, $data) {
+    public function update(User $user, $data): User {
         $user->name = $data['name'];
         $user->update();
         $address = $user->address()->first();

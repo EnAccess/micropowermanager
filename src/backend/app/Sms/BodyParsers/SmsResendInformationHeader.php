@@ -12,7 +12,7 @@ class SmsResendInformationHeader extends SmsBodyParser {
         $this->data = $data;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         if (!is_array($this->data)) {
             $person = $this->data->device->person;
         } else {

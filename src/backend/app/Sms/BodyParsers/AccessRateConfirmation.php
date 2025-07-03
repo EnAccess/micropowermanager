@@ -12,7 +12,7 @@ class AccessRateConfirmation extends SmsBodyParser {
         $this->paymentHistory = $paymentHistory;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         switch ($variable) {
             case 'amount':
                 $variable = $this->paymentHistory->amount;
