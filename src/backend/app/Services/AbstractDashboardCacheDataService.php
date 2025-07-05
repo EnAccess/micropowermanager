@@ -15,7 +15,7 @@ abstract class AbstractDashboardCacheDataService {
         $this->cacheDataKey = $cacheDataKey;
     }
 
-    abstract public function setData($dateRange = []);
+    abstract public function setData(array $dateRange = []);
 
     public function getData() {
         return Cache::get(self::cacheKeyGenerator()) ? Cache::get(self::cacheKeyGenerator())->toArray() : [];

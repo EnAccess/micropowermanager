@@ -129,7 +129,7 @@ abstract class SmsSender {
         }
     }
 
-    private function getSmsBody($reference): mixed {
+    private function getSmsBody(string $reference): mixed {
         try {
             $smsBody = $this->smsBodyService->getSmsBodyByReference($this->references[$reference]);
         } catch (ModelNotFoundException $e) {
@@ -186,7 +186,7 @@ abstract class SmsSender {
         return $this->receiver;
     }
 
-    public function setCallback($callback, $uuid): void {
+    public function setCallback(string $callback, string $uuid): void {
         $this->callback = sprintf($callback, $uuid);
     }
 

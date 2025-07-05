@@ -14,6 +14,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
         private ConnectionGroup $connectionGroup,
     ) {}
 
+    /**
+     * @param array<string, mixed> $connectionGroupData
+     */
     public function create(array $connectionGroupData): ConnectionGroup {
         return $this->connectionGroup->newQuery()->create($connectionGroupData);
     }
@@ -22,6 +25,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
         return $this->connectionGroup->newQuery()->findOrFail($connectionGroupId);
     }
 
+    /**
+     * @param array<string, mixed> $connectionGroupData
+     */
     public function update($connectionGroup, array $connectionGroupData): ConnectionGroup {
         $connectionGroup->update($connectionGroupData);
         $connectionGroup->fresh();
@@ -29,6 +35,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
         return $connectionGroup;
     }
 
+    /**
+     * @return Collection<int, ConnectionGroup>|LengthAwarePaginator<ConnectionGroup>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->connectionGroup->newQuery()->paginate($limit);

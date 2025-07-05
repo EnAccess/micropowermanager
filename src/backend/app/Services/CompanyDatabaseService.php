@@ -24,6 +24,9 @@ class CompanyDatabaseService implements IBaseService {
         return $result;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): CompanyDatabase {
         /** @var CompanyDatabase $company_database */
         $company_database = $this->companyDatabase->newQuery()->create($data);
@@ -52,6 +55,9 @@ class CompanyDatabaseService implements IBaseService {
         return $company_database;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): CompanyDatabase {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -60,6 +66,9 @@ class CompanyDatabaseService implements IBaseService {
         throw new \Exception('Method update() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, CompanyDatabase>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

@@ -14,26 +14,32 @@ class CompanyService implements IBaseService {
         private Company $company,
     ) {}
 
-    public function getByName($name): Company {
+    public function getByName(string $name): Company {
         return $this->company->where('name', $name)->firstOrFail();
     }
 
-    public function getByDatabaseProxy($databaseProxy): Company {
+    public function getByDatabaseProxy(object $databaseProxy): Company {
         return $this->getById($databaseProxy->getCompanyId());
     }
 
-    public function getById($id): Company {
+    public function getById(int $id): Company {
         $result = $this->company->newQuery()->findOrFail($id);
 
         return $result;
     }
 
-    public function create($data): Company {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function create(array $data): Company {
         $company = $this->company->newQuery()->create($data);
 
         return $company;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): Company {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -42,6 +48,9 @@ class CompanyService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, Company>
+     */
     public function getAll(?int $limit = null): Collection {
         return $this->company->newQuery()->get();
     }

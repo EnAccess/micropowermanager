@@ -22,7 +22,10 @@ class ClustersDashboardCacheDataService extends AbstractDashboardCacheDataServic
         parent::__construct(self::CACHE_KEY_CLUSTERS_DATA);
     }
 
-    public function setData($dateRange = []): void {
+    /**
+     * @param array<string> $dateRange
+     */
+    public function setData(array $dateRange = []): void {
         if (empty($dateRange)) {
             // Set $startDate to 3 months ago
             $startDate = date('Y-m-d', strtotime('-3 months'));

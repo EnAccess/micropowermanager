@@ -20,7 +20,7 @@ class ApplianceInstallmentPayer {
     /** @var array<int, array{asset_rate_id: int, paid: float}> */
     public array $paidRates = [];
     public ?AssetPerson $shsLoan = null;
-    public $consumableAmount;
+    public float $consumableAmount;
 
     public function __construct(
         private AppliancePersonService $appliancePersonService,
