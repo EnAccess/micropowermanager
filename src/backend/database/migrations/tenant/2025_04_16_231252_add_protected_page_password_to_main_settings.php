@@ -22,13 +22,16 @@ return new class extends Migration {
             DB::connection('micro_power_manager')->statement(
                 "ALTER TABLE companies MODIFY COLUMN protected_page_password VARCHAR(255) NULL COMMENT 'DEPRECATED: Use main_settings.protected_page_password in tenant database instead'"
             );
-        }
-
-        // Copy existing data from companies to main_settings if it exists
-        $existingPasswords = DB::connection('micro_power_manager')->table('companies')
+            // Copy existing data from companies to main_settings if it exists
+            $existingPasswords = DB::connection('micro_power_manager')->table('companies')
             ->whereNotNull('protected_page_password')
             ->pluck('protected_page_password', 'name');
 
+        } else {
+            $existingPasswords = collect();
+        }
+
+       
         foreach ($existingPasswords as $companyName => $password) {
             DB::connection('tenant')
                 ->table('main_settings')
