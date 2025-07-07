@@ -24,14 +24,12 @@ return new class extends Migration {
             );
             // Copy existing data from companies to main_settings if it exists
             $existingPasswords = DB::connection('micro_power_manager')->table('companies')
-            ->whereNotNull('protected_page_password')
-            ->pluck('protected_page_password', 'name');
-
+                ->whereNotNull('protected_page_password')
+                ->pluck('protected_page_password', 'name');
         } else {
             $existingPasswords = collect();
         }
 
-       
         foreach ($existingPasswords as $companyName => $password) {
             DB::connection('tenant')
                 ->table('main_settings')
