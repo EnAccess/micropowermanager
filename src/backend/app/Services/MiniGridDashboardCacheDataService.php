@@ -31,7 +31,10 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         parent::__construct(self::CACHE_KEY_MINI_GRIDS_DATA);
     }
 
-    public function setData($dateRange = []) {
+    /**
+     * @param array<int, string> $dateRange
+     */
+    public function setData($dateRange = []): void {
         if (empty($dateRange)) {
             $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
