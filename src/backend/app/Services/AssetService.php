@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 class AssetService {
     public function __construct(private Asset $asset) {}
 
+    /**
+     * @return LengthAwarePaginator<Asset>|Collection<int, Asset>
+     */
     public function getAssets(Request $request): LengthAwarePaginator|Collection {
         $perPage = $request->get('per_page');
         if ($perPage) {
@@ -33,11 +36,11 @@ class AssetService {
         return $asset;
     }
 
-    public function deleteAsset($asset): void {
-        $asset->delete();
+    public function deleteAsset(Asset $asset): bool {
+        return $asset->delete();
     }
 
-    public function getById($id): ?Asset {
+    public function getById(int $id): ?Asset {
         return $this->asset->newQuery()->with(['assetType'])->find($id);
     }
 }

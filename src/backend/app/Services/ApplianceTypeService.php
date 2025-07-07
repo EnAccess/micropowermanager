@@ -3,18 +3,15 @@
 namespace App\Services;
 
 use App\Models\AssetType;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 
 class ApplianceTypeService {
-    private AssetType $assetType;
+    private $assetType;
 
     public function __construct(AssetType $assetType) {
         $this->assetType = $assetType;
     }
 
-    public function getApplianceTypes($request): LengthAwarePaginator|Collection {
+    public function getApplianceTypes($request) {
         $perPage = $request->get('per_page');
         if ($perPage) {
             return $this->assetType->newQuery()->paginate($perPage);
@@ -23,14 +20,14 @@ class ApplianceTypeService {
         return $this->assetType->newQuery()->get();
     }
 
-    public function createApplianceType(Request $request): AssetType {
+    public function createApplianceType($request) {
         return $this->assetType::query()
             ->create(
                 $request->only(['name', 'price'])
             );
     }
 
-    public function updateApplianceType(Request $request, $appliance) {
+    public function updateApplianceType($request, $appliance) {
         $appliance->update($request->only(['name', 'price']));
         $appliance->fresh();
 

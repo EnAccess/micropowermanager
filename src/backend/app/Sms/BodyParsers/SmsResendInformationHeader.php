@@ -5,7 +5,7 @@ namespace App\Sms\BodyParsers;
 use App\Models\Person\Person;
 
 class SmsResendInformationHeader extends SmsBodyParser {
-    protected array $variables = ['name', 'surname'];
+    protected $variables = ['name', 'surname'];
 
     /** @var array<string, mixed>|object */
     protected array|object $data;

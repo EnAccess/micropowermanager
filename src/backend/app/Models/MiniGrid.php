@@ -18,6 +18,11 @@ use MPM\Target\TargetAssignable;
  * @property int        $cluster_id
  * @property Collection $cities
  * @property Collection $agents
+ * @property mixed      $soldEnergy
+ * @property mixed      $transactions
+ * @property array      $period
+ * @property array      $tickets
+ * @property array      $revenueList
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
     use HasFactory;

@@ -13,7 +13,7 @@ class MailSettingsService {
     }
 
     public function list(): ?MailSettings {
-        return $this->mailSettings->newQuery()->get()->first();
+        return $this->mailSettings->newQuery()->first();
     }
 
     public function create(Request $request): MailSettings {
