@@ -8,6 +8,7 @@ use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @implements IBaseService<AssetPerson>
@@ -19,6 +20,9 @@ class AppliancePersonService implements IBaseService, IAssociative {
         private AssetPerson $assetPerson,
     ) {}
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function make(array $data): AssetPerson {
         return $this->assetPerson->newQuery()->make($data);
     }
@@ -72,7 +76,10 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $appliance;
     }
 
-    public function getLoansForCustomerId($customerId) {
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder<AssetPerson>
+     */
+    public function getLoansForCustomerId(int $customerId) {
         return $this->assetPerson->newQuery()->where('person_id', $customerId);
     }
 
@@ -80,10 +87,16 @@ class AppliancePersonService implements IBaseService, IAssociative {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): AssetPerson {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AssetPerson {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -92,6 +105,9 @@ class AppliancePersonService implements IBaseService, IAssociative {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->assetPerson->newQuery()->with(['person.devices'])->paginate($limit);
@@ -100,7 +116,10 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $this->assetPerson->newQuery()->with(['person.devices'])->get();
     }
 
-    public function getLoanIdsForCustomerId($customerId) {
+    /**
+     * @return SupportCollection<int, int>
+     */
+    public function getLoanIdsForCustomerId(int $customerId): SupportCollection {
         return $this->assetPerson->newQuery()
             ->where('person_id', $customerId)
             ->where('device_serial', null)

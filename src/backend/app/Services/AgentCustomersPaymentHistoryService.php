@@ -10,6 +10,9 @@ class AgentCustomersPaymentHistoryService {
         private PaymentHistory $paymentHistory,
     ) {}
 
+    /**
+     * @return array<string, array<string, float>>
+     */
     public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC') {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
@@ -58,6 +61,9 @@ class AgentCustomersPaymentHistoryService {
         return $this->preparePaymentFlow($payments);
     }
 
+    /**
+     * @return array<string, array<string, float>>
+     */
     public function getPaymentFlows($period, $agentId, $limit, $order = 'ASC') {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
@@ -112,6 +118,11 @@ class AgentCustomersPaymentHistoryService {
         return $this->preparePaymentFlow($payments);
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $payments
+     *
+     * @return array<string, array<string, float>>
+     */
     private function preparePaymentFlow($payments): array {
         $flowList = [];
         foreach ($payments as $payment) {
@@ -121,6 +132,9 @@ class AgentCustomersPaymentHistoryService {
         return $flowList;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function executeSqlCommand(string $sql, $payerId, $agentId, $payerType) {
         $sth = DB::connection($this->paymentHistory->getConnectionName())->getPdo()->prepare($sql);
 

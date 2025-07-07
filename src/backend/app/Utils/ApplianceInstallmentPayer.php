@@ -48,7 +48,7 @@ class ApplianceInstallmentPayer {
     public function payInstallments(): int {
         $customer = $this->customer;
         $appliancePersonIds = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
-        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds);
+        $installments = $this->applianceRateService->getByLoanIdsForDueDate($appliancePersonIds->toArray());
         $this->pay($installments, $customer);
 
         return $this->transaction->amount;
@@ -85,7 +85,7 @@ class ApplianceInstallmentPayer {
     private function getInstallments($customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
-        return $this->applianceRateService->getByLoanIdsForDueDate($loans);
+        return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());
     }
 
     /**
