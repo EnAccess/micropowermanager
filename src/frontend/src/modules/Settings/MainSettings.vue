@@ -221,12 +221,12 @@ export default {
       }
     },
     async updateMainSettings() {
-      this.progress = true
       let validator = await this.$validator.validateAll()
       if (!validator) {
         return
       }
       try {
+        this.progress = true
         await this.mainSettingsService.update()
         this.$store
           .dispatch(

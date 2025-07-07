@@ -353,7 +353,10 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', [ClusterController::class, 'index']);
 
-Route::get('/protected-pages', [ProtectedPageController::class, 'index']);
+Route::group(['prefix' => 'protected-pages'], static function () {
+    Route::get('/', [ProtectedPageController::class, 'index']);
+    Route::post('/compare', [ProtectedPageController::class, 'compareProtectedPagePassword']);
+});
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', [CompanyController::class, 'store']);
