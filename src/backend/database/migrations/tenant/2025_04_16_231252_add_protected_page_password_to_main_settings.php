@@ -17,11 +17,7 @@ return new class extends Migration {
             $table->longText('protected_page_password')->nullable();
         });
 
-        if (!Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
-            Schema::connection('micro_power_manager')->table('companies', function (Blueprint $table) {
-                $table->string('protected_page_password')->nullable()->comment('DEPRECATED: Use main_settings.protected_page_password instead');
-            });
-        } else {
+        if (Schema::connection('micro_power_manager')->hasTable('companies') && Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
             // Add the deprecation comment to existing column
             DB::connection('micro_power_manager')->statement(
                 "ALTER TABLE companies MODIFY COLUMN protected_page_password VARCHAR(255) NULL COMMENT 'DEPRECATED: Use main_settings.protected_page_password in tenant database instead'"
@@ -55,7 +51,7 @@ return new class extends Migration {
         }
 
         // Remove the deprecation comment from companies table
-        if (Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
+        if (Schema::connection('micro_power_manager')->hasTable('companies') && Schema::connection('micro_power_manager')->hasColumn('companies', 'protected_page_password')) {
             DB::connection('micro_power_manager')->statement(
                 'ALTER TABLE companies MODIFY COLUMN protected_page_password VARCHAR(255) NULL'
             );
