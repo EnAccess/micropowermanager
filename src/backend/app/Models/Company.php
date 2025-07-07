@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int    $id
- * @property string $name;
+ * @property int         $id
+ * @property string      $name;
+ * @property string|null $protected_page_password DEPRECATED: Use MainSettings.protected_page_password instead
  */
 class Company extends BaseModelCentral {
     use HasFactory;
@@ -40,5 +41,39 @@ class Company extends BaseModelCentral {
 
     public function jobs() {
         return $this->hasMany(CompanyJob::class);
+    }
+
+    /**
+     * Get the protected page password with deprecation warning.
+     *
+     * @return string|null
+     *
+     * @deprecated Use main_settings.protected_page_password instead
+     */
+    public function getProtectedPagePasswordAttribute($value) {
+        if ($value !== null) {
+            trigger_error(
+                'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
+                E_USER_DEPRECATED
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Set the protected page password with deprecation warning.
+     *
+     * @param string|null $value
+     *
+     * @deprecated Use main_settings.protected_page_password instead
+     */
+    public function setProtectedPagePasswordAttribute($value) {
+        trigger_error(
+            'Company::protected_page_password is deprecated. Use MainSettings.protected_page_password instead.',
+            E_USER_DEPRECATED
+        );
+
+        $this->attributes['protected_page_password'] = $value;
     }
 }

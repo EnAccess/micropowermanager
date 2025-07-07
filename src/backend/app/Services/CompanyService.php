@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Company;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @implements IBaseService<Company>
@@ -24,6 +25,11 @@ class CompanyService implements IBaseService {
 
     public function getById(int $id): Company {
         $result = $this->company->newQuery()->findOrFail($id);
+        if (isset($result->protected_page_password)) {
+            if (str_starts_with($result->protected_page_password, 'eyJ')) {
+                $result->protected_page_password = Crypt::decrypt($result->protected_page_password);
+            }
+        }
 
         return $result;
     }
@@ -41,7 +47,9 @@ class CompanyService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): Company {
-        throw new \Exception('Method update() not yet implemented.');
+        $model->update($data);
+
+        return $model;
     }
 
     public function delete($model): ?bool {
