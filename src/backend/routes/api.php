@@ -15,7 +15,6 @@ use App\Http\Controllers\ClustersDashboardCacheDataController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
-use App\Http\Controllers\CountryListController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
@@ -240,7 +239,6 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::put('/mail/{mailSettings}', [MailSettingsController::class, 'update'])
         ->middleware('jwt.verify');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
-    Route::get('/country-list', [CountryListController::class, 'index']);
 });
 // Sms
 Route::group(['prefix' => 'sms-body'], static function () {
