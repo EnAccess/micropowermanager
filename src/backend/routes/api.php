@@ -15,7 +15,6 @@ use App\Http\Controllers\ClustersDashboardCacheDataController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
-use App\Http\Controllers\CountryListController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
