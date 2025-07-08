@@ -20,6 +20,7 @@
                 <span>{{ $tc("words.location", 2) }}</span>
                 <md-icon>add_location_alt</md-icon>
               </md-menu-item>
+              <md-divider></md-divider>
               <md-menu-item @click="replaceRoute('/locations/add-cluster')">
                 {{ $tc("menu.subMenu.addCluster") }}
               </md-menu-item>
@@ -40,19 +41,25 @@
               <small>{{ $tc("menu.subMenu.Settings") }}</small>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="replaceRoute('/settings')">
-                <span>{{ $tc("menu.subMenu.Config") }}</span>
+              <md-menu-item disabled>
+                <span>{{ $tc("menu.subMenu.Settings") }}</span>
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
+              <md-menu-item @click="replaceRoute('/settings/configuration')">
+                <span>{{ $tc("menu.subMenu.Config") }}</span>
+              </md-menu-item>
+              <md-menu-item @click="replaceRoute('/settings/user-management')">
+                {{ $tc("phrases.userManagement") }}
+              </md-menu-item>
               <md-menu-item disabled="">
                 <span>{{ $tc("words.connection") }}</span>
                 <md-icon>cast</md-icon>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/connection-groups')">
+              <md-menu-item @click="replaceRoute('/settings/connection-groups')">
                 {{ $tc("words.group", 2) }}
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/connection-types')">
+              <md-menu-item @click="replaceRoute('/settings/connection-types')">
                 {{ $tc("words.type", 2) }}
               </md-menu-item>
             </md-menu-content>
@@ -75,9 +82,6 @@
               </div>
               <md-menu-item @click="replaceRoute('/profile')">
                 {{ $tc("words.profile") }}
-              </md-menu-item>
-              <md-menu-item @click="replaceRoute('/profile/management')">
-                {{ $tc("phrases.userManagement") }}
               </md-menu-item>
               <md-menu-item @click="logout()">
                 {{ $tc("phrases.logOut") }}

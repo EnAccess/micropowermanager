@@ -94,6 +94,7 @@ import AngazaShsOverview from "./plugins/angaza-shs/js/modules/Overview/Overview
 import ChintMeterOverview from "./plugins/chint-meter/js/modules/Overview/Overview"
 
 export const exportedRoutes = [
+  // Welcome and login routes
   {
     path: "/welcome",
     name: "welcome",
@@ -130,6 +131,123 @@ export const exportedRoutes = [
       footer: LoginFooter,
     },
   },
+  // Top bar routes
+  {
+    // TBD: root route currently shows nothing
+    // Should we add a redirect here?
+    path: "/locations",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "add-cluster",
+        component: AddCluster,
+        name: "cluster-new",
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "add-village",
+        component: AddVillage,
+        name: "add-village",
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "add-mini-grid",
+        component: AddMiniGrid,
+        name: "add-mini-grid",
+        meta: {
+          layout: "default",
+        },
+      },
+    ],
+  },
+  {
+    path: "/settings",
+    redirect: "/settings/configuration",
+    component: ChildRouteWrapper,
+    children: [
+      {
+        path: "configuration",
+        component: Settings,
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "user-management",
+        component: ProfileManagement,
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "connection-groups",
+        component: ConnectionGroupList,
+        name: "connection-groups",
+        meta: {
+          layout: "default",
+        },
+      },
+      {
+        path: "connection-types",
+        component: ChildRouteWrapper,
+        children: [
+          {
+            path: "",
+            component: ChildRouteWrapper,
+            children: [
+              {
+                path: "",
+                component: ConnectionTypeList,
+                name: "connection-types",
+                meta: {
+                  layout: "default",
+                  breadcrumb: {
+                    level: "base",
+                    name: "Connection Types",
+                    link: "/settings/connection-types",
+                  },
+                },
+              },
+              {
+                path: ":id",
+                component: ConnectionTypeDetail,
+                name: "connection-type-detail",
+                meta: {
+                  layout: "default",
+                  breadcrumb: {
+                    level: "detail",
+                    name: "Connection Types",
+                    link: "/settings/connection-types",
+                    target: "id",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            path: "new",
+            component: ConnectionTypeNew,
+            name: "new-connection-types",
+            meta: {
+              layout: "default",
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/profile",
+    component: Profile,
+    meta: {
+      layout: "default",
+    },
+  },
+  // Sidebar routes
   {
     path: "/",
     redirect: "/clusters",
@@ -235,59 +353,6 @@ export const exportedRoutes = [
         ],
       },
     ],
-  },
-  {
-    // TBD: root route currently shows nothing
-    // Should we add a redirect here?
-    path: "/locations",
-    component: ChildRouteWrapper,
-    children: [
-      {
-        path: "add-cluster",
-        component: AddCluster,
-        name: "cluster-new",
-        meta: {
-          layout: "default",
-        },
-      },
-      {
-        path: "add-village",
-        component: AddVillage,
-        name: "add-village",
-        meta: {
-          layout: "default",
-        },
-      },
-      {
-        path: "add-mini-grid",
-        component: AddMiniGrid,
-        name: "add-mini-grid",
-        meta: {
-          layout: "default",
-        },
-      },
-    ],
-  },
-  {
-    path: "/settings",
-    component: Settings,
-    meta: {
-      layout: "default",
-    },
-  },
-  {
-    path: "/profile",
-    component: Profile,
-    meta: {
-      layout: "default",
-    },
-  },
-  {
-    path: "/profile/management",
-    component: ProfileManagement,
-    meta: {
-      layout: "default",
-    },
   },
   {
     path: "/reports",
@@ -563,65 +628,6 @@ export const exportedRoutes = [
         },
       },
     ],
-  },
-  {
-    // FIXME: Where is shown in the sidebar?
-    // Looks like it's only used in SparkMeter (?)
-    path: "/connection-types",
-    component: ChildRouteWrapper,
-    children: [
-      {
-        path: "",
-        component: ChildRouteWrapper,
-        children: [
-          {
-            path: "",
-            component: ConnectionTypeList,
-            name: "connection-types",
-            meta: {
-              layout: "default",
-              breadcrumb: {
-                level: "base",
-                name: "Connection Types",
-                link: "/connection-types",
-              },
-            },
-          },
-          {
-            path: ":id",
-            component: ConnectionTypeDetail,
-            name: "connection-type-detail",
-            meta: {
-              layout: "default",
-              breadcrumb: {
-                level: "detail",
-                name: "Connection Types",
-                link: "/connection-types",
-                target: "id",
-              },
-            },
-          },
-        ],
-      },
-      {
-        path: "new",
-        component: ConnectionTypeNew,
-        name: "new-connection-types",
-        meta: {
-          layout: "default",
-        },
-      },
-    ],
-  },
-  {
-    // FIXME: Where is shown in the sidebar?
-    // Looks like it's only used in SparkMeter (?)
-    path: "/connection-groups",
-    component: ConnectionGroupList,
-    name: "connection-groups",
-    meta: {
-      layout: "default",
-    },
   },
   {
     // TBD: root route currently shows nothing
