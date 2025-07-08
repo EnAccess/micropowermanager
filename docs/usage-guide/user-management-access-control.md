@@ -47,6 +47,9 @@ This ensures:
 Access to sensitive areas on the web platform is protected by a **Protected Pages Password**.
 This password acts as an additional layer of security on top of standard user login credentials.
 
+> [!WARNING]
+> Entering an incorrect Protected Pages Password will redirect the user back to the **home page**.
+
 The **Protected Pages Password** is:
 
 - Set during **company (tenant) registration**.
@@ -55,8 +58,7 @@ The **Protected Pages Password** is:
 
 You can update this password at any time via: `Settings → User Management` in the web platform.
 
-> [!WARNING]
-> Entering an incorrect Protected Pages Password will redirect the user back to the **home page**.
+![change-protected-pages-password](images/change-protected-pages-password.png)
 
 ## Summary
 
