@@ -7,17 +7,13 @@ order: 3
 ## Setting up your MicroPowerManager company account
 
 1. During the sign-up process, you will be required to select the plug-ins relevant to your company (for further information on plug-ins, see further below on this page).
-2. Create users under that company account (a user should be created for every person that should be able to access the company’s MicroPowerManager account via the website interface as well as persons that should work with the Android apps outlined above).
-3. Create a password for password protected areas, so that only the team members with knowledge of the password can access sensitive information (Password protected areas are: Tariff-setting, Targets-setting, Overall company Settings, Addition of locations (village, mini-grid, cluster)\*.
+2. Create users under that company account.
+3. Create a password for [Password Protected Pages](/usage-guide/user-management-access-control#protected-pages-password), so that only the team members with knowledge of the password can access sensitive information.
 4. Create the locations (under "Settings") where your systems/devices are to be located (every device must be assigned to a cluster, mini-grid and village).
 5. Register your customers (with applicable device numbers) and assign them appliances (where applicable), as follows:
    1. To register new mini-grid customers, the Customer Registration App is required.
       Basic customer data together with the electricity meter serial number are required (see [Before Using MPM](beforeusing) for further information).
    2. To register new Solar-Home System (SHS) customers, e-bike customers or assign/sell new appliances to existing customers, kindly check [Before Using MPM](beforeusing).
-
-> [!WARNING]
-> Password-setting to protect some sections of your account can only be generated at account setting stage.
-> To change this password ex-post, you will have to contact EnAccess (EnAccess can change the password directly on the database).
 
 ## MPM Software Plug-ins
 
