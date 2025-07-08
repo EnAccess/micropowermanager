@@ -1,12 +1,12 @@
 <template>
-  <User />
+  <Profile />
 </template>
 
 <script>
-import User from "@/modules/Profile/User.vue"
+import Profile from "@/modules/Profile/Profile.vue"
 
 export default {
   name: "ProfilePage",
-  components: { User },
+  components: { Profile },
 }
 </script>

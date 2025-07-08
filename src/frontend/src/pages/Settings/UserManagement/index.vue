@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import UserManagement from "@/modules/Profile/UserManagement"
+import UserManagement from "@/modules/Settings/UserManagement/UserManagement"
 export default {
-  name: "ProfileManagementPage",
+  name: "UserManagementPage",
   components: { UserManagement },
 }
 </script>

@@ -15,9 +15,9 @@ import MiniGridDetailPage from "./pages/Dashboard/MiniGrid/_id.vue"
 import AddCluster from "./pages/Location/Cluster/New/index.vue"
 import AddVillage from "./pages/Location/Village/New/index.vue"
 import AddMiniGrid from "./pages/Location/MiniGrid/New/index.vue"
-import Settings from "./pages/Settings/index.vue"
-import Profile from "./pages/Profile/index.vue"
-import ProfileManagement from "./pages/Profile/Management/index.vue"
+import SettingsPage from "./pages/Settings/Configuration/index.vue"
+import ProfilePage from "./pages/Profile/index.vue"
+import UserManagementPage from "./pages/Settings/UserManagement/index.vue"
 import Reports from "./pages/Report/index.vue"
 // FIXME: https://github.com/EnAccess/micropowermanager/issues/143
 import CustomerList from "./pages/Client/index.vue"
@@ -171,14 +171,14 @@ export const exportedRoutes = [
     children: [
       {
         path: "configuration",
-        component: Settings,
+        component: SettingsPage,
         meta: {
           layout: "default",
         },
       },
       {
         path: "user-management",
-        component: ProfileManagement,
+        component: UserManagementPage,
         meta: {
           layout: "default",
         },
@@ -242,7 +242,7 @@ export const exportedRoutes = [
   },
   {
     path: "/profile",
-    component: Profile,
+    component: ProfilePage,
     meta: {
       layout: "default",
     },
