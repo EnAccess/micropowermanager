@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder {
                 AgentSeeder::class,
                 TicketSeeder::class,
                 TransactionSeeder::class,
-                CountrySeeder::class,
                 SubConnectionTypeSeeder::class,
                 SmsSeeder::class,
                 TargetSeeder::class,
