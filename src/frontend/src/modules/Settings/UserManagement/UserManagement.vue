@@ -58,12 +58,12 @@
             <md-button
               class="md-primary change-button-protected-pages-password"
               @click="protectedPageModalVisibility = true"
-              >
+            >
               Change Protected Page Password
             </md-button>
           </div>
         </div>
-          <md-dialog :md-active.sync="protectedPageModalVisibility">
+        <md-dialog :md-active.sync="protectedPageModalVisibility">
           <md-dialog-title>Change Protected Page Password</md-dialog-title>
           <md-dialog-content>
             <div class="edit-container-protected-pages-password">
@@ -101,7 +101,9 @@
                     name="confirmProtectedPagePassword"
                     id="confirmProtectedPagePassword"
                     v-model="confirmProtectedPagePassword"
-                    v-validate="'required|confirmed:protectedPagePasswordRef|min:5'"
+                    v-validate="
+                      'required|confirmed:protectedPagePasswordRef|min:5'
+                    "
                   />
                   <span class="md-error">
                     {{ errors.first("confirmProtectedPagePassword") }}
@@ -261,7 +263,6 @@ export default {
 </script>
 
 <style scoped>
-
 .change-button-protected-pages-password {
   background-color: #4f4e94 !important;
   color: #fefefe !important;

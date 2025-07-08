@@ -192,8 +192,6 @@
         </md-button>
       </md-dialog-actions>
     </md-dialog>
-
-
   </div>
 </template>
 
@@ -314,7 +312,6 @@ export default {
       // Clear validation errors when closing modal
       this.$validator.reset()
     },
-
   },
 }
 </script>

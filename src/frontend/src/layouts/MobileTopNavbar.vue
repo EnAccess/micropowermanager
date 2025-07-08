@@ -78,7 +78,9 @@
                 </span>
                 <md-icon>cast</md-icon>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/settings/connection-groups')">
+              <md-menu-item
+                @click="replaceRoute('/settings/connection-groups')"
+              >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.group", 2) }}
                 </span>
