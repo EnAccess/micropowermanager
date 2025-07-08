@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\MainSettings;
 use Carbon\Carbon;
@@ -25,20 +26,15 @@ class ApplianceRateService {
 
     public function updateApplianceRateCost(AssetRate $applianceRate, $creatorId, $cost, $newCost): AssetRate {
         $currency = $this->getCurrencyFromMainSettings();
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $applianceRate->assetPerson,
-                    'action' => 'Appliance rate '.date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ).' cost updated. From '
-                        .$cost.' '.$currency.' to '.$newCost.' '.$currency,
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $applianceRate->assetPerson,
+            'action' => 'Appliance rate '.date(
+                'd-m-Y',
+                strtotime($applianceRate->due_date)
+            ).' cost updated. From '
+                .$cost.' '.$currency.' to '.$newCost.' '.$currency,
+        ]));
         $applianceRate->rate_cost = $newCost;
         $applianceRate->remaining = $newCost;
         $applianceRate->update();
@@ -51,20 +47,15 @@ class ApplianceRateService {
         $currency = $this->getCurrencyFromMainSettings();
         $appliancePerson = $applianceRate->assetPerson;
         $applianceRate->delete();
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $appliancePerson,
-                    'action' => 'Appliance rate '.date(
-                        'd-m-Y',
-                        strtotime($applianceRate->due_date)
-                    ).' deleted. From '
-                        .$cost.' '.$currency.' to '.$newCost.' '.$currency,
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => 'Appliance rate '.date(
+                'd-m-Y',
+                strtotime($applianceRate->due_date)
+            ).' deleted. From '
+                .$cost.' '.$currency.' to '.$newCost.' '.$currency,
+        ]));
     }
 
     public function getByLoanIdsForDueDate($loanIds): Collection {

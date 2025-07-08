@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\NewLogEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Misc\TransactionDataContainer;
@@ -66,16 +67,11 @@ class AppliancePaymentService {
         /** @var MainSettings $mainSettings */
         $mainSettings = $this->mainSettings->newQuery()->first();
         $currency = $mainSettings->currency ?? '€';
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $appliancePerson,
-                    'action' => $amount.' '.$currency.' of payment is made ',
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => $amount.' '.$currency.' of payment is made ',
+        ]));
     }
 
     public function createPaymentHistory($amount, $buyer, $applianceRate, $transaction) {
