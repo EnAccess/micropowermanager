@@ -55,8 +55,77 @@
                 <md-table-cell>{{ user.phone }}</md-table-cell>
               </md-table-row>
             </md-table>
+            <md-button
+              class="md-primary change-button-protected-pages-password"
+              @click="protectedPageModalVisibility = true"
+              >
+              Change Protected Page Password
+            </md-button>
           </div>
         </div>
+          <md-dialog :md-active.sync="protectedPageModalVisibility">
+          <md-dialog-title>Change Protected Page Password</md-dialog-title>
+          <md-dialog-content>
+            <div class="edit-container-protected-pages-password">
+              <form class="md-layout">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('protectedPagePassword'),
+                  }"
+                >
+                  <label for="protectedPagePassword">
+                    New Protected Page Password
+                  </label>
+                  <md-input
+                    type="password"
+                    name="protectedPagePassword"
+                    id="protectedPagePassword"
+                    v-validate="'required|min:5'"
+                    v-model="protectedPagePassword"
+                    ref="protectedPagePasswordRef"
+                  />
+                  <span class="md-error">
+                    {{ errors.first("protectedPagePassword") }}
+                  </span>
+                </md-field>
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has('confirmProtectedPagePassword'),
+                  }"
+                >
+                  <label for="confirmProtectedPagePassword">
+                    Confirm Protected Page Password
+                  </label>
+                  <md-input
+                    type="password"
+                    name="confirmProtectedPagePassword"
+                    id="confirmProtectedPagePassword"
+                    v-model="confirmProtectedPagePassword"
+                    v-validate="'required|confirmed:protectedPagePasswordRef|min:5'"
+                  />
+                  <span class="md-error">
+                    {{ errors.first("confirmProtectedPagePassword") }}
+                  </span>
+                </md-field>
+                <md-progress-bar
+                  md-mode="indeterminate"
+                  v-if="sendingProtectedPage"
+                />
+              </form>
+            </div>
+          </md-dialog-content>
+          <md-dialog-actions>
+            <md-button
+              class="md-raised md-primary"
+              @click="changeProtectedPagePassword"
+            >
+              {{ $tc("words.save") }}
+            </md-button>
+            <md-button @click="protectedPageModalVisibility = false">
+              {{ $tc("words.close") }}
+            </md-button>
+          </md-dialog-actions>
+        </md-dialog>
       </div>
     </widget>
     <md-progress-bar md-mode="indeterminate" v-if="sending" />
@@ -70,6 +139,7 @@ import { CityService } from "@/services/CityService"
 import NewUser from "./NewUser"
 import EditUser from "./EditUser"
 import { notify } from "@/mixins/notify"
+import { MainSettingsService } from "@/services/MainSettingsService"
 
 export default {
   name: "ProfileManagement",
@@ -87,6 +157,12 @@ export default {
       showNewUser: false,
       resetKey: 1,
       cities: [],
+      protectedPageModalVisibility: false,
+      protectedPagePassword: "",
+      confirmProtectedPagePassword: "",
+      sendingProtectedPage: false,
+      mainSettingsService: new MainSettingsService(),
+      firstStepClicked: false,
     }
   },
   created() {
@@ -154,6 +230,44 @@ export default {
       }
       this.sending = false
     },
+    async changeProtectedPagePassword() {
+      this.sendingProtectedPage = true
+      let validation = await this.$validator.validateAll()
+      if (!validation) {
+        this.sendingProtectedPage = false
+        return
+      }
+      try {
+        await this.mainSettingsService.list()
+        this.mainSettingsService.mainSettings.protectedPagePassword =
+          this.protectedPagePassword
+        await this.mainSettingsService.update()
+        this.alertNotify(
+          "success",
+          "Protected page password updated successfully",
+        )
+        this.protectedPageModalVisibility = false
+        this.protectedPagePassword = ""
+        this.confirmProtectedPagePassword = ""
+        // Clear validation errors
+        this.$validator.reset()
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+      this.sendingProtectedPage = false
+    },
   },
 }
 </script>
+
+<style scoped>
+
+.change-button-protected-pages-password {
+  background-color: #4f4e94 !important;
+  color: #fefefe !important;
+  float: right;
+}
+.edit-container-protected-pages-password {
+  padding: 1rem;
+}
+</style>
