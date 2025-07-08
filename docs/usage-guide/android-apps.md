@@ -85,17 +85,3 @@ The purpose of the Agent app is to:
    d) Click on ":heavy_plus_sign:" and insert customer issue to be resolved.
 
    ![Agent App Create Ticket](images/agent-app-create-ticket.png)
-
-## SMS Gateway App
-
-> [!WARNING]
-> Be aware that this app has created issues with service providers.
-> The privacy settings and new features of Android may interfere/block the proper functioning of this app.
-> These issues are pending to be resolved.
-
-The purpose of the app is to enable SMS-sending from and to the MicroPowerManager website interface as well as to be able to send SMS to your customer portfolio through the same website.
-For this feature to work, the SMS Gateway App must be installed on the applicable mobile phone (following the steps outlined on the [Get Started with MPM](../get-started)).
-Click then on the Copy Device Token and share the token with the headquarters staff.
-The users with access to the MicroPowerManager account’s website interface can then insert the device token under the "Settings" page, thereby interlinking this phone with the MicroPowerManager account.
-
-![SMS Gateway App Overview](images/sms-gateway-app-overview.png)

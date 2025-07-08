@@ -59,8 +59,6 @@ The MicroPowerManager package includes:
    2.2. **Agent/Merchant App**: serves as the bilateral communication channel between the company headquarters (users of MicroPowerManager website interface) and the team of agents on site, managing and responding to customer complaints.
    The Agent App is also used to manually generate STS tokens (where customers are not able to do so themselves with their own phones).
 
-   2.3. **SMS Gateway App**: required to enable the possibility of sending bulk SMS to customer portfolio via the MicroPowerManager website interface as well as communicating via SMS with company's agents/maintenance service providers via the MicroPowerManager website interface.
-
 ## Get Started
 
 Explore MPM's capabilities by
