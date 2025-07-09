@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\AccessRatePaymentInitialize;
 use App\Exceptions\AccessRates\NoAccessRateFound;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Meter\Meter;
@@ -34,7 +35,7 @@ class AccessRateListener {
         }
     }
 
-    public function handle(Meter $meter): void {
-        $this->initializeAccessRatePayment($meter);
+    public function handle(AccessRatePaymentInitialize $event): void {
+        $this->initializeAccessRatePayment($event->meter);
     }
 }
