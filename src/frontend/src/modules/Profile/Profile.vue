@@ -116,12 +116,6 @@
                 >
                   {{ $tc("phrases.changePassword") }}
                 </md-button>
-                <md-button
-                  class="md-primary change-button"
-                  @click="protectedPageModalVisibility = true"
-                >
-                  Change Protected Page Password
-                </md-button>
               </div>
             </div>
           </md-card-content>
@@ -192,70 +186,6 @@
         </md-button>
       </md-dialog-actions>
     </md-dialog>
-
-    <md-dialog :md-active.sync="protectedPageModalVisibility">
-      <md-dialog-title>Change Protected Page Password</md-dialog-title>
-      <md-dialog-content>
-        <div class="password-edit-container">
-          <form class="md-layout">
-            <md-field
-              :class="{
-                'md-invalid': errors.has('protectedPagePassword'),
-              }"
-            >
-              <label for="protectedPagePassword">
-                New Protected Page Password
-              </label>
-              <md-input
-                type="password"
-                name="protectedPagePassword"
-                id="protectedPagePassword"
-                v-validate="'required|min:5'"
-                v-model="protectedPagePassword"
-                ref="protectedPagePasswordRef"
-              />
-              <span class="md-error">
-                {{ errors.first("protectedPagePassword") }}
-              </span>
-            </md-field>
-            <md-field
-              :class="{
-                'md-invalid': errors.has('confirmProtectedPagePassword'),
-              }"
-            >
-              <label for="confirmProtectedPagePassword">
-                Confirm Protected Page Password
-              </label>
-              <md-input
-                type="password"
-                name="confirmProtectedPagePassword"
-                id="confirmProtectedPagePassword"
-                v-model="confirmProtectedPagePassword"
-                v-validate="'required|confirmed:protectedPagePasswordRef|min:5'"
-              />
-              <span class="md-error">
-                {{ errors.first("confirmProtectedPagePassword") }}
-              </span>
-            </md-field>
-            <md-progress-bar
-              md-mode="indeterminate"
-              v-if="sendingProtectedPage"
-            />
-          </form>
-        </div>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button
-          class="md-raised md-primary"
-          @click="changeProtectedPagePassword"
-        >
-          {{ $tc("words.save") }}
-        </md-button>
-        <md-button @click="protectedPageModalVisibility = false">
-          {{ $tc("words.close") }}
-        </md-button>
-      </md-dialog-actions>
-    </md-dialog>
   </div>
 </template>
 
@@ -265,7 +195,7 @@ import { UserService } from "@/services/UserService"
 import { CityService } from "@/services/CityService"
 import { UserPasswordService } from "@/services/UserPasswordService"
 import { notify } from "@/mixins/notify"
-import { MainSettingsService } from "@/services/MainSettingsService"
+
 export default {
   name: "Profile",
   mixins: [notify],
@@ -281,12 +211,6 @@ export default {
       phone: {
         valid: true,
       },
-      protectedPageModalVisibility: false,
-      protectedPagePassword: "",
-      confirmProtectedPagePassword: "",
-      sendingProtectedPage: false,
-      mainSettingsService: new MainSettingsService(),
-      firstStepClicked: false,
     }
   },
   computed: {
@@ -381,32 +305,6 @@ export default {
       this.modalVisibility = false
       // Clear validation errors when closing modal
       this.$validator.reset()
-    },
-    async changeProtectedPagePassword() {
-      this.sendingProtectedPage = true
-      let validation = await this.$validator.validateAll()
-      if (!validation) {
-        this.sendingProtectedPage = false
-        return
-      }
-      try {
-        await this.mainSettingsService.list()
-        this.mainSettingsService.mainSettings.protectedPagePassword =
-          this.protectedPagePassword
-        await this.mainSettingsService.update()
-        this.alertNotify(
-          "success",
-          "Protected page password updated successfully",
-        )
-        this.protectedPageModalVisibility = false
-        this.protectedPagePassword = ""
-        this.confirmProtectedPagePassword = ""
-        // Clear validation errors
-        this.$validator.reset()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-      this.sendingProtectedPage = false
     },
   },
 }

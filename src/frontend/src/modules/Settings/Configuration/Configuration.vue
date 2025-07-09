@@ -28,7 +28,7 @@ import SmsSettings from "./SmsSettings"
 import { MainSettingsService } from "@/services/MainSettingsService"
 import { MapSettingsService } from "@/services/MapSettingsService"
 
-import PluginSettings from "@/modules/Settings/PluginSettings"
+import PluginSettings from "@/modules/Settings/Configuration/PluginSettings"
 import { MpmPluginService } from "@/services/MpmPluginService"
 import { PluginService } from "@/services/PluginService"
 import { notify } from "@/mixins"
