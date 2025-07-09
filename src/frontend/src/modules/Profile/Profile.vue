@@ -116,12 +116,6 @@
                 >
                   {{ $tc("phrases.changePassword") }}
                 </md-button>
-                <md-button
-                  class="md-primary change-button"
-                  @click="protectedPageModalVisibility = true"
-                >
-                  Change Protected Page Password
-                </md-button>
               </div>
             </div>
           </md-card-content>
