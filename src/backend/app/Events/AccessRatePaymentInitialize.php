@@ -14,7 +14,7 @@ use Illuminate\Queue\SerializesModels;
  *
  * Note: This is specific to Meters.
  *
- * @property Meter $meter The user who registered.
+ * @property Meter $meter The Meter for which the access rate payment should be initialized.
  */
 class AccessRatePaymentInitialize {
     use Dispatchable;
