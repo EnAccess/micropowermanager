@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewLogEvent;
 use App\Http\Requests\StoreEBikeRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AppliancePersonService;
@@ -63,16 +64,11 @@ class EBikeController extends Controller {
         $manufacturerApi->switchDevice($serialNumber, $status);
         $creatorId = auth('api')->user()->id;
         $appliancePerson = $this->appliancePersonService->getBySerialNumber($serialNumber);
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creatorId,
-                    'affected' => $appliancePerson,
-                    'action' => 'Bike ('.$serialNumber.') is set as '.$status.' manually.',
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $appliancePerson,
+            'action' => 'Bike ('.$serialNumber.') is set as '.$status.' manually.',
+        ]));
 
         return ApiResource::make($this->eBikeService->getBySerialNumber($serialNumber));
     }

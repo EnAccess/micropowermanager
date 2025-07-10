@@ -2,6 +2,7 @@
 
 namespace Inensus\AngazaSHS\Modules\Api;
 
+use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
@@ -64,17 +65,12 @@ class AngazaSHSApi implements IManufacturerAPI {
 
         $token = $response['_embedded']['latest_keycode']['keycode'];
 
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => -1,
-                    'affected' => $transactionContainer->appliancePerson,
-                    'action' => 'Token: '.$token.' created for '.$energy.
-                        ' days usage.',
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => -1,
+            'affected' => $transactionContainer->appliancePerson,
+            'action' => 'Token: '.$token.' created for '.$energy.
+                ' days usage.',
+        ]));
 
         return [
             'token' => $token,

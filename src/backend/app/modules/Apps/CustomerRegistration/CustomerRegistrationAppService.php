@@ -2,6 +2,7 @@
 
 namespace MPM\Apps\CustomerRegistration;
 
+use App\Events\AccessRatePaymentInitialize;
 use App\Http\Requests\AndroidAppRequest;
 use App\Models\Person\Person;
 use App\Services\AddressesService;
@@ -79,7 +80,7 @@ class CustomerRegistrationAppService {
         $this->addressGeographicalInformationService->assign();
         $this->geographicalInformationService->save($geographicalInformation);
         // initializes a new Access Rate Payment for the next Period
-        event('accessRatePayment.initialize', $meter);
+        event(new AccessRatePaymentInitialize($meter));
 
         return $person;
     }

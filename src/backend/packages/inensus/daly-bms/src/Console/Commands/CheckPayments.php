@@ -3,6 +3,7 @@
 namespace Inensus\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Events\NewLogEvent;
 use App\Models\AssetRate;
 use App\Models\User;
 use App\Services\SmsApplianceRemindRateService;
@@ -87,16 +88,11 @@ class CheckPayments extends AbstractSharedCommand {
             'name' => 'System',
         ]);
 
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creator->id,
-                    'affected' => $eBike,
-                    'action' => "Bike ($serialNumber) is locked by system, due to overdue payment.",
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creator->id,
+            'affected' => $eBike,
+            'action' => "Bike ($serialNumber) is locked by system, due to overdue payment.",
+        ]));
 
         return true;
     }

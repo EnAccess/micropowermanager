@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewLogEvent;
 use App\Http\Requests\UpdateDeviceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Device;
@@ -20,13 +21,11 @@ class DeviceController extends Controller {
         $newOwner = $request->input('person_id');
         $deviceData = $request->validated();
         $updatedDevice = $this->deviceService->update($device, $deviceData);
-        event('new.log', [
-            'logData' => [
-                'user_id' => $creatorId,
-                'affected' => $device,
-                'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner",
-            ],
-        ]);
+        event(new NewLogEvent([
+            'user_id' => $creatorId,
+            'affected' => $device,
+            'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner",
+        ]));
 
         return ApiResource::make($updatedDevice);
     }

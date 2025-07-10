@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\AccessRatePaymentInitialize;
 use App\Events\ClusterEvent;
+use App\Events\NewLogEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\LogListener;
@@ -28,8 +30,8 @@ class EventServiceProvider extends ServiceProvider {
         // default namespace
         ClusterEvent::class => [ClusterGeoListener::class],
         // string-based Listeners
-        'accessRatePayment.initialize' => [AccessRateListener::class],
-        'new.log' => [LogListener::class],
+        AccessRatePaymentInitialize::class => [AccessRateListener::class],
+        NewLogEvent::class => [LogListener::class],
         'payment.energy' => [PaymentEnergyListener::class],
         'payment.failed' => [PaymentFailedListener::class],
         'payment.loan' => [PaymentLoanListener::class],

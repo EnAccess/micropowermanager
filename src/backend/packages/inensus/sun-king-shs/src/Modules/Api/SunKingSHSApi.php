@@ -2,6 +2,7 @@
 
 namespace Inensus\SunKingSHS\Modules\Api;
 
+use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
@@ -99,13 +100,11 @@ class SunKingSHSApi implements IManufacturerAPI {
             ? "Token: $token created for unlocking device."
             : "Token: $token created for $energy days usage.";
 
-        event('new.log', [
-            'logData' => [
-                'user_id' => -1,
-                'affected' => $transactionContainer->appliancePerson,
-                'action' => $action,
-            ],
-        ]);
+        event(new NewLogEvent([
+            'user_id' => -1,
+            'affected' => $transactionContainer->appliancePerson,
+            'action' => $action,
+        ]));
     }
 
     private function isInstallmentsCompleted(TransactionDataContainer $transactionContainer): bool {
