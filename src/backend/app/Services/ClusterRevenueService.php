@@ -71,7 +71,7 @@ class ClusterRevenueService {
 
     public function getTransactionsForWeeklyPeriod(int $clusterId, array $period, ?int $connectionType = null): Collection {
         return $this->transaction->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue, WEEKOFYEAR(created_at) as week')
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
@@ -320,7 +320,7 @@ class ClusterRevenueService {
         return $miniGrids;
     }
 
-    public function setDatesForRequest(string $startDate, string $endDate): array {
+    public function setDatesForRequest(string $startDate, ?string $endDate): array {
         if (!$startDate) {
             $start = new \DateTime();
             $year = (int) $start->format('Y');
@@ -330,7 +330,7 @@ class ClusterRevenueService {
             $start->sub(new \DateInterval('P12M'));
             $startDate = $start->format('Y-m-d');
         }
-        $endDate = $endDate ?: date('Y-m-t');
+        $endDate = $endDate ?? date('Y-m-t');
 
         return ['startDate' => $startDate, 'endDate' => $endDate];
     }

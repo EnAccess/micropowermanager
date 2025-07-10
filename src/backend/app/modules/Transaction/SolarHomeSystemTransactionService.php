@@ -4,10 +4,15 @@ namespace MPM\Transaction;
 
 use App\Models\SolarHomeSystem;
 use App\Models\Transaction\Transaction;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class SolarHomeSystemTransactionService {
     public function __construct(private Transaction $transaction) {}
 
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     */
     public function search(
         ?string $serialNumber = null,
         ?int $tariffId = null,
@@ -17,7 +22,7 @@ class SolarHomeSystemTransactionService {
         ?string $toDate = null,
         ?int $limit = null,
         bool $whereApplied = false,
-    ) {
+    ): Collection|LengthAwarePaginator {
         $query = $this->transaction->newQuery()->with('originalTransaction')->whereHas(
             'device',
             fn ($q) => $q->whereHasMorph('device', SolarHomeSystem::class)

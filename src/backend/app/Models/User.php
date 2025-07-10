@@ -22,19 +22,23 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string|null $email
  */
 class User extends Authenticatable implements JWTSubject {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'users';
     public const COL_ID = 'id';
     public const COL_COMPANY_ID = 'company_id';
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = []) {
         $this->setConnection('tenant');
 
         parent::__construct($attributes);
     }
 
-    public function setPasswordAttribute($password): void {
+    public function setPasswordAttribute(string $password): void {
         $this->attributes['password'] = Hash::make($password);
     }
 
@@ -69,7 +73,11 @@ class User extends Authenticatable implements JWTSubject {
         return $this->getKey();
     }
 
-    // we need to provide the company id in the token to encode and find the right database when an authenticated requests hits the api
+    /**
+     * Get custom claims for JWT token.
+     *
+     * @return array<string, mixed>
+     */
     public function getJWTCustomClaims(): array {
         return [
             'companyId' => $this->getCompanyId(),
@@ -92,7 +100,6 @@ class User extends Authenticatable implements JWTSubject {
         return $this->hasMany(AgentAssignedAppliances::class);
     }
 
-    // belongsTo company
     public function company(): BelongsTo {
         return $this->BelongsTo(Company::class, 'company_id');
     }

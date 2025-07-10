@@ -18,21 +18,22 @@ class MiniGridService implements IBaseService {
         return $this->miniGrid->newQuery()->with(['location'])->find($miniGridId);
     }
 
-    public function getById(int $miniGridId): ?Model {
+    public function getById(int $miniGridId): ?MiniGrid {
         return $this->miniGrid->newQuery()->find($miniGridId);
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    public function create(array $data): Model {
+    public function create(array $data): MiniGrid {
         return $this->miniGrid->newQuery()->create($data);
     }
 
     /**
      * @param array<string, mixed> $miniGridData
      */
-    public function update(Model $model, array $miniGridData): Model {
+    public function update(Model $model, array $miniGridData): MiniGrid {
+        /* @var MiniGrid $model */
         $model->update([
             'name' => $miniGridData['name'] ?? $model->name,
         ]);

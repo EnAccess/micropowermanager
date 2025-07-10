@@ -53,7 +53,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function getApplianceDetails($applianceId) {
+    public function getApplianceDetails(int $applianceId) {
         $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
             ->where('id', '=', $applianceId)
             ->first();
