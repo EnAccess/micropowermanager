@@ -31,6 +31,7 @@
                 </span>
                 <md-icon>add_location_alt</md-icon>
               </md-menu-item>
+              <md-divider></md-divider>
               <md-menu-item @click="replaceRoute('/locations/add-cluster')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("menu.subMenu.addCluster") }}
@@ -56,25 +57,35 @@
               </small>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="replaceRoute('/settings')">
-                <span class="mobile-sub-menu-text">
-                  {{ $tc("menu.subMenu.Config") }}
-                </span>
+              <md-menu-item disabled>
+                <span>{{ $tc("menu.subMenu.Settings") }}</span>
                 <md-icon>settings</md-icon>
               </md-menu-item>
               <md-divider></md-divider>
+              <md-menu-item @click="replaceRoute('/settings/configuration')">
+                <span class="mobile-sub-menu-text">
+                  {{ $tc("menu.subMenu.Config") }}
+                </span>
+              </md-menu-item>
+              <md-menu-item @click="replaceRoute('/settings/user-management')">
+                <span class="mobile-sub-menu-text">
+                  {{ $tc("phrases.userManagement") }}
+                </span>
+              </md-menu-item>
               <md-menu-item disabled="">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.connection") }}
                 </span>
                 <md-icon>cast</md-icon>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/connection-groups')">
+              <md-menu-item
+                @click="replaceRoute('/settings/connection-groups')"
+              >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.group", 2) }}
                 </span>
               </md-menu-item>
-              <md-menu-item @click="replaceRoute('/connection-types')">
+              <md-menu-item @click="replaceRoute('/settings/connection-types')">
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.type", 2) }}
                 </span>
@@ -107,11 +118,6 @@
               >
                 <span class="mobile-sub-menu-text">
                   {{ $tc("words.profile") }}
-                </span>
-              </md-menu-item>
-              <md-menu-item @click="replaceRoute('/profile/management')">
-                <span class="mobile-sub-menu-text">
-                  {{ $tc("phrases.userManagement") }}
                 </span>
               </md-menu-item>
               <md-menu-item @click="logout()">

@@ -1,9 +1,9 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler"
-import CountriesRepository from "@/repositories/CountriesRepository"
+import CountryRepository from "@/repositories/CountryRespository"
 
 export class CountryListService {
   constructor() {
-    this.repository = CountriesRepository
+    this.repository = CountryRepository
     this.countryList = []
   }
 

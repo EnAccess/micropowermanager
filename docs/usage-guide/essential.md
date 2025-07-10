@@ -36,14 +36,6 @@ The MicroPowerManager user can customize the following message types:
 
 - **Reminder**: Automated messages are sent to remind users of upcoming or overdue payments.
 
-### Android Gateway Settings
-
-The Android Gateway settings allow MicroPowerManager users to configure message sending methods through the embedded Android gateway application
-Users can add as many gateways as they wish, with each gateway representing an Android phone that has the MPM SMS Gateway application installed.
-
-To obtain the token information, users can use the "Copy Tokens" button available in the app.
-Each gateway registered here will be randomly selected for sending automated or manual messages.
-
 ## Map Settings
 
 In this section, users can configure the settings for the maps displayed within the MicroPowerManager.

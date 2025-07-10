@@ -12,11 +12,11 @@ components:
 
 images:
   - name: enaccess/micropowermanager-backend:latest
-    newTag: 0.0.43
+    newTag: 0.0.46
   - name: enaccess/micropowermanager-frontend:latest
-    newTag: 0.0.43
+    newTag: 0.0.46
   - name: enaccess/micropowermanager-scheduler:latest
-    newTag: 0.0.43
+    newTag: 0.0.46
 
 patches:
   - path: configmap-cloud-backend.yaml

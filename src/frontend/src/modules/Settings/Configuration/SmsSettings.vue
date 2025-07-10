@@ -105,7 +105,7 @@
 
 <script>
 import { SmsBodiesService } from "@/services/SmsBodiesService"
-import SmsBody from "../Settings/SmsBody"
+import SmsBody from "./SmsBody"
 import { EventBus } from "@/shared/eventbus"
 import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService"
 import SmsApplianceRemindRate from "./SmsApplianceRemindRate"
