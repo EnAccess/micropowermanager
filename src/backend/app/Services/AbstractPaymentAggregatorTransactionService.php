@@ -56,10 +56,12 @@ abstract class AbstractPaymentAggregatorTransactionService {
     }
 
     /**
+     * @param array<string, mixed> $transactionData
+     *
      * @throws TransactionIsInvalidForProcessingIncomingRequestException
      * @throws TransactionAmountNotEnoughException
      */
-    public function imitateTransactionForValidation(array $transactionData) {
+    public function imitateTransactionForValidation(array $transactionData): void {
         $this->paymentAggregatorTransaction = $this->paymentAggregatorTransaction->newQuery()->make($transactionData);
         $this->transaction = $this->transaction->newQuery()->make([
             'amount' => $transactionData['amount'],
@@ -72,14 +74,14 @@ abstract class AbstractPaymentAggregatorTransactionService {
         $this->isImitationTransactionValid($this->transaction);
     }
 
-    public function saveTransaction() {
+    public function saveTransaction(): void {
         $this->paymentAggregatorTransaction->save();
         /** @var \Illuminate\Database\Eloquent\Model $paymentAggregatorTransaction */
         $paymentAggregatorTransaction = $this->paymentAggregatorTransaction;
         $this->transaction->originalTransaction()->associate($paymentAggregatorTransaction)->save();
     }
 
-    private function isImitationTransactionValid($transaction) {
+    private function isImitationTransactionValid(Transaction $transaction): void {
         try {
             $transactionData = TransactionDataContainer::initialize($transaction);
         } catch (\Exception $e) {
@@ -99,7 +101,7 @@ abstract class AbstractPaymentAggregatorTransactionService {
         }
     }
 
-    private function getTransactionSender($meterSerialNumber) {
+    private function getTransactionSender(string $meterSerialNumber): string {
         $meter = $this->meter->newQuery()
             ->where(
                 'serial_number',
@@ -128,15 +130,15 @@ abstract class AbstractPaymentAggregatorTransactionService {
         return $this->customerId;
     }
 
-    public function getMeterSerialNumber() {
+    public function getMeterSerialNumber(): string {
         return $this->meterSerialNumber;
     }
 
-    public function getAmount() {
+    public function getAmount(): float {
         return $this->amount;
     }
 
-    public function getMinimumPurchaseAmount() {
+    public function getMinimumPurchaseAmount(): float {
         return $this->minimumPurchaseAmount;
     }
 

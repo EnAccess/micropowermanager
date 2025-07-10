@@ -16,7 +16,7 @@ class PricingDetails extends SmsBodyParser {
         $this->calculateTaxes();
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         switch ($variable) {
             case 'amount':
                 $variable = $this->transaction->amount;

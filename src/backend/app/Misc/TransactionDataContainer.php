@@ -29,7 +29,7 @@ class TransactionDataContainer {
     public ?AssetPerson $appliancePerson;
     public ?Meter $meter;
     public float $installmentCost;
-    public string $dayDifferenceBetweenTwoInstallments;
+    public float $dayDifferenceBetweenTwoInstallments;
     public bool $applianceInstallmentsFullFilled;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\City;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -15,34 +16,49 @@ class CityService implements IBaseService {
         private City $city,
     ) {}
 
-    public function getCityIdsByMiniGridId($miniGridId): array {
+    /**
+     * @return array<int, int>
+     */
+    public function getCityIdsByMiniGridId(int $miniGridId): array {
         return $this->city->newQuery()->select('id')->where('mini_grid_id', $miniGridId)->get()->pluck('id')->toArray();
     }
 
-    public function getByIdWithRelation($cityId, $relation) {
+    /**
+     * @param string|array<string> $relation
+     */
+    public function getByIdWithRelation(int $cityId, string|array $relation): ?City {
         return $this->city->newQuery()->with($relation)->find($cityId);
     }
 
-    public function getById($cityId): City {
+    public function getById(int $cityId): ?Model {
         return $this->city->newQuery()->find($cityId);
     }
 
-    public function update($city, array $cityData): City {
-        $city->update([
-            'name' => $cityData['name'] ?? $city->name,
-            'mini_grid_id' => $cityData['mini_grid_id'] ?? $city->mini_grid_id,
-            'cluster_id' => $cityData['cluster_id'] ?? $city->mini_grid_id,
-            'country_id' => $cityData['country_id'] ?? $city->country_id,
+    /**
+     * @param array<string, mixed> $cityData
+     */
+    public function update(Model $model, array $cityData): Model {
+        $model->update([
+            'name' => $cityData['name'] ?? $model->name,
+            'mini_grid_id' => $cityData['mini_grid_id'] ?? $model->mini_grid_id,
+            'cluster_id' => $cityData['cluster_id'] ?? $model->cluster_id,
+            'country_id' => $cityData['country_id'] ?? $model->country_id,
         ]);
-        $city->fresh();
+        $model->fresh();
 
-        return $city;
+        return $model;
     }
 
-    public function create(array $data): City {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function create(array $data): Model {
         return $this->city->newQuery()->create($data);
     }
 
+    /**
+     * @return Collection<int, City>|LengthAwarePaginator<City>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->city->newQuery()->with('location')->paginate($limit);
@@ -51,7 +67,7 @@ class CityService implements IBaseService {
         return $this->city->newQuery()->with('location')->get();
     }
 
-    public function delete($model): ?bool {
+    public function delete(Model $model): ?bool {
         throw new \Exception('not implemented');
     }
 }

@@ -24,11 +24,11 @@ abstract class AbstractExportService {
     protected string $timeZone;
     protected string $recentlyCreatedSpreadSheetId;
 
-    abstract public function setExportingData();
+    abstract public function setExportingData(): void;
 
-    abstract public function getTemplatePath();
+    abstract public function getTemplatePath(): string;
 
-    abstract public function getPrefix();
+    abstract public function getPrefix(): string;
 
     public function createSpreadSheetFromTemplate(string $path): Spreadsheet {
         try {
@@ -46,15 +46,15 @@ abstract class AbstractExportService {
         }
     }
 
-    public function setCurrency($currency) {
+    public function setCurrency(string $currency): void {
         $this->currency = $currency;
     }
 
-    public function setTimeZone($timeZone) {
+    public function setTimeZone(string $timeZone): void {
         $this->timeZone = $timeZone;
     }
 
-    public function readable($amount, $separator = ',') {
+    public function readable(float|string|null $amount, string $separator = ','): string {
         // Check for null or undefined amount and return '0'
         if ($amount === null || $amount === 'undefined') {
             return '0';
@@ -94,7 +94,7 @@ abstract class AbstractExportService {
         $this->recentlyCreatedSpreadSheetId = $id;
     }
 
-    public function setActivatedSheet($sheetName): void {
+    public function setActivatedSheet(string $sheetName): void {
         try {
             $this->worksheet = $this->spreadsheet->setActiveSheetIndexByName($sheetName);
         } catch (\Exception $e) {

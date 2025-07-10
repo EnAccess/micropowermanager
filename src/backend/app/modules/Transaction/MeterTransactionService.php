@@ -4,10 +4,15 @@ namespace MPM\Transaction;
 
 use App\Models\Meter\Meter;
 use App\Models\Transaction\Transaction;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class MeterTransactionService {
     public function __construct(private Transaction $transaction) {}
 
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     */
     public function search(
         ?string $serialNumber = null,
         ?int $tariffId = null,

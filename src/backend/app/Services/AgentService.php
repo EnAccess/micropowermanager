@@ -40,20 +40,20 @@ class AgentService implements IBaseService {
         return $newPassword;
     }
 
-    public function updateDevice($agent, $deviceId): void {
+    public function updateDevice(Agent $agent, string $deviceId): void {
         $agent->mobile_device_id = $deviceId;
         $agent->update();
         $agent->fresh();
     }
 
-    public function setFirebaseToken($agent, $firebaseToken) {
+    public function setFirebaseToken(Agent $agent, $firebaseToken): ?Agent {
         $agent->fire_base_token = $firebaseToken;
         $agent->update();
 
         return $agent->fresh();
     }
 
-    public function getAgentBalance($agent) {
+    public function getAgentBalance(Agent $agent): float {
         return $agent->balance;
     }
 
@@ -80,7 +80,7 @@ class AgentService implements IBaseService {
             ->orWhere('email', 'LIKE', '%'.$searchTerm.'%')->get();
     }
 
-    public function getByAuthenticatedUser() {
+    public function getByAuthenticatedUser(): ?Agent {
         return $this->agent->newQuery()->find(auth('agent_api')->user()->id);
     }
 

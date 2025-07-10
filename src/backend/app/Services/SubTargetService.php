@@ -18,6 +18,9 @@ class SubTargetService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array{targetId: int, data: array<int, array{id: int, target: array{totalRevenue: float, newConnection: int, connectedPower: float, energyPerMonth: float, averageRevenuePerMonth: float}}>} $subTargetData
+     */
     public function create(array $subTargetData): SubTarget {
         $targetId = $subTargetData['targetId'];
 
@@ -36,6 +39,9 @@ class SubTargetService implements IBaseService {
         return $this->subTarget;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): SubTarget {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -44,6 +50,9 @@ class SubTargetService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, SubTarget>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

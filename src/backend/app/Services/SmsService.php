@@ -24,7 +24,7 @@ class SmsService {
         private Sms $sms,
     ) {}
 
-    public function checkMessageType($message) {
+    public function checkMessageType(string $message): int {
         $wordsInMessage = explode(' ', $message);
         $firstWord = $wordsInMessage[0];
         switch (strtolower($firstWord)) {
@@ -35,7 +35,10 @@ class SmsService {
         }
     }
 
-    public function createAndSendSms($smsData): Sms {
+    /**
+     * @param array<string, mixed> $smsData
+     */
+    public function createAndSendSms(array $smsData): Sms {
         $sms = $this->createSms($smsData);
 
         $data = [
@@ -47,7 +50,10 @@ class SmsService {
         return $sms;
     }
 
-    public function createSms($smsData): Sms {
+    /**
+     * @param array<string, mixed> $smsData
+     */
+    public function createSms(array $smsData): Sms {
         /** @var Sms $sms */
         $sms = $this->sms->newQuery()->create($smsData);
 
@@ -80,7 +86,11 @@ class SmsService {
             }
     }
 
-    private function getSender($data, $smsType, $smsConfigs, $smsAndroidSettings) {
+    /**
+     * @param array<string, mixed> $data
+     * @param class-string         $smsConfigs
+     */
+    private function getSender(array $data, int $smsType, string $smsConfigs, ?SmsAndroidSetting $smsAndroidSettings): SmsSender {
         $configs = resolve($smsConfigs);
 
         if (!array_key_exists($smsType, $configs->smsTypes)) {
@@ -102,7 +112,10 @@ class SmsService {
         ]);
     }
 
-    private function associateSmsWithForSmsType($sender, $data, $uuid, $receiver, $gatewayId) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function associateSmsWithForSmsType(SmsSender $sender, array $data, string $uuid, string $receiver, ?int $gatewayId): void {
         if (!($sender instanceof ManualSms)) {
             Sms::query()->create([
                 'uuid' => $uuid,
