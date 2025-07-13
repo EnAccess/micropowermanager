@@ -30,8 +30,9 @@ class MailHelper implements MailHelperInterface {
         $this->mailer->Password = $this->mailSettings['password'];
         $this->mailer->From = $this->mailSettings['default_sender'];
         $this->mailer->SMTPDebug = $this->mailSettings['debug_level'];
-        // https://github.com/EnAccess/micropowermanager/issues/554
-        $this->mailer->Debugoutput = 'error_log';
+        $this->mailer->Debugoutput = function ($message, $level) {
+            Log::debug("PHPMailer [$level]: $message");
+        };
         $this->mailer->isSMTP();
         // When debugging Email sending locally it might helpful to explicitly set a Hostname
         // as certain mail providers might block traffic with Hostname `localhost`.
