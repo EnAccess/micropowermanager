@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AgentReceipt;
 use App\Services\Interfaces\IBaseService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -15,6 +16,9 @@ class AgentReceiptService implements IBaseService {
         private AgentReceipt $agentReceipt,
     ) {}
 
+    /**
+     * @return Collection<int, AgentReceipt>|LengthAwarePaginator<AgentReceipt>
+     */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentReceipt->newQuery()
             ->with(['user', 'agent', 'history']);
@@ -27,6 +31,7 @@ class AgentReceiptService implements IBaseService {
                 }
             );
         }
+
         if ($limit) {
             return $query->latest()->paginate($limit);
         } else {
@@ -34,6 +39,9 @@ class AgentReceiptService implements IBaseService {
         }
     }
 
+    /**
+     * @param array<string, mixed> $receiptData
+     */
     public function create(array $receiptData): AgentReceipt {
         return $this->agentReceipt->newQuery()->create($receiptData);
     }
@@ -42,6 +50,9 @@ class AgentReceiptService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AgentReceipt {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -50,13 +61,19 @@ class AgentReceiptService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
-    public function getLastReceipt($agentId) {
-        return $this->agentReceipt->newQuery()->where('agent_id', $agentId)
-            ->latest('id')->first();
+    public function getLastReceipt(int $agentId): ?AgentReceipt {
+        return $this->agentReceipt->newQuery()
+            ->where('agent_id', $agentId)
+            ->latest('id')
+            ->first();
     }
 
-    public function getLastReceiptDate($agent) {
-        $lastReceiptDate = $this->agentReceipt->newQuery()->where('agent_id', $agent->id)
+    /**
+     * @param object{id: int, created_at: Carbon} $agent
+     */
+    public function getLastReceiptDate($agent): Carbon {
+        $lastReceiptDate = $this->agentReceipt->newQuery()
+            ->where('agent_id', $agent->id)
             ->latest('created_at')
             ->first();
 

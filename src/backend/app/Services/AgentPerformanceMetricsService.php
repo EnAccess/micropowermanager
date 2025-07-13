@@ -10,7 +10,7 @@ class AgentPerformanceMetricsService {
         private PeriodService $periodService,
     ) {}
 
-    public function getMetrics($startDate = null, $endDate = null, $interval = 'monthly') {
+    public function getMetrics(?string $startDate = null, ?string $endDate = null, string $interval = 'monthly'): array {
         $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->subMonths(3)->startOfDay();
         $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now()->endOfDay();
 

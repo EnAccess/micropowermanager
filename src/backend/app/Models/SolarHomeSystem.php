@@ -9,19 +9,29 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class SolarHomeSystem extends BaseModel {
+    /** @use HasFactory<\Database\Factories\SolarHomeSystemFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'solar_home_system';
     protected $table = 'solar_home_systems';
 
+    /**
+     * @return MorphOne<Device, $this>
+     */
     public function device(): MorphOne {
         return $this->morphOne(Device::class, 'device');
     }
 
+    /**
+     * @return BelongsTo<Manufacturer, $this>
+     */
     public function manufacturer(): BelongsTo {
         return $this->belongsTo(Manufacturer::class);
     }
 
+    /**
+     * @return BelongsTo<Asset, $this>
+     */
     public function appliance(): BelongsTo {
         return $this->belongsTo(Asset::class, 'asset_id', 'id');
     }
@@ -38,6 +48,8 @@ class SolarHomeSystem extends BaseModel {
      * Device(id: 1, device_id: 1, device_type: 'solar_home_system')
      *   ↓
      * Token(device_id: 1, token_type: 'time', token_unit: 'days')
+     *
+     * @return HasManyThrough<Token, Device, $this>
      */
     public function tokens(): HasManyThrough {
         return $this->hasManyThrough(

@@ -16,7 +16,7 @@ class MeterService implements IBaseService {
         private Meter $meter,
     ) {}
 
-    public function getBySerialNumber($serialNumber) {
+    public function getBySerialNumber(string $serialNumber): ?Meter {
         return $this->meter->newQuery()->with([
             'tariff',
             'device.person',
@@ -28,7 +28,10 @@ class MeterService implements IBaseService {
         ])->where('serial_number', $serialNumber)->first();
     }
 
-    public function search($term, $paginate): LengthAwarePaginator {
+    /**
+     * @return LengthAwarePaginator<Meter>
+     */
+    public function search(string $term, int $paginate): LengthAwarePaginator {
         return $this->meter->newQuery()->with(['meterType', 'tariff'])
             ->whereHas('tariff', fn ($q) => $q->where('name', 'LIKE', '%'.$term.'%'))
             ->orWhere(
@@ -38,7 +41,7 @@ class MeterService implements IBaseService {
             )->paginate($paginate);
     }
 
-    public function getMeterWithAllRelations(int $meterId) {
+    public function getMeterWithAllRelations(int $meterId): ?Meter {
         return $this->meter->newQuery()->with([
             'tariff',
             'device.device.geo',
@@ -46,11 +49,19 @@ class MeterService implements IBaseService {
         ])->find($meterId);
     }
 
-    public function getUsedMetersGeoWithAccessRatePayments(): Collection|array {
+    /**
+     * @return Collection<int, Meter>
+     */
+    public function getUsedMetersGeoWithAccessRatePayments(): Collection {
         return $this->meter->newQuery()->with(['device.device.geo', 'accessRatePayment'])->where('in_use', 1)->get();
     }
 
-    public function getUsedMetersGeoWithAccessRatePaymentsInCities($cities): Collection|array {
+    /**
+     * @param array<int> $cities
+     *
+     * @return Collection<int, Meter>
+     */
+    public function getUsedMetersGeoWithAccessRatePaymentsInCities(array $cities): Collection {
         return $this->meter->newQuery()->with(['device.device.geo', 'accessRatePayment'])
             ->whereHas(
                 'device',
@@ -64,6 +75,9 @@ class MeterService implements IBaseService {
             ->where('in_use', 1)->get();
     }
 
+    /**
+     * @param array<string, mixed> $meterData
+     */
     public function create(array $meterData): Meter {
         return $this->meter->newQuery()->create([
             'serial_number' => $meterData['serial_number'],
@@ -76,7 +90,7 @@ class MeterService implements IBaseService {
         ]);
     }
 
-    public function getById(int $meterId): Meter {
+    public function getById(int $meterId): ?Meter {
         return $this->meter->newQuery()->with([
             'tariff',
             'device',

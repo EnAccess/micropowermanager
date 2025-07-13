@@ -20,6 +20,9 @@ class PersonService implements IBaseService {
         private Person $person,
     ) {}
 
+    /**
+     * @return Collection<int, Person>|array<int, Person>
+     */
     public function getAllRegisteredPeople(): Collection|array {
         return $this->person->newQuery()->get();
     }
@@ -29,7 +32,7 @@ class PersonService implements IBaseService {
         return $person->citizenship()->associate($country);
     }
 
-    public function getDetails(int $personID, bool $allRelations = false) {
+    public function getDetails(int $personID, bool $allRelations = false): ?Person {
         if (!$allRelations) {
             return $this->getById($personID);
         }
@@ -49,14 +52,12 @@ class PersonService implements IBaseService {
     }
 
     /**
-     * @param string                   $searchTerm could either phone, name or surname
-     * @param Request|array|int|string $paginate
+     * @param string                          $searchTerm could either phone, name or surname
+     * @param Request|array<mixed>|int|string $paginate
      *
-     * @return Builder[]|Collection|LengthAwarePaginator
-     *
-     * @psalm-return Collection|LengthAwarePaginator|array<array-key, Builder>
+     * @return Builder<Person>|Collection<int, Person>|LengthAwarePaginator<Person>
      */
-    public function searchPerson($searchTerm, $paginate) {
+    public function searchPerson($searchTerm, $paginate): Builder|Collection|LengthAwarePaginator {
         $query = $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')
@@ -73,10 +74,16 @@ class PersonService implements IBaseService {
         return $query->get();
     }
 
-    public function getPersonTransactions($person) {
+    /**
+     * @return LengthAwarePaginator<mixed>
+     */
+    public function getPersonTransactions(Person $person): LengthAwarePaginator {
         return $person->payments()->with('transaction.token')->latest()->paginate(7);
     }
 
+    /**
+     * @param array<string, mixed> $personData
+     */
     public function createMaintenancePerson(array $personData): Person {
         $personData['is_customer'] = 0;
         /** @var Person $person */
@@ -89,6 +96,11 @@ class PersonService implements IBaseService {
         return $this->person->livingInClusterQuery($clusterId);
     }
 
+    /**
+     * @param array<int> $peopleId
+     *
+     * @return Builder<Person>
+     */
     public function getBulkDetails(array $peopleId): Builder {
         return $this->person->newQuery()->with(
             [
@@ -102,15 +114,18 @@ class PersonService implements IBaseService {
         )->whereIn('id', $peopleId);
     }
 
-    public function updatePersonUpdatedDate(Person $person) {
+    public function updatePersonUpdatedDate(Person $person): void {
         $person->updated_at = Carbon::now();
         $person->save();
     }
 
-    public function isMaintenancePerson($customerType): bool {
+    public function isMaintenancePerson(?string $customerType): bool {
         return $customerType !== null && $customerType !== 'customer' && $customerType === 'maintenance';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function createPersonDataFromRequest(Request $request): array {
         return [
             'title' => $request->get('title'),
@@ -130,10 +145,16 @@ class PersonService implements IBaseService {
         return $model;
     }
 
+    /**
+     * @param array<string, mixed> $personData
+     */
     public function create(array $personData): Person {
         return $this->person->newQuery()->create($personData);
     }
 
+    /**
+     * @param array<string, mixed> $personData
+     */
     public function update($person, array $personData): Person {
         foreach ($personData as $key => $value) {
             $person->$key = $value;
@@ -149,7 +170,10 @@ class PersonService implements IBaseService {
         return $person->delete();
     }
 
-    public function getAll(?int $limit = null, $customerType = 1, $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
+    /**
+     * @return LengthAwarePaginator<Person>
+     */
+    public function getAll(?int $limit = null, ?int $customerType = 1, ?int $agentId = null, ?bool $activeCustomer = null): LengthAwarePaginator {
         $query = $this->person->newQuery()->with([
             'addresses' => function ($q) {
                 return $q->where('is_primary', 1);
@@ -183,7 +207,10 @@ class PersonService implements IBaseService {
         return $query->paginate($limit);
     }
 
-    public function getAllForExport($customerType = 1): Collection|array {
+    /**
+     * @return Collection<int, Person>|array<int, Person>
+     */
+    public function getAllForExport(?int $customerType = 1): Collection|array {
         return $this->person->newQuery()->with([
             'addresses' => function ($q) {
                 return $q->where('is_primary', 1);
@@ -219,7 +246,7 @@ class PersonService implements IBaseService {
         return $person;
     }
 
-    public function getByPhoneNumber($phoneNumber): ?Person {
+    public function getByPhoneNumber(string $phoneNumber): ?Person {
         return $this->person->newQuery()->whereHas('addresses', fn ($q) => $q->where('phone', $phoneNumber))
             ->first();
     }

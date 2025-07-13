@@ -60,7 +60,11 @@ class SmsService {
         return $sms;
     }
 
-    public function sendSms($data, $smsType, $smsConfigs) {
+    /**
+     * @param array<string, mixed> $data
+     * @param class-string         $smsConfigs
+     */
+    public function sendSms(array $data, int $smsType, string $smsConfigs): void {
         $uuid = Str::uuid()->toString();
         $gatewayId = null;
 

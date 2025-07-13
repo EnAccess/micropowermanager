@@ -9,6 +9,9 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class AgentCustomerService {
     public function __construct(private Person $person) {}
 
+    /**
+     * @return LengthAwarePaginator<Person>
+     */
     public function list(Agent $agent): LengthAwarePaginator {
         $miniGridId = $agent->mini_grid_id;
 
@@ -24,7 +27,10 @@ class AgentCustomerService {
             ->paginate(config('settings.paginate'));
     }
 
-    public function search($searchTerm, $limit, $agent) {
+    /**
+     * @return LengthAwarePaginator<Person>
+     */
+    public function search(string $searchTerm, int $limit, Agent $agent): LengthAwarePaginator {
         return $this->person->newQuery()->with(['addresses.city', 'devices'])->whereHas(
             'addresses',
             fn ($q) => $q->where('phone', 'LIKE', '%'.$searchTerm.'%')

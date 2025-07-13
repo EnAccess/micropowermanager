@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class MiniGridRevenueService {
@@ -12,7 +13,15 @@ class MiniGridRevenueService {
         private Token $token,
     ) {}
 
-    public function getById($miniGridId, $startDate, $endDate, $miniGridDeviceService) {
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getById(
+        int $miniGridId,
+        ?string $startDate,
+        ?string $endDate,
+        $miniGridDeviceService,
+    ): Collection {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
@@ -30,7 +39,15 @@ class MiniGridRevenueService {
             ->whereBetween('created_at', [$startDate, Carbon::parse($endDate)->endOfDay()])->get();
     }
 
-    public function getSoldEnergyById($miniGridId, $startDate, $endDate, $miniGridDeviceService) {
+    /**
+     * @return array{data: float}
+     */
+    public function getSoldEnergyById(
+        int $miniGridId,
+        ?string $startDate,
+        ?string $endDate,
+        $miniGridDeviceService,
+    ): array {
         $startDate = $startDate ?? date('Y-01-01');
         $endDate = $endDate ?? date('Y-m-t');
         $miniGridMeters = $miniGridDeviceService->getMetersByMiniGridId($miniGridId);
