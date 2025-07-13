@@ -31,7 +31,7 @@ class UserDefaultDatabaseConnectionMiddleware {
 
         // skip middleware for third party api requests
         if ($this->resolveThirdPartyApi($request->path())) {
-            return $this->resolveRoute($request, $next, $request->path());
+            return $this->resolveRoute($request, $next);
         }
 
         // Attempt to match against known Laravel routes
@@ -42,7 +42,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        return $this->resolveRoute($request, $next, $request->path());
+        return $this->resolveRoute($request, $next);
     }
 
     private function resolveRoute(Request $request, \Closure $next) {
