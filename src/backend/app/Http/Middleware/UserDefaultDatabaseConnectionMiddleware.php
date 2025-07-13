@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
 use MPM\TenantResolver\ApiCompanyResolverService;
 use MPM\TenantResolver\ApiResolvers\Data\ApiResolverMap;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * The goal is to have the database connection on each incomming http request.
@@ -22,44 +24,28 @@ class UserDefaultDatabaseConnectionMiddleware {
     ) {}
 
     public function handle(Request $request, \Closure $next) {
-        // REMOVE THIS WHEN THE TESTS ARE FIXED
-        if ($request->path() === 'api/micro-star-meters/test' && $request->isMethod('get')) {
+        // skip middleware for excluded routes
+        if ($this->isExcludedRoute($request)) {
             return $next($request);
         }
 
-        // adding new company should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/companies') {
-            return $next($request);
+        // skip middleware for third party api requests
+        if ($this->resolveThirdPartyApi($request->path())) {
+            return $this->resolveRoute($request, $next, $request->path());
         }
 
-        // getting mpm plugins should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/mpm-plugins' && $request->isMethod('get')) {
-            return $next($request);
+        // Attempt to match against known Laravel routes
+        try {
+            Route::getRoutes()->match($request);
+        } catch (NotFoundHttpException) {
+            // Path doesn't exist in Laravel routes or third-party API map
+            return response()->json(['message' => 'Not found'], 404);
         }
 
-        // getting protected pages  should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/protected-pages' && $request->isMethod('get')) {
-            return $next($request);
-        }
+        return $this->resolveRoute($request, $next, $request->path());
+    }
 
-        // getting usage types  should not be proxied. It should use the base database to create the record
-        if ($request->path() === 'api/usage-types' && $request->isMethod('get')) {
-            return $next($request);
-        }
-
-        if (strpos($request->path(), 'horizon') === 0) {
-            return $next($request);
-        }
-
-        if (strpos($request->path(), 'laravel-erd') === 0) {
-            return $next($request);
-        }
-
-        // health check route
-        if ($request->path() === 'up') {
-            return $next($request);
-        }
-
+    private function resolveRoute(Request $request, \Closure $next) {
         // webclient login
         if ($request->path() === 'api/auth/login' || $request->path() === 'api/app/login') {
             $databaseProxy = $this->databaseProxyManager->findByEmail($request->input('email'));
@@ -105,5 +91,33 @@ class UserDefaultDatabaseConnectionMiddleware {
 
     private function isAgentApp(string $path): bool {
         return Str::startsWith($path, 'api/app/');
+    }
+
+    private function isExcludedRoute(Request $request): bool {
+        $path = $request->path();
+        $method = $request->method();
+
+        if ($method === 'GET') {
+            return in_array($path, [
+                'api/micro-star-meters/test',
+                'api/mpm-plugins',
+                'api/protected-pages',
+                'api/usage-types',
+                'up',
+            ]);
+        }
+
+        if ($method === 'POST') {
+            return $path === 'api/companies';
+        }
+
+        if (Str::startsWith($path, [
+            'horizon',
+            'laravel-erd',
+        ])) {
+            return true;
+        }
+
+        return false;
     }
 }
