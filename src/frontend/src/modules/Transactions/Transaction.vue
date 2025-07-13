@@ -106,6 +106,24 @@
                         {{ transaction.message }}
                       </router-link>
                     </div>
+                    <div
+                      class="md-layout-item md-subheader n-font"
+                      v-else-if="
+                        transaction.payment_histories[0].paymentHistory &&
+                        transaction.device.device_type === 'solar_home_system'
+                      "
+                    >
+                      <router-link
+                        :to="{
+                          path:
+                            '/solar-home-systems/' +
+                            transaction.device.device_id,
+                        }"
+                        class="nav-link"
+                      >
+                        {{ transaction.message }}
+                      </router-link>
+                    </div>
                     <div class="md-layout-item md-subheader n-font" v-else>
                       {{ transaction.message }}
                     </div>
