@@ -32,7 +32,6 @@ class EventServiceProvider extends ServiceProvider {
         // string-based Listeners
         AccessRatePaymentInitialize::class => [AccessRateListener::class],
         NewLogEvent::class => [LogListener::class],
-        'payment.energy' => [PaymentEnergyListener::class],
         'payment.loan' => [PaymentLoanListener::class],
         'payment.successful' => [PaymentSuccessListener::class],
         SmsStoredEvent::class => [SmsListener::class],
