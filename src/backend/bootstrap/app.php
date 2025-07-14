@@ -40,6 +40,27 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('agent_api', [
             Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
+
+        $environment = env('APP_ENV');
+        // configure trust proxies based on the environment
+        switch ($environment) {
+            case 'production':
+            case 'demo':
+                $middleware->trustProxies(
+                    at: '*',
+                    headers: Request::HEADER_X_FORWARDED_FOR |
+                        Request::HEADER_X_FORWARDED_HOST |
+                        Request::HEADER_X_FORWARDED_PORT |
+                        Request::HEADER_X_FORWARDED_PROTO
+                );
+                break;
+            default:
+                $middleware->trustProxies(
+                    at: ['127.0.0.1', '::1'],
+                    headers: Request::HEADER_X_FORWARDED_FOR |
+                        Request::HEADER_X_FORWARDED_PROTO
+                );
+        }
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {
