@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Events\PaymentSuccessEvent;
 use App\Misc\TransactionDataContainer;
 use App\Models\AccessRate\AccessRatePayment;
 use App\Models\Transaction\Transaction;
@@ -45,16 +46,15 @@ class AccessRatePayer {
 
             $this->accessRatePaymentService->update($this->accessRatePayment, ['debt' => $this->debtAmount]);
             $this->transactionData->accessRateDebt = $this->debtAmount;
-            // add payment history for the client
-            event('payment.successful', [
-                'amount' => $this->debtAmount,
-                'paymentService' => $this->transactionData->transaction->original_transaction_type,
-                'paymentType' => 'access rate',
-                'sender' => $this->transactionData->transaction->sender,
-                'paidFor' => method_exists($meter, 'accessRate') ? $meter->accessRate() : null,
-                'payer' => $owner,
-                'transaction' => $this->transactionData->transaction,
-            ]);
+            event(new PaymentSuccessEvent(
+                amount: $this->debtAmount,
+                paymentService: $this->transactionData->transaction->original_transaction_type,
+                paymentType: 'access rate',
+                sender: $this->transactionData->transaction->sender,
+                paidFor: method_exists($meter, 'accessRate') ? $meter->accessRate() : null,
+                payer: $owner,
+                transaction: $this->transactionData->transaction,
+            ));
         }
 
         return $this->transactionData;

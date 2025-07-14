@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\PaymentSuccessEvent;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -124,15 +125,15 @@ class TokenProcessor extends AbstractJob {
     private function handlePaymentEvents($token): void {
         $owner = $this->transactionContainer->device->person;
 
-        event('payment.successful', [
-            'amount' => $this->transactionContainer->transaction->amount,
-            'paymentService' => $this->transactionContainer->transaction->original_transaction_type,
-            'paymentType' => 'energy',
-            'sender' => $this->transactionContainer->transaction->sender,
-            'paidFor' => $token,
-            'payer' => $owner,
-            'transaction' => $this->transactionContainer->transaction,
-        ]);
+        event(new PaymentSuccessEvent(
+            amount: $this->transactionContainer->transaction->amount,
+            paymentService: $this->transactionContainer->transaction->original_transaction_type,
+            paymentType: 'energy',
+            sender: $this->transactionContainer->transaction->sender,
+            paidFor: $token,
+            payer: $owner,
+            transaction: $this->transactionContainer->transaction,
+        ));
 
         event('transaction.successful', [$this->transactionContainer->transaction]);
     }

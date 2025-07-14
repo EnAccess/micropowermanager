@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\NewLogEvent;
+use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PaymentAmountBiggerThanTotalRemainingAmount;
 use App\Exceptions\PaymentAmountSmallerThanZero;
 use App\Misc\TransactionDataContainer;
@@ -75,18 +76,15 @@ class AppliancePaymentService {
     }
 
     public function createPaymentHistory($amount, $buyer, $applianceRate, $transaction) {
-        event(
-            'payment.successful',
-            [
-                'amount' => $amount,
-                'paymentService' => 'web',
-                'paymentType' => 'installment',
-                'sender' => $transaction->sender,
-                'paidFor' => $applianceRate,
-                'payer' => $buyer,
-                'transaction' => $transaction,
-            ]
-        );
+        event(new PaymentSuccessEvent(
+            amount: $amount,
+            paymentService: 'web',
+            paymentType: 'installment',
+            sender: $transaction->sender,
+            paidFor: $applianceRate,
+            payer: $buyer,
+            transaction: $transaction,
+        ));
     }
 
     private function validateAmount($applianceDetail, $amount) {

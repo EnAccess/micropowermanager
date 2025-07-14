@@ -2,10 +2,13 @@
 
 namespace App\Listeners;
 
+use App\Events\PaymentSuccessEvent;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Asset;
 use App\Models\AssetRate;
+use App\Models\Person\Person;
 use App\Models\Token;
+use App\Models\Transaction\Transaction;
 use App\Services\AccessRatePaymentHistoryService;
 use App\Services\ApplianceRatePaymentHistoryService;
 use App\Services\PaymentHistoryService;
@@ -31,13 +34,13 @@ class PaymentSuccessListener {
      * @param        $transaction
      */
     public function onPaymentSuccess(
-        $amount,
-        $paymentService,
-        $paymentType,
-        $sender,
-        $paidFor,
-        $payer,
-        $transaction,
+        int $amount,
+        string $paymentService,
+        string $paymentType,
+        string $sender,
+        AccessRate|AssetRate|Asset|Token $paidFor,
+        Person $payer,
+        Transaction $transaction,
     ): void {
         $paymentHistoryData = [
             'amount' => $amount,
@@ -79,23 +82,15 @@ class PaymentSuccessListener {
         $this->paymentHistoryService->save($paymentHistory);
     }
 
-    public function handle(
-        $amount,
-        $paymentService,
-        $paymentType,
-        $sender,
-        $paidFor,
-        $payer,
-        $transaction,
-    ): void {
+    public function handle(PaymentSuccessEvent $event): void {
         $this->onPaymentSuccess(
-            $amount,
-            $paymentService,
-            $paymentType,
-            $sender,
-            $paidFor,
-            $payer,
-            $transaction
+            $event->amount,
+            $event->paymentService,
+            $event->paymentType,
+            $event->sender,
+            $event->paidFor,
+            $event->payer,
+            $event->transaction
         );
     }
 }

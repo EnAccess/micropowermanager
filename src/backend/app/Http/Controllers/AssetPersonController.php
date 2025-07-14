@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PaymentSuccessEvent;
 use App\Http\Resources\ApiResource;
 use App\Models\Asset;
 use App\Models\AssetPerson;
@@ -114,18 +115,15 @@ class AssetPersonController extends Controller {
                     $deviceSerial
                 );
                 $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
-                event(
-                    'payment.successful',
-                    [
-                        'amount' => $transaction->amount,
-                        'paymentService' => 'web',
-                        'paymentType' => 'down payment',
-                        'sender' => $transaction->sender,
-                        'paidFor' => $applianceRate,
-                        'payer' => $appliancePerson->person,
-                        'transaction' => $transaction,
-                    ]
-                );
+                event(new PaymentSuccessEvent(
+                    amount: $transaction->amount,
+                    paymentService: 'web',
+                    paymentType: 'down payment',
+                    sender: $transaction->sender,
+                    paidFor: $applianceRate,
+                    payer: $appliancePerson->person,
+                    transaction: $transaction,
+                ));
             }
             DB::connection('tenant')->commit();
 
