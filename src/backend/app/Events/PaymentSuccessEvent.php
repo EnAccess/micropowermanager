@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\Asset;
+use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\Person\Person;
 use App\Models\Token;
@@ -35,7 +36,7 @@ class PaymentSuccessEvent {
         public string $paymentType,
         public string $sender,
         public AccessRate|AssetRate|Asset|Token $paidFor,
-        public Person $payer,
+        public Person|AssetPerson $payer,  // Is this correct? It should only be one of the two.
         public Transaction $transaction,
     ) {}
 }
