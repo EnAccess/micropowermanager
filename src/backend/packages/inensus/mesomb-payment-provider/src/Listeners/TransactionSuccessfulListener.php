@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Models\Transaction\Transaction;
 
-class TransactionSuccessListener {
+class TransactionSuccessfulListener {
     public function onTransactionSuccess(Transaction $transaction) {
         $transactionProvider = resolve('MesombPaymentProvider');
         $transactionProvider->sendResult(true, $transaction);

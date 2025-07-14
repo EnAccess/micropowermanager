@@ -6,7 +6,7 @@ use App\Models\Transaction\Transaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
 
-class TransactionSuccessListener {
+class TransactionSuccessfulListener {
     public function onTransactionSuccess(Transaction $transaction): void {
         $originalTransaction = $transaction->originalTransaction()->first();
         if ($originalTransaction instanceof ITransactionProvider) {

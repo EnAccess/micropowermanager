@@ -17,7 +17,7 @@ use App\Listeners\PaymentSuccessListener;
 use App\Listeners\SmsListener;
 use App\Listeners\TransactionFailedListener;
 use App\Listeners\TransactionSavedListener;
-use App\Listeners\TransactionSuccessListener;
+use App\Listeners\TransactionSuccessfulListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Inensus\SwiftaPaymentProvider\Listeners\TransactionSuccessfulListener;
 use MPM\User\Events\UserCreatedEvent;
@@ -39,7 +39,7 @@ class EventServiceProvider extends ServiceProvider {
         SmsStoredEvent::class => [SmsListener::class],
         TransactionFailedEvent::class => [TransactionFailedListener::class],
         TransactionSavedEvent::class => [TransactionSavedListener::class],
-        TransactionSuccessfulEvent::class => [TransactionSuccessListener::class],
+        TransactionSuccessfulEvent::class => [TransactionSuccessfulListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],
     ];
