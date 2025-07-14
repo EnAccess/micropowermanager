@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\TransactionAmountNotEnoughException;
 use App\Exceptions\TransactionNotInitializedException;
 use App\Misc\TransactionDataContainer;
@@ -97,7 +98,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     }
 
     private function completeTransactionWithNotification(TransactionDataContainer $transactionData): void {
-        event('transaction.successful', [$transactionData->transaction]);
+        event(new TransactionSuccessfulEvent($transactionData->transaction));
     }
 
     private function processToken(TransactionDataContainer $transactionData): void {

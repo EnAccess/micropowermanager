@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -136,7 +137,7 @@ class TokenProcessor extends AbstractJob {
             transaction: $this->transactionContainer->transaction,
         ));
 
-        event('transaction.successful', [$this->transactionContainer->transaction]);
+        event(new TransactionSuccessfulEvent($this->transactionContainer->transaction));
     }
 
     private function handleRollbackInFailure() {
