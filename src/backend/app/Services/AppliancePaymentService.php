@@ -10,7 +10,6 @@ use App\Misc\TransactionDataContainer;
 use App\Models\AssetPerson;
 use App\Models\AssetRate;
 use App\Models\MainSettings;
-use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Database\Eloquent\Collection;

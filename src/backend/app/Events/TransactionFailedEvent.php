@@ -2,11 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\AccessRate\AccessRate;
-use App\Models\Asset;
-use App\Models\AssetRate;
-use App\Models\Person\Person;
-use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
