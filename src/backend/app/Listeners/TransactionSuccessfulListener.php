@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\TransactionSuccessfulEvent;
 use App\Models\Transaction\Transaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
@@ -15,7 +16,7 @@ class TransactionSuccessfulListener {
         }
     }
 
-    public function handle(Transaction $transaction): void {
-        $this->onTransactionSuccess($transaction);
+    public function handle(TransactionSuccessfulEvent $event): void {
+        $this->onTransactionSuccess($event->transaction);
     }
 }
