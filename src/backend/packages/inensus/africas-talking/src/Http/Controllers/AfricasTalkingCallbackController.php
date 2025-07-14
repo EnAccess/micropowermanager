@@ -2,6 +2,7 @@
 
 namespace Inensus\AfricasTalking\Http\Controllers;
 
+use App\Events\SmsStoredEvent;
 use App\Models\Sms;
 use App\Services\AddressesService;
 use App\Services\SmsService;
@@ -35,7 +36,7 @@ class AfricasTalkingCallbackController extends Controller {
         ];
 
         $this->smsService->createSms($smsData);
-        event('sms.stored', [$phoneNumber, $message]);
+        event(new SmsStoredEvent($phoneNumber, $message));
 
         return response()->json(['status' => 'success']);
     }

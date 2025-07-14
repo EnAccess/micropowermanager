@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SmsStoredEvent;
 use App\Http\Requests\SmsRequest;
 use App\Http\Requests\StoreSmsRequest;
 use App\Http\Resources\ApiResource;
@@ -170,7 +171,7 @@ class SmsController extends Controller {
 
         switch ($this->smsService->checkMessageType($message)) {
             case $this->smsService::FEEDBACK:
-                event('sms.stored', [$sender, $message]);
+                event(new SmsStoredEvent($sender, $message));
                 break;
             case $this->smsService::TICKET:
                 $this->commentService->storeComment($sender, $message);

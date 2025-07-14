@@ -2,13 +2,14 @@
 
 namespace Inensus\SparkMeter\Providers;
 
+use App\Events\SmsStoredEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Inensus\SparkMeter\Listeners\SmsListener;
 use Inensus\SparkMeter\Listeners\TransactionListener;
 
 class EventServiceProvider extends ServiceProvider {
     protected $listen = [
-        'sms.stored' => [SmsListener::class],
+        SmsStoredEvent::class => [SmsListener::class],
         'transaction.successful' => [TransactionListener::class],
     ];
 

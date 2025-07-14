@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\AccessRatePaymentInitialize;
 use App\Events\ClusterEvent;
 use App\Events\NewLogEvent;
+use App\Events\SmsStoredEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\LogListener;
@@ -36,7 +37,7 @@ class EventServiceProvider extends ServiceProvider {
         'payment.failed' => [PaymentFailedListener::class],
         'payment.loan' => [PaymentLoanListener::class],
         'payment.successful' => [PaymentSuccessListener::class],
-        'sms.stored' => [SmsListener::class],
+        SmsStoredEvent::class => [SmsListener::class],
         'transaction.failed' => [TransactionFailedListener::class],
         'transaction.saved' => [TransactionSavedListener::class],
         'transaction.successful' => [TransactionSuccessListener::class],
