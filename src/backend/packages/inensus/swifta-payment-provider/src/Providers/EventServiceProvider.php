@@ -2,6 +2,7 @@
 
 namespace Inensus\SwiftaPaymentProvider\Providers;
 
+use App\Events\TransactionFailedEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Inensus\SwiftaPaymentProvider\Listeners\TransactionFailedListener;
 use Inensus\SwiftaPaymentProvider\Listeners\TransactionSuccessfulListener;
@@ -9,7 +10,7 @@ use Inensus\SwiftaPaymentProvider\Listeners\TransactionSuccessfulListener;
 class EventServiceProvider extends ServiceProvider {
     // commended out because it is not used for cloud
     protected $listen = [
-        // 'transaction.failed' => [TransactionFailedListener::class],
+        // TransactionFailedEvent::class => [TransactionFailedListener::class],
         // 'transaction.successful' => [TransactionSuccessfulListener::class],
     ];
 

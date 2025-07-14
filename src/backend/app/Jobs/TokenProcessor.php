@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\PaymentSuccessEvent;
+use App\Events\TransactionFailedEvent;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -58,7 +59,7 @@ class TokenProcessor extends AbstractJob {
             'No Api is registered for '.$this->transactionContainer->manufacturer->name,
             ['message' => $e->getMessage()]
         );
-        event('transaction.failed', [$this->transactionContainer->transaction, $e->getMessage()]);
+        event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
     }
 
     private function handleExistingToken() {
@@ -98,10 +99,10 @@ class TokenProcessor extends AbstractJob {
 
         $this->handleRollbackInFailure();
 
-        event('transaction.failed', [
+        event(new TransactionFailedEvent(
             $this->transactionContainer->transaction,
             'Manufacturer Api did not succeed after 3 times with the following error: '.$e->getMessage(),
-        ]);
+        ));
     }
 
     private function retryTokenGeneration(): void {
