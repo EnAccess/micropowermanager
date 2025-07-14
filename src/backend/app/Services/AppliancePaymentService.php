@@ -87,7 +87,7 @@ class AppliancePaymentService {
 
     public function createPaymentHistory(float $amount, AssetPerson $buyer, AssetRate $applianceRate, Transaction $transaction): void {
         event(new PaymentSuccessEvent(
-            amount: $amount,
+            amount: (int) $amount,
             paymentService: 'web',
             paymentType: 'installment',
             sender: $transaction->sender,

@@ -24,15 +24,6 @@ class PaymentSuccessListener {
         private TransactionPaymentHistoryService $transactionPaymentHistoryService,
     ) {}
 
-    /**
-     * @param int    $amount
-     * @param string $paymentService the name of the Payment gateway
-     * @param        $paymentType
-     * @param mixed  $sender         : The number or person who sent the money
-     * @param mixed  $paidFor        the identifier for the payment. Ex; { LoanID, TokenID }
-     * @param        $payer
-     * @param        $transaction
-     */
     public function onPaymentSuccess(
         int $amount,
         string $paymentService,
