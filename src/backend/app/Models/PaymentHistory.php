@@ -23,21 +23,38 @@ use Illuminate\Support\Facades\DB;
  * @property string $payer_type
  * @property int    $payer_id
  * @property int    $transaction_id
+ *
+ * @phpstan-type PaymentFlowData array{amount: int, payment_type: string, aperiod: string}
+ * @phpstan-type PaymentMonthData array{amount: int, month: int}
+ * @phpstan-type OverviewData array{total: int, dato: string}
+ * @phpstan-type CustomerPaymentData array{customer_id: int}
  */
 class PaymentHistory extends BaseModel {
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function paidFor(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function payer(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Transaction, $this>
+     */
     public function transaction(): BelongsTo {
         return $this->belongsTo(Transaction::class);
     }
 
-    public function getFlow(string $payer_type, int $payer_id, string $period, $limit = null, string $order = 'ASC') {
+    /**
+     * @return array<PaymentFlowData>
+     */
+    public function getFlow(string $payer_type, int $payer_id, string $period, ?int $limit = null, string $order = 'ASC'): array {
         $sql = <<<SQL
             SELECT
                 SUM(amount) AS amount,
@@ -56,7 +73,10 @@ class PaymentHistory extends BaseModel {
         return $this->executeSqlCommand($sql, $payer_id, null, $payer_type);
     }
 
-    public function getPaymentFlow(string $payer_type, int $payer_id, int $year) {
+    /**
+     * @return array<PaymentMonthData>
+     */
+    public function getPaymentFlow(string $payer_type, int $payer_id, int $year): array {
         $sql = <<<SQL
             SELECT
                 SUM(amount) AS amount,
@@ -81,10 +101,12 @@ class PaymentHistory extends BaseModel {
     }
 
     /**
-     * @param Request|array|string $begin
-     * @param Request|array|string $end
+     * @param Request|array<string>|string $begin
+     * @param Request|array<string>|string $end
+     *
+     * @return array<OverviewData>
      */
-    public function getOverview($begin, $end) {
+    public function getOverview($begin, $end): array {
         $sql = <<<SQL
             SELECT
                 SUM(amount) AS total,
@@ -102,7 +124,10 @@ class PaymentHistory extends BaseModel {
         return $results;
     }
 
-    private function executeSqlCommand(string $sql, $payer_id, $agent_id, $payer_type) {
+    /**
+     * @return array<mixed>
+     */
+    private function executeSqlCommand(string $sql, ?int $payer_id, ?int $agent_id, string $payer_type): array {
         $sth = DB::connection('tenant')->getPdo()->prepare($sql);
         if ($payer_id) {
             $sth->bindValue(':payer_id', $payer_id, \PDO::PARAM_INT);
@@ -116,12 +141,17 @@ class PaymentHistory extends BaseModel {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param array<int> $customerIds
+     *
+     * @return Collection<int, CustomerPaymentData>
+     */
     public function findCustomersPaidInRange(
         array $customerIds,
         CarbonImmutable $startDate,
         CarbonImmutable $endDate,
     ): Collection {
-        return DB::connection('tenant')->table($this->getTable())
+        $result = DB::connection('tenant')->table($this->getTable())
             ->select('payer_id as customer_id')
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate)
@@ -129,5 +159,10 @@ class PaymentHistory extends BaseModel {
             ->where('payer_type', '=', 'person')
             ->groupBy('payer_id')
             ->get();
+
+        // Convert stdClass objects to arrays to match the expected return type
+        return $result->map(function ($item) {
+            return ['customer_id' => (int) $item->customer_id];
+        });
     }
 }

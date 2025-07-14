@@ -14,7 +14,7 @@ class AgentReceiptDetailService implements IBaseService {
         private AgentReceiptDetail $agentReceiptDetail,
     ) {}
 
-    public function getSummary($agentId) {
+    public function getSummary(int $agentId): mixed {
         return $this->agentReceiptDetail->newQuery()->select('summary')
             ->whereHas(
                 'receipt',
@@ -28,10 +28,16 @@ class AgentReceiptDetailService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $agentReceiptDetailData
+     */
     public function create(array $agentReceiptDetailData): AgentReceiptDetail {
         return $this->agentReceiptDetail->create($agentReceiptDetailData);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AgentReceiptDetail {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -40,6 +46,9 @@ class AgentReceiptDetailService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AgentReceiptDetail>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Agent;
 use App\Models\AgentBalanceHistory;
+use App\Models\AgentReceipt;
 use App\Services\Interfaces\IAssociative;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -68,7 +69,7 @@ class AgentBalanceHistoryService implements IBaseService, IAssociative {
             ->sum('amount');
     }
 
-    public function getTransactionAverage(Agent $agent, ?AgentBalanceHistory $lastReceipt): float {
+    public function getTransactionAverage(Agent $agent, ?AgentReceipt $lastReceipt): float {
         $query = $this->agentBalanceHistory->newQuery()
             ->where('agent_id', $agent->id)
             ->where('trigger_type', 'agent_transaction');

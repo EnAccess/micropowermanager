@@ -19,23 +19,30 @@ use Illuminate\Support\Facades\DB;
  * @property int    $city_id
  */
 class Target extends BaseModel {
+    /** @use HasFactory<\Database\Factories\TargetFactory> */
     use HasFactory;
 
+    /**
+     * @return BelongsTo<City, $this>
+     */
     public function city(): BelongsTo {
         return $this->belongsTo(City::class);
     }
 
+    /**
+     * @return HasMany<SubTarget, $this>
+     */
     public function subTargets(): HasMany {
         return $this->hasMany(SubTarget::class);
     }
 
     /**
-     * @param        $cityId
-     * @param string $endDate
+     * @param int|string $cityId
+     * @param string     $endDate
      *
-     * @return Builder
+     * @return Builder<Target>
      */
-    public function targetForMiniGrid($cityId, string $endDate): Builder {
+    public function targetForMiniGrid(int|string $cityId, string $endDate): Builder {
         return $this::with('subTargets.connectionType', 'city')
             ->where('owner_id', $cityId)
             ->where('owner_type', 'mini-grid')
@@ -44,7 +51,13 @@ class Target extends BaseModel {
             ->limit(1);
     }
 
-    public function targetForCluster($miniGridIds, string $endDate): Builder {
+    /**
+     * @param array<int|string> $miniGridIds
+     * @param string            $endDate
+     *
+     * @return Builder<Target>
+     */
+    public function targetForCluster(array $miniGridIds, string $endDate): Builder {
         return $this::query()
             ->select(DB::raw('*, YEARWEEK(target_date,3) as period'))
             ->with('subTargets.connectionType', 'city')
@@ -54,11 +67,20 @@ class Target extends BaseModel {
             ->orderBy('target_date', 'asc');
     }
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function owner(): MorphTo {
         return $this->morphTo();
     }
 
-    public function periodTargetAlternative($cityId, $startDate): Builder {
+    /**
+     * @param int|string $cityId
+     * @param string     $startDate
+     *
+     * @return Builder<Target>
+     */
+    public function periodTargetAlternative(int|string $cityId, string $startDate): Builder {
         return $this::query()
             ->select(DB::raw('*, YEARWEEK(target_date,3) as period'))->with(
                 'subTargets.connectionType',

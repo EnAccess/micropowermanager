@@ -3,19 +3,26 @@
 namespace App\Services;
 
 use App\Models\SmsResendInformationKey;
+use Illuminate\Database\Eloquent\Collection;
 
 class SmsResendInformationKeyService {
-    private $smsResendInformationKey;
+    private SmsResendInformationKey $smsResendInformationKey;
 
     public function __construct(SmsResendInformationKey $smsResendInformationKey) {
         $this->smsResendInformationKey = $smsResendInformationKey;
     }
 
-    public function getResendInformationKeys() {
+    /**
+     * @return Collection<int, SmsResendInformationKey>
+     */
+    public function getResendInformationKeys(): Collection {
         return $this->smsResendInformationKey->newQuery()->get();
     }
 
-    public function updateResendInformationKey(SmsResendInformationKey $smsResendInformationKey, $data) {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function updateResendInformationKey(SmsResendInformationKey $smsResendInformationKey, array $data): SmsResendInformationKey {
         $smsResendInformationKey->update([
             'key' => $data['key'],
         ]);

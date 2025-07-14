@@ -15,7 +15,10 @@ class SubConnectionTypeService implements IBaseService {
         private SubConnectionType $subConnectionType,
     ) {}
 
-    public function getSubConnectionTypesByConnectionTypeId($connectionTypeId, $limit = null): LengthAwarePaginator|Collection {
+    /**
+     * @return LengthAwarePaginator<SubConnectionType>|Collection<int, SubConnectionType>
+     */
+    public function getSubConnectionTypesByConnectionTypeId(int $connectionTypeId, ?int $limit = null): LengthAwarePaginator|Collection {
         return $limit ? $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
             ->paginate($limit) :
             $this->subConnectionType->newQuery()->where('connection_type_id', $connectionTypeId)
@@ -26,10 +29,16 @@ class SubConnectionTypeService implements IBaseService {
         return $this->subConnectionType->newQuery()->findOrFail($subConnectionTypeId);
     }
 
+    /**
+     * @param array<string, mixed> $subConnectionServiceData
+     */
     public function create(array $subConnectionServiceData): SubConnectionType {
         return $this->subConnectionType->newQuery()->create($subConnectionServiceData);
     }
 
+    /**
+     * @param array<string, mixed> $subConnectionTypeData
+     */
     public function update($subConnectionType, array $subConnectionTypeData): SubConnectionType {
         $subConnectionType->update($subConnectionTypeData);
         $subConnectionType->fresh();
@@ -37,6 +46,9 @@ class SubConnectionTypeService implements IBaseService {
         return $subConnectionType;
     }
 
+    /**
+     * @return Collection<int, SubConnectionType>|LengthAwarePaginator<SubConnectionType>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->subConnectionType->newQuery()->paginate($limit);

@@ -78,7 +78,7 @@ class AssetRateChecker extends AbstractSharedCommand {
 
     private function sendReminderSms(AssetRate $assetRate): void {
         $smsService = app()->make(SmsService::class);
-        $smsService->sendSms($assetRate, SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
+        $smsService->sendSms($assetRate->toArray(), SmsTypes::APPLIANCE_RATE, SmsConfigs::class);
     }
 
     private function sendReminders($dueAssetRates, $smsType) {

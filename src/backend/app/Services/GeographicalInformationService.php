@@ -18,8 +18,12 @@ class GeographicalInformationService implements IBaseService, IAssociative {
     ) {}
 
     // This function will be removed until devices feature migration is done
-    public function changeOwnerWithAddress($meter, $addressId) {
-        $geoInfo = $this->geographicalInformation->newQuery()->where('owner_type', 'meter')->where('owner_id', $meter->id)->first();
+    public function changeOwnerWithAddress(object $meter, int $addressId): void {
+        $geoInfo = $this->geographicalInformation->newQuery()
+            ->where('owner_type', 'meter')
+            ->where('owner_id', $meter->id)
+            ->first();
+
         if ($geoInfo) {
             $geoInfo->owner_type = 'address';
             $geoInfo->owner_id = $addressId;
@@ -35,14 +39,23 @@ class GeographicalInformationService implements IBaseService, IAssociative {
         return $model->delete();
     }
 
+    /**
+     * @return Collection<int, GeographicalInformation>|LengthAwarePaginator<GeographicalInformation>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->geographicalInformation->newQuery()->get();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): GeographicalInformation {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): GeographicalInformation {
         $model->update($data);
         $model->fresh();
@@ -50,7 +63,10 @@ class GeographicalInformationService implements IBaseService, IAssociative {
         return $model;
     }
 
-    public function make($geographicalInformationData): GeographicalInformation {
+    /**
+     * @param array<string, mixed> $geographicalInformationData
+     */
+    public function make(array $geographicalInformationData): GeographicalInformation {
         return $this->geographicalInformation->newQuery()->make([
             'points' => $geographicalInformationData['points'],
         ]);

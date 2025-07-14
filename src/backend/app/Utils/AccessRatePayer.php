@@ -18,7 +18,7 @@ class AccessRatePayer {
         $this->debtAmount = self::MINIMUM_AMOUNT;
     }
 
-    public function initialize(TransactionDataContainer $container) {
+    public function initialize(TransactionDataContainer $container): void {
         $meter = $container->device->device;
         $accessRatePayment = $this->accessRatePaymentService->getAccessRatePaymentByMeter($meter);
 
@@ -31,7 +31,7 @@ class AccessRatePayer {
         $this->transaction = $container->transaction;
     }
 
-    public function pay() {
+    public function pay(): TransactionDataContainer {
         $meter = $this->transactionData->device->device;
         $owner = $this->transactionData->device->person;
         if ($this->debtAmount > self::MINIMUM_AMOUNT) { // there is unpaid amount
@@ -60,7 +60,7 @@ class AccessRatePayer {
         return $this->transactionData;
     }
 
-    public function consumeAmount() {
+    public function consumeAmount(): int {
         $this->transaction->amount = (int) ($this->transaction->amount - $this->debtAmount);
 
         return $this->transaction->amount;

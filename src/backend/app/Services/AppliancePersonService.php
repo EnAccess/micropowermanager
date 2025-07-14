@@ -31,7 +31,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $appliancePerson->save();
     }
 
-    public function createLogForSoldAppliance($assetPerson, $cost, $preferredPrice) {
+    public function createLogForSoldAppliance(AssetPerson $assetPerson, float $cost, float $preferredPrice): void {
         $currency = $this->getCurrencyFromMainSettings();
 
         event(
@@ -47,13 +47,13 @@ class AppliancePersonService implements IBaseService, IAssociative {
         );
     }
 
-    public function getCurrencyFromMainSettings() {
+    public function getCurrencyFromMainSettings(): string {
         $mainSettings = $this->mainSettings->newQuery()->first();
 
         return $mainSettings === null ? '€' : $mainSettings->currency;
     }
 
-    public function getApplianceDetails(int $applianceId) {
+    public function getApplianceDetails(int $applianceId): AssetPerson {
         $appliance = $this->assetPerson::with('asset', 'rates.logs', 'logs.owner')
             ->where('id', '=', $applianceId)
             ->first();
@@ -61,8 +61,9 @@ class AppliancePersonService implements IBaseService, IAssociative {
         return $this->sumTotalPaymentsAndTotalRemainingAmount($appliance);
     }
 
-    private function sumTotalPaymentsAndTotalRemainingAmount($appliance) {
-        $rates = Collect($appliance->rates);
+    private function sumTotalPaymentsAndTotalRemainingAmount(AssetPerson $appliance): AssetPerson {
+        /** @var SupportCollection<int, mixed> $rates */
+        $rates = collect($appliance->rates);
         $appliance['totalRemainingAmount'] = 0;
         $appliance['totalPayments'] = 0;
 
@@ -126,7 +127,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
             ->orWhere('device_serial', '')->pluck('id');
     }
 
-    public function getBySerialNumber($serialNumber) {
+    public function getBySerialNumber(string $serialNumber): ?AssetPerson {
         return $this->assetPerson->newQuery()->where('device_serial', $serialNumber)->first();
     }
 }

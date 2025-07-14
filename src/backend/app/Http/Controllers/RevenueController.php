@@ -131,7 +131,7 @@ class RevenueController extends Controller {
             $targets = $this->target->targetForMiniGrid($targetTypeId, $endDate)->first();
         } else {
             $cluster = Cluster::query()->find($targetTypeId);
-            $miniGridIds = $cluster->miniGrids()->get()->pluck('id');
+            $miniGridIds = $cluster->miniGrids()->get()->pluck('id')->toArray();
             $targets = $this->target->targetForCluster($miniGridIds, $endDate)->get();
             $target_data = $this->revenueService->fetchTargets($targets);
             $targets = $targets[0];

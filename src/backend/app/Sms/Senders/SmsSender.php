@@ -195,13 +195,13 @@ abstract class SmsSender {
         $africasTalkingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
         $gateway = self::DEFAULT_GATEWAY;
 
-        if ($africasTalkingPlugin && $africasTalkingPlugin->status === Plugins::ACTIVE) {
+        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
             $gateway = self::AFRICAS_TALKING_GATEWAY;
         }
 
         $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
-        if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
+        if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
             $viberContactService = app()->make(ViberContactService::class);
             $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
 

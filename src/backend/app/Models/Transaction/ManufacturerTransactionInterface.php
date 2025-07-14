@@ -2,6 +2,8 @@
 
 namespace App\Models\Transaction;
 
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+
 /**
  * Interface ManufacturerTransactionInterface.
  *
@@ -12,17 +14,17 @@ namespace App\Models\Transaction;
  *
  *  Implementations may also expose additional metadata such as `site_ids`,
  * `external_ids`, device identifiers, or configuration parameters required
- * by the manufacturer’s systems.
+ * by the manufacturer's systems.
  * These should be exposed through custom methods or attributes on the implementing model.
  */
 interface ManufacturerTransactionInterface {
-    public function agentTransaction();
+    public function agentTransaction(): MorphOne;
 
-    public function thirdPartyTransaction();
+    public function thirdPartyTransaction(): MorphOne;
 
-    public function swiftaTransaction();
+    public function swiftaTransaction(): MorphOne;
 
-    public function mesombTransaction();
+    public function mesombTransaction(): MorphOne;
 
-    public function waveMoneyTransaction();
+    public function waveMoneyTransaction(): MorphOne;
 }
