@@ -14,10 +14,6 @@ Then you can proceed to create a new "Maintenance request".
 Once the user clicks on "Save", an SMS notifying the maintenance service provider of the task to be resolved is automatically sent.
 The maintenance service provider can respond to this SMS (by confirming receipt, or communicating that issue has been resolved, for instance).
 
-> [!NOTE]
-> MicroPowerManager was originally developed to enable the recording of responses from maintenance service providers on the MicroPowerManager account (provided the user relies on the [SMS Gateway App](android-apps#sms-gateway-app)).
-> However, it would currently require additional code adaption of the SMS Gateway App to re-activate this feature.
-
 The created maintenance request will also appear on the "Ticket" menu.
 
 > [!NOTE]

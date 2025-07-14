@@ -18,18 +18,24 @@ class AccessRateService implements IBaseService {
         return $this->accessRate->newQuery()->find($accessRateId);
     }
 
+    /**
+     * @param array<string, mixed> $accessRateData
+     */
     public function create(array $accessRateData): AccessRate {
         return $this->accessRate->newQuery()->create($accessRateData);
     }
 
-    public function update($accessRate, $acessRateData): AccessRate {
+    /**
+     * @param array<string, mixed> $acessRateData
+     */
+    public function update($accessRate, array $acessRateData): AccessRate {
         $accessRate->update($acessRateData);
         $accessRate->fresh();
 
         return $accessRate;
     }
 
-    public function deleteByTariffId($meterTariffId) {
+    public function deleteByTariffId(int $meterTariffId): void {
         $this->accessRate->newQuery()->where('tariff_id', $meterTariffId)->delete();
     }
 
@@ -37,6 +43,9 @@ class AccessRateService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AccessRate>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }

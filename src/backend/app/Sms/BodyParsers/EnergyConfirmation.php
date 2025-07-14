@@ -12,7 +12,7 @@ class EnergyConfirmation extends SmsBodyParser {
         $this->paymentHistory = $paymentHistory;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         $token = $this->paymentHistory->paidFor()->first();
         $transaction = $this->paymentHistory->transaction()->first();
         switch ($variable) {

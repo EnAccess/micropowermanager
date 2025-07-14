@@ -15,7 +15,6 @@ use App\Http\Controllers\ClustersDashboardCacheDataController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionGroupController;
 use App\Http\Controllers\ConnectionTypeController;
-use App\Http\Controllers\CountryListController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DeviceAddressController;
 use App\Http\Controllers\DeviceController;
@@ -240,7 +239,6 @@ Route::group(['prefix' => 'settings'], static function () {
     Route::put('/mail/{mailSettings}', [MailSettingsController::class, 'update'])
         ->middleware('jwt.verify');
     Route::get('/currency-list', [CurrencyController::class, 'index']);
-    Route::get('/country-list', [CountryListController::class, 'index']);
 });
 // Sms
 Route::group(['prefix' => 'sms-body'], static function () {
@@ -353,7 +351,10 @@ Route::group(['prefix' => 'plugins'], static function () {
 
 Route::get('/clusterlist', [ClusterController::class, 'index']);
 
-Route::get('/protected-pages', [ProtectedPageController::class, 'index']);
+Route::group(['prefix' => 'protected-pages'], static function () {
+    Route::get('/', [ProtectedPageController::class, 'index']);
+    Route::post('/compare', [ProtectedPageController::class, 'compareProtectedPagePassword']);
+});
 
 Route::group(['prefix' => 'companies'], static function () {
     Route::post('/', [CompanyController::class, 'store']);

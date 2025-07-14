@@ -18,18 +18,30 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class AgentTransaction extends BaseModel implements PaymentProviderTransactionInterface {
     public const RELATION_NAME = 'agent_transaction';
 
+    /**
+     * @return MorphOne<Transaction, $this>
+     */
     public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'original_transaction');
     }
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function manufacturerTransaction(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Agent, $this>
+     */
     public function agent(): BelongsTo {
         return $this->belongsTo(Agent::class);
     }
 
+    /**
+     * @return MorphMany<TransactionConflicts, $this>
+     */
     public function conflicts(): MorphMany {
         return $this->morphMany(TransactionConflicts::class, 'transaction');
     }

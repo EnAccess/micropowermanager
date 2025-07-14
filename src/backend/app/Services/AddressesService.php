@@ -19,7 +19,9 @@ class AddressesService implements IBaseService, IAssociative {
         private Address $address,
     ) {}
 
-    // fills the object and returns it without saving.
+    /**
+     * @param array<string, mixed> $params
+     */
     public function instantiate(array $params): Address {
         return $this->address->fill([
             'city_id' => $params['city_id'] ?? null,
@@ -30,7 +32,7 @@ class AddressesService implements IBaseService, IAssociative {
         ]);
     }
 
-    public function assignAddressToOwner(HasAddressesInterface $owner, Address $address) {
+    public function assignAddressToOwner(HasAddressesInterface $owner, Address $address): Address|bool {
         return $owner->addresses()->save($address);
     }
 
@@ -38,6 +40,9 @@ class AddressesService implements IBaseService, IAssociative {
         return $this->address::with('city')->findOrFail($id);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function createAddressDataFromRequest(Request $request): array {
         return [
             'email' => $request->get('email') ?? '',
@@ -52,6 +57,9 @@ class AddressesService implements IBaseService, IAssociative {
         return $this->address->newQuery()->findOrFail($id);
     }
 
+    /**
+     * @return Collection<int, Address>|LengthAwarePaginator<Address>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->address->newQuery()->paginate($limit);
@@ -60,6 +68,9 @@ class AddressesService implements IBaseService, IAssociative {
         return $this->address->newQuery()->get();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): Address {
         throw new \Exception('Method create() not yet implemented.');
     }
@@ -68,13 +79,19 @@ class AddressesService implements IBaseService, IAssociative {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $addressData
+     */
     public function update($address, array $addressData): Address {
         $address->update($addressData);
 
         return $address;
     }
 
-    public function make($addressData): Address {
+    /**
+     * @param array<string, mixed> $addressData
+     */
+    public function make(array $addressData): Address {
         return $this->address->newQuery()->make([
             'email' => $addressData['email'] ?? null,
             'phone' => $addressData['phone'] ?? null,

@@ -10,7 +10,15 @@ class AgentCustomersPaymentHistoryService {
         private PaymentHistory $paymentHistory,
     ) {}
 
-    public function getPaymentFlowByCustomerId($period, $customerId, $limit, $order = 'ASC') {
+    /**
+     * @param string   $period
+     * @param int      $customerId
+     * @param int|null $limit
+     * @param string   $order
+     *
+     * @return array<string, array<string, float>>
+     */
+    public function getPaymentFlowByCustomerId(string $period, int $customerId, ?int $limit, string $order = 'ASC'): array {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
@@ -49,23 +57,27 @@ class AgentCustomersPaymentHistoryService {
         $payments = $this->executeSqlCommand($sql, $customerId, null, 'person');
 
         if (empty($payments)) {
-            $flowList = [];
-            $flowList[$periodParam][''] = 0;
-
-            return $flowList;
+            return [$periodParam => ['' => 0.0]];
         }
 
         return $this->preparePaymentFlow($payments);
     }
 
-    public function getPaymentFlows($period, $agentId, $limit, $order = 'ASC') {
+    /**
+     * @param string   $period
+     * @param int      $agentId
+     * @param int|null $limit
+     * @param string   $order
+     *
+     * @return array<string, array<string, float>>
+     */
+    public function getPaymentFlows(string $period, int $agentId, ?int $limit, string $order = 'ASC'): array {
         $periodParam = strtoupper($period);
         $period = strtoupper($period);
 
         switch ($period) {
             case 'D':
-                $period = 'Day(payment_histories.created_at), '.
-                    'Month(payment_histories.created_at), Year(payment_histories.created_at)';
+                $period = 'Day(payment_histories.created_at), Month(payment_histories.created_at), Year(payment_histories.created_at)';
                 break;
             case 'W':
                 $period = 'Week(payment_histories.created_at), Year(payment_histories.created_at)';
@@ -100,35 +112,46 @@ class AgentCustomersPaymentHistoryService {
         if ($limit !== null) {
             $sql .= ' LIMIT '.(int) $limit;
         }
+
         $payments = $this->executeSqlCommand($sql, null, $agentId, 'person');
 
         if (empty($payments)) {
-            $flowList = [];
-            $flowList[$periodParam][''] = 0;
-
-            return $flowList;
+            return [$periodParam => ['' => 0.0]];
         }
 
         return $this->preparePaymentFlow($payments);
     }
 
-    private function preparePaymentFlow($payments): array {
+    /**
+     * @param array<int, array{period: string, payment_type: string, amount: float}> $payments
+     *
+     * @return array<string, array<string, float>>
+     */
+    private function preparePaymentFlow(array $payments): array {
         $flowList = [];
         foreach ($payments as $payment) {
-            $flowList[$payment['period']][$payment['payment_type']] = $payment['amount'];
+            $flowList[$payment['period']][$payment['payment_type']] = (float) $payment['amount'];
         }
 
         return $flowList;
     }
 
-    private function executeSqlCommand(string $sql, $payerId, $agentId, $payerType) {
+    /**
+     * @param string   $sql
+     * @param int|null $payerId
+     * @param int|null $agentId
+     * @param string   $payerType
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function executeSqlCommand(string $sql, ?int $payerId, ?int $agentId, string $payerType): array {
         $sth = DB::connection($this->paymentHistory->getConnectionName())->getPdo()->prepare($sql);
 
-        if ($payerId) {
+        if ($payerId !== null) {
             $sth->bindValue(':payer_id', $payerId, \PDO::PARAM_INT);
         }
 
-        if ($agentId) {
+        if ($agentId !== null) {
             $sth->bindValue(':agent_id', $agentId, \PDO::PARAM_INT);
         }
 

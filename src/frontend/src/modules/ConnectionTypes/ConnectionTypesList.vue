@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     connectionTypeDetail(type) {
-      this.$router.push({ path: "/connection-types/" + type.id })
+      this.$router.push({ path: "/settings/connection-types/" + type.id })
       EventBus.$emit("connectionTypeDetail", type.name)
     },
     reloadList(subscriber, data) {

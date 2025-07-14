@@ -43,7 +43,7 @@ class AgentReceiptObserver {
             'agent_receipt_id' => $receipt->id,
             'due' => $due,
             'collected' => $collected,
-            'since_last_visit' => $sinceLastVisit ?? 0,
+            'since_last_visit' => $sinceLastVisit,
             'earlier' => $earlier ?? 0,
             'summary' => $summary < 0 ? 0 : $summary,
         ];

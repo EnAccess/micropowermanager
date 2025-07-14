@@ -19,10 +19,16 @@ class AccessRatePaymentService implements IBaseService {
         return $this->accessRatePayment->newQuery()->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $accessRatePaymentData
+     */
     public function create(array $accessRatePaymentData): AccessRatePayment {
         return $this->accessRatePayment->newQuery()->create($accessRatePaymentData);
     }
 
+    /**
+     * @param array<string, mixed> $accessRatePaymentData
+     */
     public function update($accessRatePayment, array $accessRatePaymentData): AccessRatePayment {
         $accessRatePayment->update($accessRatePaymentData);
         $accessRatePayment->fresh();
@@ -34,6 +40,9 @@ class AccessRatePaymentService implements IBaseService {
         return $accessRatePayment->delete();
     }
 
+    /**
+     * @return Collection<int, AccessRatePayment>|LengthAwarePaginator<AccessRatePayment>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         $query = $this->accessRatePayment->newQuery();
 
@@ -44,7 +53,7 @@ class AccessRatePaymentService implements IBaseService {
         return $this->accessRatePayment->newQuery()->get();
     }
 
-    public function getAccessRatePaymentByMeter($meter) {
+    public function getAccessRatePaymentByMeter($meter): ?AccessRatePayment {
         return $meter->accessRatePayment()->first();
     }
 }

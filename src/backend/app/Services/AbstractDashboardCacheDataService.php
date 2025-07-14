@@ -15,13 +15,24 @@ abstract class AbstractDashboardCacheDataService {
         $this->cacheDataKey = $cacheDataKey;
     }
 
-    abstract public function setData($dateRange = []);
+    /**
+     * @param array<int, string> $dateRange
+     */
+    abstract public function setData(array $dateRange = []): void;
 
-    public function getData() {
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getData(): array {
         return Cache::get(self::cacheKeyGenerator()) ? Cache::get(self::cacheKeyGenerator())->toArray() : [];
     }
 
-    public function getDataById($id) {
+    /**
+     * @param int|string $id
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getDataById(int|string $id): ?array {
         $cachedData = Cache::get(self::cacheKeyGenerator());
 
         return $cachedData ? collect($cachedData)->filter(function ($data) use ($id) {

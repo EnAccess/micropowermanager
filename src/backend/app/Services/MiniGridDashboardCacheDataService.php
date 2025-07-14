@@ -31,7 +31,10 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
         parent::__construct(self::CACHE_KEY_MINI_GRIDS_DATA);
     }
 
-    public function setData($dateRange = []) {
+    /**
+     * @param array<int, string> $dateRange
+     */
+    public function setData($dateRange = []): void {
         if (empty($dateRange)) {
             $startDate = date('Y-01-01'); // first day of the year
             $endDate = date('Y-m-d H:i:s', strtotime('today'));
@@ -101,7 +104,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $connectionGroup->id,
                     $endDate
                 );
-                $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]['registered_connections'];
+                $totalConnections[$connectionGroup->name] = $totalConnectionsData[0]['registered_connections'] ?? 0;
                 $revenues[$connectionGroup->name] = $revenue[0]['total'] ?? 0;
 
                 $connectionsData = $this->meterRevenueService->getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
@@ -110,7 +113,7 @@ class MiniGridDashboardCacheDataService extends AbstractDashboardCacheDataServic
                     $startDate,
                     $endDate
                 );
-                $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'];
+                $connections[$connectionGroup->name] = $connectionsData[0]['registered_connections'] ?? 0;
             }
 
             $cities = $this->city::where('mini_grid_id', $miniGridId)->get();

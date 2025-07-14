@@ -19,10 +19,13 @@ class AgentTransactionService implements IBaseService {
         private Device $device,
     ) {}
 
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     */
     public function getAll(
         ?int $limit = null,
-        $agentId = null,
-        $forApp = false,
+        ?int $agentId = null,
+        bool $forApp = false,
     ): Collection|LengthAwarePaginator {
         $query = $this->transaction->newQuery();
 
@@ -45,6 +48,9 @@ class AgentTransactionService implements IBaseService {
         return $transactions;
     }
 
+    /**
+     * @return Collection<int, Transaction>|LengthAwarePaginator<Transaction>
+     */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         $customerDeviceSerials = $this->device->newQuery()->where('person_id', $customerId)
             ->pluck('device_serial');
@@ -71,10 +77,16 @@ class AgentTransactionService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $transactionData
+     */
     public function create(array $transactionData): AgentTransaction {
         return $this->agentTransaction->newQuery()->create($transactionData);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AgentTransaction {
         throw new \Exception('Method update() not yet implemented.');
     }

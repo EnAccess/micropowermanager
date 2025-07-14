@@ -7,7 +7,7 @@ use App\Models\Meter\Meter;
 class ClusterMeterService {
     public function __construct(private Meter $meter) {}
 
-    public function getCountById($clusterId): int {
+    public function getCountById(int $clusterId): int {
         return $this->meter->newQuery()->whereHas(
             'device',
             function ($q) use ($clusterId) {

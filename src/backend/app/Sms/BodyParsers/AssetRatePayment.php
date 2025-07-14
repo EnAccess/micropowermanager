@@ -12,7 +12,7 @@ class AssetRatePayment extends SmsBodyParser {
         $this->paymentHistory = $paymentHistory;
     }
 
-    protected function getVariableValue($variable) {
+    protected function getVariableValue($variable): mixed {
         switch ($variable) {
             case 'appliance_type_name':
                 $variable = $this->paymentHistory->paidFor->assetPerson->assetType;

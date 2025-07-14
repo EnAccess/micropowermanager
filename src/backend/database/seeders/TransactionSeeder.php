@@ -33,16 +33,11 @@ class TransactionSeeder extends Seeder {
         $this->databaseProxyManagerService->buildDatabaseConnectionDemoCompany();
     }
 
-    private $meterTransactionTypes = [
+    private $transactionTypes = [
         SwiftaTransaction::class,
         WaveComTransaction::class,
         WaveMoneyTransaction::class,
         AgentTransaction::class,
-    ];
-
-    private $shsTransactionTypes = [
-        SunKingTransaction::class,
-        AngazaTransaction::class,
     ];
 
     private $amount = 1000;
@@ -69,12 +64,24 @@ class TransactionSeeder extends Seeder {
         }
     }
 
-    private function getTransactionTypeRandomlyFromTransactionTypes($deviceModel) {
+    private function getTransactionTypeRandomlyFromTransactionTypes() {
+        return $this->transactionTypes[array_rand($this->transactionTypes)];
+    }
+
+    private function getManufacturerTransactionFromDeviceType($deviceModel): CalinTransaction|AngazaTransaction|SunKingTransaction {
         if ($deviceModel instanceof Meter) {
-            return $this->meterTransactionTypes[array_rand($this->meterTransactionTypes)];
-        } elseif ($deviceModel instanceof SolarHomeSystem) {
-            return $this->shsTransactionTypes[array_rand($this->shsTransactionTypes)];
+            return CalinTransaction::create();
         }
+
+        if ($deviceModel instanceof SolarHomeSystem) {
+            $transactionClass = collect([
+                AngazaTransaction::class,
+                SunKingTransaction::class,
+            ])->random();
+
+            return $transactionClass::create();
+        }
+
         throw new \Exception('Unsupported device type for transaction');
     }
 
@@ -117,7 +124,7 @@ class TransactionSeeder extends Seeder {
             $amount = 300;
         }
 
-        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes($deviceModel);
+        $randomTransactionType = $this->getTransactionTypeRandomlyFromTransactionTypes();
         $transactionType = app()->make($randomTransactionType);
 
         // Get device serial based on device type
@@ -150,7 +157,7 @@ class TransactionSeeder extends Seeder {
         $subTransaction = null;
 
         // FIXME: What is this?
-        $manufacturerTransaction = CalinTransaction::query()->create([]);
+        $manufacturerTransaction = $this->getManufacturerTransactionFromDeviceType($deviceModel);
 
         if ($transactionType instanceof AgentTransaction) {
             $city = $randomDevice->person->addresses()->first()->city()->first();

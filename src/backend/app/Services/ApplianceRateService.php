@@ -24,7 +24,7 @@ class ApplianceRateService {
         return $mainSettings?->currency ?? '€';
     }
 
-    public function updateApplianceRateCost(AssetRate $applianceRate, $creatorId, $cost, $newCost): AssetRate {
+    public function updateApplianceRateCost(AssetRate $applianceRate, int $creatorId, int $cost, int $newCost): AssetRate {
         $currency = $this->getCurrencyFromMainSettings();
         event(new NewLogEvent([
             'user_id' => $creatorId,
@@ -43,7 +43,7 @@ class ApplianceRateService {
         return $applianceRate->refresh();
     }
 
-    public function deleteUpdatedApplianceRateIfCostZero(AssetRate $applianceRate, $creatorId, $cost, $newCost): void {
+    public function deleteUpdatedApplianceRateIfCostZero(AssetRate $applianceRate, int $creatorId, float $cost, float $newCost): void {
         $currency = $this->getCurrencyFromMainSettings();
         $appliancePerson = $applianceRate->assetPerson;
         $applianceRate->delete();
@@ -58,7 +58,10 @@ class ApplianceRateService {
         ]));
     }
 
-    public function getByLoanIdsForDueDate($loanIds): Collection {
+    /**
+     * @return Collection<int, AssetRate>
+     */
+    public function getByLoanIdsForDueDate(array $loanIds): Collection {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->whereIn('asset_person_id', $loanIds)
             ->where('remaining', '>', 0)
@@ -66,7 +69,10 @@ class ApplianceRateService {
             ->get();
     }
 
-    public function getAllByLoanId($loanId): Collection {
+    /**
+     * @return Collection<int, AssetRate>
+     */
+    public function getAllByLoanId(int $loanId): Collection {
         return $this->applianceRate->newQuery()->with('assetPerson.asset')
             ->where('asset_person_id', $loanId)
             ->get();
@@ -76,7 +82,7 @@ class ApplianceRateService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create($assetPerson, $installmentType = 'monthly'): void {
+    public function create(object $assetPerson, string $installmentType = 'monthly'): void {
         $baseTime = $assetPerson->first_payment_date ?? date('Y-m-d');
         $installment = $installmentType === 'monthly' ? 'month' : 'week';
         if ($assetPerson->down_payment > 0) {
@@ -115,19 +121,25 @@ class ApplianceRateService {
         }
     }
 
-    public function update($model, array $data): AssetRate {
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function update(object $model, array $data): AssetRate {
         throw new \Exception('Method update() not yet implemented.');
     }
 
-    public function delete($model): ?bool {
+    public function delete(object $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AssetRate>
+     */
     public function getAll(?int $limit = null): Collection {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 
-    public function getDownPaymentAsAssetRate($assetPerson): ?AssetRate {
+    public function getDownPaymentAsAssetRate(object $assetPerson): ?AssetRate {
         /** @var ?AssetRate $result */
         $result = $this->applianceRate->newQuery()
             ->where('asset_person_id', $assetPerson->id)
@@ -138,6 +150,9 @@ class ApplianceRateService {
         return $result;
     }
 
+    /**
+     * @return Builder<AssetRate>
+     */
     public function queryOutstandingDebtsByApplianceRates(CarbonImmutable $toDate): Builder {
         return $this->applianceRate->newQuery()
             ->with(['assetPerson.asset', 'assetPerson.person'])

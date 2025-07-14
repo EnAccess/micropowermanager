@@ -41,10 +41,16 @@ class AgentSoldApplianceService implements IBaseService {
         private TransactionService $transactionService,
     ) {}
 
-    public function create($applianceData): AgentSoldAppliance {
+    /**
+     * @param array<string, mixed> $applianceData
+     */
+    public function create(array $applianceData): AgentSoldAppliance {
         return $this->agentSoldAppliance->newQuery()->create($applianceData);
     }
 
+    /**
+     * @return Collection<int, AssetPerson>|LengthAwarePaginator<AssetPerson>
+     */
     public function getByCustomerId(int $agentId, ?int $customerId = null): Collection|LengthAwarePaginator {
         return $this->assetPerson->newQuery()->with(['person', 'device', 'rates'])
             ->whereHasMorph(
@@ -63,6 +69,9 @@ class AgentSoldApplianceService implements IBaseService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AgentSoldAppliance {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -71,11 +80,14 @@ class AgentSoldApplianceService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AgentSoldAppliance>|LengthAwarePaginator<AgentSoldAppliance>
+     */
     public function getAll(
         ?int $limit = null,
-        $agentId = null,
-        $customerId = null,
-        $forApp = false,
+        ?int $agentId = null,
+        ?int $customerId = null,
+        bool $forApp = false,
     ): Collection|LengthAwarePaginator {
         if ($forApp) {
             return $this->list($agentId);
@@ -122,12 +134,18 @@ class AgentSoldApplianceService implements IBaseService {
             ->paginate();
     }
 
+    /**
+     * @return Collection<int, Agent>
+     */
     public function getAgentsByCustomerId(int $customerId): Collection {
         return Agent::whereHas('soldAppliances', function ($query) use ($customerId) {
             $query->where('person_id', $customerId);
         })->get();
     }
 
+    /**
+     * @param array<string, mixed> $requestData
+     */
     public function processSaleFromRequest(AgentSoldAppliance $agentSoldAppliance, array $requestData = []): void {
         $assignedApplianceId = $agentSoldAppliance->agent_assigned_appliance_id;
         $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId);

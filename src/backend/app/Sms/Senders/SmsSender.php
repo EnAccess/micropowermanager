@@ -18,24 +18,31 @@ abstract class SmsSender {
     public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
     public const DEFAULT_GATEWAY = 'AndroidGateway';
 
-    protected $smsBodyService;
-    protected $data;
-    protected $references;
-    public $body = '';
-    protected $receiver;
-    protected $callback;
-    protected $parserSubPath;
-    private $smsAndroidSettings;
-    private $viberIdOfReceiver;
+    protected mixed $smsBodyService;
+    protected mixed $data;
 
-    public function __construct($data, $smsBodyService, $parserSubPath, $smsAndroidSettings) {
+    /** @var array<string, string>|null */
+    protected ?array $references;
+    public string $body = '';
+    protected ?string $receiver;
+    protected ?string $callback;
+    protected string $parserSubPath;
+    private mixed $smsAndroidSettings;
+    private ?string $viberIdOfReceiver;
+
+    public function __construct(
+        mixed $data,
+        mixed $smsBodyService,
+        string $parserSubPath,
+        mixed $smsAndroidSettings,
+    ) {
         $this->smsBodyService = $smsBodyService;
         $this->data = $data;
         $this->parserSubPath = $parserSubPath;
         $this->smsAndroidSettings = $smsAndroidSettings;
     }
 
-    public function sendSms() {
+    public function sendSms(): void {
         $gateway = $this->determineGateway();
         $lastRecordedSMS = Sms::query()
             ->where('receiver', $this->receiver)
@@ -76,7 +83,7 @@ abstract class SmsSender {
         }
     }
 
-    public function prepareHeader() {
+    public function prepareHeader(): void {
         try {
             $smsBody = $this->getSmsBody('header');
         } catch (MissingSmsReferencesException $exception) {
@@ -95,7 +102,7 @@ abstract class SmsSender {
         }
     }
 
-    public function prepareBody() {
+    public function prepareBody(): void {
         try {
             $smsBody = $this->getSmsBody('body');
         } catch (MissingSmsReferencesException $exception) {
@@ -112,7 +119,7 @@ abstract class SmsSender {
         }
     }
 
-    public function prepareFooter() {
+    public function prepareFooter(): void {
         try {
             $smsBody = $this->getSmsBody('footer');
             $this->body .= ' '.$smsBody->body;
@@ -122,7 +129,7 @@ abstract class SmsSender {
         }
     }
 
-    private function getSmsBody($reference) {
+    private function getSmsBody(string $reference): mixed {
         try {
             $smsBody = $this->smsBodyService->getSmsBodyByReference($this->references[$reference]);
         } catch (ModelNotFoundException $e) {
@@ -132,7 +139,7 @@ abstract class SmsSender {
         return $smsBody;
     }
 
-    public function validateReferences() {
+    public function validateReferences(): void {
         if (($this->data instanceof Transaction) || ($this->data instanceof AssetRate)) {
             $nullSmsBodies = $this->smsBodyService->getNullBodies();
             if (count($nullSmsBodies)) {
@@ -155,7 +162,7 @@ abstract class SmsSender {
         }
     }
 
-    public function getReceiver() {
+    public function getReceiver(): string {
         if ($this->data instanceof Transaction) {
             $this->receiver = strpos($this->data->sender, '+') === 0 ? $this->data->sender : '+'.$this->data->sender;
         } elseif ($this->data instanceof AssetRate) {
@@ -179,22 +186,22 @@ abstract class SmsSender {
         return $this->receiver;
     }
 
-    public function setCallback($callback, $uuid) {
+    public function setCallback(string $callback, string $uuid): void {
         $this->callback = sprintf($callback, $uuid);
     }
 
-    private function determineGateway() {
+    private function determineGateway(): string {
         $pluginsService = app()->make(PluginsService::class);
         $africasTalkingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::AFRICAS_TALKING);
         $gateway = self::DEFAULT_GATEWAY;
 
-        if ($africasTalkingPlugin && $africasTalkingPlugin->status === Plugins::ACTIVE) {
+        if ($africasTalkingPlugin && $africasTalkingPlugin->status == Plugins::ACTIVE) {
             $gateway = self::AFRICAS_TALKING_GATEWAY;
         }
 
         $viberMessagingPlugin = $pluginsService->getByMpmPluginId(MpmPlugin::VIBER_MESSAGING);
 
-        if ($viberMessagingPlugin && $viberMessagingPlugin->status === Plugins::ACTIVE) {
+        if ($viberMessagingPlugin && $viberMessagingPlugin->status == Plugins::ACTIVE) {
             $viberContactService = app()->make(ViberContactService::class);
             $viberContact = $viberContactService->getByReceiverPhoneNumber($this->receiver);
 

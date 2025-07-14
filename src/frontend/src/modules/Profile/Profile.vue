@@ -52,7 +52,6 @@
                     autocomplete="off"
                     :name="$tc('words.phone')"
                     enabledCountryCode="true"
-                    v-model="userService.user.phone"
                     @validate="validatePhone"
                   ></vue-tel-input>
                   <span
@@ -131,47 +130,45 @@
       </md-dialog-title>
       <md-dialog-content>
         <div class="password-edit-container">
-          <form class="md-layout" data-vv-scope="Change-Password-Form">
+          <form class="md-layout">
             <md-field
               :class="{
-                'md-invalid': errors.has('Change-Password-Form.password'),
+                'md-invalid': errors.has('changePassword'),
               }"
             >
-              <label for="password">
+              <label for="changePassword">
                 {{ $tc("words.password") }}
               </label>
               <md-input
                 type="password"
-                name="password"
-                id="password"
+                name="changePassword"
+                id="changePassword"
                 v-validate="'required|min:3|max:15'"
                 v-model="passwordService.user.password"
-                ref="passwordRef"
+                ref="changePasswordRef"
               />
               <span class="md-error">
-                {{ errors.first("Change-Password-Form.password") }}
+                {{ errors.first("changePassword") }}
               </span>
             </md-field>
 
             <md-field
               :class="{
-                'md-invalid': errors.has(
-                  'Change-Password-Form.confirmPassword',
-                ),
+                'md-invalid': errors.has('confirmChangePassword'),
               }"
             >
-              <label for="confirmPassword">
+              <label for="confirmChangePassword">
                 {{ $tc("phrases.confirmPassword") }}
               </label>
               <md-input
                 type="password"
-                name="confirmPassword"
-                id="confirmPassword"
+                name="confirmChangePassword"
+                id="confirmChangePassword"
                 v-model="passwordService.user.confirmPassword"
-                v-validate="'required|confirmed:$passwordRef|min:3|max:15'"
+                v-validate="'required|confirmed:changePasswordRef|min:3|max:15'"
               />
               <span class="md-error">
-                {{ errors.first("Change-Password-Form.confirmPassword") }}
+                {{ errors.first("confirmChangePassword") }}
               </span>
             </md-field>
 
@@ -198,6 +195,7 @@ import { UserService } from "@/services/UserService"
 import { CityService } from "@/services/CityService"
 import { UserPasswordService } from "@/services/UserPasswordService"
 import { notify } from "@/mixins/notify"
+
 export default {
   name: "Profile",
   mixins: [notify],
@@ -215,9 +213,27 @@ export default {
       },
     }
   },
+  computed: {
+    phoneInput: {
+      get() {
+        return typeof this.userService.user.phone === "string"
+          ? this.userService.user.phone
+          : ""
+      },
+      set(val) {
+        this.userService.user.phone = val
+      },
+    },
+  },
   mounted() {
     this.getCities()
     this.getUser()
+    if (
+      !this.userService.user.phone ||
+      typeof this.userService.user.phone !== "string"
+    ) {
+      this.userService.user.phone = ""
+    }
   },
   methods: {
     async getCities() {
@@ -235,6 +251,12 @@ export default {
         await this.userService.get(
           this.$store.getters["auth/authenticationService"].authenticateUser.id,
         )
+        if (
+          !this.userService.user.phone ||
+          typeof this.userService.user.phone !== "string"
+        ) {
+          this.userService.user.phone = ""
+        }
         if (this.userService.user.cityId !== undefined) {
           this.selectedCity = this.cityService.cities
             .filter((x) => x.id === this.userService.user.cityId)
@@ -248,6 +270,7 @@ export default {
       this.sending = true
       let validation = await this.$validator.validateAll("address")
       if (!validation) {
+        this.sending = false
         return
       }
       if (this.selectedCity !== undefined) {
@@ -263,8 +286,9 @@ export default {
     },
     async changePassword() {
       this.sending = true
-      let validation = await this.$validator.validateAll("Change-Password-Form")
+      let validation = await this.$validator.validateAll()
       if (!validation) {
+        this.sending = false
         return
       }
       try {
@@ -279,6 +303,8 @@ export default {
     },
     closeModal() {
       this.modalVisibility = false
+      // Clear validation errors when closing modal
+      this.$validator.reset()
     },
   },
 }

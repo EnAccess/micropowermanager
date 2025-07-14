@@ -39,7 +39,7 @@ class DeviceAddressService implements IAssignationService {
     /**
      * @return Address
      */
-    public function updateDeviceAddress($deviceAddress, $addressData): Address {
+    public function updateDeviceAddress(Address $deviceAddress, array $addressData): Address {
         $points = $addressData['lat'].','.$addressData['lon'];
         $deviceAddress->geo()->update([
             'points' => $points,
