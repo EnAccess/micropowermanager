@@ -19,7 +19,6 @@ use App\Listeners\TransactionFailedListener;
 use App\Listeners\TransactionSavedListener;
 use App\Listeners\TransactionSuccessfulListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Inensus\SwiftaPaymentProvider\Listeners\TransactionSuccessfulListener;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
 
@@ -31,9 +30,8 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
         // default namespace
-        ClusterEvent::class => [ClusterGeoListener::class],
-        // string-based Listeners
         AccessRatePaymentInitialize::class => [AccessRateListener::class],
+        ClusterEvent::class => [ClusterGeoListener::class],
         NewLogEvent::class => [LogListener::class],
         PaymentSuccessEvent::class => [PaymentSuccessListener::class],
         SmsStoredEvent::class => [SmsListener::class],
