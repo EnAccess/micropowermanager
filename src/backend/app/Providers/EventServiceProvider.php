@@ -10,7 +10,6 @@ use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\LogListener;
 use App\Listeners\PaymentEnergyListener;
-use App\Listeners\PaymentFailedListener;
 use App\Listeners\PaymentLoanListener;
 use App\Listeners\PaymentSuccessListener;
 use App\Listeners\SmsListener;
@@ -34,7 +33,6 @@ class EventServiceProvider extends ServiceProvider {
         AccessRatePaymentInitialize::class => [AccessRateListener::class],
         NewLogEvent::class => [LogListener::class],
         'payment.energy' => [PaymentEnergyListener::class],
-        'payment.failed' => [PaymentFailedListener::class],
         'payment.loan' => [PaymentLoanListener::class],
         'payment.successful' => [PaymentSuccessListener::class],
         SmsStoredEvent::class => [SmsListener::class],
