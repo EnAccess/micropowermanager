@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners;
+namespace Inensus\MesombPaymentProvider\Listeners;
 
 use App\Models\Transaction\Transaction;
 use Illuminate\Support\Facades\Log;
