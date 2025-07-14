@@ -8,6 +8,7 @@ use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
 use App\Events\SmsStoredEvent;
 use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSavedEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\LogListener;
@@ -35,7 +36,7 @@ class EventServiceProvider extends ServiceProvider {
         PaymentSuccessEvent::class => [PaymentSuccessListener::class],
         SmsStoredEvent::class => [SmsListener::class],
         TransactionFailedEvent::class => [TransactionFailedListener::class],
-        'transaction.saved' => [TransactionSavedListener::class],
+        TransactionSavedEvent::class => [TransactionSavedListener::class],
         'transaction.successful' => [TransactionSuccessListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],

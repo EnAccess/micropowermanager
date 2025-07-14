@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TransactionSavedEvent;
 use App\Http\Resources\ApiResource;
 use App\Jobs\ProcessPayment;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class TransactionController extends Controller {
         $transactionProvider = $request->attributes->get('transactionProcessor');
         $transactionProvider->saveTransaction();
         $transaction = $transactionProvider->saveCommonData();
-        event('transaction.saved', $transactionProvider);
+        event(new TransactionSavedEvent($transactionProvider));
 
         if (isset($transaction->id)) {
             ProcessPayment::dispatch($transaction->id)
