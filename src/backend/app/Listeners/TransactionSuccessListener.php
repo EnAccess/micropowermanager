@@ -15,7 +15,7 @@ class TransactionSuccessListener {
         }
     }
 
-    public function subscribe(Transaction $transaction): void {
+    public function handle(Transaction $transaction): void {
         $this->onTransactionSuccess($transaction);
     }
 }
