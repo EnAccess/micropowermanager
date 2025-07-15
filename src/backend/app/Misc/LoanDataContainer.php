@@ -2,6 +2,7 @@
 
 namespace App\Misc;
 
+use App\Events\PaymentSuccessEvent;
 use App\Exceptions\Meters\MeterIsNotAssignedToCustomer;
 use App\Exceptions\Meters\MeterIsNotInUse;
 use App\Exceptions\Meters\MeterNotFound;
@@ -32,19 +33,15 @@ class LoanDataContainer {
 
         foreach ($loans as $loan) {
             if ($loan->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
-                // add payment history for the loan
-                event(
-                    'payment.successful',
-                    [
-                        'amount' => $this->transaction->amount,
-                        'paymentService' => $this->transaction->original_transaction_type,
-                        'paymentType' => 'installment',
-                        'sender' => $this->transaction->sender,
-                        'paidFor' => $loan,
-                        'payer' => $this->meterOwner,
-                        'transaction' => $this->transaction,
-                    ]
-                );
+                event(new PaymentSuccessEvent(
+                    amount: $this->transaction->amount,
+                    paymentService: $this->transaction->original_transaction_type,
+                    paymentType: 'installment',
+                    sender: $this->transaction->sender,
+                    paidFor: $loan,
+                    payer: $this->meterOwner,
+                    transaction: $this->transaction,
+                ));
                 $loan->update(
                     ['remaining' => $this->transaction->amount]
                 );
@@ -57,19 +54,15 @@ class LoanDataContainer {
                 $this->transaction->amount = 0;
                 break;
             } else {
-                // add payment history for the loan
-                event(
-                    'payment.successful',
-                    [
-                        'amount' => $loan->remaining,
-                        'paymentService' => $this->transaction->original_transaction_type,
-                        'paymentType' => 'installment',
-                        'sender' => $this->transaction->sender,
-                        'paidFor' => $loan,
-                        'payer' => $this->meterOwner,
-                        'transaction' => $this->transaction,
-                    ]
-                );
+                event(new PaymentSuccessEvent(
+                    amount: $loan->remaining,
+                    paymentService: $this->transaction->original_transaction_type,
+                    paymentType: 'installment',
+                    sender: $this->transaction->sender,
+                    paidFor: $loan,
+                    payer: $this->meterOwner,
+                    transaction: $this->transaction,
+                ));
                 $this->paid_rates[] = [
                     'asset_type_name' => $loan->assetPerson->asset->assetType->name,
                     'paid' => $loan->remaining,

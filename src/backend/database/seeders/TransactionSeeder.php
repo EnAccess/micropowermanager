@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Events\PaymentSuccessEvent;
+use App\Events\TransactionFailedEvent;
 use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Meter\Meter;
@@ -247,7 +249,7 @@ class TransactionSeeder extends Seeder {
             // create an object for the token job
             $transactionData = \App\Misc\TransactionDataContainer::initialize($transaction);
         } catch (\Exception $exception) {
-            event('transaction.failed', [$transaction, $exception->getMessage()]);
+            event(new TransactionFailedEvent($transaction, $exception->getMessage()));
             throw $exception;
         }
 
@@ -300,19 +302,15 @@ class TransactionSeeder extends Seeder {
             $token->save();
             $transactionData->token = $token;
 
-            // payment event
-            event(
-                'payment.successful',
-                [
-                    'amount' => $transactionData->transaction->amount,
-                    'paymentService' => $transactionData->transaction->original_transaction_type,
-                    'paymentType' => 'energy',
-                    'sender' => $transactionData->transaction->sender,
-                    'paidFor' => $token,
-                    'payer' => $transactionData->device->person,
-                    'transaction' => $transactionData->transaction,
-                ]
-            );
+            event(new PaymentSuccessEvent(
+                amount: $transactionData->transaction->amount,
+                paymentService: $transactionData->transaction->original_transaction_type,
+                paymentType: 'energy',
+                sender: $transactionData->transaction->sender,
+                paidFor: $token,
+                payer: $transactionData->device->person,
+                transaction: $transactionData->transaction,
+            ));
         }
     }
 }

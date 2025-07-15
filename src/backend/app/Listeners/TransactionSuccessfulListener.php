@@ -2,11 +2,12 @@
 
 namespace App\Listeners;
 
+use App\Events\TransactionSuccessfulEvent;
 use App\Models\Transaction\Transaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
 
-class TransactionSuccessListener {
+class TransactionSuccessfulListener {
     public function onTransactionSuccess(Transaction $transaction): void {
         $originalTransaction = $transaction->originalTransaction()->first();
         if ($originalTransaction instanceof ITransactionProvider) {
@@ -15,7 +16,7 @@ class TransactionSuccessListener {
         }
     }
 
-    public function subscribe(Transaction $transaction): void {
-        $this->onTransactionSuccess($transaction);
+    public function handle(TransactionSuccessfulEvent $event): void {
+        $this->onTransactionSuccess($event->transaction);
     }
 }

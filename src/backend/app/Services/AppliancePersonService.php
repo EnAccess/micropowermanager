@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\NewLogEvent;
 use App\Models\AssetPerson;
 use App\Models\MainSettings;
 use App\Services\Interfaces\IAssociative;
@@ -34,17 +35,12 @@ class AppliancePersonService implements IBaseService, IAssociative {
     public function createLogForSoldAppliance(AssetPerson $assetPerson, float $cost, float $preferredPrice): void {
         $currency = $this->getCurrencyFromMainSettings();
 
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => auth('api')->user()->id,
-                    'affected' => $assetPerson,
-                    'action' => 'Appliance is sold to '.$cost.' '.$currency.
-                        ' instead of Preferred Price ('.$preferredPrice.' '.$currency.')',
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => auth('api')->user()->id,
+            'affected' => $assetPerson,
+            'action' => 'Appliance is sold to '.$cost.' '.$currency.
+                ' instead of Preferred Price ('.$preferredPrice.' '.$currency.')',
+        ]));
     }
 
     public function getCurrencyFromMainSettings(): string {

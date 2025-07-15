@@ -2,6 +2,7 @@
 
 namespace Inensus\SparkMeter\Services;
 
+use App\Events\PaymentSuccessEvent;
 use App\Models\Token;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -393,14 +394,14 @@ class TransactionService {
 
     private function createPayment($meter, $mainTransaction, $token) {
         $owner = $meter->device()->person;
-        event('payment.successful', [
-            'amount' => $mainTransaction->amount,
-            'paymentService' => $mainTransaction->original_transaction_type,
-            'paymentType' => 'energy',
-            'sender' => $mainTransaction->sender,
-            'paidFor' => $token,
-            'payer' => $owner,
-            'transaction' => $mainTransaction,
-        ]);
+        event(new PaymentSuccessEvent(
+            amount: $mainTransaction->amount,
+            paymentService: $mainTransaction->original_transaction_type,
+            paymentType: 'energy',
+            sender: $mainTransaction->sender,
+            paidFor: $token,
+            payer: $owner,
+            transaction: $mainTransaction,
+        ));
     }
 }

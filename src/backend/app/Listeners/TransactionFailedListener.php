@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\TransactionFailedEvent;
 use App\Models\Transaction\Transaction;
 use MPM\Transaction\Provider\ITransactionProvider;
 use MPM\Transaction\Provider\TransactionAdapter;
@@ -16,7 +17,7 @@ class TransactionFailedListener {
         }
     }
 
-    public function handle(Transaction $transaction, $message = null): void {
-        $this->onTransactionFailed($transaction, $message);
+    public function handle(TransactionFailedEvent $event): void {
+        $this->onTransactionFailed($event->transaction, $event->message);
     }
 }

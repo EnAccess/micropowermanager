@@ -2,18 +2,22 @@
 
 namespace App\Providers;
 
+use App\Events\AccessRatePaymentInitialize;
 use App\Events\ClusterEvent;
+use App\Events\NewLogEvent;
+use App\Events\PaymentSuccessEvent;
+use App\Events\SmsStoredEvent;
+use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSavedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Listeners\AccessRateListener;
 use App\Listeners\ClusterGeoListener;
 use App\Listeners\LogListener;
-use App\Listeners\PaymentEnergyListener;
-use App\Listeners\PaymentFailedListener;
-use App\Listeners\PaymentLoanListener;
 use App\Listeners\PaymentSuccessListener;
 use App\Listeners\SmsListener;
 use App\Listeners\TransactionFailedListener;
 use App\Listeners\TransactionSavedListener;
-use App\Listeners\TransactionSuccessListener;
+use App\Listeners\TransactionSuccessfulListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use MPM\User\Events\UserCreatedEvent;
 use MPM\User\UserListener;
@@ -26,18 +30,14 @@ class EventServiceProvider extends ServiceProvider {
      */
     protected $listen = [
         // default namespace
+        AccessRatePaymentInitialize::class => [AccessRateListener::class],
         ClusterEvent::class => [ClusterGeoListener::class],
-        // string-based Listeners
-        'accessRatePayment.initialize' => [AccessRateListener::class],
-        'new.log' => [LogListener::class],
-        'payment.energy' => [PaymentEnergyListener::class],
-        'payment.failed' => [PaymentFailedListener::class],
-        'payment.loan' => [PaymentLoanListener::class],
-        'payment.successful' => [PaymentSuccessListener::class],
-        'sms.stored' => [SmsListener::class],
-        'transaction.failed' => [TransactionFailedListener::class],
-        'transaction.saved' => [TransactionSavedListener::class],
-        'transaction.successful' => [TransactionSuccessListener::class],
+        NewLogEvent::class => [LogListener::class],
+        PaymentSuccessEvent::class => [PaymentSuccessListener::class],
+        SmsStoredEvent::class => [SmsListener::class],
+        TransactionFailedEvent::class => [TransactionFailedListener::class],
+        TransactionSavedEvent::class => [TransactionSavedListener::class],
+        TransactionSuccessfulEvent::class => [TransactionSuccessfulListener::class],
         // MPM\User namespace
         UserCreatedEvent::class => [UserListener::class],
     ];

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\PaymentSuccessEvent;
 use App\Models\Agent;
 use App\Models\AgentSoldAppliance;
 use App\Models\AssetPerson;
@@ -223,18 +224,15 @@ class AgentSoldApplianceService implements IBaseService {
 
         if ($appliancePerson->down_payment > 0) {
             $applianceRate = $this->applianceRateService->getDownPaymentAsAssetRate($appliancePerson);
-            event(
-                'payment.successful',
-                [
-                    'amount' => $transaction->amount,
-                    'paymentService' => $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
-                    'paymentType' => 'down payment',
-                    'sender' => $transaction->sender,
-                    'paidFor' => $applianceRate,
-                    'payer' => $buyer,
-                    'transaction' => $transaction,
-                ]
-            );
+            event(new PaymentSuccessEvent(
+                amount: $transaction->amount,
+                paymentService: $transaction->original_transaction_type === 'cash_transaction' ? 'web' : 'agent',
+                paymentType: 'down payment',
+                sender: $transaction->sender,
+                paidFor: $applianceRate,
+                payer: $buyer,
+                transaction: $transaction,
+            ));
         }
 
         // assign agent assigned appliance to agent balance history

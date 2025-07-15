@@ -2,6 +2,7 @@
 
 namespace Inensus\DalyBms\Modules\Api;
 
+use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
@@ -129,16 +130,11 @@ class DalyBmsApi implements IManufacturerAPI {
         $creator = User::query()->firstOrCreate([
             'name' => 'System',
         ]);
-        event(
-            'new.log',
-            [
-                'logData' => [
-                    'user_id' => $creator->id,
-                    'affected' => $eBike,
-                    'action' => "Bike ($deviceSerial) is unlocked with transaction id: $transactionId",
-                ],
-            ]
-        );
+        event(new NewLogEvent([
+            'user_id' => $creator->id,
+            'affected' => $eBike,
+            'action' => "Bike ($deviceSerial) is unlocked with transaction id: $transactionId",
+        ]));
 
         return [
             'token' => '-',

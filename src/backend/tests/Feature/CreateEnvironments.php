@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\GeographicalInformation;
 use Database\Factories\AgentAssignedAppliancesFactory;
@@ -579,19 +580,15 @@ trait CreateEnvironments {
                 'token' => $this->faker->unique()->randomNumber(),
             ]);
 
-            // payment event
-            event(
-                'payment.successful',
-                [
-                    'amount' => $transaction->amount,
-                    'paymentService' => $transaction->original_transaction_type,
-                    'paymentType' => 'energy',
-                    'sender' => $transaction->sender,
-                    'paidFor' => $token,
-                    'payer' => $this->person,
-                    'transaction' => $transaction,
-                ]
-            );
+            event(new PaymentSuccessEvent(
+                amount: $transaction->amount,
+                paymentService: $transaction->original_transaction_type,
+                paymentType: 'energy',
+                sender: $transaction->sender,
+                paidFor: $token,
+                payer: $this->person,
+                transaction: $transaction,
+            ));
 
             $agentBalanceHistory = AgentBalanceHistoryFactory::new()->create([
                 'agent_id' => $agent->id,
