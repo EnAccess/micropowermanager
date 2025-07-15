@@ -92,6 +92,40 @@ To test logging setup run the Artisan logging test command
 php artisan log:test
 ```
 
+## Configuring Trusted Proxies
+
+MicroPowerManager uses Laravel's Trusted Proxy feature to correctly handle requests coming through load balancers or reverse proxies (such as those used in Kubernetes or cloud environments). You must configure the list of trusted proxies to ensure correct detection of client IP addresses and secure handling of headers.
+
+### Why configure trusted proxies?
+
+- If not set, Laravel may not correctly identify the real client IP, which can affect logging, security, and application logic.
+- Paginated response links do not include https routes.
+- In cloud environments (GCP, AWS), the load balancer IP ranges should be trusted.
+
+### How to configure
+
+1. **Set the `TRUSTED_PROXIES` environment variable** in your backend ConfigMap. For example:
+
+   ```yaml
+   # In your ConfigMap (e.g. k8s/base/gcp_gke/configmaps.yaml)
+   TRUSTED_PROXIES: 35.191.0.0/16,130.211.0.0/22  # GCP load balancer IP ranges
+   # For AWS, use the appropriate AWS ELB IP ranges or '*', if you understand the risks
+   TRUSTED_PROXIES: '*'  # Trust all proxies (not recommended for production)
+   ```
+
+2. **The application will automatically use this value** via the `src/backend/config/trustedproxy.php` config file.
+
+3. **Recommended values:**
+
+   - **GCP:** `35.191.0.0/16,130.211.0.0/22`
+   - **AWS:** Use the documented AWS ELB IP ranges or `*` if you are behind a private network
+   - **Development:** `127.0.0.1` or your proxy IP
+
+4. **Reload your deployment** after changing the ConfigMap to apply the new settings.
+
+> [!NOTE]
+> Setting `TRUSTED_PROXIES` to `*` trusts all proxies. Only use this in secure, private environments.
+
 ## Agent Apps
 
 Placeholder, do this, do that
