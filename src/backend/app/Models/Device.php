@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Manufacturer   $manufacturer
  */
 class Device extends BaseModel {
+    /** @use HasFactory<\Database\Factories\DeviceFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'device';
@@ -28,18 +29,30 @@ class Device extends BaseModel {
     // but they are completely different things.
     // `id` is this device's... well... id, which it can be referenced with in the `device` table
     // `device_id` is the `id` in the target table depending on type. For example `meter` or `solar_home_system`.
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function device(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Person, $this>
+     */
     public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 
+    /**
+     * @return MorphOne<Address, $this>
+     */
     public function address(): MorphOne {
         return $this->morphOne(Address::class, 'owner');
     }
 
+    /**
+     * @return HasOne<Asset, $this>
+     */
     public function appliance(): HasOne {
         return $this->hasOne(Asset::class, 'device_serial', 'device_serial');
     }

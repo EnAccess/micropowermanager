@@ -25,23 +25,36 @@ use MPM\Target\TargetAssignable;
  * @property array      $revenueList
  */
 class MiniGrid extends BaseModel implements TargetAssignable {
+    /** @use HasFactory<\Database\Factories\MiniGridFactory> */
     use HasFactory;
 
     public const RELATION_NAME = 'mini-grid';
     protected $guarded = [];
 
+    /**
+     * @return HasMany<City, $this>
+     */
     public function cities(): HasMany {
         return $this->hasMany(City::class);
     }
 
+    /**
+     * @return BelongsTo<Cluster, $this>
+     */
     public function cluster(): BelongsTo {
         return $this->belongsTo(Cluster::class);
     }
 
+    /**
+     * @return MorphOne<GeographicalInformation, $this>
+     */
     public function location(): MorphOne {
         return $this->morphOne(GeographicalInformation::class, 'owner');
     }
 
+    /**
+     * @return HasMany<Agent, $this>
+     */
     public function agents(): HasMany {
         return $this->hasMany(Agent::class);
     }

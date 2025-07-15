@@ -15,6 +15,9 @@ class AgentAssignedApplianceService implements IBaseService {
         private AgentAssignedAppliances $agentAssignedAppliance,
     ) {}
 
+    /**
+     * @param array<string, mixed> $applianceData
+     */
     public function create(array $applianceData): AgentAssignedAppliances {
         return $this->agentAssignedAppliance->newQuery()->create([
             'agent_id' => $applianceData['agent_id'],
@@ -28,6 +31,9 @@ class AgentAssignedApplianceService implements IBaseService {
         return $this->agentAssignedAppliance->newQuery()->with('appliance')->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): AgentAssignedAppliances {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -36,6 +42,9 @@ class AgentAssignedApplianceService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, AgentAssignedAppliances>|LengthAwarePaginator<AgentAssignedAppliances>
+     */
     public function getAll(?int $limit = null, ?int $agentId = null): Collection|LengthAwarePaginator {
         $query = $this->agentAssignedAppliance->newQuery();
 

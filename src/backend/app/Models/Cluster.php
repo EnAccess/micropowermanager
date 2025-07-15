@@ -22,6 +22,7 @@ use MPM\Target\TargetAssignable;
  * @property float  $revenue
  */
 class Cluster extends BaseModel implements TargetAssignable {
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<static>> */
     use HasFactory;
 
     public const RELATION_NAME = 'cluster';
@@ -30,14 +31,17 @@ class Cluster extends BaseModel implements TargetAssignable {
         'geo_data' => 'array',
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function manager(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
+    /** @return HasMany<City, $this> */
     public function cities(): HasMany {
         return $this->hasMany(City::class);
     }
 
+    /** @return HasMany<MiniGrid, $this> */
     public function miniGrids(): HasMany {
         return $this->hasMany(MiniGrid::class);
     }

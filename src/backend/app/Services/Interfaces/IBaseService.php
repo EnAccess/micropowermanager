@@ -15,11 +15,16 @@ interface IBaseService {
     /** @return T|null */
     public function getById(int $id): ?Model;
 
-    /** @return T */
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return T
+     */
     public function create(array $data): Model;
 
     /**
-     * @param T $model
+     * @param T                    $model
+     * @param array<string, mixed> $data
      *
      * @return T
      */

@@ -12,8 +12,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class BaseModelCentral extends Model {
     protected $guarded = ['id'];
+
+    /** @var array<string, string> */
     public static $rules = [];
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function __construct(array $attributes = []) {
         $this->setConnection('micro_power_manager');
 

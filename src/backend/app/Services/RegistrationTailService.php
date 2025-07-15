@@ -20,10 +20,16 @@ class RegistrationTailService implements IBaseService {
         return $this->registrationTail->newQuery()->find($id);
     }
 
+    /**
+     * @param array<string, mixed> $registrationTailData
+     */
     public function create(array $registrationTailData): RegistrationTail {
         return $this->registrationTail->newQuery()->create($registrationTailData);
     }
 
+    /**
+     * @param array<string, mixed> $registrationTailData
+     */
     public function update($registrationTail, array $registrationTailData): RegistrationTail {
         if (array_key_exists('tail', $registrationTailData)) {
             $registrationTail->update($registrationTailData);
@@ -40,11 +46,17 @@ class RegistrationTailService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, RegistrationTail>|LengthAwarePaginator<RegistrationTail>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         return $this->registrationTail->newQuery()->get();
     }
 
-    public function getFirst($limit = null) {
+    /**
+     * @param int|null $limit
+     */
+    public function getFirst($limit = null): RegistrationTail {
         return $this->registrationTail->newQuery()->firstOrCreate();
     }
 

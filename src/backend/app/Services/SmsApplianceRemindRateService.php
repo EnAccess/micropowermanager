@@ -12,14 +12,23 @@ class SmsApplianceRemindRateService {
         private Asset $appliance,
     ) {}
 
+    /**
+     * @return Collection<int, Asset>
+     */
     public function getApplianceRemindRatesWithAppliances(): Collection {
         return $this->appliance->newQuery()->with(['smsReminderRate'])->get();
     }
 
+    /**
+     * @return Collection<int, SmsApplianceRemindRate>
+     */
     public function getApplianceRemindRates(): Collection {
         return $this->smsApplianceRemindRate->newQuery()->get();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function updateApplianceRemindRate(SmsApplianceRemindRate $smsApplianceRemindRate, $data): Asset {
         $smsApplianceRemindRate->update([
             'appliance_id' => $data['appliance_id'],
@@ -33,6 +42,11 @@ class SmsApplianceRemindRateService {
         return $result;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return Collection<int, Asset>
+     */
     public function createApplianceRemindRate($data): Collection {
         $this->smsApplianceRemindRate->newQuery()->create([
             'appliance_id' => $data['appliance_type_id'],

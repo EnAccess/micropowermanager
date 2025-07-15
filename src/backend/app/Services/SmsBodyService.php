@@ -16,12 +16,17 @@ class SmsBodyService {
         return $this->smsBody->newQuery()->where('reference', $reference)->firstOrFail();
     }
 
+    /**
+     * @return Collection<int, SmsBody>
+     */
     public function getSmsBodies(): Collection {
         return $this->smsBody->newQuery()->get();
     }
 
     /**
      * @param array<int, array<string, mixed>> $smsBodiesData
+     *
+     * @return Collection<int, SmsBody>
      */
     public function updateSmsBodies(array $smsBodiesData): Collection {
         $smsBodies = $this->smsBody->newQuery()->get();
@@ -36,6 +41,9 @@ class SmsBodyService {
         return $smsBodies;
     }
 
+    /**
+     * @return Collection<int, SmsBody>
+     */
     public function getNullBodies(): Collection {
         return $this->smsBody->newQuery()->whereNull('body')->get();
     }
