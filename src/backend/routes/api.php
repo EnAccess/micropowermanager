@@ -60,6 +60,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Inensus\Ticket\Http\Controllers\TicketExportController;
 
 // Routes for City resource
 require 'resources/Cities.php';
@@ -388,4 +389,8 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
 });
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);
+});
+
+Route::group(['prefix' => 'book-keeping'], static function () {
+    Route::get('/{id}/download', [TicketExportController::class, 'download']);
 });
