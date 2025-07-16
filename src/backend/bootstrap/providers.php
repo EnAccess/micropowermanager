@@ -7,7 +7,6 @@ return [
     App\Providers\AppServiceProvider::class,
 
     App\Providers\ServicesProvider::class, // for helper services
-    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     Inensus\Ticket\Providers\TicketServiceProvider::class,
     Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
     Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
