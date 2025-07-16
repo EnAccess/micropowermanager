@@ -31,7 +31,7 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
         $startDay = Carbon::parse($toDay)->modify('first day of this month')->format('Y-m-d');
 
         try {
-            $tickets = $this->ticketService->getForOutsourceReport($startDay, $toDay);
+            $tickets = $this->ticketService->getForOutsourceReportForGeneration($startDay, $toDay);
             // create excel sheet
             $fileName = 'Outsourcing-'.$startDay.'-'.$toDay.'.xlsx';
 
@@ -43,13 +43,14 @@ class OutsourceReportGenerator extends AbstractSharedCommand {
             $sheet->setCellValue('C1', 'Amount');
             $sheet->setCellValue('D1', 'Category');
 
-            $row = 3;
+            $row = 2;
             foreach ($tickets as $t) {
-                $owner = $t->owner !== null ? $t->owner->name.' '.$t->owner->surname : 'No assigned user found, please check your history reports';
+                $owner = $t->owner !== null ? $t->owner->person->name.' '.$t->owner->person->surname : 'No assigned user found, please check your history reports';
                 $sheet->setCellValue('A'.$row, $owner);
                 $sheet->setCellValue('B'.$row, $t->created_at);
                 $sheet->setCellValue('C'.$row, $t->outsource->amount);
                 $sheet->setCellValue('D'.$row, $t->category->label_name);
+                ++$row;
             }
             $writer = new Xlsx($this->spreadsheet);
             $dirPath = storage_path('outsourcing');
