@@ -186,7 +186,7 @@ class TicketSeeder extends Seeder {
         ]);
 
         if ($randomCategory->out_source) {
-            $ticket->assigned_id = null;
+            $ticket->assigned_id = $randomMaintenanceUser->id; // TODO: why was this set to null?
             $ticket->owner_id = $randomMaintenanceUser->id;
             $ticket->owner_type = 'maintenance_user';
             $ticket->save();
