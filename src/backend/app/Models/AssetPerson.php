@@ -20,30 +20,49 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $rate_count
  */
 class AssetPerson extends BaseModel {
+    /** @var array<string, string> */
     protected $dispatchesEvents = [
         'created' => AssetPersonCreated::class,
     ];
 
+    /**
+     * @return BelongsTo<Person, $this>
+     */
     public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 
+    /**
+     * @return MorphMany<Log, $this>
+     */
     public function logs(): MorphMany {
         return $this->morphMany(Log::class, 'affected');
     }
 
+    /**
+     * @return BelongsTo<Asset, $this>
+     */
     public function asset(): BelongsTo {
         return $this->belongsTo(Asset::class, 'asset_id');
     }
 
+    /**
+     * @return HasMany<AssetRate, $this>
+     */
     public function rates(): HasMany {
         return $this->hasMany(AssetRate::class);
     }
 
+    /**
+     * @return MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function creator(): MorphTo {
         return $this->morphTo();
     }
 
+    /**
+     * @return BelongsTo<Device, $this>
+     */
     public function device(): BelongsTo {
         return $this->belongsTo(Device::class, 'device_serial');
     }

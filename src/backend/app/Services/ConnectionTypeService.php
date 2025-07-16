@@ -17,6 +17,9 @@ class ConnectionTypeService implements IBaseService {
         private ConnectionType $connectionType,
     ) {}
 
+    /**
+     * @param int|string $connectionTypeId
+     */
     public function getByIdWithMeterCountRelation($connectionTypeId): Model|Builder {
         return $this->connectionType->newQuery()->withCount('meters')->where('id', $connectionTypeId)
             ->firstOrFail();
@@ -26,10 +29,16 @@ class ConnectionTypeService implements IBaseService {
         return $this->connectionType->newQuery()->findOrFail($connectionTypeId);
     }
 
+    /**
+     * @param array<string, mixed> $connectionServiceData
+     */
     public function create(array $connectionServiceData): ConnectionType {
         return $this->connectionType->newQuery()->create($connectionServiceData);
     }
 
+    /**
+     * @param array<string, mixed> $connectionTypeData
+     */
     public function update($connectionType, array $connectionTypeData): ConnectionType {
         $connectionType->update($connectionTypeData);
         $connectionType->fresh();
@@ -37,6 +46,9 @@ class ConnectionTypeService implements IBaseService {
         return $connectionType;
     }
 
+    /**
+     * @return Collection<int, ConnectionType>|LengthAwarePaginator<ConnectionType>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->connectionType->newQuery()->paginate($limit);

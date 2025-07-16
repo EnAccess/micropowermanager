@@ -15,6 +15,9 @@ class MpmPluginService implements IBaseService {
         private MpmPlugin $mpmPlugin,
     ) {}
 
+    /**
+     * @param int|string $id
+     */
     public function getById($id): MpmPlugin {
         /** @var MpmPlugin $result */
         $result = $this->mpmPlugin->newQuery()->findOrFail($id);
@@ -22,10 +25,16 @@ class MpmPluginService implements IBaseService {
         return $result;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): MpmPlugin {
         throw new \Exception('Method create() not yet implemented.');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update($model, array $data): MpmPlugin {
         throw new \Exception('Method update() not yet implemented.');
     }
@@ -34,6 +43,9 @@ class MpmPluginService implements IBaseService {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
+    /**
+     * @return Collection<int, MpmPlugin>|LengthAwarePaginator<MpmPlugin>
+     */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         if ($limit) {
             return $this->mpmPlugin->newQuery()

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\SocialTariff;
 use App\Services\Interfaces\IBaseService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @phpstan-type SocialTariffData array{
@@ -15,6 +17,8 @@ use Illuminate\Database\Eloquent\Collection;
  *     effective_date?: string,
  *     expiry_date?: string|null
  * }
+ *
+ * @implements IBaseService<SocialTariff>
  */
 class SocialTariffService implements IBaseService {
     public function __construct(
@@ -28,11 +32,15 @@ class SocialTariffService implements IBaseService {
         return $this->socialTariff->newQuery()->create($socialTariffData);
     }
 
-    public function getById(int $socialTariffId): SocialTariff {
+    public function getById(int $socialTariffId): ?SocialTariff {
         return $this->socialTariff->newQuery()->find($socialTariffId);
     }
 
-    public function update($socialTariff, array $socialTariffData): SocialTariff {
+    /**
+     * @param SocialTariffData $socialTariffData
+     */
+    public function update(Model $socialTariff, array $socialTariffData): SocialTariff {
+        /* @var SocialTariff $socialTariff */
         $socialTariff->update($socialTariffData);
 
         /** @var SocialTariff $freshTariff */
@@ -45,14 +53,14 @@ class SocialTariffService implements IBaseService {
         $this->socialTariff->newQuery()->where('tariff_id', $meterTariffId)->delete();
     }
 
-    public function delete($model): ?bool {
+    public function delete(Model $model): ?bool {
         throw new \Exception('Method delete() not yet implemented.');
     }
 
     /**
-     * @return Collection<int, SocialTariff>
+     * @return Collection<int, SocialTariff>|LengthAwarePaginator<SocialTariff>
      */
-    public function getAll(?int $limit = null): Collection {
+    public function getAll(?int $limit = null): Collection|LengthAwarePaginator {
         throw new \Exception('Method getAll() not yet implemented.');
     }
 }

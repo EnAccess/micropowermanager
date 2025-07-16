@@ -15,7 +15,7 @@ class MeterRevenueService {
         private Transaction $transaction,
     ) {}
 
-    public function getBySerialNumber(string $serialNumber) {
+    public function getBySerialNumber(string $serialNumber): int|float {
         $tokens = $this->token->newQuery()->whereHas(
             'device',
             function ($q) use ($serialNumber) {
@@ -26,8 +26,11 @@ class MeterRevenueService {
         return $this->transaction->newQuery()->whereIn('id', $tokens)->sum('amount');
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getConnectionGroupBasedRevenueForCluster(
-        $clusterId,
+        int $clusterId,
         int $connectionGroupId,
         string $startDate,
         string $endDate,
@@ -85,7 +88,7 @@ class MeterRevenueService {
                     ->whereIn(
                         'addresses.city_id',
                         explode(',', $cityIds)
-                    );  // assuming $miniGridId is a comma-separated string
+                    );  // assuming $cityIds is a comma-separated string
             })
             ->whereHasMorph(
                 'originalTransaction',
@@ -99,6 +102,9 @@ class MeterRevenueService {
             ->get();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getConnectionGroupBasedRevenueForMiniGrid(
         int $miniGridId,
         int $connectionGroupId,
@@ -139,6 +145,9 @@ class MeterRevenueService {
             ->get()->toArray();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getMetersByConnectionGroupForMiniGrid(
         int $miniGridId,
         int $connectionGroupId,
@@ -160,6 +169,9 @@ class MeterRevenueService {
             ->get()->toArray();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getRegisteredMetersByConnectionGroupInWeeklyPeriodForMiniGrid(
         int $miniGridId,
         int $connectionGroupId,
@@ -184,6 +196,9 @@ class MeterRevenueService {
             ->get()->toArray();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getRegisteredMetersByConnectionGroupInWeeklyPeriodForCluster(
         int $clusterId,
         int $connectionGroupId,
@@ -207,6 +222,9 @@ class MeterRevenueService {
             ->get()->toArray();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getMetersByConnectionGroupForCluster(
         int $clusterId,
         int $connectionGroupId,
