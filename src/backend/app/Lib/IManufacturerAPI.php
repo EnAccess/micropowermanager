@@ -9,9 +9,9 @@ interface IManufacturerAPI {
     /**
      * @param TransactionDataContainer $transactionContainer
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function chargeDevice(TransactionDataContainer $transactionContainer): array;
 
-    public function clearDevice(Device $device);
+    public function clearDevice(Device $device): void;
 }
