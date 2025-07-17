@@ -83,7 +83,10 @@ class ApplianceInstallmentPayer {
         return $device->person;
     }
 
-    private function getInstallments($customer): Collection {
+    /**
+     * @return Collection<int, mixed>
+     */
+    private function getInstallments(Person $customer): Collection {
         $loans = $this->appliancePersonService->getLoanIdsForCustomerId($customer->id);
 
         return $this->applianceRateService->getByLoanIdsForDueDate($loans->toArray());
@@ -92,7 +95,7 @@ class ApplianceInstallmentPayer {
     /**
      * @param Collection<int, mixed> $installments
      */
-    private function pay(Collection $installments, mixed $customer): void {
+    private function pay(Collection $installments, Person $customer): void {
         $installments->map(function ($installment) use ($customer) {
             if ($installment->remaining > $this->transaction->amount) {// money is not enough to cover the whole rate
                 event(new PaymentSuccessEvent(

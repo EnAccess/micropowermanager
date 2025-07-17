@@ -105,8 +105,11 @@ class MeterService implements IBaseService {
         return $meter->delete();
     }
 
-    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator {
-        if (isset($inUse)) {
+    /**
+     * @return LengthAwarePaginator<Meter>
+     */
+    public function getAll(?int $limit = null, ?bool $inUse = true): LengthAwarePaginator {
+        if ($inUse !== null) {
             return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
                 'in_use',
                 $inUse

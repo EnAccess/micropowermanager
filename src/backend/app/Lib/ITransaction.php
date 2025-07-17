@@ -3,9 +3,9 @@
 namespace App\Lib;
 
 interface ITransaction {
-    public function getAmount();
+    public function getAmount(): int;
 
-    public function getSender();
+    public function getSender(): string;
 
-    public function getProvider();
+    public function getProvider(): string;
 }

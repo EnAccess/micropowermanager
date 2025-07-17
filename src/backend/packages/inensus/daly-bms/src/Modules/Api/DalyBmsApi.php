@@ -144,7 +144,7 @@ class DalyBmsApi implements IManufacturerAPI {
         ];
     }
 
-    public function clearDevice(Device $device) {
+    public function clearDevice(Device $device): void {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MPM\TenantResolver;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use MPM\TenantResolver\ApiResolvers\ApiResolverInterface;
@@ -14,7 +15,8 @@ class ApiCompanyResolverService {
     public function __construct(private ApiResolverMap $apiResolverMap) {}
 
     public function resolve(Request $request): int {
-        $api = collect($this->apiResolverMap::RESOLVABLE_APIS)->filter(fn ($apiPath) => Str::startsWith(Str::lower($request->path()), Str::lower($apiPath)));
+        /** @var Collection<int, string> $api */
+        $api = collect($this->apiResolverMap::RESOLVABLE_APIS)->filter(fn (string $apiPath): bool => Str::startsWith(Str::lower($request->path()), Str::lower($apiPath)));
         if ($api->isEmpty()) {
             throw ValidationException::withMessages(['path' => 'No api resolver registered for '.$request->path()]);
         }

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Lib\IManufacturerAPI;
 use App\Misc\TransactionDataContainer;
 use App\Models\AssetRate;
 use App\Models\Token;
@@ -63,7 +64,7 @@ class TokenProcessor extends AbstractJob {
         event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
     }
 
-    private function handleExistingToken() {
+    private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
         if ($token !== null && $this->reCreate === true) {
@@ -74,7 +75,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken($api): void {
+    private function generateToken(IManufacturerAPI $api): void {
         try {
             $tokenData = $api->chargeDevice($this->transactionContainer);
         } catch (\Exception $e) {
@@ -115,6 +116,9 @@ class TokenProcessor extends AbstractJob {
         )->allOnConnection('redis')->onQueue(config('services.queues.token'))->delay(5);
     }
 
+    /**
+     * @param array<string, mixed> $tokenData
+     */
     private function saveToken(array $tokenData): void {
         $token = Token::query()->make($tokenData);
         $token->device_id = $this->transactionContainer->device->id;
@@ -124,7 +128,7 @@ class TokenProcessor extends AbstractJob {
         $this->handlePaymentEvents($token);
     }
 
-    private function handlePaymentEvents($token): void {
+    private function handlePaymentEvents(Token $token): void {
         $owner = $this->transactionContainer->device->person;
 
         event(new PaymentSuccessEvent(
@@ -140,7 +144,7 @@ class TokenProcessor extends AbstractJob {
         event(new TransactionSuccessfulEvent($this->transactionContainer->transaction));
     }
 
-    private function handleRollbackInFailure() {
+    private function handleRollbackInFailure(): void {
         $paidRates = $this->transactionContainer->paidRates;
         collect($paidRates)->map(function ($paidRate) {
             $assetRate = AssetRate::query()->find($paidRate['asset_rate_id']);
