@@ -18,8 +18,8 @@
             {{ item.date }}
           </md-table-cell>
           <md-table-cell :md-label="$tc('words.file')">
-            <div @click="download(item.id, '/book-keeping')">
-              <md-icon style="cursor: pointer">save</md-icon>
+            <div style="cursor: pointer" @click="download(item.id)">
+              <md-icon>save</md-icon>
               <span>{{ $tc("words.download") }}</span>
             </div>
           </md-table-cell>
@@ -33,9 +33,11 @@
 import Widget from "@/shared/Widget.vue"
 import { EventBus } from "@/shared/eventbus"
 import { BookKeepingService } from "@/services/BookKeepingService"
+import { notify } from "@/mixins/notify"
 
 export default {
   name: "BookKeeping",
+  mixins: [notify],
   components: {
     Widget,
   },
@@ -63,8 +65,18 @@ export default {
     endSearching() {
       this.bookKeeping.showAll()
     },
-    download(id, reference) {
-      window.open(this.bookKeepingService.exportBookKeeping(id, reference))
+    async download(id) {
+      try {
+        const response = await this.bookKeepingService.exportBookKeeping(id)
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const a = document.createElement("a")
+        a.href = url
+        a.download = "payment-requests.xlsx"
+        a.click()
+      } catch (error) {
+        console.log("error", error)
+        this.alertNotify("error", error.message)
+      }
     },
   },
 }

@@ -48,6 +48,8 @@ class TicketExportController {
     }
 
     public function download($id): BinaryFileResponse {
-        return response()->download($this->ticketOutsourceReportService->getById($id));
+        $report = $this->ticketOutsourceReportService->getById($id);
+
+        return response()->download(explode('*', $report->path)[0]);
     }
 }
