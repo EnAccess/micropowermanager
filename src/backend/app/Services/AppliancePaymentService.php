@@ -92,7 +92,7 @@ class AppliancePaymentService {
             paymentType: 'installment',
             sender: $transaction->sender,
             paidFor: $applianceRate,
-            payer: $buyer,
+            payer: $buyer->person,
             transaction: $transaction,
         ));
     }
