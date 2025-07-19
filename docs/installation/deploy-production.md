@@ -135,6 +135,7 @@ Other cloud providers might require adjustments to the manifest files.
    ```
 
 5. (Optional) Adjust `ConfigMap` entries by using a Kustomize `patch`
+
 6. Create a `secrets.yaml` by copying `secrets.yaml.example` and populating the values.
 
    > [!NOTE]
