@@ -5,14 +5,8 @@ return [
     * Application Service Providers...
     */
     App\Providers\AppServiceProvider::class,
-    App\Providers\AuthServiceProvider::class,
-    App\Providers\BroadcastServiceProvider::class,
-    App\Providers\EventServiceProvider::class,
-    App\Providers\HorizonServiceProvider::class,
-    App\Providers\RouteServiceProvider::class,
 
     App\Providers\ServicesProvider::class, // for helper services
-    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     Inensus\Ticket\Providers\TicketServiceProvider::class,
     Inensus\SparkMeter\Providers\SparkMeterServiceProvider::class,
     Inensus\SteamaMeter\Providers\SteamaMeterServiceProvider::class,
