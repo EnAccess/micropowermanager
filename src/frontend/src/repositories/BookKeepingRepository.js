@@ -7,7 +7,9 @@ export default {
   list() {
     return Client.get(`${resource}`)
   },
-  download(id, reference) {
-    return `${resource}/download/` + `${id}` + `${reference}`
+  download(id) {
+    return Client.get(`${resource}/download/${id}/book-keeping`, {
+      responseType: "blob",
+    })
   },
 }
