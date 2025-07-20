@@ -25,7 +25,7 @@ export class CredentialService {
       if (status !== 200) return new ErrorHandler(error, "http", status)
       return this.fromJson(data.data)
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -38,7 +38,7 @@ export class CredentialService {
 
       return this.fromJson(data.data)
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

@@ -22,7 +22,7 @@ export class CredentialService {
       this.credential = convertObjectKeysToCamelCase(data.data)
       return this.credential
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -36,7 +36,7 @@ export class CredentialService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

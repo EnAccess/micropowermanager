@@ -101,7 +101,7 @@ export class CityService {
 
       return this.cities
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -115,7 +115,7 @@ export class CityService {
       this.city = data.data
       return this.city
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

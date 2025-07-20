@@ -27,7 +27,7 @@ export class CredentialService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -45,7 +45,7 @@ export class CredentialService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
