@@ -8,7 +8,7 @@ export default {
     return Client.get(`${resource}`)
   },
   download(id) {
-    return Client.get(`${baseUrl}/api/book-keeping/${id}/download`, {
+    return Client.get(`${resource}/download/${id}/book-keeping`, {
       responseType: "blob",
     })
   },

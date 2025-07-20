@@ -390,7 +390,3 @@ Route::group(['prefix' => 'export', 'middleware' => 'api'], static function () {
 Route::group(['prefix' => 'usage-types'], static function () {
     Route::get('/', [UsageTypeController::class, 'index']);
 });
-
-Route::group(['prefix' => 'book-keeping'], static function () {
-    Route::get('/{id}/download', [TicketExportController::class, 'download']);
-});

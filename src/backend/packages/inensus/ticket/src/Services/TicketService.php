@@ -137,7 +137,7 @@ class TicketService implements IAssociative {
     public function getForOutsourceReportForGeneration($startDate, $endDate) {
         return $this->ticket->newQuery()->with(['outsource', 'owner.person', 'category'])
             ->whereHas('category', static function ($q) {
-                $q->where('out_source', 0);
+                $q->where('out_source', 1);
             })
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
