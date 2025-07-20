@@ -12,7 +12,7 @@ export class ClustersDashboardCacheDataService {
       const response = await this.repository.list()
       return this.responseValidator(response)
     } catch (e) {
-      return new ErrorHandler(e.response.data.data.message, "http")
+      return new ErrorHandler(e.response.data.message, "http")
     }
   }
 
@@ -21,7 +21,7 @@ export class ClustersDashboardCacheDataService {
       const response = await this.repository.update()
       return this.responseValidator(response)
     } catch (e) {
-      return new ErrorHandler(e.response.data.data.message, "http")
+      return new ErrorHandler(e.response.data.message, "http")
     }
   }
 
@@ -30,7 +30,7 @@ export class ClustersDashboardCacheDataService {
       const response = await this.repository.detail(id)
       return this.responseValidator(response)
     } catch (e) {
-      return new ErrorHandler(e.response.data.data.message, "http")
+      return new ErrorHandler(e.response.data.message, "http")
     }
   }
 

@@ -82,7 +82,7 @@ class ClusterRevenueService {
      */
     public function getTransactionsForWeeklyPeriod(int $clusterId, array $period, ?int $connectionType = null): Collection {
         return $this->transaction->newQuery()
-            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue')
+            ->selectRaw('DATE_FORMAT(created_at,\'%Y-%m\') as period , SUM(amount) as revenue, WEEKOFYEAR(created_at) as week')
             ->whereHas(
                 'device',
                 function ($q) use ($clusterId, $connectionType) {
@@ -115,7 +115,7 @@ class ClusterRevenueService {
     }
 
     public function getPeriodicRevenueForClustersOld(
-        array $clusters,
+        Collection $clusters,
         string $startDate,
         string $endDate,
         array $periods,
@@ -143,7 +143,7 @@ class ClusterRevenueService {
             $clusters[$clusterIndex]['totalRevenue'] = $totalRevenue;
         }
 
-        return $clusters;
+        return $clusters->toArray();
     }
 
     /**
