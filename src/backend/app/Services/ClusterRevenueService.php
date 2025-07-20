@@ -114,6 +114,15 @@ class ClusterRevenueService {
             ->groupBy(DB::raw('DATE_FORMAT(created_at,\'%Y-%m\'),WEEKOFYEAR(created_at)'))->get();
     }
 
+    /**
+     * @param Collection<int, Cluster> $clusters
+     * @param string                   $startDate
+     * @param string                   $endDate
+     * @param array                    $periods
+     * @param string                   $period
+     *
+     * @return array
+     */
     public function getPeriodicRevenueForClustersOld(
         Collection $clusters,
         string $startDate,
