@@ -40,7 +40,7 @@ class MeterTariffController extends Controller {
      *
      * @return ApiResource
      */
-    public function show(Request $request, $meterTariffId): ApiResource {
+    public function show(Request $request, int $meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffService->getById($meterTariffId));
     }
 
@@ -66,7 +66,7 @@ class MeterTariffController extends Controller {
         return ApiResource::make($this->meterTariffService->getById($newTariff->id))->response()->setStatusCode(201);
     }
 
-    public function update($meterTariffId, TariffCreateRequest $request): ApiResource {
+    public function update(int $meterTariffId, TariffCreateRequest $request): ApiResource {
         $meterTariff = $this->meterTariffService->getById($meterTariffId);
         $meterTariffData = [
             'name' => $request->input('name'),
@@ -84,25 +84,25 @@ class MeterTariffController extends Controller {
         return ApiResource::make($meterTariff);
     }
 
-    public function destroy($meterTariffId): ?bool {
+    public function destroy(int $meterTariffId): ?bool {
         $meterTariff = $this->meterTariffService->getById($meterTariffId);
 
         return $this->meterTariffService->delete($meterTariff);
     }
 
     /**
-     * @param     $meterTariffId
+     * @param  int   $meterTariffId
      * @param int $changeId
      *
      * @return ApiResource
      */
-    public function updateTariff($meterTariffId, int $changeId): ApiResource {
+    public function updateTariff(int $meterTariffId, int $changeId): ApiResource {
         $result = $this->meterTariffService->changeMetersTariff($meterTariffId, $changeId);
 
         return ApiResource::make($result);
     }
 
-    public function updateForMeter($meterSerial, $tariffId): ApiResource {
+    public function updateForMeter(string $meterSerial, int $tariffId): ApiResource {
         $result = $this->meterTariffService->changeMeterTariff($meterSerial, $tariffId);
 
         return ApiResource::make($result);
@@ -115,7 +115,7 @@ class MeterTariffController extends Controller {
      *
      * @return ApiResource
      */
-    public function showUsageCount($meterTariffId): ApiResource {
+    public function showUsageCount(int $meterTariffId): ApiResource {
         return ApiResource::make($this->meterTariffService->getCountById($meterTariffId));
     }
 }

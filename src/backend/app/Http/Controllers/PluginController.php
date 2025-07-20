@@ -20,7 +20,7 @@ class PluginController extends Controller {
         return ApiResource::make($this->pluginsService->getAll());
     }
 
-    public function update(Request $request, $mpmPluginId): ApiResource {
+    public function update(Request $request, int $mpmPluginId): ApiResource {
         $plugin = $this->pluginsService->getByMpmPluginId($mpmPluginId);
         $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
         $registrationTail = $this->registrationTailService->getFirst();

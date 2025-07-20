@@ -29,7 +29,7 @@ class MeterConsumptionController extends Controller {
      *
      * @return ApiResource
      */
-    public function show($serialNumber, $start, $end): ApiResource {
+    public function show(string $serialNumber, string $start, string $end): ApiResource {
         $meter = $this->meterService->getBySerialNumber($serialNumber);
 
         return ApiResource::make($this->meterConsumptionService->getByMeter($meter, $start, $end));

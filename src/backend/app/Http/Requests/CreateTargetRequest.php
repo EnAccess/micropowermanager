@@ -9,9 +9,9 @@ class CreateTargetRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'data' => 'required',
             'period' => 'required',
@@ -28,6 +28,9 @@ class CreateTargetRequest extends FormRequest {
         return $this->input('targetForId');
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getData(): array {
         return $this->input('data');
     }

@@ -42,7 +42,7 @@ class AgentCommissionWebController extends Controller {
      *
      * @return ApiResource
      */
-    public function update($agentCommissionId, CreateAgentCommissionRequest $request): ApiResource {
+    public function update(int $agentCommissionId, CreateAgentCommissionRequest $request): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
         return ApiResource::make($this->agentCommissionService->update($agentCommission, $request->all()));
@@ -55,7 +55,7 @@ class AgentCommissionWebController extends Controller {
      *
      * @return ApiResource
      */
-    public function destroy($agentCommissionId): ApiResource {
+    public function destroy(int $agentCommissionId): ApiResource {
         $agentCommission = $this->agentCommissionService->getById($agentCommissionId);
 
         return ApiResource::make($this->agentCommissionService->delete($agentCommission));

@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Collection;
 
 class SmsLoadBalancer extends AbstractJob {
     use Dispatchable;
@@ -16,13 +17,13 @@ class SmsLoadBalancer extends AbstractJob {
     use Queueable;
     use SerializesModels;
 
-    public $timeout = 600;
-    public $tries = 250;
+    public int $timeout = 600;
+    public int $tries = 250;
     public $gateways;
 
-    public $smsBody;
+    public array $smsBody;
 
-    public function __construct($smsBody) {
+    public function __construct(array $smsBody) {
         $this->smsBody = $smsBody;
         parent::__construct(get_class($this));
     }
@@ -39,7 +40,12 @@ class SmsLoadBalancer extends AbstractJob {
         );
     }
 
+    /**
+     * @param array $data
+     * @return string
+     */
     private function sendSms($data): string {
+        /** @var Collection<int, mixed> $smsCollection */
         $smsCollection = collect($data);
         $smsCollection = $smsCollection->chunk(3);
         $httpClient = new Client();
@@ -48,7 +54,7 @@ class SmsLoadBalancer extends AbstractJob {
             [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'key='.$smsCollection[1]['setting']['key'],
+                    'Authorization' => 'key=' . $smsCollection[1]['setting']['key'],
                     'Accept' => 'application/json',
                 ],
                 'json' => [

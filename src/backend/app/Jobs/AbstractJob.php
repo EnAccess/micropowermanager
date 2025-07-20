@@ -10,21 +10,26 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
+use Throwable;
 
-abstract class AbstractJob implements ShouldQueue {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+abstract class AbstractJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected int $companyId;
     protected CompanyJob $companyJob;
-
     public ?string $parentId = null;
 
-    abstract public function executeJob();
+    /**
+     * Execute the job logic. Child classes must implement this.
+     */
+    abstract public function executeJob(): void;
 
-    public function __construct($jobName) {
+    /**
+     * AbstractJob constructor.
+     */
+    public function __construct(string $jobName)
+    {
         $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();
 
@@ -38,27 +43,32 @@ abstract class AbstractJob implements ShouldQueue {
         );
     }
 
-    public function handle() {
+    public function handle(): void
+    {
         $this->setJobUuid($this->job->uuid());
+
         $databaseProxyManager = app()->make(DatabaseProxyManagerService::class);
-        $databaseProxyManager->runForCompany($this->companyId, function () {
+        $databaseProxyManager->runForCompany($this->companyId, function (): void {
             $this->executeJob();
         });
 
         $this->setJobStatus(CompanyJob::STATUS_SUCCESS);
     }
 
-    public function failed(?\Throwable $t = null) {
+    public function failed(?Throwable $t = null): void
+    {
         $trace = $t !== null ? explode('#15', $t->getTraceAsString(), 1000)[0] : null;
         $this->setJobStatus(CompanyJob::STATUS_FAILED, $t?->getMessage(), $trace);
     }
 
-    protected function setJobUuid($jobUuid) {
+    protected function setJobUuid(string $jobUuid): void
+    {
         $this->companyJob->job_uuid = $jobUuid;
         $this->companyJob->save();
     }
 
-    protected function setJobStatus($status, ?string $message = null, ?string $trace = null) {
+    protected function setJobStatus(int $status, ?string $message = null, ?string $trace = null): void
+    {
         $this->companyJob->status = $status;
         $this->companyJob->message = $message;
         $this->companyJob->trace = $trace;

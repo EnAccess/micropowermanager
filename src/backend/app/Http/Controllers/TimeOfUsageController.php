@@ -11,7 +11,7 @@ class TimeOfUsageController extends Controller {
         private MeterTariffService $meterTariffService,
     ) {}
 
-    public function destroy($timeOfUsageId): ?bool {
+    public function destroy(int $timeOfUsageId): ?bool {
         $timeOfUsage = $this->timeOfUsageService->getById($timeOfUsageId);
         $result = $this->timeOfUsageService->delete($timeOfUsage);
 

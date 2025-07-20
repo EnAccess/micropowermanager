@@ -19,7 +19,7 @@ class CreateAddressRequest extends FormRequest {
      *
      * @bodyParam city_id int required
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules() {
         return [

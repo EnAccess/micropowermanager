@@ -55,7 +55,7 @@ class JwtMiddleware extends BaseMiddleware {
         return $next($request);
     }
 
-    private function generateResponse(string $message, $status = 400): JsonResponse {
+    private function generateResponse(string $message, int $status = 400): JsonResponse {
         return response()->json(['data' => ['message' => $message, 'status' => $status]]);
     }
 }

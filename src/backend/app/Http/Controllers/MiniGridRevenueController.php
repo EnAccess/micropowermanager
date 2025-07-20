@@ -13,7 +13,7 @@ class MiniGridRevenueController {
         private MiniGridRevenueService $miniGridRevenueService,
     ) {}
 
-    public function show($miniGridId, Request $request): ApiResource {
+    public function show(int $miniGridId, Request $request): ApiResource {
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
 

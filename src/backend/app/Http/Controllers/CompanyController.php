@@ -107,7 +107,7 @@ class CompanyController extends Controller {
         );
     }
 
-    public function get($email): ApiResource {
+    public function get(string $email): ApiResource {
         $databaseProxy = $this->databaseProxyManagerService->findByEmail($email);
 
         return ApiResource::make($this->companyService->getByDatabaseProxy($databaseProxy));

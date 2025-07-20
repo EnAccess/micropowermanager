@@ -9,7 +9,7 @@ use App\Services\UserAddressService;
 use Illuminate\Http\Request;
 
 class UserAddressController extends Controller {
-    private $userAddressService;
+    private UserAddressService $userAddressService;
 
     public function __construct(UserAddressService $userAddressService) {
         $this->userAddressService = $userAddressService;
@@ -19,13 +19,13 @@ class UserAddressController extends Controller {
         return new ApiResource($this->userAddressService->update($user, $request->all()));
     }
 
-    public function admin(User $user, Request $request) {
+    public function admin(User $user, Request $request): ApiResource {
         $address = $user->addressDetails()->first();
 
         return new ApiResource($address);
     }
 
-    public function update(User $user, CreateAddressRequest $request) {
+    public function update(User $user, CreateAddressRequest $request): ApiResource {
         return new ApiResource($this->userAddressService->update($user, $request->all()));
     }
 }
