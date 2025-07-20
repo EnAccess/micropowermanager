@@ -60,7 +60,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inensus\Ticket\Http\Controllers\TicketExportController;
 
 // Routes for City resource
 require 'resources/Cities.php';
