@@ -124,41 +124,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
         $this->app->bind('AccessRatePayer', AccessRatePayer::class);
 
-        // Register Events
-
-        // default namespace
-        Event::listen(
-            AccessRatePaymentInitialize::class,
-            AccessRateListener::class,
-        );
-        Event::listen(
-            ClusterEvent::class,
-            ClusterGeoListener::class,
-        );
-        Event::listen(
-            NewLogEvent::class,
-            LogListener::class,
-        );
-        Event::listen(
-            PaymentSuccessEvent::class,
-            PaymentSuccessListener::class,
-        );
-        Event::listen(
-            SmsStoredEvent::class,
-            SmsListener::class,
-        );
-        Event::listen(
-            TransactionFailedEvent::class,
-            TransactionFailedListener::class,
-        );
-        Event::listen(
-            TransactionSavedEvent::class,
-            TransactionSavedListener::class,
-        );
-        Event::listen(
-            TransactionSuccessfulEvent::class,
-            TransactionSuccessfulListener::class,
-        );
+        // Register custom MPM Events
 
         // MPM\User namespace
         Event::listen(
