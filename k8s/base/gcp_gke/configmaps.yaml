@@ -14,7 +14,7 @@ data:
   REDIS_PORT: "6379"
   CACHE_DRIVER: redis
   QUEUE_DRIVER: database
-  TRUSTED_PROXIES: 35.191.0.0/16,130.211.0.0/22
+  TRUSTEDPROXY_PROXIES: 35.191.0.0/16,130.211.0.0/22
 ---
 apiVersion: v1
 kind: ConfigMap
