@@ -78,4 +78,5 @@ return Application::configure(basePath: dirname(__DIR__))
         // will run on the last day of the month
         $schedule->command(MailApplianceDebtsCommand::class)->weeklyOn(1, '6:00');
     })
+    ->withProviders(require __DIR__.'/providers.php')
     ->create();
