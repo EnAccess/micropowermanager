@@ -2,25 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\AccessRatePaymentInitialize;
-use App\Events\ClusterEvent;
-use App\Events\NewLogEvent;
-use App\Events\PaymentSuccessEvent;
-use App\Events\SmsStoredEvent;
-use App\Events\TransactionFailedEvent;
-use App\Events\TransactionSavedEvent;
-use App\Events\TransactionSuccessfulEvent;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
-use App\Listeners\AccessRateListener;
-use App\Listeners\ClusterGeoListener;
-use App\Listeners\LogListener;
-use App\Listeners\PaymentSuccessListener;
-use App\Listeners\SmsListener;
-use App\Listeners\TransactionFailedListener;
-use App\Listeners\TransactionSavedListener;
-use App\Listeners\TransactionSuccessfulListener;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
