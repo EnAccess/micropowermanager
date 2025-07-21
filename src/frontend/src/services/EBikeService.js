@@ -42,7 +42,7 @@ export class EBikeService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -56,7 +56,7 @@ export class EBikeService {
         this.eBike.status && this.eBike.status.includes("ACCON")
       return this.eBike
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -71,7 +71,7 @@ export class EBikeService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

@@ -21,11 +21,11 @@ export class CertService {
     } catch (error) {
       if (error.response) {
         if (error.response.status && error.response.status === 422) {
-          const errorMessage = error.response.data.data.message.cert[0]
+          const errorMessage = error.response.data.message.cert[0]
 
           return new ErrorHandler(errorMessage, "http", 422)
         }
-        const errorMessage = error.response.data.data.message
+        const errorMessage = error.response.data.message
 
         return new ErrorHandler(errorMessage, "http", 400)
       } else {
@@ -44,11 +44,11 @@ export class CertService {
     } catch (error) {
       if (error.response) {
         if (error.response.status && error.response.status === 422) {
-          const errorMessage = error.response.data.data.message.cert[0]
+          const errorMessage = error.response.data.message.cert[0]
 
           return new ErrorHandler(errorMessage, "http", 422)
         }
-        const errorMessage = error.response.data.data.message
+        const errorMessage = error.response.data.message
 
         return new ErrorHandler(errorMessage, "http", 400)
       } else {

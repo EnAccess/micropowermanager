@@ -38,7 +38,7 @@ export class AssetPersonService {
 
       return this.list
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -49,7 +49,7 @@ export class AssetPersonService {
 
       return this.fromJson(data.data)
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -63,7 +63,7 @@ export class AssetPersonService {
 
       return this.assetPerson
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

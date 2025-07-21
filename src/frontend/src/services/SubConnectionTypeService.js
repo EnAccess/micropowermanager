@@ -31,7 +31,7 @@ export class SubConnectionTypeService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let erorMessage = e.response.data.data.message
+      let erorMessage = e.response.data.message
       return new ErrorHandler(erorMessage, "http")
     }
   }
@@ -52,7 +52,7 @@ export class SubConnectionTypeService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let erorMessage = e.response.data.data.message
+      let erorMessage = e.response.data.message
       return new ErrorHandler(erorMessage, "http")
     }
   }
@@ -72,7 +72,7 @@ export class SubConnectionTypeService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let erorMessage = e.response.data.data.message
+      let erorMessage = e.response.data.message
       return new ErrorHandler(erorMessage, "http")
     }
   }

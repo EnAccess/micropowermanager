@@ -21,7 +21,7 @@ export class MiniGridService {
       this.list = data.data
       return this.miniGrids
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -35,7 +35,7 @@ export class MiniGridService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -52,7 +52,7 @@ export class MiniGridService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -63,7 +63,7 @@ export class MiniGridService {
       this.miniGrid = data.data
       return this.miniGrid
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -98,7 +98,7 @@ export class MiniGridService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -119,7 +119,7 @@ export class MiniGridService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

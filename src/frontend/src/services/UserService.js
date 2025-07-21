@@ -60,7 +60,7 @@ export class UserService {
       this.resetUser()
       return data.data
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -72,7 +72,7 @@ export class UserService {
       }
       return this.fromJson(data.data)
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -92,7 +92,7 @@ export class UserService {
       this.resetUser()
       return this.fromJson(data.data)
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
