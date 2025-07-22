@@ -34,7 +34,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Agent extends Authenticatable implements JWTSubject
 {
-    /** @use HasFactory<Agent> */
+    /** @use HasFactory<\Illuminate\Database\Eloquent\Factories\Factory<Agent>> */
     use HasFactory;
 
     public const RELATION_NAME = 'agent';
@@ -65,7 +65,7 @@ class Agent extends Authenticatable implements JWTSubject
     ];
 
     /**
-     * @return BelongsTo<MiniGrid, Agent>
+     * @return BelongsTo<MiniGrid, $this>
      */
     public function miniGrid(): BelongsTo
     {
@@ -95,7 +95,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return MorphOne<Address, Agent>
+     * @return MorphOne<Address, $this>
      */
     public function address(): MorphOne
     {
@@ -103,7 +103,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return MorphMany<Ticket, Agent>
+     * @return MorphMany<Ticket, $this>
      */
     public function tickets(): MorphMany
     {
@@ -111,7 +111,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return HasMany<Transaction, Agent>
+     * @return HasMany<Transaction, $this>
      */
     public function transaction(): HasMany
     {
@@ -119,7 +119,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return HasMany<AgentBalanceHistory, Agent>
+     * @return HasMany<AgentBalanceHistory, $this>
      */
     public function balanceHistory(): HasMany
     {
@@ -127,7 +127,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return HasMany<AgentAssignedAppliances, Agent>
+     * @return HasMany<AgentAssignedAppliances, $this>
      */
     public function assignedAppliance(): HasMany
     {
@@ -143,7 +143,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return BelongsTo<Person, Agent>
+     * @return BelongsTo<Person, $this>
      */
     public function person(): BelongsTo
     {
@@ -151,7 +151,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return BelongsTo<AgentCommission, Agent>
+     * @return BelongsTo<AgentCommission, $this>
      */
     public function commission(): BelongsTo
     {
@@ -159,7 +159,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return MorphMany<AssetPerson, Agent>
+     * @return MorphMany<AssetPerson, $this>
      */
     public function soldAppliances(): MorphMany
     {
@@ -167,7 +167,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return HasMany<AgentCharge, Agent>
+     * @return HasMany<AgentCharge, $this>
      */
     public function agentCharges(): HasMany
     {
@@ -175,7 +175,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return MorphMany<Address, Agent>
+     * @return MorphMany<Address, $this>
      */
     public function addresses(): MorphMany
     {
@@ -183,7 +183,7 @@ class Agent extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return HasMany<AgentReceipt, Agent>
+     * @return HasMany<AgentReceipt, $this>
      */
     public function receipt(): HasMany
     {
