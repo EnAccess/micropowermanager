@@ -2,25 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\AccessRatePaymentInitialize;
-use App\Events\ClusterEvent;
-use App\Events\NewLogEvent;
-use App\Events\PaymentSuccessEvent;
-use App\Events\SmsStoredEvent;
-use App\Events\TransactionFailedEvent;
-use App\Events\TransactionSavedEvent;
-use App\Events\TransactionSuccessfulEvent;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
-use App\Listeners\AccessRateListener;
-use App\Listeners\ClusterGeoListener;
-use App\Listeners\LogListener;
-use App\Listeners\PaymentSuccessListener;
-use App\Listeners\SmsListener;
-use App\Listeners\TransactionFailedListener;
-use App\Listeners\TransactionSavedListener;
-use App\Listeners\TransactionSuccessfulListener;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -124,41 +108,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
         $this->app->bind('AccessRatePayer', AccessRatePayer::class);
 
-        // Register Events
-
-        // default namespace
-        Event::listen(
-            AccessRatePaymentInitialize::class,
-            AccessRateListener::class,
-        );
-        Event::listen(
-            ClusterEvent::class,
-            ClusterGeoListener::class,
-        );
-        Event::listen(
-            NewLogEvent::class,
-            LogListener::class,
-        );
-        Event::listen(
-            PaymentSuccessEvent::class,
-            PaymentSuccessListener::class,
-        );
-        Event::listen(
-            SmsStoredEvent::class,
-            SmsListener::class,
-        );
-        Event::listen(
-            TransactionFailedEvent::class,
-            TransactionFailedListener::class,
-        );
-        Event::listen(
-            TransactionSavedEvent::class,
-            TransactionSavedListener::class,
-        );
-        Event::listen(
-            TransactionSuccessfulEvent::class,
-            TransactionSuccessfulListener::class,
-        );
+        // Register custom MPM Events
 
         // MPM\User namespace
         Event::listen(
