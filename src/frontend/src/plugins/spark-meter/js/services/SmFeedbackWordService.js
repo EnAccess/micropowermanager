@@ -28,7 +28,7 @@ export class SmFeedbackWordService {
       }
       return this.fromJson(response.data.data[0])
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -47,7 +47,7 @@ export class SmFeedbackWordService {
       }
       return this.fromJson(response.data.data)
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

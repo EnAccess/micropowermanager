@@ -16,7 +16,7 @@ export class DeviceAddressService {
 
       return data.data
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

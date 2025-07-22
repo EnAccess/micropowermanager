@@ -121,7 +121,7 @@ export class ConnectionTypeService {
         return new ErrorHandler(error, "http", status)
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -134,7 +134,7 @@ export class ConnectionTypeService {
       this.list = data.data
       return this.connectionTypes
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -147,7 +147,7 @@ export class ConnectionTypeService {
       this.connectionType = data.data
       return this.connectionType
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -163,7 +163,7 @@ export class ConnectionTypeService {
       this.resetConnectionType()
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

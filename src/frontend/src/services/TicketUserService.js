@@ -22,7 +22,7 @@ export class TicketUserService {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response.data.data.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -36,7 +36,7 @@ export class TicketUserService {
         new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      new ErrorHandler(e.response.data.data.message)
+      new ErrorHandler(e.response.data.message)
     }
   }
 

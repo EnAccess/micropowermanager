@@ -14,7 +14,7 @@ export class ProtectedPageService {
       }
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       throw new ErrorHandler(errorMessage, "http")
     }
   }
@@ -30,7 +30,7 @@ export class ProtectedPageService {
       }
       return data.result
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       throw new ErrorHandler(errorMessage, "http")
     }
   }

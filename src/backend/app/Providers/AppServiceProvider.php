@@ -2,9 +2,25 @@
 
 namespace App\Providers;
 
+use App\Events\AccessRatePaymentInitialize;
+use App\Events\ClusterEvent;
+use App\Events\NewLogEvent;
+use App\Events\PaymentSuccessEvent;
+use App\Events\SmsStoredEvent;
+use App\Events\TransactionFailedEvent;
+use App\Events\TransactionSavedEvent;
+use App\Events\TransactionSuccessfulEvent;
 use App\Helpers\MailHelper;
 use App\Helpers\MailHelperInterface;
 use App\Helpers\MailHelperMock;
+use App\Listeners\AccessRateListener;
+use App\Listeners\ClusterGeoListener;
+use App\Listeners\LogListener;
+use App\Listeners\PaymentSuccessListener;
+use App\Listeners\SmsListener;
+use App\Listeners\TransactionFailedListener;
+use App\Listeners\TransactionSavedListener;
+use App\Listeners\TransactionSuccessfulListener;
 use App\Misc\LoanDataContainer;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
@@ -38,9 +54,12 @@ use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
 use App\Utils\TariffPriceCalculator;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use MPM\Transaction\Provider\AgentTransactionProvider;
+use MPM\User\Events\UserCreatedEvent;
+use MPM\User\UserListener;
 
 class AppServiceProvider extends ServiceProvider {
     /**
@@ -104,5 +123,47 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->bind('TariffPriceCalculator', TariffPriceCalculator::class);
         $this->app->bind('ApplianceInstallmentPayer', ApplianceInstallmentPayer::class);
         $this->app->bind('AccessRatePayer', AccessRatePayer::class);
+
+        // Register Events
+
+        // default namespace
+        Event::listen(
+            AccessRatePaymentInitialize::class,
+            AccessRateListener::class,
+        );
+        Event::listen(
+            ClusterEvent::class,
+            ClusterGeoListener::class,
+        );
+        Event::listen(
+            NewLogEvent::class,
+            LogListener::class,
+        );
+        Event::listen(
+            PaymentSuccessEvent::class,
+            PaymentSuccessListener::class,
+        );
+        Event::listen(
+            SmsStoredEvent::class,
+            SmsListener::class,
+        );
+        Event::listen(
+            TransactionFailedEvent::class,
+            TransactionFailedListener::class,
+        );
+        Event::listen(
+            TransactionSavedEvent::class,
+            TransactionSavedListener::class,
+        );
+        Event::listen(
+            TransactionSuccessfulEvent::class,
+            TransactionSuccessfulListener::class,
+        );
+
+        // MPM\User namespace
+        Event::listen(
+            UserCreatedEvent::class,
+            UserListener::class
+        );
     }
 }

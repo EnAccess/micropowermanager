@@ -134,6 +134,15 @@ class TicketService implements IAssociative {
             ->get();
     }
 
+    public function getForOutsourceReportForGeneration($startDate, $endDate) {
+        return $this->ticket->newQuery()->with(['outsource', 'owner.person', 'category'])
+            ->whereHas('category', static function ($q) {
+                $q->where('out_source', 1);
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+    }
+
     public function getForAgent($agentId, $customerId = null) {
         $query = $this->ticket->newQuery()->with(['category', 'owner', 'assignedTo', 'comments.ticketUser']);
 

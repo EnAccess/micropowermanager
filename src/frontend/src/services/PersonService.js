@@ -166,7 +166,7 @@ export class PersonService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -195,7 +195,7 @@ export class PersonService {
 
       return this.person
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -209,7 +209,7 @@ export class PersonService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -222,7 +222,7 @@ export class PersonService {
 
       return data.data
     } catch (e) {
-      const errorMessage = e.response.data.data.message
+      const errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
@@ -234,7 +234,7 @@ export class PersonService {
         return response
       }
     } catch (e) {
-      let erorMessage = e.response.data.data.message
+      let erorMessage = e.response.data.message
       return new ErrorHandler(erorMessage, "http")
     }
   }
