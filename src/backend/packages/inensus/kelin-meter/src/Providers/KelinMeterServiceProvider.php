@@ -39,6 +39,8 @@ class KelinMeterServiceProvider extends ServiceProvider {
                 UpdatePackage::class,
                 DataSynchronizer::class,
             ]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
         $this->app->booted(function ($app) {
             $app->make(Schedule::class)->command('kelin-meter:access-token-refresher')->everyTenMinutes()->withoutOverlapping(50)

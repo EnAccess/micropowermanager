@@ -19,6 +19,8 @@ class CalinMeterServiceProvider extends ServiceProvider {
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class, UpdatePackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
         Relation::morphMap(
             [

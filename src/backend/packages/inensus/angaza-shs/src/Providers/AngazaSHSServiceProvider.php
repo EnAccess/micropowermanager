@@ -16,6 +16,8 @@ class AngazaSHSServiceProvider extends ServiceProvider {
             $this->publishVueFiles();
             $this->publishMigrations($filesystem);
             $this->commands([InstallPackage::class]);
+        } else {
+            $this->commands([InstallPackage::class]);
         }
     }
 
