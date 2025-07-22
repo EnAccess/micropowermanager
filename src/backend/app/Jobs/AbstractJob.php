@@ -10,11 +10,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use MPM\DatabaseProxy\DatabaseProxyManagerService;
-use Throwable;
 
-abstract class AbstractJob implements ShouldQueue
-{
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+abstract class AbstractJob implements ShouldQueue {
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected int $companyId;
     protected CompanyJob $companyJob;
@@ -28,8 +29,7 @@ abstract class AbstractJob implements ShouldQueue
     /**
      * AbstractJob constructor.
      */
-    public function __construct(string $jobName)
-    {
+    public function __construct(string $jobName) {
         $this->afterCommit = true;
         $this->companyId = app()->make(UserService::class)->getCompanyId();
 
@@ -43,8 +43,7 @@ abstract class AbstractJob implements ShouldQueue
         );
     }
 
-    public function handle(): void
-    {
+    public function handle(): void {
         $this->setJobUuid($this->job->uuid());
 
         $databaseProxyManager = app()->make(DatabaseProxyManagerService::class);
@@ -55,20 +54,17 @@ abstract class AbstractJob implements ShouldQueue
         $this->setJobStatus(CompanyJob::STATUS_SUCCESS);
     }
 
-    public function failed(?Throwable $t = null): void
-    {
+    public function failed(?\Throwable $t = null): void {
         $trace = $t !== null ? explode('#15', $t->getTraceAsString(), 1000)[0] : null;
         $this->setJobStatus(CompanyJob::STATUS_FAILED, $t?->getMessage(), $trace);
     }
 
-    protected function setJobUuid(string $jobUuid): void
-    {
+    protected function setJobUuid(string $jobUuid): void {
         $this->companyJob->job_uuid = $jobUuid;
         $this->companyJob->save();
     }
 
-    protected function setJobStatus(int $status, ?string $message = null, ?string $trace = null): void
-    {
+    protected function setJobStatus(int $status, ?string $message = null, ?string $trace = null): void {
         $this->companyJob->status = $status;
         $this->companyJob->message = $message;
         $this->companyJob->trace = $trace;

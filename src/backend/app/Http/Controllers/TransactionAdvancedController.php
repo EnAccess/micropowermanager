@@ -35,6 +35,7 @@ class TransactionAdvancedController extends Controller {
 
     /**
      * @param int $period
+     *
      * @return array<string, mixed>
      */
     public function compare(int $period): array {

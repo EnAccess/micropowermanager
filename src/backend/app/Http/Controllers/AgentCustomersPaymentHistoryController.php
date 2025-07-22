@@ -20,7 +20,7 @@ class AgentCustomersPaymentHistoryController extends Controller {
         );
     }
 
-    public function index(string $period, ?int$limit = null, string $order = 'ASC'): array {
+    public function index(string $period, ?int $limit = null, string $order = 'ASC'): array {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return $this->agentCustomersPaymentHistoryService->getPaymentFlows($period, $agent->id, $limit, $order);

@@ -12,8 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @implements IBaseService<Device>
  * @implements IAssociative<Device>
  */
-class DeviceService implements IBaseService, IAssociative
-{
+class DeviceService implements IBaseService, IAssociative {
     public function __construct(
         private Device $device,
     ) {}
@@ -55,7 +54,7 @@ class DeviceService implements IBaseService, IAssociative
     }
 
     /**
-     * @param Device $device
+     * @param Device               $device
      * @param array<string, mixed> $deviceData
      */
     public function update($device, array $deviceData): Device {

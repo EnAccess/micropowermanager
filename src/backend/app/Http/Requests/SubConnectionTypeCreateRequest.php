@@ -4,13 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubConnectionTypeCreateRequest extends FormRequest
-{
+class SubConnectionTypeCreateRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -19,8 +17,7 @@ class SubConnectionTypeCreateRequest extends FormRequest
      *
      * @return array<string, string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             'name' => 'required|min:3',
             'connection_type_id' => 'required|numeric',

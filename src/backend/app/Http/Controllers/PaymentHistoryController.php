@@ -106,8 +106,8 @@ class PaymentHistoryController {
      * @param int      $personId
      * @param int|null $year
      *
-    * @return array<int, float>
-    */
+     * @return array<int, float>
+     */
     public function byYear(int $personId, ?int $year = null): array {
         $year = $year ?? (int) date('Y');
         $payments = $this->history->getPaymentFlow('person', $personId, $year);
@@ -182,6 +182,7 @@ class PaymentHistoryController {
 
     /**
      * @param array<int, array{aperiod: string, payment_type: string, amount: float|int}> $payments
+     *
      * @return array<string, array<string, float|int>>
      */
     public function preparePaymentFlow(array $payments): array {

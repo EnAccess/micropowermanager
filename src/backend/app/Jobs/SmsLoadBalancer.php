@@ -7,9 +7,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Collection;
 
 class SmsLoadBalancer extends AbstractJob {
     use Dispatchable;
@@ -42,6 +42,7 @@ class SmsLoadBalancer extends AbstractJob {
 
     /**
      * @param array $data
+     *
      * @return string
      */
     private function sendSms($data): string {
@@ -54,7 +55,7 @@ class SmsLoadBalancer extends AbstractJob {
             [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Authorization' => 'key=' . $smsCollection[1]['setting']['key'],
+                    'Authorization' => 'key='.$smsCollection[1]['setting']['key'],
                     'Accept' => 'application/json',
                 ],
                 'json' => [
