@@ -18,7 +18,7 @@ class ConnectionGroupController {
         return ApiResource::make($this->connectionGroupService->getAll($limit));
     }
 
-    public function show($connectionGroupId, Request $request): ApiResource {
+    public function show(int $connectionGroupId, Request $request): ApiResource {
         return ApiResource::make($this->connectionGroupService->getById($connectionGroupId));
     }
 
@@ -28,7 +28,7 @@ class ConnectionGroupController {
         return new ApiResource($this->connectionGroupService->create($connectionGroupData));
     }
 
-    public function update($connectionGroupId, CreateConnectionGroupRequest $request): ApiResource {
+    public function update(int $connectionGroupId, CreateConnectionGroupRequest $request): ApiResource {
         $connectionGroup = $this->connectionGroupService->getById($connectionGroupId);
         $connectionGroupData = $request->all();
 

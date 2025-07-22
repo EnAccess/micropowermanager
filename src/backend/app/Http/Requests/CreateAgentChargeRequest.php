@@ -18,7 +18,7 @@ class CreateAgentChargeRequest extends FormRequest {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules() {
         // TODO: Change on UI.  user_id is not required.

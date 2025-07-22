@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Address\Address;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IAssignationService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * @implements IAssignationService<Address, Person>
@@ -19,7 +20,10 @@ class PersonAddressService implements IAssignationService {
         return $this->person;
     }
 
-    public function getPersonAddresses($person) {
+    /**
+     * @return LengthAwarePaginator<Address>
+     */
+    public function getPersonAddresses(Person $person): LengthAwarePaginator {
         return $person->addresses()->with('city', 'geo')->orderBy('is_primary', 'DESC')->paginate(5);
     }
 

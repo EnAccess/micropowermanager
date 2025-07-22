@@ -10,16 +10,16 @@ class MeterTypeCreateRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function rules() {
+    public function rules(): array {
         return [
             'max_current' => 'required|numeric|min:1',
             'phase' => 'required|numeric|min:1',

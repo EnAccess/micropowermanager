@@ -150,7 +150,7 @@ class AssetPersonController extends Controller {
         return ApiResource::make($assets);
     }
 
-    public function show($applianceId): ApiResource {
+    public function show(int $applianceId): ApiResource {
         $appliance = $this->assetPersonService->getApplianceDetails($applianceId);
 
         return ApiResource::make($appliance);

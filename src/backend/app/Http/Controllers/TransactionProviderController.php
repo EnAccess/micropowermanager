@@ -6,7 +6,7 @@ use App\Http\Resources\ApiResource;
 use App\Services\TransactionProviderService;
 
 class TransactionProviderController extends Controller {
-    private $transactionProviderService;
+    private TransactionProviderService $transactionProviderService;
 
     public function __construct(TransactionProviderService $transactionProviderService) {
         $this->transactionProviderService = $transactionProviderService;

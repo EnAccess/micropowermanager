@@ -12,7 +12,7 @@ class MapSettingsController extends Controller {
         return new ApiResource(MapSettings::all());
     }
 
-    public function update($id): ApiResource {
+    public function update(int $id): ApiResource {
         $mapSettings = MapSettings::query()
             ->updateOrCreate(
                 ['id' => $id],
@@ -28,7 +28,7 @@ class MapSettingsController extends Controller {
     }
 
     // TODO: remove this method and associated route references when docs can be updated
-    public function checkBingApiKey($key): ApiResource {
+    public function checkBingApiKey(string $key): ApiResource {
         return ApiResource::make(['authentication' => '']);
     }
 }

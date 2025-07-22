@@ -23,7 +23,7 @@ class UserController extends Controller {
         return new ApiResource($users);
     }
 
-    public function store(CreateAdminRequest $request) {
+    public function store(CreateAdminRequest $request): ApiResource {
         $user = $this->userService->create($request->only(['name', 'password', 'email']));
         $companyDatabase = $this->companyDatabaseService->findByCompanyId($user->getCompanyId());
         $databaseProxyData = [
@@ -36,7 +36,7 @@ class UserController extends Controller {
         return ApiResource::make($user->toArray());
     }
 
-    public function show(User $user) {
+    public function show(User $user): ApiResource {
         return new ApiResource($this->userService->get($user->id));
     }
 

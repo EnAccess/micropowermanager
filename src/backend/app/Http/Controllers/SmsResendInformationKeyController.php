@@ -8,7 +8,7 @@ use App\Services\SmsResendInformationKeyService;
 use Illuminate\Http\Request;
 
 class SmsResendInformationKeyController extends Controller {
-    private $smsResendInformationKeyService;
+    private SmsResendInformationKeyService $smsResendInformationKeyService;
 
     public function __construct(SmsResendInformationKeyService $smsResendInformationKeyService) {
         $this->smsResendInformationKeyService = $smsResendInformationKeyService;

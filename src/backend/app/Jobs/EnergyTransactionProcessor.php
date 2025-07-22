@@ -14,7 +14,7 @@ class EnergyTransactionProcessor extends AbstractJob {
     private Transaction $transaction;
     protected const TYPE = 'energy';
 
-    public function __construct(private $transactionId) {
+    public function __construct(private int|string $transactionId) {
         $this->afterCommit = true;
         parent::__construct(get_class($this));
     }
@@ -26,7 +26,7 @@ class EnergyTransactionProcessor extends AbstractJob {
      *
      * @throws TransactionNotInitializedException
      */
-    public function executeJob() {
+    public function executeJob(): void {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 
@@ -46,7 +46,7 @@ class EnergyTransactionProcessor extends AbstractJob {
         }
     }
 
-    private function initializeTransaction() {
+    private function initializeTransaction(): void {
         $this->transaction = Transaction::query()->find($this->transactionId);
         $this->transaction->type = 'energy';
         $this->transaction->save();
@@ -88,7 +88,6 @@ class EnergyTransactionProcessor extends AbstractJob {
 
     private function payAccessRateIfExists(TransactionDataContainer $transactionData): TransactionDataContainer {
         if ($transactionData->transaction->amount > 0) {
-            // pay if necessary access rate
             $accessRatePayer = resolve('AccessRatePayer');
             $accessRatePayer->initialize($transactionData);
             $transactionData = $accessRatePayer->pay();
@@ -110,7 +109,7 @@ class EnergyTransactionProcessor extends AbstractJob {
             ->onQueue(config('services.queues.token'));
     }
 
-    private function getTariffMinimumPurchaseAmount($transactionData) {
+    private function getTariffMinimumPurchaseAmount(TransactionDataContainer $transactionData): float {
         return $transactionData->tariff->minimum_purchase_amount;
     }
 }

@@ -24,7 +24,7 @@ class TargetController extends Controller {
         return ApiResource::make($this->targetService->getAll($limit));
     }
 
-    public function show($targetId): ApiResource {
+    public function show(int $targetId): ApiResource {
         return ApiResource::make($this->targetService->getById($targetId));
     }
 

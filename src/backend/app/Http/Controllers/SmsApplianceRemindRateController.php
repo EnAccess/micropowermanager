@@ -9,7 +9,7 @@ use App\Services\SmsApplianceRemindRateService;
 use Illuminate\Http\Request;
 
 class SmsApplianceRemindRateController extends Controller {
-    private $smsApplianceRemindService;
+    private SmsApplianceRemindRateService $smsApplianceRemindService;
 
     public function __construct(SmsApplianceRemindRateService $smsApplianceRemindService) {
         $this->smsApplianceRemindService = $smsApplianceRemindService;

@@ -43,7 +43,7 @@ class ClusterRevenueController extends Controller {
         );
     }
 
-    public function show($clusterId, Request $request): ApiResource {
+    public function show(int $clusterId, Request $request): ApiResource {
         $dateRange =
             $this->clusterRevenueService->setDateRangeForRequest($request->get('startDate'), $request->get('endDate'));
         $cluster = $this->clusterService->getById($clusterId);

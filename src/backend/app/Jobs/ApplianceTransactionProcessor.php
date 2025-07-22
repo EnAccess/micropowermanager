@@ -21,7 +21,7 @@ class ApplianceTransactionProcessor extends AbstractJob {
     /**
      * @throws TransactionNotInitializedException
      */
-    public function executeJob() {
+    public function executeJob(): void {
         $this->initializeTransaction();
         $container = $this->initializeTransactionDataContainer();
 

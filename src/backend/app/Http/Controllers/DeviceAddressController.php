@@ -14,7 +14,7 @@ class DeviceAddressController extends Controller {
         private DeviceService $deviceService,
     ) {}
 
-    public function update(Request $request) {
+    public function update(Request $request): ApiResource {
         $creatorId = auth('api')->user()->id;
         $devices = $request->all();
         foreach ($devices as $deviceData) {

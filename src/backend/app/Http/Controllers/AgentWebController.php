@@ -30,7 +30,7 @@ class AgentWebController extends Controller {
         return ApiResource::make($this->agentService->getAll($limit));
     }
 
-    public function show($agentId, Request $request): ApiResource {
+    public function show(int $agentId, Request $request): ApiResource {
         return ApiResource::make($this->agentService->getById($agentId));
     }
 
@@ -70,14 +70,14 @@ class AgentWebController extends Controller {
         ));
     }
 
-    public function update($agentId, Request $request): ApiResource {
+    public function update(int $agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
         $agentData = $request->all();
 
         return ApiResource::make($this->agentService->update($agent, $agentData));
     }
 
-    public function destroy($agentId, Request $request): ApiResource {
+    public function destroy(int $agentId, Request $request): ApiResource {
         $agent = $this->agentService->getById($agentId);
 
         $deleted = $this->agentService->delete($agent);

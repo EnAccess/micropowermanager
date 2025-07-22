@@ -105,8 +105,11 @@ class MeterService implements IBaseService {
         return $meter->delete();
     }
 
-    public function getAll(?int $limit = null, $inUse = true): LengthAwarePaginator {
-        if (isset($inUse)) {
+    /**
+     * @return LengthAwarePaginator<Meter>
+     */
+    public function getAll(?int $limit = null, ?bool $inUse = true): LengthAwarePaginator {
+        if ($inUse !== null) {
             return $this->meter->newQuery()->with(['meterType', 'tariff'])->where(
                 'in_use',
                 $inUse
@@ -123,7 +126,10 @@ class MeterService implements IBaseService {
         return $meter;
     }
 
-    public function getNumberOfConnectionTypes(): Collection|array {
+    /**
+     * @return Collection<int, Meter>
+     */
+    public function getNumberOfConnectionTypes(): Collection {
         return $this->meter->newQuery()->join('connection_types', 'meters.connection_type_id', '=', 'connection_types.id')
             ->select('connection_type_id', DB::raw('count(*) as total'))
             ->groupBy('connection_type_id')

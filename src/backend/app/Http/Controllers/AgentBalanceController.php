@@ -10,7 +10,7 @@ class AgentBalanceController extends Controller {
         private AgentService $agentService,
     ) {}
 
-    public function show(Request $request) {
+    public function show(Request $request): float {
         $agent = $this->agentService->getByAuthenticatedUser();
 
         return $this->agentService->getAgentBalance($agent);

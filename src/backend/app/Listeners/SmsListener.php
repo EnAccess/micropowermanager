@@ -11,9 +11,9 @@ use App\Sms\SmsTypes;
 use Illuminate\Support\Facades\Log;
 
 class SmsListener {
-    private $smsResendInformationKeyService;
-    private $transaction;
-    private $smsService;
+    private SmsResendInformationKeyService $smsResendInformationKeyService;
+    private Transaction $transaction;
+    private SmsService $smsService;
 
     public function __construct(
         SmsResendInformationKeyService $smsResendInformationKeyService,
@@ -25,7 +25,7 @@ class SmsListener {
         $this->smsService = $smsService;
     }
 
-    public function onSmsStored($sender, $message) {
+    public function onSmsStored(string $sender, string $message): void {
         $resendInformationKey = $this->smsResendInformationKeyService->getResendInformationKeys()->first();
 
         if (!$resendInformationKey) {
@@ -47,7 +47,7 @@ class SmsListener {
         }
     }
 
-    public function handle(SmsStoredEvent $event) {
+    public function handle(SmsStoredEvent $event): void {
         $this->onSmsStored($event->sender, $event->message);
     }
 }

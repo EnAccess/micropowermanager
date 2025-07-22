@@ -726,7 +726,7 @@ class Reports {
         }
     }
 
-    private function addStoredTargets(Worksheet $sheet, int $cityId, $endDate): void {
+    private function addStoredTargets(Worksheet $sheet, int $cityId, string $endDate): void {
         $targetData = $this->target::with('subTargets.connectionType')
             ->where('target_date', '>', $endDate)
             ->where('owner_type', 'mini-grid')

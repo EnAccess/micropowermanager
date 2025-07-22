@@ -28,7 +28,7 @@ class AgentTicketController extends Controller {
         return ApiResource::make($this->ticketService->getForAgent($agent->id));
     }
 
-    public function show($ticketId, Request $request): ApiResource {
+    public function show(int $ticketId, Request $request): ApiResource {
         return ApiResource::make($this->ticketService->getById($ticketId));
     }
 
